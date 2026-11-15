@@ -26,5 +26,15 @@ Both reviewers confirm `A5-560` and the arguments of `A5-561`. Each finding is c
 The reviewers' hypotheses are recorded with their falsifiers in the rows they concern: the dimension of the two
 sets in the stratum (`A5-558`), and an exact point of `A5-551` in a rational chart, for which the red-team
 reviewer gives a rational family of Hermitian elements of the subgroup `SL(3, C)` that fixes `e_4` and a real
-zero at 50 digits of a system of three polynomials of degrees 8, 8 and 16 (`A5-551`). Neither is computed in this
-pull request.
+zero at 50 digits of a system of three polynomials of degrees 8, 8 and 16 (`A5-551`). The first is not computed in
+this pull request.
+
+Two additions follow the local review, so neither local reviewer read them and the hosted round is their first
+review. `A5-562` (`nullity4_real_polar_sl3_chart.py`) computes the red-team reviewer's lead: the chart is checked
+as an identity, a Krawczyk box holds one real zero of the three polynomials with pairing rank 1, and the point
+lies on a factor of degree 88 of the eliminating polynomial that msolve 0.9.4 returns (the degree is computed, the
+eliminant is retained and not recomputed). The evidence README gains one table of the nullity-4 strata by kernel
+plane, `dim C(P)`, `dim L` and row. Both passed the sweep for the five finding classes of the earlier reviews
+before the push: the factor loop runs through `parallel.ordered_map`, each test computes what it compares, each
+fact name states what its code evaluates, the Krawczyk test refuses a precision below 64 bits, a radius that selects
+the point evaluation and an unknown box, and the gate runs the producer directly.
