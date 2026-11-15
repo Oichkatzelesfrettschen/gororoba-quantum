@@ -614,6 +614,7 @@ differs from it only in the `cd_core.py` digest.
 | File | Contents |
 |---|---|
 | [providers.md](notes/providers.md) | provider interpreter variables and MCP server names, with the guide of each provider |
+| [bracketed-executed-order-analysis.md](design/bracketed-executed-order-analysis.md) | preregistered executed-order drift fit of the bracketed twin contrasts and its operating characteristics under reordering |
 | [tuna17-bipartite-designs.md](notes/quantum_inspire/tuna17-bipartite-designs.md) | Tuna-17 cubic Walsh classes and box-kite packing |
 | [quandela/literature.md](notes/quandela/literature.md) | published methods for characterizing a Belenos-class mesh |
 | [quandela/quickstart.md](notes/quandela/quickstart.md) | Quandela Cloud quick start |
