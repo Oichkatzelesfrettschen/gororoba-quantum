@@ -3,8 +3,8 @@ name: pr
 # Pull-request regression checks of the repository's own code through
 # ci/pr_checks.sh: Ruff, mypy and the pytest suite with the audit marker
 # deselected (pyproject.toml), its contract suites in a parallel job. The gates of ci/gates.json (record replays,
-# digest and source checks, research-script runs) run on demand, and
-# proofs.yml compiles a proof change. A job or step that reaches its timeout fails.
+# digest and source checks, research-script runs) run on demand, and no workflow compiles Rocq.
+# A job or step that reaches its timeout fails.
 # workflow_dispatch serves a pull request that GITHUB_TOKEN opened, whose
 # pull_request event starts no workflow; check runs attach to the dispatched
 # commit, which is that pull request's head.
