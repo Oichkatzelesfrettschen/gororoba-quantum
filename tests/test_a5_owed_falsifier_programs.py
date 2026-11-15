@@ -179,3 +179,10 @@ def test_a_falsified_or_undecided_quadric_record_exits_one(field: str, value: An
     record = passing_quadric_record()
     record[field] = value
     _same(qr.exit_status(record), 1)
+
+
+def test_a_radical_ideal_that_is_not_cohen_macaulay_falsifies_the_hypothesis() -> None:
+    cm_row = {"cohen_macaulay": False}
+    red = {"chart": [0, 15, 12], "squarefree_charpoly_bases": [7], "nilpotent": [0, 1, 1], "radical_equal": [1]}
+    found = qr.verdict(cm_row, red)
+    _same((found["reduced"], found["hypothesis_holds"]), (True, False))

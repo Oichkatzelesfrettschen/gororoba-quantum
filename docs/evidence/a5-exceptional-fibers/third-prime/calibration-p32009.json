@@ -29,6 +29,9 @@
      1,
      1
     ],
+    "radical_equal": [
+     0
+    ],
     "squarefree_charpoly_bases": [
      7,
      8,
@@ -169,6 +172,9 @@
      5,
      1,
      1
+    ],
+    "radical_equal": [
+     0
     ],
     "squarefree_charpoly_bases": [
      7,

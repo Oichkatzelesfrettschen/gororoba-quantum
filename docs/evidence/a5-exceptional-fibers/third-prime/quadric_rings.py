@@ -8,7 +8,8 @@ not Cohen-Macaulay, or a nonreduced ring that is. This program decides both prop
 
 - Cohen-Macaulay: `k2_cm.test` unchanged (Artinian length against degree after a linear system of parameters).
 - Nonreduced: the radical R of K2 has a nonzero linear part N with N^2 in K2; K2 is generated in degree 2, so a
-  linear form of R is a nilpotent outside K2. This probe runs on every ring the Cohen-Macaulay test rejects.
+  linear form of R is a nilpotent outside K2. This probe runs on every ring the Cohen-Macaulay test rejects, and
+  there R = K2 decides the ring reduced, so a reduced ring that is not Cohen-Macaulay falsifies the hypothesis.
 - Reduced, for a Cohen-Macaulay ring A = k[y]/K2 of dimension a and degree e: the forms l_1, ..., l_a of the
   Cohen-Macaulay test are a regular sequence, so A_1 = A/(l_1, ..., l_{a-1}) is Cohen-Macaulay of dimension 1 and
   every point of Proj A_1 lies in the chart l_a = 1. The chart ring k[y]/Z = A_1/(l_a - 1) is reduced of length e
@@ -98,7 +99,8 @@ quit;
 """
 
 NIL = """ideal R=std(radical(sK)); ideal N=simplify(jet(R,1),2);
-"RESULT nilpotent",size(N),size(reduce(N*N,sK))==0,size(reduce(N,sK))==size(N);"""
+"RESULT nilpotent",size(N),size(reduce(N*N,sK))==0,size(reduce(N,sK))==size(N);
+"RESULT radical_equal",size(reduce(R,sK))==0;"""
 
 
 def relations(slug: str) -> Path:
@@ -163,6 +165,8 @@ def verdict(cm_row: dict[str, Any], red: dict[str, Any]) -> dict[str, Any]:
         out["nilpotent_certificate"] = count > 0 and square == 1 and outside == 1
     if out.get("nilpotent_certificate"):
         out["reduced"] = False
+    elif red.get("radical_equal") == [1]:
+        out["reduced"] = True
     elif cm_row["cohen_macaulay"] and chart_reduced:
         out["reduced"] = True
     else:
