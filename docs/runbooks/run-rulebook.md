@@ -759,7 +759,7 @@ the closest entry and say what changed.
   y_a G_p - y_p G_a by the pivot G_p in place of the 2 x 2 minors): Rees standard basis in 911 s against 1,241 s,
   colon certificate at 8,701 s against 8,685 s, the same fiber (dimension 5, multiplicity 23, 68 generators). The
   pivot form moves no time out of the saturation, so the E8-bar pivot run was not started; the block route is the
-  open A5-506.
+  open A5-542, which restates the refuted A5-506.
 
 ### Singular locus of the degree-11 component of the E8-bar fiber cone (plane and line, or a divisor)
 
