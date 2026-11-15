@@ -1,7 +1,7 @@
 ### 1. Defects in Code, Claims, and Records (Ranked by Consequence)
 
 #### Defect 1: Premature loop termination in Singular reduction check via dynamic `size(I)`
-- **Location:** [arcs/gen_family.py:141-143](../../../docs/evidence/a5-exceptional-fibers/arcs/gen_family.py#L141-L143)
+- **Location:** [arcs/gen_family.py:141-143](../../../../docs/evidence/a5-exceptional-fibers/arcs/gen_family.py#L141-L143)
 - **Classification:** [computed] / [proved]
 - **Mechanism:** In Singular, `size(I)` returns the count of non-zero generators. When elements in the loop `for (jj=1;jj<=size(P2F);jj++) { P2F[jj]=reduce(P2F[jj],rel); }` reduce to 0, `size(P2F)` decreases dynamically. Once `jj > size(I)`, the loop terminates prematurely, leaving generators in the second half of the ideal unreduced.
 - **Demonstrated Break:**
@@ -12,31 +12,31 @@
   ```text
   0, 0, 0, x, x
   ```
-  Generators 4 and 5 were never zeroed out. While [relation_ideal_orders.py:35](../../../docs/evidence/a5-exceptional-fibers/arcs/relation_ideal_orders.py#L35) recognized this (`"every loop over an ideal runs to ncols, since Singular's size counts only the nonzero generators"`), [gen_family.py:141-143](../../../docs/evidence/a5-exceptional-fibers/arcs/gen_family.py#L141-L143) retains `size(P2F)`, `size(P1F)`, and `size(K2F)`. If leading generators vanish, trailing non-vanishing generators escape reduction.
+  Generators 4 and 5 were never zeroed out. While [relation_ideal_orders.py:35](../../../../docs/evidence/a5-exceptional-fibers/arcs/relation_ideal_orders.py#L35) recognized this (`"every loop over an ideal runs to ncols, since Singular's size counts only the nonzero generators"`), [gen_family.py:141-143](../../../../docs/evidence/a5-exceptional-fibers/arcs/gen_family.py#L141-L143) retains `size(P2F)`, `size(P1F)`, and `size(K2F)`. If leading generators vanish, trailing non-vanishing generators escape reduction.
 
 #### Defect 2: Reducedness certificate failure mode on non-Cohen-Macaulay rings
-- **Location:** [third-prime/quadric_rings.py:12-20, 151-166](../../../docs/evidence/a5-exceptional-fibers/third-prime/quadric_rings.py#L12-L20)
+- **Location:** [third-prime/quadric_rings.py:12-20, 151-166](../../../../docs/evidence/a5-exceptional-fibers/third-prime/quadric_rings.py#L12-L20)
 - **Classification:** [computed] / [proved]
-- **Mechanism:** A squarefree characteristic polynomial on an Artinian linear section chart $l_a = 1$ does *not* detect non-reducedness when $k[y]/K_2$ is non-Cohen-Macaulay. On $X^- \to N^-$ (3 nilpotent linear forms) and $E_8\text{-bar} \to N^-$ (5 nilpotent linear forms), the section chart reports `chart_reduced: True` with squarefree charpolys for all bases 7–10 ([quadric-rings-p32057.json:44, 461](../../../docs/evidence/a5-exceptional-fibers/third-prime/quadric-rings-p32057.json#L44)). The codimension-4 section in $\mathbb{P}^{20}$ misses the dimension-4 non-reduced components $P_2$ and $A$ ($\dim V + \dim L - N = 3 + 16 - 20 = -1 < 0$).
+- **Mechanism:** A squarefree characteristic polynomial on an Artinian linear section chart $l_a = 1$ does *not* detect non-reducedness when $k[y]/K_2$ is non-Cohen-Macaulay. On $X^- \to N^-$ (3 nilpotent linear forms) and $E_8\text{-bar} \to N^-$ (5 nilpotent linear forms), the section chart reports `chart_reduced: True` with squarefree charpolys for all bases 7–10 ([quadric-rings-p32057.json:44, 461](../../../../docs/evidence/a5-exceptional-fibers/third-prime/quadric-rings-p32057.json#L44)). The codimension-4 section in $\mathbb{P}^{20}$ misses the dimension-4 non-reduced components $P_2$ and $A$ ($\dim V + \dim L - N = 3 + 16 - 20 = -1 < 0$).
 - **Demonstrated Output:**
   ```sh
   python3 -c 'import json; d = json.load(open("docs/evidence/a5-exceptional-fibers/third-prime/quadric-rings-p32057.json")); print(d["cells"][0]["fiber"], "CM:", d["cells"][0]["cohen_macaulay"], "chart_reduced:", d["cells"][0]["chart_reduced"], "nilpotents:", d["cells"][0]["nilpotent_linear_forms"])'
   ```
   **Output:** `X- -> N- CM: False chart_reduced: True nilpotents: 3`
-  The verdict is only saved from falsely asserting `reduced: True` because line 161 gates the chart verdict behind `cm_row["cohen_macaulay"]`. Consequently, [calibration-p32009.json](../../../docs/evidence/a5-exceptional-fibers/third-prime/calibration-p32009.json) yields `chart_reduced: True` across all five cells (including both non-reduced cells), failing to exercise chart failure on non-reduced rings.
+  The verdict is only saved from falsely asserting `reduced: True` because line 161 gates the chart verdict behind `cm_row["cohen_macaulay"]`. Consequently, [calibration-p32009.json](../../../../docs/evidence/a5-exceptional-fibers/third-prime/calibration-p32009.json) yields `chart_reduced: True` across all five cells (including both non-reduced cells), failing to exercise chart failure on non-reduced rings.
 
 #### Defect 3: Gate replay pollutes repository with unmanaged artifact writes
-- **Location:** [arcs/relation_ideal_orders.py:124-129](../../../docs/evidence/a5-exceptional-fibers/arcs/relation_ideal_orders.py#L124-L129)
+- **Location:** [arcs/relation_ideal_orders.py:124-129](../../../../docs/evidence/a5-exceptional-fibers/arcs/relation_ideal_orders.py#L124-L129)
 - **Classification:** [computed]
 - **Mechanism:** In gate `core-a5-header-relation-ideal-orders`, `ci/replay_check.py` redirects JSON output `{out}` to a temporary directory, but `relation_ideal_orders.py:124-129` hardcodes writing `.sing` scripts and `.log` outputs directly to `HERE / "relation-ideal-orders" / target_name`. Running the gate mutates the repository tree, violating gate read-only hermeticity.
 
 #### Defect 4: Asymmetric nilradical search leaves Iso and W8 unprobed for nilpotents
-- **Location:** [third-prime/quadric_rings.py:200-202](../../../docs/evidence/a5-exceptional-fibers/third-prime/quadric_rings.py#L200-L202)
+- **Location:** [third-prime/quadric_rings.py:200-202](../../../../docs/evidence/a5-exceptional-fibers/third-prime/quadric_rings.py#L200-L202)
 - **Classification:** [computed]
 - **Mechanism:** Line 200 hardcodes `nil = {"xm-nm", "xp-np", "e8-vb", "e8-nm"}`. For `iso-nm` and `w8-nm`, `NIL` (which computes `radical(sK)` and linear nilpotents) is skipped entirely. Their reducedness is inferred purely from `cohen_macaulay: True` and `chart_reduced: True`.
 
 #### Defect 5: Mutation gap in test suite
-- **Location:** [tests/test_a5_owed_falsifier_programs.py:86-95](../../../tests/test_a5_owed_falsifier_programs.py#L86-L95)
+- **Location:** [tests/test_a5_owed_falsifier_programs.py:86-95](../../../../tests/test_a5_owed_falsifier_programs.py#L86-L95)
 - **Classification:** [computed]
 - **Mechanism:** `MUTATIONS` checks `("top", "plain", "P1NONVAN", 2)` but lacks `("scroll", "plain", "P2NONVAN", 2)`. Moreover, `pytest` executes only against synthesized in-memory dicts; none of the committed JSON evidence records are validated by pytest.
 
@@ -87,10 +87,10 @@
      - `e8-nm`: 148 quadrics, ~2 h wall clock, 1.4 GB peak resident set.
      - `w8-nm`: 144 quadrics, ~1 h 52 min wall clock, 2.0 GB peak resident set.
   3. `quadric_rings.py` (CM + reducedness + defect probes): 45 s, 450 MB peak memory.
-- **Total Cost:** ~4.0 hours serial (or ~2.0 hours with 2 parallel workers), peak memory **2.0 GB** (bounded by `w8-nm` normal-form stage; evidence: [third-prime/README.md:28-45](../../../docs/evidence/a5-exceptional-fibers/third-prime/README.md#L28-L45)).
+- **Total Cost:** ~4.0 hours serial (or ~2.0 hours with 2 parallel workers), peak memory **2.0 GB** (bounded by `w8-nm` normal-form stage; evidence: [third-prime/README.md:28-45](../../../../docs/evidence/a5-exceptional-fibers/third-prime/README.md)).
 
 #### A5-548: Characteristic 0 over $\mathbb{Q}(i)$
-- **Required Steps:** Run `quadric_rings.py` over $\mathbb{Q}(i)$ directly on the certified weight-slice relation files from A5-474 ([weight-slice-relation-membership-result.json](../../../docs/evidence/a5-kernel-attachments/weight-slice-relation-membership-result.json)).
+- **Required Steps:** Run `quadric_rings.py` over $\mathbb{Q}(i)$ directly on the certified weight-slice relation files from A5-474 ([weight-slice-relation-membership-result.json](../../../../docs/evidence/a5-kernel-attachments/weight-slice-relation-membership-result.json)).
 - **Cost & Memory:**
   - `e8-vb` (10 vars), `iso` (17 vars), `xm` (15 vars): 10–45 s each, $< 400\text{ MB}$.
   - `w8` (24 vars, 144 quadrics, degree 50): Artinian reduction over $\mathbb{Q}(i)$ incurs coefficient swelling in Singular: ~8–12 min, peak memory **2.5 GB**.

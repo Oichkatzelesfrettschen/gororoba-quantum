@@ -13,7 +13,7 @@ homogeneous generator in degrees three to seven beyond the 148 quadrics.
 Each header carries its own arcs, quadratic relation file and column bases. The N+ ranks are measured directly
 on N+; the N+ upper bound at 32009 uses the retained sign transport of the N- degree-two membership receipt
 (described below). Every equality holds over its named prime field. Degrees eight and above are settled by
-[the order functions of the arc package](../arcs/README.md#the-relation-ideal-in-every-degree-a5-555), L = K2 in every
+[the order functions of the arc package](../arcs/README.md#the-relation-ideal-in-every-degree-a5-559), L = K2 in every
 degree (A5-559); characteristic zero on these slices remains open.
 
 ## Method
