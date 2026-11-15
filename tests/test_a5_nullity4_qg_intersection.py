@@ -114,8 +114,10 @@ def _record() -> dict[str, Any]:
     return json.loads(qg.RECORD.read_text(encoding="utf-8"))
 
 
-def test_pinned_record_passes_its_rules() -> None:
+def test_pinned_record_passes_its_rules(monkeypatch: pytest.MonkeyPatch) -> None:
     record = _record()
+    retained_inputs = dict(record["inputs"])
+    monkeypatch.setattr(qg, "_inputs", lambda: dict(retained_inputs))
     _same(qg.verdict(record), [])
     _same(record["pass"], True)
     _same(qg._serialized(record), qg.RECORD.read_text(encoding="utf-8"))
@@ -132,8 +134,10 @@ def test_pinned_record_passes_its_rules() -> None:
         ("the verdict flag", lambda r: r.__setitem__("pass", False)),
     ],
 )
-def test_record_rules_reject_a_planted_mutant(label: str, mutate: Any) -> None:
+def test_record_rules_reject_a_planted_mutant(label: str, mutate: Any, monkeypatch: pytest.MonkeyPatch) -> None:
     record = _record()
+    retained_inputs = dict(record["inputs"])
+    monkeypatch.setattr(qg, "_inputs", lambda: dict(retained_inputs))
     mutate(record)
     if not qg.verdict(record):
         raise AssertionError(label)

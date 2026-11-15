@@ -65,6 +65,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import functools
 import hashlib
 import itertools
 import json
@@ -450,16 +451,29 @@ def line_x_rank() -> int:
     return int(DomainMatrix.from_Matrix(matrix).convert_to(QQ_I.frac_field(S, C1, C2)).rank())
 
 
-def line_x_groebner() -> dict[str, list[str]]:
-    """The 8 x 8 Pfaffians of M(c1 k1 + c2 k2) with their common zeros in the charts c2 = 1 and c1 = 1, c2 = 0."""
+@functools.cache
+def _line_x_matrices() -> tuple[Any, Any, Any]:
+    """The ring Q(i)[s, c1, c2], M(c1 k1 + c2 k2) over it, and its value at s = 2, c1 = 3, c2 = 5."""
     domain = ring("s,c1,c2", QQ_I)[0]
     k1, k2 = kernel_vectors(S)[1:]
-    entries = _ring_matrix(msym([C1 * a + C2 * b for a, b in zip(k1, k2, strict=True)]), domain)
-    sample = msym([C1 * a + C2 * b for a, b in zip(k1, k2, strict=True)]).subs({S: 2, C1: 3, C2: 5})
+    matrix = msym([C1 * a + C2 * b for a, b in zip(k1, k2, strict=True)])
+    return domain, _ring_matrix(matrix, domain), matrix.subs({S: 2, C1: 3, C2: 5})
+
+
+def line_x_pfaffian(indices: tuple[int, ...]) -> Any:
+    """The Pfaffian of the principal 8 x 8 block on the indices, or None where its value at the sample point is 0."""
+    domain, entries, sample = _line_x_matrices()
+    if sample.extract(list(indices), list(indices)).det() == 0:
+        return None
+    return sp.expand(_pfaffian_ring(entries, indices, domain).as_expr())
+
+
+def line_x_groebner() -> dict[str, list[str]]:
+    """The 8 x 8 Pfaffians of M(c1 k1 + c2 k2) with their common zeros in the charts c2 = 1 and c1 = 1, c2 = 0."""
+    subsets = list(itertools.combinations(range(15), 8))
     polynomials: dict[str, Any] = {}
-    for indices in itertools.combinations(range(15), 8):
-        if sample.extract(list(indices), list(indices)).det() != 0:
-            found = sp.expand(_pfaffian_ring(entries, indices, domain).as_expr())
+    for found in parallel.ordered_map(line_x_pfaffian, subsets, min_items=2):
+        if found is not None:
             polynomials[sp.srepr(found)] = found
     result = {}
     for label, values in (("c2 = 1", {C2: 1}), ("c1 = 1, c2 = 0", {C1: 1, C2: 0})):
