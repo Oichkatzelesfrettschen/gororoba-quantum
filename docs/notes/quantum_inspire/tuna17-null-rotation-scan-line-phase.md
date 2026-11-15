@@ -147,19 +147,23 @@ compared with the same maximum over an off-line band of equal width (0.004 to 0.
 | all -10 / +10 degrees | 0.0078 / 0.0050 | 0.0205 / 0.0122 |
 | all -20 / +20 degrees | 0.0096 / 0.0116 | 0.0110 / 0.0254 |
 
-The centers read half their folded harmonic, as the parity relation gives. Both q8 arms sit at the off-line
-level, at -10 degrees with a strong reference on q4's bit, so the q8 arms carry no oscillation of the contrast.
-The q4 +10 degree arm sits within 0.002 of the off-line level, which bounds its contrast harmonic near a third
-of the center's. q4's own bit loses its line at q4 +10 and at q8 +10 degrees.
+The centers read half their folded harmonic, as the parity relation gives. Both q8 arms read at the off-line
+level, at -10 degrees with a strong reference on q4's bit, and the q4 +10 degree arm reads within 0.002 of it;
+q4's own bit reads at its off-line level at q4 +10 and at q8 +10 degrees. These are observed band maxima: a
+maximum over frequencies is biased upward and noise can add to or cancel a harmonic, so the table is descriptive
+and sets no upper limit on an oscillation in those arms. A limit with stated coverage needs a calibration that
+this analysis lacks.
 
 ## Phase-resolved fits
 
-`phase_resolved_fit.py` lets one error parameter follow the line, u = u0 + A cos(theta), and fits the 80 pooled
-phase-bin contrasts and the ten q4 line amplitudes. No candidate is adequate (limit 124.8 on the contrasts): a
-phase on q12 reads 438 to 472 and predicts no line on q4's bit; a conditional phase on every CZ reproduces q4's
-amplitudes and reads 806. `phase_resolved_two_source.py` drives two parameters with one phase: the best pair, a
+`phase_resolved_fit.py` lets one error parameter follow the line, u = u0 + A cos(theta), and fits the 72 pooled
+phase-bin contrasts and the nine q4 line amplitudes of the nine `Rx` arm types. No candidate is adequate (limit
+112.3 on the contrasts, 70 degrees of freedom): a conditional phase on coupler 8-12 reads 315 and a phase on q12
+376 (before its pulses and after its CZ gates alike), and both predict no line on q4's bit, so the alignment of
+each arm to the line is unidentified in them and each arm takes the better of the two; a conditional phase on
+every CZ reproduces q4's amplitudes and reads 806. `phase_resolved_two_source.py` drives two parameters with one phase: the best pair, a
 conditional phase on coupler 4-8 (static -0.025 rad, oscillating 0.125 rad) with a phase on q12 (static -0.15 rad,
-oscillating 0.10 rad), reads 304 against 122.3.
+oscillating 0.10 rad), reads 304 against 109.8 (68 degrees of freedom).
 
 ## Model facts that bear on the next case
 

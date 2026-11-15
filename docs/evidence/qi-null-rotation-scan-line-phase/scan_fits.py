@@ -11,6 +11,7 @@ from typing import Any
 import numpy as np
 from scan_forward import HERE, ROOT, cc, laws, rs
 from scipy.interpolate import RegularGridInterpolator
+from scipy.stats import chi2 as chi2_law
 
 S = "2026-11-15T001929Z"
 RUNS = ROOT / "results/quantum_inspire/runs"
@@ -242,6 +243,16 @@ def q4_marginal(seen: np.ndarray) -> np.ndarray:
     )
 
 
+# Below this response of the model's q4 P(1) to the driven parameter the line's alignment s of an arm is
+# unidentified, and the fit takes the alignment that scores lower for that arm.
+ALIGNMENT_TOLERANCE = 1e-9
+
+
+def contrast_limit(points: int, parameters: int) -> float:
+    """Chi-square bound of the phase-bin contrasts: upper tail 0.001 at points - parameters degrees of freedom."""
+    return round(float(chi2_law.ppf(1 - 0.001, points - parameters)), 1)
+
+
 PHASE_THETAS = np.linspace(-0.6, 0.6, 481)
 PHASE_OFFSETS = np.linspace(-0.3, 0.3, 61)
 PHASE_AMPLITUDES = np.linspace(0.0, 0.3, 31)
@@ -264,25 +275,35 @@ def phase_single(cand: tuple[str, Any, Any]) -> dict[str, Any]:
             chi = 0.0
             chia = 0.0
             pred = {}
+            free = []
             for a in arms:
                 slope = np.interp(u0 + 1e-3, thetas, p4[a]) - np.interp(u0 - 1e-3, thetas, p4[a])
-                s = 1.0 if slope >= 0 else -1.0
-                u = u0 + s * am * np.cos(ang)
-                c = np.interp(u, thetas, con[a])
-                pm = np.interp(u, thetas, p4[a])
-                amp = abs(2 * np.mean(pm * np.exp(-1j * ang)))
-                chi += float((((c - data[a][0]) / data[a][1]) ** 2).sum())
+                signs = (1.0, -1.0) if abs(slope) < ALIGNMENT_TOLERANCE else (1.0 if slope > 0 else -1.0,)
+                options = []
+                for s in signs:
+                    u = u0 + s * am * np.cos(ang)
+                    c = np.interp(u, thetas, con[a])
+                    pm = np.interp(u, thetas, p4[a])
+                    amp = abs(2 * np.mean(pm * np.exp(-1j * ang)))
+                    options.append((float((((c - data[a][0]) / data[a][1]) ** 2).sum()), c, amp))
+                arm_chi, c, amp = min(options, key=lambda o: o[0])
+                if len(signs) == 2:
+                    free.append(a)
+                chi += arm_chi
                 chia += ((amp - data[a][2]) / 0.002) ** 2
                 pred[a] = (c, amp)
             if chi + chia < best[0]:
-                best = (chi + chia, chi, chia, float(u0), float(am), pred)
+                best = (chi + chia, chi, chia, float(u0), float(am), pred, free)
     return {
         "cand": str(cand),
         "total": round(best[0], 1),
-        "chi_contrast_80": round(best[1], 1),
-        "chi_q4amp_10": round(best[2], 1),
+        "chi_contrast": round(best[1], 1),
+        "chi_q4amp": round(best[2], 1),
+        "contrast_points": 8 * len(arms),
+        "contrast_limit": contrast_limit(8 * len(arms), 2),
         "u0": best[3],
         "A": best[4],
+        "free_alignment_arms": best[6],
         "pred": {a: [np.round(best[5][a][0], 4).tolist(), round(float(best[5][a][1]), 4)] for a in arms},
     }
 
@@ -308,6 +329,7 @@ def phase_pair(item: tuple[tuple[str, Any, Any], tuple[str, Any, Any]]) -> dict[
     chi = np.zeros(len(a0))
     chia = np.zeros(len(a0))
     preds = {}
+    free = {}
     for a in arms:
         seen = r0 * (laws(a, [(ca, ga), (cb, gb)]) @ matrix.T) + (1 - r0) * uniform
         fc = RegularGridInterpolator((grid, grid), rs.selector_contrast(seen).reshape(41, 41))
@@ -320,10 +342,13 @@ def phase_pair(item: tuple[tuple[str, Any, Any], tuple[str, Any, Any]]) -> dict[
             c = fc(pts).reshape(-1, 8)
             p = fp(pts).reshape(-1, 8)
             res.append((c, 2 * (p * np.exp(-1j * ang)[None]).mean(1)))
-        pick = res[0][1].real >= res[1][1].real
+        gap = res[0][1].real - res[1][1].real
+        score = [(((x[0] - data[a][0][None]) / data[a][1]) ** 2).sum(1) for x in res]
+        free[a] = np.abs(gap) < ALIGNMENT_TOLERANCE
+        pick = np.where(free[a], score[0] <= score[1], gap > 0)
         c = np.where(pick[:, None], res[0][0], res[1][0])
         amp = np.where(pick, np.abs(res[0][1]), np.abs(res[1][1]))
-        chi += (((c - data[a][0][None]) / data[a][1]) ** 2).sum(1)
+        chi += np.where(pick, score[0], score[1])
         chia += ((amp - data[a][2]) / 0.002) ** 2
         preds[a] = (c, amp)
     k = int((chi + chia).argmin())
@@ -332,8 +357,11 @@ def phase_pair(item: tuple[tuple[str, Any, Any], tuple[str, Any, Any]]) -> dict[
         "A": str(ca),
         "B": str(cb),
         "total": round(float(chi[k] + chia[k]), 1),
-        "chi_contrast_80": round(float(chi[k]), 1),
-        "chi_q4amp_10": round(float(chia[k]), 1),
+        "chi_contrast": round(float(chi[k]), 1),
+        "chi_q4amp": round(float(chia[k]), 1),
+        "contrast_points": 8 * len(arms),
+        "contrast_limit": contrast_limit(8 * len(arms), 4),
+        "free_alignment_arms": [a for a in arms if bool(free[a][k])],
         "params_a0_Aa_b0_Ab": [round(float(x[k]), 3) for x in (a0, aa, b0, ab)],
         "contrast_only_best": round(float(chi[k2]), 1),
         "contrast_only_params": [round(float(x[k2]), 3) for x in (a0, aa, b0, ab)],
@@ -344,10 +372,13 @@ def phase_pair(item: tuple[tuple[str, Any, Any], tuple[str, Any, Any]]) -> dict[
 # Fixed-parameter worlds (exact_pulse_residuals.py, d2_split_worlds.py, followup_predictions.py) --------------------
 
 
+EXACT_WORLD = "pulse_x_before_all"
+
+
 def exact_residual_batch(batch: str) -> dict[str, Any]:
     """Measured contrasts of one scan batch less the exact-pulse law of each gate-noise family."""
     row = analysis()["batch_rows"][batch]
-    world = "pulse_x_before_all"
+    world = EXACT_WORLD
     zero = int(np.argmin(np.abs(rs.parameter_grid(world))))
     matrix = bracket_matrix(row["guard"])
     arms = tuple(row["arms"])

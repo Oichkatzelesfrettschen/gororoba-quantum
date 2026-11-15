@@ -1,12 +1,14 @@
 """Exploratory: one error parameter that follows the shot-order line, fitted to the phase-bin contrasts.
 
 Written before fitting: a single error parameter u oscillates with the line, u = u0 + s A cos(theta), theta = 0 at
-the maximum of q4's P(1), s the sign of dP(q4 = 1)/du of the model at u0 for that arm. Data: the selector contrast
-of each arm type in 8 phase bins pooled over its jobs (10 arm types, 80 points) plus the 10 mean q4-bit line
-amplitudes. Parameters shared by all arms: u0, A. Noise: contraction share 0 at the retention where the exact
+the maximum of q4's P(1), s the sign of dP(q4 = 1)/du of the model at u0 for that arm; where the model's q4 bit
+has no response to u the alignment is unidentified and each such arm takes the s that scores lower (recorded as
+`free_alignment_arms`). Data: the selector contrast of each `Rx` arm type in 8 phase bins pooled over its jobs (9
+arm types, 72 points; the `X90` arm `b0` has no model row here) plus the 9 mean q4-bit line amplitudes. Parameters shared by all arms: u0, A. Noise: contraction share 0 at the retention where the exact
 center reads visibility 0.42 through the mean bracket matrix. Candidates: z, x or y before each qubit's pulses or
 all; conditional phase on each coupler or all; a z phase on one qubit after each of its CZs on one coupler.
-Falsifier of a candidate: chi-square of the 80 contrast points above 124.8 (0.001 point, 78 degrees of freedom);
+Falsifier of a candidate: chi-square of the 72 contrast points above 112.3 (upper tail 0.001, 70 degrees of
+freedom; `contrast_limit` in each row is computed from the selected data);
 calibration: exact pulses with A = 0."""
 
 import json
@@ -30,7 +32,7 @@ def main() -> None:
     out.sort(key=lambda r: r["total"])
     print("RANK")
     for r in out[:10]:
-        print(r["cand"], r["total"], r["chi_contrast_80"], r["chi_q4amp_10"], r["u0"], r["A"])
+        print(r["cand"], r["total"], r["chi_contrast"], r["chi_q4amp"], r["u0"], r["A"])
     (HERE / "phase_resolved_fit.json").write_text(json.dumps(out, indent=1))
 
 
