@@ -78,6 +78,9 @@ QuTech publishes a Grafana public dashboard per backend and a Status
 dashboard at https://monitoring.qutech.support (Grafana 13.1.1 on
 2026-10-22). `scripts/qi_monitoring.py` reads them through Grafana's
 public-dashboard API, with no account, and both tools above wrap it.
+`scripts/qi_status.py` joins those dashboards with the compute API's backend instances and queues in one
+document; the [status-source observations of 2026-11-15](../../evidence/quantum_inspire/status-sources-2026-11-15/README.md)
+record what each source reports, the link service's burst answers and the dashboards' fixed time range.
 
 The public [Status dashboard](https://monitoring.qutech.support/public-dashboards/b9a0daeda64d4044b88f78b40ba5482a)
 is the destination verified on 23 October 2026 for the stable
