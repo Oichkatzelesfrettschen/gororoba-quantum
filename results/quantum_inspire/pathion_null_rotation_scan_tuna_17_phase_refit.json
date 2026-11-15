@@ -1,0 +1,404 @@
+{
+ "data_sha256": "77915755bc6fa3c04265aa1e9058f893bb6cda99c4a23dc083ceaf912a3101f4",
+ "evidence_class": "exploratory post-hoc fit of retained shots; no provider job, no random draw",
+ "models": {
+  "cz_noise_flip_q12_z_after_cz": {
+   "at_bound": [
+    "flip"
+   ],
+   "bounds": {
+    "c12": [
+     -0.4,
+     0.4
+    ],
+    "ca": [
+     0.0,
+     0.3
+    ],
+    "cp": [
+     0.0,
+     0.3
+    ],
+    "flip": [
+     0.0,
+     0.2
+    ]
+   },
+   "contrast_chi2": 428.3591930052746,
+   "contrast_chi2_by_kind": {
+    "all10": 117.97929620352248,
+    "all20": 157.07951411226418,
+    "bridge": 22.696576505533052,
+    "q4-10": 98.34769883621081,
+    "q8-10": 32.25610734774407
+   },
+   "dof": 926,
+   "free": [
+    "ca",
+    "cp",
+    "flip",
+    "c12"
+   ],
+   "histogram_chi2": 42848.81982093294,
+   "n_free": 4,
+   "optimizer_status": 3,
+   "values": {
+    "c12": -0.15075325082996546,
+    "ca": 0.019391566974021043,
+    "cp": 0.027166957838362524,
+    "flip": 2.681654625120201e-11
+   }
+  },
+  "cz_noise_flip_q12_z_after_pulse": {
+   "at_bound": [
+    "flip"
+   ],
+   "bounds": {
+    "ca": [
+     0.0,
+     0.3
+    ],
+    "cp": [
+     0.0,
+     0.3
+    ],
+    "flip": [
+     0.0,
+     0.2
+    ],
+    "z12": [
+     -0.4,
+     0.4
+    ]
+   },
+   "contrast_chi2": 428.35919300623397,
+   "contrast_chi2_by_kind": {
+    "all10": 117.97929620379875,
+    "all20": 157.07951411207372,
+    "bridge": 22.69657650575251,
+    "q4-10": 98.34769883680474,
+    "q8-10": 32.256107347804225
+   },
+   "dof": 926,
+   "free": [
+    "ca",
+    "cp",
+    "flip",
+    "z12"
+   ],
+   "histogram_chi2": 42848.8198209331,
+   "n_free": 4,
+   "optimizer_status": 3,
+   "values": {
+    "ca": 0.01939156697402734,
+    "cp": 0.02716695783835859,
+    "flip": 2.681655161482639e-11,
+    "z12": -0.15075325082968735
+   }
+  },
+  "exact_circuit": {
+   "at_bound": [],
+   "bounds": {},
+   "contrast_chi2": 4785.738771330182,
+   "contrast_chi2_by_kind": {
+    "all10": 1218.5662729152978,
+    "all20": 2858.3673854769054,
+    "bridge": 157.12942312447362,
+    "q4-10": 457.00563467541997,
+    "q8-10": 94.67005513808553
+   },
+   "dof": 930,
+   "free": [],
+   "histogram_chi2": 2696334.4621445406,
+   "n_free": 0,
+   "optimizer_status": null,
+   "values": {}
+  },
+  "exact_circuit_batch_retention": {
+   "at_bound": [],
+   "bounds": {
+    "retention_batch-01": [
+     0.05,
+     1.0
+    ],
+    "retention_batch-03": [
+     0.05,
+     1.0
+    ],
+    "retention_batch-05": [
+     0.05,
+     1.0
+    ],
+    "retention_batch-07": [
+     0.05,
+     1.0
+    ],
+    "retention_batch-09": [
+     0.05,
+     1.0
+    ],
+    "retention_batch-11": [
+     0.05,
+     1.0
+    ],
+    "retention_batch-13": [
+     0.05,
+     1.0
+    ],
+    "retention_batch-15": [
+     0.05,
+     1.0
+    ],
+    "retention_batch-17": [
+     0.05,
+     1.0
+    ],
+    "retention_batch-19": [
+     0.05,
+     1.0
+    ]
+   },
+   "contrast_chi2": 1179.109209888352,
+   "contrast_chi2_by_kind": {
+    "all10": 235.9445274923203,
+    "all20": 199.2159752528039,
+    "bridge": 157.12942312447436,
+    "q4-10": 457.0056346754173,
+    "q8-10": 129.81364934333624
+   },
+   "dof": 920,
+   "free": [
+    "retention_batch-01",
+    "retention_batch-03",
+    "retention_batch-05",
+    "retention_batch-07",
+    "retention_batch-09",
+    "retention_batch-11",
+    "retention_batch-13",
+    "retention_batch-15",
+    "retention_batch-17",
+    "retention_batch-19"
+   ],
+   "histogram_chi2": 182795.3544793889,
+   "n_free": 10,
+   "optimizer_status": 2,
+   "values": {
+    "retention_batch-01": 0.44853226625435044,
+    "retention_batch-03": 0.4678336480229574,
+    "retention_batch-05": 0.4679582418652257,
+    "retention_batch-07": 0.5478084111501351,
+    "retention_batch-09": 0.47540654054023923,
+    "retention_batch-11": 0.4604101329447252,
+    "retention_batch-13": 0.5989057196810554,
+    "retention_batch-15": 0.47394381595285395,
+    "retention_batch-17": 0.47144983179530925,
+    "retention_batch-19": 0.48072932352389947
+   }
+  },
+  "five_noise_terms": {
+   "at_bound": [
+    "pa",
+    "pp",
+    "cd"
+   ],
+   "bounds": {
+    "ca": [
+     0.0,
+     0.3
+    ],
+    "cd": [
+     0.0,
+     0.5
+    ],
+    "cp": [
+     0.0,
+     0.3
+    ],
+    "pa": [
+     0.0,
+     0.3
+    ],
+    "pp": [
+     0.0,
+     0.3
+    ]
+   },
+   "contrast_chi2": 1126.1382959094508,
+   "contrast_chi2_by_kind": {
+    "all10": 281.0341259104559,
+    "all20": 131.89732200365555,
+    "bridge": 158.45355632346866,
+    "q4-10": 454.4849043998241,
+    "q8-10": 100.26838727204667
+   },
+   "dof": 925,
+   "free": [
+    "pa",
+    "pp",
+    "cd",
+    "ca",
+    "cp"
+   ],
+   "histogram_chi2": 51766.95171652455,
+   "n_free": 5,
+   "optimizer_status": 3,
+   "values": {
+    "ca": 0.01943221942472489,
+    "cd": 7.919059768583166e-06,
+    "cp": 0.03231349229927279,
+    "pa": 3.0573953379554433e-15,
+    "pp": 1.7556588846275876e-09
+   }
+  },
+  "five_noise_terms_q12_z_after_pulse": {
+   "at_bound": [
+    "pa",
+    "pp"
+   ],
+   "bounds": {
+    "ca": [
+     0.0,
+     0.3
+    ],
+    "cd": [
+     0.0,
+     0.5
+    ],
+    "cp": [
+     0.0,
+     0.3
+    ],
+    "pa": [
+     0.0,
+     0.3
+    ],
+    "pp": [
+     0.0,
+     0.3
+    ],
+    "z12": [
+     -0.3,
+     0.3
+    ]
+   },
+   "contrast_chi2": 427.96460616367284,
+   "contrast_chi2_by_kind": {
+    "all10": 117.91185659126018,
+    "all20": 156.7318764887819,
+    "bridge": 22.702347893636173,
+    "q4-10": 98.35968077032325,
+    "q8-10": 32.25884441967134
+   },
+   "dof": 924,
+   "free": [
+    "pa",
+    "pp",
+    "cd",
+    "ca",
+    "cp",
+    "z12"
+   ],
+   "histogram_chi2": 42849.03833110383,
+   "n_free": 6,
+   "optimizer_status": 3,
+   "values": {
+    "ca": 0.019394846753102855,
+    "cd": 8.160724796115388e-05,
+    "cp": 0.026997846551768893,
+    "pa": 5.471139657231831e-16,
+    "pp": 6.416231122117415e-12,
+    "z12": -0.15079604857222334
+   }
+  },
+  "five_noise_terms_selector_flip": {
+   "at_bound": [
+    "pa",
+    "pp",
+    "cd"
+   ],
+   "bounds": {
+    "ca": [
+     0.0,
+     0.3
+    ],
+    "cd": [
+     0.0,
+     0.5
+    ],
+    "cp": [
+     0.0,
+     0.3
+    ],
+    "flip": [
+     0.0,
+     0.2
+    ],
+    "pa": [
+     0.0,
+     0.3
+    ],
+    "pp": [
+     0.0,
+     0.3
+    ]
+   },
+   "contrast_chi2": 703.7064522609136,
+   "contrast_chi2_by_kind": {
+    "all10": 193.84749501925816,
+    "all20": 94.57457728217773,
+    "bridge": 46.57950416091261,
+    "q4-10": 322.00534729930774,
+    "q8-10": 46.69952849925737
+   },
+   "dof": 924,
+   "free": [
+    "pa",
+    "pp",
+    "cd",
+    "ca",
+    "cp",
+    "flip"
+   ],
+   "histogram_chi2": 51570.04870694276,
+   "n_free": 6,
+   "optimizer_status": 3,
+   "values": {
+    "ca": 0.01935356640738773,
+    "cd": 1.792913713990536e-07,
+    "cp": 0.031077133020323014,
+    "flip": 0.01660556413527073,
+    "pa": 6.300514611699973e-17,
+    "pp": 1.6347685038690935e-12
+   }
+  }
+ },
+ "observations": 30,
+ "outcomes_per_observation": 32,
+ "runs": [
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-00",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-01",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-02",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-03",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-04",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-05",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-06",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-07",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-08",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-09",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-10",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-11",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-12",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-13",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-14",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-15",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-16",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-17",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-18",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-19",
+  "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-20"
+ ],
+ "schema": "qi-pathion-null-rotation-scan-phase-refit-v1",
+ "series": "pathion_null_rotation_scan_tuna_17",
+ "statistic": "Pearson chi-square of the 32 logical outcome counts of each circuit against the model law read through the mean of the two adjacent readout brackets; contrast_chi2 is the 30-circuit selector-contrast chi-square",
+ "tolerance": 1e-05
+}
