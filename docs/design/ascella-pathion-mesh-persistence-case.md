@@ -110,15 +110,20 @@ many anchor seeds or a per-mesh table, sized by the fresh anchors of this job.
 
 ## Relabeling-test tie convention
 
-Both relabeling tests (the frozen-map test over seed blocks and the persistence test over mirror pairs) score
-`p = (1 + #{r_relabeled >= r_observed}) / (P + 1)` through `permutation_p`, which counts a relabeled r within
-`TIE_TOLERANCE` (1e-12) below the observed r as a tie. The observed r (`np.corrcoef`) and a relabeled r
-(`batch_r`, a centered dot product over norms) are two float evaluations of one statistic, and a relabeling that
-reproduces the observed pairing read below the observed r in 628 of 2000 measured random draws, so the earlier
-analysis counted an exact tie as smaller. The retained QPU analysis (`analysis.json` of the job-00 run) reproduces
-byte for byte under the tolerance, since its group sizes (16 seed blocks, 6 mirror pairs) put the identity at
-probability 1/16! and 1/720 (issue 883). `docs/evidence/pathion-kernel-map/conjectures/c1_map_increment.py` imports
-`batch_r` and keeps its own untoleranced count as a retained evidence script.
+Both relabeling tests in this analyzer (the frozen-map test over seed blocks and the persistence test over mirror
+differences) score `p = (1 + #{r_relabeled >= r_observed}) / (P + 1)` through `permutation_p`. The observed r
+(`np.corrcoef`) and a relabeled r (`batch_r`, a centered dot product over norms) are two float evaluations of one
+statistic. On the five-block regression of the tests `finite_r(x, x)` is 1.0 and `batch_r(x, x[None, :])` is
+0.9999999999999997, so a comparison across the two kernels counted the identity relabeling, the observed pairing
+itself, as smaller. `permutation_p` evaluates the observed r through `batch_r` as well and counts a relabeled row
+that equals the observed pairing element for element as a tie. No tolerance enters: a fixed 1e-12 tolerance called
+an exchange that lowers r by 1.47e-13 (a real loss of `(x1 - x0)^2 / sum((x - mean)^2)`) a tie, so the helper
+carries none. The exhaustive permutation p of the five-block alignment is 1/120; the plus-one formula over a
+120-row batch that includes the identity returns 2/121. A fresh analyzer replay reproduces the retained QPU
+`analysis.json` byte for byte (SHA-256 `4d25564c93d8a15f32bfd0f7f0e328966ae2ec200f2de9c7561050505376256f`), so
+no retained count moves (issue 883).
+`docs/evidence/pathion-kernel-map/conjectures/c1_map_increment.py` imports `batch_r` and keeps its own
+untoleranced count as a retained evidence script.
 
 ## Review and the changes it made
 

@@ -142,16 +142,19 @@ def batch_r(x: np.ndarray, ys: np.ndarray) -> np.ndarray:
     return np.asarray((yc @ xc) / (np.linalg.norm(yc, axis=1) * np.linalg.norm(xc)))
 
 
-# Pearson r lies in [-1, 1]. finite_r (np.corrcoef) and batch_r (a centered dot product over norms) evaluate one
-# statistic in two float orders, and a relabeling that reproduces the observed pairing reads a few ulps below the
-# observed r in 628 of 2000 measured random draws (Python 3.14, the numpy of ci/requirements-ci.txt); a gap of that
-# size is a tie, which an exact permutation p counts.
-TIE_TOLERANCE = 1e-12
+def permutation_p(x: np.ndarray, y: np.ndarray, relabeled: np.ndarray) -> float:
+    """(1 + #{r_relabeled >= r_observed}) / (P + 1) over P relabeled copies of y; the observed pairing is a tie.
 
-
-def permutation_p(observed: float, relabeled: np.ndarray) -> float:
-    """(1 + #{r_relabeled >= r_observed}) / (P + 1) over P relabeled r values; a tie within TIE_TOLERANCE counts."""
-    return (1 + int(np.sum(relabeled >= observed - TIE_TOLERANCE))) / (len(relabeled) + 1)
+    Pearson r through np.corrcoef (finite_r) and through batch_r (a centered dot product over norms) are one
+    statistic in two float orders: on the five-block regression of the tests the identity relabeling reads
+    0.9999999999999997 through batch_r against 1.0 through np.corrcoef (Python 3.14, numpy 2.5.4 of
+    requirements.txt). The observed r therefore goes through batch_r too, and a relabeled row that equals y
+    element for element is the observed pairing itself, a tie that no float order moves. No tolerance enters, so a
+    relabeling that is genuinely smaller by any amount stays smaller.
+    """
+    observed = batch_r(x, y[None, :])[0]
+    scores = batch_r(x, relabeled)
+    return (1 + int(np.sum((scores >= observed) | np.all(relabeled == y, axis=1)))) / (len(relabeled) + 1)
 
 
 def mirror(rows: list[dict[str, Any]], settings: list[dict[str, Any]], calibration: dict[str, Any] | None, key: str):
@@ -440,7 +443,7 @@ def map_score(
     orders = np.array([rng.permutation(len(seeds)) for _ in range(permutations)])
     shuffled = np.empty((permutations, len(m)))
     shuffled[:, blocks.ravel()] = m[blocks[orders].reshape(permutations, -1)]
-    p = permutation_p(r, batch_r(o, shuffled))
+    p = permutation_p(o, m, shuffled)
     ceiling = 1 - float(np.mean(var)) / float(np.var(o, ddof=1))
     return {
         "n_readings": len(o),
@@ -510,7 +513,7 @@ def analyze(run: Path) -> dict[str, Any]:
         entry["reading"] = NOT_READ
     else:
         relabeled = np.array([rng.permutation(y) for _ in range(reg["permutations"])])
-        p = permutation_p(r_value, batch_r(x, relabeled))
+        p = permutation_p(x, y, relabeled)
         entry.update({"r": r_value, "p": p, "replay_failing": int(np.sum(np.abs(y) > th["mirror_spread"]))})
         if r_value >= cutoff:
             entry["reading"] = "fixed per mesh"
