@@ -1,4 +1,4 @@
-"""Real points of V(Q) n V(G) with an exceptional kernel plane: codimension 4, and none for P_y, P_z at s = +-1.
+"""Real points of V(Q) n V(G) with an exceptional kernel plane: a line in each fiber, none for P_y, P_z at s = +-1.
 
 Setting. M(t), K(z) = ker M(z), the cone J, the planes P_x, P_y, P_z of J, the kernel plane P = K n conj(z)-perp and
 dim L = 2 (dim C(P) - 2) are those of nullity4_qg_intersection.py (qg) and nullity4_qg_orbit_types.py (ot). <a, b>
@@ -10,9 +10,12 @@ is the Hermitian form sum a_i conj(b_i). S is the set of nullity-4 points of V(Q
    in K, so P(z) = P_j exactly when z lies on the complex line of K Hermitian-orthogonal to P_j: the map
    k -> (<k, p_1>, <k, p_2>) from K to C^2, p_1, p_2 a basis of P_j, is complex-linear and onto, because the form
    is positive definite on K. Hence inside each fiber K minus J (real dimension 6) the points with kernel plane
-   P_j form a complex line minus the points of J (real dimension 2): real codimension 4 in every fiber, so real
-   codimension 4 in S. With A5-557 the set {dim L = 6} is the set P = P_x (s^2 other than 1) and the set
-   {dim L = 4} is the set P = P_y or P_z away from the roots of D1 D2.
+   P_j form a complex line minus the points of J (real dimension 2): real codimension 4 in every fiber. With A5-557
+   the set {dim L = 6} is the set P = P_x (s^2 other than 1) and the set {dim L = 4} is the set P = P_y or P_z
+   away from the roots of D1 D2. The fiberwise statement does not give the dimension of these sets in S: that needs
+   the dimension of the set of kernels over which the line leaves J. Item 2 gives the local answer at six points.
+   hypothesis: both sets have real dimension dim S - 4 = 22; missing lemma: the map z -> K(z) has an image of real
+   dimension 20 (a Pluecker differential of rank 10) over which the exceptional lines form line bundles.
 2. Incidence (exact check at the six witnesses of qg, s = 2 and 0, planes x, y, z). The local parametrization
    (g, s, c) -> g (c_0 k_0(s) + c_1 k_1(s) + c_2 k_2(s)) of S has the tangent vectors D_k z (14 derivations),
    sum c_a dk_a/ds and k_0, k_1, k_2. They span 13 dimensions, lie in ker dQ n ker dDelta, and dQ, dDelta have
@@ -20,7 +23,8 @@ is the Hermitian form sum a_i conj(b_i). S is the set of nullity-4 points of V(Q
    with (p_1, p_2) = g (plane vectors of P_j at s) vanishes at the witness, and its real Jacobian (4 rows; the
    columns are the real directions D_k z, i D_k z, d/ds, i d/ds, k_a, i k_a) has rank 4; the six fiber columns
    alone have rank 4, the columns of the compact directions D_k z vanish (the form is invariant under the compact
-   G_2), and the columns i D_k z alone have rank 4. The rank at a zero of F does not depend on the frame of P_j.
+   G_2), and the columns i D_k z alone have rank 4. The rank at a zero of F does not depend on the frame of P_j. So
+   near each witness the points with kernel plane P_j form a real submanifold of codimension 4 in S.
 3. The planes P_y and P_z at s = +-1 (argument). K = P_x + C q with P_x in E_eps and q in E_(-eps), q lies in
    P_y and in P_z, and E_+ and E_- are Hermitian-orthogonal and preserved by G_2(C) (ot item 1). For g in G_2(C),
    g P_y contains g q and the line g (P_y n P_x) of g P_x, so g P_y = C g q + g (P_y n P_x), an orthogonal sum. A

@@ -484,11 +484,13 @@ These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`
   pairs hold no nullity-4 point (rank at most 10 by `A5-359`, 8 on the special planes `u x v = 0` by `A5-360`). Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_intersection.py
   --check` (about 45 s).
 - `A5-559` and `A5-560`, proved (`nullity4_qg_plane_incidence.py`, record
-  `nullity4-qg-plane-incidence-result.json`); they settle the two hypotheses that `A5-558` and `A5-555`
+  `nullity4-qg-plane-incidence-result.json`); they settle the hypothesis that `A5-555` carried and the fiberwise and local parts of the one that `A5-558`
   carried. The stratum is the disjoint union of the sets `K` minus `J`, and in each the real points with kernel
   plane `P_j` are one complex line minus its points of `J`, so the points with `dim L = 6` and those with
-  `dim L = 4` each have real codimension 4, fiber by fiber; at the six exact witnesses the real Jacobian of the
-  incidence map has rank 4 on a tangent space of dimension 13. At `s = +-1` the vector `q` lies in `P_y` and
+  `dim L = 4` have real codimension 4 inside every fiber; at the six exact witnesses the real Jacobian of the
+  incidence map has rank 4 on a tangent space of dimension 13, so they form a submanifold of codimension 4 there.
+  `hypothesis:` both sets have real dimension 22 in the stratum; the missing lemma is that the kernels form a
+  family of real dimension 20 over which the exceptional lines are line bundles (`A5-558`). At `s = +-1` the vector `q` lies in `P_y` and
   `P_z` and is Hermitian-orthogonal to `g P_x` for every `g` of `G_2(C)`, so the Hermitian complement of
   `g P_y` or `g P_z` in `g K` lies in `g P_x`, inside the cone: neither plane is the kernel plane of a real
   point, and the type holds `dim L = 2` alone. The exact check runs at the base frame and at a unipotent element

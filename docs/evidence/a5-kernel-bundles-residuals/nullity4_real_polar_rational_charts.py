@@ -28,7 +28,9 @@ holds no exact point. This file records two exact searches for one and the certi
    element outside these two four-parameter families.
 4. Precision. The Krawczyk test of ff (same midpoint, radius 2^-24) is repeated at 131 and 400 bits with the
    precision passed to every evaluation; it gives the same containment, contraction and pairing bound as at 200
-   bits. This removes the dependence of the certificate on one working precision, not on python-flint.
+   bits. The exact pairing factors are built first, since ff sets its own precision when it builds them, and each
+   evaluation checks the context precision at its end. This removes the dependence of the certificate on one working
+   precision, not on python-flint.
 
 Evidence classes. Items 1 to 3 are exact over Q(i) or over the polynomial ring in (c, s, C, S) modulo the two
 relations; item 4 is a certified interval statement. The searches are bounded negatives: they exclude an exact point
@@ -100,14 +102,14 @@ FAMILIES: dict[str, dict[str, Any]] = {
 INSTANCE = {"c": "3/5", "s": "4/5", "C": "5/3", "S": "4/3"}
 FAMILY_FACTS: dict[str, dict[str, Any]] = {
     "4, 7": {
-        "structure": True,
+        "structure": dict.fromkeys(("in_g2", "commute", "left", "right", "hermitian"), True),
         "minor": "400*SR**2*(2*SL**2 + 1)**2*(SR**2 + 1)",
         "incidence_at_SR_zero": ["-2*I*CL*SL*(7*cL + 24*sL)", "2*I*CL*SL*(24*cL - 7*sL)"],
         "sum_of_squares": "625",
         "instance": [True, True, False, 2],
     },
     "5, 6": {
-        "structure": True,
+        "structure": dict.fromkeys(("in_g2", "commute", "left", "right", "hermitian"), True),
         "minor": "400*SR**2*(2*SL**2 + 1)**2*(SR**2 + 1)",
         "incidence_at_SR_zero": ["10*CL*SL*(4*cL - 3*sL)", "10*CL*SL*(3*cL + 4*sL)"],
         "sum_of_squares": "25",
@@ -149,12 +151,20 @@ def derivations() -> tuple[sp.Matrix, ...]:
     return tuple(ff._derivations())
 
 
+def _derivation_image(job: tuple[int, tuple[Any, ...]]) -> list[Any]:
+    """D_k v for the job (k, v)."""
+    k, vector = job
+    return list(derivations()[k] * sp.Matrix(list(vector)))
+
+
 def _combination_rows(vectors: sp.Matrix, target: sp.Matrix | None) -> list[list[Any]]:
     """Rows of the linear system sum x_k D_k v_i = sum a_ij w_j over the columns v_i of vectors, w_j of target."""
     rows = []
     width = 0 if target is None else target.cols
+    count = len(derivations())
     for i in range(vectors.cols):
-        images = [matrix * vectors[:, i] for matrix in derivations()]
+        column = tuple(vectors[:, i])
+        images = parallel.ordered_map(_derivation_image, [(k, column) for k in range(count)], min_items=2)
         for r in range(15):
             extra = [0] * (vectors.cols * width)
             if target is not None:
@@ -282,8 +292,11 @@ def _hermitian_element(name: str) -> sp.Matrix:
     return (a_left * a_right).applyfunc(_reduced)
 
 
-def family_structure(name: str) -> bool:
-    """The generators lie in g_2 and have the commutation and minimal-polynomial facts of item 3; A is Hermitian."""
+STRUCTURE_KEYS = ("in_g2", "commute", "left", "right", "hermitian")
+
+
+def family_structure(name: str) -> dict[str, bool]:
+    """Per STRUCTURE_KEYS: the generators lie in g_2; L_j and R_k commute; the minimal polynomials; A is Hermitian."""
     n_left, n_right, p4, p3, generators = _family(name)
     small = [matrix[0:7, 0:7] for matrix in derivations()]
     flat = sp.Matrix([list(matrix) for matrix in small])
@@ -296,7 +309,8 @@ def family_structure(name: str) -> bool:
     right = (p4 * n_right * n_right + p4).applyfunc(_reduced) == zero
     right = right and (p3 * (n_right**3 + 4 * n_right)).applyfunc(_reduced) == zero
     a = _hermitian_element(name)
-    return bool(in_g2 and commute and left and right and (a - a.H).applyfunc(_reduced) == zero)
+    values = (in_g2, commute, left, right, (a - a.H).applyfunc(_reduced) == zero)
+    return dict(zip(STRUCTURE_KEYS, [bool(value) for value in values], strict=True))
 
 
 @functools.cache
@@ -377,12 +391,15 @@ def evaluation_at(job: tuple[int, int, int]) -> tuple[list[Any], list[Any]]:
     """The evaluation of ff at the precision of the job (precision, radius_bits, k), serialized."""
     precision, radius_bits, k = job
     _require(precision >= 64, f"the precision {precision} is below 64 bits")
+    # ff._pairing_factors sets the context to ff.PRECISION on its first call in a process; its balls are exact.
+    z, line = ff._pairing_factors()
     ctx.prec = precision
     exponential = ff._block_matrix(ff._slice_point(ff.MIDPOINT, radius_bits), k).exp()
     pi = acb_mat([[exponential[a, b] for b in range(15)] for a in range(15)])
     derivative = acb_mat([[exponential[a, 15 + b] for b in range(15)] for a in range(15)])
-    z, line = ff._pairing_factors()
-    return ff._ser_matrix(z * pi * line), ff._ser_matrix(z * derivative * line)
+    values = ff._ser_matrix(z * pi * line), ff._ser_matrix(z * derivative * line)
+    _require(ctx.prec == precision, "the working precision changed during the evaluation")
+    return values
 
 
 def krawczyk_at(precision: int) -> dict[str, Any]:
@@ -392,6 +409,7 @@ def krawczyk_at(precision: int) -> dict[str, Any]:
     free = ff.SLICE_FREE
     jobs = [(precision, 0, k) for k in free] + [(precision, radius_bits, k) for k in free]
     rows = parallel.ordered_map(evaluation_at, jobs, min_items=2)
+    ff._pairing_factors()
     ctx.prec = precision
     count = len(free)
     f0, j0 = ff._equations(ff._de_matrix(rows[0][0]), [ff._de_matrix(rows[k][1]) for k in range(count)])
@@ -405,11 +423,13 @@ def krawczyk_at(precision: int) -> dict[str, Any]:
     interior = all(image[c, 0].lower() > -radius and image[c, 0].upper() < radius for c in range(count))
     worst = max((image[c, 0].abs_upper() for c in range(count)), key=lambda x: float(x.mid()))
     entry = box_t[ff.PAIRING_ENTRY[0] + 1, ff.PAIRING_ENTRY[1]].abs_lower()
-    return {
+    result = {
         "interior": bool(interior),
         "contraction_bits": ff._largest_power(worst / radius, True, 200) if interior else 0,
         "pairing_bound_bits": ff._largest_power(entry, False, 300),
     }
+    _require(ctx.prec == precision, "the working precision changed during the Krawczyk test")
+    return result
 
 
 def precision_record() -> dict[str, dict[str, Any]]:

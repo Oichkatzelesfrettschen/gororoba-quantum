@@ -68,7 +68,24 @@ def test_a_generator_outside_g2_fails_the_structure(monkeypatch: pytest.MonkeyPa
     rc._family.cache_clear()
     rc._hermitian_element.cache_clear()
     try:
-        _same(rc.family_structure("4, 7"), False)
+        _same(rc.family_structure("4, 7")["in_g2"], False)
+    finally:
+        monkeypatch.undo()
+        rc._family.cache_clear()
+        rc._hermitian_element.cache_clear()
+
+
+def test_generators_that_do_not_commute_fail_that_clause_alone(monkeypatch: pytest.MonkeyPatch) -> None:
+    # R_1 of the family (5, 6) in place of R_1 of (4, 7): a derivation, so membership holds, and it does not
+    # commute with L_1.
+    families = {name: dict(data) for name, data in rc.FAMILIES.items()}
+    families["4, 7"]["R"] = [rc.FAMILIES["5, 6"]["R"][0], families["4, 7"]["R"][1]]
+    monkeypatch.setattr(rc, "FAMILIES", families)
+    rc._family.cache_clear()
+    rc._hermitian_element.cache_clear()
+    try:
+        facts = rc.family_structure("4, 7")
+        _same((facts["in_g2"], facts["commute"]), (True, False))
     finally:
         monkeypatch.undo()
         rc._family.cache_clear()
@@ -91,6 +108,15 @@ def test_an_unknown_family_or_fact_is_refused() -> None:
 @pytest.mark.parametrize("precision", rc.PRECISIONS)
 def test_krawczyk_test_holds_at_the_precision(precision: int) -> None:
     _same(rc.krawczyk_at(precision), rc.KRAWCZYK)
+
+
+@pytest.mark.parametrize("precision", rc.PRECISIONS)
+def test_evaluation_keeps_its_precision_on_a_cold_cache(precision: int) -> None:
+    # ff._pairing_factors sets the context to 200 bits on its first call; the evaluation must end at its own.
+    ff._pairing_factors.cache_clear()
+    rc.ctx.prec = 53
+    rc.evaluation_at((precision, ff.RADIUS_BITS, ff.SLICE_FREE[0]))
+    _same(rc.ctx.prec, precision)
 
 
 def test_evaluation_at_200_bits_is_the_evaluation_of_the_certificate() -> None:
