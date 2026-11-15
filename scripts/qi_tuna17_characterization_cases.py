@@ -21,7 +21,8 @@ rightmost character of a shot.
     --check ROOT        regenerate and compare every file of both directories except CASE.md
     --local             run every circuit of the qx profile once on the local qxelarator emulator and require its
                         noiseless outcome; the tuna_17 texts come from the same builder at 17 qubits
-    --sanity RUN_DIR    after a collection: every job completed with all its shots, and each circuit with a fixed
+    --sanity RUN_DIR    after a collection: the run validates through gororoba_quantum/qi_records.py with shots of
+                        the register width, every job completed with all its shots, and each circuit with a fixed
                         noiseless outcome (readout-0, readout-1, t1-0, x90-0) reads it on all but
                         SANITY_WRONG_QUBITS qubits; batches 02 and 04 hold no such circuit and get the job check only
     --analyze OUT RUN_DIR...   per-qubit readout, T1 and ladder rows with the verdicts of prediction.json;
@@ -42,6 +43,9 @@ import math
 import sys
 from pathlib import Path
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
+import qi_records  # noqa: E402
 
 SCHEMA = "qi-tuna17-characterization-cases-v1"
 ANALYSIS_SCHEMA = "qi-tuna17-characterization-analysis-v1"
@@ -234,28 +238,39 @@ def local() -> list[str]:
     return problems
 
 
-def read_run(run: Path) -> tuple[dict[str, Any], dict[str, list[str]]]:
-    cases = json.loads((run / "cases.json").read_text(encoding="utf-8"))
-    raw = {
-        row["file"]: json.loads((run / "raw" / f"{row['file']}.json").read_text(encoding="utf-8"))
-        for row in cases["circuits"]
-        if (run / "raw" / f"{row['file']}.json").is_file()
-    }
-    return cases, raw
+def read_run(run: Path) -> tuple[qi_records.Acquisition, dict[str, Any], dict[str, list[str]]]:
+    """One run directory through gororoba_quantum/qi_records.py: acquisition, manifest and shots by circuit file.
+
+    qi_records binds the receipt, the circuit bytes, the job identities and the raw shots to the recorded
+    histogram and raises ValueError on a difference. This design adds that every shot of a completed job is a
+    bitstring of the manifest's register width, since bit() indexes from the right end of the string.
+    """
+    acquisition = qi_records.read_run(run)
+    cases: dict[str, Any] = json.loads((run / "cases.json").read_text(encoding="utf-8"))
+    width = cases["nqubits"]
+    raw: dict[str, list[str]] = {}
+    for job in acquisition.jobs:
+        if job.raw is None:
+            continue
+        odd = next((shot for shot in job.raw if len(shot) != width or set(shot) - {"0", "1"}), None)
+        if not job.raw or odd is not None:
+            found = "no shot" if not job.raw else repr(odd)
+            raise ValueError(f"Quantum Inspire run {run.name}: {job.file} holds {found}, want {width}-bit strings")
+        raw[job.file] = list(job.raw)
+    return acquisition, cases, raw
 
 
 def sanity(run: Path) -> list[str]:
-    cases, raw = read_run(run)
+    try:
+        acquisition, cases, raw = read_run(run)
+    except ValueError as error:
+        return [str(error)]
     problems = []
-    jobs = json.loads((run / "results.json").read_text(encoding="utf-8")).get("jobs") or []
-    by_file = {entry["file"]: entry for entry in jobs}
-    for row in cases["circuits"]:
-        entry = by_file.get(row["file"])
-        results = (entry or {}).get("results") or []
-        if entry is None or entry["job"].get("status") != "completed" or not results:
-            problems.append(f"{row['file']}: no completed job")
-        elif results[0].get("shots_done") != cases["shots"] or len(raw.get(row["file"], [])) != cases["shots"]:
-            problems.append(f"{row['file']}: {results[0].get('shots_done')} shots done of {cases['shots']}")
+    for job in acquisition.jobs:
+        if job.status != "completed":
+            problems.append(f"{job.file}: job {job.status}")
+        elif job.shots_done != cases["shots"]:
+            problems.append(f"{job.file}: {job.shots_done} shots done of {cases['shots']}")
     if problems:
         return problems
     for row in cases["circuits"]:
@@ -366,9 +381,19 @@ def analyze(runs: list[Path], retained: dict[int, dict[str, float]] | None = Non
     t1_raw: dict[int, tuple[list[float], int]] = {}
     ladder_raw: dict[int, tuple[list[float], int]] = {}
     nqubits = 0
+    register: tuple[str, int] | None = None
     for run in runs:
-        cases, raw = read_run(run)
+        try:
+            acquisition, cases, raw = read_run(run)
+        except ValueError as refusal:
+            raise SystemExit(f"qi_tuna17_characterization_cases: {refusal}") from refusal
         nqubits = cases["nqubits"]
+        if register not in (None, (acquisition.backend, nqubits)):
+            raise SystemExit(
+                f"qi_tuna17_characterization_cases: {run.name} is {acquisition.backend} on {nqubits} qubits, "
+                f"the runs before it {register[0]} on {register[1]}"
+            )
+        register = (acquisition.backend, nqubits)
         rows = {row["file"]: row for row in cases["circuits"]}
         if {"readout-0.cq", "readout-1.cq"} <= set(raw):
             readouts.append(
@@ -379,10 +404,18 @@ def analyze(runs: list[Path], retained: dict[int, dict[str, float]] | None = Non
                 }
             )
         for name, shots in raw.items():
-            if rows[name]["kind"] == "t1":
-                t1_raw[rows[name]["wait_cycles"]] = (p1(shots, nqubits), len(shots))
-            elif rows[name]["kind"] == "x90":
-                ladder_raw[rows[name]["pulses"]] = (p1(shots, nqubits), len(shots))
+            held, key = (
+                (t1_raw, rows[name]["wait_cycles"])
+                if rows[name]["kind"] == "t1"
+                else (ladder_raw, rows[name]["pulses"])
+                if rows[name]["kind"] == "x90"
+                else (None, 0)
+            )
+            if held is None:
+                continue
+            if key in held:
+                raise SystemExit(f"qi_tuna17_characterization_cases: {run.name} repeats {name} of an earlier run")
+            held[key] = (p1(shots, nqubits), len(shots))
     if not readouts:
         raise SystemExit("qi_tuna17_characterization_cases: no collected readout pair among the run directories")
     readout_shots = sum(pair["shots"] for pair in readouts)
@@ -443,7 +476,7 @@ def analyze(runs: list[Path], retained: dict[int, dict[str, float]] | None = Non
             if fit.get("length") is not None and points:
                 # A decay this slow leaves the points flat within the window; the fitted value is a lower scale.
                 row["t1_beyond_window"] = fit["length"] > 10 * points[-1][0]
-        ladder_points = []
+        ladder_points: list[tuple[float, float, float]] = []
         ladder_p0 = {}
         for pulses, (values, count) in sorted(ladder_raw.items()):
             value, error = corrected(values[qubit], count)
@@ -483,6 +516,8 @@ def main(argv: list[str]) -> int:
     if args.analyze:
         if len(args.analyze) < 2:
             parser.error("--analyze takes OUT and at least one RUN_DIR")
+        if not (args.analyze[1] / "cases.json").is_file():
+            parser.error(f"{args.analyze[1]} holds no cases.json")
         nqubits = json.loads((args.analyze[1] / "cases.json").read_text(encoding="utf-8"))["nqubits"]
         found = analyze(args.analyze[1:], retained_rows(args.retained, nqubits))
         args.analyze[0].write_text(json.dumps(found, indent=1, allow_nan=False) + "\n", encoding="utf-8")

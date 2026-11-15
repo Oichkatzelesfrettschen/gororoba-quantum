@@ -5,8 +5,10 @@ a dead qubit and a partial ladder, and the sanity check stops a batch whose fixe
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -58,46 +60,97 @@ def shots_with(probability: list[float], count: int) -> list[str]:
     return ["".join("1" if shot < ones[width - 1 - place] else "0" for place in range(width)) for shot in range(count)]
 
 
-def write_run(run: Path, nqubits: int, shots: int, raw: dict[str, list[str]], rows: list[dict[str, Any]]) -> None:
+def write_run(
+    run: Path, nqubits: int, raw: dict[str, list[str]], rows: list[dict[str, Any]], backend: str = "tuna_17"
+) -> None:
+    """A run directory in the layout gororoba_quantum/qi_records.py validates, with RAW as the completed shots."""
     (run / "raw").mkdir(parents=True)
-    (run / "cases.json").write_text(
-        json.dumps({"nqubits": nqubits, "shots": shots, "circuits": rows}), encoding="utf-8"
-    )
-    for name, values in raw.items():
-        (run / "raw" / f"{name}.json").write_text(json.dumps(values), encoding="utf-8")
-    jobs = [{"file": row["file"], "job": {"status": "completed"}, "results": [{"shots_done": shots}]} for row in rows]
-    (run / "results.json").write_text(json.dumps({"jobs": jobs}), encoding="utf-8")
-
-
-def synthetic(
-    tmp_path: Path, ladder: tuple[int, ...], readout_shots: int = 20000
-) -> tuple[Path, list[dict[str, Any]], dict[str, list[str]]]:
-    """A three-qubit run: T1 of 20 and 40 us on qubits 0 and 1, and qubit 2 stuck at the same value in every circuit."""
-    nqubits, shots, zero, one, t1_us = 3, 20000, 0.02, 0.96, [20.0, 40.0]
-    rows: list[dict[str, Any]] = [
-        {"file": "readout-0.cq", "kind": "readout", "prepared": 0},
-        {"file": "readout-1.cq", "kind": "readout", "prepared": 1},
-    ]
-    raw = {
-        "readout-0.cq": shots_with([zero, zero, 0.5], readout_shots),
-        "readout-1.cq": shots_with([one, one, 0.5], readout_shots),
+    shots = max(len(values) for values in raw.values())
+    identity = sum(run.name.encode()) * 100
+    circuits = []
+    for row in rows:
+        text = f"circuit {row['file']}\n"
+        (run / row["file"]).write_text(text, encoding="utf-8")
+        circuits.append({**row, "sha256": hashlib.sha256(text.encode()).hexdigest()})
+    manifest = {"backend": backend, "backend_type_id": 7, "nqubits": nqubits, "shots": shots, "circuits": circuits}
+    (run / "cases.json").write_text(json.dumps(manifest), encoding="utf-8")
+    jobs = [{"file": row["file"], "job": identity + index} for index, row in enumerate(rows)]
+    receipt = {
+        "schema": "qi-submission-v1",
+        "approval": "test fixture",
+        "backend": backend,
+        "backend_type_id": 7,
+        "shots": shots,
+        "batch_job": identity,
+        "jobs": jobs,
     }
+    (run / "submission.json").write_text(json.dumps(receipt), encoding="utf-8")
+    collected = []
+    for entry in jobs:
+        values = raw[entry["file"]]
+        (run / "raw" / f"{entry['file']}.json").write_text(json.dumps(values), encoding="utf-8")
+        job = {
+            "id": entry["job"],
+            "batch_job_id": identity,
+            "number_of_shots": shots,
+            "status": "completed",
+            "created_on": "2026-11-15T00:00:00Z",
+        }
+        result = {
+            "job_id": entry["job"],
+            "shots_requested": shots,
+            "shots_done": len(values),
+            "results": dict(Counter(values)),
+        }
+        collected.append({"file": entry["file"], "job": job, "results": [result]})
+    (run / "results.json").write_text(json.dumps({"schema": "qi-collection-v1", "jobs": collected}), encoding="utf-8")
+
+
+def synthetic(tmp_path: Path, ladder: tuple[int, ...], readout_shots: int = 20000) -> list[Path]:
+    """Three batches of a three-qubit series: T1 of 20 and 40 us on qubits 0 and 1, qubit 2 stuck at one value."""
+    nqubits, shots, zero, one, t1_us = 3, 20000, 0.02, 0.96, [20.0, 40.0]
+    readout = tmp_path / "batch-00"
+    write_run(
+        readout,
+        nqubits,
+        {
+            "readout-0.cq": shots_with([zero, zero, 0.5], readout_shots),
+            "readout-1.cq": shots_with([one, one, 0.5], readout_shots),
+        },
+        [
+            {"file": "readout-0.cq", "kind": "readout", "prepared": 0},
+            {"file": "readout-1.cq", "kind": "readout", "prepared": 1},
+        ],
+    )
+    rows: list[dict[str, Any]] = []
+    raw = {}
     for cycles in cases.T1_CYCLES:
         delay = cycles * cases.CYCLE_SECONDS * 1e6
         rows.append({"file": f"t1-{cycles}.cq", "kind": "t1", "wait_cycles": cycles})
         raw[f"t1-{cycles}.cq"] = shots_with(
             [zero + (one - zero) * math.exp(-delay / t1) for t1 in t1_us] + [0.5], shots
         )
+    write_run(tmp_path / "batch-01", nqubits, raw, rows)
+    rows, raw = [], {}
     for pulses in ladder:
         rows.append({"file": f"x90-{pulses}.cq", "kind": "x90", "pulses": pulses})
         raw[f"x90-{pulses}.cq"] = shots_with([zero + (one - zero) * 0.1 * (pulses > 0)] * 2 + [0.5], shots)
-    run = tmp_path / "run"
-    write_run(run, nqubits, shots, raw, rows)
-    return run, rows, raw
+    write_run(tmp_path / "batch-03", nqubits, raw, rows)
+    return [readout, tmp_path / "batch-01", tmp_path / "batch-03"]
+
+
+def replace_shots(run: Path, name: str, values: list[str]) -> None:
+    """Overwrite one circuit's raw shots and its recorded histogram together."""
+    (run / "raw" / f"{name}.json").write_text(json.dumps(values), encoding="utf-8")
+    collected = json.loads((run / "results.json").read_text(encoding="utf-8"))
+    for row in collected["jobs"]:
+        if row["file"] == name:
+            row["results"][0]["results"] = dict(Counter(values))
+    (run / "results.json").write_text(json.dumps(collected), encoding="utf-8")
 
 
 def test_analysis_recovers_a_given_t1_and_readout_pair(tmp_path: Path) -> None:
-    run, _, _ = synthetic(tmp_path, (0, 32, 128, 256))
+    runs = synthetic(tmp_path, (0, 32, 128, 256))
     retained_file = tmp_path / "retained.json"
     retained_file.write_text(
         json.dumps(
@@ -112,7 +165,7 @@ def test_analysis_recovers_a_given_t1_and_readout_pair(tmp_path: Path) -> None:
         encoding="utf-8",
     )
     out = tmp_path / "analysis.json"
-    if cases.main(["--analyze", str(out), str(run), "--retained", str(retained_file)]) != 0:
+    if cases.main(["--analyze", str(out), *map(str, runs), "--retained", str(retained_file)]) != 0:
         raise AssertionError("--analyze failed")
     first, second, dead = json.loads(out.read_text(encoding="utf-8"))["qubits"]
     for row, want in ((first, 20.0), (second, 40.0)):
@@ -134,37 +187,31 @@ def test_analysis_recovers_a_given_t1_and_readout_pair(tmp_path: Path) -> None:
 
 
 def test_ladder_verdict_needs_the_256_pulse_point_and_every_point_above_the_minimum(tmp_path: Path) -> None:
-    run, _, _ = synthetic(tmp_path, (0, 32))
-    partial = cases.analyze([run])["qubits"][0]
+    partial = cases.analyze(synthetic(tmp_path, (0, 32)))["qubits"][0]
     if "ladder_clears" in partial or "ladder_p0_at_longest" in partial or "32" not in partial["ladder_p0"]:
         raise AssertionError(f"a ladder without its 256-pulse circuit received a verdict: {partial}")
-    run, _, _ = synthetic(tmp_path / "ends", (0, 256))
-    ends = cases.analyze([run])["qubits"][0]
+    ends = cases.analyze(synthetic(tmp_path / "ends", (0, 256)))["qubits"][0]
     if "ladder_clears" in ends or abs(ends["ladder_p0_at_longest"] - 0.9) > 0.02:
         raise AssertionError(f"a ladder without its 32 and 128 pulse circuits received a verdict: {ends}")
-    run, rows, raw = synthetic(tmp_path / "aliased", (0, 32, 128, 256))
+    runs = synthetic(tmp_path / "aliased", (0, 32, 128, 256))
     # An over-rotation that returns to P(0) = 1 at 256 pulses passes through P(0) = 0 at 128.
-    raw["x90-128.cq"] = shots_with([0.96, 0.96, 0.5], 20000)
-    raw["x90-256.cq"] = shots_with([0.02, 0.02, 0.5], 20000)
-    (run / "raw" / "x90-128.cq.json").write_text(json.dumps(raw["x90-128.cq"]), encoding="utf-8")
-    (run / "raw" / "x90-256.cq.json").write_text(json.dumps(raw["x90-256.cq"]), encoding="utf-8")
-    aliased = cases.analyze([run])["qubits"][0]
+    replace_shots(runs[2], "x90-128.cq", shots_with([0.96, 0.96, 0.5], 20000))
+    replace_shots(runs[2], "x90-256.cq", shots_with([0.02, 0.02, 0.5], 20000))
+    aliased = cases.analyze(runs)["qubits"][0]
     if aliased["ladder_clears"] or aliased["ladder_p0_at_longest"] < 0.99:
         raise AssertionError(f"an aliased over-rotation cleared the ladder: {aliased}")
     # P(0) of 0.9, 0.4 and 0.7: the middle contrast is negative, and the two that remain would fit a decay.
     for pulses, value in ((32, 0.114), (128, 0.584), (256, 0.302)):
-        (run / "raw" / f"x90-{pulses}.cq.json").write_text(
-            json.dumps(shots_with([value, value, 0.5], 20000)), encoding="utf-8"
-        )
-    dipped = cases.analyze([run])["qubits"][0]
+        replace_shots(runs[2], f"x90-{pulses}.cq", shots_with([value, value, 0.5], 20000))
+    dipped = cases.analyze(runs)["qubits"][0]
     if dipped["ladder_clears"] or "ladder" in dipped or abs(dipped["ladder_p0"]["128"] - 0.4) > 0.01:
         raise AssertionError(f"a ladder with a negative contrast received a decay length: {dipped}")
 
 
 def test_t1_error_grows_with_the_uncertainty_of_the_readout_pair(tmp_path: Path) -> None:
-    wide, _, _ = synthetic(tmp_path / "wide", (0,), readout_shots=200)
-    tight, _, _ = synthetic(tmp_path / "tight", (0,))
-    few, many = cases.analyze([wide])["qubits"][0]["t1"], cases.analyze([tight])["qubits"][0]["t1"]
+    wide = synthetic(tmp_path / "wide", (0,), readout_shots=200)
+    tight = synthetic(tmp_path / "tight", (0,))
+    few, many = cases.analyze(wide)["qubits"][0]["t1"], cases.analyze(tight)["qubits"][0]["t1"]
     if few["us_se"] < 1.5 * many["us_se"]:
         raise AssertionError(f"a readout pair of 200 shots left the T1 error at {few['us_se']} against {many['us_se']}")
 
@@ -177,34 +224,49 @@ def test_sanity_stops_a_batch_whose_fixed_outcome_is_wrong(tmp_path: Path) -> No
         {"file": "t1-0.cq", "kind": "t1", "wait_cycles": 0},
         {"file": "t1-250.cq", "kind": "t1", "wait_cycles": 250},
     ]
-    good = tmp_path / "good"
-    write_run(
-        good,
-        nqubits,
-        shots,
-        {"t1-0.cq": shots_with(healthy, shots), "t1-250.cq": shots_with([0.0] * nqubits, shots)},
-        rows,
-    )
-    if cases.sanity(good):
-        raise AssertionError(cases.sanity(good))
-    bad = tmp_path / "bad"
-    write_run(
-        bad,
-        nqubits,
-        shots,
-        {"t1-0.cq": shots_with([0.0] * nqubits, shots), "t1-250.cq": shots_with(healthy, shots)},
-        rows,
-    )
-    problems = cases.sanity(bad)
+    dark, lit = shots_with([0.0] * nqubits, shots), shots_with(healthy, shots)
+    write_run(tmp_path / "good", nqubits, {"t1-0.cq": lit, "t1-250.cq": dark}, rows)
+    if cases.sanity(tmp_path / "good"):
+        raise AssertionError(cases.sanity(tmp_path / "good"))
+    write_run(tmp_path / "bad", nqubits, {"t1-0.cq": dark, "t1-250.cq": lit}, rows)
+    problems = cases.sanity(tmp_path / "bad")
     if len(problems) != 1 or "t1-0.cq" not in problems[0] or "want all 1" not in problems[0]:
         raise AssertionError(problems)
-    short = tmp_path / "short"
-    write_run(
-        short,
-        nqubits,
-        shots,
-        {"t1-0.cq": shots_with(healthy, shots - 1), "t1-250.cq": shots_with(healthy, shots)},
-        rows,
-    )
-    if len(cases.sanity(short)) != 1 or "shots done" not in cases.sanity(short)[0]:
-        raise AssertionError(cases.sanity(short))
+    write_run(tmp_path / "short", nqubits, {"t1-0.cq": lit, "t1-250.cq": lit[:-1]}, rows)
+    problems = cases.sanity(tmp_path / "short")
+    if len(problems) != 1 or "t1-250.cq: 63 shots done of 64" not in problems[0]:
+        raise AssertionError(problems)
+
+
+def test_a_run_of_another_width_backend_or_histogram_is_refused(tmp_path: Path) -> None:
+    rows = [{"file": "t1-0.cq", "kind": "t1", "wait_cycles": 0}]
+    # Ten-character shots under a 17-qubit manifest: bit() would read the low bits again for qubits 10 to 16.
+    write_run(tmp_path / "narrow", 17, {"t1-0.cq": ["1" * 10] * 8}, rows)
+    problems = cases.sanity(tmp_path / "narrow")
+    if len(problems) != 1 or "want 17-bit strings" not in problems[0]:
+        raise AssertionError(problems)
+    write_run(tmp_path / "empty", 17, {"t1-0.cq": []}, rows)
+    problems = cases.sanity(tmp_path / "empty")
+    if len(problems) != 1 or "holds no shot" not in problems[0]:
+        raise AssertionError(problems)
+    write_run(tmp_path / "edited", 17, {"t1-0.cq": ["1" * 17] * 8}, rows)
+    (tmp_path / "edited" / "raw" / "t1-0.cq.json").write_text(json.dumps(["0" * 17] * 8), encoding="utf-8")
+    problems = cases.sanity(tmp_path / "edited")
+    if len(problems) != 1 or "differs from the recorded outcome histogram" not in problems[0]:
+        raise AssertionError(problems)
+    runs = synthetic(tmp_path / "tuna", (0,))
+    twin = synthetic(tmp_path / "qx", (0,))
+    receipt = json.loads((twin[1] / "submission.json").read_text(encoding="utf-8"))
+    manifest = json.loads((twin[1] / "cases.json").read_text(encoding="utf-8"))
+    receipt["backend"] = manifest["backend"] = "QXsinglenodesimulator"
+    (twin[1] / "submission.json").write_text(json.dumps(receipt), encoding="utf-8")
+    (twin[1] / "cases.json").write_text(json.dumps(manifest), encoding="utf-8")
+    again = synthetic(tmp_path / "again", (0,))
+    for mixed, want in (([runs[0], twin[1]], "QXsinglenodesimulator on 3 qubits"), ([*runs, again[1]], "repeats")):
+        try:
+            cases.analyze(mixed)
+        except SystemExit as stop:
+            if want not in str(stop):
+                raise AssertionError(str(stop)) from stop
+        else:
+            raise AssertionError(f"runs {[run.parent.name for run in mixed]} were analyzed together")
