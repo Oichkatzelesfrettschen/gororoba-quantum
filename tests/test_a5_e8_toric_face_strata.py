@@ -115,7 +115,7 @@ def test_a_thirteenth_monomial_changes_the_facets_and_the_triangle_stops_being_a
     _same(found["faces"], {"point": ["z l"], "line": ["a m", "b m"], "plane": None})
 
 
-def test_a_missing_interior_monomial_is_reported_as_a_lattice_point_outside_the_set() -> None:
+def test_a_missing_boundary_monomial_that_is_no_vertex_is_reported_as_a_lattice_point_outside_the_set() -> None:
     kept = [index for index in range(12) if index != 5]
     found = strata.polytope(
         tuple(strata.MONOMIALS[index] for index in kept), tuple(strata.NAMES[index] for index in kept)
@@ -130,7 +130,7 @@ def test_the_generator_lists_parse_into_linear_forms_over_the_gaussian_integers(
         [{21: (1, 0)}, {15: (1, 0), 16: (0, 1)}, {10: (1, 0), 16: (1, 0)}],
     )
     _same(strata.linear_forms("y(18)+(-i)*y(19),-y(2)"), [{18: (1, 0), 19: (0, -1)}, {2: (-1, 0)}])
-    for text in ("y(1)*y(2)", "2*y(1)", "y(1)^2", "x(1)"):
+    for text in ("y(1)*y(2)", "2*y(1)", "y(1)^2", "x(1)", "y(1)+y(1)", "y(2)+(i)*y(2)"):
         with pytest.raises(ValueError, match="summand"):
             strata.linear_forms(text)
     for orbit in strata.ORBITS:
@@ -154,6 +154,20 @@ def test_the_generators_of_the_other_basepoint_reject_the_faces() -> None:
     _same(found["columns_on_the_point"], [])
     problems = strata.strata_problems("N-", found)
     _same(any("point_face_spans_the_point" in problem for problem in problems), True)
+
+
+def test_dependent_generators_reject_the_faces_although_they_vanish_on_the_columns() -> None:
+    for orbit in strata.ORBITS:
+        point, line = (text.split(",") for text in geometry.SINGULAR_GENERATORS[orbit])
+        # Twenty forms of rank 19 cut out a plane, and nineteen of rank 18 a space of dimension 3.
+        doubled_point = ",".join([point[0], point[1], point[0], *point[3:]])
+        doubled_line = ",".join([line[0], line[1], line[0], *line[3:]])
+        found = strata.strata(orbit, (doubled_point, ",".join(line)))
+        _same((found["point_generators"], found["point_face_spans_the_point"]), (20, False))
+        _same(found["line_face_spans_the_line"], True)
+        found = strata.strata(orbit, (",".join(point), doubled_line))
+        _same((found["line_generators"], found["line_face_spans_the_line"]), (19, False))
+        _same(found["point_face_spans_the_point"], True)
 
 
 def test_swapped_components_reject_the_faces() -> None:

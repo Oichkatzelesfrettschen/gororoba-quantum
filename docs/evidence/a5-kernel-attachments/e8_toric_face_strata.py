@@ -211,6 +211,8 @@ def linear_forms(text: str) -> list[dict[int, Gaussian]]:
             match = _TERM.fullmatch(summand)
             if match is None:
                 raise ValueError(f"the summand {summand!r} is not a multiple of a generator by 1, -1, i or -i")
+            if int(match.group(2)) in form:
+                raise ValueError(f"the summand {summand!r} repeats a generator of its form")
             form[int(match.group(2))] = _COEFFICIENT[match.group(1) or ""]
         forms.append(form)
     return forms
@@ -252,14 +254,20 @@ def strata(
     def rank(face: tuple[int, ...]) -> int:
         return birational.gaussian_rank([matrix[index] for index in face])
 
+    def independent(ideal: list[dict[int, Gaussian]]) -> bool:
+        rows = [[form.get(index, (0, 0)) for index in range(1, birational.GENERATORS + 1)] for form in ideal]
+        return birational.gaussian_rank(rows) == len(ideal)
+
     return {
         "point_generators": len(point),
         "line_generators": len(line),
         # A space cut out by n independent forms in 21 variables that contains r independent vectors with
         # r = 21 - n is their span; the generator counts are those of spaces of dimension 1 and 2.
-        "point_face_spans_the_point": rank(POINT_FACE) == birational.GENERATORS - len(point)
+        "point_face_spans_the_point": independent(point)
+        and rank(POINT_FACE) == birational.GENERATORS - len(point)
         and all(on(point, index) for index in POINT_FACE),
-        "line_face_spans_the_line": rank(LINE_FACE) == birational.GENERATORS - len(line)
+        "line_face_spans_the_line": independent(line)
+        and rank(LINE_FACE) == birational.GENERATORS - len(line)
         and all(on(line, index) for index in LINE_FACE),
         "plane_face_rank": rank(PLANE_FACE),
         "columns_on_the_point": [NAMES[index] for index in range(len(MONOMIALS)) if on(point, index)],

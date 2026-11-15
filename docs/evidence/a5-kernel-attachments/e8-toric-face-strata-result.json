@@ -5,7 +5,7 @@
   "strata": "Q(i)"
  },
  "inputs": {
-  "e8_toric_face_strata.py": "7ff2c435c1461d2e32979542361b0b11c5c040588fe456c718489f516355a257",
+  "e8_toric_face_strata.py": "f23fc596c36c89b8f9b985a50f4046d29a743e4d40b7144c3b0cb67bba532d50",
   "e8_birational_degree.py": "8fb6dd51651f9be5054453c7cfb621cc31a50a21495c5955d88fcfab8c003ead",
   "e8_component_geometry.py": "0ed4369a80aed9a157a1da0f0291bfe415907b5bc5d1a7ca38f67f658faf820c"
  },
