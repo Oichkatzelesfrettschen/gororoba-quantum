@@ -17,6 +17,13 @@ algebraic point for A5-551; neither P_y nor P_z at s = +-1 is the kernel plane o
 exact probe of the base frames is not retained); the real points with dim L of 4 and of 6 each have real codimension 4
 (A5-558).
 
+## Hosted rounds
+
+Each hosted reviewer returned one finding, and both hold. Codex: the five ranks of `polar_line_facts` ran as a serial
+comprehension; they run through `parallel.ordered_map`. Copilot: `krawczyk` accepted `radius_bits = 0`, the value
+that selects the point evaluation, so a box of radius 1 would have been tested with a Jacobian at its midpoint;
+`krawczyk` refuses a value below 1, and a test plants 0 and -1. The certificate at radius 2^-24 is unchanged.
+
 ## Advisor verdict
 
 The Advisor reviewed last and confirmed the three findings and their fixes from the source lines. It did not audit

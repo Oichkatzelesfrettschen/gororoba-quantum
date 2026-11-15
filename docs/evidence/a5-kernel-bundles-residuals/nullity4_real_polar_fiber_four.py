@@ -387,7 +387,12 @@ def _largest_power(x: arb, below: bool, limit: int) -> int:
 
 
 def krawczyk(midpoint: tuple[int, ...], radius_bits: int) -> dict[str, Any]:
-    """The Krawczyk test of the box of the given midpoint and radius: containment, contraction bits, pairing bound."""
+    """The Krawczyk test of the box of the given midpoint and radius: containment, contraction bits, pairing bound.
+
+    radius_bits is at least 1: the value 0 selects the point evaluation in _slice_point, whose Jacobian encloses no box.
+    """
+    if radius_bits < 1:
+        raise ValueError(f"radius_bits must be at least 1, got {radius_bits}")
     ctx.prec = PRECISION
     jobs = [(0, midpoint, k) for k in SLICE_FREE] + [(radius_bits, midpoint, k) for k in SLICE_FREE]
     rows = parallel.ordered_map(evaluation, jobs, min_items=2)

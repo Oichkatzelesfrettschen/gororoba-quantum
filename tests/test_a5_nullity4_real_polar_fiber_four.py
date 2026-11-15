@@ -78,6 +78,13 @@ def test_krawczyk_rejects_a_box_too_wide_for_the_jacobian() -> None:
     _same((result["interior"], result["pairing_bound_bits"]), (False, -1))
 
 
+@pytest.mark.parametrize("radius_bits", [0, -1])
+def test_krawczyk_refuses_a_radius_without_a_box_jacobian(radius_bits: int) -> None:
+    # radius_bits = 0 is the point evaluation of _slice_point, so a box of radius 1 would get a point Jacobian.
+    with pytest.raises(ValueError, match="radius_bits"):
+        fiber.krawczyk(fiber.MIDPOINT, radius_bits)
+
+
 def _double_t(midpoint: tuple[int, ...]) -> np.ndarray:
     xi = np.array([float(sp.Rational(fiber.FIXED_NUMERATORS.get(i, 0), 1 << fiber.FIXED_BITS)) for i in range(14)])
     for index, numerator in zip(fiber.SLICE_FREE, midpoint, strict=True):
