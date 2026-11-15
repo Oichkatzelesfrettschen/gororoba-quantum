@@ -11,7 +11,7 @@ import json
 import sys
 import types
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import pytest
 import qi_mcp_server
@@ -141,5 +141,5 @@ def test_qi_run_local_passes_a_seed_and_refuses_a_seed_that_is_not_an_integer_in
     calls = len(qx.calls)
     for bad in (-1, 2**31, 2**63, 2**64 - 1, 1.0, 1.5, True):
         with pytest.raises(ToolError, match="seed must be an integer"):
-            qi_mcp_server.qi_run_local(PROGRAM, shots=4, seed=bad)
+            qi_mcp_server.qi_run_local(PROGRAM, shots=4, seed=cast(Any, bad))
     _expect(len(qx.calls) == calls, "a refused seed still reached qxelarator")
