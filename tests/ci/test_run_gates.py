@@ -283,6 +283,17 @@ def test_a_gororoba_math_gate_reads_the_checkout_through_proofs(root: Path, tmp_
         raise AssertionError(f"the ledger did not verify against the checkout (status {status}):\n{output.getvalue()}")
 
 
+def test_a_gororoba_math_gate_ignores_a_source_no_record_cites(root: Path, tmp_path: Path) -> None:
+    math = math_fixture(root, tmp_path)
+    (math / "rocq/quantum/_RocqProject").write_text('-Q . ""\nCdOne.v\nUncited.v\n', encoding="utf-8")
+    (math / "rocq/quantum/Uncited.v").write_bytes(b"Definition u := 3.\n")
+    manifest(root, MATH_GATE)
+    with runner(root, GOROROBA_MATH=str(math)) as output:
+        status = run_gates.main([])
+    if status != 0 or "PASS ledger" not in output.getvalue():
+        raise AssertionError(f"an uncited source failed the ledger gate (status {status}):\n{output.getvalue()}")
+
+
 def test_a_gororoba_math_gate_fails_on_a_source_that_differs_from_the_ledger(root: Path, tmp_path: Path) -> None:
     math = math_fixture(root, tmp_path, flipped=True)
     manifest(root, MATH_GATE)

@@ -181,3 +181,39 @@ for byte; the `redefining` lines at the head of each log (139 in both) are Singu
 A basis pair failing the automorphism identity, an orbit representative whose phi-image leaves the predicted closure, a
 germ tuple different from the table, a base locus with a second prime through 0 or a prime different from the B9
 pullback, a residual of a different dimension, or any disagreement between the three fields.
+
+## Germ ideals and three quadric schemes, probed exactly
+
+`quadric_and_germ_probes.py` writes `quadric-and-germ-probes.json` (21 rows, Singular 4.4.1 in dp, under a minute
+on the laptop). Its `check()` compares every field of a record with the expected value, row by row:
+
+- `germ-prime`, 12 rows: the germ ideal J of X- -> N-, E8-bar -> VB, Iso -> N-, W8 -> N-, E8-bar -> N+ and
+  E8-bar -> N- at 32009 (`working/runs/k2struct/`, `working/build/inputs/p32009-r10754/e8-nm.sing`) and at 32029
+  (the canonical headers) is radical with one minimal prime through the origin, so J is prime; each 32029 ideal
+  equals its 32009 input read modulo 32029. The pivots G_11, G_3, G_16 and G_19 lie outside J, so each is a
+  nonzerodivisor modulo J (ledger rows A5-027, A5-028).
+- `vb-components`, 2 rows: each minimal prime of the quadric ideal of E8-bar -> VB has a reduced section by three
+  linear forms with an F_p-point, so it is absolutely prime; the two components meet in one reduced plane, and
+  HF(k[y]/K2, d) = 7 C(d + 2, 3) + C(d + 2, 2) for d = 1..7 (A5-020).
+- `x-colon`, 3 rows: for same-sign X the minimal prime P is absolutely prime by the same section test, K2 : P is
+  the ideal of the embedded plane, K2 : (K2 : P) = P, and the first Hilbert numerators satisfy
+  N_K2 - N_P = N_A - (1 - t)^15, so dim (P / K2)_d = C(d + 2, 2) for every d >= 1 (A5-022, A5-544).
+- `e8-colon`, 4 rows: for E8-bar -> N- and N+ at both primes the radical R is K2 plus five linear forms of square
+  zero, K2 : R is a prime of dimension 4 and multiplicity 2, K2 : (K2 : R) = R, and
+  N_K2 - N_R = N_A - (1 - t)^21, so R / K2 has the Hilbert function 5, 14, 30, 55, 91, 140, 204, ... of the
+  irrelevant ideal of a quadric threefold cone in every degree (A5-547).
+
+## Where the embedded plane of same-sign X sits in the Pluecker space
+
+`embedded_plane_images.py` writes `embedded-plane-images.json` (5 rows, exact arithmetic, under a second) from the
+embedding matrices of the [nullity-16 Rees record](../../a5-kernel-attachments/README.md) and the 12 forms above:
+
+- over Q(i), at N- and at N+, the embedding matrices of the same-sign and of the opposite-sign X incidence have
+  ranks 15 and 3 and rank 18 side by side, so the two linear spans share no point and the embedded plane is not the
+  image of the opposite-sign P^2 fiber (A5-545, refuted);
+- modulo 32009 and 32029 the 9 linear conditions of the section through V^a- (at N-) or V^a+ (at N+) lie in the
+  span of the 12 forms, so the embedded plane lies in that section, and the section through VB meets the plane in
+  one point (A5-546);
+- the same conditions have rank 3 on the three opposite-sign generators for V^a and rank 0 for VB, so the V^a
+  section holds no point of the opposite-sign fiber. Rank 18 alone would also arise from matrices in different
+  frames; these source-against-stratum ranks separate the two images and show the shared frame.

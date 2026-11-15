@@ -1,35 +1,28 @@
-"""Resolve the Rocq sources that gororoba-math holds under rocq/quantum for this repository.
+"""Resolve the Rocq sources of gororoba-math that this repository's records cite.
 
-The sources moved to gororoba-math; this repository keeps a pin, a resolver and
-the retained replay bundles that read them. ``ci/gororoba_math.pin`` names the
-commit of gororoba-math whose ``rocq/quantum`` tree the retained digests bind.
-A local run locates a checkout of that commit through the environment variable
-``GOROROBA_MATH``, and hosted CI fetches the pin (ci/fetch_gororoba_math.sh).
+The sources live in gororoba-math under ``rocq/quantum``; this repository holds a pin and a resolver and reads only the
+sources a retained record names. ``ci/gororoba_math.pin`` names a commit of gororoba-math at which every cited source
+keeps the sha256 its records hold, so a pin moves to any commit that leaves those bytes unchanged and a source no
+record cites is never read. A local run locates a checkout of that commit through the environment variable
+``GOROROBA_MATH`` (ci/fetch_gororoba_math.sh fetches the pin into a directory).
 
-The set of moved sources is the ``.v`` lines of ``rocq/quantum/_RocqProject`` in
-that checkout, so a pin bump that adds a source moves it without a code change.
-A source this repository still tracks under ``proofs/`` and the project file
-omits keeps resolving to the checkout's own copy.
+A source is cited when a record holds a digest of it: a ``proofs/NAME.v`` row of docs/evidence/*/*.sha256
+(STALE_MANIFESTS lists the one ledger whose row predates its source) or an evidence entry of
+docs/state/research_state.json that names ``proofs/NAME.v`` or ``gororoba-math:rocq/quantum/NAME.v``
+(``cited_names``). A cited name must be a ``.v`` line of ``rocq/quantum/_RocqProject`` in the checkout.
 
-A retained replay bundle (docs/evidence/BUNDLE/replay_rocq.sh) reads
-``$repository_root/proofs/NAME.v``, where ``repository_root`` is three levels
-above the script, and its bytes stay fixed. ``shadow_root`` builds a directory
-tree whose ``proofs/`` holds the digest-checked sources and whose other entries
-are the checkout's own, so the unmodified script resolves its inputs there.
+A retained replay bundle (docs/evidence/BUNDLE/replay_rocq.sh) reads ``$repository_root/proofs/NAME.v``, where
+``repository_root`` is three levels above the script, and its bytes stay fixed. ``shadow_root`` builds a directory tree
+whose ``proofs/`` holds the digest-checked cited sources and whose other entries are the checkout's own, so a ledger
+row ``proofs/NAME.v`` resolves there without a change to the ledger.
 
-References in records. A live record names a moved source as
-``gororoba-math:rocq/quantum/NAME.v`` (REFERENCE_PREFIX); resolve_reference
-maps it to the file of the checkout. A closed plan record keeps its
-``proofs/NAME.v`` references and bytes; relocated_reference maps such a
-reference to the new form while the repository no longer tracks the file.
+References in records. A live record names a source as ``gororoba-math:rocq/quantum/NAME.v`` (REFERENCE_PREFIX);
+resolve_reference maps it to the file of the checkout. A closed plan record keeps its ``proofs/NAME.v`` references and
+bytes; relocated_reference maps such a reference to the new form while the repository no longer tracks the file.
 
-Digests. Every moved source is checked against the sha256 the retained
-records already hold: the ``proofs/NAME.v`` rows of docs/evidence/*/*.sha256
-(STALE_MANIFESTS lists the one ledger whose row predates its source) and the
-evidence entries of docs/state/research_state.json. Two different digests for
-one source, a source without a digest, an unset GOROROBA_MATH, a checkout whose
-HEAD differs from the pin and a source whose bytes differ each raise
-MathSourcesError.
+Digests. Every cited source is checked against the sha256 its records hold. Two different digests for one source, a
+cited source absent from the project file, an unset GOROROBA_MATH, a checkout whose HEAD differs from the pin and a
+source whose bytes differ each raise MathSourcesError.
 """
 
 from __future__ import annotations
@@ -38,7 +31,6 @@ import hashlib
 import json
 import os
 import re
-import shutil
 import stat
 import subprocess
 from collections.abc import Mapping
@@ -62,20 +54,6 @@ REFERENCE_PATTERN = re.compile(re.escape(REFERENCE_PREFIX) + r"[A-Za-z0-9_]+\.v"
 
 class MathSourcesError(RuntimeError):
     """The gororoba-math sources are unresolved, off the pin, or differ from the retained digests."""
-
-
-def validated_url(value: str) -> str:
-    """A clone URL that git may receive: an ``https://`` URL or the absolute path of an existing directory.
-
-    Any other transport (``ext::`` command URLs, ``file:``, ``ssh:``, a relative path) and any value with ``::`` or
-    whitespace raises MathSourcesError, since git runs the command of an ``ext::`` URL."""
-    if "::" in value or any(character.isspace() or ord(character) < 32 for character in value):
-        raise MathSourcesError(f"clone URL {value!r} holds '::' or whitespace")
-    if value.startswith("https://") and len(value) > len("https://"):
-        return value
-    if value.startswith("/") and Path(value).is_dir():
-        return value
-    raise MathSourcesError(f"clone URL {value!r} is neither an https:// URL nor an absolute directory")
 
 
 def read_pin(root: Path = ROOT) -> str:
@@ -189,6 +167,11 @@ def _read_recorded_digests(root: Path) -> dict[str, str]:
     return {name: next(iter(digests)) for name, digests in found.items()}
 
 
+def cited_names(root: Path = ROOT) -> list[str]:
+    """The sources that retained records cite, as file names in sorted order: the names recorded_digests holds."""
+    return sorted(recorded_digests(root))
+
+
 def _checked_location(name: str, math: Path) -> Path:
     """The path of source ``name`` in the checkout once the name is a plain ``NAME.v`` and the path is no symbolic
     link and resolves inside the checkout."""
@@ -234,52 +217,36 @@ def verified_source(name: str, math: Path, root: Path = ROOT) -> Path:
     return _checked_location(name, math)
 
 
-def writable_source(name: str, math: Path) -> Path:
-    """The location a generator writes source ``name`` to: a plain ``NAME.v`` in rocq/quantum of the checkout that is
-    no symbolic link and resolves, with its directory, inside the checkout.
-
-    No digest comparison applies: a write produces new bytes, whose digest the retained records do not hold until
-    the change lands in gororoba-math and the records are rebound."""
-    path = _checked_location(name, math)
-    if not path.parent.resolve().is_relative_to(math.resolve()):
-        raise MathSourcesError(f"{SUBDIRECTORY} resolves outside the checkout")
-    return path
+def _require_listed(names: list[str], math: Path) -> None:
+    listed = moved_names(math)
+    absent = [name for name in names if name not in listed]
+    if absent:
+        raise MathSourcesError(f"{', '.join(absent)} is cited by a retained record and absent from {PROJECT_FILE}")
 
 
 def verified_sources(math: Path, root: Path = ROOT, names: list[str] | None = None) -> dict[str, Path]:
-    """Each moved source (or the listed ones) mapped to its file through verified_source."""
-    return {name: verified_source(name, math, root) for name in (names if names is not None else moved_names(math))}
+    """Each cited source (or the listed ones) mapped to its file through verified_source.
+
+    A cited source that the project file of the checkout omits raises MathSourcesError."""
+    chosen = names if names is not None else cited_names(root)
+    _require_listed(chosen, math)
+    return {name: verified_source(name, math, root) for name in chosen}
 
 
-def shadow_root(destination: Path, math: Path, root: Path = ROOT, bundle: str | None = None) -> Path:
-    """Build ``destination`` as a stand-in for the repository root in which ``proofs/`` holds the sources.
+def shadow_root(destination: Path, math: Path, root: Path = ROOT) -> Path:
+    """Build ``destination`` as a stand-in for the repository root in which ``proofs/`` holds the cited sources.
 
-    Every moved source is written from the bytes verified_bytes returned, so the copy is the digest-checked
-    content; a source the project file omits and the repository still tracks is copied from ``proofs/``. Each
-    top-level entry of the repository except ``proofs`` and ``.git`` is a symbolic link to the real one. With
-    ``bundle``, ``docs/evidence/BUNDLE`` is a copy of the real directory under a real ``docs/evidence``, so a script
-    run from it finds its root three levels up without following a link.
-    """
-    names = moved_names(math)
+    Every cited source is written from the bytes verified_bytes returned, so the copy is the digest-checked content; a
+    source no record cites is not copied. Each top-level entry of the repository except ``proofs`` and ``.git`` is a
+    symbolic link to the real one."""
+    names = cited_names(root)
+    _require_listed(names, math)
     contents = {name: verified_bytes(name, math, root) for name in names}
     proofs = destination / "proofs"
     proofs.mkdir(parents=True)
-    local = root / "proofs"
-    if local.is_dir():
-        for path in sorted(local.glob("*.v")):
-            if path.name not in contents:
-                shutil.copyfile(path, proofs / path.name)
     for name, data in contents.items():
         (proofs / name).write_bytes(data)
     for entry in sorted(root.iterdir()):
-        if entry.name in {"proofs", ".git"} or (bundle is not None and entry.name == "docs"):
-            continue
-        (destination / entry.name).symlink_to(entry)
-    if bundle is not None:
-        evidence = destination / "docs/evidence"
-        evidence.mkdir(parents=True)
-        shutil.copytree(root / "docs/evidence" / bundle, evidence / bundle, symlinks=True)
-        for entry in sorted((root / "docs").iterdir()):
-            if entry.name != "evidence":
-                (destination / "docs" / entry.name).symlink_to(entry)
+        if entry.name not in {"proofs", ".git"}:
+            (destination / entry.name).symlink_to(entry)
     return destination

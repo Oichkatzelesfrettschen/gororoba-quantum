@@ -1,194 +1,43 @@
-"""Exploratory: one global parameter per elementary error, fitted to all 24 scan arms at matched center visibility.
+"""Exploratory: one error parameter that follows the shot-order line, fitted to the phase-bin contrasts.
 
-Written before fitting. Candidates: a constant rotation about x, y or z before or after every pulse of one region
-qubit or of all; a constant conditional-phase error on every CZ or on the CZs of one coupler; none (exact). Statistic:
-chi-square of the 24 raw selector contrasts of the eight scan batches with one parameter shared by all batches and a
-contraction (share 0 or 1) matched to each batch's center visibility. Split: fit on the forward round (batches 01 to
-07), score on the mirror round (13 to 19) with the parameter fixed. Falsifier of a candidate: mirror chi-square above
-the 0.001 point of chi-square with 12 degrees of freedom (32.9)."""
+Written before fitting: a single error parameter u oscillates with the line, u = u0 + s A cos(theta), theta = 0 at
+the maximum of q4's P(1), s the sign of dP(q4 = 1)/du of the model at u0 for that arm; where the model's q4 bit
+has no response to u the alignment is unidentified and each such arm takes the s that scores lower (recorded as
+`free_alignment_arms`). Data: the selector contrast of each `Rx` arm type in 8 phase bins pooled over its jobs (9
+arm types, 72 points; the `X90` arm `b0` has no model row here) plus the 9 mean q4-bit line amplitudes. Parameters shared by all arms: u0, A. Noise: contraction share 0 at the retention where the exact
+center reads visibility 0.42 through the mean bracket matrix. Candidates: z, x or y before each qubit's pulses or
+all; conditional phase on each coupler or all; a z phase on one qubit after each of its CZs on one coupler.
+Falsifier of a candidate: chi-square of the 72 contrast points above 112.3 (upper tail 0.001, 70 degrees of
+freedom; `contrast_limit` in each row is computed from the selected data);
+the alignment rule and this bound were set after the first fit, which scored the same 72 points against the
+80-point bound 124.8 and took the alignment from the sign of a zero slope. A free alignment per arm is not removed
+from the degrees of freedom, so the score of a candidate with free arms is a lower bound;
+calibration: exact pulses with A = 0."""
 
 import json
-import math
-import sys
-from pathlib import Path
 from typing import Any
 
-import numpy as np
+import scan_fits
+from scan_forward import HERE, pairs, region
 
-ROOT = Path.cwd()
-sys.path.insert(0, str(ROOT / "scripts"))
-import qi_pathion_null_rotation_scan_cases as rs
-
-cc = rs.cc
-ref = rs.retained()
-region = ref["region"]
-ax = {q: i for i, q in enumerate(region)}
-pairs = sorted({tuple(sorted(q)) for g, a, q in ref["ops"] if g == "CZ"})
+import parallel
 
 
-def rot(axis, t):
-    return np.cos(t / 2)[:, None, None] * np.eye(2) - 1j * np.sin(t / 2)[:, None, None] * rs.PAULI[axis]
-
-
-def laws(arm, items):
-    thetas0 = items[0][1]
-    pulse, scope, steps = rs.ARMS[arm]
-    inj = () if scope is None else rs.SCOPES[scope]
-    n = len(thetas0)
-    shape = (2,) * 5
-    psi = np.zeros((n, *shape), complex)
-    psi.reshape(n, -1)[:, 0] = 1
-    idx = np.indices(shape)
-    for gate, angle, qs in ref["ops"]:
-        if gate == "CZ":
-            both = idx[ax[qs[0]]] * idx[ax[qs[1]]]
-            ph = np.zeros(n)
-            for (kind, a, _b), thetas in items:
-                if kind == "cz" and (a is None or tuple(sorted(qs)) == a):
-                    ph = ph + thetas
-            psi = psi * np.where(both[None] == 1, -np.exp(1j * ph)[:, None, None, None, None, None], 1.0)
-            for (kind, a, b), thetas in items:
-                if kind == "czz" and a in qs and (b is None or tuple(sorted(qs)) == b):
-                    psi = psi * np.exp(1j * thetas[:, None, None, None, None, None] * (idx[ax[a]][None] - 0.5))
-            continue
-        q = qs[0]
-        if gate == "Rz":
-            u = np.broadcast_to(rs.rotation("z", float(angle or 0.0)), (n, 2, 2))
-        else:
-            ex = rs.rotation("x", math.pi / 2 + (steps * rs.STEP if pulse == "Rx" and q in inj else 0.0))
-            u = np.broadcast_to(ex, (n, 2, 2))
-            for (kind, a, b), thetas in items:
-                if kind == "pulse" and (b is None or q == b):
-                    e = rot(a[0], thetas)
-                    u = u @ e if a[1] == "b" else e @ u
-        m = np.moveaxis(psi, ax[q] + 1, -1)
-        lo, hi = m[..., 0], m[..., 1]
-        uu = u[:, :, :, None, None, None, None]
-        psi = np.moveaxis(
-            np.stack([uu[:, 0, 0] * lo + uu[:, 0, 1] * hi, uu[:, 1, 0] * lo + uu[:, 1, 1] * hi], -1), -1, ax[q] + 1
-        )
-    p = np.abs(psi) ** 2
-    return p.transpose([0, *(ax[ref["roles"][k]] + 1 for k in reversed(rs.KEYS))]).reshape(n, rs.NOUT)
-
-
-print(
-    "phase-resolved fit, written before fitting: a single error parameter u oscillates with the line, "
-    "u = u0 + s A cos(theta), theta = 0 at the maximum of q4's P(1), s the sign of dP(q4 = 1)/du of "
-    "the model at u0 for that arm. Data: the selector contrast of each arm type in 8 phase bins "
-    "pooled over its jobs (10 arm types, 80 points) plus the 10 mean q4-bit line amplitudes. "
-    "Parameters shared by all arms: u0, A. Noise: contraction share 0 at the retention where the "
-    "exact center reads visibility 0.42 through the mean bracket matrix. Candidates: z, x or y before "
-    "each qubit's pulses or all; conditional phase on each coupler or all; a z phase on one qubit "
-    "after each of its CZs on one coupler. Falsifier of a candidate: chi-square of the 80 contrast "
-    "points above 124.8 (0.001 point, 78 degrees of freedom); calibration: exact pulses with A = 0."
-)
-S = "2026-11-15T001929Z"
-rows_in = json.loads((ROOT / "docs/evidence/qi-null-rotation-scan-line-phase/line_phase_bins.json").read_text())
-arms_seen = sorted({r["arm"] for r in rows_in if r["arm"] != rs.RETAINED})
-data = {}
-for a in arms_seen:
-    v = [r for r in rows_in if r["arm"] == a]
-    data[a] = (
-        np.mean([r["bins"] for r in v], 0),
-        2 * np.sqrt(np.mean([r["se"] ** 2 for r in v]) / len(v)),
-        float(np.mean([r["q4_amp"] for r in v])),
+def main() -> None:
+    cands: list[tuple[Any, Any, Any]] = (
+        [scan_fits.NONE]
+        + [("pulse", a + "b", q) for a in "zxy" for q in (*region, None)]
+        + [("cz", None, None)]
+        + [("cz", p, None) for p in pairs]
+        + [("czz", q, p) for p in pairs for q in p]
     )
-A_ = json.loads((ROOT / "results/quantum_inspire/pathion_null_rotation_scan_tuna_17_analysis.json").read_text())
-man = json.loads(
-    (ROOT / f"results/quantum_inspire/runs/{S}-pathion_null_rotation_scan_tuna_17-batch-01/cases.json").read_text()
-)
-roles = {k: int(v) for k, v in man["templates"]["b0"]["roles"].items()}
-register = [int(q) for q in man["register"]]
-gs = [r["guard"] for r in A_["batch_rows"].values()]
-mean = {
-    q: tuple(float(np.mean([(g["before"][str(q)][i] + g["after"][str(q)][i]) / 2 for g in gs])) for i in (0, 1))
-    for q in register
-}
-M = cc.readout_matrix(mean, roles)
-U = np.full(rs.NOUT, 1 / rs.NOUT) @ M.T
-TH = np.linspace(-0.6, 0.6, 481)
-exact_center = laws(rs.CENTER, [(("none", None, None), np.zeros(1))])[0] @ M.T
-R = np.linspace(0.05, 1, 381)
-r0 = R[np.abs(np.array([rs.visibility(r * exact_center + (1 - r) * U) for r in R]) - 0.42).argmin()]
-print("retention", round(float(r0), 3))
-d1 = rs.KEYS.index("d1")
+    out = parallel.ordered_map(scan_fits.phase_single, cands, min_items=2)
+    out.sort(key=lambda r: r["total"])
+    print("RANK")
+    for r in out[:10]:
+        print(r["cand"], r["total"], r["chi_contrast"], r["chi_q4amp"], r["u0"], r["A"])
+    (HERE / "phase_resolved_fit.json").write_text(json.dumps(out, indent=1))
 
 
-def q4p(seen):
-    return seen.reshape(*seen.shape[:-1], *([2] * 5)).sum(tuple(-1 - i for i in range(5) if i != d1))[..., 1]
-
-
-ang = 2 * np.pi * (np.arange(8) + 0.5) / 8
-cands = (
-    [("none", None, None)]
-    + [("pulse", a + "b", q) for a in "zxy" for q in (*region, None)]
-    + [("cz", None, None)]
-    + [("cz", p, None) for p in pairs]
-    + [("czz", q, p) for p in pairs for q in p]
-)
-U0 = np.linspace(-0.3, 0.3, 61)
-AM = np.linspace(0.0, 0.3, 31)
-out: list[dict[str, Any]] = []
-for cand in cands:
-    con = {}
-    p4 = {}
-    for a in arms_seen:
-        seen = r0 * (laws(a, [(cand, TH)]) @ M.T) + (1 - r0) * U
-        con[a] = rs.selector_contrast(seen)
-        p4[a] = q4p(seen)
-    best: tuple[Any, ...] = (np.inf, None)
-    for u0 in U0:
-        for am in AM if cand[0] != "none" else AM[:1]:
-            chi = 0.0
-            chia = 0.0
-            pred = {}
-            for a in arms_seen:
-                slope = np.interp(u0 + 1e-3, TH, p4[a]) - np.interp(u0 - 1e-3, TH, p4[a])
-                s = 1.0 if slope >= 0 else -1.0
-                u = u0 + s * am * np.cos(ang)
-                c = np.interp(u, TH, con[a])
-                pm = np.interp(u, TH, p4[a])
-                amp = abs(2 * np.mean(pm * np.exp(-1j * ang)))
-                chi += float((((c - data[a][0]) / data[a][1]) ** 2).sum())
-                chia += ((amp - data[a][2]) / 0.002) ** 2
-                pred[a] = (c, amp)
-            if chi + chia < best[0]:
-                best = (chi + chia, chi, chia, float(u0), float(am), pred)
-    out.append(
-        {
-            "cand": str(cand),
-            "total": round(best[0], 1),
-            "chi_contrast_80": round(best[1], 1),
-            "chi_q4amp_10": round(best[2], 1),
-            "u0": best[3],
-            "A": best[4],
-            "pred": {a: [np.round(best[5][a][0], 4).tolist(), round(float(best[5][a][1]), 4)] for a in arms_seen},
-        }
-    )
-    print(
-        out[-1]["cand"],
-        out[-1]["total"],
-        out[-1]["chi_contrast_80"],
-        out[-1]["chi_q4amp_10"],
-        out[-1]["u0"],
-        out[-1]["A"],
-        flush=True,
-    )
-out.sort(key=lambda r: r["total"])
-print("RANK")
-[print(r["cand"], r["total"], r["chi_contrast_80"], r["chi_q4amp_10"], r["u0"], r["A"]) for r in out[:10]]
-b = out[0]
-print("BEST", b["cand"])
-for a in arms_seen:
-    print(
-        a.ljust(15),
-        "data",
-        np.round(data[a][0], 3).tolist(),
-        "amp",
-        round(data[a][2], 4),
-        "| model",
-        np.round(b["pred"][a][0], 3).tolist(),
-        "amp",
-        b["pred"][a][1],
-    )
-(ROOT / "docs/evidence/qi-null-rotation-scan-line-phase/phase_resolved_fit.json").write_text(json.dumps(out, indent=1))
+if __name__ == "__main__":
+    main()
