@@ -75,11 +75,38 @@ def test_one_direction_in_every_batch_is_confounded_and_one_mixed_template_is_en
     _expect(solved["template_drift"]["b0"] is None, "a one-direction template reports its own drift")  # type: ignore[index]
 
 
-def test_executed_sign_reads_the_stamps_and_refuses_a_tie() -> None:
-    _expect(eo.executed_sign("2026-11-15T10:00:00Z", "2026-11-15T10:00:12Z") == 1, "coin 1 after coin 0")
-    _expect(eo.executed_sign("2026-11-15T10:00:12Z", "2026-11-15T10:00:00Z") == -1, "coin 1 before coin 0")
+def test_executed_offset_reads_the_rank_difference_of_the_stamps_and_refuses_a_tie() -> None:
+    requested = {"r0": "00:00:01", "c0": "00:00:02", "c1": "00:00:03", "r1": "00:00:04", "b": "00:00:05"}
+    _expect(eo.executed_offset(requested, "c0", "c1") == 1, "the requested order reads +1")
+    _expect(eo.executed_offset({**requested, "c0": "00:00:03", "c1": "00:00:02"}, "c0", "c1") == -1, "swapped twins")
+    # the batch 02 of the hosted QX run: coin 1 ran second, coin 0 last of five
+    scrambled = {"r0": "00:00:01", "c1": "00:00:02", "r1": "00:00:03", "b": "00:00:04", "c0": "00:00:05"}
+    _expect(eo.executed_offset(scrambled, "c0", "c1") == -3, "coin 1 three places before coin 0")
     with pytest.raises(eo.ConfoundedOrder):
-        eo.executed_sign("2026-11-15T10:00:00Z", "2026-11-15T10:00:00Z")
+        eo.executed_offset({**requested, "c1": "00:00:02"}, "c0", "c1")
+
+
+def test_a_position_offset_other_than_one_enters_the_drift_term_in_proportion() -> None:
+    offsets = {"b0": [-3, 1, -1, 1], "k4": [1, -1, 1, -1], "k8": [1, -1, -3, 1], "k12": [1, -1, 1, -1]}
+    solved = eo.fit(_rows({name: [int(v) for v in values] for name, values in offsets.items()}))
+    _expect(math.isclose(float(solved["drift"]), DRIFT, abs_tol=1e-12), f"drift {solved['drift']}")  # type: ignore[arg-type]
+    for name in CONTRAST:
+        _expect(math.isclose(solved["contrast"][name], CONTRAST[name], abs_tol=1e-12), f"{name}")  # type: ignore[index]
+
+
+def test_templates_that_are_each_one_directional_in_opposite_directions_are_confounded() -> None:
+    # Sxx is zero when every template has one offset in all its batches, even if the templates differ.
+    rows = _rows({"b0": [1, 1, 1, 1], "k4": [-1, -1, -1, -1], "k8": [1, 1, 1, 1], "k12": [-1, -1, -1, -1]})
+    with pytest.raises(eo.ConfoundedOrder):
+        eo.fit(rows)
+
+
+def test_the_enumerated_confounded_probability_matches_its_closed_form() -> None:
+    for rate in (0.1, 0.25, 7 / 19):
+        per_template = 2 * rate**2 * (1 - rate) ** 2  # a template [+, -, +, -] ends one-directional
+        seen = eo.operating_characteristics(rate)["confounded"]
+        _expect(math.isclose(seen, per_template**4, rel_tol=1e-9), f"rate {rate}: {seen} against {per_template**4}")
+    _expect(eo.operating_characteristics(0.0)["mean_error_ratio"] == 1.0, "a balanced design pays no error")
 
 
 @pytest.mark.parametrize(

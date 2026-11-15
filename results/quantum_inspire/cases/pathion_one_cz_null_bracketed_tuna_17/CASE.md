@@ -378,12 +378,14 @@ percent), so a probe does not rescue the strict gate. Two ways remain, each for 
 job: (A) keep the strict order gate and accept that the series almost surely reads `unresolved_order`, which spends 2.6
 million shots to learn the platform's order rate; (B) preregister an executed-order analysis before the run, which reads each
 batch's circuit positions from `queued_at` (the stamp that follows the previous job's `finished_at` by 0.03 to 0.19 s in the
-retained batches) and fits the linear drift on those positions, so a reordered batch costs precision and no decision. The
+retained batches) and fits the linear drift on the position offset of the twins, so a reordered twin batch costs precision and
+no decision; the base and calibration batches have no such rule yet (`docs/design/bracketed-executed-order-analysis.md`). The
 cheaper way to learn the rate is one wave (3 batches, 15 circuits, about 15 x 12 s of device time) of the cheapest circuits,
 which measures how this layout's submission pattern reorders without claiming a decision.
 
 Results already in hand and what they change: the hosted QX run passes its noiseless control (`qx_control.pass`,
-`qx_brackets.pass`), so the batch of five circuits parses and returns in its listed order on the emulator, which says nothing
-about the device's order; the sim:belenos b1-j1 job finished at 300 s of a 300 s limit, which predicted that the same shape
+`qx_brackets.pass`), so the batch of five circuits parses and returns ten-bit outcomes in the expected logical-bit ordering, and
+2 of its 4 batches executed out of the requested order by `queued_at` on the emulator, so the order question is not particular
+to the device; the sim:belenos b1-j1 job finished at 300 s of a 300 s limit, which predicted that the same shape
 could be cut off, and b1-j2 was (305 s, 23 of 24 iterations): a result at a limit is a warning for the next job of its shape.
 
