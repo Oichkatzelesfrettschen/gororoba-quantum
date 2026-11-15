@@ -293,6 +293,10 @@ From the same conditions:
   `state: enqueued` and publishes the final receipt. A recovered `submitted_utc`
   records the local confirmation time when no earlier confirmation was
   retained; the job timestamps remain the execution chronology.
+  Under a wave policy (`qi_platform_wave.py`) the batch is re-read from the account immediately before the enqueue
+  PATCH, with its own planned row left out; a refusal there (a rival client filled the queue after the admission
+  snapshot) leaves the batch created and un-enqueued, `submission-state.json` at phase `enqueue-refused`, and no
+  receipt. The re-read narrows the window to one read and one PATCH; another host can still enqueue inside it.
 - Every run keeps its circuits, cases.json digests, submission.json,
   raw shots and results.json under results/quantum_inspire/runs/.
   New receipts use `qi-submission-v2` and carry `cases_sha256`, the SHA-256 of

@@ -131,9 +131,11 @@ the tests.
 ### Designs rejected
 
 - A third replicate at full shots, more replicates of only the twin or of only the base batches, and twice the shots,
-  priced by a scratch simulation (20,000 series per cell, independent drift 0.003, the matched bound, seeds from values
-  911 to 919 of the draw below; the scratch code is not retained, so the cells are computed and not replayable from the
-  tree; issue 903 tracks retaining it). Power in percent, dropout / superposition-only, independent drift and common-pair drift:
+  priced by simulation (20,000 series per cell, independent drift 0.003, the matched bound, one value of the draw below
+  per cell, values 911 to 919 in index order). `scripts/qi_pathion_one_cz_null_bracketed_pricing.py` computes each
+  cell from its value and `docs/evidence/qi-bracketed-pricing/cells.jsonl` retains the nine results, which the script
+  regenerates count for count (issue 903). Power in percent, dropout / superposition-only, independent drift and
+  common-pair drift:
 
   | replicates (base / twin) and shots per circuit | batches | waves | jobs | shots | execution s | independent | common |
   |---|---|---|---|---|---|---|---|
@@ -272,9 +274,14 @@ single-qubit gate, Rz included, and in under 0.1 percent of runs of any admitted
 - QX local (qxelarator in the Quantum Inspire environment, `docs/notes/quantum_inspire/qx-runs.md`, "Run QX locally"; no
   account, queue or approval). The check reads the QX series through the successor's analyzer (`--qx-check`): every data
   circuit within twice the sampling floor of its ideal law, the selector's readout arms deterministic (zero misassigned
-  shots), every bracket offset 0, and the twin contrast equal to the raw contrast. Not run for the in-batch layout of this
-  version: the tests exercise the check on noiseless expected counts of the 20 circuits; a local run at 2,048 shots per
-  circuit precedes the owner's approval request.
+  shots), every bracket offset 0, and the twin contrast equal to the raw contrast. Run for the in-batch layout on
+  2026-11-15 (issue 896): 20 circuits at 2,048 shots on qxelarator 0.10.0, each circuit's seed derived from value 1 of
+  `docs/evidence/anu_qrng/draw-2026-11-15T163052Z.json` by `scripts/qx_local_series.py`; every circuit passes (the
+  largest total variation distance is 1.31 times its sampling floor, the bound 2), no readout shot is misassigned and
+  every bracketed twin contrast equals its raw one. The retained counts
+  `results/quantum_inspire/pathion_one_cz_null_bracketed_qx_local_counts.json` replay through gate
+  `core-pathion-one-cz-null-bracketed-qx-local-control`; a local qxelarator run says nothing about the hosted emulator
+  (the remote QX run below is the plumbing check) or about Tuna-17.
 - QX remote (type 1): the same series, a written case for the owner's approval (repository rule), 4 batches.
 - Ry (type 5): not built for the decision (predecessor CASE.md, owner decision 2026-11-07: 1,024 shots per job and an
   undocumented noise model). The one Ry check that adds information is the bracket arithmetic on a backend with nonzero
