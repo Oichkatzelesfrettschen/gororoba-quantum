@@ -5469,6 +5469,16 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/real_nullity_bordered_matrix.py --check",
+      "name": "core-a5-real-nullity-bordered-matrix",
+      "seconds": 3.0,
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/real-nullity-bordered-matrix-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_intersection.py --check",
       "name": "core-a5-nullity4-qg-intersection",
       "seconds": 43.0,

@@ -1,0 +1,18 @@
+{
+  "identities": {
+    "constructors": true,
+    "left_matrices": true,
+    "transport": [
+      30,
+      30
+    ]
+  },
+  "inputs": {
+    "docs/evidence/a5-kernel-bundles-residuals/real_nullity_bordered_matrix.py": "b1ff3b4f641f4616e0e7a01cd658d65adbe369dda7baec392c9e5ba35c2d9119",
+    "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4a3b2d4e74bcedd2e5ce76d1a5eb4d8099ce3aa872f5d168d32f88496013a3bf",
+    "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+    "scripts/a5_stiefel_pfaffian_germs.py": "af79da08318ee7176c11d9f263fd326403dceba71a966d81873e7bb036815485"
+  },
+  "pass": true,
+  "schema": "a5-kernel-bundles-residuals-real-nullity-bordered-matrix-v1"
+}

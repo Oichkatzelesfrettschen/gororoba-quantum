@@ -436,8 +436,9 @@ These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`
   Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_polar_line_module.py --check` (about 10 s).
 - `A5-538`, superseded by `A5-550` (proved) and `A5-551` (open), both from `nullity4_real_polar_line.py` (record
   `nullity4-real-polar-line-result.json`). For every nonzero `p`, `ker A(p, conjugate(p))` has complex dimension
-  `nullity M(p) - 1`, 6 and 8 on `l_z`; the real nullities 12 and 16 are twice these at all 66 fixtures (`A5-554`, survives: the
-  identification is checked at the fixtures and not derived). Where `mu = 0`, `l_z` lies in `E_eps = {(a; 0; eps i a)}` and
+  `nullity M(p) - 1`, 6 and 8 on `l_z`; the real nullities 12 and 16 are twice these (`A5-554`, proved:
+  `real_nullity_bordered_matrix.py` shows that the bordered matrix of these records equals the one on which `A5-364`
+  proves the transport of left multiplication, exactly, and the 66 fixtures agree). Where `mu = 0`, `l_z` lies in `E_eps = {(a; 0; eps i a)}` and
   `C(l_z)` in `C z + E_(-eps)`; these subspaces are Hermitian-orthogonal and preserved by the group, so `P = l_z`
   gives `dim L = 12`, and 8 and 10 never occur. Where `mu` is nonzero, `dim L` is 2, 4 or 6. `hypothesis`
   (`A5-551`): 4 occurs; two double-precision points have `P = l_z` and `dim L = 4` (singular-value gaps 0.49 and
