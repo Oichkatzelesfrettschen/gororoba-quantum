@@ -157,3 +157,25 @@ def test_the_identity_is_a_signed_bijection_and_rejects_a_bent_coefficient() -> 
     _same(hit["map"], [[2, "1"], [1, "1"]])
     bent = [{t8: qi.Gauss(2), t1: one}, {t9: one}]
     _same(qi.identity(bent, moved, qi.SIGMA)["bijection_by_units"], False)
+
+
+def passing_quadric_record() -> dict[str, Any]:
+    return {"defect_problems": [], "undecided_cells": [], "hypothesis_holds_on_every_decided_cell": True}
+
+
+def test_a_passing_quadric_record_exits_zero() -> None:
+    _same(qr.exit_status(passing_quadric_record()), 0)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("defect_problems", ["e8-colon: colon ideal differs"]),
+        ("undecided_cells", ["W8 -> N-"]),
+        ("hypothesis_holds_on_every_decided_cell", False),
+    ],
+)
+def test_a_falsified_or_undecided_quadric_record_exits_one(field: str, value: Any) -> None:
+    record = passing_quadric_record()
+    record[field] = value
+    _same(qr.exit_status(record), 1)

@@ -383,7 +383,7 @@ def main() -> int:
     )
     Path(sys.argv[1]).write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     print(json.dumps({k: record[k] for k in ("sign_identity_over_qi", "control_t9_only")}))
-    return 0
+    return 0 if record["sign_identity_over_qi"] else 1
 
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@ not Cohen-Macaulay, or a nonreduced ring that is. This program decides both prop
 
 - Cohen-Macaulay: `k2_cm.test` unchanged (Artinian length against degree after a linear system of parameters).
 - Nonreduced: the radical R of K2 has a nonzero linear part N with N^2 in K2; K2 is generated in degree 2, so a
-  linear form of R is a nilpotent outside K2.
+  linear form of R is a nilpotent outside K2. This probe runs on every ring the Cohen-Macaulay test rejects.
 - Reduced, for a Cohen-Macaulay ring A = k[y]/K2 of dimension a and degree e: the forms l_1, ..., l_a of the
   Cohen-Macaulay test are a regular sequence, so A_1 = A/(l_1, ..., l_{a-1}) is Cohen-Macaulay of dimension 1 and
   every point of Proj A_1 lies in the chart l_a = 1. The chart ring k[y]/Z = A_1/(l_a - 1) is reduced of length e
@@ -27,7 +27,8 @@ transport and E8-bar -> N+ is not run.
 
 Usage, from the repository root: "$PYTHON" docs/evidence/a5-exceptional-fibers/third-prime/quadric_rings.py OUT.json;
 with `--calibrate OUT.json` the same verdicts run on retained 32009 cells whose answers the ledger proves, and the
-program exits 1 on any departure.
+program exits 1 on any departure. The main run exits 1 when a decided cell falsifies the hypothesis, a cell stays
+undecided or a defect probe fails.
 """
 
 from __future__ import annotations
@@ -170,23 +171,41 @@ def verdict(cm_row: dict[str, Any], red: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
+def two_phase(cases: list[tuple[str, int, int, Path]], probes: list[tuple[str, Any]]) -> tuple[list, list, list]:
+    """Cohen-Macaulay rows, reducedness rows and probe rows for the cases (fiber, prime, generators, relation file).
+
+    The nilpotent probe runs on exactly the rings the Cohen-Macaulay test rejects, so the choice follows the computed
+    verdict and never the expected answer; a Cohen-Macaulay ring is decided by its chart.
+    """
+    cms = parallel.ordered_map(run, [("cm", c) for c in cases], min_items=1)
+    jobs: list[tuple[str, Any]] = [
+        ("reduced", (*c, not row["cohen_macaulay"])) for c, row in zip(cases, cms, strict=True)
+    ]
+    rows = parallel.ordered_map(run, jobs + probes, min_items=1)
+    return cms, rows[: len(cases)], rows[len(cases) :]
+
+
+def exit_status(record: dict[str, Any]) -> int:
+    """1 when the record falsifies A5-548, leaves a cell undecided or fails a defect probe; 0 otherwise."""
+    failed = record["defect_problems"] or record["undecided_cells"]
+    return 1 if failed or not record["hypothesis_holds_on_every_decided_cell"] else 0
+
+
 def calibrate(out: Path) -> int:
     """Run the Cohen-Macaulay and reducedness verdicts on retained 32009 cells with known answers."""
     work = A5 / "working"
-    jobs: list[tuple[str, Any]] = [("cm", (f, CALIBRATION_PRIME, n, work / rel)) for f, n, rel, _, _ in CALIBRATION]
-    jobs += [("reduced", (f, CALIBRATION_PRIME, n, work / rel, not red)) for f, n, rel, _, red in CALIBRATION]
     fiber_bad, n_bad, rel_bad = CHART_KNOWN_BAD
-    jobs += [("cm", (fiber_bad, CALIBRATION_PRIME, n_bad, rel_bad))]
-    jobs += [("reduced", (fiber_bad, CALIBRATION_PRIME, n_bad, rel_bad, False))]
-    rows = parallel.ordered_map(run, jobs, min_items=1)
+    cases = [(f, CALIBRATION_PRIME, n, work / rel) for f, n, rel, _, _ in CALIBRATION]
+    cases.append((fiber_bad, CALIBRATION_PRIME, n_bad, rel_bad))
+    cms, reds, _ = two_phase(cases, [])
     k = len(CALIBRATION)
     cells, bad = [], []
-    for (fiber, _, _, want_cm, want_red), cm_row, red in zip(CALIBRATION, rows[:k], rows[k : 2 * k], strict=True):
+    for (fiber, _, _, want_cm, want_red), cm_row, red in zip(CALIBRATION, cms[:k], reds[:k], strict=True):
         cell = {**cm_row, "reducedness": red, **verdict(cm_row, red)}
         cells.append(cell)
         if (cell["cohen_macaulay"], cell["reduced"]) != (want_cm, want_red):
             bad.append(f"{fiber}: Cohen-Macaulay {cell['cohen_macaulay']}, reduced {cell['reduced']}")
-    cell = {**rows[2 * k], "reducedness": rows[2 * k + 1], **verdict(rows[2 * k], rows[2 * k + 1])}
+    cell = {**cms[-1], "reducedness": reds[-1], **verdict(cms[-1], reds[-1])}
     cells.append(cell)
     if (cell["cohen_macaulay"], cell["chart_reduced"], cell["reduced"]) != (True, False, None):
         bad.append(f"{fiber_bad}: Cohen-Macaulay {cell['cohen_macaulay']}, chart {cell['chart_reduced']}, "
@@ -209,22 +228,19 @@ def main() -> int:
     qp.VB = [(PRIME, rel["e8-vb"])]
     qp.XS = [("X- -> N-", PRIME, rel["xm-nm"]), ("X+ -> N+", PRIME, rel["xp-np"])]
     qp.E8S = [("E8-bar -> N-", PRIME, rel["e8-nm"])]
-    nil = {"xm-nm", "xp-np", "e8-vb", "e8-nm"}
-    jobs: list[tuple[str, Any]] = [("cm", (f, PRIME, n, relations(s))) for f, n, s in CELLS]
-    jobs += [("reduced", (f, PRIME, n, relations(s), s in nil)) for f, n, s in CELLS]
-    jobs += [("vb-components", v) for v in qp.VB] + [("x-colon", x) for x in qp.XS] + [("e8-colon", e) for e in qp.E8S]
-    rows = parallel.ordered_map(run, jobs, min_items=1)
-    cms, reds, probes = rows[: len(CELLS)], rows[len(CELLS) : 2 * len(CELLS)], rows[2 * len(CELLS) :]
+    probes: list[tuple[str, Any]] = [("vb-components", v) for v in qp.VB]
+    probes += [("x-colon", x) for x in qp.XS] + [("e8-colon", e) for e in qp.E8S]
+    cms, reds, probe_rows = two_phase([(f, PRIME, n, relations(s)) for f, n, s in CELLS], probes)
     cells = []
     for cm_row, red in zip(cms, reds, strict=True):
         cells.append({**cm_row, "reducedness": red, **verdict(cm_row, red)})
-    problems = qp.check(probes)
+    problems = qp.check(probe_rows)
     record = {
         "check": "a5-548-third-prime",
         "prime": PRIME,
         "root_of_minus_one": 8059,
         "cells": cells,
-        "defect_probes": probes,
+        "defect_probes": probe_rows,
         "defect_problems": problems,
         "hypothesis_holds_on_every_decided_cell": all(c["hypothesis_holds"] is not False for c in cells),
         "undecided_cells": [c["fiber"] for c in cells if c["hypothesis_holds"] is None],
@@ -242,7 +258,7 @@ def main() -> int:
         )
     for line in problems:
         print("defect:", line)
-    return 0
+    return exit_status(record)
 
 
 if __name__ == "__main__":
