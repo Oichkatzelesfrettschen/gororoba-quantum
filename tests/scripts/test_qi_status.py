@@ -99,12 +99,15 @@ class Transport:
 class Client:
     def __init__(self) -> None:
         self.asked: list[tuple[str, dict[str, Any]]] = []
+        self.gateset = ["CZ"]
 
     def pages(self, path: str) -> list[dict[str, Any]]:
         self.asked.append((path, {}))
         if path == "/backend_types/":
-            return [{"id": 7, "name": "Tuna-17", "identifier": "tuna_17", "is_hardware": True, "nqubits": 17,
-                     "status": "calibrating", "enabled": True, "messages": {}, "image_id": "withheld"}]  # fmt: skip
+            backend_type = {"id": 7, "name": "Tuna-17", "identifier": "tuna_17", "is_hardware": True, "nqubits": 17}
+            backend_type.update(status="calibrating", enabled=True, messages={}, image_id="withheld")
+            backend_type.update(max_number_of_shots=131072, gateset=self.gateset)
+            return [backend_type]
         return [
             {
                 "id": 7,
@@ -141,6 +144,12 @@ def test_account_joins_instances_and_both_queue_scopes() -> None:
         raise AssertionError(row)
     if row["queue_all"]["number_of_jobs_in_queue"] != 8 or row["queue_own"]["number_of_jobs_in_queue"] != 0:
         raise AssertionError(row)
+    if row["limits"]["max_number_of_shots"] != 131072 or len(row["definition_sha256"]) != 64:
+        raise AssertionError(row)
+    changed = Client()
+    changed.gateset = ["CZ", "X90"]
+    if status.account(changed, NOW)["backend_types"][0]["definition_sha256"] == row["definition_sha256"]:
+        raise AssertionError("a changed gate set kept the definition digest")
     if "extra" in row["queue_all"] or [item["name"] for item in found["retired"]] != ["Spin-2+"]:
         raise AssertionError(found)
     if [params for path, params in client.asked if path.endswith("/queue")] != [

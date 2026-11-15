@@ -3,8 +3,9 @@
 One read-only pass joins the two sources that report on the platform:
 
 - the compute API (an account's bearer token, GET only): every backend type with its status and enable flag, each
-  physical instance with its status, message and heartbeat, and the queue of each type counted over all users and
-  over this account;
+  physical instance with its status, message and heartbeat, the queue of each type counted over all users and
+  over this account, its job limits, and a digest of its published definition (gate set, topology, compiler
+  passes), so a changed device definition shows as a changed digest;
 - QuTech's public Grafana dashboards (no account, through qi_monitoring.py): the Status dashboard's value per
   backend type with its history, and for each backend dashboard its dated notices and whether its calibration
   datasource answers. While it answers, the document carries the latest per-qubit value of every "Latest" panel.
@@ -12,10 +13,10 @@ One read-only pass joins the two sources that report on the platform:
 Each section fails alone: a section that cannot be read holds `{"error": TEXT}` and the others stay. The document
 names no team, member or user.
 
-The link service is asked once per dashboard, LINK_PAUSE_SECONDS apart. Measured 2026-11-15: about 20 requests
-inside 2 s drew HTTP 428 from the second request on, and requests 8 s apart were all redirected; hypothesis: a
-burst limit. A dashboard whose first "Latest" panel fails is not asked for the others, since every panel of a
-backend dashboard names one datasource.
+The link service is asked once per dashboard, LINK_PAUSE_SECONDS apart. Measured 2026-11-15: of 20 link requests
+sent inside 5 s the first four were redirected and the fifth and every later one drew HTTP 428, while requests
+3 s and 8 s apart were all redirected; hypothesis: a burst limit. A dashboard whose first "Latest" panel fails is
+not asked for the others, since every panel of a backend dashboard names one datasource.
 
 A public dashboard answers over its own stored time range whatever range the request names (measured 2026-11-15
 on the Status dashboard, whose definition holds `now-6h` to `now`: requests naming 1 h, 24 h and 720 h each
@@ -29,6 +30,7 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import hashlib
 import json
 import sys
 import time
@@ -48,7 +50,25 @@ PANEL_PAUSE_SECONDS = 1.0
 # Spacing asked of the status history; the Status datasource answered at 20 s spacing when asked for less.
 HISTORY_INTERVAL_MS = 60_000
 ERROR_LENGTH = 240
-TYPE_FIELDS = ("id", "name", "identifier", "is_hardware", "nqubits", "status", "enabled", "messages")
+TYPE_FIELDS = (
+    "id",
+    "name",
+    "identifier",
+    "is_hardware",
+    "nqubits",
+    "status",
+    "enabled",
+    "messages",
+    "protocol_version",
+)
+LIMIT_FIELDS = (
+    "default_number_of_shots",
+    "max_number_of_shots",
+    "job_execution_time_limit",
+    "max_jobs_per_batch_job",
+    "batchjobs_per_queue_limit",
+)
+DEFINITION_FIELDS = ("gateset", "topology", "default_compiler_config", "features", "supports_raw_data", "image_id")
 QUEUE_FIELDS = (
     "number_of_jobs_in_queue",
     "min_wait_time_in_queue_secs",
@@ -85,6 +105,9 @@ def account(client: Any, now: datetime.datetime | None = None) -> dict[str, Any]
     rows = []
     for backend_type in types:
         row = {key: backend_type.get(key) for key in TYPE_FIELDS}
+        row["limits"] = {key: backend_type.get(key) for key in LIMIT_FIELDS}
+        definition = json.dumps({key: backend_type.get(key) for key in DEFINITION_FIELDS}, sort_keys=True)
+        row["definition_sha256"] = hashlib.sha256(definition.encode()).hexdigest()
         for scope, user_only in (("queue_all", False), ("queue_own", True)):
             queue = client.get(f"/backend_types/{backend_type['id']}/queue", user_only=user_only)
             row[scope] = {key: queue.get(key) for key in QUEUE_FIELDS}
