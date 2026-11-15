@@ -115,3 +115,69 @@ def test_the_enumerated_confounded_probability_matches_its_closed_form() -> None
 def test_an_unusable_row_is_refused(bad: dict[str, list[eo.Row]]) -> None:
     with pytest.raises(ValueError):
         eo.fit(bad)
+
+
+TIMES = [0.0, 1.5, 6.0, 11.0]  # hours of four base replicates, unequally spaced
+SES = [0.004, 0.005, 0.004, 0.006]
+
+
+def test_the_constrained_weights_obey_their_moment_conditions() -> None:
+    reference = 5.2
+    for order in (0, 1, 2):
+        weights = eo.constrained_weights(TIMES, SES, reference, order)
+        _expect(math.isclose(sum(weights), 1.0, abs_tol=1e-12), f"order {order}: weights sum to {sum(weights)}")
+        for k in range(1, order + 1):
+            moment = sum(w * (t - reference) ** k for w, t in zip(weights, TIMES, strict=True))
+            _expect(abs(moment) < 1e-9, f"order {order}: moment {k} is {moment}")
+
+
+def test_the_level_is_exact_under_a_linear_drift_where_the_plain_mean_is_biased() -> None:
+    reference, level, slope = 5.2, 0.0164, 0.01
+    values = [level + slope * (t - reference) for t in TIMES]
+    solved, _ = eo.level_at(values, SES, TIMES, reference)
+    _expect(math.isclose(solved, level, abs_tol=1e-12), f"level {solved}")
+    plain, _ = ana.pooled(list(zip(values, SES, strict=True)))
+    weighted_time = sum(t / (s * s) for t, s in zip(TIMES, SES, strict=True)) / sum(1 / (s * s) for s in SES)
+    _expect(math.isclose(plain - level, slope * (weighted_time - reference), abs_tol=1e-12), "the plain-mean bias")
+    _expect(abs(plain - level) > 1e-3, f"the plain mean is not biased here: {plain - level}")
+
+
+def test_a_quadratic_drift_needs_the_second_order_column() -> None:
+    reference = 5.2
+    values = [0.0164 + 0.004 * (t - reference) ** 2 for t in TIMES]
+    first, _ = eo.level_at(values, SES, TIMES, reference, order=1)
+    second, _ = eo.level_at(values, SES, TIMES, reference, order=2)
+    _expect(abs(first - 0.0164) > 1e-3 and math.isclose(second, 0.0164, abs_tol=1e-12), f"{first} {second}")
+
+
+def test_the_variance_follows_the_closed_form_and_costs_nothing_at_the_weighted_mean_time() -> None:
+    reference = 3.0
+    _, se = eo.level_at([0.0] * 4, SES, TIMES, reference)
+    w = [1 / (s * s) for s in SES]
+    total = sum(w)
+    t_w = sum(wi * t for wi, t in zip(w, TIMES, strict=True)) / total
+    stt = sum(wi * (t - t_w) ** 2 for wi, t in zip(w, TIMES, strict=True)) / total
+    expected = math.sqrt((1 / total) * (1 + (t_w - reference) ** 2 / stt))
+    _expect(math.isclose(se, expected, rel_tol=1e-12), f"{se} against {expected}")
+    _, at_mean = eo.level_at([0.0] * 4, SES, TIMES, t_w)
+    _expect(
+        math.isclose(at_mean, math.sqrt(1 / total), rel_tol=1e-12), "a reference at the weighted mean time costs error"
+    )
+
+
+def test_replicates_at_one_time_cannot_separate_the_drift() -> None:
+    with pytest.raises(eo.ConfoundedOrder):
+        eo.constrained_weights([1.0, 1.0, 1.0], [0.004] * 3, 2.0)
+    with pytest.raises(eo.ConfoundedOrder):
+        eo.constrained_weights([0.0, 1.0], [0.004] * 2, 2.0, order=2)
+
+
+def test_the_drift_monitor_passes_a_line_and_refuses_a_step() -> None:
+    times = [float(i) for i in range(12)]
+    ses = [0.003] * 12
+    line = eo.drift_monitor(times, [0.002 + 0.0007 * t for t in times], ses)
+    _expect(math.isclose(float(line["slope"]), 0.0007, abs_tol=1e-12) and line["adequate"] is True, f"{line}")
+    step = eo.drift_monitor(times, [0.0 if t < 6 else 0.03 for t in times], ses)
+    _expect(step["adequate"] is False, f"a 10-sigma step passed: {step}")
+    with pytest.raises(eo.ConfoundedOrder):
+        eo.drift_monitor([0.0, 1.0], [0.0, 0.0], [0.003, 0.003])
