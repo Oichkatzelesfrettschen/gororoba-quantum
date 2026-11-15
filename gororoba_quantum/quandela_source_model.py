@@ -39,39 +39,52 @@ def coincidence(overlap: float, g2: float) -> float:
     return sum(float(p) for state, p in results.items() if len(state) == 2 and state[0] > 0 and state[1] > 0)
 
 
-def click_visibility(overlap: float, g2: float, reference: str = "distinguishable") -> float:
-    """The simulated click visibility of |1,1> on a balanced beam splitter: 1 - P(both modes click) / reference, where
-    the reference is P at overlap 0 and the same g2 ("distinguishable") or 0.5 ("half")."""
+def _visibility(overlap: float, g2: float, denominator: float) -> float:
+    return 1.0 - coincidence(overlap, g2) / denominator
+
+
+def _denominator(g2: float, reference: str) -> float:
     if reference not in REFERENCES:
         raise ValueError(f"reference {reference!r} must be one of {REFERENCES}")
-    both = coincidence(overlap, g2)
-    return 1.0 - both / (coincidence(0.0, g2) if reference == "distinguishable" else 0.5)
+    return coincidence(0.0, g2) if reference == "distinguishable" else 0.5
+
+
+def click_visibility(overlap: float, g2: float, reference: str = "distinguishable") -> float:
+    """The simulated click visibility of |1,1> on a balanced beam splitter: 1 - P(both modes click) / reference, where
+    the reference is P at overlap 0 and the same g2 ("distinguishable") or 0.5 ("half"). The model has unit
+    transmission and perfect detection: a measured figure of a lossy detector weights the photon-number sectors
+    differently, and its inversion needs the matching detection model."""
+    return _visibility(overlap, g2, _denominator(g2, reference))
 
 
 def overlap_for_click_visibility(visibility: float, g2: float, reference: str = "distinguishable") -> float:
     """The overlap M with click_visibility(M, g2, reference) equal to `visibility`, by bisection (the visibility rises
     with M).
 
-    The final overlap bracket is at most SOLVER_TOLERANCE wide. Measured with Perceval 1.3.1 (2026-11-15): the
-    simulator drops probabilities below 1e-6, so click_visibility reads exactly 1.0 within about 1e-6 of M = 1. The
-    ceiling therefore returns M = 1, and a visibility inside the gap below it, which no overlap simulates, raises
-    after the bisection because the residual of the result exceeds RESIDUAL_TOLERANCE. Each evaluation takes about
-    2 s, so a solve of about 40 evaluations suits a case builder and not an inner loop.
+    The final overlap bracket is at most SOLVER_TOLERANCE wide. The reference coincidence is computed once and reused
+    by every evaluation. A visibility above the ceiling `click_visibility(1.0, g2, reference)` is refused; with
+    multiphoton emission that ceiling can lie below 1. Measured with Perceval 1.3.1 (2026-11-15): the simulator drops
+    probabilities below 1e-6, so at g2 = 0 the visibility reads exactly 1.0 within about 1e-6 of M = 1 (0.999999 at
+    M = 1 - 1e-6). The ceiling therefore returns M = 1, and a visibility inside such a gap, which no overlap
+    simulates, raises after the bisection because the residual of the result exceeds RESIDUAL_TOLERANCE. Each
+    evaluation takes about 1 s once the reference is held, so a solve of about 42 evaluations suits a case builder and
+    not an inner loop.
     """
+    denominator = _denominator(g2, reference)
     low, high = OVERLAP_BOUNDS
-    floor, ceiling = click_visibility(low, g2, reference), click_visibility(high, g2, reference)
+    floor, ceiling = _visibility(low, g2, denominator), _visibility(high, g2, denominator)
     if not floor <= visibility <= ceiling:
         raise ValueError(f"a click visibility of {visibility} lies outside [{floor}, {ceiling}] at g2 {g2}")
     if visibility == ceiling:
         return high
     while high - low > SOLVER_TOLERANCE:
         middle = (low + high) / 2
-        if click_visibility(middle, g2, reference) < visibility:
+        if _visibility(middle, g2, denominator) < visibility:
             low = middle
         else:
             high = middle
     solved = (low + high) / 2
-    residual = abs(click_visibility(solved, g2, reference) - visibility)
+    residual = abs(_visibility(solved, g2, denominator) - visibility)
     if residual > RESIDUAL_TOLERANCE:
         raise ValueError(f"no overlap simulates a click visibility of {visibility} at g2 {g2}: residual {residual}")
     return solved
