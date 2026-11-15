@@ -1,6 +1,6 @@
 {
  "schema": "qi-status-v1",
- "request_started_utc": "2026-11-15T19:40:10.200471+00:00",
+ "request_started_utc": "2026-11-15T20:10:45.376705+00:00",
  "account": {
   "backend_types": [
    {
@@ -43,8 +43,8 @@
       "backend_type_id": 1,
       "status": "idle",
       "message": "",
-      "last_heartbeat": "2026-11-15T19:40:08.019137Z",
-      "heartbeat_age_seconds": 2.2
+      "last_heartbeat": "2026-11-15T20:10:44.374687Z",
+      "heartbeat_age_seconds": 1.7
      }
     ]
    },
@@ -72,9 +72,9 @@
     "definition_sha256": "9eee84cdee784ba3880c48eb8332abba1339e2adb7976f01e45a51671e2e96b5",
     "queue_all": {
      "number_of_jobs_in_queue": 8,
-     "min_wait_time_in_queue_secs": 3215314.0,
-     "avg_wait_time_in_queue_secs": 4946140.0,
-     "max_wait_time_in_queue_secs": 10045964.0
+     "min_wait_time_in_queue_secs": 3217149.0,
+     "avg_wait_time_in_queue_secs": 4947975.0,
+     "max_wait_time_in_queue_secs": 10047799.0
     },
     "queue_own": {
      "number_of_jobs_in_queue": 0,
@@ -89,7 +89,7 @@
       "status": "offline",
       "message": "",
       "last_heartbeat": "2026-03-09T17:41:44.628372Z",
-      "heartbeat_age_seconds": 21693505.6
+      "heartbeat_age_seconds": 21695341.5
      }
     ]
    },
@@ -133,8 +133,8 @@
       "backend_type_id": 5,
       "status": "idle",
       "message": "",
-      "last_heartbeat": "2026-11-15T19:40:09.045799Z",
-      "heartbeat_age_seconds": 1.2
+      "last_heartbeat": "2026-11-15T20:10:45.881952Z",
+      "heartbeat_age_seconds": 0.2
      }
     ]
    },
@@ -162,9 +162,9 @@
     "definition_sha256": "5cddc401c5e94853e013f6c95c527a7a44ebc59c14d4f29b8531e211204b2c97",
     "queue_all": {
      "number_of_jobs_in_queue": 8,
-     "min_wait_time_in_queue_secs": 3573204.0,
-     "avg_wait_time_in_queue_secs": 5961693.0,
-     "max_wait_time_in_queue_secs": 7292459.0
+     "min_wait_time_in_queue_secs": 3575038.0,
+     "avg_wait_time_in_queue_secs": 5963527.0,
+     "max_wait_time_in_queue_secs": 7294294.0
     },
     "queue_own": {
      "number_of_jobs_in_queue": 0,
@@ -178,8 +178,8 @@
       "backend_type_id": 6,
       "status": "offline",
       "message": "Please be aware that Q8 is affected by a spurious two-level system (TLS)",
-      "last_heartbeat": "2026-11-15T19:40:10.478492Z",
-      "heartbeat_age_seconds": -0.3
+      "last_heartbeat": "2026-11-15T20:10:42.132754Z",
+      "heartbeat_age_seconds": 4.0
      }
     ]
    },
@@ -207,9 +207,9 @@
     "definition_sha256": "1499aeb7559fa31a255990a4f119ee552b59c65581f11b41bd068a4a1a448c1a",
     "queue_all": {
      "number_of_jobs_in_queue": 19,
-     "min_wait_time_in_queue_secs": 1019.0,
-     "avg_wait_time_in_queue_secs": 9831.0,
-     "max_wait_time_in_queue_secs": 17694.0
+     "min_wait_time_in_queue_secs": 2853.0,
+     "avg_wait_time_in_queue_secs": 11666.0,
+     "max_wait_time_in_queue_secs": 19529.0
     },
     "queue_own": {
      "number_of_jobs_in_queue": 0,
@@ -223,8 +223,8 @@
       "backend_type_id": 7,
       "status": "calibrating",
       "message": "",
-      "last_heartbeat": "2026-11-15T19:40:06.856805Z",
-      "heartbeat_age_seconds": 3.3
+      "last_heartbeat": "2026-11-15T20:10:37.392820Z",
+      "heartbeat_age_seconds": 8.7
      }
     ]
    }
@@ -236,7 +236,7 @@
     "status": "offline",
     "message": "",
     "last_heartbeat": "2025-12-10T13:01:25Z",
-    "heartbeat_age_seconds": 29399925.2
+    "heartbeat_age_seconds": 29401761.1
    },
    {
     "name": "Starmon-7",
@@ -244,10 +244,10 @@
     "status": "offline",
     "message": "",
     "last_heartbeat": "2026-03-27T17:04:14.958013Z",
-    "heartbeat_age_seconds": 20140555.2
+    "heartbeat_age_seconds": 20142391.1
    }
   ],
-  "read_utc": "2026-11-15T19:40:10.200484+00:00"
+  "read_utc": "2026-11-15T20:10:46.101229+00:00"
  },
  "platform": {
   "value_text": {
@@ -259,23 +259,23 @@
   },
   "current": {
    "QX emulator": {
-    "utc": "2026-11-15T19:40:15.196000+00:00",
+    "utc": "2026-11-15T20:10:49.837000+00:00",
     "value": 0
    },
    "Ry emulator": {
-    "utc": "2026-11-15T19:40:15.196000+00:00",
+    "utc": "2026-11-15T20:10:49.837000+00:00",
     "value": 0
    },
    "Tuna-17": {
-    "utc": "2026-11-15T19:40:15.196000+00:00",
+    "utc": "2026-11-15T20:10:49.837000+00:00",
     "value": 2
    },
    "Tuna-5": {
-    "utc": "2026-11-15T19:40:15.196000+00:00",
+    "utc": "2026-11-15T20:10:49.837000+00:00",
     "value": 3
    },
    "Tuna-9": {
-    "utc": "2026-11-15T19:40:15.196000+00:00",
+    "utc": "2026-11-15T20:10:49.837000+00:00",
     "value": 3
    }
   },
@@ -286,27 +286,19 @@
   "history": {
    "QX emulator": [
     [
-     "2026-11-15T13:40:00+00:00",
+     "2026-11-15T14:10:00+00:00",
      0
     ]
    ],
    "Ry emulator": [
     [
-     "2026-11-15T13:40:00+00:00",
+     "2026-11-15T14:10:00+00:00",
      0
     ]
    ],
    "Tuna-17": [
     [
-     "2026-11-15T13:40:00+00:00",
-     0
-    ],
-    [
-     "2026-11-15T13:42:00+00:00",
-     2
-    ],
-    [
-     "2026-11-15T13:52:00+00:00",
+     "2026-11-15T14:10:00+00:00",
      0
     ],
     [
@@ -320,13 +312,13 @@
    ],
    "Tuna-5": [
     [
-     "2026-11-15T13:40:00+00:00",
+     "2026-11-15T14:10:00+00:00",
      3
     ]
    ],
    "Tuna-9": [
     [
-     "2026-11-15T13:40:00+00:00",
+     "2026-11-15T14:10:00+00:00",
      3
     ]
    ]
@@ -400,5 +392,5 @@
    }
   }
  },
- "retrieved_utc": "2026-11-15T19:40:50.427961+00:00"
+ "retrieved_utc": "2026-11-15T20:11:25.218751+00:00"
 }
