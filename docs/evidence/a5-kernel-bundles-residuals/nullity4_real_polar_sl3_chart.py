@@ -9,7 +9,8 @@ its rows R_1, R_2, so a point with F = 0, m = det [R_1; R_2] = 0 and a nonzero e
 1. Chart (exact over Q(i)(d_2, x_21, y_31)). With W = [e_1 + i e_5, e_2 + i e_6, e_3 + i e_7] and A = L D L^*,
    L unit lower triangular with entries L_21 = x_21, L_31 = i y_31, L_32 = -i / 2 and D = diag(1, d_2, 1 / d_2),
    the matrix g = e_4 e_4^T + (W A W^* + conj(W) A^(-T) conj(W)^*) / 2 is Hermitian for real parameters, and
-   M(G t) = G M(t) G^T holds as an identity for G = diag(g, 1, g): g lies in the subgroup of G_2(C) that fixes e_4.
+   M(G t) = G M(t) G^T holds for G = diag(g, 1, g) as an identity in the parameters at each of the 15 basis
+   vectors t, so for every t: g lies in the subgroup of G_2(C) that fixes e_4.
 2. Equations. For Pi = diag(g^2, 1, g^2) the two entries of F and the minor m have identically zero imaginary
    parts, and their real parts are p_0 / (32 d_2^2), p_1 / (32 d_2^2), p_2 / (1024 d_2^4) with p_0, p_1, p_2 in
    Z[d_2, x_21, y_31] of total degrees 8, 8, 16 (40, 42, 126 terms).
@@ -165,21 +166,30 @@ def _pairings() -> tuple[sp.Matrix, sp.Matrix]:
     return (z0.H * pi * line).applyfunc(sp.expand), (kernel.H * pi * line).applyfunc(sp.expand)
 
 
-def chart_facts() -> dict[str, bool]:
-    """Per CHART: g Hermitian; diag(g, 1, g) equivariant; z_0 = i k_0 + 3 k_1 + 5 k_2; F = -i R_0 + 3 R_1 + 5 R_2."""
+def _equivariance_fails(index: int) -> bool:
+    """Whether M(G e) = G M(e) G^T fails at the basis vector e of the given index, for G = diag(g, 1, g)."""
     g = chart()
     big = sp.diag(g, sp.Matrix([[1]]), g)
-    t = sp.Matrix(sp.symbols("t1:16"))
-    moved = forms.block(list(big * t), forms.ALL, forms.ALL)
-    difference = moved - big * forms.block(list(t), forms.ALL, forms.ALL) * big.T
+    unit = [1 if k == index else 0 for k in range(15)]
+    moved = forms.block(list(big[:, index]), forms.ALL, forms.ALL)
+    difference = moved - big * forms.block(unit, forms.ALL, forms.ALL) * big.T
+    return any(difference.applyfunc(sp.expand))
+
+
+def chart_facts() -> dict[str, bool]:
+    """Per CHART: g Hermitian; diag(g, 1, g) equivariant; z_0 = i k_0 + 3 k_1 + 5 k_2; F = -i R_0 + 3 R_1 + 5 R_2.
+
+    M is linear in its argument, so the identity M(G t) = G M(t) G^T holds for every t when it holds on a basis.
+    """
+    g = chart()
     z0, _, kernel = rc.polar()
     f, r = _pairings()
     combination = -IU * r[0, :] + 3 * r[1, :] + 5 * r[2, :]
     values = (
         (g - g.H).applyfunc(sp.expand) == sp.zeros(7, 7),
-        not any(difference.applyfunc(lambda entry: sp.expand(sp.together(entry)))),
+        not any(parallel.ordered_map(_equivariance_fails, list(range(15)))),
         z0 == IU * kernel[:, 0] + 3 * kernel[:, 1] + 5 * kernel[:, 2],
-        not any((f - combination).applyfunc(lambda entry: sp.expand(sp.together(entry)))),
+        not any((f - combination).applyfunc(sp.expand)),
     )
     return dict(zip(CHART, [bool(value) for value in values], strict=True))
 

@@ -470,7 +470,7 @@ These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`
   shows that the factor of degree 88 is the only one whose ball at the point holds zero. The degree 88 rests on
   the eliminant, which the record does not recompute. This settles the hypothesis that `A5-551` carried; the
   chart is the lead of the red-team review of pull request 929. Replay:
-  `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_sl3_chart.py --check` (about 12 s);
+  `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_sl3_chart.py --check` (about 3 s);
   `--msolve-input` prints the input of the elimination.
 - `A5-539`, proved (same producer): at every point with `Delta` nonzero the orbit rank is 16 minus the dimension
   of the stabilizer of the real span of `u` and `v` in the compact `g_2`, which is 3 in quaternion position and 0
