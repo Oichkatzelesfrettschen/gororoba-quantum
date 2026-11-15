@@ -1351,6 +1351,11 @@ def verify_successor_sources(manifest: dict[str, Any], root: Path = ROOT) -> Non
         return
     if not isinstance(sources, dict) or not sources:
         raise PlatformError("successor_sources must map source paths to sha256 digests")
+    verify_source_digests(sources, root)
+
+
+def verify_source_digests(sources: dict[Any, Any], root: Path) -> None:
+    """Refuse a path that leaves `root` or a digest that differs from the file's sha256."""
     resolved = root.resolve()
     for name, checksum in sources.items():
         path = (root / name).resolve() if isinstance(name, str) else None
@@ -1365,10 +1370,28 @@ def verify_successor_sources(manifest: dict[str, Any], root: Path = ROOT) -> Non
             raise PlatformError(f"reviewed source changed: {name}")
 
 
+def verify_current_case_sources(manifest: dict[str, Any], root: Path = ROOT) -> None:
+    """Refuse an Ascella acquisition whose `preregistered.current_case_sources` digests differ from the tree.
+
+    The acquisition pair carries no `successor_sources`; it binds its builder and analyzer here, and
+    `acquisition_sources` verifies them (with the completeness of the set) at review and submit. Loading the case
+    verifies the digests too, so plan, collect and every other reader refuse a source tree that differs from the
+    reviewed one. A manifest without the field passes.
+    """
+    registered = manifest.get("preregistered")
+    sources = registered.get("current_case_sources") if isinstance(registered, dict) else None
+    if sources is None:
+        return
+    if not isinstance(sources, dict) or not sources:
+        raise PlatformError("current_case_sources must map source paths to sha256 digests")
+    verify_source_digests(sources, root)
+
+
 def load_case(case_dir: Path) -> tuple[dict[str, Any], dict[str, Any], str]:
-    """qd_records.load_case, after the manifest's successor_sources match the tree."""
+    """qd_records.load_case, after the manifest's successor_sources and current_case_sources match the tree."""
     manifest, circuit, cases_sha256 = load_case_records(case_dir)
     verify_successor_sources(manifest)
+    verify_current_case_sources(manifest)
     return manifest, circuit, cases_sha256
 
 
