@@ -114,6 +114,20 @@ def test_a_replicated_kind_keeps_its_own_gate_when_the_other_has_one_replicate(
     _expect(bool(seen) and all(base < 1e300 and twin == 1e300 for base, twin in seen), f"gates {seen[:2]}")
 
 
+def test_the_plan_names_the_nine_retained_cells_in_index_order_and_write_refuses_to_overwrite(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    kept = [(c["rb"], c["rt"], c["f"]) for c in _cells()]
+    _expect([entry[:3] for entry in pricing.CELL_PLAN] == kept, f"the plan {pricing.CELL_PLAN} differs from {kept}")
+    _expect(pricing.CELL_DRAW == DRAW and pricing.CELL_FIRST_INDEX == 911, "the plan names another draw or first index")
+    monkeypatch.setattr(pricing, "cell_lines", lambda: ['{"stub": true}'])
+    target = tmp_path / "cells.jsonl"
+    _expect(pricing.main(["--write", str(target)]) == 0, "write failed")
+    _expect(target.read_text(encoding="utf-8") == '{"stub": true}\n', "the written text differs")
+    with pytest.raises(FileExistsError):
+        pricing.main(["--write", str(target)])
+
+
 def test_check_regenerates_every_row_and_names_a_changed_one(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("GOROROBA_WORKERS", "1")
     ref = next(c for c in _cells() if (c["rb"], c["rt"], c["f"]) == (2, 2, 0.5))

@@ -250,6 +250,42 @@ def result_line(args: argparse.Namespace) -> dict[str, Any]:
     }
 
 
+# The nine retained options in index order: each takes value 911 + position of DRAW; the first carries the shared rule
+# beside the options' own decision (`--reference`).
+CELL_DRAW = "docs/evidence/anu_qrng/draw-2026-11-14T183922Z.json"
+CELL_FIRST_INDEX = 911
+CELL_PLAN = (
+    (2, 2, 1.0, True),
+    (2, 3, 1.0, False),
+    (3, 2, 1.0, False),
+    (3, 3, 1.0, False),
+    (2, 2, 2.0, False),
+    (2, 4, 1.0, False),
+    (2, 2, 0.5, False),
+    (4, 4, 0.5, False),
+    (3, 3, 0.5, False),
+)
+
+
+def cell_lines() -> list[str]:
+    """The text of every retained cell, one JSON line per option of CELL_PLAN, regenerated from its draw value."""
+    lines = []
+    for position, (base, twin, factor, reference) in enumerate(CELL_PLAN):
+        spelling = f"qrng:{CELL_DRAW}#{CELL_FIRST_INDEX + position}"
+        seed, _ = qrng_seeds.parse_value(spelling, [])
+        args = argparse.Namespace(
+            seed=seed,
+            seed_source=spelling,
+            base_replicates=base,
+            twin_replicates=twin,
+            shot_factor=factor,
+            draws=20000,
+            reference=reference,
+        )
+        lines.append(json.dumps(result_line(args), sort_keys=True))
+    return lines
+
+
 def replay(cells: Path) -> list[str]:
     """The rows of a retained cells file whose regenerated layout or counts differ from the stored ones."""
     problems = []
@@ -274,7 +310,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--draws", type=int, default=20000)
     parser.add_argument("--reference", action="store_true")
     parser.add_argument("--check", type=Path, help="regenerate every row of a retained cells file")
+    parser.add_argument("--write", type=Path, help="write the nine retained cells of CELL_PLAN to a new file")
     args = parser.parse_args(argv)
+    if args.write is not None:
+        with args.write.open("x", encoding="utf-8") as handle:
+            handle.write("\n".join(cell_lines()) + "\n")
+        return 0
     if args.check is not None:
         problems = replay(args.check)
         for problem in problems:
