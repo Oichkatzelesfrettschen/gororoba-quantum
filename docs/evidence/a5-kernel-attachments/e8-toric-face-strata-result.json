@@ -5,9 +5,10 @@
   "strata": "Q(i)"
  },
  "inputs": {
-  "e8_toric_face_strata.py": "f23fc596c36c89b8f9b985a50f4046d29a743e4d40b7144c3b0cb67bba532d50",
+  "e8_toric_face_strata.py": "ae61031142ab3a27ab3741cfea98825089e499b9d4b87efc60238fa398d8e26b",
   "e8_birational_degree.py": "8fb6dd51651f9be5054453c7cfb621cc31a50a21495c5955d88fcfab8c003ead",
-  "e8_component_geometry.py": "0ed4369a80aed9a157a1da0f0291bfe415907b5bc5d1a7ca38f67f658faf820c"
+  "e8_component_geometry.py": "0ed4369a80aed9a157a1da0f0291bfe415907b5bc5d1a7ca38f67f658faf820c",
+  "weight_slice_fiber_relations.py": "7806c8bcd0a04590f55ef5ca185c9c6a0f1637e279e813ba418666265dfd892e"
  },
  "polytope": {
   "dimension": 4,
@@ -149,7 +150,21 @@
    "columns_on_the_line": [
     "a m",
     "b m"
-   ]
+   ],
+   "meeting_generators": 18,
+   "plane_face_spans_the_meeting": true,
+   "columns_on_the_meeting": [
+    "z l",
+    "a m",
+    "b m"
+   ],
+   "relations_sha256": "f4c808509571d7830d453654b16de85c254f876ef65c541f879a5097265d3b6e",
+   "meeting": [
+    3,
+    1
+   ],
+   "meeting_is_linear": true,
+   "meeting_forms": "y(21),y(20),y(18)+(i)*y(19),y(17),y(15)+(i)*y(16),y(13),y(12),y(11)+(i)*y(16),y(10)+y(16),y(9)+(i)*y(14),y(8),y(7),y(6),y(5),y(4),y(3),y(2),y(1)"
   },
   {
    "orbit": "N+",
@@ -165,7 +180,21 @@
    "columns_on_the_line": [
     "a m",
     "b m"
-   ]
+   ],
+   "meeting_generators": 18,
+   "plane_face_spans_the_meeting": true,
+   "columns_on_the_meeting": [
+    "z l",
+    "a m",
+    "b m"
+   ],
+   "relations_sha256": "cb9c0862b2dedc4a46d2fc579904e5efd18f07b5b3976e5b29e84bb2af7bcb7a",
+   "meeting": [
+    3,
+    1
+   ],
+   "meeting_is_linear": true,
+   "meeting_forms": "y(21),y(20),y(18)+(-i)*y(19),y(17),y(15)+(-i)*y(16),y(13),y(12),y(11)+(-i)*y(16),y(10)+y(16),y(9)+(-i)*y(14),y(8),y(7),y(6),y(5),y(4),y(3),y(2),y(1)"
   }
  ],
  "pass": true

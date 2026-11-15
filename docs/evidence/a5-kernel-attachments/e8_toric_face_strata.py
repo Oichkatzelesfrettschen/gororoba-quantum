@@ -14,10 +14,13 @@ the intersection of the facets that contain it.
 Strata. The column of M at z l spans the line through the origin that is the isolated singular point of A5-504, the
 columns at a m and b m span its singular plane (a projective line), and no other column lies on either; the test
 evaluates the minimal generators of the two components, held as constants by `e8_component_geometry.py`, on the
-columns over Q(i). The three columns have rank 3. Both components lie in the linear space of dimension 3 where the
-degree-11 component meets the scroll (A5-504), so that space is their span, the image of the triangle; this module
-deduces the match of the triangle and does not compare it with the 18 linear forms of the meeting, which no record
-retains.
+columns over Q(i).
+
+Meeting. Singular regenerates the 148 quadrics of the slice, takes the two minimal primes of their ideal with the
+script of `e8_component_geometry.py` cut after the sum of the primes, and prints the minimal generators of that sum:
+18 linear forms, the linear space of dimension 3 where the degree-11 component meets the scroll (A5-501). The module
+holds them as constants; they have rank 18 and vanish on the columns of M at z l, a m and b m, of rank 3, and on no
+other column, so the meeting is the image of the triangle.
 
 Tangent cones. Singular computes the toric ideal of A over Q (25 quadrics, dimension 5, multiplicity 11, the
 invariants of A5-503) and the multiplicity of X_A at the torus-fixed point of z l (4), at the point of the edge with
@@ -26,9 +29,9 @@ A5-511 at the three strata. Each comes from a standard basis in a local ordering
 dimension 4 is that of X_A. Two controls: the vertex a^3 is a smooth point (1), and the 11 monomials without z l
 give a variety of multiplicity 7.
 
-`--check` verifies the polytope, the faces and the strata in exact arithmetic, binds the record to its producers
-and compares the constants of `e8_component_geometry.py` used here with its retained record. `--check --replay`
-reruns Singular and compares the record bit for bit. Without a flag the module writes the record.
+`--check` verifies the polytope, the faces, the strata and the meeting in exact arithmetic, binds the record to its
+producers and compares the constants of `e8_component_geometry.py` used here with its retained record.
+`--check --replay` reruns Singular and compares the record bit for bit. Without a flag the module writes the record.
 
 Run from the repository root: "$PYTHON" docs/evidence/a5-kernel-attachments/e8_toric_face_strata.py [--check [--replay]]
 """
@@ -51,12 +54,19 @@ import e8_birational_degree as birational  # noqa: E402
 import e8_component_geometry as geometry  # noqa: E402
 import weight_slice_fiber_relations as ws  # noqa: E402
 
+import parallel  # noqa: E402
+
 Exponents = birational.Exponents
 Gaussian = tuple[int, int]
 
 RECORD = HERE / "e8-toric-face-strata-result.json"
 SCHEMA = "gororoba.a5.e8-toric-face-strata/1"
-INPUTS = ("e8_toric_face_strata.py", "e8_birational_degree.py", "e8_component_geometry.py")
+INPUTS = (
+    "e8_toric_face_strata.py",
+    "e8_birational_degree.py",
+    "e8_component_geometry.py",
+    "weight_slice_fiber_relations.py",
+)
 GEOMETRY_RECORD = HERE / "e8-component-geometry-result.json"
 ORBITS = birational.ORBITS
 MONOMIALS = birational.MONOMIALS
@@ -102,9 +112,24 @@ EXPECTED_CELL: dict[str, Any] = {
     "point_face_spans_the_point": True,
     "line_face_spans_the_line": True,
     "plane_face_rank": 3,
+    "meeting_generators": 18,
+    "plane_face_spans_the_meeting": True,
+    "columns_on_the_meeting": ["z l", "a m", "b m"],
+    "meeting": [3, 1],
+    "meeting_is_linear": True,
     "columns_on_the_point": ["z l"],
     "columns_on_the_line": ["a m", "b m"],
 }
+# The minimal generators of the sum of the two minimal primes of the quadric ideal, as Singular prints them: the
+# linear space where the degree-11 component meets the scroll.
+MEETING_GENERATORS: dict[str, str] = {
+    "N-": "y(21),y(20),y(18)+(i)*y(19),y(17),y(15)+(i)*y(16),y(13),y(12),y(11)+(i)*y(16),y(10)+y(16),"
+    "y(9)+(i)*y(14),y(8),y(7),y(6),y(5),y(4),y(3),y(2),y(1)",
+    "N+": "y(21),y(20),y(18)+(-i)*y(19),y(17),y(15)+(-i)*y(16),y(13),y(12),y(11)+(-i)*y(16),y(10)+y(16),"
+    "y(9)+(-i)*y(14),y(8),y(7),y(6),y(5),y(4),y(3),y(2),y(1)",
+}
+# The keys of a cell that the Singular stage of the meeting supplies.
+MEETING_KEYS = ("meeting", "meeting_is_linear")
 # (dimension of the locus, multiplicity) of A5-511 against the toric keys.
 TANGENT_CONES: dict[int, str] = {1: "point", 2: "line", 3: "plane"}
 
@@ -242,10 +267,12 @@ def strata(
     orbit: str,
     generators: tuple[str, ...] | None = None,
     forms: tuple[birational.Form, ...] | None = None,
+    meeting_generators: str | None = None,
 ) -> dict[str, Any]:
-    """The faces against the two components of the singular locus of one basepoint."""
+    """The faces against the two components of the singular locus and the meeting of one basepoint."""
     texts = geometry.SINGULAR_GENERATORS[orbit] if generators is None else generators
     point, line = (linear_forms(text) for text in texts)
+    meeting = linear_forms(MEETING_GENERATORS[orbit] if meeting_generators is None else meeting_generators)
     matrix = columns(orbit, forms)
 
     def on(ideal: list[dict[int, Gaussian]], index: int) -> bool:
@@ -262,7 +289,7 @@ def strata(
         "point_generators": len(point),
         "line_generators": len(line),
         # A space cut out by n independent forms in 21 variables that contains r independent vectors with
-        # r = 21 - n is their span; the generator counts are those of spaces of dimension 1 and 2.
+        # r = 21 - n is their span; the generator counts are those of spaces of dimension 1, 2 and 3.
         "point_face_spans_the_point": independent(point)
         and rank(POINT_FACE) == birational.GENERATORS - len(point)
         and all(on(point, index) for index in POINT_FACE),
@@ -272,6 +299,11 @@ def strata(
         "plane_face_rank": rank(PLANE_FACE),
         "columns_on_the_point": [NAMES[index] for index in range(len(MONOMIALS)) if on(point, index)],
         "columns_on_the_line": [NAMES[index] for index in range(len(MONOMIALS)) if on(line, index)],
+        "meeting_generators": len(meeting),
+        "plane_face_spans_the_meeting": independent(meeting)
+        and rank(PLANE_FACE) == birational.GENERATORS - len(meeting)
+        and all(on(meeting, index) for index in PLANE_FACE),
+        "columns_on_the_meeting": [NAMES[index] for index in range(len(MONOMIALS)) if on(meeting, index)],
     }
 
 
@@ -280,7 +312,7 @@ def strata_problems(orbit: str, found: dict[str, Any] | None = None) -> list[str
     return [
         f"{orbit}: {key} is {found[key]}, not {expected}"
         for key, expected in EXPECTED_CELL.items()
-        if found[key] != expected
+        if key not in MEETING_KEYS and found[key] != expected
     ]
 
 
@@ -373,6 +405,48 @@ def toric() -> dict[str, Any]:
     }
 
 
+MEETING_END = 'print("RESULT scroll_meets_main_is_linear "+string(lin12));'
+MEETING_STAGE = """
+print("RESULT meeting_generators "+string(mI12));
+print("RESULT done 1");
+quit;
+"""
+
+
+def meeting_stage(relations: list[str]) -> str:
+    """The script of `e8_component_geometry.py` through the sum of the two minimal primes, on the given quadrics."""
+    if geometry.SCRIPT.count(MEETING_END) != 1:
+        raise RuntimeError("the component-geometry script has no single line that ends the meeting")
+    polynomials = ",\n".join(
+        "+".join(f"({coefficient})*{'*'.join(f'y({index})' for index in key)}" for key, coefficient in relation)
+        for relation in (ws.parse_relation(line) for line in relations)
+    )
+    head = geometry.SCRIPT.split(MEETING_END)[0] + MEETING_END
+    ring = ws._ring(0, 0, f"y(1..{birational.GENERATORS})", "dp")
+    return ring + f"\nideal K={polynomials};\n" + head + MEETING_STAGE
+
+
+def meeting(orbit: str) -> dict[str, Any]:
+    """The meeting of the two components of one basepoint, from the regenerated quadrics of the slice."""
+    run = ws.run_singular(ws.fiber_script(ws.orbit_task(orbit), "e8", 0, 0))
+    values = ws.run_singular(meeting_stage(run["relations"]))["values"]
+    return {
+        "relations_sha256": ws.summarize_fiber_run(run)["relations_sha256"],
+        "meeting": [int(part) for part in values["scroll_meets_main"][0].split(",")],
+        "meeting_is_linear": values["scroll_meets_main_is_linear"] == ["1"],
+        "meeting_forms": values["meeting_generators"][0],
+    }
+
+
+def certify(orbit: str) -> dict[str, Any]:
+    return {
+        "orbit": orbit,
+        "forms_sha256": birational.fixture_digest(birational.FIXTURE[orbit]),
+        **strata(orbit),
+        **meeting(orbit),
+    }
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # The record and its checker
 
@@ -400,6 +474,8 @@ def problems(record: dict[str, Any]) -> list[str]:
         for key, expected in EXPECTED_CELL.items():
             if cell.get(key) != expected:
                 found.append(f"{cell['orbit']}: {key} differs from {expected}")
+        if cell.get("meeting_forms") != MEETING_GENERATORS[cell["orbit"]]:
+            found.append(f"{cell['orbit']}: meeting_forms differs from the generators this module holds")
     if record.get("pass") is not (found == []):
         found.append("the pass flag differs from the verdict")
     return found
@@ -424,6 +500,11 @@ def geometry_problems(record: dict[str, Any], retained: dict[str, Any] | None = 
         cell = cells.get(orbit, {})
         if cell.get("singular_generators") != list(geometry.SINGULAR_GENERATORS[orbit]):
             found.append(f"{orbit}: the singular generators differ from those of the component-geometry record")
+        ours = {entry.get("orbit"): entry for entry in record.get("cells", [])}.get(orbit, {})
+        if ours.get("relations_sha256") is None or ours.get("relations_sha256") != cell.get("relations_sha256"):
+            found.append(f"{orbit}: the quadrics differ from those of the component-geometry record")
+        if cell.get("scroll_meets_main") != ours.get("meeting"):
+            found.append(f"{orbit}: the meeting differs from that of the component-geometry record")
         cones = {entry[0]: entry[2] for entry in cell.get("tangent_cones", [])}
         for dimension, key in TANGENT_CONES.items():
             if cones.get(dimension) != record.get("toric", {}).get(key, [None, None])[1]:
@@ -438,10 +519,7 @@ def build() -> dict[str, Any]:
         "inputs": {name: _digest(HERE / name) for name in INPUTS},
         "polytope": polytope(),
         "toric": toric(),
-        "cells": [
-            {"orbit": orbit, "forms_sha256": birational.fixture_digest(birational.FIXTURE[orbit]), **strata(orbit)}
-            for orbit in ORBITS
-        ],
+        "cells": parallel.ordered_map(certify, list(ORBITS), min_items=2),
         "pass": True,
     }
     record["pass"] = problems(record) == []

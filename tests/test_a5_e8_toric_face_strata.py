@@ -57,7 +57,14 @@ CELL = {
     "plane_face_rank": 3,
     "columns_on_the_point": ["z l"],
     "columns_on_the_line": ["a m", "b m"],
+    "meeting_generators": 18,
+    "plane_face_spans_the_meeting": True,
+    "columns_on_the_meeting": ["z l", "a m", "b m"],
+    "meeting": [3, 1],
+    "meeting_is_linear": True,
 }
+# The digest of the quadrics is a label in the constructed records; no unmarked test regenerates the quadrics.
+RELATIONS = {"N-": "1" * 64, "N+": "2" * 64}
 
 
 def _same(found: object, expected: object) -> None:
@@ -73,7 +80,13 @@ def _record() -> dict[str, Any]:
         "polytope": copy.deepcopy(POLYTOPE),
         "toric": copy.deepcopy(TORIC),
         "cells": [
-            {"orbit": orbit, "forms_sha256": birational.fixture_digest(birational.FIXTURE[orbit]), **CELL}
+            {
+                "orbit": orbit,
+                "forms_sha256": birational.fixture_digest(birational.FIXTURE[orbit]),
+                **CELL,
+                "relations_sha256": RELATIONS[orbit],
+                "meeting_forms": strata.MEETING_GENERATORS[orbit],
+            }
             for orbit in ("N-", "N+")
         ],
         "pass": True,
@@ -139,8 +152,9 @@ def test_the_generator_lists_parse_into_linear_forms_over_the_gaussian_integers(
 
 
 def test_the_faces_map_onto_the_singular_point_and_the_singular_line_at_both_basepoints() -> None:
+    exact = {key: value for key, value in CELL.items() if key not in strata.MEETING_KEYS}
     for orbit in strata.ORBITS:
-        _same(strata.strata(orbit), CELL)
+        _same(strata.strata(orbit), exact)
         columns = strata.columns(orbit)
         _same((len(columns), len(columns[0])), (12, 21))
         _same(birational.gaussian_rank(columns), 12)
@@ -168,6 +182,38 @@ def test_dependent_generators_reject_the_faces_although_they_vanish_on_the_colum
         found = strata.strata(orbit, (",".join(point), doubled_line))
         _same((found["line_generators"], found["line_face_spans_the_line"]), (19, False))
         _same(found["point_face_spans_the_point"], True)
+
+
+def test_the_triangle_spans_the_meeting_and_other_forms_reject_it() -> None:
+    for orbit, other in (("N-", "N+"), ("N+", "N-")):
+        forms = strata.linear_forms(strata.MEETING_GENERATORS[orbit])
+        _same(len(forms), 18)
+        found = strata.strata(orbit, meeting_generators=strata.MEETING_GENERATORS[other])
+        _same(found["plane_face_spans_the_meeting"], False)
+        _same(found["columns_on_the_meeting"], [])
+        # Without its last form the list cuts out a space of dimension 4 that holds the triangle.
+        shorter = strata.MEETING_GENERATORS[orbit].rsplit(",", 1)[0]
+        found = strata.strata(orbit, meeting_generators=shorter)
+        _same((found["meeting_generators"], found["plane_face_spans_the_meeting"]), (17, False))
+        parts = strata.MEETING_GENERATORS[orbit].split(",")
+        doubled = ",".join([parts[0], parts[1], parts[0], *parts[3:]])
+        found = strata.strata(orbit, meeting_generators=doubled)
+        _same((found["meeting_generators"], found["plane_face_spans_the_meeting"]), (18, False))
+        # The singular point and the singular line lie in the meeting: each form of the meeting is a combination of
+        # the generators of either component, so the 20 and the 19 generators keep their ranks when it is added.
+        for text in geometry.SINGULAR_GENERATORS[orbit]:
+            component = strata.linear_forms(text)
+            rows = [[form.get(index, (0, 0)) for index in range(1, 22)] for form in [*component, *forms]]
+            _same(birational.gaussian_rank(rows), len(component))
+
+
+def test_the_meeting_stage_cuts_the_component_geometry_script_after_the_sum_of_the_primes() -> None:
+    script = strata.meeting_stage(["RELATION 1,2:1", "RELATION 3,3:2"])
+    _same("ideal K=(1)*y(1)*y(2),\n(2)*y(3)*y(3);" in script, True)
+    _same(script.count("minAssGTZ(K)"), 1)
+    _same("ideal I12=std(P4+P11);" in script and "embedded_linear_forms" not in script, True)
+    _same(script.count('print("RESULT meeting_generators "+string(mI12));'), 1)
+    _same(script.count('print("RESULT done 1");'), 1)
 
 
 def test_swapped_components_reject_the_faces() -> None:
@@ -245,6 +291,24 @@ RECORD_MUTATIONS: dict[str, tuple[Callable[[dict[str, Any]], None], str]] = {
         "columns_on_the_line",
     ),
     "a point ideal of 19 forms": (lambda record: record["cells"][0].update(point_generators=19), "point_generators"),
+    "the triangle off the meeting": (
+        lambda record: record["cells"][0].update(plane_face_spans_the_meeting=False),
+        "plane_face_spans_the_meeting",
+    ),
+    "a meeting of 17 forms": (lambda record: record["cells"][1].update(meeting_generators=17), "meeting_generators"),
+    "a fourth column on the meeting": (
+        lambda record: record["cells"][0].update(columns_on_the_meeting=["a l", "z l", "a m", "b m"]),
+        "columns_on_the_meeting",
+    ),
+    "a meeting of dimension 4": (lambda record: record["cells"][1].update(meeting=[4, 1]), "meeting differs"),
+    "a meeting with a quadric": (
+        lambda record: record["cells"][0].update(meeting_is_linear=False),
+        "meeting_is_linear",
+    ),
+    "the meeting forms of the other basepoint": (
+        lambda record: record["cells"][0].update(meeting_forms=strata.MEETING_GENERATORS["N+"]),
+        "meeting_forms",
+    ),
     "a cell removed": (lambda record: record["cells"].pop(), "N- and N+"),
     "pass flag cleared": (lambda record: record.update({"pass": False}), "pass flag"),
     "schema changed": (lambda record: record.update(schema="gororoba.a5.e8-toric-face-strata/0"), "schema"),
@@ -275,6 +339,8 @@ def _geometry_record(multiplicity_at_the_point: int = 4) -> dict[str, Any]:
                 "orbit": orbit,
                 "singular_generators": list(geometry.SINGULAR_GENERATORS[orbit]),
                 "tangent_cones": [[1, 5, multiplicity_at_the_point], [2, 5, 2], [3, 5, 1]],
+                "relations_sha256": RELATIONS[orbit],
+                "scroll_meets_main": [3, 1],
             }
             for orbit in ("N-", "N+")
         ]
@@ -296,7 +362,17 @@ def test_the_comparison_with_the_component_geometry_record_rejects_other_generat
         strata.geometry_problems(_record(), other),
         ["N+: the singular generators differ from those of the component-geometry record"],
     )
-    _same(len(strata.geometry_problems(_record(), {"cells": []})), 8)
+    other = _geometry_record()
+    other["cells"][0]["relations_sha256"] = "3" * 64
+    other["cells"][1]["scroll_meets_main"] = [4, 1]
+    _same(
+        strata.geometry_problems(_record(), other),
+        [
+            "N-: the quadrics differ from those of the component-geometry record",
+            "N+: the meeting differs from that of the component-geometry record",
+        ],
+    )
+    _same(len(strata.geometry_problems(_record(), {"cells": []})), 12)
 
 
 def test_a_record_that_disagrees_with_the_component_geometry_record_is_written_as_failing(
@@ -320,6 +396,14 @@ def test_a_record_that_disagrees_with_the_component_geometry_record_is_written_a
 )
 def test_singular_finds_the_toric_invariants_and_the_three_multiplicities() -> None:
     _same(strata.toric(), TORIC)
+
+
+@pytest.mark.audit
+def test_singular_regenerates_the_meeting_forms_from_the_quadrics_of_the_slice() -> None:
+    for orbit in strata.ORBITS:
+        found = strata.meeting(orbit)
+        _same(found["meeting_forms"], strata.MEETING_GENERATORS[orbit])
+        _same((found["meeting"], found["meeting_is_linear"]), ([3, 1], True))
 
 
 @pytest.mark.audit
