@@ -5482,6 +5482,17 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_polar_line_module.py --check",
+      "name": "core-a5-nullity4-polar-line-module",
+      "seconds": 10.0,
+      "workers": 2,
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/nullity4-polar-line-module-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --check docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json",
       "name": "core-757",
       "seconds": 1.3,

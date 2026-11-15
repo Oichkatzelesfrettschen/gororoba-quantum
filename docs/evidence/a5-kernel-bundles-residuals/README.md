@@ -424,10 +424,15 @@ its three falsifiers at every point, and its clause "nullity at least 7 on `l_z`
 is superseded the same way: `A5-531` proves its zero-set and no-line statements at every point, and its modular
 lengths of the singular scheme continue in `A5-533` and `A5-540`.
 
-These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`. Five hypotheses remain open:
+These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`. The five hypotheses that remained open, with their state:
 
-- `hypothesis` (`A5-537`): the rank of `M` on `l_z` is 8 where `mu` is nonzero and 6 where `mu = 0`, and
-  `C(l_z)` has dimension 3 and 6 respectively; the record holds the table above and no proof.
+- `A5-537`, proved (`nullity4_polar_line_module.py`, record `nullity4-polar-line-module-result.json`): the rank
+  of `M` on `l_z` minus 0 is 8 where `mu` is nonzero and 6 where `mu = 0`, and `C(l_z)` is three trivial
+  `SL_2`-summands inside `O'`, or four trivial summands inside `O'` and one standard summand outside it. The three
+  derivations that fix `e_1`, `e_2` make the eight outer coordinates a module of the quaternions over `C`, so
+  `rank M(p) = 2 rank B(p)` for the 7 x 8 block `B` and the rank is constant on `l_z` minus 0; unit ideals in the
+  ring of `x = (rho - sigma, v_1, mu)` modulo the cone `x.x = 0` fix `rank B` at 4 off `mu = 0` and 3 on it.
+  Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_polar_line_module.py --check` (about 10 s).
 - `hypothesis` (`A5-538`): at a real point with kernel plane `l_z` the conjugate plane is orthogonal to
   `C(l_z)` or cuts it to the line of `z`, so `dim L` is 2, 6 or 12; no retained point has `dim L` of 4, 8 or 10.
 - `hypothesis` (`A5-539`): the real points of orbit rank 13 are the points in one quaternion subalgebra; this
