@@ -48,8 +48,10 @@ C(P) = ker M(p1) n ker M(p2) (A5-435).
    2 (nullity M(p) - 1) at all three retained values (4, 12, 16); that identification is a pattern of the
    retained rows, not a derivation.
 
-Residuals. (a) The totally isotropic pairs (u.u = u.v = v.v = mu = 0) have rank 10 at every sampled point (200
-sampled pairs); the exact statement needs an orbit argument. (b) The chart s covers the conic except the point
+Residuals. (a) The totally isotropic pairs (u.u = u.v = v.v = mu = 0) hold no nullity-4 point: the order-12 Pfaffian
+ideal vanishes on both isotropic slice families of A5-359, whose G_2(C)-translates cover every pair, so their rank is at
+most 10; it is 8 on the special planes u x v = 0 (the piece B9, A5-360) and 10 at the 200 pairs sampled here, which
+lie in the other orbit. (b) The chart s covers the conic except the point
 (beta, lambda) = (i, 0). (c) A real point of the orbit type s = +-1 with P = P_x would have dim C(P) = 7, dim L = 10
 and a nullity of at least 9 on P; for the kernel K(z(+-1)) in this frame the vector orthogonal to P_x lies in J,
 so the witness construction yields no such point there, and whether another unitary frame yields one is not
