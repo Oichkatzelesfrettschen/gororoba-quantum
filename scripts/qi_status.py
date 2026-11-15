@@ -120,9 +120,10 @@ def account(client: Any, now: datetime.datetime | None = None) -> dict[str, Any]
     An instance whose type GET /backend_types/ leaves out is `unlisted` and keeps its backend_type_id: the list
     names the reason for no absence, so the row claims none.
     """
-    now = now or datetime.datetime.now(datetime.UTC)
     types = client.pages("/backend_types/")
     instances = client.pages("/backends")
+    # The reference time follows the instance read, so a heartbeat written during the reads has a nonnegative age.
+    now = now or datetime.datetime.now(datetime.UTC)
     rows = []
     for backend_type in types:
         row = {key: backend_type.get(key) for key in TYPE_FIELDS}

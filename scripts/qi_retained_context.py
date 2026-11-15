@@ -11,8 +11,10 @@ so this summary gathers what the repository itself measured, each figure beside 
 - per backend and UTC day, from each retained run's results.json: the job count, the median and largest time from
   a job's creation to its finish, and the median execution time the provider reports.
 
-Every figure is as of its run; none is a current calibration. The output holds no generation time, so --check
-recomputes it and compares bytes.
+Every figure is as of its run, dated by the earliest finish time of that run's jobs (a series directory's name
+holds the series start, which can precede the shots by hours); none is a current calibration. Runs are the
+directories qi_platform.run_directories() names, so a campaign's nested batches count. The output holds no
+generation time, so --check recomputes it and compares bytes.
 
 Usage: "$PYTHON" scripts/qi_retained_context.py [--check] [--out PATH]
 """
@@ -28,6 +30,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from qi_platform import run_directories  # noqa: E402 - standard-library imports only; no SDK is loaded
+
 ROOT = Path(__file__).resolve().parent.parent
 SCHEMA = "qi-retained-context-v1"
 CONTEXT = "results/quantum_inspire/readout_ringdown_tuna_17_device_context.json"
@@ -40,13 +46,22 @@ def _number(value: Any) -> Any:
     return float(f"{value:.{SIGNIFICANT}g}") if isinstance(value, float) else value
 
 
-def run_utc(name: str) -> str:
-    """The UTC instant a run directory's name begins with, such as 2026-10-16T221133Z."""
-    stamp = Path(name).name.split("-")
-    return datetime.datetime.strptime("-".join(stamp[:3]), "%Y-%m-%dT%H%M%SZ").replace(tzinfo=datetime.UTC).isoformat()
+def _instant(text: str) -> datetime.datetime:
+    return datetime.datetime.fromisoformat(text.replace("Z", "+00:00"))
 
 
-def qubits(context: dict[str, Any]) -> list[dict[str, Any]]:
+def run_utc(root: Path, run: str) -> str:
+    """The earliest finish time among the jobs of a retained run, given by its repository path."""
+    record = json.loads((root / run / "results.json").read_text(encoding="utf-8"))
+    stamps = [
+        entry["job"]["finished_at"] for entry in record.get("jobs") or [] if (entry.get("job") or {}).get("finished_at")
+    ]
+    if not stamps:
+        raise SystemExit(f"qi_retained_context: {run} records no finished job")
+    return min(_instant(stamp) for stamp in stamps).isoformat()
+
+
+def qubits(context: dict[str, Any], root: Path) -> list[dict[str, Any]]:
     """One row per qubit of the device-context record, each figure with the run it comes from."""
     rows = []
     for name, entry in sorted(context["qubits"].items(), key=lambda item: int(item[0])):
@@ -59,7 +74,7 @@ def qubits(context: dict[str, Any]) -> list[dict[str, Any]]:
             last = runs[-1]
             row["readout"] = {
                 "run": last["run"],
-                "utc": run_utc(last["run"]),
+                "utc": run_utc(root, last["run"]),
                 "shots": last.get("shots"),
                 "wait_before_readout_us": last.get("wait_before_readout_us"),
                 "p1_given_0": _number(last.get("p1_given_0")),
@@ -69,8 +84,8 @@ def qubits(context: dict[str, Any]) -> list[dict[str, Any]]:
             row["implied_t1"] = {
                 "us": _number(implied["us"]),
                 "wait_us": implied.get("wait_us"),
-                "wait_run_utc": run_utc(implied["wait_run"]),
-                "no_wait_run_utc": run_utc(implied["no_wait_run"]),
+                "wait_run_utc": run_utc(root, implied["wait_run"]),
+                "no_wait_run_utc": run_utc(root, implied["no_wait_run"]),
             }
         if mapped:
             row["coupler_map"] = {
@@ -85,14 +100,10 @@ def qubits(context: dict[str, Any]) -> list[dict[str, Any]]:
     return rows
 
 
-def _instant(text: str) -> datetime.datetime:
-    return datetime.datetime.fromisoformat(text.replace("Z", "+00:00"))
-
-
 def jobs(runs: Path) -> dict[str, list[dict[str, Any]]]:
     """Per backend and UTC day of job creation: counts, creation-to-finish seconds and reported execution seconds."""
     days: dict[str, dict[str, list[tuple[float, float, int]]]] = {}
-    for run in sorted(runs.iterdir()) if runs.is_dir() else []:
+    for run in run_directories(runs):
         cases, results = run / "cases.json", run / "results.json"
         if not (cases.is_file() and results.is_file()):
             continue
@@ -134,12 +145,14 @@ def summary(root: Path = ROOT) -> dict[str, Any]:
         "sources": {
             "device_context": CONTEXT,
             "device_context_sha256": hashlib.sha256(text).hexdigest(),
-            "coupler_map_runs_utc": [run_utc(name) for name in (context.get("coupler_map") or {}).get("runs") or []],
+            "coupler_map_runs_utc": [
+                run_utc(root, name) for name in (context.get("coupler_map") or {}).get("runs") or []
+            ],
             "job_runs": RUNS,
         },
         "implied_t1_assumption": "the whole P(1|1) drop between the no-wait and the wait run is T1 decay during the"
         " wait, and readout fidelity is unchanged between the two runs",
-        "qubits": qubits(context),
+        "qubits": qubits(context, root),
         "jobs": jobs(root / RUNS),
     }
 
