@@ -10,8 +10,8 @@ read of the account shows no hardware batch in planning, so the next holder's re
 The broker is reached through the command QI_SUBMIT_LEASE_COMMAND names, split as a shell would split it; the words
 `take HOLDER` or `release NONCE` are appended. `take` prints one JSON object with `nonce` (32 hexadecimal digits) and
 `lease_seconds` and exits 0, or exits nonzero with a reason on standard error; `release` frees the lease its nonce
-names. The holder counts lease_seconds on its own monotonic clock from before it asked. A device with no command, an
-unreachable broker and a lease another device holds all refuse the submission before any resource request.
+names. A device with no command, an unreachable broker and a lease another device holds all refuse the submission
+before any resource request.
 
 Outside the lease: a session ends without a release when its fresh read fails or shows a hardware batch still in
 planning, and the lease then expires on the broker's clock; hardware_pause_left refuses every other submission while
@@ -30,7 +30,6 @@ import shlex
 import socket
 import subprocess
 import sys
-import time
 from collections.abc import Callable, Iterator
 from typing import Any
 
@@ -46,11 +45,7 @@ class Session:
 
     def __init__(self) -> None:
         self.nonce: str | None = None
-        self.deadline = 0.0
         self.planning: Callable[[], bool] | None = None
-
-    def seconds_left(self) -> float:
-        return self.deadline - time.monotonic() if self.nonce is not None else 0.0
 
 
 _ACTIVE: Session | None = None
@@ -101,14 +96,13 @@ def take(planning: Callable[[], bool]) -> None:
     session = _ACTIVE
     if session is None or session.nonce is not None:
         return
-    name = holder()
-    started = time.monotonic()
-    answer = ask("take", name)
+    answer = ask("take", holder())
     nonce, seconds = answer.get("nonce"), answer.get("lease_seconds")
-    valid = isinstance(nonce, str) and NONCE.fullmatch(nonce) is not None and type(seconds) in (int, float)
-    if not valid or seconds <= 0:
-        raise SystemExit("no submit lease: the lease command's answer lacks a nonce or a positive lease_seconds")
-    session.nonce, session.deadline, session.planning = nonce, started + seconds, planning
+    if not isinstance(nonce, str) or NONCE.fullmatch(nonce) is None:
+        raise SystemExit("no submit lease: the lease command's answer lacks a nonce")
+    if isinstance(seconds, bool) or not isinstance(seconds, (int, float)) or not seconds > 0:
+        raise SystemExit("no submit lease: the lease command's answer lacks a positive lease_seconds")
+    session.nonce, session.planning = nonce, planning
 
 
 def _close(session: Session) -> None:

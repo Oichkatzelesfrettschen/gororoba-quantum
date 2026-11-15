@@ -937,9 +937,10 @@ def _submit(
     if cases["shots"] > backend_type["max_number_of_shots"]:
         raise SystemExit("shots exceed max_number_of_shots")
     queue = client.get(f"/backend_types/{backend_type_id}/queue", user_only=True)
-    # The API names '(batch) job queue statistics'. Both retained five-circuit
-    # Tuna-17 receipts report queue count 2 before any child-job queued_at
-    # timestamp. Treat it as batches; the separate circuit limit is above.
+    # The API names '(batch) job queue statistics', and one enqueued three-job
+    # QX batch read as user-scoped count 1 (measured 2026-10-17; usage.md,
+    # "Rules this repository adds"). Treat it as batches; the separate circuit
+    # limit is above.
     queue_limit = backend_type["batchjobs_per_queue_limit"]
     queued = queue["number_of_jobs_in_queue"]
     if type(queue_limit) is not int or queue_limit < 0 or type(queued) is not int or queued < 0:

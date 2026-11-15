@@ -55,6 +55,11 @@ def broker(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     return log
 
 
+def same(found: object, wanted: object) -> None:
+    if found != wanted:
+        raise AssertionError(f"{found!r} differs from {wanted!r}")
+
+
 def words(log: Path) -> list[str]:
     return [line.split(" ", 2)[2] for line in log.read_text(encoding="utf-8").splitlines()] if log.exists() else []
 
@@ -62,20 +67,20 @@ def words(log: Path) -> list[str]:
 def test_the_pause_read_takes_one_lease_and_the_lock_releases_it(broker: Path) -> None:
     account = Account()
     with qi_platform.token_lock(qi_platform.SUBMIT_LOCK):
-        assert qi_platform.hardware_pause_left(account) == 0  # type: ignore[arg-type]
-        assert qi_platform.hardware_pause_left(account) == 0  # type: ignore[arg-type]
-        assert words(broker) == ["take fixture-host"]
-    assert words(broker) == ["take fixture-host", f"release {NONCE}"]
-    assert account.reads.count("/batch_jobs") == 3
+        same(qi_platform.hardware_pause_left(account), 0)  # type: ignore[arg-type]
+        same(qi_platform.hardware_pause_left(account), 0)  # type: ignore[arg-type]
+        same(words(broker), ["take fixture-host"])
+    same(words(broker), ["take fixture-host", f"release {NONCE}"])
+    same(account.reads.count("/batch_jobs"), 3)
 
 
 def test_a_pause_read_outside_the_submit_lock_takes_no_lease(broker: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    assert qi_platform.hardware_pause_left(Account()) == 0  # type: ignore[arg-type]
+    same(qi_platform.hardware_pause_left(Account()), 0)  # type: ignore[arg-type]
     with qi_platform.token_lock():
-        assert qi_platform.hardware_pause_left(Account()) == 0  # type: ignore[arg-type]
+        same(qi_platform.hardware_pause_left(Account()), 0)  # type: ignore[arg-type]
     with qi_platform.token_lock(qi_platform.SUBMIT_LOCK):
         pass
-    assert words(broker) == []
+    same(words(broker), [])
 
 
 @pytest.mark.parametrize("account", [Account(planned=True), Account(fail_second_read=True)])
@@ -83,9 +88,9 @@ def test_a_batch_in_planning_or_a_failed_read_keeps_the_lease(
     broker: Path, account: Account, capsys: pytest.CaptureFixture[str]
 ) -> None:
     with qi_platform.token_lock(qi_platform.SUBMIT_LOCK):
-        assert qi_platform.hardware_pause_left(account) == 0  # type: ignore[arg-type]
-    assert words(broker) == ["take fixture-host"]
-    assert "submit lease kept until it expires" in capsys.readouterr().err
+        same(qi_platform.hardware_pause_left(account), 0)  # type: ignore[arg-type]
+    same(words(broker), ["take fixture-host"])
+    same("submit lease kept until it expires" in capsys.readouterr().err, True)
 
 
 def test_a_refused_or_absent_lease_stops_before_the_account_read(
@@ -93,20 +98,19 @@ def test_a_refused_or_absent_lease_stops_before_the_account_read(
 ) -> None:
     account = Account()
     command = f"{sys.executable} -I {tmp_path / 'broker.py'} {broker} refuse"
-    for value, message in ((command, "lease held by lab-a1"), ("", "names no lease command"), ("/nonexistent/x", "failed")):
+    refusals = ((command, "lease held by lab-a1"), ("", "names no lease command"), ("/nonexistent/x", "failed"))
+    for value, message in refusals:
         monkeypatch.setenv(qi_submit_lease.COMMAND_VARIABLE, value)
         with pytest.raises(SystemExit, match=message), qi_platform.token_lock(qi_platform.SUBMIT_LOCK):
             qi_platform.hardware_pause_left(account)  # type: ignore[arg-type]
-    assert account.reads == []
+    same(account.reads, [])
 
 
 @pytest.mark.parametrize(
     "answer",
     ["", "[]", json.dumps({"nonce": "short", "lease_seconds": 600}), json.dumps({"nonce": NONCE, "lease_seconds": 0})],
 )
-def test_a_malformed_lease_answer_is_no_lease(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, answer: str
-) -> None:
+def test_a_malformed_lease_answer_is_no_lease(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, answer: str) -> None:
     script = tmp_path / "answer.py"
     script.write_text(f"print({answer!r})\n", encoding="utf-8")
     monkeypatch.setenv(qi_submit_lease.COMMAND_VARIABLE, f"{sys.executable} -I {script}")
@@ -114,13 +118,13 @@ def test_a_malformed_lease_answer_is_no_lease(
     account = Account()
     with pytest.raises(SystemExit, match="no submit lease"), qi_platform.token_lock(qi_platform.SUBMIT_LOCK):
         qi_platform.hardware_pause_left(account)  # type: ignore[arg-type]
-    assert account.reads == []
+    same(account.reads, [])
 
 
 def test_the_holder_is_reduced_to_the_broker_alphabet(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv(qi_submit_lease.HOLDER_VARIABLE, raising=False)
     monkeypatch.setattr(qi_submit_lease.socket, "gethostname", lambda: "Lab_A1.example")
-    assert qi_submit_lease.holder() == "lab-a1-example"
+    same(qi_submit_lease.holder(), "lab-a1-example")
     monkeypatch.setenv(qi_submit_lease.HOLDER_VARIABLE, "Bad Holder")
     with pytest.raises(SystemExit, match="gives no holder"):
         qi_submit_lease.holder()
