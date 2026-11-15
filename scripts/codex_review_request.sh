@@ -1,5 +1,5 @@
 #!/bin/sh
-# Post `@codex review` on a pull request only when the rules of AGENTS.md
+# Post `@Codex review` on a pull request only when the rules of AGENTS.md
 # "Reviews and merges" admit a new round:
 # - the pull request's own diff changed since the head of the last completed
 #   round, so a merge of main or a conflict-free regeneration earns no request;
@@ -28,7 +28,7 @@ fail() { echo "PR $pr: $1" >&2; exit 2; }
 # when it is the first one or a commit arrived after the last counted request.
 events=$(gh api --paginate "repos/$slug/issues/$pr/timeline?per_page=100" \
     --jq '.[] | if .event == "committed" or .event == "head_ref_force_pushed" then "c"
-              elif .event == "commented" and ((.body // "") | startswith("@codex review")) then "r"
+              elif .event == "commented" and ((.body // "") | ascii_downcase | startswith("@codex review")) then "r"
               else empty end') || fail "the timeline lookup failed"
 rounds=$(printf '%s\n' "$events" |
     awk 'BEGIN { n = 0; fresh = 1 } $0 == "c" { fresh = 1 } $0 == "r" && fresh { n++; fresh = 0 } END { print n }')
@@ -63,5 +63,5 @@ if [ -n "$summary" ]; then
     fi
 fi
 
-gh api "repos/$slug/issues/$pr/comments" -f body='@codex review' >/dev/null
+gh api "repos/$slug/issues/$pr/comments" -f body='@Codex review' >/dev/null
 echo "PR $pr: requested automated review round $((rounds + 1)) of $max"

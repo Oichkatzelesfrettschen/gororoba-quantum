@@ -105,7 +105,7 @@ EOF
     trigger_times=$(gh api --paginate "repos/$slug/issues/$pr/comments" --jq '
         .[] | select(.user.login != "chatgpt-codex-connector[bot]")
             | select(.body
-                     | test("(^|\\n)[[:space:]]*@codex (security )?review[[:space:]]*($|\\n)"))
+                     | test("(^|\\n)[[:space:]]*@codex (security )?review[[:space:]]*($|\\n)"; "i"))
             | .created_at')
     trigger_created=$(printf '%s\n' "$trigger_times" | tail -n 1)
 

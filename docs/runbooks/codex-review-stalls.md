@@ -1,10 +1,15 @@
 # Codex review stalls
 
 A Codex review round sometimes never completes. The bot reacts with eyes to the
-`@codex review` comment, its summary comment reads Running for the current
+review request, its summary comment reads Running for the current
 head, and no review, clean comment or reaction follows. The round stays
-Running for hours and never completes. A fresh `@codex review` on the same head
-starts a new round, which usually completes.
+Running for hours and never completes. A fresh `@Codex review` on the same head
+starts a new round, which usually completes. The request is spelled with the
+capital C: the owner reports that the lowercase mention `@codex review` leaves
+the round Running (2026-11-15), and the scripts post `@Codex review` and count
+a request in either case. hypothesis: the lowercase spelling accounts for the
+dropped rounds measured below, whose requests were lowercase; the stall
+rate of capitalized requests is the measurement that tests it.
 `scripts/codex_review_wait.sh` applies that remedy: it waits for the round and
 the head's check runs, sends one repeated request when a round shows no result
 600 seconds after it started, and stops with exit 5 when the repeated request
