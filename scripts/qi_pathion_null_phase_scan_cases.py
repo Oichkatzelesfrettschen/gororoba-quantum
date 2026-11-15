@@ -28,10 +28,12 @@ arms exchanged; a readout batch [readout-0, readout-1] before and after every da
 matrix and the readout admission of the predecessor.
 
 Decision. For each world of WORLDS, fit_batch() fits the world's one parameter to the three raw selector contrasts
-of a z12 batch at the retention that reproduces the center arm's visibility, for each contraction share of the
-predecessor's MIX_FINE; decide() sums the chi-squares over the admitted z12 batches at the one share that makes
-the sum least. The gate-noise families of the predecessor are outside this fit (their tables exist for its worlds
-alone), which the case states as a limit. preregistered() states the rules.
+of a z12 batch and to the d2 split of each outer arm less the center arm's, at the retention that reproduces the
+center arm's visibility, for each contraction share of the predecessor's MIX_FINE; decide() sums the chi-squares
+over the admitted z12 batches at the one share that makes the sum least, and a deciding label also needs each z12
+kind to agree with the series. The gate-noise families of the predecessor are outside this fit (their tables exist
+for its worlds alone), which the case states as a limit. preregistered() states the rules and
+operating_characteristics() simulates them under sampling noise.
 
 Usage: "$PYTHON" scripts/qi_pathion_null_phase_scan_cases.py
        (--write DIR | --check DIR | --sanity RUN_DIR... | --analyze RUN_DIR... --out FILE | --self-test)
@@ -106,8 +108,13 @@ WORLDS: dict[str, np.ndarray] = {"exact": np.zeros(1), "q12_phase": THETA, "coup
 AFTER_PULSE = "q12_phase_after_pulse"
 ADEQUACY_ALPHA = rs.ADEQUACY_ALPHA
 SEPARATION = rs.SEPARATION
-# Bound on one z12 batch's chi-square under an error world: three contrasts, three d2 splits, one parameter.
-BATCH_LIMIT = float(chi2_law.ppf(1 - rs.ADEQUACY_ALPHA, 5))
+# A z12 kind disagrees with the series' world when it reads the other error world lower by more than this. At 0 a
+# series whose +-10 degree batches follow a q12 phase and whose +-30 degree batches a coupler phase reads a
+# deciding label in 50 of 500 simulated series and a single mechanism reads phase_mixed in 1 to 46; at 6.63 (the
+# upper 0.01 point of chi-square with one degree of freedom) the counts are 257 and 1 to 2. The +-10 degree arms
+# separate the two error worlds by about 13 per kind, so no margin serves both; 0 guards the ledger row.
+KIND_MARGIN = 0.0
+SEEN_CACHE: dict[tuple[str, tuple[str, ...], bytes, float], tuple[np.ndarray, np.ndarray]] = {}
 GUARD_LIMIT = rs.GUARD_LIMIT
 Z_RESOLVE = rs.Z_RESOLVE
 BATCH_FIELDS = rs.BATCH_FIELDS
@@ -223,9 +230,14 @@ def world_table(world: str) -> np.ndarray:
 def seen_contrasts(
     world: str, arms: tuple[str, ...], matrix: np.ndarray, center_visibility: float
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Raw selector contrasts of `arms`, then their d2 splits, under a world through the assignment `matrix`, shape
-    (share, parameter, 2 x arm) over rs.MIX_FINE, and the retention used, shape (share, parameter): per contraction
-    share and parameter value, the retention at which the world's center arm reads `center_visibility`."""
+    """Raw selector contrasts of `arms`, then the d2 split of each outer arm less the center arm's, under a world
+    through the assignment `matrix`, shape (share, parameter, 2 x arm - 1) over rs.MIX_FINE, and the retention used,
+    shape (share, parameter): per contraction share and parameter value, the retention at which the world's center
+    arm reads `center_visibility`. Results are kept per argument set; a simulation refits one set many times."""
+    key = (world, arms, matrix.tobytes(), float(center_visibility))
+    if key in SEEN_CACHE:
+        return SEEN_CACHE[key]
+    outer = [n for n, a in enumerate(arms) if a != CENTER]
     table = world_table(world)
     picked = [ARM_NAMES.index(a) for a in arms]
     center = table[:, [ARM_NAMES.index(CENTER)]]
@@ -239,20 +251,26 @@ def seen_contrasts(
             order = np.argsort(seen[:, j])
             retention[j] = float(np.interp(center_visibility, seen[order, j], rs.RETENTION_GRID[order]))
         read = rs.read(rs.contract(table[:, picked], retention, float(mix)), matrix)
-        models.append(np.concatenate([rs.selector_contrast(read), rs.d2_split(read)[0]], axis=-1))
+        split = rs.d2_split(read)[0]
+        relative = split[..., outer] - split[..., [arms.index(CENTER)]]
+        models.append(np.concatenate([rs.selector_contrast(read), relative], axis=-1))
         kept.append(retention)
-    return rs.fine_mix(np.stack(models)), rs.fine_mix(np.stack(kept))
+    SEEN_CACHE[key] = (rs.fine_mix(np.stack(models)), rs.fine_mix(np.stack(kept)))
+    return SEEN_CACHE[key]
 
 
 def fit_batch(
     arms: tuple[str, ...], contrasts: np.ndarray, errors: np.ndarray, matrix: np.ndarray, center_visibility: float
 ) -> dict[str, dict[str, np.ndarray]]:
     """Per world and contraction share, the least chi-square over the world's parameter of a batch's raw selector
-    contrasts and d2 splits (`contrasts` and `errors` hold the three contrasts, then the three splits): "chi2",
-    "parameter", "retention" (one value per share) and "predicted" (share, 2 x arm).
+    contrasts and relative d2 splits (`contrasts` and `errors` hold the three contrasts, then the d2 split of each
+    outer arm less the center arm's): "chi2", "parameter", "retention" (one value per share) and "predicted"
+    (share, 5).
 
-    The two statistics of one circuit share its shots; the sum treats them as independent, which the case states
-    as a limit of the bound."""
+    The split enters relative to the batch's center because the predecessor's centers read a d2 split of
+    +0.0083 +- 0.0017 that no world of this decision gives; the coupler world's split is odd in the injected phase
+    and survives the subtraction. The statistics of one batch share shots and a center; the sum treats them as
+    independent, which the case states as a limit of the bound."""
     rows: dict[str, dict[str, np.ndarray]] = {}
     take = np.arange(len(rs.MIX_FINE))
     for world, grid in WORLDS.items():
@@ -319,11 +337,15 @@ def arm_of(file: str) -> str:
     return file.removesuffix(".cq")
 
 
-def adequacy_limit(world: str, batches: int) -> float:
-    """Chi-square bound of a world over `batches` z12 batches: three contrasts and three d2 splits per batch, one
-    fitted parameter per batch for an error world and none for the exact world, and one contraction share for the
-    series."""
-    freedom = (6 if world == "exact" else 5) * batches - 1
+def batch_values(batch: dict[str, Any]) -> int:
+    """Fitted values of a z12 batch: three contrasts, and two relative d2 splits when d2's qubit passed its guard."""
+    return 5 if batch.get("split_admitted", True) else 3
+
+
+def adequacy_limit(world: str, values: list[int]) -> float:
+    """Chi-square bound of a world over z12 batches that hold `values` fitted values each: one fitted parameter per
+    batch for an error world and none for the exact world, and one contraction share for the series."""
+    freedom = sum(v - (0 if world == "exact" else 1) for v in values) - 1
     return float(chi2_law.ppf(1 - ADEQUACY_ALPHA, freedom))
 
 
@@ -331,27 +353,29 @@ def preregistered() -> dict[str, str]:
     return {
         "estimates": "per data circuit, the raw selector contrast P(s=0 | coin read 1) - P(s=0 | coin read 0) with "
         "its binomial standard error, the d2 split and the visibility of the center arm of each batch",
-        "guard": "a data batch is admitted when e01 and e10 of each of the five region qubits (the d2 split reads "
-        f"d2's qubit, which the predecessor left unguarded) change by at most {GUARD_LIMIT} between the readout "
-        "batch before it and the one after; the "
-        "decision needs at least one admitted batch of each z12 kind, otherwise it reads unresolved_guard",
+        "guard": "a data batch is admitted when e01 and e10 of each qubit the contrast reads (d0, d1, the selector "
+        f"and the coin) change by at most {GUARD_LIMIT} between the readout batch before it and the one after; its "
+        "d2 splits enter the fit only when d2's qubit passes the same bound, otherwise the batch is fitted on its "
+        "three contrasts; the decision needs at least one admitted batch of each z12 kind, otherwise it reads "
+        "unresolved_guard",
         "control": "the inverse-variance mean of the center arm's contrast over the admitted batches exceeds "
         f"{Z_RESOLVE} standard errors; otherwise the decision reads offset_absent (within) or offset_reversed (below)",
         "fit": "for each world (exact gates, a rotation about z before each pulse of q12, a conditional-phase error "
         "of the CZ gates of coupler 8-12) one parameter per admitted z12 batch is fitted to its three contrasts and "
-        "three d2 splits at the "
+        "to the d2 split of each outer arm less its center arm's, at the "
         "retention that reproduces the batch's center visibility through its own bracket assignment; the chi-squares "
         "are summed at the one contraction share of the predecessor's grid that makes the sum least",
         "adequacy": f"a world is adequate when its sum is at most the upper {ADEQUACY_ALPHA} point (the "
-        f"{100 * (1 - ADEQUACY_ALPHA):.1f}th percentile) of chi-square with 6 "
-        "(exact) or 5 (error world) degrees of freedom per admitted z12 batch less one",
+        f"{100 * (1 - ADEQUACY_ALPHA):.1f}th percentile) of chi-square with one degree of freedom per fitted value "
+        "(5 per z12 batch, 3 when its d2 splits are left out), less one per fitted parameter and one for the share",
         "labels": "exact_parabola: the exact world is adequate, so a phase on or around q12 is falsified as the "
-        "cause of the offset; q12_phase or coupler_phase: that world is adequate and its sum lies at least "
-        f"{SEPARATION} below the other error world's, and every admitted z12 batch reads that world at or below the "
-        f"upper {ADEQUACY_ALPHA} point of chi-square with 5 degrees of freedom and at or below the other error "
-        "world; phase_mixed: the sums prefer one error world and a batch does not; phase_unresolved: an error world "
-        "is adequate and the two are closer; none_adequate: no world is adequate. q12_phase names a single-qubit "
-        "phase at q12's pulses: a rotation about z after each pulse gives the same laws as one before each pulse",
+        "cause of the offset; q12_phase or coupler_phase: that world is adequate, its sum lies at least "
+        f"{SEPARATION} below the other error world's, and each z12 kind, summed over its admitted replicates, reads "
+        f"that world at or below the upper {ADEQUACY_ALPHA} point of chi-square on its own degrees of freedom and "
+        "no higher than the other error world; phase_mixed: the sums prefer one error world and a kind does not; "
+        "phase_unresolved: an error world is adequate and the two are closer; none_adequate: no world is "
+        "adequate. q12_phase names a single-qubit phase at q12's pulses: a rotation about z after each pulse gives "
+        "the same laws as one before each pulse",
         "sign": "reported with a q12_phase or coupler_phase label: the fitted parameter of each admitted z12 batch, "
         "and the injected phase of least contrast from a parabola through the pooled z12 arms and centers",
         "d2_split": "also reported beside the label: the d2 split of the +10 and +30 degree z12 arms pooled over the "
@@ -382,7 +406,8 @@ def series(backend: dict[str, Any], series_name: str, nqubits: int, place: dict[
         "region": list(region),
         "placement": {str(q): place[q] for q in region},
         "register": register,
-        "guard_qubits": register,
+        "guard_qubits": [place[ref["roles"][k]] for k in rs.GUARD_ROLES],
+        "d2_guard_qubit": place[ref["roles"]["d2"]],
         "templates": {
             "b0": {
                 "block": "b0",
@@ -471,9 +496,22 @@ def pooled(pairs: list[tuple[float, float]]) -> tuple[float, float]:
     return float(value), float(error)
 
 
+def relative_splits(batch: dict[str, Any]) -> tuple[list[float], list[float]]:
+    """The d2 split of each outer arm of a batch less its center arm's, and the standard errors; a batch whose d2
+    qubit failed its guard carries infinite errors, so its splits add nothing to a chi-square."""
+    at = batch["arms"].index(CENTER)
+    outer = [n for n in range(len(batch["arms"])) if n != at]
+    values = [batch["splits"][n] - batch["splits"][at] for n in outer]
+    if not batch.get("split_admitted", True):
+        return values, [math.inf] * len(outer)
+    errors = [math.hypot(batch["split_errors"][n], batch["split_errors"][at]) for n in outer]
+    return values, errors
+
+
 def decide(batches: list[dict[str, Any]], matrix_of: Any) -> dict[str, Any]:
     """Label and numbers from data batches: each holds "name", "kind", "arms", "contrasts", "errors", "splits",
-    "split_errors", "center_visibility" and "admitted"; `matrix_of(batch)` is its assignment matrix."""
+    "split_errors", "center_visibility", "admitted" and, optionally, "split_admitted" (default true); `matrix_of(batch)`
+    is its assignment matrix."""
     admitted = [b for b in batches if b["admitted"]]
     numbers: dict[str, Any] = {"admitted_batches": [b["name"] for b in admitted]}
     z12 = [b for b in admitted if b["kind"] in Z12_KINDS]
@@ -488,8 +526,8 @@ def decide(batches: list[dict[str, Any]], matrix_of: Any) -> dict[str, Any]:
     fits = {
         b["name"]: fit_batch(
             tuple(b["arms"]),
-            np.array([*b["contrasts"], *b["splits"]]),
-            np.array([*b["errors"], *b["split_errors"]]),
+            np.array([*b["contrasts"], *relative_splits(b)[0]]),
+            np.array([*b["errors"], *relative_splits(b)[1]]),
             matrix_of(b),
             b["center_visibility"],
         )
@@ -498,7 +536,7 @@ def decide(batches: list[dict[str, Any]], matrix_of: Any) -> dict[str, Any]:
     total = {w: np.sum([fits[b["name"]][w]["chi2"] for b in z12], axis=0) for w in WORLDS}
     share = {w: int(total[w].argmin()) for w in WORLDS}
     best = {w: float(total[w][share[w]]) for w in WORLDS}
-    limit = {w: adequacy_limit(w, len(z12)) for w in WORLDS}
+    limit = {w: adequacy_limit(w, [batch_values(b) for b in z12]) for w in WORLDS}
     adequate = {w: best[w] <= limit[w] for w in WORLDS}
     numbers.update(
         chi2={w: round(best[w], 3) for w in WORLDS},
@@ -516,10 +554,24 @@ def decide(batches: list[dict[str, Any]], matrix_of: Any) -> dict[str, Any]:
     per_batch = {
         w: {b["name"]: float(fits[b["name"]][w]["chi2"][share[w]]) for b in z12} for w in WORLDS if w != "exact"
     }
-    numbers.update(batch_chi2=per_batch, batch_limit=round(BATCH_LIMIT, 3))
+    # Each z12 kind, summed over its admitted replicates: the series' world must fit it and the other error world
+    # may undercut it by at most KIND_MARGIN.
+    kind_chi2 = {
+        w: {k: sum(per_batch[w][b["name"]] for b in z12 if b["kind"] == k) for k in Z12_KINDS} for w in per_batch
+    }
+    bound = {
+        k: float(chi2_law.ppf(1 - ADEQUACY_ALPHA, sum(batch_values(b) - 1 for b in z12 if b["kind"] == k)))
+        for k in Z12_KINDS
+    }
+    numbers.update(
+        batch_chi2=per_batch,
+        kind_chi2={w: {k: round(v, 3) for k, v in rows.items()} for w, rows in kind_chi2.items()},
+        kind_limit={k: round(v, 3) for k, v in bound.items()},
+        split_admitted=[b["name"] for b in z12 if b.get("split_admitted", True)],
+    )
 
     def homogeneous(world: str, other: str) -> bool:
-        return all(v <= BATCH_LIMIT and v <= per_batch[other][name] for name, v in per_batch[world].items())
+        return all(v <= bound[k] and v <= kind_chi2[other][k] + KIND_MARGIN for k, v in kind_chi2[world].items())
 
     if adequate["exact"]:
         label = "exact_parabola"
@@ -597,7 +649,7 @@ TRUTHS: dict[str, tuple[str, float, float, str]] = {
     "q12 phase -0.15 rad": ("q12_phase", -0.15, 0.0, "q12_phase"),
     "coupler 8-12 phase -0.25 rad": ("coupler_phase", -0.25, 0.0, "coupler_phase"),
     "coupler 8-12 phase +0.25 rad": ("coupler_phase", 0.25, 0.0, "coupler_phase"),
-    "exact gates, selector flip 0.0166 when q12 reads 0": ("exact", 0.0, 0.0166, "exact_parabola"),
+    "exact gates, selector flip 0.0166 when q12 reads 0": ("exact", 0.0, 0.0166, "none_adequate"),
     "exact gates, selector flip 0.036 when q12 reads 0": ("exact", 0.0, 0.036, "none_adequate"),
 }
 # Truths the prediction record states: world, parameter in radians, probability of a selector flip conditioned on
@@ -651,6 +703,54 @@ def planted_batches(row: dict[str, dict[str, float]]) -> list[dict[str, Any]]:
     return out
 
 
+OC_DRAW = rs.OC_DRAW
+OC_SEED_INDEX = 4
+OC_SERIES = 500
+# A static d2 split added to every circuit of a simulated series, the size the predecessor's centers read.
+OC_SPLIT_OFFSET = 0.0083
+
+
+def operating_characteristics(matrix: np.ndarray) -> dict[str, Any]:
+    """Label counts of OC_SERIES simulated series per truth: Gaussian contrasts and d2 splits at the design standard
+    errors around the truth's expected values, every batch admitted, a static d2 split of OC_SPLIT_OFFSET on every
+    circuit; seeded from value OC_SEED_INDEX of OC_DRAW. The last scenario draws its +-10 degree batches from a q12
+    phase and its +-30 degree batches from a coupler phase."""
+    from qrng_seeds import read_record
+
+    rng = np.random.default_rng(int(read_record(OC_DRAW)["values"][OC_SEED_INDEX]))
+    error = 1.0 / math.sqrt(SCAN_SHOTS)
+    scenarios = {
+        name: planted_batches(truth_row(world, theta, matrix, flip)) for name, (world, theta, flip, _) in TRUTHS.items()
+    }
+    by_q12, by_coupler = scenarios["q12 phase -0.18 rad"], scenarios["coupler 8-12 phase -0.25 rad"]
+    scenarios["z12 +-10 from q12 phase -0.18, z12 +-30 from coupler phase -0.25"] = [
+        c if q["kind"] == "z12-30" else q for q, c in zip(by_q12, by_coupler, strict=True)
+    ]
+    counts: dict[str, dict[str, int]] = {}
+    for name, base in scenarios.items():
+        noise = rng.standard_normal((OC_SERIES, len(base), 6))
+        tally: dict[str, int] = {}
+        for i in range(OC_SERIES):
+            series_batches = [
+                {
+                    **b,
+                    "contrasts": [v + error * noise[i, n, j] for j, v in enumerate(b["contrasts"])],
+                    "splits": [v + OC_SPLIT_OFFSET + 2 * error * noise[i, n, 3 + j] for j, v in enumerate(b["splits"])],
+                }
+                for n, b in enumerate(base)
+            ]
+            label = decide(series_batches, lambda b: matrix)["label"]
+            tally[label] = tally.get(label, 0) + 1
+        counts[name] = dict(sorted(tally.items()))
+    return {
+        "series_per_truth": OC_SERIES,
+        "qrng_draw": OC_DRAW,
+        "seed_index": OC_SEED_INDEX,
+        "static_d2_split": OC_SPLIT_OFFSET,
+        "label_counts": counts,
+    }
+
+
 def predictions() -> dict[str, Any]:
     matrix = predecessor_matrix()
     truths: dict[str, Any] = {}
@@ -669,8 +769,10 @@ def predictions() -> dict[str, Any]:
         "readout": f"mean bracket rates of {PREDECESSOR_ANALYSIS}",
         "preregistered": preregistered(),
         "truths": truths,
-        "limits": "labels at expected values with no sampling noise; contraction share 0 for the truths; the "
-        "gate-noise families and the operating characteristics under sampling noise are not computed",
+        "operating_characteristics": operating_characteristics(matrix),
+        "limits": "contraction share 0 and the design visibility for every truth; Gaussian sampling noise with "
+        "every batch admitted; the gate-noise families, a drifting readout and a phase beside a readout offset are "
+        "not simulated",
     }
 
 
@@ -722,6 +824,8 @@ def evaluate(shots: dict[str, list[str]], manifest: dict[str, Any]) -> dict[str,
     """Preregistered decision and reported numbers from shot lists keyed "batch/file"."""
     roles = {k: int(v) for k, v in manifest["templates"]["b0"]["roles"].items()}
     register = [int(q) for q in manifest["register"]]
+    guard = [int(q) for q in manifest["guard_qubits"]]
+    d2_qubit = int(manifest["d2_guard_qubit"])
     plan = {row["batch"]: row for row in batch_rows(TUNA_SERIES)}
     names = sorted(plan)
     brackets = {b: cc.batch_assignment(shots, b, register) for b in names if plan[b]["kind"] == "readout"}
@@ -740,7 +844,8 @@ def evaluate(shots: dict[str, list[str]], manifest: dict[str, Any]) -> dict[str,
         change = {
             str(q): {kind: abs(after[q][i] - before[q][i]) for i, kind in enumerate(("e01", "e10"))} for q in register
         }
-        admitted = all(v <= GUARD_LIMIT for rates in change.values() for v in rates.values())
+        admitted = all(v <= GUARD_LIMIT for q in guard for v in change[str(q)].values())
+        split_admitted = admitted and all(v <= GUARD_LIMIT for v in change[str(d2_qubit)].values())
         mean = {q: ((before[q][0] + after[q][0]) / 2, (before[q][1] + after[q][1]) / 2) for q in register}
         matrices[batch] = cc.readout_matrix(mean, roles)
         stats = [rs.circuit_statistics(shots[f"{batch}/{c['file']}"], roles) for c in row["circuits"]]
@@ -753,6 +858,7 @@ def evaluate(shots: dict[str, list[str]], manifest: dict[str, Any]) -> dict[str,
             "guard": {
                 "change": change,
                 "admitted": admitted,
+                "split_admitted": split_admitted,
                 "before": {str(q): before[q] for q in register},
                 "after": {str(q): after[q] for q in register},
             },
@@ -768,10 +874,12 @@ def evaluate(shots: dict[str, list[str]], manifest: dict[str, Any]) -> dict[str,
                 "split_errors": [s["d2_split_se"] for s in stats],
                 "center_visibility": stats[arms.index(CENTER)]["visibility"],
                 "admitted": admitted,
+                "split_admitted": split_admitted,
             }
         )
     decision = decide(batches, lambda b: matrices[b["name"]])
     admitted_rows = [r for r in rows.values() if r["guard"]["admitted"]]
+    split_rows = [id(r) for r in admitted_rows if r["guard"]["split_admitted"]]
     reported: dict[str, Any] = {}
     z_points: list[tuple[float, float, float]] = []
     q4_points: list[tuple[float, float, float]] = []
@@ -782,7 +890,7 @@ def evaluate(shots: dict[str, list[str]], manifest: dict[str, Any]) -> dict[str,
             q4_steps, z12_steps = ARMS[arm]
             if r["kind"] in Z12_KINDS:
                 z_points.append((5.0 * z12_steps, s["contrast"], s["se"]))
-                if z12_steps > 0:
+                if z12_steps > 0 and id(r) in split_rows:
                     split.setdefault(arm, []).append((s["d2_split"], s["d2_split_se"]))
             elif arm != CENTER:
                 q4_points.append(

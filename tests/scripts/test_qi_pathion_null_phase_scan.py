@@ -217,15 +217,40 @@ def test_evaluate_reads_a_planted_q12_phase_through_the_analysis_path() -> None:
     _expect(all(len(r["measured"]) == 2 and 0 < r["exact"] <= 1 for r in ratios.values()), f"ratios {ratios}")
 
 
+def test_a_jump_of_d2s_qubit_drops_the_splits_and_keeps_the_batch() -> None:
+    matrix = ps.predecessor_matrix()
+    batches = ps.planted_batches(ps.truth_row("q12_phase", -0.18, matrix))
+    whole = ps.decide(batches, lambda b: matrix)
+    for batch in batches:
+        batch["split_admitted"] = False
+        batch["splits"] = [9.0, -9.0, 9.0]
+    partial = ps.decide(batches, lambda b: matrix)
+    _expect(partial["numbers"]["split_admitted"] == [], "a batch without its splits is listed as holding them")
+    _expect(partial["numbers"]["chi2"]["q12_phase"] < 1e-6, "dropped splits still enter the chi-square")
+    limits = (whole["numbers"]["adequacy_limit"]["q12_phase"], partial["numbers"]["adequacy_limit"]["q12_phase"])
+    _expect(limits[1] < limits[0], f"the bound ignores the dropped values: {limits}")
+
+
 @pytest.mark.audit
-def test_evaluate_refuses_a_z12_kind_whose_d2_readout_jumps() -> None:
+def test_evaluate_keeps_a_batch_whose_d2_readout_jumps_and_drops_its_splits() -> None:
     rows = ps.batch_rows(ps.TUNA_SERIES)
-    # The two z12-30 batches share the bracket between them, so a jump in that one bracket fails both.
     shared = next(rows[n + 1]["batch"] for n, r in enumerate(rows) if r["kind"] == "z12-30")
-    report = ps.evaluate(_series_shots("q12_phase", -0.18, 32768, (shared,)), _manifest())
-    lost = [b for b, r in report["batch_rows"].items() if not r["guard"]["admitted"]]
-    _expect([report["batch_rows"][b]["kind"] for b in lost] == ["z12-30", "z12-30"], f"the jump fails {lost}")
-    _expect(report["decision"]["label"] == "unresolved_guard", f"the jump reads {report['decision']['label']}")
+    report = ps.evaluate(_series_shots("q12_phase", -0.18, 131072, (shared,)), _manifest())
+    guards = {b: r["guard"] for b, r in report["batch_rows"].items()}
+    _expect(all(g["admitted"] for g in guards.values()), "a jump of d2's qubit fails the contrast guard")
+    dropped = [report["batch_rows"][b]["kind"] for b, g in guards.items() if not g["split_admitted"]]
+    _expect(dropped == ["z12-30", "z12-30"], f"the jump drops the splits of {dropped}")
+    _expect(report["decision"]["label"] == "q12_phase", f"the series reads {report['decision']['label']}")
+
+
+@pytest.mark.audit
+def test_the_operating_characteristics_read_no_wrong_deciding_label_for_one_mechanism() -> None:
+    counts = ps.operating_characteristics(ps.predecessor_matrix())["label_counts"]
+    for name, (world, _, _, _) in ps.TRUTHS.items():
+        wrong = {"q12_phase", "coupler_phase"} - {world}
+        _expect(not wrong & set(counts[name]), f"{name} reads {counts[name]}")
+        if world != "exact":
+            _expect(counts[name].get(world, 0) >= 0.9 * ps.OC_SERIES, f"{name} reads its label in {counts[name]}")
 
 
 @pytest.mark.audit

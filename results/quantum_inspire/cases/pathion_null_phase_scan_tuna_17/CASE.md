@@ -50,12 +50,14 @@ share 0, through the mean bracket readout of the predecessor (`prediction.json`,
 | q12 phase +0.18 rad | +0.0141 | +0.0086 | +0.0194 | +0.0237 | +0.0268 | +0.0469 | 0 | +0.0511 | +0.1465 | `q12_phase` |
 | coupler 8-12 phase -0.25 rad | +0.0157 | +0.0236 | +0.0075 | -0.0001 | -0.0064 | +0.1635 | +0.0546 | +0.0036 | +0.0656 | `coupler_phase` |
 | coupler 8-12 phase +0.25 rad | +0.0204 | +0.0118 | +0.0285 | +0.0353 | +0.0401 | +0.0551 | +0.0111 | +0.0503 | +0.1315 | `coupler_phase` |
-| exact gates, selector flip 0.0166 when q12 reads 0 | +0.0073 | +0.0072 | +0.0072 | +0.0070 | +0.0067 | +0.0955 | +0.0196 | +0.0200 | +0.1004 | `exact_parabola` |
+| exact gates, selector flip 0.0166 when q12 reads 0 | +0.0073 | +0.0072 | +0.0072 | +0.0070 | +0.0067 | +0.0955 | +0.0196 | +0.0200 | +0.1004 | `none_adequate` |
 | exact gates, selector flip 0.036 when q12 reads 0 | +0.0162 | +0.0160 | +0.0160 | +0.0155 | +0.0148 | +0.1010 | +0.0279 | +0.0286 | +0.1065 | `none_adequate` |
 
 The last two rows are the predecessor's readout world beside exact gates, a mechanism outside this decision's
-worlds: neither reads a phase label. The smaller one sits at chi-square 48.9 against the exact world's bound of
-49.73, so under sampling noise it reads `exact_parabola` or `none_adequate`.
+worlds: neither reads a phase label. The exact world reads 48.9 and 238.1 against its bound of 43.82, so at the
+offset the device shows a readout origin reads `none_adequate`, and `exact_parabola` is reached only by an offset
+near the control's threshold. The falsifier of the phase reading at the observed offset is therefore
+`none_adequate` together with a parabola whose least point sits at phi = 0 (rule 5).
 
 The standard error of one contrast at 131,072 shots is 0.0028 and of one d2 split 0.0056. The d2 split of the z12
 arms stays below 0.0023 under exact gates and under a q12 phase; under the coupler phase of -0.25 rad it reads
@@ -64,11 +66,34 @@ arms stays below 0.0023 under exact gates and under a q12 phase; under the coupl
 a falling line, as in the three negative-sign rows, and steeper than any of them.
 
 At these expected values the fit of "Preregistered decision rules" gives the other error world a chi-square of
-189.3 (q12 phase -0.18 true), 129.1 (-0.15), 231.1 (+0.18), 95.2 (coupler -0.25 true) and 234.3 (+0.25) against
-the separation of 25 and the adequacy bound of 43.82, and the exact world above 1,100 in each. Two choices carry
+157.0 (q12 phase -0.18 true), 106.4 (-0.15), 157.6 (+0.18), 48.8 (coupler -0.25 true) and 145.4 (+0.25) against
+the separation of 25 and the adequacy bound of 37.70, and the exact world above 1,100 in each. Three choices carry
 that margin. The fit includes the d2 split: on the contrasts alone, with outer arms at +-20 degrees, the coupler
-truth of -0.25 rad sat 7.7 from the q12 world. The outer z12 arms sit at +-30 degrees: with +-20 degrees and the
-d2 split the least of these margins was 51.8.
+truth of -0.25 rad sat 7.7 from the q12 world. The outer z12 arms sit at +-30 degrees. The split enters as each
+outer arm's less its batch center's: the predecessor's centers read a d2 split of +0.0083 +- 0.0017 that no world
+of this decision gives, and the coupler world's split is odd in phi and survives the subtraction.
+
+Operating characteristics (`prediction.json`, `operating_characteristics`): 500 simulated series per truth, Gaussian
+contrasts and d2 splits at the design standard errors, every batch admitted, a static d2 split of +0.0083 on every
+circuit, seeded from value 4 of `docs/evidence/anu_qrng/draw-2026-11-13T172143Z.json`:
+
+| truth | label counts |
+|---|---|
+| coupler 8-12 phase +0.25 rad | `coupler_phase` 498, `none_adequate` 1, `phase_mixed` 1 |
+| coupler 8-12 phase -0.25 rad | `coupler_phase` 465, `none_adequate` 3, `phase_mixed` 20, `phase_unresolved` 12 |
+| exact gates | `offset_absent` 499, `offset_reversed` 1 |
+| exact gates, selector flip 0.0166 when q12 reads 0 | `exact_parabola` 25, `none_adequate` 471, `phase_unresolved` 4 |
+| exact gates, selector flip 0.036 when q12 reads 0 | `none_adequate` 500 |
+| q12 phase +0.18 rad | `phase_mixed` 2, `q12_phase` 498 |
+| q12 phase -0.15 rad | `none_adequate` 1, `phase_mixed` 46, `q12_phase` 453 |
+| q12 phase -0.18 rad | `none_adequate` 1, `phase_mixed` 29, `q12_phase` 470 |
+| z12 +-10 from q12 phase -0.18, z12 +-30 from coupler phase -0.25 | `coupler_phase` 50, `none_adequate` 23, `phase_mixed` 328, `phase_unresolved` 99 |
+
+No single mechanism reads the other mechanism's label. A true q12 phase of -0.15 rad reads `phase_mixed` in 46
+series and a coupler phase of -0.25 rad in 20: the +-10 degree arms separate the two error worlds by about 13
+per kind, so sampling noise can turn that kind toward the other world. The last row is a series of two mechanisms;
+it reads a deciding label in 50 series. A looser consistency test (the other world may undercut a kind by 6.63)
+lowers the false `phase_mixed` counts to 1 or 2 and raises that 50 to 257, so the rule stays strict.
 
 ### Circuits
 
@@ -92,7 +117,7 @@ follows every data batch. Eight data batches at 131,072 shots per circuit:
 
 Each data batch carries its own center, so a drift of the offset between batches (0.001 to 0.020 in the
 predecessor) enters no within-batch comparison. The two z12 +-30 batches share the readout batch between them, so
-one failed bracket there removes both and the series reads `unresolved_guard`. The QX twin holds the nine distinct
+one failed bracket on a contrast qubit there removes both and the series reads `unresolved_guard`. The QX twin holds the nine distinct
 circuits in three batches of 3 at 2,048 shots.
 
 ## Why simulation cannot answer it
@@ -120,28 +145,31 @@ alone, both errors fit its contrasts almost equally, and its response is even in
 
 `cases.json` of every batch carries these rules (`preregistered`); `decide()` applies rules 1 to 4.
 
-1. Admission. A data batch is admitted when e01 and e10 of each of the five region qubits change by at most 0.02
-   between the readout batch before it and the one after. The d2 split reads d2's qubit (q11), which the
-   predecessor left unguarded. The decision needs an admitted batch of each z12 kind; otherwise
-   `unresolved_guard`.
+1. Admission. A data batch is admitted when e01 and e10 of each qubit the contrast reads (q12, q4, q8, q2)
+   change by at most 0.02 between the readout batch before it and the one after. Its d2 splits enter the fit only
+   when d2's qubit (q11) passes the same bound; otherwise the batch is fitted on its three contrasts. The
+   decision needs an admitted batch of each z12 kind; otherwise `unresolved_guard`. Applied to retained brackets,
+   the four-qubit guard admits 10 of 10 data batches of the predecessor and 19 of 19 bracket pairs of the one-CZ
+   series; q11 passes in 10 of 10 and in 15 of 19 (its e10 moved by up to 0.34 there).
 2. Control. The inverse-variance mean of the center contrast over the admitted batches exceeds 3 standard errors;
    otherwise `offset_absent` (within) or `offset_reversed` (below).
 3. Fit. For each of three worlds (exact gates, a rotation about z before each pulse of q12, a conditional-phase
    error of the CZ gates of coupler 8-12) one parameter per admitted z12 batch is fitted to its three contrasts and
-   three d2 splits, at the retention that reproduces the batch's center visibility through its own bracket
-   readout. The chi-squares are summed at the one contraction share (the predecessor's grid of 13) that makes the
-   sum least. A world is adequate when its sum is at most the upper 0.001 point (the 99.9th percentile) of
-   chi-square with 6 (exact) or 5 (error world) degrees of freedom per admitted z12 batch less one: 49.73 and
-   43.82 for four batches.
+   to the d2 split of each outer arm less its center arm's, at the retention that reproduces the batch's center
+   visibility through its own bracket readout. The chi-squares are summed at the one contraction share (the
+   predecessor's grid of 13) that makes the sum least. A world is adequate when its sum is at most the upper 0.001
+   point (the 99.9th percentile) of chi-square with one degree of freedom per fitted value (5 per z12 batch, 3
+   when its d2 splits are left out), less one per fitted parameter and one for the share: 43.82 (exact) and 37.70
+   (error world) for four whole batches.
 4. Labels. `exact_parabola`: the exact world is adequate, so a phase on or around q12 is falsified as the cause of
    the offset. `q12_phase` or `coupler_phase`: that world is adequate, its sum lies at least 25 below the other
-   error world's, and every admitted z12 batch reads that world at or below 20.52 (the upper 0.001 point with 5
-   degrees of freedom) and at or below the other error world. `phase_mixed`: the sums prefer one error world and
-   a batch does not. `phase_unresolved`: an error world is adequate and the two are closer than 25.
-   `none_adequate`: no world is adequate.
+   error world's, and each z12 kind, summed over its admitted replicates, reads that world at or below the upper
+   0.001 point on its own degrees of freedom (26.12 for two whole batches) and no higher than the other error
+   world. `phase_mixed`: the sums prefer one error world and a kind does not. `phase_unresolved`: an error world
+   is adequate and the two are closer than 25. `none_adequate`: no world is adequate.
 5. Reported beside the label, outside it: the fitted parameter of each admitted z12 batch; the injected phase of
    least contrast from a weighted parabola through the z12 arms and their centers; the d2 split of the +10 and +30
-   degree arms pooled over replicates; each arm's visibility over its center's beside the exact circuit's ratio.
+   degree arms pooled over the replicates whose d2 qubit passed its guard; each arm's visibility over its center's beside the exact circuit's ratio.
 6. q4 line, outside the label: a weighted straight line through the contrast of each q4 arm less its batch center
    against q4's injected angle (-5, +5, +10, +15 degrees), with its chi-square on 3 degrees of freedom, its slope
    and the angle at which the pooled center plus the line reads zero.
@@ -151,12 +179,12 @@ alone, both errors fit its contrasts almost equally, and its response is even in
 
 | label | outcome | effect on A5-186 |
 |---|---|---|
-| `q12_phase` | a single-qubit phase at q12's pulses is adequate and preferred in every z12 batch; its sign and size per batch are reported. A rotation about z after each pulse gives the same laws as one before each pulse, so the label leaves the placement open | changes to that statement |
-| `coupler_phase` | a conditional phase of coupler 8-12 is adequate and preferred in every z12 batch | changes to that statement |
-| `phase_mixed` | the series prefers one error world and a batch disagrees or fits it badly: two mechanisms or a change during the series | unchanged; the numbers are reported |
+| `q12_phase` | a single-qubit phase at q12's pulses is adequate and preferred in each z12 kind; its sign and size per batch are reported. A rotation about z after each pulse gives the same laws as one before each pulse, so the label leaves the placement open | changes to that statement |
+| `coupler_phase` | a conditional phase of coupler 8-12 is adequate and preferred in each z12 kind | changes to that statement |
+| `phase_mixed` | the series prefers one error world and a z12 kind disagrees or fits it badly: two mechanisms, a change during the series, or sampling noise on the +-10 degree kind (2 to 46 of 500 simulated series of one mechanism) | unchanged; the numbers are reported |
 | `phase_unresolved` | an error world is adequate and the two are not separated | unchanged; the numbers are reported |
-| `exact_parabola` | the z12 arms follow exact gates; the offset is not a phase on or around q12 | unchanged; the phase reading is falsified |
-| `none_adequate` | no world fits; a constant offset beside exact gates reads this label | unchanged |
+| `exact_parabola` | the z12 arms and their centers follow exact gates; the offset is small and not a phase on or around q12 | unchanged; the phase reading is falsified |
+| `none_adequate` | no world fits; a selector readout flip beside exact gates reads this label | unchanged |
 | `offset_absent`, `offset_reversed`, `unresolved_guard` | numbers reported | unchanged |
 
 ## Limits stated before the run
@@ -164,13 +192,15 @@ alone, both errors fit its contrasts almost equally, and its response is even in
 - The fit carries the two contractions of the predecessor at a share fitted once per series. The predecessor's
   gate-noise families are outside it: their tables exist for its worlds alone. The full-histogram fit of the
   exploratory reading shows the contraction model far from the device's law, so an adequate fit here is a
-  statement about three contrasts and three d2 splits per batch and no more.
-- The labels above are read at expected values with no sampling noise. Their operating characteristics under
-  sampling noise, under gate noise and under a readout offset beside a phase are not computed.
+  statement about three contrasts and two relative d2 splits per batch and no more.
+- The operating characteristics use Gaussian noise at contraction share 0 and the design visibility with every
+  batch admitted. Gate noise, a drifting readout and a phase beside a readout offset are not simulated.
 - The q4 arms sit at -5 to +15 degrees around the zero the predecessor's q4 arms bracket (+0.039 at -10 degrees,
   -0.006 at +10). Under a positive q12 phase the line's zero lies near -13 degrees, outside them, and is an
   extrapolation.
-- A contrast and a d2 split of one circuit share its shots; the chi-square adds them as independent.
+- A series whose z12 kinds follow different mechanisms reads a deciding label in 50 of 500 simulated series.
+- The fitted values of one batch share shots and a center arm; the chi-square adds them as independent. On
+  expected laws the correlation of a circuit's contrast and d2 split is below 0.002.
 - The offset drifts on a scale of minutes, so a fitted phase is a value per batch.
 - Placement. Every q12 operation between two of its pulses is diagonal, so a rotation about z after each pulse
   gives exactly the laws of one before each pulse (`--self-test`). A single-qubit phase on q12 at its CZ gates or

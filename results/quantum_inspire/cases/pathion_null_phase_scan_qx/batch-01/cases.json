@@ -25,12 +25,12 @@
   4
  ],
  "guard_qubits": [
-  0,
+  4,
   1,
   2,
-  3,
-  4
+  0
  ],
+ "d2_guard_qubit": 3,
  "templates": {
   "b0": {
    "block": "b0",
@@ -71,11 +71,11 @@
  },
  "preregistered": {
   "estimates": "per data circuit, the raw selector contrast P(s=0 | coin read 1) - P(s=0 | coin read 0) with its binomial standard error, the d2 split and the visibility of the center arm of each batch",
-  "guard": "a data batch is admitted when e01 and e10 of each of the five region qubits (the d2 split reads d2's qubit, which the predecessor left unguarded) change by at most 0.02 between the readout batch before it and the one after; the decision needs at least one admitted batch of each z12 kind, otherwise it reads unresolved_guard",
+  "guard": "a data batch is admitted when e01 and e10 of each qubit the contrast reads (d0, d1, the selector and the coin) change by at most 0.02 between the readout batch before it and the one after; its d2 splits enter the fit only when d2's qubit passes the same bound, otherwise the batch is fitted on its three contrasts; the decision needs at least one admitted batch of each z12 kind, otherwise it reads unresolved_guard",
   "control": "the inverse-variance mean of the center arm's contrast over the admitted batches exceeds 3.0 standard errors; otherwise the decision reads offset_absent (within) or offset_reversed (below)",
-  "fit": "for each world (exact gates, a rotation about z before each pulse of q12, a conditional-phase error of the CZ gates of coupler 8-12) one parameter per admitted z12 batch is fitted to its three contrasts and three d2 splits at the retention that reproduces the batch's center visibility through its own bracket assignment; the chi-squares are summed at the one contraction share of the predecessor's grid that makes the sum least",
-  "adequacy": "a world is adequate when its sum is at most the upper 0.001 point (the 99.9th percentile) of chi-square with 6 (exact) or 5 (error world) degrees of freedom per admitted z12 batch less one",
-  "labels": "exact_parabola: the exact world is adequate, so a phase on or around q12 is falsified as the cause of the offset; q12_phase or coupler_phase: that world is adequate and its sum lies at least 25.0 below the other error world's, and every admitted z12 batch reads that world at or below the upper 0.001 point of chi-square with 5 degrees of freedom and at or below the other error world; phase_mixed: the sums prefer one error world and a batch does not; phase_unresolved: an error world is adequate and the two are closer; none_adequate: no world is adequate. q12_phase names a single-qubit phase at q12's pulses: a rotation about z after each pulse gives the same laws as one before each pulse",
+  "fit": "for each world (exact gates, a rotation about z before each pulse of q12, a conditional-phase error of the CZ gates of coupler 8-12) one parameter per admitted z12 batch is fitted to its three contrasts and to the d2 split of each outer arm less its center arm's, at the retention that reproduces the batch's center visibility through its own bracket assignment; the chi-squares are summed at the one contraction share of the predecessor's grid that makes the sum least",
+  "adequacy": "a world is adequate when its sum is at most the upper 0.001 point (the 99.9th percentile) of chi-square with one degree of freedom per fitted value (5 per z12 batch, 3 when its d2 splits are left out), less one per fitted parameter and one for the share",
+  "labels": "exact_parabola: the exact world is adequate, so a phase on or around q12 is falsified as the cause of the offset; q12_phase or coupler_phase: that world is adequate, its sum lies at least 25.0 below the other error world's, and each z12 kind, summed over its admitted replicates, reads that world at or below the upper 0.001 point of chi-square on its own degrees of freedom and no higher than the other error world; phase_mixed: the sums prefer one error world and a kind does not; phase_unresolved: an error world is adequate and the two are closer; none_adequate: no world is adequate. q12_phase names a single-qubit phase at q12's pulses: a rotation about z after each pulse gives the same laws as one before each pulse",
   "sign": "reported with a q12_phase or coupler_phase label: the fitted parameter of each admitted z12 batch, and the injected phase of least contrast from a parabola through the pooled z12 arms and centers",
   "d2_split": "also reported beside the label: the d2 split of the +10 and +30 degree z12 arms pooled over the admitted replicates, beside the values each world predicts",
   "q4_line": "reported outside the label: a weighted straight line through the contrast of each q4 arm less its batch center against q4's injected angle (-5, +5, +10, +15 degrees, 0 at the center), with its chi-square on 3 degrees of freedom, slope and the angle at which the pooled center plus the line reads zero",
