@@ -40,9 +40,13 @@ carries the latest value of every "Latest" panel, so the return of the series ne
 hypothesis: the datasource is closed on purpose, as the notice says, and returns when the provider reopens it.
 Falsifier: a `datasource-error` that persists after the notice is withdrawn. The repository's own retained Tuna-17 runs are a
 second, dated source: `scripts/qi_tuna17_device_context.py` gathers per-qubit idle detuning, Ramsey visibility,
-coupler strengths and drive crosstalk from them, each as of its run. A new characterization run on the device
-is the source of current per-qubit figures; it is a hardware job and follows the approval rule of AGENTS.md
-("Hardware services").
+coupler strengths and drive crosstalk from them, each as of its run.
+`scripts/qi_retained_context.py` gathers the per-qubit rows and the account's job timing into
+[retained-context.json](../../qi-status-context/retained-context.json). A new characterization run on the device
+is the source of current per-qubit figures ([draft case](../../../notes/quantum_inspire/tuna17-characterization-case-draft.md));
+that run is a hardware job and follows the approval rule of AGENTS.md ("Hardware services"). The
+[question to the provider](../../../notes/quantum_inspire/calibration-datasource-upstream-question.md) is drafted
+and unsent.
 
 ## Link service
 
