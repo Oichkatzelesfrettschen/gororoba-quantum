@@ -10,8 +10,8 @@ falsifiers stand in each docstring or opening `print` and were fixed before the 
 Run from the repository root under the pinned interpreter:
 
 ```sh
-export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 OPENBLAS_NUM_THREADS=2
-systemd-run --user --scope -q -p MemoryMax=8G -p MemorySwapMax=0 \
+export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 GOROROBA_WORKERS=6
+systemd-run --user --scope -q -p MemoryMax=14G -p MemorySwapMax=0 \
 	"$PYTHON" -B docs/evidence/qi-null-rotation-scan-line-phase/SCRIPT.py
 ```
 
@@ -37,6 +37,15 @@ that module builds on first use (about thirty minutes) and caches.
 | `d2_split_worlds.py` | `d2_split_worlds.json` | the retained d2 splits of the 24 scan arms against three worlds at fixed parameters |
 | `followup_predictions.py` | `followup_predictions.json` | model contrasts of the draft follow-up arms under three worlds |
 
-`line_scan.py` imports `worker1` from `docs/evidence/hardware-residuals/tuna-quandela`. The forward-model scripts
-share the state-vector routine of `scan_forward.py`, which equals `forward_laws` of the scan module where both
-apply.
+Each script is a driver: it lists its independent items (candidates, pairs, jobs or batches), maps a worker over
+them through `parallel.ordered_map` of `gororoba_quantum/parallel.py`, and orders, prints and writes in the parent
+process. `GOROROBA_WORKERS` caps the worker count.
+
+- `gororoba_quantum/elementary_error_laws.py` holds the state-vector model with explicit inputs (operations,
+  register, outcome order, pulse angles, error items); `tests/gororoba_quantum/test_elementary_error_laws.py` fixes
+  its conventions on hand-derived circuits.
+- `scan_forward.py` binds it to the retained b0 circuit and the scan's arms; the result equals `forward_laws` of
+  the scan module where both apply.
+- `scan_fits.py` selects the retained records and holds the per-candidate workers of the forward-model fits.
+- `line_fold.py` holds the per-job workers of the line analyses and the bracket reader.
+- `line_scan.py` maps `scan_file` of `docs/evidence/hardware-residuals/tuna-quandela/worker1.py`.
