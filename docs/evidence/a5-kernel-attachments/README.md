@@ -1056,8 +1056,8 @@ fixture, and checks four facts. The ten parameters of the two factors are `(p, q
 - The saturation of the ideal of the 17 differences `V_k(p) - V_k(q)` by `pa * pl * qa * ql` equals the ideal of the
   five graphs `q = zeta p` of the fifth roots of unity (dimension 5, multiplicity 5; two components of degrees 4 and
   1 over `Q(i)`, each dominating both factors; dimension 8 before the saturation). A mutated difference gives a
-  saturation of dimension 4 that the graphs do not fill, and the graphs of the fourth roots of unity are neither
-  inside nor outside it.
+  saturation of dimension 4 that the graphs do not fill, and for the graphs of the fourth roots of unity neither
+  ideal contains the other.
 
 The fixture checks run in the pull-request lane; the Singular stage runs in the module and in the replay gate
 `core-a5-e8-birational-degree`. The scratch runs modulo 32009 at both basepoints agree and are not retained.
