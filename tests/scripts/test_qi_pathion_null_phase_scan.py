@@ -63,7 +63,7 @@ def test_the_q4_plus_ten_arm_repeats_the_predecessors_arm() -> None:
     )
 
 
-@pytest.mark.parametrize("steps", [-4, -2, 2, 4])
+@pytest.mark.parametrize("steps", [-6, -2, 2, 6])
 def test_an_injected_frame_cancels_the_opposite_q12_phase(steps: int) -> None:
     arm = next(a for a, (_, z12) in ps.ARMS.items() if z12 == steps)
     gap = np.abs(ps.forward_law(arm, "q12_phase", -steps * ps.STEP) - ps.forward_law(ps.CENTER)).max()
@@ -74,9 +74,11 @@ def test_exact_gates_give_an_even_curve_with_no_offset() -> None:
     matrix = ps.predecessor_matrix()
     row = ps.truth_row("exact", 0.0, matrix)
     _expect(abs(row[ps.CENTER]["contrast"]) < 1e-9, "exact gates read an offset at the center")
-    for size in ("10", "20"):
+    for size in ("10", "30"):
         minus, plus = row[f"b0-rx-z12-m{size}"]["contrast"], row[f"b0-rx-z12-p{size}"]["contrast"]
-        _expect(abs(minus - plus) < 0.002 and minus > 0.01, f"the exact +-{size} degree arms read {minus} and {plus}")
+        _expect(
+            abs(minus - plus) < 0.05 * minus and minus > 0.01, f"the exact +-{size} degree arms read {minus} and {plus}"
+        )
 
 
 @pytest.mark.parametrize("series_name", [ps.TUNA_SERIES, ps.QX_SERIES])
@@ -102,37 +104,45 @@ def test_the_series_has_the_drafted_size_and_brackets() -> None:
     _expect(kinds[4:] == [(k, 1) for k, _ in reversed(kinds[:4])], "the mirror round is not the forward round reversed")
 
 
-@pytest.mark.parametrize(
-    ("truth", "label"),
-    [
-        ("exact gates", "offset_absent"),
-        ("q12 phase -0.18 rad", "q12_phase"),
-        ("q12 phase +0.18 rad", "q12_phase"),
-        ("coupler 8-12 phase -0.25 rad", "coupler_phase"),
-        ("coupler 8-12 phase +0.25 rad", "coupler_phase"),
-    ],
-)
-def test_a_planted_truth_reads_its_label(truth: str, label: str) -> None:
+@pytest.mark.parametrize("truth", list(ps.TRUTHS))
+def test_a_planted_truth_reads_its_label(truth: str) -> None:
     matrix = ps.predecessor_matrix()
-    world, theta = ps.TRUTHS[truth]
-    decision = ps.decide(ps.planted_batches(ps.truth_row(world, theta, matrix)), lambda b: matrix)
+    world, theta, flip, label = ps.TRUTHS[truth]
+    decision = ps.decide(ps.planted_batches(ps.truth_row(world, theta, matrix, flip)), lambda b: matrix)
     _expect(decision["label"] == label, f"{truth} reads {decision['label']}")
     if world != "exact":
         fitted = decision["numbers"]["parameters"][world].values()
         _expect(max(abs(v - theta) for v in fitted) < 0.004, f"the fitted {list(fitted)} miss the planted {theta}")
 
 
-def test_a_constant_offset_beside_exact_gates_is_not_read_as_a_phase() -> None:
+def test_a_readout_offset_beside_exact_gates_is_not_read_as_a_phase() -> None:
+    labels = {label for world, _, flip, label in ps.TRUTHS.values() if world == "exact" and flip}
+    _expect(len(labels) > 0, "no readout truth is planted")
+    _expect(not labels & {"q12_phase", "coupler_phase", "phase_mixed"}, f"readout truths read {labels}")
+
+
+def test_a_phase_after_each_q12_pulse_gives_the_laws_of_one_before() -> None:
+    for arm in ps.ARM_NAMES:
+        gap = np.abs(ps.forward_law(arm, ps.AFTER_PULSE, -0.18) - ps.forward_law(arm, "q12_phase", -0.18)).max()
+        _expect(gap < 1e-12, f"{arm}: the two placements differ by {gap}")
+
+
+@pytest.mark.parametrize(("near", "far"), [("q12_phase", "coupler_phase"), ("coupler_phase", "q12_phase")])
+def test_z12_batches_of_two_mechanisms_read_no_deciding_label(near: str, far: str) -> None:
     matrix = ps.predecessor_matrix()
-    batches = ps.planted_batches(ps.truth_row("exact", 0.0, matrix), center_offset=0.014)
-    _expect(ps.decide(batches, lambda b: matrix)["label"] == "none_adequate", "a constant offset reads as a phase")
+    size = {"q12_phase": -0.18, "coupler_phase": -0.25}
+    first = ps.planted_batches(ps.truth_row(near, size[near], matrix))
+    second = ps.planted_batches(ps.truth_row(far, size[far], matrix))
+    mixed = [b if a["kind"] == "z12-30" else a for a, b in zip(first, second, strict=True)]
+    label = ps.decide(mixed, lambda b: matrix)["label"]
+    _expect(label not in ("q12_phase", "coupler_phase"), f"two mechanisms read {label}")
 
 
 def test_a_missing_z12_kind_reads_unresolved_guard() -> None:
     matrix = ps.predecessor_matrix()
     batches = ps.planted_batches(ps.truth_row("q12_phase", -0.18, matrix))
     for batch in batches:
-        if batch["kind"] == "z12-20":
+        if batch["kind"] == "z12-30":
             batch["admitted"] = False
     _expect(ps.decide(batches, lambda b: matrix)["label"] == "unresolved_guard", "a lost z12 kind is not refused")
 
@@ -143,7 +153,7 @@ def test_the_parabola_finds_the_injected_phase_of_least_contrast() -> None:
     error = 1.0 / math.sqrt(ps.SCAN_SHOTS)
     points = [(5.0 * ps.ARMS[a][1], row[a]["contrast"], error) for a in ps.ARM_NAMES if ps.ARMS[a][0] == 0]
     least = ps.parabola_minimum(points)
-    _expect(least is not None, "the parabola opens downward")
+    _expect(least is not None, "the parabola has no least point")
     if least is not None:
         _expect(abs(least["phi_degrees"] - math.degrees(0.18)) < 1.5, f"the least point is {least['phi_degrees']}")
 
@@ -210,11 +220,11 @@ def test_evaluate_reads_a_planted_q12_phase_through_the_analysis_path() -> None:
 @pytest.mark.audit
 def test_evaluate_refuses_a_z12_kind_whose_d2_readout_jumps() -> None:
     rows = ps.batch_rows(ps.TUNA_SERIES)
-    # The two z12-20 batches share the bracket between them, so a jump in that one bracket fails both.
-    shared = next(rows[n + 1]["batch"] for n, r in enumerate(rows) if r["kind"] == "z12-20")
+    # The two z12-30 batches share the bracket between them, so a jump in that one bracket fails both.
+    shared = next(rows[n + 1]["batch"] for n, r in enumerate(rows) if r["kind"] == "z12-30")
     report = ps.evaluate(_series_shots("q12_phase", -0.18, 32768, (shared,)), _manifest())
     lost = [b for b, r in report["batch_rows"].items() if not r["guard"]["admitted"]]
-    _expect([report["batch_rows"][b]["kind"] for b in lost] == ["z12-20", "z12-20"], f"the jump fails {lost}")
+    _expect([report["batch_rows"][b]["kind"] for b in lost] == ["z12-30", "z12-30"], f"the jump fails {lost}")
     _expect(report["decision"]["label"] == "unresolved_guard", f"the jump reads {report['decision']['label']}")
 
 

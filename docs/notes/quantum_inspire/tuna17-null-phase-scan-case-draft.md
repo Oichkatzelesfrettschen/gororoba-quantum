@@ -1,8 +1,11 @@
 # Tuna-17 null block: q4 angle and q12 phase scan (draft case)
 
-Status: draft. It is no written case in the sense of root AGENTS.md ("Hardware services"): no generator, circuit
-file, prediction record or operating characteristic exists, nothing is approved and nothing is submitted. "Not
-built" lists what precedes the owner's approval. Ledger row: A5-186. Predecessor: the injected-rotation scan
+Status: superseded by the written case
+[pathion_null_phase_scan_tuna_17/CASE.md](../../../results/quantum_inspire/cases/pathion_null_phase_scan_tuna_17/CASE.md),
+which the generator `scripts/qi_pathion_null_phase_scan_cases.py` builds. The case differs from this draft: its
+outer z12 arms sit at +-30 degrees, its fit carries the d2 split beside the contrast and guards all five qubits,
+and a deciding label needs every z12 batch to agree. The text below is the draft as first written; where the two
+differ the case governs. Nothing is approved and nothing is submitted. Ledger row: A5-186. Predecessor: the injected-rotation scan
 ([case](../../../results/quantum_inspire/cases/pathion_null_rotation_scan_tuna_17/CASE.md), verdict
 `unresolved_none`) and its exploratory reading
 ([tuna17-null-rotation-scan-line-phase.md](tuna17-null-rotation-scan-line-phase.md)).
@@ -33,8 +36,8 @@ rewritten on one qubit. Angles are multiples of pi/36, the processor's angle gri
 - `b0-rx`: the center, in every data batch.
 - `b0-rx-q4-m5`, `-p5`, `-p10`, `-p15`: q4's 8 pulses at 85, 95, 100 and 105 degrees. `-p10` repeats a retained arm.
 - `b0-rx-z12-m20`, `-m10`, `-p10`, `-p20`: an `Rz(phi)` on q12 before each of its 5 pulses, phi = -20, -10, +10,
-  +20 degrees. `Rz` is virtual and takes no time, so the schedule, the pulse count and the CZ count equal the
-  center's.
+  +20 degrees. hypothesis: `Rz` is a frame update that takes no time, so the schedule, the pulse count and the
+  CZ count equal the center's; the provider lists `Rz` as native and publishes no schedule.
 
 ## Batches
 

@@ -17,7 +17,7 @@
    "files": [
     "b0-rx-q4-p10.cq",
     "b0-rx-q4-p15.cq",
-    "b0-rx-z12-m20.cq"
+    "b0-rx-z12-m30.cq"
    ]
   },
   {
@@ -26,7 +26,7 @@
    "files": [
     "b0-rx-z12-m10.cq",
     "b0-rx-z12-p10.cq",
-    "b0-rx-z12-p20.cq"
+    "b0-rx-z12-p30.cq"
    ]
   }
  ]

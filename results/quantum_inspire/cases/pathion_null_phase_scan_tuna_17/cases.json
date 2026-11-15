@@ -63,11 +63,11 @@
   },
   {
    "batch": "batch-07",
-   "kind": "z12-20",
+   "kind": "z12-30",
    "files": [
-    "b0-rx-z12-m20.cq",
+    "b0-rx-z12-m30.cq",
     "b0-rx.cq",
-    "b0-rx-z12-p20.cq"
+    "b0-rx-z12-p30.cq"
    ]
   },
   {
@@ -80,11 +80,11 @@
   },
   {
    "batch": "batch-09",
-   "kind": "z12-20",
+   "kind": "z12-30",
    "files": [
-    "b0-rx-z12-p20.cq",
+    "b0-rx-z12-p30.cq",
     "b0-rx.cq",
-    "b0-rx-z12-m20.cq"
+    "b0-rx-z12-m30.cq"
    ]
   },
   {

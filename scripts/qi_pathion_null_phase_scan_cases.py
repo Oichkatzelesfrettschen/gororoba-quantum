@@ -74,10 +74,10 @@ ARMS: dict[str, tuple[int, int]] = {
     "b0-rx-q4-p5": (1, 0),
     "b0-rx-q4-p10": (2, 0),
     "b0-rx-q4-p15": (3, 0),
-    "b0-rx-z12-m20": (0, -4),
+    "b0-rx-z12-m30": (0, -6),
     "b0-rx-z12-m10": (0, -2),
     "b0-rx-z12-p10": (0, 2),
-    "b0-rx-z12-p20": (0, 4),
+    "b0-rx-z12-p30": (0, 6),
 }
 ARM_NAMES = tuple(ARMS)
 # Scan kind -> (first arm, second arm) of its forward batch; the mirror batch exchanges them.
@@ -85,9 +85,9 @@ SCANS: dict[str, tuple[str, str]] = {
     "q4-near": ("b0-rx-q4-m5", "b0-rx-q4-p5"),
     "q4-far": ("b0-rx-q4-p10", "b0-rx-q4-p15"),
     "z12-10": ("b0-rx-z12-m10", "b0-rx-z12-p10"),
-    "z12-20": ("b0-rx-z12-m20", "b0-rx-z12-p20"),
+    "z12-30": ("b0-rx-z12-m30", "b0-rx-z12-p30"),
 }
-Z12_KINDS = ("z12-10", "z12-20")
+Z12_KINDS = ("z12-10", "z12-30")
 Q4_KINDS = ("q4-near", "q4-far")
 
 SCAN_SHOTS, READOUT_SHOTS, QX_SHOTS = rs.SCAN_SHOTS, rs.READOUT_SHOTS, rs.QX_SHOTS
@@ -99,8 +99,15 @@ DESIGN_VISIBILITY = 0.42
 # each CZ of coupler 8-12. The parameter grid of the two error worlds is in radians.
 THETA = np.linspace(-0.50, 0.50, 501)
 WORLDS: dict[str, np.ndarray] = {"exact": np.zeros(1), "q12_phase": THETA, "coupler_phase": THETA}
+# A placement outside the decision that forward_laws also simulates: the rotation about z after each q12 pulse. Its
+# laws equal those of q12_phase (every q12 operation between two pulses is diagonal, the first rotation acts on
+# |0> and the last precedes a measurement in z), so the q12_phase label names a single-qubit phase at q12's pulses
+# and leaves its placement open.
+AFTER_PULSE = "q12_phase_after_pulse"
 ADEQUACY_ALPHA = rs.ADEQUACY_ALPHA
 SEPARATION = rs.SEPARATION
+# Bound on one z12 batch's chi-square under an error world: three contrasts, three d2 splits, one parameter.
+BATCH_LIMIT = float(chi2_law.ppf(1 - rs.ADEQUACY_ALPHA, 5))
 GUARD_LIMIT = rs.GUARD_LIMIT
 Z_RESOLVE = rs.Z_RESOLVE
 BATCH_FIELDS = rs.BATCH_FIELDS
@@ -155,7 +162,7 @@ def forward_laws(arm: str, world: str, thetas: np.ndarray) -> np.ndarray:
     """Laws over the logical outcome index of an arm under a world, one row per value of `thetas`: a state vector
     over the five region qubits. `q12_phase` rotates q12 by theta about z before each of its pulses, after the
     arm's own Rz; `coupler_phase` gives each CZ of coupler 8-12 the conditional phase pi + theta."""
-    if world not in WORLDS:
+    if world not in WORLDS and world != AFTER_PULSE:
         raise ValueError(f"unknown world {world}")
     ref = rs.retained()
     region = ref["region"]
@@ -181,7 +188,13 @@ def forward_laws(arm: str, world: str, thetas: np.ndarray) -> np.ndarray:
             pulse = rs.rotation("x", math.pi / 2 + (q4_steps * STEP if q == Q4 else 0.0))
             if q == Q12:
                 frame = z12_steps * STEP + (thetas if world == "q12_phase" else zero)
-                unitary = np.stack([pulse @ rs.rotation("z", float(f)) for f in frame])
+                after = thetas if world == AFTER_PULSE else zero
+                unitary = np.stack(
+                    [
+                        rs.rotation("z", float(a)) @ pulse @ rs.rotation("z", float(f))
+                        for f, a in zip(frame, after, strict=True)
+                    ]
+                )
             else:
                 unitary = np.broadcast_to(pulse, (count, 2, 2))
         moved = np.moveaxis(psi, axis_of[q] + 1, -1)
@@ -329,15 +342,19 @@ def preregistered() -> dict[str, str]:
         "three d2 splits at the "
         "retention that reproduces the batch's center visibility through its own bracket assignment; the chi-squares "
         "are summed at the one contraction share of the predecessor's grid that makes the sum least",
-        "adequacy": f"a world is adequate when its sum is at most the {ADEQUACY_ALPHA} point of chi-square with 6 "
+        "adequacy": f"a world is adequate when its sum is at most the upper {ADEQUACY_ALPHA} point (the "
+        f"{100 * (1 - ADEQUACY_ALPHA):.1f}th percentile) of chi-square with 6 "
         "(exact) or 5 (error world) degrees of freedom per admitted z12 batch less one",
         "labels": "exact_parabola: the exact world is adequate, so a phase on or around q12 is falsified as the "
         "cause of the offset; q12_phase or coupler_phase: that world is adequate and its sum lies at least "
-        f"{SEPARATION} below the other error world's; phase_unresolved: an error world is adequate and the two are "
-        "closer; none_adequate: no world is adequate",
+        f"{SEPARATION} below the other error world's, and every admitted z12 batch reads that world at or below the "
+        f"upper {ADEQUACY_ALPHA} point of chi-square with 5 degrees of freedom and at or below the other error "
+        "world; phase_mixed: the sums prefer one error world and a batch does not; phase_unresolved: an error world "
+        "is adequate and the two are closer; none_adequate: no world is adequate. q12_phase names a single-qubit "
+        "phase at q12's pulses: a rotation about z after each pulse gives the same laws as one before each pulse",
         "sign": "reported with a q12_phase or coupler_phase label: the fitted parameter of each admitted z12 batch, "
         "and the injected phase of least contrast from a parabola through the pooled z12 arms and centers",
-        "d2_split": "also reported beside the label: the d2 split of the +10 and +20 degree z12 arms pooled over the "
+        "d2_split": "also reported beside the label: the d2 split of the +10 and +30 degree z12 arms pooled over the "
         "admitted replicates, beside the values each world predicts",
         "q4_line": "reported outside the label: a weighted straight line through the contrast of each q4 arm less "
         "its batch center against q4's injected angle (-5, +5, +10, +15 degrees, 0 at the center), with its "
@@ -496,12 +513,20 @@ def decide(batches: list[dict[str, Any]], matrix_of: Any) -> dict[str, Any]:
             w: {b["name"]: [float(x) for x in fits[b["name"]][w]["predicted"][share[w]]] for b in z12} for w in WORLDS
         },
     )
+    per_batch = {
+        w: {b["name"]: float(fits[b["name"]][w]["chi2"][share[w]]) for b in z12} for w in WORLDS if w != "exact"
+    }
+    numbers.update(batch_chi2=per_batch, batch_limit=round(BATCH_LIMIT, 3))
+
+    def homogeneous(world: str, other: str) -> bool:
+        return all(v <= BATCH_LIMIT and v <= per_batch[other][name] for name, v in per_batch[world].items())
+
     if adequate["exact"]:
         label = "exact_parabola"
     elif adequate["q12_phase"] and best["q12_phase"] <= best["coupler_phase"] - SEPARATION:
-        label = "q12_phase"
+        label = "q12_phase" if homogeneous("q12_phase", "coupler_phase") else "phase_mixed"
     elif adequate["coupler_phase"] and best["coupler_phase"] <= best["q12_phase"] - SEPARATION:
-        label = "coupler_phase"
+        label = "coupler_phase" if homogeneous("coupler_phase", "q12_phase") else "phase_mixed"
     elif adequate["q12_phase"] or adequate["coupler_phase"]:
         label = "phase_unresolved"
     else:
@@ -565,27 +590,37 @@ def predecessor_matrix() -> np.ndarray:
     return np.asarray(cc.readout_matrix(mean, ref["roles"]))
 
 
-# Truths the prediction record states: world, parameter in radians.
-TRUTHS: dict[str, tuple[str, float]] = {
-    "exact gates": ("exact", 0.0),
-    "q12 phase -0.18 rad": ("q12_phase", -0.18),
-    "q12 phase +0.18 rad": ("q12_phase", 0.18),
-    "coupler 8-12 phase -0.25 rad": ("coupler_phase", -0.25),
-    "coupler 8-12 phase +0.25 rad": ("coupler_phase", 0.25),
+TRUTHS: dict[str, tuple[str, float, float, str]] = {
+    "exact gates": ("exact", 0.0, 0.0, "offset_absent"),
+    "q12 phase -0.18 rad": ("q12_phase", -0.18, 0.0, "q12_phase"),
+    "q12 phase +0.18 rad": ("q12_phase", 0.18, 0.0, "q12_phase"),
+    "q12 phase -0.15 rad": ("q12_phase", -0.15, 0.0, "q12_phase"),
+    "coupler 8-12 phase -0.25 rad": ("coupler_phase", -0.25, 0.0, "coupler_phase"),
+    "coupler 8-12 phase +0.25 rad": ("coupler_phase", 0.25, 0.0, "coupler_phase"),
+    "exact gates, selector flip 0.0166 when q12 reads 0": ("exact", 0.0, 0.0166, "exact_parabola"),
+    "exact gates, selector flip 0.036 when q12 reads 0": ("exact", 0.0, 0.036, "none_adequate"),
 }
+# Truths the prediction record states: world, parameter in radians, probability of a selector flip conditioned on
+# d0 reading 0 (the predecessor's readout world, outside this decision's worlds), label at expected values.
 
 
-def truth_row(world: str, theta: float, matrix: np.ndarray, mix: float = 0.0) -> dict[str, dict[str, float]]:
+def truth_row(
+    world: str, theta: float, matrix: np.ndarray, flip: float = 0.0, mix: float = 0.0
+) -> dict[str, dict[str, float]]:
     """Contrast and d2 split of every arm under a truth at the retention where its center reads the design
-    visibility."""
+    visibility; `flip` is the probability that the selector read flips when d0 reads 0."""
     laws = np.stack([forward_law(arm, world, theta) for arm in ARM_NAMES])[None]
     center = laws[:, [ARM_NAMES.index(CENTER)]]
+    seen_matrix = matrix @ oc.selector_flip(KEYS.index("d0"), 0, flip)
     seen = np.array(
-        [float(rs.visibility(rs.read(rs.contract(center, float(r), mix), matrix))[0, 0]) for r in rs.RETENTION_GRID]
+        [
+            float(rs.visibility(rs.read(rs.contract(center, float(r), mix), seen_matrix))[0, 0])
+            for r in rs.RETENTION_GRID
+        ]
     )
     order = np.argsort(seen)
     retention = float(np.interp(DESIGN_VISIBILITY, seen[order], rs.RETENTION_GRID[order]))
-    read = rs.read(rs.contract(laws, retention, mix), matrix)[0]
+    read = rs.read(rs.contract(laws, retention, mix), seen_matrix)[0]
     contrast = rs.selector_contrast(read)
     split = rs.d2_split(read)[0]
     return {
@@ -594,9 +629,8 @@ def truth_row(world: str, theta: float, matrix: np.ndarray, mix: float = 0.0) ->
     }
 
 
-def planted_batches(row: dict[str, dict[str, float]], center_offset: float = 0.0) -> list[dict[str, Any]]:
-    """The eight data batches at a truth's expected contrasts and the design standard error; `center_offset` adds
-    a constant to every contrast (a static part outside the worlds)."""
+def planted_batches(row: dict[str, dict[str, float]]) -> list[dict[str, Any]]:
+    """The eight data batches at a truth's expected contrasts and d2 splits and the design standard errors."""
     error = 1.0 / math.sqrt(SCAN_SHOTS)
     out = []
     for n, (kind, replicate) in enumerate(batch_order()):
@@ -606,7 +640,7 @@ def planted_batches(row: dict[str, dict[str, float]], center_offset: float = 0.0
                 "name": f"planted-{n}",
                 "kind": kind,
                 "arms": arms,
-                "contrasts": [row[a]["contrast"] + center_offset for a in arms],
+                "contrasts": [row[a]["contrast"] for a in arms],
                 "errors": [error] * 3,
                 "splits": [row[a]["d2_split"] for a in arms],
                 "split_errors": [2 * error] * 3,
@@ -620,8 +654,8 @@ def planted_batches(row: dict[str, dict[str, float]], center_offset: float = 0.0
 def predictions() -> dict[str, Any]:
     matrix = predecessor_matrix()
     truths: dict[str, Any] = {}
-    for name, (world, theta) in TRUTHS.items():
-        row = truth_row(world, theta, matrix)
+    for name, (world, theta, flip, _) in TRUTHS.items():
+        row = truth_row(world, theta, matrix, flip)
         decision = decide(planted_batches(row), lambda b: matrix)
         truths[name] = {
             "arms": row,
@@ -828,28 +862,32 @@ def self_test() -> str:
             raise AssertionError(f"{arm} differs from the predecessor's forward law by {gap}")
     lines.append("center and q4 +10 arms equal the predecessor's forward laws")
     # An injected Rz(phi) cancels a q12 phase of -phi: the arm reads the exact center.
-    for steps in (-4, -2, 2, 4):
+    for steps in (-6, -2, 2, 6):
         arm = next(a for a, (q4, z12) in ARMS.items() if z12 == steps)
         gap = float(np.abs(forward_law(arm, "q12_phase", -steps * STEP) - forward_law(CENTER)).max())
         if gap > 1e-12:
             raise AssertionError(f"{arm} at a q12 phase of {-steps * STEP} differs from the exact center by {gap}")
     lines.append("an injected Rz cancels the opposite q12 phase exactly")
     matrix = predecessor_matrix()
-    expected = {
-        "exact gates": "offset_absent",
-        "q12 phase -0.18 rad": "q12_phase",
-        "q12 phase +0.18 rad": "q12_phase",
-        "coupler 8-12 phase -0.25 rad": "coupler_phase",
-        "coupler 8-12 phase +0.25 rad": "coupler_phase",
-    }
-    for name, (world, theta) in TRUTHS.items():
-        got = decide(planted_batches(truth_row(world, theta, matrix)), lambda b: matrix)["label"]
-        if got != expected[name]:
-            raise AssertionError(f"planted {name} reads {got}, not {expected[name]}")
+    for name, (world, theta, flip, label) in TRUTHS.items():
+        got = decide(planted_batches(truth_row(world, theta, matrix, flip)), lambda b: matrix)["label"]
+        if got != label:
+            raise AssertionError(f"planted {name} reads {got}, not {label}")
         lines.append(f"planted {name}: {got}")
-    # Exact gates beside a static offset outside the worlds (a readout-type part): the exact parabola plus a constant.
-    static = decide(planted_batches(truth_row("exact", 0.0, matrix), center_offset=0.014), lambda b: matrix)
-    lines.append(f"exact gates plus a constant 0.014: {static['label']}")
+    # The rotation about z after each q12 pulse gives the laws of the rotation before each pulse.
+    for arm in ARM_NAMES:
+        gap = float(np.abs(forward_law(arm, AFTER_PULSE, -0.18) - forward_law(arm, "q12_phase", -0.18)).max())
+        if gap > 1e-12:
+            raise AssertionError(f"{arm}: the after-pulse placement differs from the before-pulse one by {gap}")
+    lines.append("a q12 phase after each pulse gives the laws of one before each pulse")
+    # A series whose +-10 degree batches follow a q12 phase and whose +-30 degree batches a coupler phase.
+    by_q12 = planted_batches(truth_row("q12_phase", -0.18, matrix))
+    by_coupler = planted_batches(truth_row("coupler_phase", -0.25, matrix))
+    mixed = [c if q["kind"] == "z12-30" else q for q, c in zip(by_q12, by_coupler, strict=True)]
+    got = decide(mixed, lambda b: matrix)["label"]
+    if got in ("q12_phase", "coupler_phase"):
+        raise AssertionError(f"a series of two mechanisms reads the deciding label {got}")
+    lines.append(f"z12 batches of two mechanisms: {got}")
     return "\n".join(lines)
 
 

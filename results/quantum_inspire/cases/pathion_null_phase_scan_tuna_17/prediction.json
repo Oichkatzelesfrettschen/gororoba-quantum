@@ -17,13 +17,13 @@
  "design_visibility": 0.42,
  "limits": "labels at expected values with no sampling noise; contraction share 0 for the truths; the gate-noise families and the operating characteristics under sampling noise are not computed",
  "preregistered": {
-  "adequacy": "a world is adequate when its sum is at most the 0.001 point of chi-square with 6 (exact) or 5 (error world) degrees of freedom per admitted z12 batch less one",
+  "adequacy": "a world is adequate when its sum is at most the upper 0.001 point (the 99.9th percentile) of chi-square with 6 (exact) or 5 (error world) degrees of freedom per admitted z12 batch less one",
   "control": "the inverse-variance mean of the center arm's contrast over the admitted batches exceeds 3.0 standard errors; otherwise the decision reads offset_absent (within) or offset_reversed (below)",
-  "d2_split": "also reported beside the label: the d2 split of the +10 and +20 degree z12 arms pooled over the admitted replicates, beside the values each world predicts",
+  "d2_split": "also reported beside the label: the d2 split of the +10 and +30 degree z12 arms pooled over the admitted replicates, beside the values each world predicts",
   "estimates": "per data circuit, the raw selector contrast P(s=0 | coin read 1) - P(s=0 | coin read 0) with its binomial standard error, the d2 split and the visibility of the center arm of each batch",
   "fit": "for each world (exact gates, a rotation about z before each pulse of q12, a conditional-phase error of the CZ gates of coupler 8-12) one parameter per admitted z12 batch is fitted to its three contrasts and three d2 splits at the retention that reproduces the batch's center visibility through its own bracket assignment; the chi-squares are summed at the one contraction share of the predecessor's grid that makes the sum least",
   "guard": "a data batch is admitted when e01 and e10 of each of the five region qubits (the d2 split reads d2's qubit, which the predecessor left unguarded) change by at most 0.02 between the readout batch before it and the one after; the decision needs at least one admitted batch of each z12 kind, otherwise it reads unresolved_guard",
-  "labels": "exact_parabola: the exact world is adequate, so a phase on or around q12 is falsified as the cause of the offset; q12_phase or coupler_phase: that world is adequate and its sum lies at least 25.0 below the other error world's; phase_unresolved: an error world is adequate and the two are closer; none_adequate: no world is adequate",
+  "labels": "exact_parabola: the exact world is adequate, so a phase on or around q12 is falsified as the cause of the offset; q12_phase or coupler_phase: that world is adequate and its sum lies at least 25.0 below the other error world's, and every admitted z12 batch reads that world at or below the upper 0.001 point of chi-square with 5 degrees of freedom and at or below the other error world; phase_mixed: the sums prefer one error world and a batch does not; phase_unresolved: an error world is adequate and the two are closer; none_adequate: no world is adequate. q12_phase names a single-qubit phase at q12's pulses: a rotation about z after each pulse gives the same laws as one before each pulse",
   "ledger": "A5-186 changes only on q12_phase or coupler_phase, to the statement of that label; every other label reports the numbers",
   "line_phase": "outside this analysis: the shot-order fold of docs/evidence/qi-null-rotation-scan-line-phase/line_phase_split.py is run on the retained jobs afterwards and decides nothing",
   "q4_line": "reported outside the label: a weighted straight line through the contrast of each q4 arm less its batch center against q4's injected angle (-5, +5, +10, +15 degrees, 0 at the center), with its chi-square on 3 degrees of freedom, slope and the angle at which the pooled center plus the line reads zero",
@@ -59,23 +59,23 @@
      "contrast": 0.01109,
      "d2_split": 0.0192
     },
-    "b0-rx-z12-m20": {
-     "contrast": 0.02447,
-     "d2_split": 0.02829
+    "b0-rx-z12-m30": {
+     "contrast": 0.05513,
+     "d2_split": 0.03615
     },
     "b0-rx-z12-p10": {
      "contrast": 0.05031,
      "d2_split": -0.00137
     },
-    "b0-rx-z12-p20": {
-     "contrast": 0.09192,
-     "d2_split": -0.0119
+    "b0-rx-z12-p30": {
+     "contrast": 0.13148,
+     "d2_split": -0.02184
     }
    },
    "chi2_at_expected_values": {
     "coupler_phase": 0.0,
-    "exact": 1186.872,
-    "q12_phase": 181.702
+    "exact": 1413.499,
+    "q12_phase": 234.343
    },
    "label_at_expected_values": "coupler_phase"
   },
@@ -105,23 +105,23 @@
      "contrast": 0.05464,
      "d2_split": -0.00422
     },
-    "b0-rx-z12-m20": {
-     "contrast": 0.10922,
-     "d2_split": -0.01225
+    "b0-rx-z12-m30": {
+     "contrast": 0.1635,
+     "d2_split": -0.02005
     },
     "b0-rx-z12-p10": {
      "contrast": 0.00355,
      "d2_split": 0.01179
     },
-    "b0-rx-z12-p20": {
-     "contrast": 0.02184,
-     "d2_split": 0.01946
+    "b0-rx-z12-p30": {
+     "contrast": 0.06557,
+     "d2_split": 0.02674
     }
    },
    "chi2_at_expected_values": {
     "coupler_phase": 0.0,
-    "exact": 1632.786,
-    "q12_phase": 56.412
+    "exact": 2054.734,
+    "q12_phase": 95.184
    },
    "label_at_expected_values": "coupler_phase"
   },
@@ -151,21 +151,113 @@
      "contrast": 0.0127,
      "d2_split": 0.00015
     },
-    "b0-rx-z12-m20": {
-     "contrast": 0.04663,
-     "d2_split": 0.00058
+    "b0-rx-z12-m30": {
+     "contrast": 0.09108,
+     "d2_split": 0.00125
     },
     "b0-rx-z12-p10": {
      "contrast": 0.01288,
      "d2_split": 0.00015
     },
-    "b0-rx-z12-p20": {
-     "contrast": 0.04807,
-     "d2_split": 0.00058
+    "b0-rx-z12-p30": {
+     "contrast": 0.09542,
+     "d2_split": 0.00125
     }
    },
    "chi2_at_expected_values": null,
    "label_at_expected_values": "offset_absent"
+  },
+  "exact gates, selector flip 0.0166 when q12 reads 0": {
+   "arms": {
+    "b0-rx": {
+     "contrast": 0.00731,
+     "d2_split": -0.0
+    },
+    "b0-rx-q4-m5": {
+     "contrast": 0.00724,
+     "d2_split": -3e-05
+    },
+    "b0-rx-q4-p10": {
+     "contrast": 0.00703,
+     "d2_split": -7e-05
+    },
+    "b0-rx-q4-p15": {
+     "contrast": 0.0067,
+     "d2_split": -0.00016
+    },
+    "b0-rx-q4-p5": {
+     "contrast": 0.00724,
+     "d2_split": -2e-05
+    },
+    "b0-rx-z12-m10": {
+     "contrast": 0.01957,
+     "d2_split": 0.00015
+    },
+    "b0-rx-z12-m30": {
+     "contrast": 0.09555,
+     "d2_split": 0.00125
+    },
+    "b0-rx-z12-p10": {
+     "contrast": 0.01998,
+     "d2_split": 0.00015
+    },
+    "b0-rx-z12-p30": {
+     "contrast": 0.10044,
+     "d2_split": 0.00124
+    }
+   },
+   "chi2_at_expected_values": {
+    "coupler_phase": 47.989,
+    "exact": 48.892,
+    "q12_phase": 48.88
+   },
+   "label_at_expected_values": "exact_parabola"
+  },
+  "exact gates, selector flip 0.036 when q12 reads 0": {
+   "arms": {
+    "b0-rx": {
+     "contrast": 0.01617,
+     "d2_split": -0.0
+    },
+    "b0-rx-q4-m5": {
+     "contrast": 0.01602,
+     "d2_split": -6e-05
+    },
+    "b0-rx-q4-p10": {
+     "contrast": 0.01554,
+     "d2_split": -0.00016
+    },
+    "b0-rx-q4-p15": {
+     "contrast": 0.01481,
+     "d2_split": -0.00036
+    },
+    "b0-rx-q4-p5": {
+     "contrast": 0.01601,
+     "d2_split": -4e-05
+    },
+    "b0-rx-z12-m10": {
+     "contrast": 0.02791,
+     "d2_split": 0.00015
+    },
+    "b0-rx-z12-m30": {
+     "contrast": 0.10097,
+     "d2_split": 0.00125
+    },
+    "b0-rx-z12-p10": {
+     "contrast": 0.02857,
+     "d2_split": 0.00015
+    },
+    "b0-rx-z12-p30": {
+     "contrast": 0.10652,
+     "d2_split": 0.00124
+    }
+   },
+   "chi2_at_expected_values": {
+    "coupler_phase": 209.585,
+    "exact": 238.143,
+    "q12_phase": 237.962
+   },
+   "label_at_expected_values": "none_adequate"
   },
   "q12 phase +0.18 rad": {
    "arms": {
@@ -193,22 +285,68 @@
      "contrast": 1e-05,
      "d2_split": 0.0
     },
-    "b0-rx-z12-m20": {
-     "contrast": 0.01234,
-     "d2_split": 0.00015
+    "b0-rx-z12-m30": {
+     "contrast": 0.04685,
+     "d2_split": 0.00059
     },
     "b0-rx-z12-p10": {
      "contrast": 0.05107,
      "d2_split": 0.00062
     },
-    "b0-rx-z12-p20": {
-     "contrast": 0.10016,
-     "d2_split": 0.00131
+    "b0-rx-z12-p30": {
+     "contrast": 0.14653,
+     "d2_split": 0.00216
     }
    },
    "chi2_at_expected_values": {
-    "coupler_phase": 169.394,
-    "exact": 1466.797,
+    "coupler_phase": 231.096,
+    "exact": 1706.565,
+    "q12_phase": 0.0
+   },
+   "label_at_expected_values": "q12_phase"
+  },
+  "q12 phase -0.15 rad": {
+   "arms": {
+    "b0-rx": {
+     "contrast": 0.00992,
+     "d2_split": 0.00012
+    },
+    "b0-rx-q4-m5": {
+     "contrast": 0.01479,
+     "d2_split": 0.00247
+    },
+    "b0-rx-q4-p10": {
+     "contrast": 0.00015,
+     "d2_split": -0.00499
+    },
+    "b0-rx-q4-p15": {
+     "contrast": -0.00375,
+     "d2_split": -0.00762
+    },
+    "b0-rx-q4-p5": {
+     "contrast": 0.00486,
+     "d2_split": -0.00238
+    },
+    "b0-rx-z12-m10": {
+     "contrast": 0.04292,
+     "d2_split": 0.00053
+    },
+    "b0-rx-z12-m30": {
+     "contrast": 0.13314,
+     "d2_split": 0.00204
+    },
+    "b0-rx-z12-p10": {
+     "contrast": 0.00027,
+     "d2_split": 0.0
+    },
+    "b0-rx-z12-p30": {
+     "contrast": 0.05693,
+     "d2_split": 0.0007
+    }
+   },
+   "chi2_at_expected_values": {
+    "coupler_phase": 129.136,
+    "exact": 1184.776,
     "q12_phase": 0.0
    },
    "label_at_expected_values": "q12_phase"
@@ -239,22 +377,22 @@
      "contrast": 0.05117,
      "d2_split": 0.00064
     },
-    "b0-rx-z12-m20": {
-     "contrast": 0.09873,
-     "d2_split": 0.00136
+    "b0-rx-z12-m30": {
+     "contrast": 0.142,
+     "d2_split": 0.00223
     },
     "b0-rx-z12-p10": {
      "contrast": 1e-05,
      "d2_split": 0.0
     },
-    "b0-rx-z12-p20": {
-     "contrast": 0.01292,
-     "d2_split": 0.00015
+    "b0-rx-z12-p30": {
+     "contrast": 0.04986,
+     "d2_split": 0.0006
     }
    },
    "chi2_at_expected_values": {
-    "coupler_phase": 74.871,
-    "exact": 1514.321,
+    "coupler_phase": 189.299,
+    "exact": 1763.279,
     "q12_phase": 0.0
    },
    "label_at_expected_values": "q12_phase"
