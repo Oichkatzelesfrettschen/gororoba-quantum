@@ -1,0 +1,150 @@
+{
+ "schema": "qi-pathion-null-phase-scan-series-v1",
+ "backend": "tuna_17",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "kind": "readout",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "kind": "q4-near",
+   "files": [
+    "b0-rx-q4-m5.cq",
+    "b0-rx.cq",
+    "b0-rx-q4-p5.cq"
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "kind": "readout",
+   "files": [
+    "readout-1.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-03",
+   "kind": "q4-far",
+   "files": [
+    "b0-rx-q4-p10.cq",
+    "b0-rx.cq",
+    "b0-rx-q4-p15.cq"
+   ]
+  },
+  {
+   "batch": "batch-04",
+   "kind": "readout",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-05",
+   "kind": "z12-10",
+   "files": [
+    "b0-rx-z12-m10.cq",
+    "b0-rx.cq",
+    "b0-rx-z12-p10.cq"
+   ]
+  },
+  {
+   "batch": "batch-06",
+   "kind": "readout",
+   "files": [
+    "readout-1.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-07",
+   "kind": "z12-20",
+   "files": [
+    "b0-rx-z12-m20.cq",
+    "b0-rx.cq",
+    "b0-rx-z12-p20.cq"
+   ]
+  },
+  {
+   "batch": "batch-08",
+   "kind": "readout",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-09",
+   "kind": "z12-20",
+   "files": [
+    "b0-rx-z12-p20.cq",
+    "b0-rx.cq",
+    "b0-rx-z12-m20.cq"
+   ]
+  },
+  {
+   "batch": "batch-10",
+   "kind": "readout",
+   "files": [
+    "readout-1.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-11",
+   "kind": "z12-10",
+   "files": [
+    "b0-rx-z12-p10.cq",
+    "b0-rx.cq",
+    "b0-rx-z12-m10.cq"
+   ]
+  },
+  {
+   "batch": "batch-12",
+   "kind": "readout",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-13",
+   "kind": "q4-far",
+   "files": [
+    "b0-rx-q4-p15.cq",
+    "b0-rx.cq",
+    "b0-rx-q4-p10.cq"
+   ]
+  },
+  {
+   "batch": "batch-14",
+   "kind": "readout",
+   "files": [
+    "readout-1.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-15",
+   "kind": "q4-near",
+   "files": [
+    "b0-rx-q4-p5.cq",
+    "b0-rx.cq",
+    "b0-rx-q4-m5.cq"
+   ]
+  },
+  {
+   "batch": "batch-16",
+   "kind": "readout",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  }
+ ]
+}

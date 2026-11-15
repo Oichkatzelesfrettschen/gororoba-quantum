@@ -1,0 +1,224 @@
+{
+ "schema": "qi-pathion-null-phase-scan-cases-v1",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "region": [
+  2,
+  4,
+  8,
+  11,
+  12
+ ],
+ "placement": {
+  "2": 2,
+  "4": 4,
+  "8": 8,
+  "11": 11,
+  "12": 12
+ },
+ "register": [
+  2,
+  4,
+  8,
+  11,
+  12
+ ],
+ "guard_qubits": [
+  2,
+  4,
+  8,
+  11,
+  12
+ ],
+ "templates": {
+  "b0": {
+   "block": "b0",
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 0,
+   "cz": 21,
+   "roles": {
+    "d0": 12,
+    "d1": 4,
+    "d2": 11,
+    "selector": 8,
+    "coin": 2
+   },
+   "ideal_c": [
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869,
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869
+   ]
+  }
+ },
+ "retained_b0": {
+  "cases_sha256": "b7d52dd9f635fd3e8ee507ab0b1d4aa706e3698adedcd659b6750ab164c113ab",
+  "circuit_sha256": "9994e3b74314e0176bdbe77644be3faba9450a65ac79dae5136c7bc011cad56f"
+ },
+ "preregistered": {
+  "estimates": "per data circuit, the raw selector contrast P(s=0 | coin read 1) - P(s=0 | coin read 0) with its binomial standard error, the d2 split and the visibility of the center arm of each batch",
+  "guard": "a data batch is admitted when e01 and e10 of each of the five region qubits (the d2 split reads d2's qubit, which the predecessor left unguarded) change by at most 0.02 between the readout batch before it and the one after; the decision needs at least one admitted batch of each z12 kind, otherwise it reads unresolved_guard",
+  "control": "the inverse-variance mean of the center arm's contrast over the admitted batches exceeds 3.0 standard errors; otherwise the decision reads offset_absent (within) or offset_reversed (below)",
+  "fit": "for each world (exact gates, a rotation about z before each pulse of q12, a conditional-phase error of the CZ gates of coupler 8-12) one parameter per admitted z12 batch is fitted to its three contrasts and three d2 splits at the retention that reproduces the batch's center visibility through its own bracket assignment; the chi-squares are summed at the one contraction share of the predecessor's grid that makes the sum least",
+  "adequacy": "a world is adequate when its sum is at most the 0.001 point of chi-square with 6 (exact) or 5 (error world) degrees of freedom per admitted z12 batch less one",
+  "labels": "exact_parabola: the exact world is adequate, so a phase on or around q12 is falsified as the cause of the offset; q12_phase or coupler_phase: that world is adequate and its sum lies at least 25.0 below the other error world's; phase_unresolved: an error world is adequate and the two are closer; none_adequate: no world is adequate",
+  "sign": "reported with a q12_phase or coupler_phase label: the fitted parameter of each admitted z12 batch, and the injected phase of least contrast from a parabola through the pooled z12 arms and centers",
+  "d2_split": "also reported beside the label: the d2 split of the +10 and +20 degree z12 arms pooled over the admitted replicates, beside the values each world predicts",
+  "q4_line": "reported outside the label: a weighted straight line through the contrast of each q4 arm less its batch center against q4's injected angle (-5, +5, +10, +15 degrees, 0 at the center), with its chi-square on 3 degrees of freedom, slope and the angle at which the pooled center plus the line reads zero",
+  "visibility": "reported outside the label: each arm's visibility over its batch center's, beside the exact circuit's ratio; a phase on q12 moves the z12 ratios with the total phase, so the comparison bounds a finite duration of Rz and does not isolate it",
+  "line_phase": "outside this analysis: the shot-order fold of docs/evidence/qi-null-rotation-scan-line-phase/line_phase_split.py is run on the retained jobs afterwards and decides nothing",
+  "ledger": "A5-186 changes only on q12_phase or coupler_phase, to the statement of that label; every other label reports the numbers"
+ },
+ "shots": 131072,
+ "batch": "batch-03",
+ "kind": "q4-far",
+ "replicate": 0,
+ "circuits": [
+  {
+   "file": "b0-rx-q4-p10.cq",
+   "kind": "data",
+   "template": "b0",
+   "arm": {
+    "q4_steps": 2,
+    "z12_steps": 0
+   },
+   "ideal": [
+    0.056507286676,
+    0.000571384168,
+    0.066598625273,
+    0.001322703883,
+    0.045627389296,
+    0.000573324978,
+    0.076028243357,
+    0.00277104237,
+    0.00185327065,
+    0.055225400194,
+    0.001656204435,
+    0.066265124721,
+    0.000124210266,
+    0.046076504008,
+    0.001064696722,
+    0.077734589004,
+    0.001429670569,
+    0.048846204015,
+    0.001196788011,
+    0.073527337405,
+    0.00386028149,
+    0.053569872589,
+    0.000835102873,
+    0.066734743048,
+    0.049013435658,
+    0.001262438926,
+    0.074595906147,
+    0.000128219269,
+    0.055489035782,
+    0.001941118298,
+    0.066647894115,
+    0.000921951806
+   ],
+   "sha256": "8cba8a868670d4626183702b68b39b4db5cdf167c8e8e25bff7d56a3c5ec3dc4"
+  },
+  {
+   "file": "b0-rx.cq",
+   "kind": "data",
+   "template": "b0",
+   "arm": {
+    "q4_steps": 0,
+    "z12_steps": 0
+   },
+   "ideal": [
+    0.06242201442,
+    7.798558e-05,
+    0.062419618627,
+    8.0381373e-05,
+    0.06232564198,
+    0.00017435802,
+    0.062419618627,
+    8.0381373e-05,
+    0.00017435802,
+    0.06232564198,
+    0.000177984784,
+    0.062322015216,
+    7.798558e-05,
+    0.06242201442,
+    0.000177984784,
+    0.062322015216,
+    7.798558e-05,
+    0.06242201442,
+    8.0381373e-05,
+    0.062419618627,
+    0.00017435802,
+    0.06232564198,
+    8.0381373e-05,
+    0.062419618627,
+    0.06232564198,
+    0.00017435802,
+    0.062322015216,
+    0.000177984784,
+    0.06242201442,
+    7.798558e-05,
+    0.062322015216,
+    0.000177984784
+   ],
+   "sha256": "e1b6a989cd172da07f9c49f34afabaadc7ee5adfa2f21c6058e75b3be17cbead"
+  },
+  {
+   "file": "b0-rx-q4-p15.cq",
+   "kind": "data",
+   "template": "b0",
+   "arm": {
+    "q4_steps": 3,
+    "z12_steps": 0
+   },
+   "ideal": [
+    0.052825489016,
+    0.001662508917,
+    0.068005486476,
+    0.002506515591,
+    0.038423302175,
+    0.001044626142,
+    0.08060696299,
+    0.004925108693,
+    0.003470298233,
+    0.0510176997,
+    0.003013087021,
+    0.067498915046,
+    0.000371400202,
+    0.039096528115,
+    0.002466902533,
+    0.08306516915,
+    0.003155339115,
+    0.043277080004,
+    0.00198293207,
+    0.07658464881,
+    0.007618695949,
+    0.047294044163,
+    0.001662748105,
+    0.068424511783,
+    0.043692405425,
+    0.002740013695,
+    0.078122708907,
+    0.000444871974,
+    0.050044269654,
+    0.004868470458,
+    0.068099739762,
+    0.001987520126
+   ],
+   "sha256": "3a83920cbfd3fd481d2eca0c6c1513ed03a5d630d65dd5d27e5cabaa2e3110fa"
+  }
+ ]
+}

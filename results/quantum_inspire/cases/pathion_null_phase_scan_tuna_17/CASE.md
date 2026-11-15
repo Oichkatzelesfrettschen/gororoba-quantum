@@ -1,0 +1,192 @@
+# Case: Tuna-17 selector offset of the null block against an injected phase on q12
+
+Status: written case awaiting its review and the owner's approval; nothing has been submitted. Generator and
+checker: `scripts/qi_pathion_null_phase_scan_cases.py` (`--check results/quantum_inspire/cases` reproduces every
+file of this directory except this one, and the QX twin `../pathion_null_phase_scan_qx/`). Ledger row: A5-186.
+Predecessor: the injected-rotation scan ([case](../pathion_null_rotation_scan_tuna_17/CASE.md), verdict
+`unresolved_none`) and its exploratory reading
+([tuna17-null-rotation-scan-line-phase.md](../../../../docs/notes/quantum_inspire/tuna17-null-rotation-scan-line-phase.md)),
+whose [draft](../../../../docs/notes/quantum_inspire/tuna17-null-phase-scan-case-draft.md) this case builds.
+
+## What the run measures
+
+The null block b0 (21 routed CZ on q2, q4, q8, q11, q12; 49 pulses: 34 on q8, 8 on q4, 5 on q12, 1 on q2, 1 on
+q11) reads a raw selector contrast of +0.0145 +- 0.0010 over the eleven center circuits of the predecessor, where
+exact gates give 0. The predecessor varied pulse amplitudes, and none of its preregistered worlds fits (least
+chi-square 234.5 against 37.70). In the exploratory reading two elementary errors outside those worlds lead: a
+rotation about z before each pulse of q12 and a conditional-phase error of the CZ gates of coupler 8-12
+(chi-square 205 and 187 with one parameter per batch). Neither is adequate, and with exact pulses both give a
+contrast that is even in the error, so the retained offset fixes a size near 0.18 rad for the q12 phase and leaves
+its sign open.
+
+This case injects a known phase. An `Rz(phi)` before each of q12's five pulses adds phi to the phase that precedes
+that pulse. Under a phase theta on q12 the contrast against phi is the exact curve shifted by -theta: it reads zero
+at phi = -theta. Under a conditional phase of coupler 8-12 the least contrast stays above zero and the d2 split of
+the z12 arms departs from zero. With exact gates the curve is even in phi and reads zero at phi = 0, so a static
+offset of another origin adds a constant to an even curve.
+
+hypothesis: Tuna-17 applies `Rz` as a frame update of zero duration, so the z12 arms keep the schedule, the pulse
+count and the CZ count of the center arm. The provider lists `Rz(angle)` among the native gates
+(`docs/notes/quantum_inspire/site/kbase_tuna-operational-specifics.md`) and publishes no pulse schedule. The
+platform's compiler keeps each injected `Rz` as its own instruction before its pulse
+(`docs/evidence/quantum_inspire/toolchain-token-recovery.json`, 51 circuits of this case, 0 failing; the compiled
+text differs from the source by angle rounding and by `Rz(-pi)` written as `Rz(pi)`).
+
+Predicted raw selector contrast per arm at the retention where the center reads visibility 0.42, contraction
+share 0, through the mean bracket readout of the predecessor (`prediction.json`, `truths`):
+
+| truth | center | q4 -5 | q4 +5 | q4 +10 | q4 +15 | z12 -20 | z12 -10 | z12 +10 | z12 +20 | label |
+|---|---|---|---|---|---|---|---|---|---|---|
+| exact gates | 0 | 0 | 0 | 0 | 0 | +0.0466 | +0.0127 | +0.0129 | +0.0481 | `offset_absent` |
+| q12 phase -0.18 rad | +0.0144 | +0.0203 | +0.0082 | +0.0024 | -0.0025 | +0.0987 | +0.0512 | 0 | +0.0129 | `q12_phase` |
+| q12 phase +0.18 rad | +0.0141 | +0.0086 | +0.0194 | +0.0237 | +0.0268 | +0.0123 | 0 | +0.0511 | +0.1002 | `q12_phase` |
+| coupler 8-12 phase -0.25 rad | +0.0157 | +0.0236 | +0.0075 | -0.0001 | -0.0064 | +0.1092 | +0.0546 | +0.0036 | +0.0218 | `coupler_phase` |
+| coupler 8-12 phase +0.25 rad | +0.0204 | +0.0118 | +0.0285 | +0.0353 | +0.0401 | +0.0245 | +0.0111 | +0.0503 | +0.0919 | `coupler_phase` |
+
+The standard error of one contrast at 131,072 shots is 0.0028 and of one d2 split 0.0056. The d2 split of the z12
+arms stays below 0.0014 under exact gates and under a q12 phase; under the coupler phase of -0.25 rad it reads
+-0.0123, -0.0042, +0.0118 and +0.0195 at -20, -10, +10 and +20 degrees, and under +0.25 rad +0.0283, +0.0192,
+-0.0014 and -0.0119. The retained q4 arms read +0.039 at -10 degrees and -0.006 at +10 degrees, the slope of the
+two negative-sign rows and steeper than either.
+
+At these expected values the fit of "Preregistered decision rules" gives the other error world a chi-square of
+74.9 (q12 phase -0.18 true), 169.4 (+0.18), 56.4 (coupler -0.25 true) and 181.7 (+0.25) against the separation of
+25 and the adequacy bound of 43.82, and the exact world above 1,100 in each. The contrasts alone leave the coupler
+truth of -0.25 rad only 7.7 from the q12 world, which is why the fit carries the d2 split.
+
+### Circuits
+
+Every circuit is the retained b0 text with each `X90` as `Rx(pi/2)`, the predecessor's center arm, rewritten on
+one qubit. Angles are multiples of pi/36, the processor's angle grid.
+
+- `b0-rx`: the center, byte for byte the predecessor's `b0-rx`, in every data batch.
+- `b0-rx-q4-m5`, `-p5`, `-p10`, `-p15`: q4's 8 pulses at 85, 95, 100 and 105 degrees. `-p10` repeats a retained
+  arm.
+- `b0-rx-z12-m20`, `-m10`, `-p10`, `-p20`: `Rz(phi)` before each of q12's 5 pulses, phi = -20, -10, +10, +20
+  degrees.
+
+### Batches
+
+17 batches of at most 3 circuits. A readout batch [readout-0, readout-1] at 32,768 shots opens the series and
+follows every data batch. Eight data batches at 131,072 shots per circuit:
+
+- forward round: [q4 -5, `b0-rx`, q4 +5], [q4 +10, `b0-rx`, q4 +15], [z12 -10, `b0-rx`, z12 +10],
+  [z12 -20, `b0-rx`, z12 +20];
+- mirror round: the same four in reverse order with the outer arms exchanged.
+
+Each data batch carries its own center, so a drift of the offset between batches (0.001 to 0.020 in the
+predecessor) enters no within-batch comparison. The two z12 +-20 batches share the readout batch between them, so
+one failed bracket there removes both and the series reads `unresolved_guard`. The QX twin holds the nine distinct
+circuits in three batches of 3 at 2,048 shots.
+
+## Why simulation cannot answer it
+
+Whether the device carries a phase on q12, a conditional phase on coupler 8-12, or neither is a calibration fact of
+Tuna-17 that the provider does not publish. The retained series cannot separate them: it varies pulse amplitudes
+alone, both errors fit its contrasts almost equally, and its response is even in the error.
+
+## Backend, shots, seconds, quota
+
+- Backend: Tuna-17 (type 7, `tuna_17`), region q2, q4, q8, q11, q12 (q15 and q13 stay out). QX emulator (type 1)
+  for the twin.
+- Jobs and shots: 42 jobs in 17 batches, 3,735,552 shots (24 data jobs at 131,072, 18 readout jobs at 32,768),
+  every job at or under 131,072 shots. The longest job takes about 80 s against the 300 s job limit.
+- Expected time: 35 to 39 minutes of execution (2,089 to 2,315 s), 16 pauses budgeted at the 120 s top step of the
+  pause ladder (1,920 s; the series starts at the 30 s step), plus queue time. The predecessor's 21 batches took
+  66 minutes. QX twin: 9 jobs of 2,048 shots.
+- Queue rule: one batch of at most 3 circuits queued at a time, each collected before the next
+  (`docs/notes/quantum_inspire/usage.md`, "Queue rules: the FAQ governs").
+- Quota and credits: `docs/notes/quantum_inspire/usage.md` records no metered seconds, credits or minutes for this
+  account; the ledger snapshot after the predecessor lists its 62 jobs with no charge. Expected credits 0, read
+  again from a fresh usage snapshot before the submission.
+
+## Preregistered decision rules
+
+`cases.json` of every batch carries these rules (`preregistered`); `decide()` applies rules 1 to 4.
+
+1. Admission. A data batch is admitted when e01 and e10 of each of the five region qubits change by at most 0.02
+   between the readout batch before it and the one after. The d2 split reads d2's qubit (q11), which the
+   predecessor left unguarded. The decision needs an admitted batch of each z12 kind; otherwise
+   `unresolved_guard`.
+2. Control. The inverse-variance mean of the center contrast over the admitted batches exceeds 3 standard errors;
+   otherwise `offset_absent` (within) or `offset_reversed` (below).
+3. Fit. For each of three worlds (exact gates, a rotation about z before each pulse of q12, a conditional-phase
+   error of the CZ gates of coupler 8-12) one parameter per admitted z12 batch is fitted to its three contrasts and
+   three d2 splits, at the retention that reproduces the batch's center visibility through its own bracket
+   readout. The chi-squares are summed at the one contraction share (the predecessor's grid of 13) that makes the
+   sum least. A world is adequate when its sum is at most the 0.001 point of chi-square with 6 (exact) or 5 (error
+   world) degrees of freedom per admitted z12 batch less one: 49.73 and 43.82 for four batches.
+4. Labels. `exact_parabola`: the exact world is adequate, so a phase on or around q12 is falsified as the cause of
+   the offset. `q12_phase` or `coupler_phase`: that world is adequate and its sum lies at least 25 below the other
+   error world's. `phase_unresolved`: an error world is adequate and the two are closer than 25. `none_adequate`:
+   no world is adequate.
+5. Reported beside the label, outside it: the fitted parameter of each admitted z12 batch; the injected phase of
+   least contrast from a weighted parabola through the z12 arms and their centers; the d2 split of the +10 and +20
+   degree arms pooled over replicates; each arm's visibility over its center's beside the exact circuit's ratio.
+6. q4 line, outside the label: a weighted straight line through the contrast of each q4 arm less its batch center
+   against q4's injected angle (-5, +5, +10, +15 degrees), with its chi-square on 3 degrees of freedom, its slope
+   and the angle at which the pooled center plus the line reads zero.
+7. Line phase, outside this analysis: the shot-order fold of
+   `docs/evidence/qi-null-rotation-scan-line-phase/line_phase_split.py` is run on the retained jobs afterwards and
+   decides nothing.
+
+| label | outcome | effect on A5-186 |
+|---|---|---|
+| `q12_phase` | a phase before q12's pulses is adequate and preferred; its sign and size per batch are reported | changes to that statement |
+| `coupler_phase` | a conditional phase of coupler 8-12 is adequate and preferred | changes to that statement |
+| `phase_unresolved` | an error world is adequate and the two are not separated | unchanged; the numbers are reported |
+| `exact_parabola` | the z12 arms follow exact gates; the offset is not a phase on or around q12 | unchanged; the phase reading is falsified |
+| `none_adequate` | no world fits; a constant offset beside exact gates reads this label | unchanged |
+| `offset_absent`, `offset_reversed`, `unresolved_guard` | numbers reported | unchanged |
+
+## Limits stated before the run
+
+- The fit carries the two contractions of the predecessor at a share fitted once per series. The predecessor's
+  gate-noise families are outside it: their tables exist for its worlds alone. The full-histogram fit of the
+  exploratory reading shows the contraction model far from the device's law, so an adequate fit here is a
+  statement about three contrasts and three d2 splits per batch and no more.
+- The labels above are read at expected values with no sampling noise. Their operating characteristics under
+  sampling noise, under gate noise and under a static offset beside a phase are not computed. A constant 0.014
+  beside exact gates reads `none_adequate` at expected values.
+- A contrast and a d2 split of one circuit share its shots; the chi-square adds them as independent.
+- The offset drifts on a scale of minutes, so a fitted phase is a value per batch.
+- An `Rz` before each pulse of q12 is one placement. A phase that accumulates during idles or inside the CZ of
+  coupler 8-12 commutes differently with the pulses; the two error worlds bracket that and no third world covers
+  it.
+- The zero duration of `Rz` is a hypothesis. A phase on q12 moves the visibility of the z12 arms as well, so the
+  reported visibility ratio bounds a finite duration and does not isolate it.
+- The exploratory reading chose these worlds after seeing the predecessor's data. This case fixes its rules before
+  any new shot.
+
+## Commands
+
+```sh
+set -eu
+export PYTHON="${PYTHON:-python3}"
+export QI_PYTHON="${QI_PYTHON:-$HOME/.local/share/quantuminspire/venv/bin/python}"
+export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
+CASES=results/quantum_inspire/cases RUNS=results/quantum_inspire/runs
+STAMP=${STAMP:-$(date -u +%Y-%m-%dT%H%M%SZ)}
+echo "STAMP=$STAMP"
+SCAN=scripts/qi_pathion_null_phase_scan_cases.py
+
+"$PYTHON" "$SCAN" --check "$CASES"
+"$PYTHON" scripts/qi_toolchain_check.py --check
+
+# QX twin: three batches, then the control analysis, which exits 1 unless the series is complete and every circuit
+# reads its ideal law; the Tuna-17 lines run only after it exits 0.
+SANITY_COMMAND="true" sh scripts/qi_pathion_one_cz_null_submit.sh 1 "$CASES/pathion_null_phase_scan_qx" "$RUNS" "$STAMP" "QUOTE"
+"$PYTHON" "$SCAN" --analyze "$RUNS/$STAMP"-pathion_null_phase_scan_qx-batch-* \
+	--out results/quantum_inspire/pathion_null_phase_scan_qx_analysis.json
+
+# Tuna-17: seventeen batches in order, with Tuna-17 online and the account's queue empty.
+SANITY_COMMAND="$PYTHON $SCAN --sanity" sh scripts/qi_pathion_one_cz_null_submit.sh 7 \
+	"$CASES/pathion_null_phase_scan_tuna_17" "$RUNS" "$STAMP" "QUOTE"
+"$PYTHON" "$SCAN" --analyze "$RUNS/$STAMP"-pathion_null_phase_scan_tuna_17-batch-* \
+	--out results/quantum_inspire/pathion_null_phase_scan_tuna_17_analysis.json
+```
+
+Never resubmit a directory that holds `submission.json` (`qi_platform.py reconcile` recovers its receipt); see
+`docs/notes/quantum_inspire/usage.md`, "Run on Tuna-17". The retention change that follows holds the run
+directories, both analyses and their replay gates, a refreshed `usage.json` and the
+`docs/state/research_state.json` registration.

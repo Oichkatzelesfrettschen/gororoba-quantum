@@ -1,0 +1,102 @@
+{
+ "schema": "qi-pathion-null-phase-scan-cases-v1",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "region": [
+  2,
+  4,
+  8,
+  11,
+  12
+ ],
+ "placement": {
+  "2": 2,
+  "4": 4,
+  "8": 8,
+  "11": 11,
+  "12": 12
+ },
+ "register": [
+  2,
+  4,
+  8,
+  11,
+  12
+ ],
+ "guard_qubits": [
+  2,
+  4,
+  8,
+  11,
+  12
+ ],
+ "templates": {
+  "b0": {
+   "block": "b0",
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 0,
+   "cz": 21,
+   "roles": {
+    "d0": 12,
+    "d1": 4,
+    "d2": 11,
+    "selector": 8,
+    "coin": 2
+   },
+   "ideal_c": [
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869,
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869
+   ]
+  }
+ },
+ "retained_b0": {
+  "cases_sha256": "b7d52dd9f635fd3e8ee507ab0b1d4aa706e3698adedcd659b6750ab164c113ab",
+  "circuit_sha256": "9994e3b74314e0176bdbe77644be3faba9450a65ac79dae5136c7bc011cad56f"
+ },
+ "preregistered": {
+  "estimates": "per data circuit, the raw selector contrast P(s=0 | coin read 1) - P(s=0 | coin read 0) with its binomial standard error, the d2 split and the visibility of the center arm of each batch",
+  "guard": "a data batch is admitted when e01 and e10 of each of the five region qubits (the d2 split reads d2's qubit, which the predecessor left unguarded) change by at most 0.02 between the readout batch before it and the one after; the decision needs at least one admitted batch of each z12 kind, otherwise it reads unresolved_guard",
+  "control": "the inverse-variance mean of the center arm's contrast over the admitted batches exceeds 3.0 standard errors; otherwise the decision reads offset_absent (within) or offset_reversed (below)",
+  "fit": "for each world (exact gates, a rotation about z before each pulse of q12, a conditional-phase error of the CZ gates of coupler 8-12) one parameter per admitted z12 batch is fitted to its three contrasts and three d2 splits at the retention that reproduces the batch's center visibility through its own bracket assignment; the chi-squares are summed at the one contraction share of the predecessor's grid that makes the sum least",
+  "adequacy": "a world is adequate when its sum is at most the 0.001 point of chi-square with 6 (exact) or 5 (error world) degrees of freedom per admitted z12 batch less one",
+  "labels": "exact_parabola: the exact world is adequate, so a phase on or around q12 is falsified as the cause of the offset; q12_phase or coupler_phase: that world is adequate and its sum lies at least 25.0 below the other error world's; phase_unresolved: an error world is adequate and the two are closer; none_adequate: no world is adequate",
+  "sign": "reported with a q12_phase or coupler_phase label: the fitted parameter of each admitted z12 batch, and the injected phase of least contrast from a parabola through the pooled z12 arms and centers",
+  "d2_split": "also reported beside the label: the d2 split of the +10 and +20 degree z12 arms pooled over the admitted replicates, beside the values each world predicts",
+  "q4_line": "reported outside the label: a weighted straight line through the contrast of each q4 arm less its batch center against q4's injected angle (-5, +5, +10, +15 degrees, 0 at the center), with its chi-square on 3 degrees of freedom, slope and the angle at which the pooled center plus the line reads zero",
+  "visibility": "reported outside the label: each arm's visibility over its batch center's, beside the exact circuit's ratio; a phase on q12 moves the z12 ratios with the total phase, so the comparison bounds a finite duration of Rz and does not isolate it",
+  "line_phase": "outside this analysis: the shot-order fold of docs/evidence/qi-null-rotation-scan-line-phase/line_phase_split.py is run on the retained jobs afterwards and decides nothing",
+  "ledger": "A5-186 changes only on q12_phase or coupler_phase, to the statement of that label; every other label reports the numbers"
+ },
+ "shots": 32768,
+ "batch": "batch-08",
+ "kind": "readout",
+ "replicate": null,
+ "circuits": [
+  {
+   "file": "readout-0.cq",
+   "kind": "readout",
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  },
+  {
+   "file": "readout-1.cq",
+   "kind": "readout",
+   "sha256": "9ab3ef152dab6ab9fb472c9b7583674feb5d7fc4fb006a2b514af4f89c917d36"
+  }
+ ]
+}
