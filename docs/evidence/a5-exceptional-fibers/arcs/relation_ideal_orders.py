@@ -44,6 +44,7 @@ Usage, from the repository root: "$PYTHON" docs/evidence/a5-exceptional-fibers/a
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import sys
@@ -130,6 +131,8 @@ def run(job: tuple[str, str, str, Path]) -> dict[str, Any]:
     if any(line.lstrip().startswith("?") for line in text.splitlines()):
         raise RuntimeError(f"{target_name} {family} {mode}: Singular error")
     row: dict[str, Any] = {"target": target_name, "family": family, "mode": mode, **(gf.parse(text) or {})}
+    # The digest puts the log under the record comparison of a replay, which writes its logs beside its own output.
+    row["log_sha256"] = hashlib.sha256(text.encode("utf-8")).hexdigest()
     row.pop("nonzero", None)
     for key in ("ANONVAN", "EMIN", "JNONVAN", "JCORRUPT"):
         m = re.search(key + r" (\d+)", text)
