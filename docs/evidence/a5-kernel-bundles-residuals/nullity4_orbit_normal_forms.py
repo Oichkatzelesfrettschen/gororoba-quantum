@@ -82,8 +82,9 @@ item 4, the semicontinuity step of the ledger and the reduction of item 7 are pr
    in 1..GENERAL_RANGE whose mu lies in the field, all off the discriminant of chi, and at the points with v_1 and
    rho in 1..DISCRIMINANT_RANGE on that discriminant. The LONG_POINTS grid points of the retained record whose
    singular scheme has length 5 satisfy u.v = 0 and u.u + 2 v.v = 0, which is v_1 = 0 and 2 rho^2 + 1 = 0 after the
-   scaling to u.u = 1: the point where chi = lambda^3. The field holds no square root of 2, so the normal form with
-   u = e_1 has no such point over it.
+   scaling to u.u = 1: the point where chi = lambda^3. chi has a second triple root, (lambda - a)^3 with a^2 = 3,
+   at v_1 = -3 a, rho^2 = -32, mu^2 = 4, which no retained point samples: -32 is not a square modulo 32029. The
+   field holds no square root of 2, so the normal form with u = e_1 has no point of either branch over it.
 
 `--write` writes nullity4-orbit-normal-forms-result.json beside this file; `--check` recomputes and compares.
 
@@ -94,6 +95,7 @@ Run from the repository root:
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import sys
@@ -765,7 +767,10 @@ def expected_record() -> dict[str, Any]:
         "kernel_product": KERNEL_PRODUCT,
         "node_cubic": NODE_CUBIC,
         "node_discriminant": NODE_DISCRIMINANT,
-        "common_kernel_certificate": {"sigma = 1": dict(CERTIFICATE), "sigma = -1": dict(CERTIFICATE)},
+        "common_kernel_certificate": {
+            "sigma = 1": copy.deepcopy(CERTIFICATE),
+            "sigma = -1": copy.deepcopy(CERTIFICATE),
+        },
         "samples": {label: [list(row) for row in rows] for label, rows in SAMPLE_TALLY.items()},
         "fixtures": [list(row) for row in FIXTURE_TALLY],
         "quaternion_position": sorted(list(row) for row in POSITION_TALLY),

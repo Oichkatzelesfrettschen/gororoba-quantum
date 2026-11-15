@@ -422,7 +422,7 @@ Modulo 32029 the singular scheme has length 3 at 68 normal-form points off the d
 `A5-441` (survives) stated these facts at the fixtures and the grid: `A5-530`, `A5-534` and `A5-535` now exclude
 its three falsifiers at every point, and its clause "nullity at least 7 on `l_z`" continues as `A5-537`.
 
-These rows replace `A5-433`, `A5-443`, `A5-444` and `A5-445`. Four hypotheses remain open:
+These rows replace `A5-433`, `A5-443`, `A5-444` and `A5-445`. Five hypotheses remain open:
 
 - `hypothesis` (`A5-537`): the rank of `M` on `l_z` is 8 where `mu` is nonzero and 6 where `mu = 0`, and
   `C(l_z)` has dimension 3 and 6 respectively; the record holds the table above and no proof.
@@ -430,8 +430,13 @@ These rows replace `A5-433`, `A5-443`, `A5-444` and `A5-445`. Four hypotheses re
   `C(l_z)` or cuts it to the line of `z`, so `dim L` is 2, 6 or 12; no retained point has `dim L` of 4, 8 or 10.
 - `hypothesis` (`A5-539`): the real points of orbit rank 13 are the points in one quaternion subalgebra; this
   holds at the 66 fixtures.
-- `hypothesis` (`A5-540`): the singular scheme is longer than 3 exactly on the discriminant of `chi`, and the
-  quartic is irreducible at every point.
+- `hypothesis` (`A5-540`): the singular scheme is longer than 3 exactly on the discriminant of `chi`, of length
+  5 at a triple root, and the quartic is irreducible at every point. `chi` has a triple root on two branches:
+  `v_1 = 0`, `2 rho^2 + 1 = 0`, where the 32 grid points lie, and `v_1^2 = 27`, `rho^2 = -32`, which no record
+  samples.
+- `hypothesis` (`A5-541`): on `V(Q) n V(G)` a real nullity-4 point has `dim L` of 2 or 6, and where it is 6 the
+  kernel vectors have nullity 12 (4 grid points, last row of the grid table above). The normal form does not reach
+  this stratum, where `Delta = 0`.
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py --check` (about 45 s).
 The [review record](../../archive/reviews/pr904/README.md) holds the brief, both reviewer reports and the

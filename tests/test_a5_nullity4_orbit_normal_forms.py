@@ -139,6 +139,15 @@ def test_singular_scheme_off_and_on_the_discriminant() -> None:
     _same(forms.long_grid_points(), [forms.LONG_POINTS, forms.LONG_POINTS])
 
 
+def test_expected_record_shares_no_list_with_the_constants() -> None:
+    # A change to one returned record reaches neither the constant nor the other sign, so the rules reject it.
+    record = forms.expected_record()
+    record["common_kernel_certificate"]["sigma = 1"]["unit_ideals"][0] = False
+    _same(forms.CERTIFICATE["unit_ideals"], [True, True, True])
+    _same(record["common_kernel_certificate"]["sigma = -1"]["unit_ideals"], [True, True, True])
+    _same(forms.verdict(record), ["the common-kernel certificate fails, or it accepts the mutation"])
+
+
 MUTATIONS: list[Mutation] = [
     ("identity", lambda record: record["identities"].__setitem__("kernel_quartic_formula", False)),
     ("pfaffian sign", lambda record: record.__setitem__("complement_pfaffian_sign", 0)),
