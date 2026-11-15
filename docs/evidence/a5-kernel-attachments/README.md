@@ -1066,11 +1066,14 @@ The fixture checks run in the pull-request lane; the Singular stage runs in the 
 decomposition of the bound, and the Fitting ideal of the pruned Jacobian cokernel on each component. `slocus` and
 dense minors ran out of a 20 GB address space on the same ideal.
 
-**Hypothesis (`A5-506`, open):** scratch runs modulo 32009 at three values of the slice coordinate `s2` find 32
-minimal generators of `y`-degree 1 of the `E8bar` Rees ideal at `N-` beyond the germ products and the `2 x 2`
-minors, in 11 bidegrees of the two slice weights, and bidegree blocks of at most 33,899 monomials in `y`-degree 2.
-No tracked record holds them. The test that would falsify the block route is the count of `y`-degree-2 generators
-that survive modulo the slice coordinates, which must be the 148 quadrics.
+**Refuted (`A5-506`), restated (`A5-542`, open):** scratch runs modulo 32009 at three values of the slice coordinate
+`s2` find 32 minimal generators of `y`-degree 1 of the `E8bar` Rees ideal at `N-` beyond the germ products and the
+`2 x 2` minors, in 11 bidegrees of the two slice weights, and bidegree blocks of at most 33,899 monomials in
+`y`-degree 2. The row is refuted as stated, since at `s2 = 0` the same script finds 86 generators in 24 blocks and
+generators with `tw` up to 11. No fixed `s2` reaches the 148 quadrics: `s2` lies in the maximal ideal, and the fibers
+at `s2 = 0` and `s2 = 7013` have dimension 61 and 34 in `y`-degree 2 against 83. The surviving statement is for
+generic `s2`, with `s2` kept as a variable or drawn from a quantum random source; its test is the count of
+`y`-degree-2 generators of the fiber, which must be the 148 quadrics. No tracked record holds these runs.
 
 **Second route at `N-` (`A5-422`, superseded by `A5-446`; conditional on `A5-293` and `A5-294`):** the reduction `K'` of the saturated lattice of `K` has the Hilbert function of `K` and contains the
 modular `K2`, which is prime of dimension 5 (`A5-060`); `K` lies in the relation ideal `L`, whose quotient has
