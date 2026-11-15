@@ -226,8 +226,12 @@ def polar_line_facts() -> dict[str, Any]:
     z0_in_c = all(_block(p) * sp.Matrix(z0) == sp.zeros(15, 1) for p in line)
     first, second = sp.Matrix(line[0]), sp.Matrix(line[1])
     vectors = [first, second, first + second, first + 3 * second, first + sp.I * second]
-    ranks = [int(real_line._rank(_block(list(p)).tolist())) for p in vectors]
+    ranks = parallel.ordered_map(_rank_at, [list(p) for p in vectors], min_items=2)
     return {"in_kernel": in_kernel, "stack_rank": stack_rank, "z0_in_C": z0_in_c, "ranks": ranks}
+
+
+def _rank_at(vector: list[Any]) -> int:
+    return int(real_line._rank(_block(vector).tolist()))
 
 
 def exact_job(job: tuple[str, int]) -> Any:
