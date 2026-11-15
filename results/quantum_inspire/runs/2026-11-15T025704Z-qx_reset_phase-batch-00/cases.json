@@ -1,0 +1,41 @@
+{
+ "schema": "qx-reset-phase-cases-v1",
+ "family": "qx_reset_phase",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 2,
+ "shots": 2048,
+ "dialect": "qx",
+ "bit_order": "bit 0 at the rightmost character (QX); b = measure q puts q[k] on bit k",
+ "batch": "batch-00",
+ "role": "which reset map the hosted QX emulator applies: the cQASM measure-and-flip, which keeps the register's relative phases, or qxelarator 0.10.0's sqrt(|a0|^2 + |a1|^2) map, which drops them",
+ "preregistered": {
+  "falsifier": "reset_phase reading 10 in every shot refutes the qxelarator map on the hosted emulator, and 00 in every shot refutes the cQASM map; one shot of control_x or already_zero off 10 refutes the program or the register order"
+ },
+ "circuits": [
+  {
+   "file": "reset_phase.cq",
+   "sha256": "7d4ac09ba0430ec9e4435a350e60a413ba191bbd15f555292e2b3983dfd6a80c",
+   "laws": {
+    "cqasm": "10",
+    "qxelarator": "00"
+   }
+  },
+  {
+   "file": "control_x.cq",
+   "sha256": "f5ec426d4c47de527927df4061cffe051b8ae68faf38a02414c59e3e61349c13",
+   "laws": {
+    "cqasm": "10",
+    "qxelarator": "10"
+   }
+  },
+  {
+   "file": "already_zero.cq",
+   "sha256": "c51eac1c974959e2bcc3cd07fc944fca57b494154ec64e99950671674ed99b87",
+   "laws": {
+    "cqasm": "10",
+    "qxelarator": "10"
+   }
+  }
+ ]
+}
