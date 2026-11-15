@@ -206,13 +206,14 @@ the 176.16 s figure is the QPU's estimate and the simulator's value replaces it 
 The owner approved the second job of block 1 after the local review round. `results/quandela/runs/2026-11-15T180000Z-sim_belenos-bdsc_diagnostic-b1-j2`
 (job fa2da727, `b1-j2`, tree `bdsc_diagnostic_billing_rule_sim_belenos`, plan with the token idle) ended `canceled` with
 `failure_code` "Max duration reached (300.0 seconds)", `duration` 305, progress 0.9587 ("Computing phases to apply (step 2)") and
-920000 of 960000 samples; `--admit-only` refuses it ("the job did not complete"). The usage report moved by one job and 1.0
+920000 of 960000 samples (the `iterations` list of `results.json` holds 23 entries of 40000 samples and a 24th marked `missing`); `--admit-only` refuses it ("the job did not complete"). The usage report moved by one job and 1.0
 credit (free credits 23 to 24, jobs 25 to 26). Collection exited 0 and kept the partial counts (`partial` true).
 
 The second job of the same shape separates the two readings of the first job's 300 s: the simulator needs more than 300 s
-for a 24-iteration request of this shape, and the first job finished at the limit's margin. `hypothesis:` the request's
-cost is the simulator's per-iteration cost (about 12.7 s of the 305 s for 23 iterations) and the margin of b1-j1 was luck of
-load; the falsifier is a job of this shape completing again well inside 300 s. Consequence: a four-job rehearsal of this
+for a 24-iteration request of this shape, and the first job finished at the limit's margin. The two jobs bound the
+per-iteration time: at most 12.5 s for b1-j1 (24 iterations inside 300 s) and about 13 s for b1-j2 (23 iterations inside
+300 s, the 24th unfinished). `hypothesis:` the request's cost is the simulator's per-iteration cost, about 12.5 to 13 s, and
+the margin of b1-j1 was luck of load; the falsifier is a job of this shape completing again well inside 300 s. Consequence: a four-job rehearsal of this
 tree is not a 300 s-bounded procedure, stages B and C were not submitted, and a shape that fits (fewer iterations per job)
 is a change of the preregistered request that needs the full review course before its approval.
 
