@@ -17,6 +17,7 @@ ATTACH = ROOT / "docs" / "evidence" / "a5-kernel-attachments"
 sys.path.insert(0, str(ATTACH))
 
 import iso_w8_relation_ideal_orders as orders  # noqa: E402
+import weight_slice_relation_membership as membership_producer  # noqa: E402
 
 
 def _same(found: object, expected: object) -> None:
@@ -34,10 +35,9 @@ def _cell(record: dict[str, Any], orbit: str, source: str) -> dict[str, Any]:
     return cell
 
 
-def test_the_retained_record_passes_and_agrees_with_the_weight_slice_record() -> None:
+def test_the_retained_record_passes_its_checker() -> None:
     record = _record()
     _same(orders.problems(record), [])
-    _same(orders.slice_problems(record), [])
     _same(record["pass"], True)
     _same([(cell["orbit"], cell["source"]) for cell in record["cells"]], list(orders.CELLS))
 
@@ -185,8 +185,69 @@ def test_the_checker_rejects_each_mutation_of_the_retained_record(name: str) -> 
         raise AssertionError((name, found))
 
 
-def test_the_slice_comparison_rejects_other_relations() -> None:
-    record = copy.deepcopy(_record())
+def _constructed_inputs(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict[str, Any]:
+    """A weight-slice record and a passing membership record of ten cells, both read by the orders comparison."""
+    cells = []
+    for index, (orbit, source) in enumerate(membership_producer.CELLS):
+        relations = membership_producer.RELATIONS[source][-1]
+        cell: dict[str, Any] = {key: 0 for key in membership_producer.ZERO_KEYS}
+        cell.update(
+            orbit=orbit,
+            source=source,
+            relations_sha256=f"{index + 1:064x}",
+            relations=relations,
+            truncation_bound=16,
+            truncation_min_weight=17,
+            control_single_product_rejected=1,
+            selection_truncation_bound=10,
+            selection_truncation_min_weight=11,
+            spanning_products=relations + 1,
+            spanning_normal_form_rank=1,
+            spanning_relation_rank=relations,
+        )
+        cells.append(cell)
+    slice_cells = [
+        {
+            "orbit": cell["orbit"],
+            "source": cell["source"],
+            "characteristic": 0,
+            "relations_sha256": cell["relations_sha256"],
+            "relation_count": cell["relations"],
+            "product_max_weight": cell["truncation_bound"],
+        }
+        for cell in cells
+    ]
+    slice_cells.append({"orbit": "N-", "source": "iso", "characteristic": 32009, "relations_sha256": "f" * 64})
+    weight_slice = tmp_path / "weight-slice.json"
+    weight_slice.write_text(json.dumps({"cells": slice_cells}), encoding="utf-8")
+    record = {
+        "schema": membership_producer.SCHEMA,
+        "field": "Q(i)",
+        "inputs": {
+            name: hashlib.sha256((ATTACH / name).read_bytes()).hexdigest() for name in membership_producer.INPUTS
+        },
+        "weight_slice_record_sha256": hashlib.sha256(weight_slice.read_bytes()).hexdigest(),
+        "cells": cells,
+        "pass": True,
+    }
+    certified = tmp_path / "membership.json"
+    certified.write_text(json.dumps(record), encoding="utf-8")
+    monkeypatch.setattr(orders, "WEIGHT_SLICE", weight_slice)
+    monkeypatch.setattr(membership_producer, "WEIGHT_SLICE", weight_slice)
+    monkeypatch.setattr(orders, "MEMBERSHIP", certified)
+    digests = {(cell["orbit"], cell["source"]): cell["relations_sha256"] for cell in cells}
+    return {
+        "cells": [
+            {"orbit": orbit, "source": source, "relations_sha256": digests[(orbit, source)]}
+            for orbit, source in orders.CELLS
+        ]
+    }
+
+
+def test_the_slice_comparison_rejects_other_relations(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    record = _constructed_inputs(tmp_path, monkeypatch)
+    _same([(cell["orbit"], cell["source"]) for cell in record["cells"]], list(orders.CELLS))
+    _same(orders.slice_problems(record), [])
     record["cells"][0]["relations_sha256"] = "0" * 64
     _same(
         orders.slice_problems(record),
@@ -201,12 +262,13 @@ def test_a_membership_record_with_a_failure_is_rejected_whatever_its_pass_flag(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """The orders record takes K inside L from the membership record, so it runs that record's own validator."""
+    record = _constructed_inputs(tmp_path, monkeypatch)
     membership = json.loads(orders.MEMBERSHIP.read_text(encoding="utf-8"))
     membership["cells"][0]["membership_failures"] = 1
-    forged = tmp_path / "membership.json"
+    forged = tmp_path / "forged-membership.json"
     forged.write_text(json.dumps(membership), encoding="utf-8")
     monkeypatch.setattr(orders, "MEMBERSHIP", forged)
-    found = orders.slice_problems(_record())
+    found = orders.slice_problems(record)
     if not any("membership record:" in problem and "membership_failures" in problem for problem in found):
         raise AssertionError(found)
 
@@ -214,6 +276,7 @@ def test_a_membership_record_with_a_failure_is_rejected_whatever_its_pass_flag(
 @pytest.mark.audit
 def test_the_retained_record_binds_the_current_input_digests() -> None:
     record = _record()
+    _same(orders.slice_problems(record), [])
     _same(sorted(record["inputs"]), sorted(orders.INPUTS))
     for name in orders.INPUTS:
         _same(record["inputs"][name], hashlib.sha256((ATTACH / name).read_bytes()).hexdigest())

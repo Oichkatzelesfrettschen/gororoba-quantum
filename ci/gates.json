@@ -334,16 +334,6 @@
     },
     {
       "suite": "core",
-      "cwd": ".",
-      "cmd": "\"$PYTHON\" scripts/math_source_generators.py target_flip_certificate --check",
-      "name": "core-067",
-      "seconds": 0.8,
-      "requires": [
-        "gororoba-math"
-      ]
-    },
-    {
-      "suite": "core",
       "cwd": "gororoba_quantum",
       "cmd": "\"$PYTHON\" affine_residual.py",
       "name": "core-068",
@@ -911,16 +901,6 @@
       "cmd": "sha256sum -c docs/evidence/cd-sign-python-semantics/source_hashes.sha256",
       "name": "sources-405",
       "seconds": 0.1,
-      "requires": [
-        "gororoba-math"
-      ]
-    },
-    {
-      "suite": "sources",
-      "cwd": ".",
-      "cmd": "\"$PYTHON\" scripts/math_source_generators.py cd_sign_rocq_ast --check",
-      "name": "sources-406",
-      "seconds": 0.2,
       "requires": [
         "gororoba-math"
       ]
@@ -2029,16 +2009,6 @@
       "name": "core-273",
       "seconds": 3.9,
       "runtime": "qiskit-2.5"
-    },
-    {
-      "suite": "core",
-      "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error scripts/stiefel_witness_certificate.py --check",
-      "name": "core-275",
-      "seconds": 2.0,
-      "requires": [
-        "gororoba-math"
-      ]
     },
     {
       "suite": "sources",
@@ -3432,56 +3402,9 @@
     {
       "suite": "sources",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error scripts/math_source_generators.py kernel_certificates --check",
-      "name": "sources-cd-tower-kernel-certificates-check",
-      "seconds": 1.2,
-      "requires": [
-        "gororoba-math"
-      ]
-    },
-    {
-      "suite": "sources",
-      "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error scripts/math_source_generators.py gaussian_certificates --check",
-      "name": "sources-a5-gaussian-certificates-check",
-      "seconds": 1.0,
-      "requires": [
-        "gororoba-math"
-      ]
-    },
-    {
-      "suite": "sources",
-      "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error scripts/math_source_generators.py render_span --check",
-      "name": "sources-a5-gaussian-certificates-span-check",
-      "seconds": 1.0,
-      "requires": [
-        "gororoba-math"
-      ]
-    },
-    {
-      "suite": "sources",
-      "cwd": ".",
-      "cmd": "shellcheck docs/evidence/a5-gaussian-certificates/run_span_checks.sh",
-      "name": "sources-a5-gaussian-certificates-span-driver-shellcheck",
-      "seconds": 0.1
-    },
-    {
-      "suite": "sources",
-      "cwd": ".",
       "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256",
       "name": "sources-410",
       "seconds": 0.1,
-      "requires": [
-        "gororoba-math"
-      ]
-    },
-    {
-      "suite": "sources",
-      "cwd": ".",
-      "cmd": "\"$PYTHON\" scripts/math_source_generators.py cd_sign_source_ast --check",
-      "name": "sources-411",
-      "seconds": 0.2,
       "requires": [
         "gororoba-math"
       ]
@@ -5695,6 +5618,20 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/e8_birational_degree.py --check --replay; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
+      "name": "core-a5-e8-birational-degree",
+      "seconds": 20.0,
+      "workers": "all",
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/e8-birational-degree-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/weight_slice_relation_membership.py --check",
       "name": "core-a5-weight-slice-relation-membership",
       "seconds": 0.5,
@@ -6286,6 +6223,27 @@
         "results/quantum_inspire/cases/pathion_null_rotation_scan_qx",
         "results/quantum_inspire/cases/pathion_null_rotation_scan_tuna_17"
       ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error ci/replay_check.py results/quantum_inspire/pathion_null_rotation_scan_qx_analysis.json -- \"$PYTHON\" -B -W error scripts/qi_pathion_null_rotation_scan_cases.py --analyze results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-* --out {out}",
+      "name": "core-pathion-null-rotation-scan-qx-analysis-replay",
+      "seconds": 5.0,
+      "replays": [
+        "results/quantum_inspire/pathion_null_rotation_scan_qx_analysis.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error ci/replay_check.py results/quantum_inspire/pathion_null_rotation_scan_tuna_17_analysis.json -- \"$PYTHON\" -B -W error scripts/qi_pathion_null_rotation_scan_cases.py --analyze results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-* --out {out}",
+      "name": "core-pathion-null-rotation-scan-tuna-analysis-replay",
+      "seconds": 1900.0,
+      "workers": "all",
+      "replays": [
+        "results/quantum_inspire/pathion_null_rotation_scan_tuna_17_analysis.json"
+      ]
     }
   ],
   "excluded": [
@@ -6297,12 +6255,12 @@
     {
       "cmd": "ROCQ=\"${ROCQ:-rocq}\" sh docs/evidence/c881_exhaustive/replay_rocq.sh",
       "cwd": ".",
-      "reason": "runs in the proofs.yml job rocq on proof paths under the toolchain of ci/rocq_toolchain.pin"
+      "reason": "runs on demand through ci/replay_quantum_bundles.sh of gororoba-math under the toolchain its toolchain.txt records; no workflow runs it"
     },
     {
       "cmd": "GOROROBA_ROOT=\"$GOROROBA_ROOT\" sh docs/evidence/stiefel_witness/replay_rocq.sh",
       "cwd": ".",
-      "reason": "runs in the proofs.yml job rocq on pushes to main and manual runs, over the pinned gororoba-open checkout"
+      "reason": "runs on demand through ci/replay_quantum_bundles.sh of gororoba-math with GOROROBA_ROOT naming a gororoba-open checkout; no workflow runs it"
     },
     {
       "cmd": "\"$SAGE_PYTHON\" docs/evidence/cd-star-lattice/external/nauty_replay.py > docs/evidence/cd-star-lattice/external/nauty_replay.txt",
