@@ -19,52 +19,62 @@ three-circuit batches.
 ## Model
 
 A twin batch reads its contrast t = P1 - P0 with the coin-1 twin and the coin-0 twin in consecutive jobs, so a drift g of the
-selector offset between consecutive jobs adds g x s, with s = +1 when coin 1 executes after coin 0 and -1 otherwise. The
-requested forward and mirror rounds alternate s per template and cancel the term in the pooled contrast. A reordered batch
-flips its own s; the cancellation is then broken, not lost: s is known from the stamps (`queued_at` follows the previous job's
-`finished_at` by 0.03 to 0.19 s in the retained batches, a measured provider behavior and no documented guarantee).
+selector offset per position adds g x x, with x the executed position of the coin-1 twin minus that of the coin-0 twin among
+the circuits of the batch, read from `queued_at` (x = +1 forward and -1 mirror when the order is kept, and for example -3 when
+the coin-1 twin runs three places before the coin-0 twin, as in batch 02 of the hosted QX run). The requested rounds alternate x
+per template and cancel the term in the pooled contrast. A reordered batch changes its own x; the cancellation is then broken,
+not lost: x is known from the stamps (`queued_at` follows the previous job's `finished_at` by 0.03 to 0.19 s in the retained
+batches, a measured provider behavior and no documented guarantee).
 
-`scripts/qi_pathion_one_cz_null_executed_order.py` fits `v_b = t_T + g s_b + e_b` by weighted least squares with one drift g shared
-by every twin batch and one contrast t_T per template. Its module docstring states the closed form. A balanced order returns the
-pooled mean and error, so the estimator costs nothing when the platform keeps the order. `adjusted_rows` gives the (value, error)
-rows that the preregistered rule pools: values reduced by g s and errors multiplied by f_T, so the pooled error carries the
-uncertainty of g.
+`scripts/qi_pathion_one_cz_null_executed_order.py` fits `v_b = t_T + g x_b + e_b` by weighted least squares with one drift g
+shared by every twin batch and one contrast t_T per template; its module docstring states the closed form and
+`executed_offset` reads x from a batch's stamps. A balanced order returns the pooled mean and error, so the estimator costs
+nothing when the platform keeps the order. `adjusted_rows` gives the (value, error) rows that the preregistered rule pools:
+values reduced by g x and errors multiplied by f_T, so the pooled error carries the uncertainty of g.
 
 ## Decision rules (preregistered)
 
-1. The decision reads the adjusted rows when the stamps of every twin batch are present and pairwise distinct inside a batch; a
-   missing or tied stamp reads `unresolved_order` (the strict gate's rule for those inputs stays).
-2. A series whose twin batches all share one executed s has no separable drift and reads `unresolved_order_confounded`.
-3. A template whose own drift (`template_drift`) departs from the shared g by more than 3 times the error of the difference reads
-   `unresolved_drift_heterogeneity`: the common-drift hypothesis failed for that run, and the label the rule would have read
-   stays beside it.
+1. The decision reads the adjusted rows when the stamps of every circuit of every twin batch are present and pairwise distinct
+   inside the batch; a missing or tied stamp reads `unresolved_order` (the strict gate's rule for those inputs stays).
+2. A series in which every template has one x in all its twin batches has Sxx = 0 and no separable drift, even if the templates
+   differ in direction: it reads `unresolved_order_confounded`.
+3. A template whose own drift (`template_drift`) departs from the shared g by more than 3 times the error of the difference
+   reads `unresolved_drift_heterogeneity`: the common-drift hypothesis failed for that run, and the label the rule would have
+   read stays beside it.
 4. The batch heterogeneity gates keep their thresholds at the batch counts of the layout (16.266 at 3 degrees of freedom); the
    fit spends one more degree of freedom, so the unchanged threshold is conservative against false trips.
 
-## Operating characteristics (computed 2026-11-15, 20,000 series per rate, equal batch errors 0.005524, 4 templates x 4 replicates, independent reordering)
+## Operating characteristics of the twin batches (exact enumeration, no random draw)
 
-| reorder rate per batch | P(confounded) | mean error of b0's contrast against the balanced error | 95th percentile |
+`operating_characteristics(rate)` enumerates the 2^16 flip patterns of the 16 twin batches (4 templates x 4 replicates, requested
+x = +1, -1, +1, -1, equal batch errors), each batch flipping its sign independently with probability `rate`:
+
+| flip rate per batch | P(confounded) | mean error of one template's contrast against the balanced error | 95th percentile |
 |---|---:|---:|---:|
 | 0 | 0 | 1.000 | 1.000 |
 | 0.05 | 0 | 1.007 | 1.035 |
 | 0.10 | 0 | 1.013 | 1.038 |
-| 0.20 | 0 | 1.026 | 1.155 |
-| 0.37 (the predecessor's) | 0.0002 | 1.043 | 1.183 |
+| 0.20 | 1e-5 | 1.026 | 1.155 |
+| 7/19 (the predecessor's) | 1.4e-4 | 1.043 | 1.183 |
 
-The standard error of g is 0.0014 per unit sign at the balanced design. At the predecessor's rate the strict gate decides with
-probability 1.0e-7 and this estimator decides with probability 0.9998 at an error 4 percent above the balanced one on
-average. This is a model computation (hypothesis: independent reordering, equal errors, a drift linear in the sign), not a
-measurement.
+`P(confounded)` equals (2 r^2 (1 - r)^2)^4 (a test pins it): a template ends one-directional with probability 2 r^2 (1 - r)^2,
+which is 0.109 at 7/19, and the series is confounded only when all four do. These figures cover the twin batches under a
+model (hypothesis: independent flips, equal errors, a drift linear in the offset, the flip model standing for the offsets'
+real distribution until the 19 predecessor and 4 hosted-QX batches' offsets are tabulated). They are not the probability that
+the series decides.
 
-## Not yet done (scope cut, removal condition)
+## What is not covered, and why the series is not yet decidable
 
+- Base and calibration batches: 16 base batches (three circuits) and 3 calibration batches also execute in an order the
+  platform sets, and the mirror rounds reverse the base batches. No rule above says what a reordered base or calibration batch
+  does, and if the strict gate still holds for them the series fails at about 1 - 0.63^19 = 1 - 1.6e-4 at the predecessor's
+  rate. The 0.9998 of the twin batches therefore is not the decision probability, and the series stays unapproved until a
+  preregistered rule (an order covariate for the base contrasts, or evidence that their arms are order-symmetric) covers them.
 - Integration: `evaluate` in `scripts/qi_pathion_one_cz_null_bracketed_cases.py` still applies the strict gate. Removal
-  condition: a change that maps the stamps to `executed_sign`, replaces the twin rows by `adjusted_rows`, adds the three labels
-  and keeps the strict result beside it, reviewed before the series is approved.
+  condition: a change that maps the stamps to `executed_offset`, replaces the twin rows by `adjusted_rows`, adds the three
+  labels and keeps the strict result beside it, reviewed before the series is approved.
 - Power under reordering: the 82.1 / 85.3 percent power of the case is computed without reordering; the pricing and operating
   characteristic simulators need a reordering world.
-- Base contrasts: the base batches (three circuits) also reverse in the mirror rounds; whether their arm contrasts carry an
-  order term is untested, and this note covers the twin contrasts only.
 - The common-drift hypothesis: tested by rule 3 on the run itself and by nothing before it.
 
 ## Falsifiers
