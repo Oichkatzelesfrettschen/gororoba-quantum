@@ -206,8 +206,9 @@ with the call-budget text "over 1.5 times the 10 s pull-request budget": `runtim
 environment (2026-11-15) `correction_collection_contracts:verify` took 3.12 s serially and 19.55 s under `-n 8`
 beside four CPU-bound loops, failing with the same text; the same load with the variable at 0 passed all 83 units,
 and an unloaded run with the variable at 1 failed that unit with the same text. A local run on a loaded host sets
-the variable to 0; a unit that fails only on a loaded host, with the call-budget text, is no regression, and any
-other failure text is a finding.
+the variable to 0. A unit that fails there is classified only after a rerun on an unloaded host, or with the variable
+at 0: the rerun's result and its unloaded call time, compared with the unit's earlier unloaded time, decide between
+contention and a regression, since a slower unit can cross the budget only under load and give the same text.
 
 ## Exact arithmetic and dependency qualification
 
