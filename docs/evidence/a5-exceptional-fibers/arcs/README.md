@@ -69,7 +69,10 @@ therefore dominant onto V(J), and its polynomial arcs lie on V(J) exactly.
 at order nu is the limit. Every t_i has valuation at least 1, so the jet of G_j of degree n fixes the coefficients
 through s^n exactly. `gen_family.py` writes one Singular script per family, computes F symbolically in the five
 parameters u in a global monomial ordering (`dp`), and counts the generators of P2, P1 and K2 that do not vanish on F
-identically. The two certified families are
+identically. Its reduction loops run to `ncols`, since Singular's `size` counts only the nonzero generators and a loop
+bounded by it stops early once a leading generator reduces to zero. The retained scripts that predate that bound
+report the same counts as their `ncols` rewrites on all 24 of them (2026-11-15); a count from a `size` loop could only
+exceed the true count, so a reported 0 was sound either way. The two certified families are
 
     P2:  x(s) = Phi(w = W s, rho = R s, sigma = S s, e = E, zeta = Z s),                       nu = 2
     P1:  x(s) = Phi(w = W s^2, rho = (R+S)s/2, sigma = (R-S)s/2, e = -1 + E1 s^2, zeta = Z s),  nu = 5

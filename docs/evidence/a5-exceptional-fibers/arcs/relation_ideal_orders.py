@@ -118,10 +118,10 @@ def script(target_name: str, family: str, tail: str) -> str:
     return text[: text.rindex("quit;")] + tail
 
 
-def run(job: tuple[str, str, str]) -> dict[str, Any]:
-    target_name, family, mode = job
+def run(job: tuple[str, str, str, Path]) -> dict[str, Any]:
+    target_name, family, mode, logs = job
     tail = JCHECK + {"structure": STRUCTURE, "control": CONTROL, "plain": "quit;\n"}[mode]
-    out = HERE / "relation-ideal-orders" / target_name
+    out = logs / target_name
     out.mkdir(parents=True, exist_ok=True)
     path = out / f"{family}-{mode}.sing"
     path.write_text(script(target_name, family, tail), encoding="utf-8")
@@ -200,8 +200,12 @@ def main() -> int:
     if len(sys.argv) != 2:
         print(__doc__, file=sys.stderr)
         return 2
-    jobs = [(t, "embedded", "structure") for t in TARGETS]
-    jobs += [(t, f, "plain") for t in TARGETS for f in ("scroll", "top")] + [(t, "scroll", "control") for t in TARGETS]
+    # The per-target scripts and logs land beside the output record, so a replay into a scratch path leaves the
+    # retained relation-ideal-orders/ directory untouched.
+    logs = Path(sys.argv[1]).resolve().parent / "relation-ideal-orders"
+    jobs = [(t, "embedded", "structure", logs) for t in TARGETS]
+    jobs += [(t, f, "plain", logs) for t in TARGETS for f in ("scroll", "top")]
+    jobs += [(t, "scroll", "control", logs) for t in TARGETS]
     rows = parallel.ordered_map(run, jobs, min_items=1)
     found = problems(rows)
     record = {
