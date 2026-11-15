@@ -48,3 +48,15 @@ predictions from the modular pattern.
 ## Estimate from the small slice
 
 Entered after the small slice and before the remaining cells.
+
+- The calibration ideals take under 1 s each. Regenerating the X- -> N- relations takes 39 s at a 1-minute load
+  of 63 on 32 threads; its digest equals the retained one.
+- The first form of the Cohen-Macaulay step, with dense linear forms whose coefficients reach about 32000, ran past
+  the 3600 s limit on X- -> N- (load 48 to 59). A stage-timed rerun puts the time in the Groebner basis of K plus
+  those forms: std(K) itself takes under 1 s. The program now chooses sparse forms greedily, and the same rerun
+  decides the cell in 4 s (std(K) < 1 s, four forms chosen from 1242 candidates in 2 s, the radical of K in 2 s).
+- Estimate for the other seven cells: the relation regeneration scales with the generator count (17 to 24 against
+  15), so minutes per cell; the radical of the E8-bar ideal (21 variables, 148 quadrics) is the one step without a
+  measured analogue and keeps the 3600 s limit. Plan: all eight cells in one run, steps persisted, one watcher
+  with a 3-hour deadline; a step that reaches the limit leaves its cell undecided in the record instead of
+  stopping the run.

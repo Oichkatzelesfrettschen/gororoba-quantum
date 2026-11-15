@@ -10,8 +10,11 @@ weight-slice record binds.
 - Cohen-Macaulay: for A = Q(i)[y]/K of Krull dimension a and degree e, linear forms l_1, ..., l_a with
   dim A/(l) = 0 are a system of parameters, and A is Cohen-Macaulay exactly when the Artinian quotient has length e
   (every system of parameters of a Cohen-Macaulay ring is regular; a length above e proves A not Cohen-Macaulay).
-  The forms carry the integer coefficients ((k + 2)^j mod 32003) + 17 j k; the computed dimension 0 is what makes
-  them a system of parameters.
+  The forms are chosen greedily from a fixed list of sparse forms (the variables, then y_j + y_l, y_j - y_l,
+  y_j + 2 y_l, then y_j + y_l + y_m and y_j + 2 y_l + 3 y_m, then two dense forms with coefficients 1 to 5): a
+  candidate is kept when it lowers the dimension by one. The computed dimension 0 is what makes them a system of
+  parameters. Sparse forms keep the Q(i) coefficients small: on X- -> N- the dense forms with coefficients near
+  32003 left one Singular call running past 3600 s, and the sparse forms decide the cell in seconds.
 - Reduced, for a Cohen-Macaulay ring: l_1, ..., l_a is then a regular sequence, A_1 = A/(l_1, ..., l_{a-1}) is
   Cohen-Macaulay of dimension 1 and every point of Proj A_1 lies in the chart l_a = 1. When the chart ideal Z is
   radical of length e, Proj A_1 is reduced, A_1 has no embedded prime, so A_1 is reduced, and a graded ring with a
@@ -78,14 +81,20 @@ ideal sK=std(K); int a=dim(sK); int e=mult(sK);
 
 CM_SCRIPT = (
     HEAD
-    + """ideal Lf; int k; int j; int c; poly g;
-for(k=1;k<=a;k++){{g=0; c=1;
-  for(j=1;j<=nvars(r);j++){{c=(c*(k+2)) mod 32003; g=g+(c+17*j*k)*var(j);}}
-  Lf[k]=g;}}
-ideal Q=std(K+Lf);
+    + """ideal Lf; int d=a; int j; int l; int m; int k; int nv=nvars(r); ideal T; poly s; list C;
+for(j=1;j<=nv;j++){{ C=insert(C,var(j),size(C)); }}
+for(j=1;j<=nv;j++){{ for(l=j+1;l<=nv;l++){{
+  C=insert(C,var(j)+var(l),size(C)); C=insert(C,var(j)-var(l),size(C)); C=insert(C,var(j)+2*var(l),size(C)); }}}}
+for(j=1;j<=nv;j++){{ for(l=j+1;l<=nv;l++){{ for(m=l+1;m<=nv;m++){{
+  C=insert(C,var(j)+var(l)+var(m),size(C)); C=insert(C,var(j)+2*var(l)+3*var(m),size(C)); }}}}}}
+s=0; for(j=1;j<=nv;j++){{ s=s+((j mod 3)+1)*var(j); }} C=insert(C,s,size(C));
+s=0; for(j=1;j<=nv;j++){{ s=s+((j*j mod 5)+1)*var(j); }} C=insert(C,s,size(C));
+for(j=1;j<=size(C) && d>0;j++){{ T=std(sK+Lf+ideal(C[j])); if(dim(T)==d-1){{ Lf=Lf+ideal(C[j]); d=d-1; }} }}
+print("RESULT forms "+string(Lf));
+ideal Q=std(sK+Lf);
 print("RESULT cm "+string(a)+" "+string(e)+" "+string(dim(Q))+" "+string(vdim(Q)));
 ideal L1; for(k=1;k<a;k++){{ L1[k]=Lf[k]; }}
-ideal Z=std(K+L1+ideal(Lf[a]-1));
+ideal Z=std(sK+L1+ideal(Lf[a]-1));
 ideal RZ=std(radical(Z));
 print("RESULT chart "+string(dim(Z))+" "+string(vdim(Z))+" "+string(vdim(RZ)));
 print("RESULT done 1");
@@ -129,6 +138,7 @@ def cm_row(values: dict[str, list[str]]) -> dict[str, Any]:
         "degree": e,
         "length": length,
         "cohen_macaulay": length == e,
+        "parameter_forms": values["forms"][0],
         "chart": {"dim": chart_dim, "length": chart_length, "radical_length": chart_radical_length},
     }
 
@@ -175,16 +185,25 @@ def decide(name: str, n: int, polys: list[str], steps: Path | None) -> dict[str,
     text = ",\n".join(polys)
     digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
 
-    def step(kind: str, template: str) -> dict[str, Any]:
+    def step(kind: str, template: str) -> dict[str, Any] | None:
         path = None if steps is None else steps / f"{name.replace(' ', '_').replace('>', '')}.{kind}.json"
+        script = template.format(n=n, polynomials=text)
+        script_digest = hashlib.sha256(script.encode("utf-8")).hexdigest()
         if path is not None and path.is_file():
             kept = json.loads(path.read_text(encoding="utf-8"))
-            if kept["ideal_sha256"] == digest:
+            if kept.get("script_sha256") == script_digest:
                 return dict(kept)
         started, load = time.monotonic(), os.getloadavg()[0]
-        values = ws.run_singular(template.format(n=n, polynomials=text))["values"]
+        try:
+            values = ws.run_singular(script)["values"]
+        except RuntimeError as error:
+            # The producer raises RuntimeError past its time limit; the ring then stays undecided.
+            if "exceeded" not in str(error):
+                raise
+            return None
         row = {
             "ideal_sha256": digest,
+            "script_sha256": script_digest,
             "values": values,
             "seconds": round(time.monotonic() - started, 1),
             "load_1min": load,
@@ -194,13 +213,19 @@ def decide(name: str, n: int, polys: list[str], steps: Path | None) -> dict[str,
         return row
 
     first = step("cm", CM_SCRIPT)
+    if first is None:
+        return {"ring": name, "variables": n, "generators": len(polys), "krull_dim": None, "degree": None,
+                "length": None, "cohen_macaulay": None, "chart": None, "radical": None, "reduced": None,
+                "reduced_basis": "undecided: the Cohen-Macaulay step reached the Singular time limit",
+                "hypothesis_holds": None, "measurements": {}}  # fmt: skip
     cm = cm_row(first["values"])
     measurements = {"cm": {"seconds": first["seconds"], "load_1min": first["load_1min"]}}
     radical = None
     if not chart_decides(cm):
         second = step("radical", RADICAL_SCRIPT)
-        radical = radical_row(second["values"])
-        measurements["radical"] = {"seconds": second["seconds"], "load_1min": second["load_1min"]}
+        if second is not None:
+            radical = radical_row(second["values"])
+            measurements["radical"] = {"seconds": second["seconds"], "load_1min": second["load_1min"]}
     return {"ring": name, "variables": n, "generators": len(polys), **cm, "radical": radical, **verdict(cm, radical),
             "measurements": measurements}  # fmt: skip
 
