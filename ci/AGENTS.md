@@ -56,7 +56,7 @@ pair's support, the Hong-Ou-Mandel zero, a certain readout flip), locally and
 without credentials.
 The job timeouts are 8 minutes for `lint`, 10 for `types` (its mypy step 4), 12 for `tests` and
 `contracts`, and 25 for `arm`.
-`types`, `tests` and `contracts` restore the pinned venv through
+`types`, `tests`, `contracts` and `arm` restore the pinned venv through
 .github/actions/pins-venv, under a cache key that hashes the venv's inputs, and
 build it with ci/install_pins.sh on a miss; a push to main saves it where later
 pull requests restore it. Branch protection on main requires `lint`, `types`, `tests`, `contracts` and

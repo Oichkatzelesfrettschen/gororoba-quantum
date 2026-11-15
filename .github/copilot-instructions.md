@@ -28,7 +28,7 @@ claim to test, not a fact to summarize.
 
 Repository rules a review checks here (`AGENTS.md`, `ci/AGENTS.md` and `docs/README.md` hold them in full):
 
-- A merge needs the `pr.yml` checks `lint`, `types`, `tests` and `contracts`; historical replays and digest gates run
+- A merge needs the six `pr.yml` checks `lint`, `types`, `tests`, `contracts` and the two `arm` legs; historical replays and digest gates run
   on demand from `ci/gates.json`, never in a workflow.
 - Every provider job, notebook session or QPU submission needs the owner's approval of a written case; a change that
   submits without one is a defect.
