@@ -146,6 +146,11 @@ PER_JOB_CREDITS = 1.0
 PRICE_PER_SHOT = 1e-6
 TOLERANCE = 1e-12
 BODY_TOLERANCE = 1e-9
+# Largest entry difference between the unitaries of two circuit_params vectors that name one setting. A unitary is the
+# product of the template's 148 factors, so rounding keeps equal-unitary vectors within 1e-15 (measured 6e-16), while
+# one parameter moves an entry by about 0.3 per radian: 1e-12 sits three decades above the rounding and refuses a
+# parameter change from about 4e-12 rad.
+GAUGE_TOLERANCE = 1e-12
 # The platform record's connected_input_modes: a photon on any other mode makes the service re-route and re-transpile.
 CONNECTED = (0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22)
 # A window mode whose dark rate exceeds DARK_LIMIT per second would add a spurious click per 1 / (clock * DARK_LIMIT)
@@ -813,6 +818,38 @@ def perceval_circuit(circuit: Mapping[str, Any], parameters: Mapping[str, float]
         value = math.pi if index is None else parameters[f"x{index}"]
         chip.add(mode, pcvl.BS.Rx(theta=value) if kind == "BS" else pcvl.PS(value))
     return chip
+
+
+def circuit_unitary(circuit: Mapping[str, Any], parameters: Mapping[str, float]) -> np.ndarray:
+    """The 24-mode unitary the template realizes with these parameters."""
+    return np.asarray(perceval_circuit(circuit, parameters).compute_unitary(), dtype=complex)
+
+
+def close_request(built: dict[str, Any], retained: dict[str, Any], circuit: Mapping[str, Any], path: str) -> None:
+    """close() on every field of two cases.json documents except circuit_params, which compare as unitaries.
+
+    photonic_template reads np.angle of residues of the elimination, and a residue on the negative real axis has a
+    rounding-sized imaginary part whose sign follows the last-ulp result of libm hypot, which differs between CPU
+    identities. The angle then lands on pi or -pi and the phase pairs (alpha, beta) of later steps shift by pi, so two
+    parameter vectors of one setting differ while the realized unitary agrees to rounding. A parameter vector passes
+    when its unitary matches the retained vector's within GAUGE_TOLERANCE, with no global phase quotiented: the
+    unitary is fixed by the setting's operator, so a phase difference is a defect.
+    """
+    built_settings, retained_settings = built["settings"], retained["settings"]
+    require(len(built_settings) == len(retained_settings), f"{path}: settings lengths differ")
+    stripped = []
+    for document in (built, retained):
+        document = copy.deepcopy(document)
+        for setting in document["settings"]:
+            setting.pop("circuit_params")
+        stripped.append(document)
+    close(stripped[0], stripped[1], path)
+    for index, (new, old) in enumerate(zip(built_settings, retained_settings, strict=True)):
+        where = f"{path}.settings[{index}].circuit_params"
+        require(sorted(new["circuit_params"]) == sorted(old["circuit_params"]), f"{where}: names differ")
+        difference = circuit_unitary(circuit, new["circuit_params"]) - circuit_unitary(circuit, old["circuit_params"])
+        deviation = float(np.max(np.abs(difference)))
+        require(deviation <= GAUGE_TOLERANCE, f"{where}: the realized unitaries differ by {deviation:.2e}")
 
 
 def photon_distribution(
@@ -1577,9 +1614,9 @@ def check_job(name: str) -> str:
     require(documents(job) == built, f"{job.name}: a second build differs from the first")
     retained = {name: (out / name).read_bytes() for name in built}
     label = (out / "cases.json").relative_to(ROOT)
-    close(json.loads(built["cases.json"]), json.loads(retained["cases.json"]), str(label))
     require(retained["circuit.json"] == built["circuit.json"], f"{out.relative_to(ROOT)}/circuit.json differs")
     manifest, circuit = json.loads(retained["cases.json"]), json.loads(retained["circuit.json"])
+    close_request(json.loads(built["cases.json"]), manifest, circuit, str(label))
     validate(manifest, circuit)
     refused = rejections(manifest, circuit)
     t_out, dark, _ = read_perfs(json.loads(job.request.read_path.read_text(encoding="utf-8")))

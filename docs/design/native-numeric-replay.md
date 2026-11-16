@@ -62,6 +62,25 @@ contract: exact bytes within an identity, exact decisions and bounded floats acr
    comparison has shown agreement, and as a diagnostic; it stays off the pull-request lane, whose
    affected gates run within 15 measured seconds.
 
+## Implemented comparators
+
+The photonic circuit_params of the teleportation rehearsal compare through their realized unitary
+(`close_request` of `scripts/qd_teleportation_rehearsal.py`), which is item 4 of the contract for one field family.
+`photonic_template` takes `np.angle` of elimination residues that sit on the negative real axis with a
+rounding-sized imaginary part, and the sign of that part follows the last-ulp result of libm `hypot`. For the
+arguments (-0.6123724356957945, 0.2041241452319315) glibc 2.43 returns `...028` on an x86-64 Zen 4 core and `...027`
+on a Xeon and on a Neoverse N1 core. One residue then reads +pi on one identity and -pi on another, and the (alpha,
+beta) pairs of the later elimination steps move by pi, which multiplies two modes by -1 on both sides of a beam
+splitter and leaves the operator, column and ideal bit-identical. The retained `cases.json` of job-00 to job-03 keep
+their bytes; a rebuild passes when each setting's parameter vector realizes the retained vector's unitary within
+`GAUGE_TOLERANCE` = 1e-12, with no global phase quotiented because the unitary equals the setting's operator. Every
+other field keeps the exact comparison of `close`. Measured: the rebuilt and retained unitaries differ by at most
+6e-16 on the Zen 4 and Neoverse N1 hosts. The Neoverse N1 host rebuilds job-01 to job-03 with parameters up to 6.28
+rad (job-00, job-01) and 3.33 rad (job-02, job-03) from the retained ones, and the same comparator accepts every one;
+the CNOT unitary's signed zeros played no part. A parameter moved by 1e-11 moves the unitary by 3e-12, and an unpaired
+beta shift of pi moves it by 1.15. The plan step `semantic-comparator` stays open for
+the float fields of decision records.
+
 ## Migration
 
 The plan record [native-numeric-replay](../state/plans/native-numeric-replay.json) carries the order,
