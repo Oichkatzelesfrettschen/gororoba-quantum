@@ -445,7 +445,33 @@ These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`
   by `Theta = exp(i sum xi_k D_k)` and encloses, in an arb Krawczyk box of radius `2^-24` on six coordinates, one
   zero of the system `z_0^* Pi l = 0`, `det N = 0` with `Pi = Theta^* Theta`; there the kernel plane is `l_z` and
   the pairing has rank 1. The ranks at the normal form are exact and constant on the orbit; the point is a
-  certified existence, and no exact algebraic point is known.
+  certified existence with no algebraic description (`A5-564` gives an algebraic point in another chart). The Krawczyk test gives the same containment,
+  contraction and pairing bound at 131 and 400 bits. Two exact searches for an algebraic point end in closed forms
+  (`A5-563`, proved as a bounded negative, `nullity4_real_polar_rational_charts.py`, record
+  `nullity4-real-polar-rational-charts-result.json`): the stabilizers of `z_0`, of `l` and of `C(l)` in
+  `g_2(C)` are one three-dimensional subalgebra that keeps the pairing zero, the 24 root subgroups
+  `exp(t (D_a +- i D_b))` that keep the incidence keep it zero as well, the other 76 meet the incidence at the
+  identity alone, and on the two four-parameter families of
+  Hermitian elements of the subgroups `SO(4, C)` of the pairs `(4, 7)` and `(5, 6)` the pairing has rank 0 or
+  2. Replay:
+  `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_rational_charts.py --check` (about 6 s).
+- `A5-564`, certified (`nullity4_real_polar_sl3_chart.py`, record `nullity4-real-polar-sl3-chart-result.json`): a
+  real algebraic point with `dim L = 4` in a rational chart. The Hermitian elements
+  `g = e_4 e_4^T + (W A W^* + conj(W) A^(-T) conj(W)^*) / 2` of the subgroup `SL(3, C)` that fixes `e_4`, with
+  `A = L D L^*`, `D = diag(1, d_2, 1 / d_2)` and `L` unit lower triangular with entries `x_21`, `i y_31`, `-i / 2`,
+  are rational in three real parameters, and `M(G t) = G M(t) G^T` holds as an identity. At the normal form of
+  `A5-551` the incidence `F = z_0^* g^2 l` and the minor of `R` on the rows `k_1`, `k_2` are real, with numerators
+  `p_0`, `p_1`, `p_2` in `Z[d_2, x_21, y_31]` of degrees 8, 8 and 16. An arb Krawczyk box of radius `2^-30` holds
+  exactly one real zero of them, at 200 and at 400 bits, and an entry of `R` is bounded away from zero on the box,
+  so the pairing has rank 1 there. The zero is isolated with an invertible Jacobian, so its coordinates are
+  algebraic. `computed:` msolve 0.9.4 gives a zero-dimensional ideal with a quotient of dimension 164 (Singular
+  4.4.1 agrees) and an eliminating polynomial of degree 140 for `t = 1 / d_2 + 2 x_21 + 3 y_31 + 4 d_2`, retained
+  in `nullity4-real-polar-sl3-chart-eliminant.json`; the record factors it (degrees 2, 2, 2, 4, 6, 36, 88) and
+  shows that the factor of degree 88 is the only one whose ball at the point holds zero. The degree 88 rests on
+  the eliminant, which the record does not recompute. This settles the hypothesis that `A5-551` carried; the
+  chart is the lead of the red-team review of pull request 929. Replay:
+  `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_sl3_chart.py --check` (about 3 s);
+  `--msolve-input` prints the input of the elimination.
 - `A5-539`, proved (same producer): at every point with `Delta` nonzero the orbit rank is 16 minus the dimension
   of the stabilizer of the real span of `u` and `v` in the compact `g_2`, which is 3 in quaternion position and 0
   otherwise, so the orbit rank is 13 exactly in quaternion position and 16 elsewhere. Replay:
@@ -474,16 +500,62 @@ These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`
   `s^2` other than 1; the points with `u.u = 0` are rotation images of four chart points; the totally isotropic
   pairs hold no nullity-4 point (rank at most 10 by `A5-359`, 8 on the special planes `u x v = 0` by `A5-360`). Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_intersection.py
   --check` (about 45 s).
+- `A5-561` and `A5-562`, proved (`nullity4_qg_plane_incidence.py`, record
+  `nullity4-qg-plane-incidence-result.json`); they settle the hypothesis that `A5-555` carried and the fiberwise and local parts of the one that `A5-558`
+  carried. The stratum is the disjoint union of the sets `K` minus `J`, and in each the real points with kernel
+  plane `P_j` are one complex line minus its points of `J` (empty when the line lies in `J`), so the points with
+  `dim L = 6` are at most one such line and those with `dim L = 4` the union of at most two, each line of real
+  codimension 4 inside its fiber; at the six exact witnesses the real Jacobian of the
+  incidence map has rank 4 on a tangent space of dimension 13, so they form a submanifold of codimension 4 there.
+  `hypothesis:` both sets have real dimension 22 in the stratum; the missing lemma is that the kernels form a
+  family of real dimension 20 over which the exceptional lines are line bundles (`A5-558`). At `s = +-1` the vector `q` lies in `P_y` and
+  `P_z` and is Hermitian-orthogonal to `g P_x` for every `g` of `G_2(C)`, so the Hermitian complement of
+  `g P_y` or `g P_z` in `g K` lies in `g P_x`, inside the cone: neither plane is the kernel plane of a real
+  point, and the type holds `dim L = 2` alone. The exact check runs at the base frame and at a unipotent element
+  that is not unitary. Replay:
+  `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_plane_incidence.py --check` (about 3 s).
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py --check` (about 45 s).
 The [review record](../../archive/reviews/pr904/README.md) holds the brief, both reviewer reports and the
 reconciliation of their findings; the [review record of the residual rows](../../archive/reviews/pr907/README.md)
 holds those of the rows from `A5-537` on, and the
-[review record of the open rows](../../archive/reviews/pr915/README.md) those of `A5-551` and `A5-554` to `A5-558`.
+[review record of the open rows](../../archive/reviews/pr915/README.md) those of `A5-551` and `A5-554` to `A5-558`,
+and the [review record of the open hypotheses](../../archive/reviews/pr929/README.md) those of `A5-561` to `A5-563`.
 
 The count of quadrics on each image (`A5-434`, superseded by `A5-460`) is tested and taken apart in the next
 subsection. `hypothesis:` the complexified ranks of the first table hold in characteristic 0 and at every point of
 each stratum outside a proper closed subset.
+
+#### Stratification of the real nullity-4 points by the fiber of the Gauss maps
+
+One table for the three nullity-4 strata. A real point is a doubly pure `y` with complex coordinates `z`; `P` is
+its kernel plane `ker A(z, conjugate(z))`, `C(P)` the common kernel of `M` on `P`, and `dim L` the real dimension
+of the fiber of the pair of Gauss maps (`A5-430`, `A5-435`). The fifth column is the real nullity of left
+multiplication by a vector `p` of `P`, which is `2 (nullity M(p) - 1)` (`A5-554`). Each cell is `proved` unless
+it carries another mark: `certified` (interval certificate), `measured` (exact at sampled points), `hypothesis` or
+`open` (no row decides it).
+
+| Stratum | Kernel plane `P` | `dim C(P)` | `dim L` | Real nullity on `P` | Rows |
+|---|---|---|---|---|---|
+| `V(Q)` minus `V(G)` | any plane | 1 | 2 | 4 at 469 sampled points (measured) | `A5-532`, `A5-438` |
+| `V(G)` minus `V(Q)` | not the polar line `l_z` | 1 | 2 | open | `A5-535` |
+| `V(G)` minus `V(Q)`, `mu` nonzero | `l_z`, pairing rank 2 | 3 | 2 (occurs next to the point of `A5-551`, whose zero is transverse: certified) | 12 | `A5-550`, `A5-537`, `A5-551` |
+| `V(G)` minus `V(Q)`, `mu` nonzero | `l_z`, pairing rank 1 | 3 | 4 (certified; an algebraic point of degree 88 in a rational chart, degree computed) | 12 | `A5-551`, `A5-564`, `A5-563` |
+| `V(G)` minus `V(Q)`, `mu` nonzero | `l_z`, pairing rank 0 | 3 | 6 | 12 | `A5-550`, `A5-536` |
+| `V(G)` minus `V(Q)`, `mu = 0` | `l_z` | 6 | 12 | 16 | `A5-550`, `A5-537` |
+| `V(Q) n V(G)` | a plane of `K` outside the cone `J` | 3 | 2 | 4 at a vector outside `J` | `A5-552` |
+| `V(Q) n V(G)`, `s^2` other than 1 | `P_x` | 5 | 6 | 12 | `A5-552`, `A5-557` |
+| `V(Q) n V(G)`, off the roots of `s^4 + 14 s^2 + 1` | `P_y` or `P_z` | 4 | 4 | above 4; value open | `A5-552`, `A5-556`, `A5-557` |
+| `V(Q) n V(G)`, roots of `s^4 + 14 s^2 + 1` | `P_y = P_x` or `P_z = P_x` | 5 | 6 | 12 | `A5-557`, `A5-558` |
+| `V(Q) n V(G)`, `s = +-1` | `P_x`, `P_y`, `P_z` (`dim C` = 7, 4, 4) are the kernel plane of no real point | 3 | 2 alone | 4 at a vector outside `J` | `A5-555`, `A5-562` |
+
+The values 8 and 10 of `dim L` occur on no stratum (`A5-550`, `A5-555`). On `V(Q) n V(G)` the real points with
+kernel plane `P_j` form in each fiber `K` minus `J` a punctured complex line or nothing, so the points with
+`dim L = 6` are at most one such line and those with `dim L = 4` the union of at most two, one for `P_y` and one
+for `P_z` (two at the witnesses of `s = 0` and `s = 2`); each set is a submanifold of real codimension 4 near six
+exact witnesses (`A5-561`); that each set has real dimension 22 in the
+whole stratum is a hypothesis (`A5-558`, with its missing lemma on the image of `z -> K(z)`). The dimension of the
+`dim L = 4` and `dim L = 6` loci on `V(G)` minus `V(Q)` is open.
 
 #### The quadrics of the Gauss images
 
