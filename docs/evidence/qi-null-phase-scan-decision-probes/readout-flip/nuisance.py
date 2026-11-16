@@ -1,10 +1,11 @@
 """Exploratory: the decision of qi_pathion_null_phase_scan_cases.decide() with the selector flip (probability f that
 the selector read flips when d0 reads 0) as one nuisance parameter per series, shared by every batch and minimized
 jointly per world over FLIPS. The label logic reimplements decide() on top of fit_batch(); the current rule is the
-flip-0 slice of the same fits (checked against ps.decide() with the flip fixed at 0 by `--check`). Pseudo-random
-seed 20261117 (exploration only, not a QRNG value). Written against the generator of rule R5 (no flip in decide());
-the generator of rule R6 fits the flip itself, and decide(..., flips=(0.0,)) is R5 (r6_regression.py). Part files
-go to docs/local/rebuild/nuisance/parts (ignored); the logs beside this file hold the counts of the recorded run.
+flip-0 slice of the same fits (checked against ps.decide() with the flip fixed at 0 by `--check`). Seed: index 0 of
+the ANU QRNG draw docs/evidence/anu_qrng/draw-2026-11-16T041214Z.json. Written against the generator of rule R5 (no
+flip in decide()); the generator of rule R6 fits the flip itself, and decide(..., flips=(0.0,)) is R5
+(r6_regression.py). Part files go to docs/local/rebuild/nuisance/parts (ignored); the logs beside this file hold
+the counts of the recorded run.
 
 Usage: nuisance.py --check | --time | --run SERIES [--out FILE] [--only SUBSTRING]"""
 
@@ -24,7 +25,7 @@ import qi_pathion_null_phase_scan_cases as ps  # noqa: E402
 
 from parallel import ordered_map  # noqa: E402
 
-SEED = 20261117
+SEED = 47387  # index 0 of docs/evidence/anu_qrng/draw-2026-11-16T041214Z.json
 _MATCHED = ps.matched
 _RETENTION: dict = {}
 

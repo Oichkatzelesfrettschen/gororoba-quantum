@@ -1,8 +1,8 @@
-"""Exploratory (pseudo-random seed 20261120, not a QRNG value): how often a small true phase reads exact_parabola under
-rule R6, whose exact world fits a readout flip that can absorb part of a phase. exact_parabola states the phase reading
-unnecessary, so a true phase that reads it is the costly error of R6; each such series' center offset is printed
-in standard errors. 300 noisy series per scenario, drawn as
-oc_worker draws them, every series fitted at one flip before the next.
+"""Exploratory, seeded by index 1 of docs/evidence/anu_qrng/draw-2026-11-16T041214Z.json: how often a small true
+phase reads exact_parabola under rule R6, whose exact world fits a readout flip that can absorb part of a phase.
+exact_parabola states the phase reading unnecessary, so a true phase that reads it is the costly error of R6; each
+such series' center offset is printed in standard errors. 300 noisy series per scenario, drawn as oc_worker draws
+them, every series fitted at one flip before the next.
 
 Usage: small_phase.py [SERIES]"""
 
@@ -16,7 +16,7 @@ import qi_pathion_null_phase_scan_cases as ps  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 SERIES = int(sys.argv[1]) if len(sys.argv) > 1 else 300
-SEED = 20261120
+SEED = 9893  # index 1 of docs/evidence/anu_qrng/draw-2026-11-16T041214Z.json
 PHASES = {"q12_phase": (-0.12, -0.08, -0.05, 0.05, 0.08, 0.12), "coupler_phase": (-0.12, -0.08, 0.08)}
 SCENARIOS = [(world, theta, flip) for world, thetas in PHASES.items() for theta in thetas for flip in (0.0, 0.036)]
 
