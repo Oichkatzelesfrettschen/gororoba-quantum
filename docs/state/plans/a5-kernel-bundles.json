@@ -76,7 +76,7 @@
           "evidence": [
             {
               "ref": "docs/evidence/a5-kernel-bundles/frames-result.json",
-              "sha256": "07cb7c0db4bace6961a06063a36bb638ae4639bcfe1ade041ba726f6f2307476"
+              "sha256": "0b826e8f3956e048cce28675cd58376fe4ed303c7fb89bb0c9c16f363b70333c"
             }
           ],
           "scope_sha256": "0091f6fb8ec25f22e544319203e4801ad3d27b0d77878135c7b003cbaa666a93"
@@ -88,7 +88,7 @@
           "evidence": [
             {
               "ref": "docs/evidence/a5-kernel-bundles/frames-result.json",
-              "sha256": "07cb7c0db4bace6961a06063a36bb638ae4639bcfe1ade041ba726f6f2307476"
+              "sha256": "0b826e8f3956e048cce28675cd58376fe4ed303c7fb89bb0c9c16f363b70333c"
             }
           ],
           "scope_sha256": "0091f6fb8ec25f22e544319203e4801ad3d27b0d77878135c7b003cbaa666a93"
@@ -168,7 +168,7 @@
           "evidence": [
             {
               "ref": "docs/evidence/a5-kernel-bundles/transition-atlas-result.json",
-              "sha256": "3570c30e6f42f9d4cc1cac157611e93eec8f8e87ae692a64ca90971cc484961c"
+              "sha256": "655591bb521629b7e1b4ace1f362190c9d3e25ad5475e3c39b0cea030883b42c"
             }
           ],
           "scope_sha256": "26d46266d6a22864f19a270dd8621575a47811bbc2253234e44ac826c7e7f42d"
@@ -208,7 +208,7 @@
           "evidence": [
             {
               "ref": "docs/evidence/a5-kernel-bundles/bundle-invariants-result.json",
-              "sha256": "e7f783f633339562d78d9d04fd25de9a631ac9b68aab4c2af8d39a80151513d7"
+              "sha256": "eadf04f7ebbe4a43b85036ca5a1b335aef4a0046760ccb8d4551e23706cef44b"
             },
             {
               "ref": "docs/evidence/a5-kernel-bundles/nullity-sixteen-bundle-result.json",
@@ -236,7 +236,7 @@
           "evidence": [
             {
               "ref": "docs/evidence/a5-kernel-bundles/bundle-invariants-result.json",
-              "sha256": "e7f783f633339562d78d9d04fd25de9a631ac9b68aab4c2af8d39a80151513d7"
+              "sha256": "eadf04f7ebbe4a43b85036ca5a1b335aef4a0046760ccb8d4551e23706cef44b"
             },
             {
               "ref": "docs/evidence/a5-kernel-bundles/verification.json",
@@ -258,7 +258,7 @@
       "evidence": [
         {
           "ref": "docs/evidence/a5-kernel-bundles/bundle-invariants-result.json",
-          "sha256": "e7f783f633339562d78d9d04fd25de9a631ac9b68aab4c2af8d39a80151513d7"
+          "sha256": "eadf04f7ebbe4a43b85036ca5a1b335aef4a0046760ccb8d4551e23706cef44b"
         },
         {
           "ref": "docs/evidence/a5-kernel-bundles/verification.json",

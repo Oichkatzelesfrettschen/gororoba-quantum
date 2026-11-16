@@ -10,8 +10,8 @@ the sedenion `SU(2)` bundle, and determines their ordinary real, complex, and qu
 frames now carry explicit overlap maps, inverse and cocycle identities, and canonical unitary reductions on every
 high-nullity piece. The five nullity-twelve complex bundles are trivial; the two nullity-sixteen complex and
 quaternionic bundles retain the nonzero order-two class already found by the homogeneous calculation, although all
-seven underlying real bundles are trivial. An exhaustive component census and smaller reductions on the
-non-homogeneous pieces remain open. The aligned nullity-twelve pieces now have an explicit
+seven underlying real bundles are trivial. The component group is exactly the visible `S_3 x Z_2` (`A5-379`);
+smaller reductions on the non-homogeneous pieces remain open. The aligned nullity-twelve pieces now have an explicit
 one-dimensional compact-orbit quotient, a computed unit-section topology, and exact stabilizer representations on
 their principal and endpoint orbits. The open `V` orbit now has an explicit three-dimensional connected compact-orbit
 quotient, a computed unit-section topology and K-groups, and exact stabilizer representations on its principal,
@@ -1019,7 +1019,10 @@ The falsifier was a failed basis product, relation, commutator, center-separatio
 The control changes one radical coefficient of `psi`; 244 sedenion basis products and 1,952 A_5 basis products then
 fail. This computation does not prove that `S_3 x Z_2` is the entire component group: Brown's automorphism theorem
 classifies algebra automorphisms in dimension 32, while the kernel-pencil group also permits triples that are not
-algebra automorphisms. An exhaustive normalizer census remains open.
+algebra automorphisms. The
+[centralizer record](../a5-kernel-bundles-residuals/README.md#the-component-group-is-the-visible-s_3-x-z_2) supplies
+the census: the centralizer of `G_2` has 12 complex components and a connected real torus, so the component group
+is exactly this `S_3 x Z_2` (`A5-379`).
 
 ## Standard topology references
 
@@ -1051,8 +1054,9 @@ stabilizer representations. The finite classification then proves that all five 
 trivial, both nullity-sixteen complex and quaternionic bundles are nontrivial with reduced class `x`, every
 underlying real kernel bundle is trivial. Reduced `K^0`, the exact cancellation ranges, the periodic phase lift, and
 `pi_6(U(6))=0` supply these triviality statements without choosing a canonical clutching matrix. This completes
-deliverable 4. The computation has not proved that
-the visible components exhaust the group and has not classified an equivariant extension under the disconnected
+deliverable 4. The visible components exhaust the component group (`A5-379`, by the
+[centralizer record](../a5-kernel-bundles-residuals/README.md#the-component-group-is-the-visible-s_3-x-z_2)). The
+computation has not classified an equivariant extension under the disconnected
 `N_+-` stabilizers, the actual real type of the individual four-plane `xi_R`, or smaller structure-group reductions
 on the nullity-twelve pieces. The compact
 symmetry orbits are strictly smaller than the complex rank-stratum orbits outside `N_+-`, so the rank-stratum orbit

@@ -407,7 +407,7 @@ def as_arb(value) -> arb:
 
 
 def compare(result: dict, reference: dict) -> dict:
-    out = {"max_rate_abs_error": 0.0}
+    out: dict[str, float | str] = {"max_rate_abs_error": 0.0}
     for value, exact in zip(result["rates"], reference["rates"], strict=True):
         out["max_rate_abs_error"] = max(out["max_rate_abs_error"], abs(float((as_arb(value) - exact).mid())))
     worst = 0.0

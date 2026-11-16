@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 import fp_backends as fp
 
@@ -41,7 +42,7 @@ def as_result(record: dict, d: dict) -> dict:
 def main() -> int:
     d = fp.load(sys.argv[1])
     reference = fp.arb_reference(d)
-    report = {"reference": f"arb {fp.PREC}-bit normal equations", "records": {}}
+    report: dict[str, Any] = {"reference": f"arb {fp.PREC}-bit normal equations", "records": {}}
     for path in sys.argv[3:]:
         record = json.loads(Path(path).read_text(encoding="utf-8"))
         scored = fp.compare(as_result(record, d), reference)

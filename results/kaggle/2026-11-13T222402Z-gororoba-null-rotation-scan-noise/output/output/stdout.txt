@@ -1,0 +1,144 @@
+cz_depolarizing no_offset: expected offset_absent; stable {'offset_absent': 40} wrong 0; retained_walk {'offset_absent': 25, 'unresolved_guard': 15} wrong 0
+cz_depolarizing pulse_x_before_all@-0.1470: expected pulse_x; stable {'pulse_x': 40} wrong 0; retained_walk {'pulse_x': 4, 'unresolved_bridge': 17, 'unresolved_guard': 19} wrong 0
+cz_depolarizing pulse_x_before_all@+0.0509: expected pulse_x; stable {'pulse_x': 40} wrong 0; retained_walk {'pulse_x': 1, 'unresolved_bridge': 23, 'unresolved_guard': 16} wrong 0
+cz_depolarizing pulse_x_before_q8@-0.2512: expected pulse_x; stable {'pulse_x': 39, 'unresolved_none': 1} wrong 0; retained_walk {'pulse_x': 4, 'unresolved_bridge': 20, 'unresolved_guard': 15, 'unresolved_none': 1} wrong 0
+cz_depolarizing pulse_x_before_q8@+0.0857: expected pulse_x; stable {'pulse_x': 39, 'unresolved_none': 1} wrong 0; retained_walk {'pulse_x': 3, 'unresolved_bridge': 22, 'unresolved_guard': 15} wrong 0
+cz_depolarizing pulse_x_before_q8@+0.1575: expected pulse_x; stable {'pulse_x': 40} wrong 0; retained_walk {'pulse_x': 3, 'unresolved_bridge': 20, 'unresolved_guard': 17} wrong 0
+cz_depolarizing pulse_y_before_all@-0.0677: expected pulse_other; stable {'pulse_other': 39, 'unresolved_both': 1} wrong 0; retained_walk {'pulse_other': 3, 'unresolved_both': 3, 'unresolved_bridge': 12, 'unresolved_guard': 21, 'unresolved_none': 1} wrong 0
+cz_depolarizing pulse_y_before_all@+0.0639: expected pulse_other; stable {'pulse_other': 39, 'x_excluded': 1} wrong 0; retained_walk {'pulse_other': 2, 'unresolved_bridge': 21, 'unresolved_guard': 17} wrong 0
+cz_depolarizing pulse_z_before_all@-0.0677: expected pulse_other; stable {'pulse_other': 39, 'unresolved_both': 1} wrong 0; retained_walk {'pulse_other': 6, 'unresolved_bridge': 16, 'unresolved_guard': 18} wrong 0
+cz_depolarizing pulse_z_before_all@+0.0639: expected pulse_other; stable {'pulse_other': 40} wrong 0; retained_walk {'pulse_other': 7, 'unresolved_bridge': 13, 'unresolved_guard': 20} wrong 0
+cz_depolarizing selector_flip_q12_0@0.0363: expected readout; stable {'readout': 37, 'unresolved_bridge': 1, 'x_excluded': 2} wrong 0; retained_walk {'readout': 4, 'unresolved_bridge': 14, 'unresolved_guard': 21, 'x_excluded': 1} wrong 0
+cz_depolarizing selector_dropout_coin_1@0.0361: expected readout; stable {'readout': 35, 'unresolved_none': 1, 'x_excluded': 4} wrong 0; retained_walk {'readout': 2, 'unresolved_bridge': 15, 'unresolved_guard': 20, 'x_excluded': 3} wrong 0
+cz_depolarizing amplitude_scale@-0.0936: expected pulse_x; stable {'pulse_x': 40} wrong 0; retained_walk {'pulse_x': 5, 'unresolved_bridge': 15, 'unresolved_guard': 19, 'unresolved_none': 1} wrong 0
+cz_depolarizing amplitude_scale@+0.0324: expected pulse_x; stable {'pulse_x': 40} wrong 0; retained_walk {'pulse_x': 8, 'unresolved_bridge': 14, 'unresolved_guard': 18} wrong 0
+cz_depolarizing cz_phase@-0.08: expected unresolved_both; stable {'pulse_x': 1, 'unresolved_both': 33, 'unresolved_none': 6} wrong 1; retained_walk {'unresolved_both': 18, 'unresolved_guard': 16, 'unresolved_none': 6} wrong 0
+cz_depolarizing cz_phase@+0.08: expected pulse_other; stable {'pulse_other': 38, 'unresolved_bridge': 1, 'x_excluded': 1} wrong 0; retained_walk {'pulse_other': 1, 'unresolved_bridge': 22, 'unresolved_guard': 16, 'unresolved_none': 1} wrong 0
+pulse_dephasing no_offset: expected offset_absent; stable {'offset_absent': 40} wrong 0; retained_walk {'offset_absent': 19, 'unresolved_guard': 21} wrong 0
+pulse_dephasing pulse_x_before_all@-0.1398: expected pulse_x; stable {'pulse_x': 39, 'unresolved_none': 1} wrong 0; retained_walk {'pulse_x': 5, 'unresolved_bridge': 14, 'unresolved_guard': 21} wrong 0
+pulse_dephasing pulse_x_before_all@+0.0521: expected pulse_x; stable {'pulse_x': 40} wrong 0; retained_walk {'pulse_x': 5, 'unresolved_bridge': 18, 'unresolved_guard': 17} wrong 0
+pulse_dephasing pulse_x_before_q8@-0.2467: expected pulse_x; stable {'pulse_x': 40} wrong 0; retained_walk {'pulse_x': 3, 'unresolved_bridge': 19, 'unresolved_guard': 18} wrong 0
+pulse_dephasing pulse_x_before_q8@+0.0937: expected pulse_x; stable {'pulse_x': 40} wrong 0; retained_walk {'pulse_x': 6, 'unresolved_bridge': 19, 'unresolved_guard': 15} wrong 0
+pulse_dephasing pulse_x_before_q8@+0.1466: expected pulse_x; stable {'pulse_x': 40} wrong 0; retained_walk {'pulse_x': 5, 'unresolved_bridge': 20, 'unresolved_guard': 15} wrong 0
+pulse_dephasing pulse_y_before_all@-0.0640: expected pulse_other; stable {'pulse_other': 39, 'unresolved_bridge': 1} wrong 0; retained_walk {'pulse_other': 1, 'unresolved_bridge': 21, 'unresolved_guard': 18} wrong 0
+pulse_dephasing pulse_y_before_all@+0.0646: expected pulse_other; stable {'pulse_other': 39, 'unresolved_none': 1} wrong 0; retained_walk {'pulse_other': 5, 'unresolved_bridge': 13, 'unresolved_guard': 22} wrong 0
+pulse_dephasing pulse_z_before_all@-0.0640: expected pulse_other; stable {'pulse_other': 40} wrong 0; retained_walk {'pulse_other': 4, 'unresolved_bridge': 27, 'unresolved_guard': 9} wrong 0
+pulse_dephasing pulse_z_before_all@+0.0646: expected pulse_other; stable {'pulse_other': 40} wrong 0; retained_walk {'pulse_other': 7, 'unresolved_bridge': 18, 'unresolved_guard': 15} wrong 0
+pulse_dephasing selector_flip_q12_0@0.0364: expected readout; stable {'readout': 36, 'x_excluded': 4} wrong 0; retained_walk {'readout': 3, 'unresolved_bridge': 10, 'unresolved_guard': 25, 'x_excluded': 2} wrong 0
+pulse_dephasing selector_dropout_coin_1@0.0360: expected readout; stable {'readout': 26, 'x_excluded': 14} wrong 0; retained_walk {'readout': 2, 'unresolved_bridge': 19, 'unresolved_guard': 18, 'x_excluded': 1} wrong 0
+pulse_dephasing amplitude_scale@-0.0890: expected pulse_x; stable {'pulse_x': 38, 'unresolved_none': 2} wrong 0; retained_walk {'pulse_x': 6, 'unresolved_bridge': 15, 'unresolved_guard': 16, 'unresolved_none': 3} wrong 0
+pulse_dephasing amplitude_scale@+0.0332: expected pulse_x; stable {'pulse_x': 40} wrong 0; retained_walk {'pulse_x': 6, 'unresolved_bridge': 18, 'unresolved_guard': 16} wrong 0
+pulse_dephasing cz_phase@-0.08: expected unresolved_both; stable {'pulse_x': 2, 'unresolved_both': 28, 'unresolved_none': 10} wrong 2; retained_walk {'unresolved_both': 19, 'unresolved_guard': 16, 'unresolved_none': 5} wrong 0
+pulse_dephasing cz_phase@+0.08: expected pulse_other; stable {'pulse_other': 29, 'unresolved_none': 11} wrong 0; retained_walk {'pulse_other': 4, 'unresolved_bridge': 15, 'unresolved_guard': 17, 'unresolved_none': 4} wrong 0
+cz_dephasing no_offset: expected offset_absent; stable {'offset_absent': 40} wrong 0; retained_walk {'offset_absent': 27, 'unresolved_guard': 13} wrong 0
+cz_dephasing pulse_x_before_all@-0.1403: expected pulse_x; stable {'pulse_x': 39, 'unresolved_bridge': 1} wrong 0; retained_walk {'pulse_x': 5, 'unresolved_bridge': 15, 'unresolved_guard': 20} wrong 0
+cz_dephasing pulse_x_before_all@+0.0495: expected pulse_x; stable {'pulse_x': 39, 'unresolved_none': 1} wrong 0; retained_walk {'pulse_x': 5, 'unresolved_bridge': 19, 'unresolved_guard': 16} wrong 0
+cz_dephasing pulse_x_before_q8@-0.2499: expected pulse_x; stable {'pulse_x': 24, 'unresolved_none': 16} wrong 0; retained_walk {'pulse_x': 2, 'unresolved_bridge': 10, 'unresolved_guard': 21, 'unresolved_none': 7} wrong 0
+cz_dephasing pulse_x_before_q8@+0.0777: expected pulse_x; stable {'pulse_x': 40} wrong 0; retained_walk {'pulse_x': 1, 'unresolved_bridge': 23, 'unresolved_guard': 16} wrong 0
+cz_dephasing pulse_x_before_q8@+0.1716: expected pulse_x; stable {'pulse_x': 40} wrong 0; retained_walk {'pulse_x': 1, 'unresolved_bridge': 13, 'unresolved_guard': 26} wrong 0
+cz_dephasing pulse_y_before_all@-0.0605: expected pulse_other; stable {'pulse_other': 38, 'unresolved_both': 1, 'unresolved_bridge': 1} wrong 0; retained_walk {'pulse_other': 7, 'unresolved_both': 1, 'unresolved_bridge': 14, 'unresolved_guard': 18} wrong 0
+cz_dephasing pulse_y_before_all@+0.0672: expected pulse_other; stable {'pulse_other': 40} wrong 0; retained_walk {'pulse_other': 3, 'unresolved_bridge': 21, 'unresolved_guard': 16} wrong 0
+cz_dephasing pulse_z_before_all@-0.0605: expected pulse_other; stable {'pulse_other': 40} wrong 0; retained_walk {'pulse_other': 4, 'unresolved_bridge': 19, 'unresolved_guard': 17} wrong 0
+cz_dephasing pulse_z_before_all@+0.0672: expected pulse_other; stable {'pulse_other': 40} wrong 0; retained_walk {'pulse_other': 4, 'unresolved_bridge': 17, 'unresolved_guard': 19} wrong 0
+cz_dephasing selector_flip_q12_0@0.0362: expected readout; stable {'readout': 38, 'x_excluded': 2} wrong 0; retained_walk {'readout': 1, 'unresolved_bridge': 20, 'unresolved_guard': 18, 'x_excluded': 1} wrong 0
+cz_dephasing selector_dropout_coin_1@0.0359: expected readout; stable {'readout': 28, 'x_excluded': 12} wrong 0; retained_walk {'readout': 1, 'unresolved_bridge': 16, 'unresolved_guard': 20, 'x_excluded': 3} wrong 0
+cz_dephasing amplitude_scale@-0.0893: expected pulse_x; stable {'pulse_x': 38, 'unresolved_none': 2} wrong 0; retained_walk {'pulse_x': 6, 'unresolved_bridge': 16, 'unresolved_guard': 17, 'unresolved_none': 1} wrong 0
+cz_dephasing amplitude_scale@+0.0315: expected pulse_x; stable {'pulse_x': 40} wrong 0; retained_walk {'pulse_x': 5, 'unresolved_bridge': 15, 'unresolved_guard': 20} wrong 0
+cz_dephasing cz_phase@-0.08: expected unresolved_both; stable {'unresolved_both': 37, 'unresolved_none': 3} wrong 0; retained_walk {'unresolved_both': 20, 'unresolved_guard': 19, 'unresolved_none': 1} wrong 0
+cz_dephasing cz_phase@+0.08: expected pulse_other; stable {'pulse_other': 36, 'unresolved_none': 4} wrong 0; retained_walk {'pulse_other': 6, 'unresolved_bridge': 14, 'unresolved_guard': 20} wrong 0
+cz_damping no_offset: expected offset_absent; stable {'offset_absent': 40} wrong 0; retained_walk {'offset_absent': 24, 'unresolved_guard': 16} wrong 0
+cz_damping pulse_x_before_all@-0.1665: expected pulse_x; stable {'pulse_x': 34, 'unresolved_none': 6} wrong 0; retained_walk {'pulse_x': 2, 'unresolved_bridge': 17, 'unresolved_guard': 21} wrong 0
+cz_damping pulse_x_before_all@+0.0484: expected pulse_x; stable {'pulse_x': 18, 'unresolved_none': 22} wrong 0; retained_walk {'pulse_x': 3, 'unresolved_bridge': 19, 'unresolved_guard': 10, 'unresolved_none': 8} wrong 0
+cz_damping pulse_x_before_q8@-0.2621: expected pulse_x; stable {'pulse_x': 8, 'unresolved_none': 32} wrong 0; retained_walk {'pulse_x': 1, 'unresolved_bridge': 7, 'unresolved_guard': 22, 'unresolved_none': 10} wrong 0
+cz_damping pulse_x_before_q8@+0.0667: expected pulse_x; stable {'pulse_x': 24, 'unresolved_none': 16} wrong 0; retained_walk {'pulse_x': 7, 'unresolved_bridge': 13, 'unresolved_guard': 13, 'unresolved_none': 7} wrong 0
+cz_damping pulse_x_before_q8@+0.1942: expected pulse_x; stable {'pulse_x': 17, 'unresolved_none': 23} wrong 0; retained_walk {'pulse_x': 2, 'unresolved_bridge': 16, 'unresolved_guard': 11, 'unresolved_none': 11} wrong 0
+cz_damping pulse_y_before_all@-0.0728: expected pulse_x; stable {'pulse_x': 17, 'unresolved_none': 23} wrong 17; retained_walk {'pulse_x': 1, 'unresolved_both': 10, 'unresolved_bridge': 8, 'unresolved_guard': 17, 'unresolved_none': 4} wrong 9
+cz_damping pulse_y_before_all@+0.0630: expected pulse_other; stable {'pulse_other': 28, 'unresolved_none': 12} wrong 0; retained_walk {'pulse_other': 1, 'unresolved_bridge': 11, 'unresolved_guard': 25, 'unresolved_none': 3} wrong 0
+cz_damping pulse_z_before_all@-0.0728: expected pulse_x; stable {'pulse_x': 9, 'unresolved_none': 31} wrong 9; retained_walk {'unresolved_both': 5, 'unresolved_bridge': 5, 'unresolved_guard': 13, 'unresolved_none': 17} wrong 5
+cz_damping pulse_z_before_all@+0.0630: expected pulse_other; stable {'pulse_other': 37, 'unresolved_none': 3} wrong 0; retained_walk {'pulse_other': 2, 'unresolved_bridge': 13, 'unresolved_guard': 23, 'unresolved_none': 2} wrong 0
+cz_damping selector_flip_q12_0@0.0389: expected x_excluded; stable {'pulse_other': 13, 'unresolved_none': 16, 'x_excluded': 11} wrong 13; retained_walk {'pulse_other': 1, 'unresolved_bridge': 17, 'unresolved_guard': 14, 'unresolved_none': 4, 'x_excluded': 4} wrong 6
+cz_damping selector_dropout_coin_1@0.0351: expected unresolved_none; stable {'readout': 4, 'unresolved_none': 35, 'x_excluded': 1} wrong 0; retained_walk {'pulse_other': 1, 'unresolved_bridge': 4, 'unresolved_guard': 18, 'unresolved_none': 14, 'x_excluded': 3} wrong 1
+cz_damping amplitude_scale@-0.1060: expected pulse_x; stable {'pulse_x': 20, 'unresolved_none': 20} wrong 0; retained_walk {'pulse_x': 3, 'unresolved_bridge': 13, 'unresolved_guard': 16, 'unresolved_none': 8} wrong 0
+cz_damping amplitude_scale@+0.0308: expected pulse_x; stable {'pulse_x': 30, 'unresolved_none': 10} wrong 0; retained_walk {'pulse_x': 4, 'unresolved_bridge': 11, 'unresolved_guard': 19, 'unresolved_none': 6} wrong 0
+cz_damping cz_phase@-0.08: expected unresolved_none; stable {'offset_absent': 1, 'pulse_other': 5, 'unresolved_both': 2, 'unresolved_none': 32} wrong 0; retained_walk {'offset_absent': 1, 'unresolved_both': 8, 'unresolved_bridge': 4, 'unresolved_guard': 15, 'unresolved_none': 12} wrong 0
+cz_damping cz_phase@+0.08: expected pulse_other; stable {'pulse_other': 30, 'unresolved_none': 2, 'x_excluded': 8} wrong 0; retained_walk {'pulse_other': 1, 'unresolved_bridge': 19, 'unresolved_guard': 17, 'x_excluded': 3} wrong 0
+damping_and_dephasing no_offset: expected offset_absent; stable {'offset_absent': 40} wrong 0; retained_walk {'offset_absent': 24, 'unresolved_guard': 16} wrong 0
+damping_and_dephasing pulse_x_before_all@-0.1570: expected pulse_x; stable {'pulse_x': 38, 'unresolved_bridge': 1, 'unresolved_none': 1} wrong 0; retained_walk {'pulse_x': 5, 'unresolved_bridge': 14, 'unresolved_guard': 21} wrong 0
+damping_and_dephasing pulse_x_before_all@+0.0484: expected pulse_x; stable {'pulse_x': 28, 'unresolved_none': 12} wrong 0; retained_walk {'pulse_x': 3, 'unresolved_bridge': 21, 'unresolved_guard': 14, 'unresolved_none': 2} wrong 0
+damping_and_dephasing pulse_x_before_q8@-0.2596: expected pulse_x; stable {'pulse_x': 9, 'unresolved_none': 31} wrong 0; retained_walk {'unresolved_bridge': 10, 'unresolved_guard': 13, 'unresolved_none': 17} wrong 0
+damping_and_dephasing pulse_x_before_q8@+0.0698: expected pulse_x; stable {'pulse_x': 36, 'unresolved_none': 4} wrong 0; retained_walk {'pulse_x': 2, 'unresolved_both': 2, 'unresolved_bridge': 19, 'unresolved_guard': 14, 'unresolved_none': 3} wrong 0
+damping_and_dephasing pulse_x_before_q8@+0.1859: expected pulse_x; stable {'pulse_x': 35, 'unresolved_none': 5} wrong 0; retained_walk {'pulse_x': 3, 'unresolved_bridge': 20, 'unresolved_guard': 16, 'unresolved_none': 1} wrong 0
+damping_and_dephasing pulse_y_before_all@-0.0676: expected unresolved_both; stable {'pulse_other': 3, 'pulse_x': 6, 'unresolved_both': 7, 'unresolved_none': 24} wrong 6; retained_walk {'unresolved_both': 11, 'unresolved_bridge': 2, 'unresolved_guard': 18, 'unresolved_none': 9} wrong 1
+damping_and_dephasing pulse_y_before_all@+0.0641: expected pulse_other; stable {'pulse_other': 38, 'unresolved_none': 2} wrong 0; retained_walk {'pulse_other': 3, 'unresolved_bridge': 13, 'unresolved_guard': 23, 'unresolved_none': 1} wrong 0
+damping_and_dephasing pulse_z_before_all@-0.0676: expected unresolved_both; stable {'pulse_other': 4, 'pulse_x': 2, 'unresolved_both': 6, 'unresolved_none': 28} wrong 2; retained_walk {'pulse_other': 1, 'unresolved_both': 9, 'unresolved_guard': 21, 'unresolved_none': 9} wrong 0
+damping_and_dephasing pulse_z_before_all@+0.0641: expected pulse_other; stable {'pulse_other': 38, 'unresolved_none': 2} wrong 0; retained_walk {'pulse_other': 6, 'unresolved_bridge': 17, 'unresolved_guard': 17} wrong 0
+damping_and_dephasing selector_flip_q12_0@0.0375: expected x_excluded; stable {'pulse_other': 1, 'readout': 6, 'unresolved_none': 11, 'x_excluded': 22} wrong 1; retained_walk {'unresolved_bridge': 15, 'unresolved_guard': 15, 'unresolved_none': 4, 'x_excluded': 6} wrong 1
+damping_and_dephasing selector_dropout_coin_1@0.0357: expected readout; stable {'readout': 22, 'unresolved_none': 14, 'x_excluded': 4} wrong 0; retained_walk {'unresolved_bridge': 15, 'unresolved_guard': 17, 'unresolved_none': 4, 'x_excluded': 4} wrong 0
+damping_and_dephasing amplitude_scale@-0.0999: expected pulse_x; stable {'pulse_x': 31, 'unresolved_none': 9} wrong 0; retained_walk {'pulse_x': 3, 'unresolved_bridge': 15, 'unresolved_guard': 22} wrong 0
+damping_and_dephasing amplitude_scale@+0.0308: expected pulse_x; stable {'pulse_x': 40} wrong 0; retained_walk {'pulse_x': 2, 'unresolved_bridge': 19, 'unresolved_guard': 19} wrong 0
+damping_and_dephasing cz_phase@-0.08: expected unresolved_both; stable {'unresolved_both': 13, 'unresolved_none': 27} wrong 0; retained_walk {'unresolved_both': 7, 'unresolved_guard': 25, 'unresolved_none': 8} wrong 0
+damping_and_dephasing cz_phase@+0.08: expected pulse_other; stable {'pulse_other': 35, 'x_excluded': 5} wrong 0; retained_walk {'pulse_other': 1, 'unresolved_bridge': 19, 'unresolved_guard': 19, 'x_excluded': 1} wrong 0
+{
+ "expected_label_names_a_wrong_class": [
+  "cz_damping/pulse_y_before_all@-0.0728",
+  "cz_damping/pulse_z_before_all@-0.0728"
+ ],
+ "series_naming_a_wrong_class": {
+  "cz_depolarizing/cz_phase@-0.08/stable": [
+   1,
+   40
+  ],
+  "pulse_dephasing/cz_phase@-0.08/stable": [
+   2,
+   40
+  ],
+  "cz_damping/pulse_y_before_all@-0.0728/stable": [
+   17,
+   40
+  ],
+  "cz_damping/pulse_y_before_all@-0.0728/retained_walk": [
+   9,
+   40
+  ],
+  "cz_damping/pulse_z_before_all@-0.0728/stable": [
+   9,
+   40
+  ],
+  "cz_damping/pulse_z_before_all@-0.0728/retained_walk": [
+   5,
+   40
+  ],
+  "cz_damping/selector_flip_q12_0@0.0389/stable": [
+   13,
+   40
+  ],
+  "cz_damping/selector_flip_q12_0@0.0389/retained_walk": [
+   6,
+   40
+  ],
+  "cz_damping/selector_dropout_coin_1@0.0351/retained_walk": [
+   1,
+   40
+  ],
+  "damping_and_dephasing/pulse_y_before_all@-0.0676/stable": [
+   6,
+   40
+  ],
+  "damping_and_dephasing/pulse_y_before_all@-0.0676/retained_walk": [
+   1,
+   40
+  ],
+  "damping_and_dephasing/pulse_z_before_all@-0.0676/stable": [
+   2,
+   40
+  ],
+  "damping_and_dephasing/selector_flip_q12_0@0.0375/stable": [
+   1,
+   40
+  ],
+  "damping_and_dephasing/selector_flip_q12_0@0.0375/retained_walk": [
+   1,
+   40
+  ]
+ }
+}

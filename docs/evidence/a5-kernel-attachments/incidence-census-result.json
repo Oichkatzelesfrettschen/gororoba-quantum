@@ -1040,7 +1040,7 @@
   "inputs": {
     "docs/evidence/a5-kernel-attachments/incidence_census.py": "1ac6e43468e4cd6ad482533792437da898d0d89960532982126b98572c190a32",
     "docs/evidence/a5-kernel-bundles-nullity8/boundary_specializations.py": "f7d978febf6a286b11df3ea25b30b7c8dcd9e28763a46769a153f0246419b387",
-    "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",
+    "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4a3b2d4e74bcedd2e5ce76d1a5eb4d8099ce3aa872f5d168d32f88496013a3bf",
     "docs/evidence/a5-strata-regularity/verify_regularity_independent.py": "154a686ccf2f55f101f83cb98d3e5ee2a751c4ecb3c352eeeaac119099925280",
     "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
   },

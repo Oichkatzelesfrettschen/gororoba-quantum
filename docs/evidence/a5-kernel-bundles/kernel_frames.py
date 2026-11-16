@@ -273,7 +273,7 @@ def _symbolic_parameterization_check(sign: int) -> dict[str, bool]:
     }
 
 
-def _original_z_from_split(split_point: Sequence[int]) -> tuple[sp.Expr, ...]:
+def _original_z_from_split(split_point: Sequence[int | Fraction]) -> tuple[sp.Expr, ...]:
     """Convert z'_1,...,z'_15 to z_k=i^popcount(k) z'_k."""
     if len(split_point) != IMAGINARY_DIMENSION:
         raise ValueError(f"split point must have {IMAGINARY_DIMENSION} coordinates")

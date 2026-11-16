@@ -1,0 +1,18 @@
+{
+ "schema": "anu-qrng-draw-v1",
+ "source": "https://api.quantumnumbers.anu.edu.au?length=8&type=uint16",
+ "retrieved_utc": "2026-11-13T172143Z",
+ "raw": "{\"success\": true, \"type\": \"uint16\", \"length\": \"8\", \"data\": [6326, 47164, 64211, 7960, 57953, 51319, 9678, 30045]}",
+ "raw_sha256": "9c33f8f3dd62de05b8dd42549131134457f1378c7878d8461f76e7d03823972b",
+ "type": "uint16",
+ "values": [
+  6326,
+  47164,
+  64211,
+  7960,
+  57953,
+  51319,
+  9678,
+  30045
+ ]
+}

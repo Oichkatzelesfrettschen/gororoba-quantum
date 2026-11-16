@@ -1,0 +1,303 @@
+{
+ "check": "e8-np-nm-coordinate-map-qi",
+ "field": "Q(i), minpoly I^2 + 1",
+ "sigma": "t8 -> -t8, t9 -> -t9",
+ "producer": "fiber_inputs.py phase one through rees._phase_one_script, rings rewritten to (0,I)",
+ "inputs": {
+  "e8-np": {
+   "script_sha256": "88258418108f71380d0da40f9333c01fefd7a804ba52c3013d52ee4b0200beb4",
+   "ring": "t1,t2,t3,t4,t5,t6,t7,t8,t9",
+   "germ_dimension": 5,
+   "selected_one_based": [
+    89,
+    90,
+    68,
+    67,
+    81,
+    87,
+    56,
+    61,
+    60,
+    120,
+    121,
+    54,
+    80,
+    53,
+    78,
+    76,
+    96,
+    98,
+    109,
+    110,
+    126
+   ],
+   "eliminated": [],
+   "J_generators": 16,
+   "G_generators": 21
+  },
+  "e8-nm": {
+   "script_sha256": "9ed5c43a36bb314c5f63dc830e83e5bd0194625b7b0ad0bd6d8f5a6671980cdb",
+   "ring": "t1,t2,t3,t4,t5,t6,t7,t8,t9",
+   "germ_dimension": 5,
+   "selected_one_based": [
+    89,
+    90,
+    68,
+    67,
+    81,
+    87,
+    56,
+    61,
+    60,
+    120,
+    121,
+    54,
+    80,
+    53,
+    78,
+    76,
+    96,
+    98,
+    109,
+    110,
+    126
+   ],
+   "eliminated": [],
+   "J_generators": 16,
+   "G_generators": 21
+  }
+ },
+ "J_identity": {
+  "map": [
+   [
+    1,
+    "1"
+   ],
+   [
+    2,
+    "1"
+   ],
+   [
+    3,
+    "-1"
+   ],
+   [
+    4,
+    "-1"
+   ],
+   [
+    5,
+    "-1"
+   ],
+   [
+    6,
+    "-1"
+   ],
+   [
+    7,
+    "-1"
+   ],
+   [
+    8,
+    "-1"
+   ],
+   [
+    9,
+    "-1"
+   ],
+   [
+    10,
+    "1"
+   ],
+   [
+    11,
+    "1"
+   ],
+   [
+    12,
+    "1"
+   ],
+   [
+    13,
+    "1"
+   ],
+   [
+    14,
+    "-1"
+   ],
+   [
+    15,
+    "-1"
+   ],
+   [
+    16,
+    "1"
+   ]
+  ],
+  "bijection_by_units": true
+ },
+ "G_identity": {
+  "map": [
+   [
+    1,
+    "-1"
+   ],
+   [
+    2,
+    "-1"
+   ],
+   [
+    3,
+    "1"
+   ],
+   [
+    4,
+    "1"
+   ],
+   [
+    5,
+    "-1"
+   ],
+   [
+    6,
+    "-1"
+   ],
+   [
+    7,
+    "-1"
+   ],
+   [
+    8,
+    "1"
+   ],
+   [
+    9,
+    "1"
+   ],
+   [
+    10,
+    "1"
+   ],
+   [
+    11,
+    "1"
+   ],
+   [
+    12,
+    "-1"
+   ],
+   [
+    13,
+    "-1"
+   ],
+   [
+    14,
+    "-1"
+   ],
+   [
+    15,
+    "-1"
+   ],
+   [
+    16,
+    "-1"
+   ],
+   [
+    17,
+    "-1"
+   ],
+   [
+    18,
+    "-1"
+   ],
+   [
+    19,
+    "-1"
+   ],
+   [
+    20,
+    "-1"
+   ],
+   [
+    21,
+    "1"
+   ]
+  ],
+  "bijection_by_units": true
+ },
+ "control_t9_only": {
+  "J": true,
+  "G": false
+ },
+ "reductions": [
+  {
+   "header": "p32009-r10754/e8-np.sing",
+   "header_sha256": "ab6dd0ef6281b0d02e84d744ace39f56a8cf95695186324e4d76fb387c628af6",
+   "J_counts": [
+    16,
+    16
+   ],
+   "J_generatorwise_up_to_scalar": 10,
+   "G_counts": [
+    21,
+    21
+   ],
+   "G_generatorwise_up_to_scalar": 21,
+   "J_ideal_equal": true,
+   "G_equal_up_to_scalar": true
+  },
+  {
+   "header": "p32009-r10754/e8-nm.sing",
+   "header_sha256": "7d3521d0e8026e6ff9b17f1a3af618adcd133ff2835ff68f9d445c3db42414de",
+   "J_counts": [
+    16,
+    16
+   ],
+   "J_generatorwise_up_to_scalar": 10,
+   "G_counts": [
+    21,
+    21
+   ],
+   "G_generatorwise_up_to_scalar": 21,
+   "J_ideal_equal": true,
+   "G_equal_up_to_scalar": true
+  },
+  {
+   "header": "p32029-r9115/e8-np.sing",
+   "header_sha256": "966c836537e2ef8e313cbbb6ae2b9a3ea7ee54de7b106aa3f53c83d555d13cae",
+   "J_counts": [
+    16,
+    16
+   ],
+   "J_generatorwise_up_to_scalar": 10,
+   "G_counts": [
+    21,
+    21
+   ],
+   "G_generatorwise_up_to_scalar": 21,
+   "J_ideal_equal": true,
+   "G_equal_up_to_scalar": true
+  },
+  {
+   "header": "p32029-r9115/e8-nm.sing",
+   "header_sha256": "48bdcbe0fa17d04cd4899c0a1e056706b9c9c368ccece97ebeb94686ad3c1cca",
+   "J_counts": [
+    16,
+    16
+   ],
+   "J_generatorwise_up_to_scalar": 10,
+   "G_counts": [
+    21,
+    21
+   ],
+   "G_generatorwise_up_to_scalar": 21,
+   "J_ideal_equal": true,
+   "G_equal_up_to_scalar": true
+  }
+ ],
+ "mutations": {
+  "J_ideal_equal_after_adding_t1": false,
+  "G_identity_after_doubling_one_coefficient": false
+ },
+ "sign_identity_over_qi": true
+}

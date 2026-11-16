@@ -19,7 +19,7 @@ here is [repository-layout-reconciliation](repository-layout-reconciliation.md).
 The measurements describe the CI as it stood when they were taken: a nightly and weekly audit, selection of
 gates by reach under a 900 s budget, and a gate ledger. That machinery is gone. `pr.yml` runs lint, types and
 the unit tests on each pull request and each push to main, every gate of `ci/gates.json` runs on demand,
-and `proofs.yml` compiles the Rocq bundles when a proof path changes ([ci/AGENTS.md](../../ci/AGENTS.md)). The
+and no workflow compiles Rocq: the retained bundles replay on demand from gororoba-math ([ci/AGENTS.md](../../ci/AGENTS.md)). The
 verdict column and the sections "What the CI is for" and "Falsifiers" below state the present rule.
 
 ## The failures the rules exist for
@@ -72,7 +72,7 @@ The purpose, stated so a researcher can read it, is three questions:
 | Question | Who answers it | When |
 |---|---|---|
 | Does this change keep the contracts of the tree? | `pr.yml`: `tests` (unit tests on synthetic inputs, providers mocked); `lint` and `types` run beside it | every pull request and every push to main |
-| Does a proof still compile? | `proofs.yml`, path-filtered, not a required check | a pull request or push touching a proof path |
+| Does a proof still compile? | `ci/check_rocq.sh` of gororoba-math, which holds the sources; the retained bundles replay through its `ci/replay_quantum_bundles.sh` | a pull request in gororoba-math; on demand here |
 | Do the retained artifacts behind each claim still replay? | `sh ci/pr_checks.sh gates`, by hand | after a pin or producer change |
 
 A gate no claim cites stays a contract check or leaves `ci/gates.json`; a claim cites a gate of either manifest.
@@ -108,8 +108,8 @@ check that already runs, a runbook that already exists, or a fact a file already
 
 `lint`, `types`, `tests` (`pr.yml`); `tests/ci/test_seed_provenance.py`; `core-611` for links and
 anchors; `core-plan-tracker`; `scripts/approved_run.sh`; ruff `S101` for stripped asserts; the
-vectorized-fits equivalence gate; the `rocq` job of `proofs.yml`, which compiles a pull request that touches a
-proof path so the local-replay sentence leaves.
+vectorized-fits equivalence gate; the Rocq gate of gororoba-math, which compiles each pull request that touches a
+proof source.
 
 ### What the two reviews agree on
 
@@ -201,7 +201,7 @@ or digest binds is corrected in place in the change that refreshes its ledger or
 the private gororoba-documents-private repository.
 
 Shared history. Branch, pull request, merge commit (merge_method=merge). Retarget a stacked PR to main
-before deleting its base. Codex is the only hosted reviewer: one @codex review per head, a second only
+before deleting its base. Codex is the only hosted reviewer: one @Codex review per head, a second only
 when the operator review changed code; reply Fixed in <commit>, Refuted: <source line> or Boundary:
 <limit, issue>, then scripts/resolve_answered_threads.sh. The four pr.yml checks admit a merge; no
 local gate run precedes a push. Procedure: docs/runbooks/codex-review-loop.md.

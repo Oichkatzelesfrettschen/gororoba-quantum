@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
+import shutil
 from pathlib import Path
+from typing import Any
 
 import ascella_predecessor_case as original
 import ascella_predecessor_current_analysis as analysis
@@ -119,3 +122,69 @@ def test_current_analyzer_validates_serialized_result_end_to_end(tmp_path: Path)
     (run / "results.json").write_text("{}")
     with pytest.raises(ValueError, match="anchor"):
         analysis.analyze(run, submission_sha256=submission_sha, results_sha256=results_sha)
+
+
+ROOT = Path(__file__).resolve().parents[2]
+BOUND = [(job, name) for job, names in qd.CURRENT_CASE_SOURCES.items() for name in names]
+
+
+def digest(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+@pytest.mark.parametrize(("job", "name"), BOUND)
+def test_verify_current_case_sources_refuses_a_changed_bound_source(tmp_path: Path, job: str, name: str) -> None:
+    tree = tmp_path / "tree"
+    names = qd.CURRENT_CASE_SOURCES[job]
+    for bound in names:
+        (tree / bound).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT / bound, tree / bound)
+    manifest = {"preregistered": {"current_case_sources": {bound: digest(ROOT / bound) for bound in names}}}
+    qd.verify_current_case_sources(manifest, tree)
+    (tree / name).write_bytes((tree / name).read_bytes() + b"\n# changed\n")
+    with pytest.raises(qd.PlatformError, match=f"reviewed source changed: {name}"):
+        qd.verify_current_case_sources(manifest, tree)
+
+
+def test_a_bound_source_that_is_missing_or_a_directory_is_a_platform_refusal(tmp_path: Path) -> None:
+    for name, make in (("scripts/gone.py", None), ("scripts", "dir")):
+        if make:
+            (tmp_path / name).mkdir(parents=True, exist_ok=True)
+        manifest = {"preregistered": {"current_case_sources": {name: "0" * 64}}}
+        with pytest.raises(qd.PlatformError, match=f"reviewed source missing: {name}"):
+            qd.verify_current_case_sources(manifest, tmp_path)
+
+
+def test_load_case_runs_the_current_case_source_check(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    original.publish_case(tmp_path, current.documents())
+
+    def refuse(manifest: dict[str, Any], root: Path = ROOT) -> None:
+        raise qd.PlatformError("current case source check ran")
+
+    monkeypatch.setattr(qd, "verify_current_case_sources", refuse)
+    with pytest.raises(qd.PlatformError, match="current case source check ran"):
+        qd.load_case(tmp_path)
+
+
+def test_a_manifest_without_current_case_sources_passes_and_a_malformed_one_is_refused() -> None:
+    qd.verify_current_case_sources({})
+    qd.verify_current_case_sources({"preregistered": {}})
+    malformed: list[object] = [{}, [], "x", {"../escape.py": "0" * 64}, {"scripts/qd_platform.py": 7}]
+    for bad in malformed:
+        with pytest.raises(qd.PlatformError):
+            qd.verify_current_case_sources({"preregistered": {"current_case_sources": bad}})
+
+
+def test_plan_and_collect_refuse_a_changed_current_case_source(tmp_path: Path) -> None:
+    documents = current.documents()
+    original.publish_case(tmp_path, documents)
+    manifest, _, _ = qd.load_case(tmp_path)
+    if manifest["preregistered"]["current_case_sources"].keys() != set(qd.CURRENT_CASE_SOURCES[current.JOB]):
+        raise AssertionError("the current case binds another set of sources")
+    manifest["preregistered"]["current_case_sources"][current.ANALYZER] = "0" * 64
+    (tmp_path / "cases.json").write_text(json.dumps(manifest, indent=1) + "\n", encoding="utf-8")
+    (tmp_path / "submission.json").write_text("{}\n", encoding="utf-8")
+    with pytest.raises(qd.PlatformError, match=f"reviewed source changed: {current.ANALYZER}"):
+        qd.plan(tmp_path, "qpu:ascella", 1.0, 300.0, 1.0)
+    with pytest.raises(qd.PlatformError, match=f"reviewed source changed: {current.ANALYZER}"):
+        qd.collect(tmp_path, 0.0, 0.0)

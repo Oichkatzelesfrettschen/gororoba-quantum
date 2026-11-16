@@ -146,10 +146,11 @@ def header_text(prime: int, root: int, variables: list[str], reduced_j: list[str
     )
 
 
-def _emit_nakayama(spec: Spec, *, prime: int, root: int) -> dict[str, Any]:
-    """Emit a nullity-12 boundary input: nakayama_rees_fibers supplies the Schur coordinates and the row, and the
-    nullity-16 phase-one script (coefficient-rank Nakayama selection, no embedding lift) supplies the presolve.
+def _nakayama_inputs(spec: Spec) -> tuple[rees.RowTask, Any, tuple[int, ...]]:
+    """The row task, Schur data and candidate indices of a nullity-12 boundary input.
 
+    nakayama_rees_fibers supplies the Schur coordinates and the row; the nullity-16 phase-one script
+    (coefficient-rank Nakayama selection, no embedding lift) then supplies the presolve over F_p or over Q(i).
     The nakayama phase-one script selects with a sequential std(NormalForms) loop that exceeds 900 s at
     E8bar->VB; both selections are the greedy column-independence rule over the same ordered coordinates.
     """
@@ -174,9 +175,13 @@ def _emit_nakayama(spec: Spec, *, prime: int, root: int) -> dict[str, Any]:
         slice_columns=tuple(int(v) for v in row["slice_columns_zero_based"]),
         coordinates=tuple(nakayama_data.coordinates),
     )
-    task = rees.RowTask(shim_row, closure)
-    candidates = tuple(range(1, len(data.coordinates) + 1))
-    script = rees._phase_one_script(root, task, data, candidates, prime=prime, embedding=False)  # type: ignore[arg-type]
+    return rees.RowTask(shim_row, closure), data, tuple(range(1, len(data.coordinates) + 1))
+
+
+def _emit_nakayama(spec: Spec, *, prime: int, root: int) -> dict[str, Any]:
+    """Emit a nullity-12 boundary input from the inputs of _nakayama_inputs."""
+    task, data, candidates = _nakayama_inputs(spec)
+    script = rees._phase_one_script(root, task, data, candidates, prime=prime, embedding=False)
     outcome = rees._run_singular(script, "fiber_input_phase_one", SINGULAR_TIMEOUT_SECONDS)
     _require(outcome.status == "completed", f"{spec.incidence} phase one {outcome.status}: {outcome.diagnostic}")
     return _finish(spec, outcome, prime, root, len(candidates))

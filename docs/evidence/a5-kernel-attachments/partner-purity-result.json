@@ -24,7 +24,7 @@
   },
   "inputs": {
     "docs/evidence/a5-kernel-attachments/partner_purity.py": "b1b3eff0f8a0e5916484b63518ff7d59824a86d494697f78f58fa0d459331841",
-    "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",
+    "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4a3b2d4e74bcedd2e5ce76d1a5eb4d8099ce3aa872f5d168d32f88496013a3bf",
     "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
   },
   "mutation_control": {

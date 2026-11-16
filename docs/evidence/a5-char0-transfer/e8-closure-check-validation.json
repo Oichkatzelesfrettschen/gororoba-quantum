@@ -1,0 +1,123 @@
+{
+ "certificate_producer_sha256": "e89f5b317a5a7c199b349d60aa49905f223a29b9244c3c43ca7d1149a3992419",
+ "checks": [
+  {
+   "certificate": "docs/evidence/a5-char0-transfer/e8-closure-certificate-e8-nm.json",
+   "certificate_sha256": "6f4ad2e2bc86d884f2b74335eba0d58ee1f7062608dfa9693efeddfdc751c612",
+   "cofactor_sha256": "0a4c214e1e8e3ee3d30be1776404b8f59409533c931861e4e4d953466d9a9360",
+   "result": {
+    "mutations": {
+     "cofactor": {
+      "bad_identities": 1,
+      "status": "completed",
+      "verdict": "failed"
+     },
+     "generator": {
+      "bad_identities": 42,
+      "status": "completed",
+      "verdict": "failed"
+     }
+    },
+    "slug": "e8-nm",
+    "verdict": "i_equals_is",
+    "wall_seconds": 14.1
+   },
+   "retained_generation_diagnostic_sha256": {
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32009-r10754.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32009-r10754.time": "ffa77ad3bcc51ea27a78a7ac908a33e6f6c74af568b162afbeca75510a7eedad",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32009-r21255.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32009-r21255.time": "e095bbd448f177239966a5cd4ab34e3c646d720c991d51fbd2ef2382da3e3076",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32029-r22914.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32029-r22914.time": "3e48e7942d213dba8df87fc3ba9049b63f77a6b5a59601b51fefe7c6c3ac396a",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32029-r9115.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32029-r9115.time": "8c199d6e10bc5ea337eb4f65d8b76084f29e42008388b001430ff79d5ec9784b",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32693-r24103.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32693-r24103.time": "970eefc6cef9fa6fc9abb61dcff5fa8b4c3111b569d4261ab25edaa6aa265738",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32693-r8590.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32693-r8590.time": "70aec87546c83952d8e1bd34cdb3e0ce268f89fdc89b4dcc8168fb3c4236d552",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32713-r31739.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32713-r31739.time": "353f9879e91c601f86bfd614586068d36c91b03aef860814cf71f6b7a59ae241",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32713-r974.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32713-r974.time": "262dfae50545c191d9d951bb2f8906256dae55dab127221f9d27457ddf2006b4",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32717-r11332.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32717-r11332.time": "26a3638359433390efc8111bd66a50022e2d99f23c569e26dff00dcc16a1dc50",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32717-r21385.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32717-r21385.time": "51cd20e63f88de894da6d2468d113d6bde05ae6cb1f4f5f20df236fb5a3b4e11",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32749-r15645.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32749-r15645.time": "e4667820137d445d2b4bb0905505a98721d84d45ce93eca0085e844706d9a9fd",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32749-r17104.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-nm-p32749-r17104.time": "85c961ec61ea73abb898f53c180e8b85c8671fbe6a885e020a3953a452cdec4a",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-producer-e8-nm.log": "3df5d978e42b8576f9cc4f3c155f66ae015f5848ddad403f262fdc5d70514927",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-producer-e8-nm.time": "32d87ac2138089c85df063efb66e08ce3b7bed16a7cea8ab801f8047a4eaf53b",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-verify-e8-nm-mutate-cofactor.log": "e67544e478bb7e13cb4ed7dec6ff2cfd40911e4340f3a9fbf3ad0b731f4aa776",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-verify-e8-nm-mutate-cofactor.time": "159d65223c3d6f1b003148c21165fff64d1fa1b2111830ac14c91f3a1cdad075",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-verify-e8-nm-mutate-generator.log": "7d504dd2c50f5d8305b1b274d575edeabbc35b4ef4b24f4d20af3d33be33f8c6",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-verify-e8-nm-mutate-generator.time": "ea04f88e30dc972771117a6f5fe26919105e0fae4fd9893032c2083163f2e4c3",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-verify-e8-nm.log": "23cf5669f6317e8da0649cca87b47c3de6f80cbb4795bbefa8667e7820dcabc5",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-verify-e8-nm.time": "e65dbc9d5789f92324a4692cb6a6f9f81dbd602b64b069496f4cc2135cdff407"
+   },
+   "retained_generation_diagnostics_equal_before_and_after": true,
+   "slug": "e8-nm"
+  },
+  {
+   "certificate": "docs/evidence/a5-char0-transfer/e8-closure-certificate-e8-np.json",
+   "certificate_sha256": "4e90f4c357f1dcbe5aa13c06a3827edb7ff56daaa476322bc5fffc4c6758f5a6",
+   "cofactor_sha256": "fa403cf03dfa8d200bcde8299c2363aefa7384d08c0416009dc9f63cd9ade228",
+   "result": {
+    "mutations": {
+     "cofactor": {
+      "bad_identities": 1,
+      "status": "completed",
+      "verdict": "failed"
+     },
+     "generator": {
+      "bad_identities": 42,
+      "status": "completed",
+      "verdict": "failed"
+     }
+    },
+    "slug": "e8-np",
+    "verdict": "i_equals_is",
+    "wall_seconds": 14.0
+   },
+   "retained_generation_diagnostic_sha256": {
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32009-r10754.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32009-r10754.time": "5b04566940ba99c954853f785a639b0bfa25de981cb98093ccaee5705090366a",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32009-r21255.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32009-r21255.time": "78459e71e80e02a795a2f4655765f1e50409359567170ad0e17da61015b7fe1c",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32029-r22914.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32029-r22914.time": "c806b6850cd4644976076fbcb88cb1993d4302958dea0d4eab1ffc937690baa9",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32029-r9115.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32029-r9115.time": "aec2b532acb9141beabd411c3061d8d640e6f205ad214bfc23a979c74b0a1387",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32693-r24103.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32693-r24103.time": "bf8bbbe8bdbdd8bd1f1e8fe63e376211442df47e33bd2d169bc358c37f55aab3",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32693-r8590.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32693-r8590.time": "2666f14cfff197069a5f0268399b416f655b04e1ae92848b6369359e293ef352",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32713-r31739.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32713-r31739.time": "1bb5e28e250919036c697ae097a49cdb165e10b4d165c49395ed3ab1881fdae6",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32713-r974.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32713-r974.time": "a69c43246e0a4f42151409b6a4076017920abecb40073b982c41b25394f9488b",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32717-r11332.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32717-r11332.time": "6dc3d4ace334dc9bd0cbab26e7d489f8955a7b3cb37287f416dc528f024855bf",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32717-r21385.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32717-r21385.time": "8a3a6589c308ebc21d44c99e79dad64584a65e4d61b52e2230330c15ebe3de09",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32749-r15645.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32749-r15645.time": "d725c1773f7a30fd1ea636ffd32b1ffe207771e2819d47b386aa5a7473668f7f",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32749-r17104.log": "b40308e05a7a922832d4933da418ba9bd604d54a54b36d8ff87d18713323e616",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-e8-np-p32749-r17104.time": "516163bc4451f1aef38a57110b864291cb79362d92de36cd3cf03d6b2fd8edaf",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-producer-e8-np.log": "4cce809de694ef158bbc7aeeebab53dd5457ceaf9272b0a95d8da8c4e94c1c88",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-producer-e8-np.time": "576ff6f210d1ad17d59b2f2b05e8ae2493d4d695d9ed18fef23aa75c3f1abb2f",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-verify-e8-np-mutate-cofactor.log": "e67544e478bb7e13cb4ed7dec6ff2cfd40911e4340f3a9fbf3ad0b731f4aa776",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-verify-e8-np-mutate-cofactor.time": "b38845e47b3518c30a7f3e4fa30c3679dc8f82a5e9f96415e07b575510bc7407",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-verify-e8-np-mutate-generator.log": "7d504dd2c50f5d8305b1b274d575edeabbc35b4ef4b24f4d20af3d33be33f8c6",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-verify-e8-np-mutate-generator.time": "51533a789b4b6b081a879b272a345d584acb8fba151b3b4391aa170cfa5cbf93",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-verify-e8-np.log": "1d4acd324f8d66d1f9deaf56328cce5d4c3d12cacff71b6fb2b8752839bd6612",
+    "docs/evidence/a5-char0-transfer/logs/e8-closure-verify-e8-np.time": "2d2193bdad476f3820bb550189c23988c5f1b6198f6c28501d3be4c811e10c56"
+   },
+   "retained_generation_diagnostics_equal_before_and_after": true,
+   "slug": "e8-np"
+  }
+ ],
+ "field": "Q(i), minpoly I^2+1; exact Singular 4.4.1 verification, global ordering dp",
+ "schema": "a5-e8-closure-exact-check-validation/1"
+}

@@ -4014,8 +4014,8 @@
     }
   ],
   "inputs": {
-    "docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json": "68488363760fef1c904356f4cead3a1fa2d69983eaa3ce653c9b6b64b31ae099",
-    "docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json": "756dc35bcd99179c22085daaea9b0026c7c7f87d6909a1152ef8b189f989d843",
+    "docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json": "0173462891d377fcf50cd7a88f923ecf8648011f8a0e91cc39a11b32f59d3d49",
+    "docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json": "d94efe0376b561d87a517f6f74cf07ae0fe8e541d6efc9428ba0d058f660dcb6",
     "docs/evidence/a5-kernel-attachments/holomorphic_gauss_fibers.py": "ade16627774974b2f3b3ea7565af4e18249bbbd9f95481ac91e735498e061044",
     "docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py": "158288ec239ecbe4e63ad6eaf4bef472894ac539ee0fe15dc56d29d467c8e7dd",
     "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",

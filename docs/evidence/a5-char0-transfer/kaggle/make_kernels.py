@@ -1,9 +1,12 @@
 """Write the Kaggle CPU kernels that run the characteristic-0 checks of X- -> N- off the build host.
 
 Each kernel is runner.py with its configuration in CONFIG_B64: it clones the public repository at the integration
-branch, runs quadric_lift.py or truncation_check.py at N = 22 unchanged inside a 12-hour CPU session, copies the
+branch, runs quadric_lift.py or truncation_check.py at N = 22 unchanged inside an 11.5-hour CPU session, copies the
 driver's record and exits 1 unless the driver exited 0 with a verdict. Run from the repository root:
 "$PYTHON" docs/evidence/a5-char0-transfer/kaggle/make_kernels.py
+
+Push with `kaggle kernels push -p DIR --timeout 41400`: runner.py orders the driver's own timeout and its outer
+`timeout` before that 11.5-hour limit and rewrites the driver's --timeout to the time left.
 """
 
 import base64
@@ -12,15 +15,32 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 OWNER = "probablyeric"
-BRANCH = "integration/gororoba-quantum-ultrareview"
+BRANCH = "a5-char0-quadrics-iso-w8"
 # The commit each kernel checks out, so a kernel replays the same drivers after the branch merges or moves.
-COMMIT = "8a2e410ba0ba1c742055e46c3ab1c60266e08dab"
+COMMIT = "00b7d63c261535d328f73369fba54ae7d512d64d"
+# Per-kernel pins bind the driver arguments and deadline contract to their implementation.
+COMMITS = {
+    "a5-char0-e8-quadrics": "07ecf27ee6e68b5e038bdb9ab6afbb99f6781561",
+    "a5-char0-xm-truncation-n22": "7e22f6d5b7813407ca14e17ddb03114176ddfa59",
+}
 REPO = "https://github.com/Oichkatzelesfrettschen/gororoba-quantum"
 
 JOBS = {
     "a5-char0-xm-quadrics": (
         ["docs/evidence/a5-char0-transfer/quadric_lift.py", "--slug", "xm-nm", "--timeout", "41000"],
         "quadrics-xm-nm.json",
+    ),
+    "a5-char0-iso-quadrics": (
+        ["docs/evidence/a5-char0-transfer/quadric_lift.py", "--slug", "iso-nm", "--timeout", "41000"],
+        "quadrics-iso-nm.json",
+    ),
+    "a5-char0-w8-quadrics": (
+        ["docs/evidence/a5-char0-transfer/quadric_lift.py", "--slug", "w8-nm", "--timeout", "41000"],
+        "quadrics-w8-nm.json",
+    ),
+    "a5-char0-e8-quadrics": (
+        ["docs/evidence/a5-char0-transfer/quadric_lift.py", "--slug", "e8-nm", "--timeout", "41000"],
+        "quadrics-e8-nm.json",
     ),
     "a5-char0-xm-truncation-n22": (
         [
@@ -41,7 +61,7 @@ def kernel(slug: str, args: list[str], record: str, out: Path = HERE) -> None:
     """Write OUT/SLUG/SLUG.py (runner.py with its configuration in CONFIG_B64) and its kernel-metadata.json."""
     d = out / slug
     d.mkdir(parents=True, exist_ok=True)
-    config = {"branch": BRANCH, "commit": COMMIT, "repo": REPO, "args": args, "record": record}
+    config = {"branch": BRANCH, "commit": COMMITS.get(slug, COMMIT), "repo": REPO, "args": args, "record": record}
     blob = base64.b64encode(json.dumps(config).encode()).decode()
     chunks = "".join(f'    "{blob[i : i + 100]}"\n' for i in range(0, len(blob), 100))
     runner = (HERE / "runner.py").read_text()

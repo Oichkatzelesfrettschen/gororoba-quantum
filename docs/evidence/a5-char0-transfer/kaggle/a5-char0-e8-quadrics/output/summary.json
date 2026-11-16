@@ -1,0 +1,18 @@
+{
+ "repo_head": "07ecf27ee6e68b5e038bdb9ab6afbb99f6781561",
+ "args": [
+  "docs/evidence/a5-char0-transfer/quadric_lift.py",
+  "--slug",
+  "e8-nm",
+  "--timeout",
+  "40182"
+ ],
+ "stage": "finished",
+ "rc": 1,
+ "verdict": null,
+ "failed": true,
+ "seconds": 27718.2,
+ "total_seconds": 28035.4,
+ "cpu_count": 4,
+ "singular_last": "STAGE std_Q_start generators 2095 823"
+}

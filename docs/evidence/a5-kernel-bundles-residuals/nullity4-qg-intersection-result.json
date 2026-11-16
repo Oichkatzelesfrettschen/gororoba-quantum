@@ -1,0 +1,315 @@
+{
+ "field": "Q(i) for the identities, the witnesses and the retained points; GF(32029), i = 9115, for the scans",
+ "identities": {
+  "kernel_basis_in_the_kernel": true,
+  "kernel_in_both_hypersurfaces": true,
+  "kernel_independence": true,
+  "kernel_product_vanishes": true,
+  "kernel_sextic": true,
+  "lines_are_the_common_kernel_planes": true,
+  "normal_form_on_the_intersection": true,
+  "orbit_modulus_is_constant_on_the_kernel": true,
+  "rank_twelve_pfaffian": true
+ },
+ "inputs": {
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4-gauss-image-result.json": "8c2b82678a84186cb5f371996cb657503bbb41a2d79a170ad92f46a04467508f",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "d388bdfa74314ac193e8fa12b5b15ca490b90aff88c7c5fac5a579509200f5c6",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py": "745edad5ec0fe70aa3167564c25f17983054504b4706d4db82c57cd73fa16d72",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_intersection.py": "90e20458f9eca6c2462c86dfedb5ec23fa31ff976150391c5aa9dc76882fe17e"
+ },
+ "isotropic": [
+  [
+   10,
+   2,
+   200
+  ]
+ ],
+ "line_x_groebner": {
+  "c1 = 1, c2 = 0": [
+   "s**2 - 1"
+  ],
+  "c2 = 1": [
+   "s**2 - 1"
+  ]
+ },
+ "line_x_rank": 8,
+ "orbit_ranks": {
+  "a + b": 12,
+  "a only": 10,
+  "b only": 10,
+  "w = 0": 8
+ },
+ "pass": true,
+ "retained_facts": [
+  [
+   12,
+   3,
+   5,
+   3,
+   [
+    7
+   ]
+  ],
+  [
+   12,
+   3,
+   5,
+   3,
+   [
+    7
+   ]
+  ],
+  [
+   12,
+   3,
+   5,
+   3,
+   [
+    7
+   ]
+  ],
+  [
+   12,
+   3,
+   5,
+   3,
+   [
+    7
+   ]
+  ]
+ ],
+ "retained_points": 4,
+ "scan": [
+  [
+   12,
+   7,
+   5,
+   4,
+   4,
+   32021
+  ],
+  [
+   12,
+   7,
+   5,
+   4,
+   5,
+   2
+  ],
+  [
+   12,
+   7,
+   5,
+   5,
+   4,
+   2
+  ],
+  [
+   12,
+   9,
+   7,
+   4,
+   4,
+   2
+  ]
+ ],
+ "schema": "a5-kernel-bundles-residuals-nullity4-qg-intersection-v1",
+ "sextic": "-32*I*c0**4*(s**2 + 1)**3*(2*c0*s*(s + I) - c1*(s**2 - 4*I*s - 1))*(2*c0*s*(s - I) + c2*(s**2 + 4*I*s - 1))/4",
+ "special_s": {
+  "-1": [
+   7,
+   4,
+   4,
+   9
+  ],
+  "0": [
+   5,
+   4,
+   4,
+   7
+  ],
+  "1": [
+   7,
+   4,
+   4,
+   9
+  ]
+ },
+ "stack_ranks": {
+  "x": 10,
+  "y": 11,
+  "z": 11
+ },
+ "witness_points": {
+  "s = 0, x": [
+   "16*I",
+   "8",
+   "-8*I",
+   "8",
+   "8*I",
+   "0",
+   "0",
+   "16",
+   "0",
+   "-8",
+   "8*I",
+   "8",
+   "8*I",
+   "0",
+   "0"
+  ],
+  "s = 0, y": [
+   "8*I",
+   "-12",
+   "12*I",
+   "4",
+   "4*I",
+   "0",
+   "0",
+   "8",
+   "0",
+   "-20",
+   "20*I",
+   "4",
+   "4*I",
+   "0",
+   "0"
+  ],
+  "s = 0, z": [
+   "8*I",
+   "4",
+   "-4*I",
+   "-12",
+   "-12*I",
+   "0",
+   "0",
+   "8",
+   "0",
+   "-4",
+   "4*I",
+   "20",
+   "20*I",
+   "0",
+   "0"
+  ],
+  "s = 2, x": [
+   "2000*I",
+   "-600 - 800*I",
+   "-800 + 600*I",
+   "-600 + 800*I",
+   "-800 - 600*I",
+   "0",
+   "0",
+   "-1200",
+   "1600",
+   "-1000",
+   "1000*I",
+   "1000",
+   "1000*I",
+   "0",
+   "0"
+  ],
+  "s = 2, y": [
+   "3000 + 6000*I",
+   "-7000 + 36500*I",
+   "36500 + 7000*I",
+   "-600 + 3300*I",
+   "-3300 - 600*I",
+   "0",
+   "0",
+   "-3600 + 1800*I",
+   "4800 - 2400*I",
+   "-31000 - 24500*I",
+   "-24500 + 31000*I",
+   "3000 - 1500*I",
+   "1500 + 3000*I",
+   "0",
+   "0"
+  ],
+  "s = 2, z": [
+   "-3000 + 6000*I",
+   "-600 - 3300*I",
+   "-3300 + 600*I",
+   "-7000 - 36500*I",
+   "36500 - 7000*I",
+   "0",
+   "0",
+   "-3600 - 1800*I",
+   "4800 + 2400*I",
+   "-3000 - 1500*I",
+   "-1500 + 3000*I",
+   "31000 - 24500*I",
+   "24500 + 31000*I",
+   "0",
+   "0"
+  ]
+ },
+ "witnesses": {
+  "s = 0, x": [
+   12,
+   3,
+   5,
+   3,
+   6,
+   6,
+   7,
+   5,
+   3
+  ],
+  "s = 0, y": [
+   12,
+   3,
+   4,
+   2,
+   4,
+   4,
+   5,
+   4,
+   2
+  ],
+  "s = 0, z": [
+   12,
+   3,
+   4,
+   2,
+   4,
+   4,
+   5,
+   4,
+   2
+  ],
+  "s = 2, x": [
+   12,
+   3,
+   5,
+   3,
+   6,
+   6,
+   7,
+   5,
+   3
+  ],
+  "s = 2, y": [
+   12,
+   3,
+   4,
+   2,
+   4,
+   4,
+   5,
+   4,
+   2
+  ],
+  "s = 2, z": [
+   12,
+   3,
+   4,
+   2,
+   4,
+   4,
+   5,
+   4,
+   2
+  ]
+ }
+}

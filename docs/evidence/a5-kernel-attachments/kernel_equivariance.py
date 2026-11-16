@@ -1,0 +1,736 @@
+"""Equivariance of the holomorphic kernel map z -> ker C_z under a product of unipotent G_2 automorphisms and the boost.
+
+C_z is linear in z in the original coordinates z_k = i^popcount(k) z'_k of holomorphic_kernel_lemma.py. A matrix g of
+the 15-dimensional representation acts on the kernel bundle when C_(g z) = rho^(-T) C_z rho^(-1) for one matrix rho,
+since then ker C_(g z) = rho ker C_z, and rho = g gives ker C_(g z) = g ker C_z. For the product of unipotent G_2
+automorphisms that incidence_census.py selects (trace 12 on the 15-dimensional representation, so not itself
+unipotent), written in original coordinates, g^T g = I and the identity holds with rho = g on the 15 basis
+directions, hence for every z by linearity. The same identity with the split-coordinate matrix as
+rho, which omits the phase conjugation, leaves a nonzero residual; that is the mutation control. For the rational
+boost b(c, s) of verify_regularity_independent.py no candidate rho satisfies the identity, and ker C_(b z) differs from
+b ker C_z at six of the twelve canonical points, with the smallest witness at the canonical VB point.
+
+The Lie-algebra level solves C_(X e_k) + R^T C_k + C_k R = 0 over Q for the pairs (X, R) of 15 x 15 matrices; its
+solution space has dimension 15, projects isomorphically onto the X coordinates, contains the 14 G_2 derivations and
+the scaling, and excludes the boost generator. The final table compares the orbit dimension of each canonical point
+with the rank of the tangent vectors that the equivariant span produces there.
+"""
+
+from __future__ import annotations
+
+import argparse
+import functools
+import hashlib
+import json
+import sys
+from fractions import Fraction
+from pathlib import Path
+from typing import Any
+
+import flint
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[2]
+sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(HERE.parent / "a5-strata-regularity"))
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+
+import holomorphic_kernel_lemma as kernel_lemma  # noqa: E402
+import incidence_census  # noqa: E402
+import verify_regularity_independent as regularity  # noqa: E402
+
+import parallel  # noqa: E402
+
+SCHEMA = "a5-kernel-attachments-kernel-equivariance-v2"
+FIRST_ORDER_RESULT = HERE / "first-order-normal-cones-result.json"
+NULLITY16_BASEPOINTS_RESULT = HERE / "nullity16-basepoints-result.json"
+SOURCE_PATHS = (
+    HERE / "kernel_equivariance.py",
+    HERE / "holomorphic_kernel_lemma.py",
+    HERE / "incidence_census.py",
+    FIRST_ORDER_RESULT,
+    NULLITY16_BASEPOINTS_RESULT,
+    HERE.parent / "a5-strata-regularity" / "verify_regularity_independent.py",
+    ROOT / "gororoba_quantum" / "cd_core.py",
+    ROOT / "gororoba_quantum" / "parallel.py",
+)
+ZERO = kernel_lemma.ZERO
+ONE = kernel_lemma.ONE
+DIMENSION = 15
+OCTONION_DIMENSION = 7
+CANONICAL_POINTS = ("B9", "V", "VB", "Va+", "Va-", "N+", "N-", "W8", "E8bar", "Iso", "X+", "X-")
+EQUATION_COUNT = DIMENSION * DIMENSION * DIMENSION
+UNKNOWN_COUNT = 2 * DIMENSION * DIMENSION
+WITNESS_POINTS = ("VB", "B9", "V")
+SMALLEST_WITNESS = "VB"
+G2_DERIVATION_COUNT = 14
+LOCAL_PRODUCT_ORBITS = ["B9", "N+", "N-", "Va+", "Va-"]
+BOOST_DEFICIENT_ORBITS = ["V", "VB"]
+# The retained incidences in record order: those whose basepoint lies on an orbit of LOCAL_PRODUCT_ORBITS, and those
+# whose basepoint lies on V or VB.
+LOCAL_PRODUCT_INCIDENCES = (
+    "E8bar->B9",
+    "E8bar->Va+",
+    "E8bar->Va-",
+    "Iso->B9",
+    "W8->B9",
+    "X+->B9",
+    "X+->Va+",
+    "X-->B9",
+    "X-->Va-",
+    "B9->N+",
+    "B9->N-",
+    "V->N+",
+    "V->N-",
+    "VB->N+",
+    "VB->N-",
+    "Va+->N+",
+    "Va-->N-",
+    "E8bar->N+",
+    "E8bar->N-",
+    "Iso->N+",
+    "Iso->N-",
+    "W8->N+",
+    "W8->N-",
+    "X+->N+",
+    "X+->N-",
+    "X-->N+",
+    "X-->N-",
+)
+BOOST_DEFICIENT_INCIDENCES = (
+    "E8bar->V",
+    "E8bar->VB",
+    "Iso->VB",
+    "W8->VB",
+    "X+->VB",
+    "X-->VB",
+)
+
+Gaussian = kernel_lemma.Gaussian
+GaussianVector = kernel_lemma.GaussianVector
+GaussianMatrix = kernel_lemma.GaussianMatrix
+
+
+def _require(condition: bool, message: str) -> None:
+    if not condition:
+        raise RuntimeError(message)
+
+
+def _hash_path(path: Path) -> tuple[str, str]:
+    return path.relative_to(ROOT).as_posix(), hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _gaussian_rational(value: Fraction | int) -> Gaussian:
+    return (Fraction(value), Fraction(0))
+
+
+def multiply_matrices(left: GaussianMatrix, right: GaussianMatrix) -> GaussianMatrix:
+    """The product of two Gaussian-rational matrices with exact arithmetic."""
+    inner = len(right)
+    return tuple(
+        tuple(
+            kernel_lemma._gaussian_sum(kernel_lemma._gaussian_multiply(row[k], right[k][j]) for k in range(inner))
+            for j in range(len(right[0]))
+        )
+        for row in left
+    )
+
+
+def identity_matrix() -> GaussianMatrix:
+    return tuple(tuple(ONE if i == j else ZERO for j in range(DIMENSION)) for i in range(DIMENSION))
+
+
+def to_original_coordinates(split_matrix: GaussianMatrix) -> GaussianMatrix:
+    """D M D^(-1) for the diagonal phase matrix D of the coordinate change z_k = i^popcount(k) z'_k."""
+    return tuple(
+        tuple(
+            kernel_lemma._gaussian_multiply(
+                kernel_lemma._gaussian_multiply(kernel_lemma._phase((i + 1).bit_count()), split_matrix[i][j]),
+                kernel_lemma._gaussian_conjugate(kernel_lemma._phase((j + 1).bit_count())),
+            )
+            for j in range(DIMENSION)
+        )
+        for i in range(DIMENSION)
+    )
+
+
+def split_matrix_of_automorphism(octonion_block: tuple[tuple[Fraction, ...], ...]) -> GaussianMatrix:
+    """The 15 x 15 split-coordinate matrix diag(g, 1, g) of a 7 x 7 automorphism g."""
+    rows = [[ZERO] * DIMENSION for _ in range(DIMENSION)]
+    for i in range(OCTONION_DIMENSION):
+        for j in range(OCTONION_DIMENSION):
+            rows[i][j] = _gaussian_rational(octonion_block[i][j])
+            rows[8 + i][8 + j] = _gaussian_rational(octonion_block[i][j])
+    rows[7][7] = ONE
+    return tuple(map(tuple, rows))
+
+
+def split_matrix_of_derivation(octonion_block: list[list[Fraction]]) -> GaussianMatrix:
+    """The 15 x 15 split-coordinate matrix diag(d, 0, d) of a 7 x 7 derivation d."""
+    rows = [[ZERO] * DIMENSION for _ in range(DIMENSION)]
+    for i in range(OCTONION_DIMENSION):
+        for j in range(OCTONION_DIMENSION):
+            rows[i][j] = _gaussian_rational(octonion_block[i][j])
+            rows[8 + i][8 + j] = _gaussian_rational(octonion_block[i][j])
+    return tuple(map(tuple, rows))
+
+
+def split_matrix_of_boost(cosh: Fraction, sinh: Fraction) -> GaussianMatrix:
+    """The split-coordinate matrix of the boost mixing u_k with v_k and fixing the middle coordinate."""
+    rows = [[ZERO] * DIMENSION for _ in range(DIMENSION)]
+    for k in range(OCTONION_DIMENSION):
+        rows[k][k] = rows[k + 8][k + 8] = _gaussian_rational(cosh)
+        rows[k][k + 8] = rows[k + 8][k] = _gaussian_rational(sinh)
+    rows[7][7] = ONE
+    return tuple(map(tuple, rows))
+
+
+def split_matrix_of_boost_generator() -> GaussianMatrix:
+    """The derivative at the identity of the boost: swap u_k and v_k."""
+    rows = [[ZERO] * DIMENSION for _ in range(DIMENSION)]
+    for k in range(OCTONION_DIMENSION):
+        rows[k][k + 8] = rows[k + 8][k] = ONE
+    return tuple(map(tuple, rows))
+
+
+def basis_vector(index: int) -> GaussianVector:
+    return tuple(ONE if position == index else ZERO for position in range(DIMENSION))
+
+
+def congruence_residual(rho: GaussianMatrix, matrix: GaussianMatrix) -> int:
+    """The nonzero entry count of rho^T C_(M e_k) rho - C_(e_k), summed over the 15 basis directions k."""
+    transposed = kernel_lemma._transpose(rho)
+    nonzero = 0
+    for k in range(DIMENSION):
+        moved = kernel_lemma._c_matrix(kernel_lemma._matrix_vector(matrix, basis_vector(k)))
+        lhs = multiply_matrices(multiply_matrices(transposed, moved), rho)
+        rhs = kernel_lemma._c_matrix(basis_vector(k))
+        nonzero += sum(1 for i in range(DIMENSION) for j in range(DIMENSION) if lhs[i][j] != rhs[i][j])
+    return nonzero
+
+
+def kernel_transport(split_point: list[Fraction], matrix: GaussianMatrix) -> tuple[int, int, bool, int]:
+    """Kernel dimensions of C_z and C_(Mz), whether M ker C_z equals ker C_(Mz), and dim(M ker C_z meet ker C_(Mz))."""
+    z = kernel_lemma._original_z_from_split(tuple(split_point))
+    kernel = kernel_lemma._nullspace(kernel_lemma._c_matrix(z))
+    moved_kernel = kernel_lemma._nullspace(kernel_lemma._c_matrix(kernel_lemma._matrix_vector(matrix, z)))
+    mapped = [kernel_lemma._matrix_vector(matrix, vector) for vector in kernel]
+    equal = len(kernel) == len(moved_kernel) and kernel_lemma._spans_equal(mapped, list(moved_kernel))
+    total = kernel_lemma._columns_rank(mapped + list(moved_kernel))
+    return len(kernel), len(moved_kernel), equal, len(mapped) + len(moved_kernel) - total
+
+
+@functools.cache
+def g2_matrices() -> tuple[GaussianMatrix, GaussianMatrix]:
+    """The product of unipotent G_2 automorphisms of the census in split and in original coordinates."""
+    split = split_matrix_of_automorphism(incidence_census._unipotent_automorphism())
+    return split, to_original_coordinates(split)
+
+
+@functools.cache
+def boost_matrices() -> tuple[GaussianMatrix, GaussianMatrix, GaussianMatrix, GaussianMatrix]:
+    """The boost b and b with s -> -s, each in split and original coordinates."""
+    cosh, sinh = regularity.BOOST
+    forward = split_matrix_of_boost(cosh, sinh)
+    inverse = split_matrix_of_boost(cosh, -sinh)
+    return forward, to_original_coordinates(forward), inverse, to_original_coordinates(inverse)
+
+
+def residual_task(name: str) -> tuple[str, int]:
+    """The congruence residual of one named candidate rho against its group element."""
+    g2_split, g2_original = g2_matrices()
+    boost_split, boost_original, _, boost_inverse_original = boost_matrices()
+    candidates = {
+        "g2_rho_equals_g_original": (g2_original, g2_original),
+        "g2_rho_equals_g_split": (g2_split, g2_original),
+        "boost_rho_equals_b_original": (boost_original, boost_original),
+        "boost_rho_equals_b_original_inverse": (boost_inverse_original, boost_original),
+        "boost_rho_equals_b_split": (boost_split, boost_original),
+        "boost_rho_equals_identity": (identity_matrix(), boost_original),
+    }
+    rho, matrix = candidates[name]
+    return name, congruence_residual(rho, matrix)
+
+
+def point_task(name: str) -> dict[str, Any]:
+    """Kernel transport of both group elements at one canonical point, with the split-coordinate controls."""
+    _, g2_original = g2_matrices()
+    g2_split, _ = g2_matrices()
+    boost_split, boost_original, _, _ = boost_matrices()
+    cosh, sinh = regularity.BOOST
+    split_point = regularity.REPS[name]
+    z = kernel_lemma._original_z_from_split(tuple(split_point))
+    g2_dim, g2_moved_dim, g2_equal, _ = kernel_transport(split_point, g2_original)
+    boost_dim, boost_moved_dim, boost_equal, intersection_dimension = kernel_transport(split_point, boost_original)
+    split_g2_equal = kernel_transport(split_point, g2_split)[2]
+    split_boost_equal = kernel_transport(split_point, boost_split)[2]
+    moved_by_g2 = regularity.act_g2(incidence_census._unipotent_automorphism(), split_point)
+    moved_by_boost = regularity.act_boost(cosh, sinh, split_point)
+    return {
+        "point": name,
+        "support_size_in_split_coordinates": sum(1 for value in split_point if value != 0),
+        "kernel_dimension": g2_dim,
+        "g2": {
+            "moved_kernel_dimension": g2_moved_dim,
+            "g_ker_equals_ker_of_gz": g2_equal,
+            "moved_point_equals_g_original_z": kernel_lemma._original_z_from_split(tuple(moved_by_g2))
+            == kernel_lemma._matrix_vector(g2_original, z),
+            "split_matrix_control_g_ker_equals_ker_of_gz": split_g2_equal,
+        },
+        "boost": {
+            "moved_kernel_dimension": boost_moved_dim,
+            "b_ker_equals_ker_of_bz": boost_equal,
+            "dimension_of_b_ker_meet_ker_of_bz": intersection_dimension,
+            "moved_point_equals_b_original_z": kernel_lemma._original_z_from_split(tuple(moved_by_boost))
+            == kernel_lemma._matrix_vector(boost_original, z),
+            "split_matrix_control_b_ker_equals_ker_of_bz": split_boost_equal,
+        },
+    }
+
+
+def _fmpq(value: Fraction) -> flint.fmpq:
+    return flint.fmpq(value.numerator, value.denominator)
+
+
+def _flatten(matrix: GaussianMatrix, part: int) -> list[Fraction]:
+    return [entry[part] for row in matrix for entry in row]
+
+
+def equivariance_system() -> tuple[int, int, list[GaussianMatrix]]:
+    """Solve C_(X e_k) + R^T C_k + C_k R = 0 over Q: solution dimension, X-projection rank and an X-basis."""
+    basis_c = []
+    for k in range(DIMENSION):
+        matrix = kernel_lemma._c_matrix(basis_vector(k))
+        _require(all(entry[1] == 0 for row in matrix for entry in row), "C_(e_k) has a non-rational entry")
+        basis_c.append([[int(entry[0]) for entry in row] for row in matrix])
+    rows = []
+    for k in range(DIMENSION):
+        for i in range(DIMENSION):
+            for j in range(DIMENSION):
+                row = [0] * UNKNOWN_COUNT
+                for m in range(DIMENSION):
+                    row[m * DIMENSION + k] += basis_c[m][i][j]
+                for p in range(DIMENSION):
+                    row[DIMENSION * DIMENSION + p * DIMENSION + i] += basis_c[k][p][j]
+                    row[DIMENSION * DIMENSION + p * DIMENSION + j] += basis_c[k][i][p]
+                rows.append(row)
+    _require(len(rows) == EQUATION_COUNT, "the equivariance system has the wrong number of equations")
+    solutions, nullity = flint.fmpz_mat(rows).nullspace()
+    columns = [[int(solutions[r, c]) for r in range(UNKNOWN_COUNT)] for c in range(nullity)]
+    projections: list[GaussianMatrix] = [
+        tuple(tuple(_gaussian_rational(column[i * DIMENSION + j]) for j in range(DIMENSION)) for i in range(DIMENSION))
+        for column in columns
+    ]
+    rank = flint.fmpz_mat([column[: DIMENSION * DIMENSION] for column in columns]).rank()
+    return nullity, rank, projections
+
+
+def in_complex_span(basis: list[GaussianMatrix], target: GaussianMatrix) -> bool:
+    """Whether target lies in the complex span of a rational basis (real and imaginary parts in its rational span)."""
+    base = flint.fmpq_mat([[_fmpq(v) for v in _flatten(matrix, 0)] for matrix in basis]).rank()
+    for part in (0, 1):
+        augmented = [[_fmpq(v) for v in _flatten(matrix, 0)] for matrix in basis]
+        augmented.append([_fmpq(v) for v in _flatten(target, part)])
+        if flint.fmpq_mat(augmented).rank() != base:
+            return False
+    return True
+
+
+def tangent_rank(generators: list[GaussianMatrix], z: GaussianVector) -> int:
+    """The rank of {X z} over the generators X."""
+    return kernel_lemma._columns_rank([kernel_lemma._matrix_vector(matrix, z) for matrix in generators])
+
+
+def infinitesimal_residual(generator: GaussianMatrix, lift: GaussianMatrix) -> int:
+    """The nonzero entry count of C_(X e_k) + R^T C_(e_k) + C_(e_k) R for X = generator, R = lift, summed over k."""
+    transposed = kernel_lemma._transpose(lift)
+    nonzero = 0
+    for k in range(DIMENSION):
+        fixed = kernel_lemma._c_matrix(basis_vector(k))
+        moved = kernel_lemma._c_matrix(kernel_lemma._matrix_vector(generator, basis_vector(k)))
+        left = multiply_matrices(transposed, fixed)
+        right = multiply_matrices(fixed, lift)
+        nonzero += sum(
+            1
+            for i in range(DIMENSION)
+            for j in range(DIMENSION)
+            if (
+                moved[i][j][0] + left[i][j][0] + right[i][j][0] != 0
+                or moved[i][j][1] + left[i][j][1] + right[i][j][1] != 0
+            )
+        )
+    return nonzero
+
+
+def scaled_matrix(factor: Fraction, matrix: GaussianMatrix) -> GaussianMatrix:
+    return tuple(tuple((factor * entry[0], factor * entry[1]) for entry in row) for row in matrix)
+
+
+def lift_task(index: int) -> dict[str, Any]:
+    """One generator of g_2 + scaling with its lift R: the residual, the skewness and the sign-flipped control.
+
+    Index 0..13 is a G_2 derivation X with R = X; index 14 is the scaling X = I with R = -I/2."""
+    if index < G2_DERIVATION_COUNT:
+        generator = to_original_coordinates(split_matrix_of_derivation(regularity.DERS[index]))
+        lift = generator
+        name = f"g2_derivation_{index + 1}"
+    else:
+        generator = identity_matrix()
+        lift = scaled_matrix(Fraction(-1, 2), generator)
+        name = "scaling"
+    return {
+        "generator": name,
+        "lift": "R = X" if index < G2_DERIVATION_COUNT else "R = -I/2",
+        "residual_nonzero_entries": infinitesimal_residual(generator, lift),
+        "generator_is_skew": generator == scaled_matrix(Fraction(-1), kernel_lemma._transpose(generator)),
+        "sign_flipped_lift_residual_nonzero_entries": infinitesimal_residual(
+            generator, scaled_matrix(Fraction(-1), lift)
+        ),
+    }
+
+
+def basepoint_task(task: tuple[dict[str, Any], list[GaussianMatrix]]) -> dict[str, Any]:
+    """At the retained basepoint of one incidence: the tangent rank of g_2 + scaling against the dimension of the
+    boundary orbit, and the rank of that tangent space together with the slice directions."""
+    row, equivariant = task
+    split_point = [Fraction(value) for value in row["boundary_point"]]
+    z = kernel_lemma._original_z_from_split(tuple(split_point))
+    tangent = [kernel_lemma._matrix_vector(matrix, z) for matrix in equivariant]
+    slice_columns = [int(value) for value in row["slice_columns_zero_based"]]
+    tangent_rank_here = kernel_lemma._columns_rank(tangent)
+    orbit_dimension = regularity.orbit_dim(split_point)
+    spanned = kernel_lemma._columns_rank([*tangent, *(basis_vector(column) for column in slice_columns)])
+    return {
+        "incidence": str(row["incidence"]),
+        "boundary_orbit": str(row["boundary_orbit"]),
+        "boundary_orbit_dimension": orbit_dimension,
+        "slice_dimension": len(slice_columns),
+        "tangent_rank_equivariant_span": tangent_rank_here,
+        "rank_of_tangent_span_with_slice": spanned,
+        "local_product_with_kernel_transport": tangent_rank_here == orbit_dimension
+        and orbit_dimension + len(slice_columns) == DIMENSION
+        and spanned == DIMENSION,
+    }
+
+
+# Per boundary orbit: orbit dimension, slice dimension, tangent rank of g_2 + scaling, rank of tangent span with slice.
+EXPECTED_BASEPOINT_DIMENSIONS = {
+    "B9": (9, 6, 9, 15),
+    "Va+": (7, 8, 7, 15),
+    "Va-": (7, 8, 7, 15),
+    "N+": (6, 9, 6, 15),
+    "N-": (6, 9, 6, 15),
+    "V": (8, 7, 7, 14),
+    "VB": (7, 8, 6, 14),
+}
+
+
+def basepoint_dimensions_match(row: dict[str, Any]) -> bool:
+    """Whether the four dimensions of a basepoint row are those declared for its boundary orbit."""
+    found = (
+        row["boundary_orbit_dimension"],
+        row["slice_dimension"],
+        row["tangent_rank_equivariant_span"],
+        row["rank_of_tangent_span_with_slice"],
+    )
+    return found == EXPECTED_BASEPOINT_DIMENSIONS.get(str(row["boundary_orbit"]))
+
+
+def basepoint_partition_matches(rows: list[dict[str, Any]]) -> bool:
+    """Whether the rows are exactly the declared incidences, each once, split as declared; a missing, repeated or
+    unexpected incidence fails."""
+    with_product = sorted(str(row["incidence"]) for row in rows if row["local_product_with_kernel_transport"])
+    without = sorted(str(row["incidence"]) for row in rows if not row["local_product_with_kernel_transport"])
+    return with_product == sorted(LOCAL_PRODUCT_INCIDENCES) and without == sorted(BOOST_DEFICIENT_INCIDENCES)
+
+
+def _load_incidences(path: Path) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = json.loads(path.read_text(encoding="utf-8"))["incidences"]
+    return rows
+
+
+def orbit_task(
+    task: tuple[str, list[GaussianMatrix], list[GaussianMatrix], list[GaussianMatrix], GaussianMatrix],
+) -> dict[str, Any]:
+    """The orbit dimension at one canonical point against the tangent rank of each generating family."""
+    name, nilpotent, derivations, equivariant, boost_generator = task
+    split_point = regularity.REPS[name]
+    z = kernel_lemma._original_z_from_split(tuple(split_point))
+    return {
+        "point": name,
+        "recorded_orbit_dimension": regularity.DIMS[name],
+        "recomputed_orbit_dimension": regularity.orbit_dim(split_point),
+        "tangent_rank_nilpotent_derivations": tangent_rank(nilpotent, z),
+        "tangent_rank_g2_derivations": tangent_rank(derivations, z),
+        "tangent_rank_equivariant_span": tangent_rank(equivariant, z),
+        "tangent_rank_equivariant_span_with_boost_generator": tangent_rank([*equivariant, boost_generator], z),
+    }
+
+
+def build_record() -> dict[str, Any]:
+    residual_names = (
+        "g2_rho_equals_g_original",
+        "g2_rho_equals_g_split",
+        "boost_rho_equals_b_original",
+        "boost_rho_equals_b_original_inverse",
+        "boost_rho_equals_b_split",
+        "boost_rho_equals_identity",
+    )
+    residuals = dict(parallel.ordered_map(residual_task, residual_names, min_items=1))
+    points = parallel.ordered_map(point_task, CANONICAL_POINTS, min_items=1)
+    _, g2_original = g2_matrices()
+    orthogonality = multiply_matrices(kernel_lemma._transpose(g2_original), g2_original)
+    orthogonal = orthogonality == identity_matrix()
+
+    nullity, projection_rank, projections = equivariance_system()
+    derivations = [to_original_coordinates(split_matrix_of_derivation(derivation)) for derivation in regularity.DERS]
+    boost_generator = to_original_coordinates(split_matrix_of_boost_generator())
+    *derivations_in_span, scaling_in_span, boost_generator_in_span = parallel.ordered_map(
+        functools.partial(in_complex_span, projections),
+        [*derivations, identity_matrix(), boost_generator],
+        min_items=1,
+    )
+    nilpotent = [
+        to_original_coordinates(split_matrix_of_derivation(derivation))
+        for derivation in regularity.nilpotent_derivations()
+    ]
+    orbit_rows = parallel.ordered_map(
+        orbit_task,
+        [(name, nilpotent, derivations, projections, boost_generator) for name in CANONICAL_POINTS],
+        min_items=1,
+    )
+
+    lifts = parallel.ordered_map(lift_task, range(G2_DERIVATION_COUNT + 1), min_items=1)
+    lifts_pass = all(row["residual_nonzero_entries"] == 0 for row in lifts) and all(
+        row["generator_is_skew"] for row in lifts[:G2_DERIVATION_COUNT]
+    )
+    lift_mutation_detected = all(row["sign_flipped_lift_residual_nonzero_entries"] > 0 for row in lifts)
+    basepoint_rows = parallel.ordered_map(
+        basepoint_task,
+        [
+            (row, [*derivations, identity_matrix()])
+            for row in [*_load_incidences(FIRST_ORDER_RESULT), *_load_incidences(NULLITY16_BASEPOINTS_RESULT)]
+        ],
+        min_items=1,
+    )
+    product_orbits = sorted(
+        {row["boundary_orbit"] for row in basepoint_rows if row["local_product_with_kernel_transport"]}
+    )
+    other_orbits = sorted(
+        {row["boundary_orbit"] for row in basepoint_rows if not row["local_product_with_kernel_transport"]}
+    )
+    basepoints_pass = (
+        basepoint_partition_matches(basepoint_rows)
+        and all(basepoint_dimensions_match(row) for row in basepoint_rows)
+        and product_orbits == LOCAL_PRODUCT_ORBITS
+        and other_orbits == BOOST_DEFICIENT_ORBITS
+    )
+
+    g2_equal = all(point["g2"]["g_ker_equals_ker_of_gz"] for point in points)
+    g2_consistent = all(point["g2"]["moved_point_equals_g_original_z"] for point in points)
+    boost_failures = [point["point"] for point in points if not point["boost"]["b_ker_equals_ker_of_bz"]]
+    witnesses = {
+        point["point"]: {
+            "support_size_in_split_coordinates": point["support_size_in_split_coordinates"],
+            "kernel_dimension": point["kernel_dimension"],
+            "dimension_of_b_ker_meet_ker_of_bz": point["boost"]["dimension_of_b_ker_meet_ker_of_bz"],
+        }
+        for point in points
+        if point["point"] in WITNESS_POINTS
+    }
+    controls_fail = all(not point["g2"]["split_matrix_control_g_ker_equals_ker_of_gz"] for point in points)
+    mutation_detected = residuals["g2_rho_equals_g_split"] > 0 and controls_fail
+    baseline_pass = (
+        orthogonal
+        and residuals["g2_rho_equals_g_original"] == 0
+        and g2_equal
+        and g2_consistent
+        and all(point["boost"]["moved_point_equals_b_original_z"] for point in points)
+        and all(residuals[name] > 0 for name in residual_names if name.startswith("boost_"))
+        and len(boost_failures) == 6
+        and witnesses[SMALLEST_WITNESS]["dimension_of_b_ker_meet_ker_of_bz"] == 6
+        and nullity == DIMENSION
+        and projection_rank == DIMENSION
+        and len(derivations) == G2_DERIVATION_COUNT
+        and all(derivations_in_span)
+        and scaling_in_span
+        and not boost_generator_in_span
+        and all(row["recorded_orbit_dimension"] == row["recomputed_orbit_dimension"] for row in orbit_rows)
+        and lifts_pass
+        and basepoints_pass
+    )
+    return {
+        "schema": SCHEMA,
+        "inputs": dict(parallel.ordered_map(_hash_path, SOURCE_PATHS, min_items=1)),
+        "tools": {"python_flint": flint.__version__},
+        "scope": {
+            "statement": (
+                "the holomorphic kernel C_z of the 15-dimensional representation in original coordinates, the "
+                "product of unipotent G_2 automorphisms that incidence_census.py selects, the rational boost of "
+                "verify_regularity_independent.py, the twelve canonical points of that module, the 14 G_2 "
+                "derivations and the scaling with their lifts, and the retained basepoint and slice of each of the "
+                "33 incidences of first-order-normal-cones-result.json and nullity16-basepoints-result.json"
+            ),
+            "claim_boundary": (
+                "The finite checks cover the 15 basis directions, the twelve canonical points and four candidate "
+                "matrices rho for the boost; the Lie-algebra solve is exact over Q. The solve excludes a rational "
+                "one-parameter family rho(t) through the identity for the boost group; a single matrix rho for one "
+                "boost element outside the four candidates, and a lift in another component, are not excluded. "
+                "The group action of G_2(C) x C^* on the kernel is a deduction from the exact lifts (group_action); "
+                "the local product at a basepoint is a deduction from the exact ranks of basepoint_local_products "
+                "by the inverse function theorem. Basepoints on V and VB lack one tangent direction and carry no "
+                "such deduction."
+            ),
+        },
+        "g2_element": {
+            "trace_in_original_coordinates": str(sum((g2_original[i][i][0] for i in range(DIMENSION)), Fraction(0))),
+            "g_transpose_g_equals_identity_in_original_coordinates": orthogonal,
+            "identity": "C_(g z) = g^(-T) C_z g^(-1), tested as g^T C_(g e_k) g = C_(e_k)",
+            "basis_direction_count": DIMENSION,
+            "residual_nonzero_entries": residuals["g2_rho_equals_g_original"],
+            "kernel_transport_at_twelve_points": g2_equal,
+            "moved_points_agree_with_original_coordinate_action": g2_consistent,
+        },
+        "boost": {
+            "parameters_cosh_sinh": [str(value) for value in regularity.BOOST],
+            "residual_nonzero_entries": {
+                name.removeprefix("boost_rho_equals_"): residuals[name]
+                for name in residual_names
+                if name.startswith("boost_")
+            },
+            "points_where_b_ker_differs_from_ker_of_bz": boost_failures,
+            "witnesses": witnesses,
+            "smallest_witness": SMALLEST_WITNESS,
+        },
+        "points": points,
+        "infinitesimal": {
+            "system": "C_(X e_k) + R^T C_k + C_k R = 0 for k = 0..14, unknowns (X, R) in two 15 x 15 blocks",
+            "equation_count": EQUATION_COUNT,
+            "unknown_count": UNKNOWN_COUNT,
+            "solution_dimension": nullity,
+            "x_projection_dimension": projection_rank,
+            "g2_derivation_count": len(derivations),
+            "g2_derivations_in_x_projection": sum(derivations_in_span),
+            "scaling_in_x_projection": scaling_in_span,
+            "boost_generator_in_x_projection": boost_generator_in_span,
+        },
+        "orbit_table": orbit_rows,
+        "group_action": {
+            "identity": "C_(X e_k) + R^T C_(e_k) + C_(e_k) R = 0 for k = 0..14",
+            "generators": lifts,
+            "all_residuals_zero": lifts_pass,
+            "deduction": (
+                "For a G_2 derivation X in original coordinates the pair (X, X) solves the identity and X is skew, "
+                "so F(t) = exp(tX)^T C_(exp(tX) z) exp(tX) has derivative zero and exp(tX) satisfies "
+                "C_(g z) = g^(-T) C_z g^(-1) for every t; the exponentials generate the connected group G_2(C) and "
+                "the congruence is closed under products, so every g in G_2(C) acts with rho = g and "
+                "ker C_(g z) = g ker C_z. The scaling z -> c z has C_(c z) = c C_z and leaves ker C_z fixed. The "
+                "solution space and its X-projection both have dimension 15, so the lift R of each X is unique."
+            ),
+        },
+        "basepoint_local_products": {
+            "rows": basepoint_rows,
+            "boundary_orbits_with_local_product": product_orbits,
+            "boundary_orbits_without": other_orbits,
+            "incidences_with_local_product": sum(row["local_product_with_kernel_transport"] for row in basepoint_rows),
+            "incidence_count": len(basepoint_rows),
+            "rows_are_the_declared_incidences_each_once": basepoint_partition_matches(basepoint_rows),
+            "expected_orbit_slice_tangent_and_joint_dimensions": {
+                orbit: list(values) for orbit, values in EXPECTED_BASEPOINT_DIMENSIONS.items()
+            },
+            "rows_with_the_expected_dimensions": sum(basepoint_dimensions_match(row) for row in basepoint_rows),
+            "deduction": (
+                "Where the tangent span of g_2 + scaling at the basepoint z_0 has the dimension of the boundary "
+                "orbit and spans C^15 together with the slice, the map (xi, s) -> exp(xi) s from a complement of "
+                "the stabilizer algebra times the slice is a local biholomorphism at (0, z_0) by the inverse "
+                "function theorem. Every z near z_0 is g(z) s(z) with g(z) -> identity and s(z) in the slice; the "
+                "source stratum is invariant under G_2(C) x C^*, so s(z) lies in the source slice germ, and "
+                "ker C_z = g(z) ker C_(s(z)). The limits of ker C_z along any sequence or continuous path in the "
+                "source "
+                "tending to z_0 are therefore limits along the slice germ (the fiber over z_0 of the closed graph "
+                "equals that of its restriction to the slice; s(z(t)) is analytic and need not be semialgebraic), "
+                "and the fiber of holomorphic kernel limits P over g z_0 is g applied to the fiber over z_0; the "
+                "bordered-kernel limits over g z_0 are the planes g P meet (g z_0)^perp, since g is complex "
+                "orthogonal and need not preserve the Hermitian complement. "
+                "G_2(C) x C^* is a direct factor of the connected group G_2(C) x SO(2, C) x C^* "
+                "whose orbit is the boundary orbit, so its tangent rank is constant along that orbit; its orbits "
+                "inside the boundary orbit are then open and partition a connected set, so the orbit of z_0 under "
+                "G_2(C) x C^* is the whole boundary orbit."
+            ),
+        },
+        "computed": [
+            "the congruence residual for the G_2 element g with rho = g is zero on 15 basis directions",
+            "g^T g = I in original coordinates",
+            "g ker C_z = ker C_(g z) at the twelve canonical points",
+            "the residual of four candidate rho for the boost is nonzero",
+            "b ker C_z differs from ker C_(b z) at six canonical points",
+            "the dimension of the solution space of the infinitesimal system and the membership tests",
+            "the tangent ranks of the table",
+            "the zero residual of (X, X) for the 14 G_2 derivations and of (I, -I/2) for the scaling",
+            "the tangent rank and the rank with the slice at the retained basepoint of every incidence",
+        ],
+        "inferred": [
+            "the identity for every z follows from linearity of z -> C_z in the basis directions",
+            "no rational one-parameter family rho(t) with rho(0) = I satisfies "
+            "C_(b(t) z) = rho(t)^(-T) C_z rho(t)^(-1) along the boost group b(t): its derivative at t = 0 would be "
+            "a solution (beta, R) of the infinitesimal system, and beta lies outside its X-projection",
+            "G_2(C) x C^* acts on the kernel bundle (deduction of group_action)",
+            "at the basepoints on B9, Va+, Va-, N+ and N- the limits along paths that leave the slice are limits "
+            "along the slice germ (deduction of basepoint_local_products)",
+        ],
+        "mutation_control": {
+            "name": "split_coordinate_matrix_as_rho",
+            "input_change": "use the split-coordinate matrix of g in place of its original-coordinate matrix as rho",
+            "residual_nonzero_entries": residuals["g2_rho_equals_g_split"],
+            "kernel_transport_lost_at_points": [
+                point["point"] for point in points if not point["g2"]["split_matrix_control_g_ker_equals_ker_of_gz"]
+            ],
+            "detected": mutation_detected,
+        },
+        "lift_mutation_control": {
+            "name": "sign_flipped_lift",
+            "input_change": "use -R in place of the lift R of each generator",
+            "detected": lift_mutation_detected,
+        },
+        "falsifier": (
+            "The congruence residual of the G_2 element g is nonzero, g^T g differs from I, or g ker C_z differs from "
+            "ker C_(g z) at a canonical point; the boost residual vanishes for a candidate rho or b ker C_z equals "
+            "ker C_(b z) at the smallest witness; the infinitesimal solution space has a dimension other than 15, "
+            "omits a G_2 derivation or the scaling, or contains the boost generator; or the split-coordinate matrix "
+            "leaves a zero residual; a G_2 derivation or the scaling with a nonzero lift residual; a basepoint on "
+            "B9, Va+, Va-, N+ or N- whose tangent span with the slice has rank below 15, or one on V or VB whose "
+            "tangent span reaches the orbit dimension."
+        ),
+        "pass": baseline_pass and mutation_detected and lift_mutation_detected,
+    }
+
+
+def _record_bytes(record: dict[str, Any]) -> bytes:
+    return (json.dumps(record, indent=2, sort_keys=True) + "\n").encode("utf-8")
+
+
+def _self_test(record: dict[str, Any]) -> None:
+    _require(bool(record["pass"]), "the kernel-equivariance record failed")
+    _require(bool(record["mutation_control"]["detected"]), "the split-coordinate matrix left a zero residual")
+    _require(bool(record["lift_mutation_control"]["detected"]), "a sign-flipped lift left a zero residual")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--out", type=Path, help="write the deterministic JSON record")
+    parser.add_argument("--check", type=Path, help="compare a deterministic record byte for byte")
+    parser.add_argument("--self-test", action="store_true", help="run the baseline and mutation checks")
+    arguments = parser.parse_args()
+    if sum((arguments.out is not None, arguments.check is not None, arguments.self_test)) != 1:
+        parser.error("select exactly one of --out, --check, or --self-test")
+    record = build_record()
+    _self_test(record)
+    rendered = _record_bytes(record)
+    if arguments.out is not None:
+        arguments.out.write_bytes(rendered)
+    elif arguments.check is not None:
+        _require(arguments.check.read_bytes() == rendered, f"{arguments.check} differs from the regenerated record")
+
+
+if __name__ == "__main__":
+    main()

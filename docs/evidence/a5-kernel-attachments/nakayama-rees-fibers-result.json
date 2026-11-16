@@ -2095,11 +2095,11 @@
     }
   ],
   "inputs": {
-    "docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json": "68488363760fef1c904356f4cead3a1fa2d69983eaa3ce653c9b6b64b31ae099",
+    "docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json": "0173462891d377fcf50cd7a88f923ecf8648011f8a0e91cc39a11b32f59d3d49",
     "docs/evidence/a5-kernel-attachments/holomorphic_gauss_fibers.py": "ade16627774974b2f3b3ea7565af4e18249bbbd9f95481ac91e735498e061044",
     "docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py": "158288ec239ecbe4e63ad6eaf4bef472894ac539ee0fe15dc56d29d467c8e7dd",
     "docs/evidence/a5-kernel-attachments/nakayama_rees_fibers.py": "4cb005dc80b6b3f819d6e1a8d8c5fddafa1da27bfef5cada67b11edc3da01f1a",
-    "docs/evidence/a5-kernel-attachments/schur-degeneracy-witnesses-result.json": "0d8400675385e462aa809b5dd3dec584111f036dba6255fa52eec6700e38e48f",
+    "docs/evidence/a5-kernel-attachments/schur-degeneracy-witnesses-result.json": "b145afbb6425930d3514d0da7b8e65d6905332a499e69512ed796eca79c55551",
     "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
     "docs/evidence/a5-strata-regularity/strata_regularity.py": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651",
     "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",

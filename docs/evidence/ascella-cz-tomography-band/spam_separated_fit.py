@@ -276,13 +276,13 @@ def decide(low: float, high: float) -> str:
 def analyze_pair(
     data: dict[str, np.ndarray],
     omega: np.ndarray,
-    meshes: dict[str, np.ndarray],
+    meshes: dict[str, dict[str, np.ndarray]],
     admitted: str | None,
     generator: np.random.Generator,
     replicates: int,
 ) -> dict[str, Any]:
-    """Every fit of one pair. ``meshes`` maps a label to the realized rail probabilities of one component set;
-    ``admitted`` names the label the decision fit takes, or None."""
+    """Every fit of one pair. ``meshes`` maps a label to the realized and designed rail probabilities of one component
+    set; ``admitted`` names the label the decision fit takes, or None."""
     base = {"eligible": data["eligible"], "shots": data["shots"], "scale": data["scale"], "omega": omega}
     plain = {**base, "weights": False, "throughput": False, "realized": None, "designed": None}
     variants: dict[str, dict[str, Any]] = {

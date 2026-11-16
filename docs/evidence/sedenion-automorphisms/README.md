@@ -5,7 +5,7 @@ The automorphism group of the `cd_core` sedenions is `G2 x S3`, and the 11 cells
 [test_sedenion_automorphism_group.py](../../../tests/gororoba_quantum/test_sedenion_automorphism_group.py) computes
 both in exact arithmetic on every pull request. It runs against the multiplication table that the pinned Rocq
 evaluates from the integer pair tower of
-[CdImaginarySumConference.v](../../../proofs/CdImaginarySumConference.v).
+gororoba-math `rocq/quantum/CdImaginarySumConference.v`.
 
 ## Files
 
@@ -17,11 +17,10 @@ evaluates from the integer pair tower of
 | [gresnigt_table5_printed.json](gresnigt_table5_printed.json) | the 11 printed cells and their exchanged partners, transcribed from page 54 of arXiv 2609.10569v1 (PDF SHA-256 in the record) |
 | [upstream/gresnigt-table5-erratum.md](upstream/gresnigt-table5-erratum.md) | the erratum report for the author |
 
-The `rocq` job of proofs.yml replays only the bundles that carry a `replay_rocq.sh`, so CI never recompiles
-`TowerTable.v`; the test binds `cd_core` to the retained `tower_table.txt`. A change to
+No workflow compiles Rocq, so CI never recompiles `TowerTable.v`; the test binds `cd_core` to the retained `tower_table.txt`. A change to
 `CdImaginarySumConference.v` or `CdTowerBasisSign.v` reruns the script below by hand.
 
-Replay: `ROCQ=<rocq 9.3.0 of ci/rocq_toolchain.pin> sh docs/evidence/sedenion-automorphisms/rocq_tower_table.sh`
+Replay: `ROCQ=<rocq 9.3.0 on OCaml 5.5.1, the banner of the replay bundles' toolchain.txt> sh docs/evidence/sedenion-automorphisms/rocq_tower_table.sh`
 prints `tower_table_pass TowerTable`. `sh ci/pr_checks.sh tests
 tests/gororoba_quantum/test_sedenion_automorphism_group.py` runs the certificate.
 

@@ -1,0 +1,140 @@
+Generic.kernel_vectors
+     : forall (k n : nat) (y : Generic.BC.TA.cd k)
+         (vectors : nat -> Generic.BC.TA.cd k),
+       (forall j : nat,
+        j < n -> Generic.BC.TA.mul k y (vectors j) = Generic.BC.TA.zero k) ->
+       forall j : nat,
+       j < n ->
+       Generic.BC.TB.mul k (Generic.BC.tmap k y)
+         (Generic.BC.tmap k (vectors j)) =
+       Generic.BC.TB.zero k
+Generic.kernel_spanned
+     : forall (k n : nat) (y : Generic.BC.TA.cd k) 
+         (d : IntegerRing.t)
+         (back functionals vectors : nat -> Generic.BC.TA.cd k),
+       (forall i : nat,
+        i < 2 ^ k ->
+        Generic.BC.TA.scale k d (Generic.BC.SA.basis k i) =
+        Generic.BC.TA.add k
+          (Generic.BC.source_map k back
+             (Generic.BC.TA.mul k y (Generic.BC.SA.basis k i)))
+          (Generic.source_comb k n functionals vectors
+             (Generic.BC.SA.basis k i))) ->
+       forall z : Generic.BC.TB.cd k,
+       Generic.BC.TB.mul k (Generic.BC.tmap k y) z = Generic.BC.TB.zero k ->
+       Generic.BC.TB.scale k (ZmodHom.h d) z =
+       Generic.target_comb k n functionals vectors z
+Generic.coefficients_recovered
+     : forall (k n : nat) (d : IntegerRing.t)
+         (functionals vectors : nat -> Generic.BC.TA.cd k),
+       (forall j l : nat,
+        j < n ->
+        l < n ->
+        Generic.source_pair k (functionals j) (vectors l) =
+        (if j =? l then d else IntegerRing.zero)) ->
+       forall (a : nat -> Zmod7.t) (l : nat),
+       l < n ->
+       Generic.target_pair k (Generic.BC.tmap k (functionals l))
+         (Generic.BC.SB.tsum k n
+            (fun j : nat =>
+             Generic.BC.TB.scale k (a j) (Generic.BC.tmap k (vectors j)))) =
+       Zmod7.mul (ZmodHom.h d) (a l)
+Generic.combination_zero_coefficients
+     : forall (k n : nat) (d : IntegerRing.t)
+         (functionals vectors : nat -> Generic.BC.TA.cd k),
+       (forall j l : nat,
+        j < n ->
+        l < n ->
+        Generic.source_pair k (functionals j) (vectors l) =
+        (if j =? l then d else IntegerRing.zero)) ->
+       forall a : nat -> Zmod7.t,
+       Generic.BC.SB.tsum k n
+         (fun j : nat =>
+          Generic.BC.TB.scale k (a j) (Generic.BC.tmap k (vectors j))) =
+       Generic.BC.TB.zero k ->
+       forall l : nat, l < n -> Zmod7.mul (ZmodHom.h d) (a l) = Zmod7.zero
+Generic.kernel_free_basis
+     : forall (k n : nat) (y : Generic.BC.TA.cd k) 
+         (d : IntegerRing.t)
+         (back functionals vectors : nat -> Generic.BC.TA.cd k),
+       (forall j : nat,
+        j < n -> Generic.BC.TA.mul k y (vectors j) = Generic.BC.TA.zero k) ->
+       (forall i : nat,
+        i < 2 ^ k ->
+        Generic.BC.TA.scale k d (Generic.BC.SA.basis k i) =
+        Generic.BC.TA.add k
+          (Generic.BC.source_map k back
+             (Generic.BC.TA.mul k y (Generic.BC.SA.basis k i)))
+          (Generic.source_comb k n functionals vectors
+             (Generic.BC.SA.basis k i))) ->
+       forall inverse : Zmod7.t,
+       Zmod7.mul (ZmodHom.h d) inverse = Zmod7.one ->
+       forall z : Generic.BC.TB.cd k,
+       Generic.BC.TB.mul k (Generic.BC.tmap k y) z = Generic.BC.TB.zero k <->
+       z =
+       Generic.BC.SB.tsum k n
+         (fun j : nat =>
+          Generic.BC.TB.scale k
+            (Zmod7.mul inverse
+               (Generic.target_pair k (Generic.BC.tmap k (functionals j)) z))
+            (Generic.BC.tmap k (vectors j)))
+Generic.kernel_coefficients_unique
+     : forall (k n : nat) (d : IntegerRing.t)
+         (functionals vectors : nat -> Generic.BC.TA.cd k),
+       (forall j l : nat,
+        j < n ->
+        l < n ->
+        Generic.source_pair k (functionals j) (vectors l) =
+        (if j =? l then d else IntegerRing.zero)) ->
+       forall inverse : Zmod7.t,
+       Zmod7.mul (ZmodHom.h d) inverse = Zmod7.one ->
+       forall (a : nat -> Zmod7.t) (l : nat),
+       l < n ->
+       a l =
+       Zmod7.mul inverse
+         (Generic.target_pair k (Generic.BC.tmap k (functionals l))
+            (Generic.BC.SB.tsum k n
+               (fun j : nat =>
+                Generic.BC.TB.scale k (a j) (Generic.BC.tmap k (vectors j)))))
+Mod7.W8_kernel_free_basis
+     : forall inverse : Zmod7.t,
+       Zmod7.mul (Mod7.H.h 2) inverse = Zmod7.one ->
+       forall z : Mod7.KC.BC.TB.cd 5,
+       Mod7.KC.BC.TB.mul 5 (Mod7.KC.BC.tmap 5 Mod7.W8_point) z =
+       Mod7.KC.BC.TB.zero 5 <->
+       z =
+       Mod7.KC.BC.SB.tsum 5 8
+         (fun j : nat =>
+          Mod7.KC.BC.TB.scale 5
+            (Zmod7.mul inverse
+               (Mod7.KC.target_pair 5
+                  (Mod7.KC.BC.tmap 5 (Mod7.W8_functionals j)) z))
+            (Mod7.KC.BC.tmap 5 (Mod7.W8_vectors j)))
+Mod7.V_kernel_free_basis
+     : forall inverse : Zmod7.t,
+       Zmod7.mul (Mod7.H.h 50) inverse = Zmod7.one ->
+       forall z : Mod7.KC.BC.TB.cd 5,
+       Mod7.KC.BC.TB.mul 5 (Mod7.KC.BC.tmap 5 Mod7.V_point) z =
+       Mod7.KC.BC.TB.zero 5 <->
+       z =
+       Mod7.KC.BC.SB.tsum 5 12
+         (fun j : nat =>
+          Mod7.KC.BC.TB.scale 5
+            (Zmod7.mul inverse
+               (Mod7.KC.target_pair 5
+                  (Mod7.KC.BC.tmap 5 (Mod7.V_functionals j)) z))
+            (Mod7.KC.BC.tmap 5 (Mod7.V_vectors j)))
+Mod7.Np_kernel_free_basis
+     : forall inverse : Zmod7.t,
+       Zmod7.mul (Mod7.H.h 2) inverse = Zmod7.one ->
+       forall z : Mod7.KC.BC.TB.cd 5,
+       Mod7.KC.BC.TB.mul 5 (Mod7.KC.BC.tmap 5 Mod7.Np_point) z =
+       Mod7.KC.BC.TB.zero 5 <->
+       z =
+       Mod7.KC.BC.SB.tsum 5 16
+         (fun j : nat =>
+          Mod7.KC.BC.TB.scale 5
+            (Zmod7.mul inverse
+               (Mod7.KC.target_pair 5
+                  (Mod7.KC.BC.tmap 5 (Mod7.Np_functionals j)) z))
+            (Mod7.KC.BC.tmap 5 (Mod7.Np_vectors j)))

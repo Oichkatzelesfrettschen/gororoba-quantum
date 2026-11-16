@@ -1,0 +1,148 @@
+{
+ "schema": "a5-fiber-rank-v14-memory-acceptance-v4",
+ "launch_inputs": {
+  "role": "immutable prelaunch input manifest",
+  "path": "docs/evidence/a5-exceptional-fibers/memory-bounded/w8-n16-launch-inputs.json",
+  "sha256": "21b7b7dbaa0a3f0ff8a4276a986389e9372c127ebd2f35bf42569e8eb1048797",
+  "launch_head": "dff16336c581a0ccc6f03b6ef37e806f5f7a9ae4",
+  "input_sha256": {
+   "docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v14.py": "342ec30537a09ba0addee77643d106a6731c58fa72d40c155146e1fb9cfe0f29",
+   "docs/evidence/a5-exceptional-fibers/replay/engine/rank_cell.py": "072d28456a6bf7192a64ac8758d24d9563be7ca1f2fdbb8632393d3e6a15b0db",
+   "gororoba_quantum/modular_echelon_compact.py": "97ffe60ef3642d4309fb45d59e8bd2e6f6fb48a6cbf2335e5578f1f13a9d6b40",
+   "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
+   "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/w8-nm.sing": "585a946d2d75073e4a90f697417017f2c13f432556c89088aaabfb9dff02a760",
+   "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/receipt-d2.json": "6e464db695bd891e93bfde1689dfab9c0d5bc1afdc17da3df3c3a29bb0f76425"
+  }
+ },
+ "case": {
+  "fiber": "W8 -> N-",
+  "prime": 32009,
+  "degree": 5,
+  "order": 16,
+  "header_sha256": "585a946d2d75073e4a90f697417017f2c13f432556c89088aaabfb9dff02a760",
+  "engine": "docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v14.py",
+  "engine_sha256": "342ec30537a09ba0addee77643d106a6731c58fa72d40c155146e1fb9cfe0f29",
+  "engine_bytes": "the file at the commit that retains this summary; its sha256 equals the resource record's engine_sha256"
+ },
+ "configuration": {
+  "from_records": {
+   "mode": "quotient",
+   "stream_products": true,
+   "product_operator": "uint16-cached",
+   "operator_cache_gib": 6,
+   "echelon": "compact",
+   "chunk": 64,
+   "max_gib": 12,
+   "dense_tables_gib": 0,
+   "closure_tables": "sparse",
+   "timeout_seconds": 10800.0,
+   "receipt_sha256": "6e464db695bd891e93bfde1689dfab9c0d5bc1afdc17da3df3c3a29bb0f76425",
+   "engine_args_sha256_16": "f4c92361cdd9543a"
+  },
+  "streamed_uncached_route": "not exercised at this size",
+  "from_launcher_not_recorded": {
+   "workers": 4,
+   "openblas_threads": 2,
+   "omp_threads": 1,
+   "memory_scope": "systemd user scope, MemoryMax=16G, MemorySwapMax=0",
+   "host": "the build host",
+   "source": "launch settings of the rerun; the resource file records the engine arguments, not the environment or the scope"
+  }
+ },
+ "result": {
+  "r_N": 4116,
+  "dim_quotient": 93024,
+  "products": 4116,
+  "retained_rows": 4381,
+  "nonstandard_checks": 265,
+  "nonstandard_rank_growth": {},
+  "closure_rounds": 4,
+  "per_block": {
+   "0": {
+    "cols": 23376,
+    "rank_W": 15364,
+    "r_N": 1017
+   },
+   "1": {
+    "cols": 23136,
+    "rank_W": 15264,
+    "r_N": 1005
+   },
+   "2": {
+    "cols": 23256,
+    "rank_W": 15315,
+    "r_N": 1047
+   },
+   "3": {
+    "cols": 23256,
+    "rank_W": 15315,
+    "r_N": 1047
+   }
+  }
+ },
+ "resources": {
+  "elapsed_seconds": 7218.38,
+  "max_sampled_process_group_rss_bytes": 5398753280,
+  "max_sampled_processes": 10,
+  "rss_poll_seconds": 0.1,
+  "rss_unavailable_samples": 0,
+  "rss_statistic": "maximum observed sum of process-group RSS at polling times; allocations between samples are unobserved, so this statistic is not a process-group high-water mark",
+  "seconds": {
+   "singular_and_export": 431.6,
+   "products": 914.5,
+   "closure": 5578.7,
+   "total": 7217.9,
+   "echelon_insert_within_closure": 5324.6
+  },
+  "preflight_stage_maximum_bytes": 5040786432,
+  "preflight_stage_bytes": {
+   "products": 5040786432,
+   "closure": 1974357440
+  },
+  "preflight_stage_maximum_basis": "the larger of the products and closure stage totals (the admission rule of the engine at the head), against --max-gb 12"
+ },
+ "retention": {
+  "this_file": "summary of the rerun; every number comes from the three files below and the comparator",
+  "files": [
+   {
+    "role": "engine stdout record",
+    "path": "docs/evidence/a5-exceptional-fibers/memory-bounded/w8-n16-acceptance/w8-nm-d5-n16-p32009.json",
+    "sha256": "98a0cc44d9feb9b7c41dfd06e9a793c7e3c6b94749f0ac824c189edc866a8b86"
+   },
+   {
+    "role": "engine stderr",
+    "path": "docs/evidence/a5-exceptional-fibers/memory-bounded/w8-n16-acceptance/w8-nm-d5-n16-p32009.err",
+    "sha256": "8eb719c53fd3147b9f2ab5a726f96da8d7acb9ef09347564ad32adf43e766df7"
+   },
+   {
+    "role": "runner resource file",
+    "path": "docs/evidence/a5-exceptional-fibers/memory-bounded/w8-n16-acceptance/w8-nm-d5-n16-p32009.resources.json",
+    "sha256": "17119b669b0a2ee6c2cac55fa9f6f23e69cf1c457c65b59b002101abcb603ea2"
+   }
+  ],
+  "cross_check": "the resource file's stdout_part_sha256 and stderr_sha256 equal the sha256 of the first two files"
+ },
+ "retained_v11_comparator": {
+  "path": "docs/evidence/a5-exceptional-fibers/w8-n16-azure/receipt-bound/w8d5-n16-rcpt.out",
+  "sha256": "d68f58d47612fc82540ade8141fc46e8b0e2bee279e8a4b5c8e3e47ac187d096",
+  "max_rss_path": "docs/evidence/a5-exceptional-fibers/w8-n16-azure/receipt-bound/w8d5-n16-rcpt.err",
+  "max_rss_sha256": "2495493697bf720a4f2e20ec622dc931314652c28d76103287cadee2e112c0e3",
+  "r_N": 4116,
+  "closure_rounds": 5,
+  "per_block_r_N": [
+   1017,
+   1005,
+   1047,
+   1047
+  ],
+  "per_block_rank_W": [
+   15364,
+   15264,
+   15315,
+   15315
+  ],
+  "elapsed_seconds": 7841.2,
+  "max_rss_kib": 26119936
+ },
+ "verdict": "r_N, every block rank and every nonstandard control agree with the retained v11 receipt run; the v14 maximum sampled process-group RSS is 5.03 GiB at a 0.1-second interval, while the v11 single-process high-water mark is 24.9 GiB on another machine; these distinct statistics establish no true-peak ratio"
+}

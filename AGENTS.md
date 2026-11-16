@@ -33,8 +33,8 @@ the two differ.
   bounded fixtures; historical replays, digest and source checks live in
   ci/gates.json and run on demand ([ci/AGENTS.md](ci/AGENTS.md#on-demand-gates)),
   never in a workflow.
-- The `pr.yml` checks `lint`, `types`, `tests` and `contracts` green on the head
-  admit a merge. No local gate run or premerge replay is required before a
+- The six `pr.yml` checks `lint`, `types`, `tests`, `contracts` and the two
+  `arm` legs green on the head admit a merge. No local gate run or premerge replay is required before a
   push, which overrides the local replica of the slowest CI lanes in the
   `triage-automated-review` skill; `sh ci/pr_checks.sh tests PATH` runs
   touched tests under the hosted environment.
@@ -60,9 +60,25 @@ the two differ.
   --out ../results/live`, a record under results/live/) belongs to a change
   of calibration admission, the approval comparison, the submission path or
   execution readiness, and to every case that heads for `--submit`.
-- A change to `proofs/`, a replay bundle or its receipts runs the Rocq
-  compile of `proofs.yml` (path-filtered, not a required check;
-  [ci/AGENTS.md](ci/AGENTS.md#layout-and-gates)).
+- The Rocq proof sources and their generators live in gororoba-math: sources under `rocq/quantum`, generators under
+  `ci/quantum-sources/`, and `ci/check_quantum_sources.sh` and `ci/replay_quantum_bundles.sh` there run the
+  generators and the retained replays against this checkout (`GOROROBA_QUANTUM`). This repository tracks no `proofs/`
+  directory, compiles no Rocq and runs no Rocq workflow. A new or changed source lands by a pull request in
+  gororoba-math (listed in its `rocq/quantum/_RocqProject`), followed here by a bump of `ci/gororoba_math.pin` when a
+  record cites it. `gororoba_quantum/math_sources.py` verifies the sources that retained records cite (a
+  `proofs/NAME.v` ledger row or an evidence entry of `docs/state/research_state.json`) and no other: the pin names a
+  commit at which each cited source keeps its recorded sha256, so it moves to any commit that leaves those bytes
+  unchanged, and a changed cited source lands in a successor file. A local run resolves the checkout through
+  `GOROROBA_MATH` (unset ends the run with a message; `ci/fetch_gororoba_math.sh` fetches the pin). A record names a
+  source as `gororoba-math:rocq/quantum/NAME.v`. A published replay bundle keeps its bytes and its `proofs/NAME.v`
+  reads, which the gates that declare `requires: ["gororoba-math"]` supply from a shadow root of the cited sources. A
+  generator that a retained ledger binds (`scripts/cd_sign_rocq_ast.py`, `scripts/cd_sign_source_ast.py`,
+  `gororoba_quantum/target_flip_certificate.py`, `docs/evidence/cd-tower-kernel-certificates/kernel_certificates.py`
+  with `certificates.json`; and in `docs/evidence/a5-gaussian-certificates/` `span_certificate.py`, `render_span.py`,
+  `span.json` and the README, which row A5-500 of the findings ledger cites, with `gaussian_certificates.py`, which
+  both generators import, and `left-inverses.json`, which they read) keeps its bytes here as the record of the commit
+  that ledger names or cites, and no gate renders a source from it; the live generator is the file of the same name in
+  gororoba-math, where a change lands.
 
 ## Seeds
 
@@ -90,7 +106,7 @@ Never guess or estimate hardware specifications, timing budgets, algebraic
 conventions or mathematical invariants; import or validate against the
 registered repository artifact (`docs/notes/ibm_quantum/`,
 [ibm_heron_platform](docs/notes/ibm_heron_platform.md),
-`docs/evidence/heron_platform/targets.json`, `proofs/`).
+`docs/evidence/heron_platform/targets.json`, gororoba-math `rocq/quantum/`).
 
 - `a -> L_a` is a linear encoding, never an algebra homomorphism.
 - `|0>` is `e_0 = 1`, the identity, never the zero vector. A zero product is
@@ -245,12 +261,12 @@ lives; read it before writing one.
 - Hosted review runs in a fixed order, each stage at most once per PR: Codex,
   then Copilot only when the Codex round needed a fix, then the owner. When
   the PR is a merge candidate the operator requests the Codex review through
-  `scripts/codex_review_request.sh PR`, which posts `@codex review` and
+  `scripts/codex_review_request.sh PR`, which posts `@Codex review` and
   refuses a request whose PR diff equals the last reviewed head's or that
   would open a second round, then answers and resolves every thread in one
   push. When that push fixed at least one Codex finding, the fixed head has
   had no hosted review, so the operator requests the Copilot review once with
-  `gh pr edit PR --add-reviewer @copilot` and answers and resolves its
+  `gh pr edit PR --add-reviewer @Copilot` and answers and resolves its
   threads in one push; a Codex round with no thread, or whose threads were
   all refuted or bounded, earns no Copilot request. The operator then reports the PR's
   state to the owner, who decides the merge or a further round: further

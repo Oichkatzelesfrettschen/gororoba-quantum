@@ -1,0 +1,122 @@
+{
+ "certificates": {
+  "sigma = -1": {
+   "calibration_units": [
+    false,
+    false,
+    false
+   ],
+   "mu_zero_lines": [
+    [
+     3,
+     6,
+     6,
+     4,
+     true,
+     [
+      6,
+      6
+     ]
+    ],
+    [
+     3,
+     6,
+     6,
+     4,
+     true,
+     [
+      6,
+      6
+     ]
+    ]
+   ],
+   "rank_3_unit_on_mu_zero": [
+    true,
+    true
+   ],
+   "rank_4_minors_nonzero_on_mu_zero": 0,
+   "rank_4_unit_off_mu_zero": true,
+   "rank_5_minors_nonzero": 0,
+   "stack_unit_off_mu_zero": true
+  },
+  "sigma = 1": {
+   "calibration_units": [
+    false,
+    false,
+    false
+   ],
+   "mu_zero_lines": [
+    [
+     3,
+     6,
+     6,
+     4,
+     true,
+     [
+      6,
+      6
+     ]
+    ],
+    [
+     3,
+     6,
+     6,
+     4,
+     true,
+     [
+      6,
+      6
+     ]
+    ]
+   ],
+   "rank_3_unit_on_mu_zero": [
+    true,
+    true
+   ],
+   "rank_4_minors_nonzero_on_mu_zero": 0,
+   "rank_4_unit_off_mu_zero": true,
+   "rank_5_minors_nonzero": 0,
+   "stack_unit_off_mu_zero": true
+  }
+ },
+ "claims": {
+  "mu nonzero": {
+   "dim_C": 3,
+   "dim_C_in_O_prime": 3,
+   "dim_C_in_complement": 0,
+   "nullity_of_M_on_polar_line": 7,
+   "rank_of_B": 4,
+   "rank_of_M_on_polar_line": 8
+  },
+  "mu zero": {
+   "dim_C": 6,
+   "dim_C_in_O_prime": 4,
+   "dim_C_in_complement": 2,
+   "nullity_of_M_on_polar_line": 9,
+   "rank_of_B": 3,
+   "rank_of_M_on_polar_line": 6
+  }
+ },
+ "field": "Q for the identities and unit ideals; Q(i) for the constant matrices on mu = 0; retained tallies modulo 32029",
+ "identities": {
+  "complement_blocks_intertwine": true,
+  "complement_is_four_copies_of_the_standard_module": true,
+  "complement_vectors_swap_fixed_and_complement": true,
+  "derivations_are_equivariant": true,
+  "omega_column_is_the_polar_vector": true,
+  "polar_line_is_a_submodule": true,
+  "polar_vector_is_in_the_kernel": true
+ },
+ "inputs": {
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4-orbit-normal-forms-result.json": "e6a32cf7f7b563aecc1e9c1be7c1c016814d4d7f9743332887ac374c1d5dd0ee",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "d388bdfa74314ac193e8fa12b5b15ca490b90aff88c7c5fac5a579509200f5c6",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py": "745edad5ec0fe70aa3167564c25f17983054504b4706d4db82c57cd73fa16d72",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_polar_line_module.py": "24318a1cbcce62f5b9d18eb2e1515a8de77ba39fae1d9740399bc55638cc2d47"
+ },
+ "pass": true,
+ "retained_agreement": {
+  "fixtures": 52,
+  "samples": 120
+ },
+ "schema": "a5-kernel-bundles-residuals-nullity4-polar-line-module-v1"
+}

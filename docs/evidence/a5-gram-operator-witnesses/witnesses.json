@@ -1,0 +1,1839 @@
+{
+  "boundary": "Exact finite arithmetic and coefficient identities; calibration and full topology stay separate.",
+  "checks": {
+    "associator": [
+      {
+        "basis_triples": 1024,
+        "first_index": 0,
+        "homomorphism_mutation_rejected_triples": 0
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 1,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 2,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 3,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 4,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 5,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 6,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 7,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 8,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 9,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 10,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 11,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 12,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 13,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 14,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 15,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 16,
+        "homomorphism_mutation_rejected_triples": 840
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 17,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 18,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 19,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 20,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 21,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 22,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 23,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 24,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 25,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 26,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 27,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 28,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 29,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 30,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 31,
+        "homomorphism_mutation_rejected_triples": 504
+      }
+    ],
+    "basis": {
+      "all_checks_pass": true,
+      "basis_pairs": 1365,
+      "count": 63
+    },
+    "cancellation": [
+      {
+        "chi_invariant_under_single_index_resigning": true,
+        "chi_plus_one": 0,
+        "chi_plus_one_by_m": {},
+        "chi_plus_one_by_weight_of_m": {},
+        "dimension": 8,
+        "min_weight_of_m": null,
+        "partial_cross_ratio_mutation_detected": true,
+        "sign_erasure_additional_zero_product_patterns": 42,
+        "signed_zero_products_on_skeleton": 0,
+        "skeleton_ordered_pairs_of_index_pairs": 42,
+        "two_blade_zero_divisor_elements": 0,
+        "zero_divisor_index_pairs": 0,
+        "zero_products_off_skeleton": 0
+      },
+      {
+        "chi_invariant_under_single_index_resigning": true,
+        "chi_plus_one": 168,
+        "chi_plus_one_by_m": {
+          "10": 24,
+          "11": 24,
+          "12": 24,
+          "13": 24,
+          "14": 24,
+          "15": 24,
+          "9": 24
+        },
+        "chi_plus_one_by_weight_of_m": {
+          "2": 72,
+          "3": 72,
+          "4": 24
+        },
+        "dimension": 16,
+        "min_weight_of_m": 2,
+        "partial_cross_ratio_mutation_detected": true,
+        "sign_erasure_additional_zero_product_patterns": 462,
+        "signed_zero_products_on_skeleton": 336,
+        "skeleton_ordered_pairs_of_index_pairs": 630,
+        "two_blade_zero_divisor_elements": 84,
+        "zero_divisor_index_pairs": 42,
+        "zero_products_off_skeleton": 0
+      },
+      {
+        "chi_invariant_under_single_index_resigning": true,
+        "chi_plus_one": 2520,
+        "chi_plus_one_by_m": {
+          "10": 96,
+          "11": 96,
+          "12": 96,
+          "13": 96,
+          "14": 96,
+          "15": 96,
+          "17": 168,
+          "18": 168,
+          "19": 168,
+          "20": 168,
+          "21": 168,
+          "22": 168,
+          "23": 168,
+          "24": 168,
+          "25": 72,
+          "26": 72,
+          "27": 72,
+          "28": 72,
+          "29": 72,
+          "30": 72,
+          "31": 72,
+          "9": 96
+        },
+        "chi_plus_one_by_weight_of_m": {
+          "2": 960,
+          "3": 1008,
+          "4": 480,
+          "5": 72
+        },
+        "dimension": 32,
+        "min_weight_of_m": 2,
+        "partial_cross_ratio_mutation_detected": true,
+        "sign_erasure_additional_zero_product_patterns": 3990,
+        "signed_zero_products_on_skeleton": 5040,
+        "skeleton_ordered_pairs_of_index_pairs": 6510,
+        "two_blade_zero_divisor_elements": 588,
+        "zero_divisor_index_pairs": 294,
+        "zero_products_off_skeleton": 0
+      }
+    ],
+    "gram_expansion": {
+      "cross_term_omission_detected": true,
+      "cross_terms": 6,
+      "encoding_scale": "4",
+      "gram_scale_squared": "16",
+      "terms": [
+        [
+          1,
+          1
+        ],
+        [
+          10,
+          -1
+        ],
+        [
+          18,
+          1
+        ],
+        [
+          25,
+          1
+        ]
+      ]
+    },
+    "hardware_blocks": [
+      {
+        "coset": 2,
+        "gram_characteristic_coefficients_low_first": [
+          0,
+          0,
+          48,
+          -16,
+          1
+        ],
+        "operand_indices": [
+          1,
+          10,
+          20,
+          31
+        ],
+        "output_orthogonal_invariance": true,
+        "scaling_mutation_detected": true,
+        "success_scale_squared": 16
+      },
+      {
+        "coset": 5,
+        "gram_characteristic_coefficients_low_first": [
+          0,
+          -64,
+          64,
+          -16,
+          1
+        ],
+        "operand_indices": [
+          1,
+          8,
+          18,
+          27
+        ],
+        "output_orthogonal_invariance": true,
+        "scaling_mutation_detected": true,
+        "success_scale_squared": 16
+      }
+    ],
+    "inverses": [
+      {
+        "dimension": 16,
+        "inverse_basis_offsets_checked": 4,
+        "inverse_sign_mutation_detected": true,
+        "nullity": 4,
+        "terms": [
+          [
+            1,
+            1
+          ],
+          [
+            10,
+            1
+          ]
+        ]
+      },
+      {
+        "dimension": 32,
+        "inverse_basis_offsets_checked": 16,
+        "inverse_sign_mutation_detected": true,
+        "nullity": 16,
+        "terms": [
+          [
+            1,
+            1
+          ],
+          [
+            10,
+            -1
+          ],
+          [
+            18,
+            1
+          ],
+          [
+            25,
+            1
+          ]
+        ]
+      }
+    ],
+    "kernel_limits": [
+      {
+        "endpoint_nullity": 12,
+        "family": "four_support",
+        "generic_nullities": [
+          4,
+          4,
+          4
+        ],
+        "pairwise_intersections": [
+          {
+            "dimension": 0,
+            "first": "first_linear_component",
+            "second": "second_linear_component"
+          },
+          {
+            "dimension": 0,
+            "first": "first_linear_component",
+            "second": "quadratic_component"
+          },
+          {
+            "dimension": 0,
+            "first": "second_linear_component",
+            "second": "quadratic_component"
+          }
+        ],
+        "path_count": 3,
+        "sum_equals_endpoint_projector": true
+      },
+      {
+        "automorphism_checked": true,
+        "endpoint_nullity": 12,
+        "family": "eight_nullity",
+        "first_second_projector_product_trace": "9/2",
+        "generic_nullities": [
+          8,
+          8,
+          8,
+          8
+        ],
+        "pairwise_intersections": [
+          {
+            "dimension": 4,
+            "first": "e3+e27",
+            "second": "e4+e11"
+          },
+          {
+            "dimension": 4,
+            "first": "e3+e27",
+            "second": "e8+e27"
+          },
+          {
+            "dimension": 4,
+            "first": "e3+e27",
+            "second": "e11+e24"
+          },
+          {
+            "dimension": 4,
+            "first": "e4+e11",
+            "second": "e8+e27"
+          },
+          {
+            "dimension": 4,
+            "first": "e4+e11",
+            "second": "e11+e24"
+          },
+          {
+            "dimension": 4,
+            "first": "e8+e27",
+            "second": "e11+e24"
+          }
+        ],
+        "path_count": 4
+      },
+      {
+        "family": "controls",
+        "invalid_inputs_rejected": [
+          "approximate_endpoint",
+          "approximate_operator",
+          "approximate_partner",
+          "boolean_coefficient",
+          "empty_operator",
+          "endpoint_kernel_outside_limit",
+          "irrational_coefficient",
+          "multiple_symbols",
+          "multiplication_side",
+          "non_power_two_dimension",
+          "nonpolynomial_operator",
+          "parameter_real_assumption",
+          "partner_dimension",
+          "string_partner"
+        ],
+        "mutations_rejected": [
+          "attachment",
+          "endpoint_frame",
+          "endpoint_pivot_determinant",
+          "exceptional_polynomial",
+          "generic_rank",
+          "kernel_frame",
+          "limit_projector",
+          "limiting_frame",
+          "pivot_determinant",
+          "projector",
+          "punctured_radius",
+          "transport_determinant",
+          "transport_frame",
+          "transport_gram"
+        ]
+      }
+    ],
+    "phase": [
+      {
+        "bilinear_gram_mutation_detected": true,
+        "dimension": 8,
+        "nullities_at_one_and_i": [
+          0,
+          4
+        ],
+        "pair": [
+          1,
+          2
+        ],
+        "phase_cases": [
+          {
+            "cos": "1",
+            "nullity": 0,
+            "sin": "0",
+            "spectrum": {
+              "0": 0,
+              "2": 8,
+              "4": 0
+            }
+          },
+          {
+            "cos": "0",
+            "nullity": 4,
+            "sin": "1",
+            "spectrum": {
+              "0": 4,
+              "2": 0,
+              "4": 4
+            }
+          },
+          {
+            "cos": "3/5",
+            "nullity": 0,
+            "sin": "4/5",
+            "spectrum": {
+              "16/5": 0,
+              "18/5": 4,
+              "2/5": 4,
+              "4/5": 0
+            }
+          }
+        ],
+        "symmetric_blocks": 0
+      },
+      {
+        "bilinear_gram_mutation_detected": true,
+        "dimension": 32,
+        "nullities_at_one_and_i": [
+          12,
+          4
+        ],
+        "pair": [
+          1,
+          18
+        ],
+        "phase_cases": [
+          {
+            "cos": "1",
+            "nullity": 12,
+            "sin": "0",
+            "spectrum": {
+              "0": 12,
+              "2": 8,
+              "4": 12
+            }
+          },
+          {
+            "cos": "0",
+            "nullity": 4,
+            "sin": "1",
+            "spectrum": {
+              "0": 4,
+              "2": 24,
+              "4": 4
+            }
+          },
+          {
+            "cos": "3/5",
+            "nullity": 0,
+            "sin": "4/5",
+            "spectrum": {
+              "16/5": 12,
+              "18/5": 4,
+              "2/5": 4,
+              "4/5": 12
+            }
+          }
+        ],
+        "symmetric_blocks": 12
+      },
+      {
+        "bilinear_gram_mutation_detected": true,
+        "dimension": 32,
+        "nullities_at_one_and_i": [
+          4,
+          12
+        ],
+        "pair": [
+          1,
+          26
+        ],
+        "phase_cases": [
+          {
+            "cos": "1",
+            "nullity": 4,
+            "sin": "0",
+            "spectrum": {
+              "0": 4,
+              "2": 24,
+              "4": 4
+            }
+          },
+          {
+            "cos": "0",
+            "nullity": 12,
+            "sin": "1",
+            "spectrum": {
+              "0": 12,
+              "2": 8,
+              "4": 12
+            }
+          },
+          {
+            "cos": "3/5",
+            "nullity": 0,
+            "sin": "4/5",
+            "spectrum": {
+              "16/5": 4,
+              "18/5": 12,
+              "2/5": 12,
+              "4/5": 4
+            }
+          }
+        ],
+        "symmetric_blocks": 4
+      }
+    ],
+    "projector": {
+      "annihilation": true,
+      "cubic_idempotent": true,
+      "cubic_trace": "16",
+      "identity_input_has_equal_moments": true,
+      "mean_squared": "1",
+      "minimal_filter_degree": 3,
+      "missing_root_rejected": true,
+      "moment_input_basis_index": 1,
+      "moments": [
+        "32",
+        "88",
+        "296"
+      ],
+      "operand": [
+        [
+          1,
+          "1/2"
+        ],
+        [
+          10,
+          "-1/2"
+        ],
+        [
+          18,
+          "1/2"
+        ],
+        [
+          25,
+          "1/2"
+        ]
+      ],
+      "quadratic_idempotent": false,
+      "quadratic_trace": "28",
+      "second_moment": "3/2",
+      "spectrum": {
+        "0": 16,
+        "1": 8,
+        "2": 4,
+        "4": 4
+      }
+    },
+    "reduced": {
+      "characteristic_polynomial_cases": [
+        {
+          "Delta": "0",
+          "G": "1",
+          "Q": "1",
+          "complex_characteristic_coefficients": [
+            "1",
+            "0",
+            "7",
+            "0",
+            "21",
+            "0",
+            "35",
+            "0",
+            "35",
+            "0",
+            "21",
+            "0",
+            "7",
+            "0",
+            "1",
+            "0"
+          ],
+          "quartic_coefficient_mutation_detected": true,
+          "realified_characteristic_coefficients": [
+            "1",
+            "0",
+            "14",
+            "0",
+            "91",
+            "0",
+            "364",
+            "0",
+            "1001",
+            "0",
+            "2002",
+            "0",
+            "3003",
+            "0",
+            "3432",
+            "0",
+            "3003",
+            "0",
+            "2002",
+            "0",
+            "1001",
+            "0",
+            "364",
+            "0",
+            "91",
+            "0",
+            "14",
+            "0",
+            "1",
+            "0",
+            "0"
+          ],
+          "terms": [
+            [
+              1,
+              1
+            ]
+          ]
+        },
+        {
+          "Delta": "0",
+          "G": "4",
+          "Q": "2",
+          "complex_characteristic_coefficients": [
+            "1",
+            "0",
+            "14",
+            "0",
+            "84",
+            "0",
+            "280",
+            "0",
+            "560",
+            "0",
+            "672",
+            "0",
+            "448",
+            "0",
+            "128",
+            "0"
+          ],
+          "quartic_coefficient_mutation_detected": true,
+          "realified_characteristic_coefficients": [
+            "1",
+            "0",
+            "28",
+            "0",
+            "364",
+            "0",
+            "2912",
+            "0",
+            "16016",
+            "0",
+            "64064",
+            "0",
+            "192192",
+            "0",
+            "439296",
+            "0",
+            "768768",
+            "0",
+            "1025024",
+            "0",
+            "1025024",
+            "0",
+            "745472",
+            "0",
+            "372736",
+            "0",
+            "114688",
+            "0",
+            "16384",
+            "0",
+            "0"
+          ],
+          "terms": [
+            [
+              1,
+              1
+            ],
+            [
+              9,
+              1
+            ]
+          ]
+        },
+        {
+          "Delta": "1",
+          "G": "0",
+          "Q": "2",
+          "complex_characteristic_coefficients": [
+            "1",
+            "0",
+            "14",
+            "0",
+            "76",
+            "0",
+            "200",
+            "0",
+            "256",
+            "0",
+            "128",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "quartic_coefficient_mutation_detected": true,
+          "realified_characteristic_coefficients": [
+            "1",
+            "0",
+            "28",
+            "0",
+            "348",
+            "0",
+            "2528",
+            "0",
+            "11888",
+            "0",
+            "37824",
+            "0",
+            "82496",
+            "0",
+            "121856",
+            "0",
+            "116736",
+            "0",
+            "65536",
+            "0",
+            "16384",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "terms": [
+            [
+              1,
+              1
+            ],
+            [
+              10,
+              1
+            ]
+          ]
+        },
+        {
+          "Delta": "0",
+          "G": "0",
+          "Q": "0",
+          "complex_characteristic_coefficients": [
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "quartic_coefficient_mutation_detected": true,
+          "realified_characteristic_coefficients": [
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "terms": [
+            [
+              1,
+              1
+            ],
+            [
+              18,
+              1
+            ]
+          ]
+        },
+        {
+          "Delta": "0",
+          "G": "0",
+          "Q": "0",
+          "complex_characteristic_coefficients": [
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "quartic_coefficient_mutation_detected": true,
+          "realified_characteristic_coefficients": [
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "terms": [
+            [
+              1,
+              1
+            ],
+            [
+              10,
+              -1
+            ],
+            [
+              18,
+              1
+            ],
+            [
+              25,
+              1
+            ]
+          ]
+        },
+        {
+          "Delta": "-4",
+          "G": "1 + 8*I",
+          "Q": "1 + 4*I",
+          "complex_characteristic_coefficients": [
+            "1",
+            "0",
+            "7 + 28*I",
+            "0",
+            "-283 + 168*I",
+            "0",
+            "-1485 - 1180*I",
+            "0",
+            "1091 - 5840*I",
+            "0",
+            "9269 - 5084*I",
+            "0",
+            "10775 + 1960*I",
+            "0",
+            "3793 + 2524*I",
+            "0"
+          ],
+          "quartic_coefficient_mutation_detected": true,
+          "realified_characteristic_coefficients": [
+            "1",
+            "0",
+            "14",
+            "0",
+            "267",
+            "0",
+            "2476",
+            "0",
+            "23625",
+            "0",
+            "150802",
+            "0",
+            "884491",
+            "0",
+            "3855848",
+            "0",
+            "14519547",
+            "0",
+            "41679954",
+            "0",
+            "95157817",
+            "0",
+            "158613676",
+            "0",
+            "164592827",
+            "0",
+            "91633230",
+            "0",
+            "20757425",
+            "0",
+            "0"
+          ],
+          "terms": [
+            [
+              1,
+              1
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              8,
+              1
+            ],
+            [
+              17,
+              2
+            ],
+            [
+              25,
+              -1
+            ]
+          ]
+        }
+      ],
+      "doubly_pure_signed_two_support_count": 870,
+      "named": [
+        {
+          "bordered_rank": 10,
+          "characteristic_polynomial": "lambda**15",
+          "jordan_blocks": [
+            3,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "nullity": 12,
+          "power_ranks": [
+            15,
+            8,
+            1,
+            0
+          ],
+          "reduced_rank": 8,
+          "terms": [
+            [
+              1,
+              1
+            ],
+            [
+              18,
+              1
+            ]
+          ]
+        },
+        {
+          "bordered_rank": 8,
+          "characteristic_polynomial": "lambda**15",
+          "jordan_blocks": [
+            3,
+            2,
+            2,
+            2,
+            2,
+            1,
+            1,
+            1,
+            1
+          ],
+          "nullity": 16,
+          "power_ranks": [
+            15,
+            6,
+            1,
+            0
+          ],
+          "reduced_rank": 6,
+          "terms": [
+            [
+              1,
+              1
+            ],
+            [
+              10,
+              -1
+            ],
+            [
+              18,
+              1
+            ],
+            [
+              25,
+              1
+            ]
+          ]
+        }
+      ],
+      "rank_identity_checks_pass": true
+    },
+    "reduced_structure": {
+      "adjoint_equals_negative_conjugate": true,
+      "bordered_shape": [
+        16,
+        16
+      ],
+      "coefficient_offdiagonal_pairs": 210,
+      "congruence_characteristic_polynomial_equal": true,
+      "congruence_operand": [
+        [
+          1,
+          1
+        ],
+        [
+          10,
+          -1
+        ],
+        [
+          18,
+          1
+        ],
+        [
+          25,
+          1
+        ]
+      ],
+      "congruence_rank": 6,
+      "congruent_jordan_blocks": [
+        3,
+        3,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "congruent_square_rank": 2,
+      "nonreal_skew_hermitian": false,
+      "note_already_corrected": true,
+      "original_jordan_blocks": [
+        3,
+        2,
+        2,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "original_square_rank": 1,
+      "shape": [
+        15,
+        15
+      ],
+      "transpose_skew": true
+    },
+    "scalar": [
+      {
+        "dimension": 2,
+        "gram_shift_identity": true,
+        "pure_nullity": 0,
+        "scalar": "1",
+        "shifted_nullity": 0,
+        "skew_sign_mutation_detected": true
+      },
+      {
+        "dimension": 4,
+        "gram_shift_identity": true,
+        "pure_nullity": 0,
+        "scalar": "1",
+        "shifted_nullity": 0,
+        "skew_sign_mutation_detected": true
+      },
+      {
+        "dimension": 8,
+        "gram_shift_identity": true,
+        "pure_nullity": 0,
+        "scalar": "1",
+        "shifted_nullity": 0,
+        "skew_sign_mutation_detected": true
+      },
+      {
+        "dimension": 16,
+        "gram_shift_identity": true,
+        "pure_nullity": 4,
+        "scalar": "1",
+        "shifted_nullity": 0,
+        "skew_sign_mutation_detected": true
+      },
+      {
+        "dimension": 32,
+        "gram_shift_identity": true,
+        "pure_nullity": 12,
+        "scalar": "1",
+        "shifted_nullity": 0,
+        "skew_sign_mutation_detected": true
+      }
+    ],
+    "special_lifts": {
+      "all_checks_pass": true,
+      "count": 424,
+      "lifted_nullity_histogram": {
+        "12": 196,
+        "16": 168,
+        "4": 60
+      }
+    },
+    "two_support": {
+      "all_checks_pass": true,
+      "coefficient_choices_per_pair": 4,
+      "equal_weight_moment_checks": 1182,
+      "named_equal_weight_moments": [
+        {
+          "dimension": 8,
+          "moments": [
+            {
+              "beta": 1,
+              "normalization_mutation_detected": true,
+              "raw_block_count": "0",
+              "raw_second_moment": "32",
+              "unit_norm_block_count": "0",
+              "unit_norm_second_moment": "8"
+            },
+            {
+              "beta": -1,
+              "normalization_mutation_detected": true,
+              "raw_block_count": "0",
+              "raw_second_moment": "32",
+              "unit_norm_block_count": "0",
+              "unit_norm_second_moment": "8"
+            }
+          ],
+          "pair": [
+            1,
+            2
+          ],
+          "symmetric_blocks": 0
+        },
+        {
+          "dimension": 32,
+          "moments": [
+            {
+              "beta": 1,
+              "normalization_mutation_detected": true,
+              "raw_block_count": "8",
+              "raw_second_moment": "192",
+              "unit_norm_block_count": "8",
+              "unit_norm_second_moment": "48"
+            },
+            {
+              "beta": -1,
+              "normalization_mutation_detected": true,
+              "raw_block_count": "8",
+              "raw_second_moment": "192",
+              "unit_norm_block_count": "8",
+              "unit_norm_second_moment": "48"
+            }
+          ],
+          "pair": [
+            1,
+            10
+          ],
+          "symmetric_blocks": 8
+        },
+        {
+          "dimension": 32,
+          "moments": [
+            {
+              "beta": 1,
+              "normalization_mutation_detected": true,
+              "raw_block_count": "12",
+              "raw_second_moment": "224",
+              "unit_norm_block_count": "12",
+              "unit_norm_second_moment": "56"
+            },
+            {
+              "beta": -1,
+              "normalization_mutation_detected": true,
+              "raw_block_count": "12",
+              "raw_second_moment": "224",
+              "unit_norm_block_count": "12",
+              "unit_norm_second_moment": "56"
+            }
+          ],
+          "pair": [
+            1,
+            18
+          ],
+          "symmetric_blocks": 12
+        }
+      ],
+      "pairs": 591,
+      "pathion_pair_nullity_histogram": {
+        "0": 171,
+        "12": 126,
+        "4": 84,
+        "8": 84
+      },
+      "signed_pathion_elements": 930
+    }
+  },
+  "claims": [
+    {
+      "claim": "0.1",
+      "evidence": "reduced_structure",
+      "proposition": "C_z is 15x15; bordered A(z,t) is 16x16",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "2. The 15 x 15 complex matrix C_z and the bordered matrix A(z,t)",
+        "path": "docs/notes/topics/strata-gauss-bottleneck.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "0.2",
+      "evidence": "reduced_structure",
+      "proposition": "C_z^T = -C_z; C_z^dagger = -C_{conj z}; skew-Hermitian only for real z",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "2. The 15 x 15 complex matrix C_z and the bordered matrix A(z,t)",
+        "path": "docs/notes/topics/strata-gauss-bottleneck.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "0.3",
+      "evidence": "reduced_structure.note_already_corrected",
+      "proposition": "The note states 16x16 and skew-Hermitian",
+      "scope": "The tracked note already has the correct matrix dimension and transpose-skew domain.",
+      "source": {
+        "locator": "2. The 15 x 15 complex matrix C_z and the bordered matrix A(z,t)",
+        "path": "docs/notes/topics/strata-gauss-bottleneck.md"
+      },
+      "verdict": "refuted"
+    },
+    {
+      "claim": "1.1",
+      "evidence": "README.md#scope",
+      "proposition": "The possible nullities of a nonzero real operand are {0} through dimension 8, {0,4} in dimension 16, and {0,4,8,12,16} in dimension 32.",
+      "scope": "Complete real nullity classification is a published theorem; named attainment witnesses are computed.",
+      "source": {
+        "locator": "Primary statements used; Deductions used by the repository",
+        "path": "docs/notes/cayley_dickson_rank_topology_sources.md"
+      },
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "1.2",
+      "evidence": "basis",
+      "proposition": "L_{(a,0)} = diag(L_a, R_a)",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Primary statements used; Deductions used by the repository",
+        "path": "docs/notes/cayley_dickson_rank_topology_sources.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "1.3",
+      "evidence": "inverses",
+      "proposition": "L_a and R_a have identical Gram spectra, so k -> 2k",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Primary statements used; Deductions used by the repository",
+        "path": "docs/notes/cayley_dickson_rank_topology_sources.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "1.4",
+      "evidence": "special_lifts",
+      "proposition": "(a, \u00b1i_n a) gives k + 2^n - 4; the sedenion nullity-4 element gives 8 by embedding and 16 by the special lift",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Primary statements used; Deductions used by the repository",
+        "path": "docs/notes/cayley_dickson_rank_topology_sources.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "1.5",
+      "evidence": "two_support",
+      "proposition": "The 930-element two-support census gives {0,4,8,12} only and a larger census cannot repair that",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Primary statements used; Deductions used by the repository",
+        "path": "docs/notes/cayley_dickson_rank_topology_sources.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "1.6",
+      "evidence": "README.md#scope",
+      "proposition": "The maximal locus is two copies of V_2(R^7); the partner sphere goes S^3 -> S^15",
+      "scope": "Maximal-locus topology and partner spheres require the published geometric proofs.",
+      "source": {
+        "locator": "Primary statements used; Deductions used by the repository",
+        "path": "docs/notes/cayley_dickson_rank_topology_sources.md"
+      },
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "2.1",
+      "evidence": "inverses",
+      "proposition": "Inverse set = conj(a)/N + ker L_a, with a = e1+e10, x = e4-e15, ax = 0, and -a/2 and -a/2+x both two-sided inverses",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Results; Proofs",
+        "path": "docs/notes/topics/cd-one-sided-inverses.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "2.2",
+      "evidence": "basis",
+      "proposition": "Real CD algebras have no nonzero nilpotents; complex C_z does",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Results; Proofs",
+        "path": "docs/notes/topics/cd-one-sided-inverses.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "3.1",
+      "evidence": "cancellation",
+      "proposition": "Eligible xor patterns 42/630/6510; sign-cancelling 0/168/2520",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Zero products as fiber cancellation; The Fano plane on both sides; Boundaries",
+        "path": "docs/notes/topics/kaplansky-mechanisms-cayley-dickson.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "3.2",
+      "evidence": "cancellation",
+      "proposition": "chi survives every re-signing",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Zero products as fiber cancellation; The Fano plane on both sides; Boundaries",
+        "path": "docs/notes/topics/kaplansky-mechanisms-cayley-dickson.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "3.3",
+      "evidence": "cancellation",
+      "proposition": "Mod 2 the table erases sigma, leaving F2[(Z/2)^n]; the Fano incidence omits signs",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Zero products as fiber cancellation; The Fano plane on both sides; Boundaries",
+        "path": "docs/notes/topics/kaplansky-mechanisms-cayley-dickson.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "3.4",
+      "evidence": "README.md#scope",
+      "proposition": "The math/ torsion-free group-algebra theorem does not transfer; the Lean build exists",
+      "scope": "The separate Lean project and the group-algebra theorem are outside this arithmetic replay.",
+      "source": {
+        "locator": "Zero products as fiber cancellation; The Fano plane on both sides; Boundaries",
+        "path": "docs/notes/topics/kaplansky-mechanisms-cayley-dickson.md"
+      },
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "4.1",
+      "evidence": "basis",
+      "proposition": "(M_a)_jj = \u2016a\u2016^2 and tr M = D\u2016a\u2016^2",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Gram moments and complete projectors",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "4.2",
+      "evidence": "gram_expansion",
+      "proposition": "M = \u2016a\u2016^2 I + sum a_i a_j (L_i^T L_j + L_j^T L_i)",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Gram moments and complete projectors",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "4.3",
+      "correction": "The block-count formula with denominator 2 requires the unit-norm Gram operator; applying it directly to the raw equal-weight Gram operator gives an incorrect block count.",
+      "evidence": "two_support",
+      "proposition": "For real a=alpha*e_i+beta*e_j, s=alpha^2+beta^2 and n symmetric two-dimensional blocks, spec(M)={(alpha+beta)^2 [n], (alpha-beta)^2 [n], s [D-2n]} and tr(M^2)=D*s^2+8*n*alpha^2*beta^2. For raw coefficients alpha=1,beta=+/-1, n=(tr(M_raw^2)-4*D)/8. For the unit-norm operand (e_i+/-e_j)/sqrt(2), M_unit=M_raw/2 and n=(tr(M_unit^2)-D)/2.",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Gram moments and complete projectors",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "4.4",
+      "evidence": "two_support",
+      "proposition": "e1+e9 has nullity 0 and e1+e10 has nullity 8, and both have herald success 1/2 on every basis input",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Gram moments and complete projectors",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "5.1",
+      "evidence": "two_support",
+      "proposition": "P = I - 3M/2 + M^2/2 on spectrum {0,1,2}",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Gram moments and complete projectors",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "5.2",
+      "evidence": "projector",
+      "proposition": "The 32D witness has spectrum {0^16, 1^8, 2^4, 4^4}, traces 32/88/296, quadratic trace 28, cubic projector trace 16, P^2 = P, L P = 0",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Gram moments and complete projectors",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "5.3",
+      "evidence": "projector",
+      "proposition": "Degree = number of distinct positive eigenvalues",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Gram moments and complete projectors",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "5.4",
+      "correction": "The predecessor proposed the identity input e0; e0 has equal moments and supplies no counterexample. The retained witness uses e1.",
+      "evidence": "projector",
+      "proposition": "The square of tr(rho M) can differ from tr(rho M^2); the four-support Gram operand gives an exact counterexample at rho=|e1><e1|.",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Gram moments and complete projectors",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "6.1",
+      "evidence": "reduced",
+      "proposition": "rank C_z, C_z^2, C_z^3 = 8, 1, 0 for e1+e18 (z_1 = 1, z_2 = i) and 6, 1, 0 for e1-e10+e18+e25 (z_1 = 1, z_10 = -1, z_2 = z_9 = i)",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Reduced ranks and congruence; Scope",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "6.2",
+      "evidence": "reduced",
+      "proposition": "chi_C = lambda (lambda^2 + Q)^3 (lambda^4 + 2Q lambda^2 + F)^2, with F = Q^2 - 4 Delta",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Theorem 2; Theorem 4",
+        "path": "docs/evidence/a5-zero-divisor-strata/README.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "6.3",
+      "correction": "The signed doubly pure two-support corpus has 2*binomial(30,2)=870 elements; the predecessor count 812 is incorrect.",
+      "evidence": "reduced",
+      "proposition": "For a nonzero doubly pure real operand y, nullity_R(L_y)=28-2*rank_C(C_z), and rank_R(L_y)=2*rank_C(A(z,conj(z))).",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Theorem 2; Theorem 4",
+        "path": "docs/evidence/a5-zero-divisor-strata/README.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "6.4",
+      "evidence": "reduced_structure",
+      "proposition": "Split-coordinate congruence preserves rank but not Jordan structure",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Reduced ranks and congruence; Scope",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "6.5",
+      "evidence": "README.md#scope",
+      "proposition": "The missing invariant is the kernel filtration",
+      "scope": "Selecting a complete invariant for attachments requires a classification beyond these power ranks.",
+      "source": {
+        "locator": "Reduced ranks and congruence; Scope",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "7.1",
+      "evidence": "scalar",
+      "proposition": "M_{r+p} = r^2 I + M_p for p pure",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Coefficients, embeddings and phase",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "7.2",
+      "evidence": "phase",
+      "proposition": "With a coefficient phase, symmetric blocks give s \u00b1 2ab cos(theta) and skew blocks s \u00b1 2ab sin(theta)",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Coefficients, embeddings and phase",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "7.3",
+      "evidence": "phase",
+      "proposition": "Changing the second coefficient from 1 to i changes nullity from 0 to 4 for the octonion pair (e1,e2), from 12 to 4 for the pathion pair (e1,e18), and from 4 to 12 for the pathion pair (e1,e26).",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Coefficients, embeddings and phase",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "7.4",
+      "evidence": "README.md#scope",
+      "proposition": "An external coefficient phase differs from an input-state phase",
+      "scope": "The experimental distinction between operator and input phase needs its declared encoding.",
+      "source": {
+        "locator": "Coefficients, embeddings and phase",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "7.5",
+      "evidence": "gram_expansion",
+      "proposition": "Encoding scale: (L/k)^T (L/k) = M/k^2",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Coefficients, embeddings and phase",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "8.1",
+      "evidence": "README.md#scope",
+      "proposition": "Kernel bundle xi + R^4 = R^8 and xi is nontrivial; a global projector exists while a global basis is obstructed",
+      "scope": "Stable bundle equivalence and nontriviality require the cited topology argument.",
+      "source": {
+        "locator": "Same derivative and different limiting fibers; Complete kernel bundles and their transition maps; All-stage transport and remaining classification",
+        "path": "docs/notes/annihilator_kernel_limits.md"
+      },
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "8.2",
+      "evidence": "kernel_limits",
+      "proposition": "At e1+e18 the endpoint nullity is 12. Same-derivative paths give three pairwise-orthogonal 4-planes spanning the kernel. The paths x_A..x_D give 8-planes meeting in 4-planes, with tr(P_A P_B) = 9/2",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Same derivative and different limiting fibers; Complete kernel bundles and their transition maps; All-stage transport and remaining classification",
+        "path": "docs/notes/annihilator_kernel_limits.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "8.3",
+      "evidence": "README.md#scope",
+      "proposition": "Transport and Berry holonomy are not established",
+      "scope": "The retained acquisitions establish neither Berry transport nor holonomy.",
+      "source": {
+        "locator": "Same derivative and different limiting fibers; Complete kernel bundles and their transition maps; All-stage transport and remaining classification",
+        "path": "docs/notes/annihilator_kernel_limits.md"
+      },
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "9.1",
+      "evidence": "hardware_blocks",
+      "proposition": "p(psi) = psi^dagger B^dagger B psi / 16; bright levels 3/4 for (1,10,20,31) and (3+sqrt5)/8 for (1,8,18,27)",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Existing photonic evidence; A5 coefficient and spectral decomposition; Scope and denominator successor",
+        "path": "docs/evidence/a5-photonic-crosschecks/README.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "9.2",
+      "evidence": "README.md#scope",
+      "proposition": "Retained readings 0.727/0.726/0.7495 and 0.649/0.658/0.642",
+      "scope": "Calibrated provider readings are owned by their retained analyses; raw acquisitions are not replayed.",
+      "source": {
+        "locator": "Retained B12/C8 Gram-block success readings: 0.727/0.726/0.7495 and 0.649/0.658/0.642",
+        "path": "results/live/PATHION_KERNEL_MAP_FINDINGS.md"
+      },
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "9.3",
+      "evidence": "README.md#scope",
+      "proposition": "Ascella kernel slice 1/2 -> 0.513568, 0 -> 0.002622, 1 -> 0.998198; 26 successes, 9891 failures, 83 sentinel of 10000",
+      "scope": "The Ascella acquisition and denominators belong to a5_photonic_scope; that analysis is not duplicated.",
+      "source": {
+        "locator": "Existing photonic evidence; A5 coefficient and spectral decomposition; Scope and denominator successor",
+        "path": "docs/evidence/a5-photonic-crosschecks/README.md"
+      },
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "9.4",
+      "evidence": "associator",
+      "proposition": "B -> UB leaves p unchanged; L_a L_b - L_ab = -[a,b,.]",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Existing photonic evidence; A5 coefficient and spectral decomposition; Scope and denominator successor",
+        "path": "docs/evidence/a5-photonic-crosschecks/README.md"
+      },
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "9.5",
+      "evidence": "README.md#scope",
+      "proposition": "Belenos variance 50 and 80 times binomial; 23 of 30 against 1; Ascella r = 0.9966",
+      "scope": "Mesh variance and repeat correlations require the existing acquisition-level analyses.",
+      "source": {
+        "locator": "Claims describing Belenos variance and Ascella frozen-mesh repeat correlation; raw analysis remains separate",
+        "path": "docs/state/research_state.json"
+      },
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "9.6",
+      "evidence": "README.md#scope",
+      "proposition": "The source citations and line numbers supplied by the reconciliation review are accurate.",
+      "scope": "External review citation line numbers are not scientific evidence or an input to the calculation.",
+      "source": {
+        "locator": "Scope: citation-line auditing lies outside the exact arithmetic replay",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
+      "verdict": "not_checked"
+    }
+  ],
+  "producer_sha256": "81ff6f5d5cfb07263f8645236a9940292279341e7adc86c256232b87ca0f1a05",
+  "schema": "a5-gram-operator-witnesses/1",
+  "sources_sha256": {
+    "docs/evidence/a5-gram-operator-witnesses/claim_definitions.json": "da7103cddf7e9d55ca9bb9f10d624f66585f8cacefb51a75057958c37ebcfd17",
+    "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
+    "docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py": "b23919697c9adfa9ccbd1ab5929af206d48ff604195c511699f3ff8dc3fd6cbb",
+    "docs/notes/topics/strata-gauss-bottleneck.md": "91568d079ad628b64d42c48526b3762f4cf9d56306c19ed9edfa1acaf5b8e84f",
+    "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+    "gororoba_quantum/cd_quantum_contracts.py": "82b5d5b3b221489d94a6f0aa76b4f870b8de84acaf907c2b2090e55197396839",
+    "gororoba_quantum/four_support_rank.py": "a6573541854fb2139df6d4670b3b0dd187998a96da2f733b4a2b9a52f3e6c693",
+    "gororoba_quantum/kernel_limit_contracts.py": "8f6ab9b457d42a94ab59646fe1b3731d2d407e4ac92549bd4d60ef07657c2586",
+    "gororoba_quantum/kernel_limits.py": "46591b43f37086bce51d6d600c0b0ae6e1d5055c0e0c475a5185d0c2d351e6a7",
+    "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48"
+  }
+}

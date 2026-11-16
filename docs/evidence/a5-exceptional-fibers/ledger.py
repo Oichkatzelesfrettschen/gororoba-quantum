@@ -11,7 +11,8 @@ Columns (tab-separated, first line is the header):
 - id: stable key, `A5-` and a number; never reused.
 - kind: equation | structure | method | operational.
 - fibers: the pairs Y -> Z the claim concerns, comma-separated, or `all`.
-- primes: 32009, 32029, `both`, `char0`, or `any` (a statement independent of the field).
+- primes: 32003, 32009, 32029, 32057 (the third split prime of A5-560), `both` (32009 and 32029), `char0`,
+  `odd` (every field of characteristic other than 2), or `any` (a statement independent of the field).
 - claim: the statement, with equations written out.
 - status: one of STATUSES below.
 - basis: the deciding evidence in words (the measured numbers, the argument).
@@ -28,6 +29,7 @@ Columns (tab-separated, first line is the header):
 import argparse
 import csv
 import re
+import subprocess
 import sys
 from collections import Counter
 from pathlib import Path
@@ -49,7 +51,7 @@ COLUMNS = [
     "updated",
 ]
 KINDS = {"equation", "structure", "method", "operational"}
-PRIMES = {"32009", "32029", "both", "char0", "any"}
+PRIMES = {"32003", "32009", "32029", "32057", "both", "char0", "odd", "any"}
 STATUSES = {
     "proved": "a complete argument or exact computation decides it over the stated fields",
     "certified": "a lower bound and a matching upper bound decide the value",
@@ -64,6 +66,7 @@ STATUSES = {
 # The statuses of a row whose falsifier or deciding test is still outstanding; `--open` lists these rows.
 OPEN_STATUSES = frozenset({"survives", "open", "stalled", "boundary"})
 DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+RELOCATED = re.compile(r"gororoba-math:rocq/quantum/[A-Za-z0-9_]+\.v")
 ID = re.compile(r"^A5-\d{3}$")
 
 
@@ -100,6 +103,8 @@ def check(data: list[dict[str, str]]) -> list[str]:
         if not paths:
             problems.append(f"{rid}: no evidence")
         for path in paths:
+            if RELOCATED.fullmatch(path):
+                continue  # a source of gororoba-math; the pull-request suite reaches no other repository
             if not (ROOT / path.split("#")[0]).exists():
                 problems.append(f"{rid}: evidence {path} does not exist")
         for sup in [x.strip() for x in r["supersedes"].split(";") if x.strip()]:
@@ -116,9 +121,36 @@ def check(data: list[dict[str, str]]) -> list[str]:
     return problems
 
 
+def uncited_directories(data: list[dict[str, str]], directories: list[str]) -> list[str]:
+    """The directories, as repository-relative paths, under which no row cites an evidence path."""
+    cited = [x.strip() for r in data for x in r["evidence"].split(";") if x.strip()]
+    return [d for d in directories if not any(path == d or path.startswith(d + "/") for path in cited)]
+
+
+def a5_directories() -> list[str]:
+    """Every `docs/evidence/a5-*` directory that holds a tracked file; `--check` requires a citing row for each.
+
+    The tracked files come from `git ls-files`, so an ignored or leftover directory does not count; outside a git
+    checkout, or on a host with no git executable, every such directory on disk counts.
+    """
+    try:
+        listing = subprocess.run(
+            ["git", "-C", str(ROOT), "ls-files", "docs/evidence/a5-*"], capture_output=True, text=True, check=False
+        )
+    except FileNotFoundError:
+        listing = None
+    if listing is not None and listing.returncode == 0:
+        return sorted({"/".join(line.split("/")[:3]) for line in listing.stdout.splitlines() if line.count("/") >= 3})
+    return sorted(str(p.relative_to(ROOT)) for p in (ROOT / "docs" / "evidence").glob("a5-*") if p.is_dir())
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--check", action="store_true", help="validate the ledger; exit 1 on any problem")
+    ap.add_argument(
+        "--check",
+        action="store_true",
+        help="validate the ledger and require a citing row for every a5-* evidence directory; exit 1 on any problem",
+    )
     ap.add_argument("--summary", action="store_true", help="counts by status and kind")
     ap.add_argument(
         "--open",
@@ -128,6 +160,9 @@ def main() -> int:
     a = ap.parse_args()
     data = rows()
     problems = check(data)
+    if a.check:
+        uncited = uncited_directories(data, a5_directories())
+        problems += [f"{d}: no ledger row cites this evidence directory" for d in uncited]
     for line in problems:
         print(line)
     if a.summary or not (a.check or a.open):
