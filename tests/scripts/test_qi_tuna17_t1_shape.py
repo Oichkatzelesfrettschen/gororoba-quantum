@@ -15,6 +15,7 @@ RECORD = ROOT / "results/quantum_inspire/characterization_tuna_17_t1_shape_analy
 RUNS = sorted((ROOT / "results/quantum_inspire/runs").glob("2026-11-16T0401Z-characterization_tuna_17-*"))
 
 
+@pytest.mark.audit
 def test_coupling_map_is_the_24_edge_ninja_star() -> None:
     edges = shape.coupling_edges(shape.CATALOGUE)
     degree = [sum(q in edge for edge in edges) for q in range(17)]
@@ -36,6 +37,7 @@ def test_tally_counts_the_qubits_at_the_decision_limit() -> None:
         raise AssertionError(found)
 
 
+@pytest.mark.audit
 def test_committed_record_matches_its_decision_rules() -> None:
     record = json.loads(RECORD.read_text(encoding="utf-8"))
     if (

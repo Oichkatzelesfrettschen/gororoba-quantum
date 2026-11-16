@@ -233,23 +233,23 @@ sqrt(chi-square / dof).
 
 | Hypothesis | Measured | Verdict |
 |---|---|---|
-| H1 readout floor | chi-square / dof at most 3 on 2 of 17 qubits for the opening, closing, mean and time-interpolated pair and for the joint likelihood (median 34.8, range 1.4 to 465 for the mean pair) | refuted |
-| H2 delay unit or idle gate | wait lines read N on all 17 qubits for all six delays; execution time rises 4.7 +- 15.0 ns per cycle per shot against 20 nominal; a common stretched exponent (0.90; per qubit 0.58 to 1.01) and a common delay offset (1.70 us; per qubit 0 to 13.5 us) are rejected (likelihood ratios 2310 and 2504 on 16 degrees of freedom, p below 1e-300) | refuted as one global calibration; realized delay undecided |
+| H1 readout floor | chi-square / dof at most 3 on 2 of 17 qubits for the opening, mean and time-interpolated pair and for the joint likelihood, and on 1 of 17 for the closing pair (median 34.8, range 1.4 to 465 for the mean pair) | refuted |
+| H2 delay unit or idle gate | wait lines read N on all 17 qubits for all six delays (`results.json` of the jobs carries no cycle time, so 20 ns per cycle rests on `cases.json` of the case and [cqasm.md](cqasm.md)); execution time rises 4.7 +- 15.0 ns per cycle per shot against 20 nominal; a common stretched exponent (0.90; per qubit 0.58 to 1.01) and a common delay offset (1.70 us; per qubit 0 to 13.5 us) are rejected (likelihood ratios 2310 and 2504 on 16 degrees of freedom, p below 1e-300) | refuted as one global calibration; realized delay undecided |
 | H3 two-rate decay | chi-square / dof at most 3 on 3 (biexponential), 2 (plateau) and 4 (stretched) of 17 qubits against 12 predicted; AICc falls by more than 4 on 12, 13 and 9 | not supported as a 3-parameter shape; tail excess real |
 | H4 drift | readout drift 0.001 to 0.014 (median 0.004); interpolated pair leaves chi-square / dof at most 3 on 2 of 17; a batch step is positive on 16 of 17 and its likelihood ratio exceeds 4 on 13 | drift refuted; batch step undecided (confounded with delay) |
 | H5 crosstalk | Spearman rho 0.15 (p 0.56) with degree and -0.23 (p 0.37) with the neighbor mean; coupled against uncoupled pairs |z| at most 2.32 and Welch p at least 0.089 on all 10 circuits; overdispersion 0.99 to 1.03 | refuted within this series; crosstalk undecided |
 | H2b delay offset (after the fact) | chi-square / dof at most 3 on 2 of 17; AICc gain over 4 on 9 | common offset refuted |
-| H6 T1 distribution | sigma 0.01 to 1.33 (median 0.30); AICc gain over 4 on 12; chi-square / dof at most 3 on 3 of 17 | predictions held; not sufficient as the shape |
+| H6 T1 distribution | sigma median 0.30 but range 0.01 to 1.33 (predicted 0.2 to 0.8); AICc gain over 4 on 12 (predicted at least 12); chi-square / dof at most 3 on 3 of 17 (predicted fewer than 12) | the AICc and chi-square clauses held, the sigma range did not; not sufficient as the shape |
 | Standard-error mechanism | factor sqrt(chi-square / dof) is 1.4 to 22 (median 5.8); scaled standard errors 0.25 to 4.6 us; the spread over six analyses (retained log fit, four readout choices, joint likelihood) exceeds the scaled error on 1 of 17 | supported |
 
 Predictions that failed. H3 predicted chi-square / dof at most 3 on at least 12
-qubits for a 2- or 3-parameter model and reaches 2 to 4; H4 predicted a step
-under 2 standard errors on at least 9 qubits and reads above on 13 (the second
-clause of its falsifier), while its drift clause stands refuted; H5 and H1 held
-as predicted, and so did the standard-error prediction. H2 predicted an
-execution-time slope within 25% of 20 ns per cycle per shot and reads 4.7 ns
-(+- 15.0), which the error makes uninformative; H2b predicted a common offset
-and reads a rejected one (recorded after the fact).
+qubits for a 2- or 3-parameter model and reaches 2 to 4. H4 predicted a batch
+step under 2 standard errors on at least 9 qubits and reads above on 13 (the
+second clause of its falsifier); its drift prediction held. H6 predicted sigma
+0.2 to 0.8 and reads 0.01 to 1.33. H2 predicted an execution-time slope within
+25% of 20 ns per cycle per shot and reads 4.7 ns (+- 15.0), which the error
+makes uninformative, and H2b predicted a common offset and reads a rejected one
+(recorded after the fact). The H1, H5 and standard-error predictions held.
 
 ### Observations
 
