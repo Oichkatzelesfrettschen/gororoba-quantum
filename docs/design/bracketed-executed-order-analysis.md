@@ -35,6 +35,8 @@ values reduced by g x and errors multiplied by f_T, so the pooled error carries 
 2. A series in which every template has one x in all its twin batches has Sxx = 0 and no separable drift, even if the templates
    differ in direction: it reads `unresolved_order_confounded`.
 3. A template whose own drift (`template_drift`) departs from the shared g by more than 3 times the error of the difference
+   (`template_drift_difference_se`, sqrt(1 / own - 1 / Sxx): the shared g is the own-drift average weighted by own / Sxx, so
+   cov(own, g) = var(g))
    reads `unresolved_drift_heterogeneity`: the common-drift hypothesis failed for that run, and the label the rule would have
    read stays beside it.
 4. The batch heterogeneity gates keep their thresholds at the batch counts of the layout (16.266 at 3 degrees of freedom); the
@@ -51,17 +53,17 @@ x = +1, -1, +1, -1, equal batch errors), each batch flipping its sign independen
 | 0.05 | 0 | 1.007 | 1.035 |
 | 0.10 | 0 | 1.013 | 1.038 |
 | 0.20 | 1e-5 | 1.026 | 1.155 |
-| 0.25 (measured: 3 of 12 retained twin batches flipped) | 2.4e-5 | 1.032 | 1.168 |
+| 0.25 (measured: 2 of 8 predecessor twin batches flipped; 3 of 12 with PR 927's hosted-QX batches) | 2.4e-5 | 1.032 | 1.168 |
 | 7/19 (the predecessor's) | 1.4e-4 | 1.043 | 1.183 |
 
 `P(confounded)` equals (2 r^2 (1 - r)^2)^4 (a test pins it): a template ends one-directional with probability 2 r^2 (1 - r)^2,
 which is 0.109 at 7/19, and the series is confounded only when all four do. These figures cover the twin batches under a
-model (hypothesis: independent flips, equal errors, a drift linear in the offset). The retained twin batches give the measured
-flip rate: 3 of 12 (2 of 8 predecessor batches, 1 of 4 hosted-QX batches; the QX run directories
+model (hypothesis: independent flips, equal errors, a drift linear in the offset). The predecessor's retained twin batches give the measured
+flip rate: 2 of 8, with executed offsets -2 and +1. The hosted-QX run adds 1 of 4 (offset -3), for 3 of 12; its run directories
 `results/quantum_inspire/runs/2026-11-15T184810Z-pathion_one_cz_null_bracketed_qx-batch-00..03` and
-`results/quantum_inspire/pathion_one_cz_null_bracketed_qx_analysis.json` arrive with the stacked PR 927, so this count resolves in the
-tree only after that PR lands), with executed offsets -2, +1 and -3 against requested
-+1, -1 and +1; the strict gate's 7 of 19 counts any permutation of a batch, readouts included, and overstates the twin-flip rate.
+`results/quantum_inspire/pathion_one_cz_null_bracketed_qx_analysis.json` arrive with the stacked PR 927, so the QX share of that
+count resolves in the tree only after PR 927 lands. The three flipped batches executed at offsets -2, +1 and -3 against
+requested +1, -1 and +1; the strict gate's 7 of 19 counts any permutation of a batch, readouts included, and overstates the twin-flip rate.
 Under the strict gate the 16 twin batches alone all stay intact with probability 0.75^16 = 0.010 at 0.25. They are not the probability that
 the series decides.
 

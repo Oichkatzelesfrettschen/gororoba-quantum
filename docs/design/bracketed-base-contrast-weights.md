@@ -88,7 +88,9 @@ two-sided p of 0.125. Independent sign assignment gives minimum exact two-sided 
 and 8 waves. The Bonferroni level for 16 contrasts, 0.003125, stays below the 8-wave floor. A sweep simulation of the test's power is not
 retained in this tree, so no power figure is stated here. Range-only confidence sequences need 50 to 460 waves. The layer
 therefore cannot carry the decision of this 4-wave design: it enters only as a pooled global-null diagnostic (a sign-flip test over
-the 16 twin batches, floor 2^-15) and as a requirement for any successor with at least 6 waves per template. Sequential
+the 16 twin batches, floor 2^-15) and as a requirement for any successor. The wave count follows the level: 6 waves per template
+reach a two-sided floor of 0.03125, enough for an unadjusted 0.05 per template only; 8 waves (floor 0.0078) serve 0.05 over the four
+templates (Bonferroni 0.0125); 10 waves (floor 0.00195) serve 0.05 over 16 contrasts (0.003125). Sequential
 estimation of the selector offset (arXiv 1207.1655v2) reduces to the generalized least squares and Kalman filter of this model and
 is parked.
 

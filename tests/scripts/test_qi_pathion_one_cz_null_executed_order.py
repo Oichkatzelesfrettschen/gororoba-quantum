@@ -183,25 +183,63 @@ def test_the_drift_monitor_passes_a_line_and_refuses_a_step() -> None:
         eo.drift_monitor([0.0, 1.0], [0.0, 0.0], [0.003, 0.003])
 
 
-def test_unusable_inputs_fail_closed_instead_of_returning_a_number() -> None:
+def test_a_nonfinite_reference_or_value_is_refused_by_the_level() -> None:
     times, ses = [0.0, 1.0], [0.004, 0.004]
+    for reference in (math.nan, math.inf):
+        with pytest.raises(ValueError):
+            eo.constrained_weights(times, ses, reference)
     with pytest.raises(ValueError):
-        eo.constrained_weights(times, ses, math.nan)
-    with pytest.raises(ValueError):
-        eo.constrained_weights(times, ses, math.inf)
+        eo.level_at([0.01, math.nan], ses, times, 0.5)
+
+
+@pytest.mark.parametrize("bad_ses", [[-0.003] * 6, [0.0] * 6, [math.nan] * 6])
+def test_the_drift_monitor_refuses_an_unusable_error(bad_ses: list[float]) -> None:
     series = [float(i) for i in range(6)]
-    for bad_ses in ([-0.003] * 6, [0.0] * 6, [math.nan] * 6):
-        with pytest.raises(ValueError):
-            eo.drift_monitor(series, series, bad_ses)
     with pytest.raises(ValueError):
-        eo.drift_monitor(series, [math.nan] + series[1:], [0.003] * 6)
-    for kwargs in (
-        {"rate": -0.1},
-        {"rate": 1.1},
-        {"rate": math.nan},
-        {"rate": 0.2, "templates": 0},
-        {"rate": 0.2, "requested": ()},
-        {"rate": 0.2, "requested": (0, 0, 0, 0)},
-    ):
+        eo.drift_monitor(series, series, bad_ses)
+
+
+def test_the_drift_monitor_refuses_a_nonfinite_value() -> None:
+    series = [float(i) for i in range(6)]
+    with pytest.raises(ValueError):
+        eo.drift_monitor(series, [math.nan, *series[1:]], [0.003] * 6)
+
+
+@pytest.mark.parametrize("rate", [-0.1, 1.1, math.nan])
+def test_the_operating_characteristics_refuse_a_rate_outside_the_unit_interval(rate: float) -> None:
+    with pytest.raises(ValueError):
+        eo.operating_characteristics(rate, templates=1)
+
+
+def test_the_operating_characteristics_refuse_an_empty_template_count_or_pattern() -> None:
+    with pytest.raises(ValueError):
+        eo.operating_characteristics(0.2, templates=0)
+    for pattern in ((), (0, 0, 0, 0), (1, 2, -1, -1)):
         with pytest.raises(ValueError):
-            eo.operating_characteristics(templates=kwargs.pop("templates", 1), **kwargs)  # type: ignore[arg-type]
+            eo.operating_characteristics(0.2, requested=pattern, templates=1)
+
+
+def test_the_own_drift_difference_error_matches_the_covariance_of_the_two_linear_estimators() -> None:
+    rows = {
+        "b0": [(0.0, 0.003, -1), (0.0, 0.004, -1), (0.0, 0.005, 1), (0.0, 0.003, -1)],
+        "k4": [(0.0, 0.004, 1), (0.0, 0.003, 1), (0.0, 0.006, -3), (0.0, 0.004, -1)],
+    }
+    solved = eo.fit(rows)
+    sxx = 0.0
+    parts: dict[str, list[tuple[float, float, float]]] = {}
+    for name, batch in rows.items():
+        w = [1.0 / se**2 for _, se, _ in batch]
+        s_bar = sum(wi * s for wi, (_, _, s) in zip(w, batch, strict=True)) / sum(w)
+        parts[name] = [
+            (wi * (s - s_bar), se, wi * (s - s_bar) * (s - s_bar)) for wi, (_, se, s) in zip(w, batch, strict=True)
+        ]
+        sxx += sum(c for _, _, c in parts[name])
+    for name, items in parts.items():
+        own = sum(c for _, _, c in items)
+        # Coefficients of v in the own drift (a_i / own) and in the shared drift (a_i / sxx), per row of the template.
+        cov = sum((a / own) * (a / sxx) * se * se for a, se, _ in items)
+        var_own = sum((a / own) ** 2 * se * se for a, se, _ in items)
+        var_shared = 1.0 / sxx
+        expected = math.sqrt(var_own - 2.0 * cov + var_shared)
+        got = solved["template_drift_difference_se"][name]  # type: ignore[index]
+        _expect(math.isclose(got, expected, rel_tol=1e-9), f"{name}: {got} against {expected}")

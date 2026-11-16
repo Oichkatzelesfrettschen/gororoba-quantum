@@ -84,7 +84,7 @@ def fit(rows: Mapping[str, Sequence[Row]]) -> dict[str, object]:
     if sxx <= 0.0:
         raise ConfoundedOrder("the twin batches carry no variation of the position offset")
     drift, var_drift = sxy / sxx, 1.0 / sxx
-    contrast, error, own_drift = {}, {}, {}
+    contrast, error, own_drift, own_diff_se = {}, {}, {}, {}
     for name, batch_rows in rows.items():
         total, s_bar, v_bar, w = weighted[name]
         contrast[name] = v_bar - drift * s_bar
@@ -95,12 +95,16 @@ def fit(rows: Mapping[str, Sequence[Row]]) -> dict[str, object]:
             if own <= 0.0
             else sum(wi * (s - s_bar) * (v - v_bar) for wi, (v, _, s) in zip(w, batch_rows, strict=True)) / own
         )
+        # The shared drift is the own drifts averaged with weights own / Sxx, so cov(own_T, g) = var(g) and
+        # var(own_T - g) = 1 / own_T - 1 / Sxx.
+        own_diff_se[name] = None if own <= 0.0 else math.sqrt(max(1.0 / own - var_drift, 0.0))
     return {
         "drift": drift,
         "drift_se": math.sqrt(var_drift),
         "contrast": contrast,
         "error": error,
         "template_drift": own_drift,
+        "template_drift_difference_se": own_diff_se,
     }
 
 
@@ -190,6 +194,8 @@ def level_at(
     values: Sequence[float], ses: Sequence[float], times: Sequence[float], reference: float, order: int = 1
 ) -> tuple[float, float]:
     """(level at `reference`, its standard error) from `constrained_weights`; the variance is sum w^2 se^2."""
+    if len(values) != len(times) or not all(math.isfinite(v) for v in values):
+        raise ValueError("a replicate value is not usable")
     weights = constrained_weights(times, ses, reference, order)
     level = sum(w * v for w, v in zip(weights, values, strict=True))
     return level, math.sqrt(sum(w * w * se * se for w, se in zip(weights, ses, strict=True)))
