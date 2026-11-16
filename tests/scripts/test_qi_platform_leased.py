@@ -27,8 +27,8 @@ print(json.dumps({"nonce": sys.argv[3], "lease_seconds": float(sys.argv[2]), "re
 
 
 class Response:
-    def __init__(self, payload: Any) -> None:
-        self.status_code = 200
+    def __init__(self, payload: Any, status: int = 200) -> None:
+        self.status_code = status
         self.content = b"x"
         self.text = ""
         self.payload = payload
@@ -42,26 +42,35 @@ class Http:
 
     def __init__(self, batch_status: str = "queued") -> None:
         self.batch_status = batch_status
+        self.unauthorized = 0
         self.sent: list[tuple[str, str]] = []
 
-    def request(self, method: str, url: str, **_: Any) -> Response:
+    def request(self, method: str, url: str, **options: Any) -> Response:
         path = url.removeprefix(qi_platform.HOST)
         self.sent.append((method, path))
         if path.startswith("/backend_types/"):
             return Response({"id": int(path.rsplit("/", 1)[1]), "is_hardware": path.endswith("/7")})
         if path == "/batch_jobs" and method == "POST":
+            if self.batch_status == "lost-answer":
+                raise ConnectionError("fixture: the answer to the creation never arrived")
             return Response({"id": 31})
-        if path == "/batch_jobs/31":
+        if path == "/batch_jobs" and method == "GET":
             if self.batch_status == "unreadable":
                 raise ConnectionError("fixture read failure")
-            return Response({"id": 31, "status": self.batch_status})
+            same(options["params"]["id"], 31)
+            rows = [] if self.batch_status == "absent" else [{"id": 31, "status": self.batch_status}]
+            return Response({"items": rows, "pages": 1})
+        if self.unauthorized and method != "GET":
+            self.unauthorized -= 1
+            return Response({"detail": "fixture"}, 401)
         return Response({"items": [], "pages": 1})
 
 
 def client(http: Http) -> qi_platform_leased.LeasedClient:
     made = object.__new__(qi_platform_leased.LeasedClient)
     made.expires = float("inf")
-    made.session = http  # type: ignore[assignment]
+    made.session = qi_platform_leased.GuardedSession(http, made)
+    made.refresh = lambda: None  # type: ignore[method-assign]
     return made
 
 
@@ -90,7 +99,7 @@ def route(monkeypatch: pytest.MonkeyPatch, http: Http, inner: Any) -> None:
     class Fixture(qi_platform_leased.LeasedClient):
         def __init__(self) -> None:
             self.expires = float("inf")
-            self.session = http  # type: ignore[assignment]
+            self.session = qi_platform_leased.GuardedSession(http, self)
 
     monkeypatch.setattr(qi_platform_leased, "LeasedClient", Fixture)
     monkeypatch.setattr(qi_platform, "_submit", inner)
@@ -114,7 +123,7 @@ def test_a_hardware_submission_takes_the_lease_before_the_inner_submit_and_relea
     route(monkeypatch, http, inner)
     record = qi_platform_leased.submit(tmp_path, 7, "fixture approval", expected_cases_sha256="ab")
     same(record, {"batch_job": 31, "options": {"expected_cases_sha256": "ab", "execution_deadline": None}})
-    same(http.sent[-1], ("GET", "/batch_jobs/31"))
+    same(http.sent[-1], ("GET", "/batch_jobs"))
     same(words(broker), ["take fixture-host", f"release {NONCE}"])
     same(qi_platform.Client is original, True)
 
@@ -142,7 +151,10 @@ def test_the_client_binding_is_restored_when_the_inner_submit_raises(
     same(words(broker), ["take fixture-host", f"release {NONCE}"])
 
 
-@pytest.mark.parametrize(("status", "released"), [("queued", True), ("planned", False), ("unreadable", False)])
+@pytest.mark.parametrize(
+    ("status", "released"),
+    [("queued", True), ("finished", True), ("planned", False), ("unreadable", False), ("absent", False)],
+)
 def test_the_lease_is_released_only_after_the_created_batch_reads_as_enqueued(
     broker: Path, status: str, released: bool, capsys: pytest.CaptureFixture[str]
 ) -> None:
@@ -150,9 +162,39 @@ def test_the_lease_is_released_only_after_the_created_batch_reads_as_enqueued(
     with qi_submit_lease.session():
         qi_submit_lease.take()
         client(http).post("/batch_jobs", {"backend_type_id": 7})
-    same(http.sent[-1], ("GET", "/batch_jobs/31"))
+    same(http.sent[-1], ("GET", "/batch_jobs"))
     same(words(broker), ["take fixture-host", f"release {NONCE}"] if released else ["take fixture-host"])
     same("submit lease kept until it expires" in capsys.readouterr().err, not released)
+
+
+def test_a_batch_creation_without_an_answer_keeps_the_lease(broker: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    http = Http("lost-answer")
+    with qi_submit_lease.session():
+        qi_submit_lease.take()
+        with pytest.raises(ConnectionError):
+            client(http).post("/batch_jobs", {"backend_type_id": 7})
+    same(words(broker), ["take fixture-host"])
+    same("creation has no recorded answer" in capsys.readouterr().err, True)
+
+
+def test_the_resend_after_an_expired_token_answer_is_refused_once_the_deadline_passed(
+    broker: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    http = Http()
+    http.unauthorized = 1
+    now = [1000.0]
+    monkeypatch.setattr(qi_submit_lease, "clock", lambda: now[0])
+    with qi_submit_lease.session():
+        qi_submit_lease.take()
+        made = client(http)
+        made.refresh = lambda: now.__setitem__(0, 1000.0 + 600)  # type: ignore[method-assign]
+        with pytest.raises(qi_platform.RequestRejectedBeforeRetry) as refused:
+            made.post("/projects", {})
+        same(
+            (refused.value.method, refused.value.path, refused.value.receipt()["status_code"]),
+            ("POST", "/projects", 401),
+        )
+    same(http.sent, [("POST", "/projects")])
 
 
 def test_a_write_after_the_deadline_is_refused_unsent_and_a_read_still_passes(
@@ -169,8 +211,8 @@ def test_a_write_after_the_deadline_is_refused_unsent_and_a_read_still_passes(
         for method, path in (("POST", "/batch_jobs"), ("PATCH", "/batch_jobs/31/enqueue")):
             with pytest.raises(qi_platform.RequestNotDispatched, match="submit lease passed its deadline"):
                 client(http).request(method, path)
-        client(http).get("/batch_jobs/31")
-    same(http.sent, [("POST", "/projects"), ("GET", "/batch_jobs/31")])
+        client(http).get("/jobs/5")
+    same(http.sent, [("POST", "/projects"), ("GET", "/jobs/5")])
     same(words(broker), ["take fixture-host", f"release {NONCE}"])
 
 
@@ -230,3 +272,31 @@ def test_the_holder_is_reduced_to_the_broker_alphabet(monkeypatch: pytest.Monkey
     monkeypatch.setenv(qi_submit_lease.HOLDER_VARIABLE, "Bad Holder")
     with pytest.raises(SystemExit, match="gives no holder"):
         qi_submit_lease.holder()
+
+
+def test_a_client_built_by_its_constructor_keeps_the_guard_across_a_token_refresh(
+    broker: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    http = Http()
+    http.unauthorized = 1
+    now = [1000.0]
+
+    def base_init(self: qi_platform.Client) -> None:
+        self.session = http  # type: ignore[assignment]
+        self.expires = float("inf")
+
+    monkeypatch.setattr(qi_platform.Client, "__init__", base_init)
+    monkeypatch.setattr(qi_platform.Client, "refresh", lambda self: self.session.headers.update(Authorization="x"))
+    monkeypatch.setattr(qi_submit_lease, "clock", lambda: now[0])
+    http.headers = {}  # type: ignore[attr-defined]
+    with qi_submit_lease.session():
+        qi_submit_lease.take()
+        made = qi_platform_leased.LeasedClient()
+        same(isinstance(made.session, qi_platform_leased.GuardedSession), True)
+        made.post("/projects", {})
+        same(http.headers, {"Authorization": "x"})  # type: ignore[attr-defined]
+        same(isinstance(made.session, qi_platform_leased.GuardedSession), True)
+        now[0] = 1000.0 + 600
+        with pytest.raises(qi_platform.RequestNotDispatched):
+            made.post("/batch_jobs", {"backend_type_id": 7})
+    same(http.sent, [("POST", "/projects"), ("POST", "/projects")])

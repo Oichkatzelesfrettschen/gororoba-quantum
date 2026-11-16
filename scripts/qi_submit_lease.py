@@ -6,17 +6,21 @@ at its limit, each before the other's batch exists on the service. This module h
 scripts/qi_platform_leased.py is the submit route that uses it:
 
 - session() opens a span for the calling thread; take() takes the lease in it, once;
-- expired() tells the route's client that the deadline has passed, and the client then sends no request other than
-  a GET;
-- created() receives the fresh read of the batch job the route just created.
+- expired() tells the route's client that the deadline has passed, and the client then dispatches no request other
+  than a GET;
+- batch_requested() marks the dispatch of the request that creates a batch job, and created() receives the fresh
+  read of the batch job once its id is known.
 
-The session's end releases the lease when no batch job was created, or when a fresh read of the exact batch job shows
-it enqueued; the next holder's admission read then sees it. Every other end (the batch still `planned`, a failed
-read) keeps the lease until the grantor expires it.
+The session's end releases the lease when no request creating a batch job was dispatched, or when a fresh read of
+the exact batch job shows it enqueued; the next holder's admission read then sees it. Every other end (a creation
+request with no recorded answer, the batch still `planned`, a failed read) keeps the lease until the grantor
+expires it.
 
 The deadline is the grantor's `lease_seconds` less MARGIN_SECONDS, counted on this device's boot-time clock from
-before the lease was asked for, so neither a clock offset between devices nor a suspended device lengthens it. After
-it, the holder sends no write: a batch it created stays `planned` and is never enqueued by this process.
+before the lease was asked for, so no clock offset between devices lengthens it, and time spent suspended counts.
+The route checks it immediately before each dispatch of a write; a batch created before it stays `planned` and is
+not enqueued after it. The check cannot cover a process suspended between the check and the send: the service takes
+no fencing token, so the lease assumes a request leaves within MARGIN_SECONDS of its check.
 
 The broker is reached through the command QI_SUBMIT_LEASE_COMMAND names, split as a shell would split it; the words
 `take HOLDER` or `release NONCE` are appended. `take` prints one JSON object with `nonce` (32 hexadecimal digits) and
@@ -33,6 +37,7 @@ from __future__ import annotations
 
 import contextlib
 import json
+import math
 import os
 import re
 import shlex
@@ -63,6 +68,7 @@ class Session:
         self.thread = threading.get_ident()
         self.nonce: str | None = None
         self.deadline = 0.0
+        self.batch_requested = False
         self.batch_status: Callable[[], str] | None = None
 
 
@@ -125,7 +131,9 @@ def take() -> None:
     nonce, seconds = answer.get("nonce"), answer.get("lease_seconds")
     if not isinstance(nonce, str) or NONCE.fullmatch(nonce) is None:
         raise SystemExit("no submit lease: the lease command's answer lacks a nonce")
-    if isinstance(seconds, bool) or not isinstance(seconds, (int, float)) or not seconds > MARGIN_SECONDS:
+    if isinstance(seconds, bool) or not isinstance(seconds, (int, float)):
+        seconds = 0.0
+    if not math.isfinite(seconds) or not seconds > MARGIN_SECONDS:
         # The grant stands on the broker; hand it back, since no write of this session can fit in it.
         _release(nonce)
         raise SystemExit(f"no submit lease: the answer's lease_seconds is not above {MARGIN_SECONDS}")
@@ -136,6 +144,13 @@ def expired() -> bool:
     """Whether this thread's session holds a lease whose deadline has passed; a write is then refused unsent."""
     session = _mine()
     return session is not None and session.nonce is not None and clock() >= session.deadline
+
+
+def batch_requested() -> None:
+    """Record that the request creating a batch job is being dispatched; its outcome is unknown until created()."""
+    session = _mine()
+    if session is not None and session.nonce is not None:
+        session.batch_requested = True
 
 
 def created(batch_status: Callable[[], str]) -> None:
@@ -154,6 +169,9 @@ def _release(nonce: str) -> None:
 
 def _close(session: Session) -> None:
     if session.nonce is None:
+        return
+    if session.batch_requested and session.batch_status is None:
+        print("submit lease kept until it expires: the batch job's creation has no recorded answer", file=sys.stderr)
         return
     if session.batch_status is not None:
         try:

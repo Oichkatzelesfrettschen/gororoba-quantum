@@ -10,10 +10,15 @@ scripts/qi_platform.py, so this module adds the lease around that file's own `_s
 - submit() holds qi_platform.SUBMIT_LOCK and a qi_submit_lease session, reads the backend type, and for a type
   flagged `is_hardware` takes the lease before `_submit` reads the queue or the account;
 - for the span of `_submit`, the name qi_platform.Client is bound to LeasedClient, so the client `_submit` builds
-  refuses every request other than a GET after the lease's deadline (qi_platform.RequestNotDispatched, which
-  `_submit` records as a pre-dispatch refusal on its first request) and hands the id of the batch job it creates to
-  the session. The binding is restored when `_submit` returns or raises; SUBMIT_LOCK keeps other sessions of this
-  process and device out of the span.
+  refuses every request other than a GET after the lease's deadline, at each transport dispatch, and hands the id
+  of the batch job it creates to the session. The binding is restored when `_submit` returns or raises.
+
+Assumptions and limits. The deadline check runs immediately before each dispatch; a process that is suspended
+between that check and the send, or whose request stays in flight longer than qi_submit_lease.MARGIN_SECONDS, can
+write after the grantor freed the lease, because the service accepts no fencing token. While the binding holds,
+another thread of this process that builds qi_platform.Client() (snapshot, reconcile, collect) receives a
+LeasedClient; the lease hooks act only for the thread that opened the session, so that client behaves as the base
+class, and no caller in the repository runs such a thread beside a submission.
 
 An emulator batch takes no lease and passes through unchanged. Collection and reconciliation stay
 qi_platform's. A route that calls qi_platform.submit or qi_platform_submission_deadline.submit directly stays
@@ -32,19 +37,63 @@ import qi_platform
 import qi_submit_lease
 
 
-class LeasedClient(qi_platform.Client):
-    """A client whose writes stop at the lease's deadline and whose created batch job the lease session reads."""
+class GuardedSession:
+    """The client's HTTP session with the lease's deadline checked at each dispatch of a write.
 
-    def request(self, method: str, path: str, *, execution_deadline: float | None = None, **kwargs: Any) -> Any:
+    qi_platform.Client.request refreshes the token and resends once inside one call, so the check sits here, at the
+    transport, and runs again for the resend. A refusal before the first dispatch is RequestNotDispatched; a refusal
+    of the resend is RequestRejectedBeforeRetry with the status the service sent, the two forms `_submit` records.
+    """
+
+    def __init__(self, inner: Any, owner: LeasedClient) -> None:
+        self._inner = inner
+        self._owner = owner
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._inner, name)
+
+    def request(self, method: str, url: str, **kwargs: Any) -> Any:
+        owner = self._owner
         if method != "GET" and qi_submit_lease.expired():
+            if owner.dispatched:
+                raise qi_platform.RequestRejectedBeforeRetry(method, owner.path, owner.status)
             raise qi_platform.RequestNotDispatched(
                 "the account's submit lease passed its deadline; the request was not sent"
             )
+        if method == "POST" and url == f"{qi_platform.HOST}/batch_jobs":
+            # From here the batch job may exist whatever answer arrives.
+            qi_submit_lease.batch_requested()
+        owner.dispatched += 1
+        response = self._inner.request(method, url, **kwargs)
+        owner.status = response.status_code
+        return response
+
+
+class LeasedClient(qi_platform.Client):
+    """A client whose writes stop at the lease's deadline and whose created batch job the lease session reads."""
+
+    dispatched = 0
+    path = ""
+    status = 0
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.session = GuardedSession(self.session, self)
+
+    def request(self, method: str, path: str, *, execution_deadline: float | None = None, **kwargs: Any) -> Any:
+        self.dispatched, self.path, self.status = 0, path, 0
         body = super().request(method, path, execution_deadline=execution_deadline, **kwargs)
-        if method == "POST" and path == "/batch_jobs" and isinstance(body, dict):
+        if method == "POST" and path == "/batch_jobs" and isinstance(body, dict) and "id" in body:
             created = body["id"]
-            qi_submit_lease.created(lambda: str(self.get(f"/batch_jobs/{created}")["status"]))
+            qi_submit_lease.created(lambda: self.batch_status(created))
         return body
+
+    def batch_status(self, batch_id: int) -> str:
+        """The status of exactly this batch job, read as qi_platform.reconcile reads it: the list with an id filter."""
+        rows = self.pages("/batch_jobs", id=batch_id)
+        if len(rows) != 1 or rows[0]["id"] != batch_id:
+            raise qi_platform.PlatformError("the service did not resolve exactly the created batch job")
+        return str(rows[0]["status"])
 
 
 @contextlib.contextmanager
