@@ -13,9 +13,11 @@ draw through the generator.
 |---|---|
 | `nuisance.py` | the decision with the flip as nuisance, reimplemented on `fit_batch()` (`finish()`), beside its flip-0 slice (rule R5); seed 20261117; `--check`, `--time`, `--run SERIES [--only TEXT]` |
 | `nuisance_check.log`, `nuisance_time.log` | the checks (retention cache bit for bit, flip-0 slice equal to the R5 `decide()`, a flip-only truth recovered at its own flip) and the timing |
-| `nuisance_first12.log`, `nuisance_rest.log`, `nuisance_gap.log` | label counts of 200 noisy series per scenario, both rules: 12 flip-plus-damping nulls; the truths, flip-0.05 nulls, flip-only nulls, true phases beside flip 0.0166 and the mixed scenarios (33); true phases beside flips 0.036 and 0.042 and drifting flips (14) |
+| `nuisance_first12.log`, `nuisance_rest.log`, `nuisance_gap.log` | label counts of 200 noisy series per scenario, both rules (two lines of a multiprocessing resource-tracker warning that named the interpreter's install path are removed from the first): 12 flip-plus-damping nulls; the truths, flip-0.05 nulls, flip-only nulls, true phases beside flip 0.0166 and the mixed scenarios (33); true phases beside flips 0.036 and 0.042 and drifting flips (14) |
 | `final_round.py`, `final_round.log` | rule R5 against a model-light least-contrast gate, true phases beside a flip, and drifting truths; 300 noisy series per scenario, seed 20261119 |
-| `r6_regression.py`, `r6_regression_value11.log`, `r6_regression_nuisance.log` | the R6 generator with the flip fixed at 0 reproduces the value-11 label counts of all 25 scenarios of `prediction_value11.json`; on the full grid its `decide()` reproduces `nuisance.py`'s labels on 20 series of 4 scenarios |
+| `r6_regression.py`, `r6_regression.log` | the R6 generator with the flip fixed at 0 reproduces the value-11 label counts of all 25 scenarios of `prediction_value11.json`; on the full grid its `decide()` reproduces `nuisance.py`'s labels on 20 series of 4 scenarios |
+| `nuisance_flips.json` | per scenario of the part files: the exact world's fitted flip (mean, least, largest over 200 series) and the fitted flip of the leading world by label |
+| `small_phase.py`, `small_phase.log` | how often a small true q12 or coupler phase (0.05 to 0.12 rad, flip 0 or 0.036) reads `exact_parabola` under R6, with each such series' center offset in standard errors; seed 20261120 |
 | `prediction_value11.json` | the prediction record of rule R5 (flip fixed at 0, separation 40) on value 11 of the draw, which R6 replaced |
 | `record_diff.py`, `record_diff_wsl.log` | the value-11 record rebuilt on a second host: only the `limits` string, edited after the write, differs |
 
@@ -48,9 +50,10 @@ the copies here call it that way. Run them from the repository root under the pi
    value under a pure q12 phase of -0.18 rad is +0.0080 +- 0.0010, and the gate rejects 293 to 297 of 300 true q12
    labels. The refutation covers this five-point estimator; the forward model still cancels the phase exactly
    (`--self-test`). The gate is not part of any rule.
-7. The fitted exact-world flip recovers a flip-only truth within 0.0004 beside pulse damping and lies 0.001 to
-   0.002 high beside CZ phase damping, which it partly absorbs.
+7. The fitted exact-world flip tracks the true flip on the grid of step 0.0025: for a flip of 0.025 its mean over
+   200 series is 0.0247 alone, 0.0242 beside pulse phase damping and 0.0256 to 0.0268 beside CZ phase damping of
+   0.10 to 0.16, which it partly absorbs (`nuisance_flips.json`, the per-scenario flips of the part files).
 
-Cost: the R6 fit takes 25 times the fits of R5 per series (0.83 s against 0.044 s warm per series; 92 s against
-4.7 s cold, under host load 15 to 57). The generator fits every series of a simulation at one flip before the next,
-so a worker holds one flip's tables at a time.
+Cost: the R6 fit takes 25 times the fits of R5 per series (`nuisance_time.log`). The generator fits every series
+of a simulation at one flip before the next, so a worker holds one flip's tables at a time; the value-12 record
+(50,000 series, 39,656 of them past the control and fitted) took 70 minutes on 28 workers.

@@ -10,5 +10,3 @@ done null: flip 0.0166, CZ phase damping 0.16 200 series 465.15s current {'exact
 done null: flip 0.036, CZ phase damping 0.10 200 series 496.63s current {'none_adequate': 200} nuisance {'exact_parabola': 34, 'none_adequate': 1, 'phase_unresolved': 165}
 done null: flip 0.036, pulse phase damping 0.10 200 series 521.82s current {'none_adequate': 200} nuisance {'exact_parabola': 199, 'phase_unresolved': 1}
 done null: flip 0.025, CZ phase damping 0.13 200 series 541.69s current {'none_adequate': 155, 'phase_unresolved': 45} nuisance {'exact_parabola': 20, 'phase_unresolved': 180}
-/home/eirikr/.local/share/uv/python/cpython-3.14.7-linux-x86_64-gnu/lib/python3.14/multiprocessing/resource_tracker.py:475: UserWarning: resource_tracker: There appear to be 5 leaked semaphore objects to clean up at shutdown: {'/mp-j6fy9ywp', '/mp-dz8b5ziq', '/mp-rcr1fz_p', '/mp-s0sb90dt', '/mp-7v8exs9d'}
-  warnings.warn(

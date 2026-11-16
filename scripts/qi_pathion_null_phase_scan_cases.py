@@ -280,9 +280,12 @@ def forward_law(arm: str, world: str = "exact", theta: float = 0.0, noise: Noise
     return np.asarray(forward_laws(arm_of(arm), world, np.array([theta]), noise)[0])
 
 
-# CZ damping of the predecessor's retained histograms: amplitude 0.019 and phase 0.031 per CZ qubit took their
-# Pearson chi-square from 182,795 to 51,767 on 925 degrees of freedom in an exploratory refit, with a q12 phase of
-# -0.151 rad lowering it to 42,849.
+# CZ damping of the predecessor's retained histograms: the CZ terms (amplitude 0.0194, phase 0.0311 per CZ qubit) of
+# the refit with five noise terms and a selector flip of 0.0166, histogram chi-square 51,570 on 924 degrees of
+# freedom against 182,795 on 920 for the exact circuit with ten per-batch retentions
+# (results/quantum_inspire/pathion_null_rotation_scan_tuna_17_phase_refit.json of pull request 933, model
+# five_noise_terms_selector_flip). The five terms without the flip fit phase 0.0323 at 51,767 on 925; the
+# amplitude-to-phase ratios (0.623, 0.601) bracket this one's (0.613), and the fit scales it by 0 to 3.
 CZ_DAMPING: Noise = (0.0, 0.0, 0.019, 0.031)
 NO_NOISE: Noise = (0.0, 0.0, 0.0, 0.0)
 # Noise models of the fit beside the contraction shares: CZ damping at multiples of CZ_DAMPING, each with a uniform
@@ -577,9 +580,10 @@ def preregistered() -> dict[str, str]:
         "noise model and one for the readout flip",
         "readout_flip": "reported beside the label: each world's fitted readout flip, and the worlds whose flip "
         f"lies at the grid's end, {FLIP_GRID[-1]:g}, where the excess of a larger flip is outside the fit",
-        "labels": "exact_parabola: the exact world, at its fitted readout flip, is adequate, so a phase on or "
-        "around q12 is falsified as the cause of the offset, and a fitted flip above 0 names a selector misread "
-        f"conditioned on d0 as its candidate cause; {', '.join(ERROR_WORLDS[:-1])} or {ERROR_WORLDS[-1]}: that "
+        "labels": "exact_parabola: the exact world, at its fitted readout flip, is adequate, so the deciding arms "
+        "need no phase on or around q12 at this offset, and a fitted flip above 0 names a selector misread "
+        "conditioned on d0 as a candidate cause; a phase whose center offset lies near the control's threshold can "
+        f"read it; {', '.join(ERROR_WORLDS[:-1])} or {ERROR_WORLDS[-1]}: that "
         "world is adequate, its "
         f"sum lies at least {SEPARATION:g} times the larger of 1 and its sum per degree of freedom below every other "
         "error world's, and each deciding kind, summed over its "
@@ -1044,9 +1048,9 @@ OC_DRAW = "docs/evidence/anu_qrng/draw-2026-11-15T084216Z.json"
 # Value 0 of OC_DRAW calibrated KIND_MARGIN and value 1 recorded the characteristics of the two-error-world
 # decision; values 2 through 7 seeded a reviewer's replication; value 8 recorded the three-error-world decision with
 # an unscaled separation of 25, under which no-phase nulls outside the noise models read q12_phase in up to 48 of
-# 500 series. Value 9 calibrated SEPARATION, value 10 recorded it at 30 (one null read q12_phase once in 500), value
-# 11 recorded it at 40 with the readout flip fixed at 0, and value 12 records the decision this module holds, with
-# the readout flip fitted over FLIP_GRID.
+# 500 series (a record the later writes replaced). Value 9 calibrated SEPARATION, value 10 recorded it at 30 (one
+# null read q12_phase once in 500), value 11 recorded it at 40 with the readout flip fixed at 0, and value 12
+# records the decision this module holds, with the readout flip fitted over FLIP_GRID.
 OC_SEED_INDEX = 12
 OC_SERIES = 500
 # Scenarios of exact gates draw NULL_SERIES series, so that a count of 0 deciding labels bounds the rate at 0.06%
@@ -1068,10 +1072,12 @@ def scenario_series(name: str) -> int:
 
 
 def wrong_labels(name: str) -> tuple[str, ...]:
-    """Deciding labels that misread a scenario: every error world for exact gates and for a mixed scenario, every
-    other error world for a single phase."""
+    """Labels that misread a scenario: every error world for exact gates; for a single phase every other error world
+    and exact_parabola, which states that no phase is needed; for a mixed scenario every error world and
+    exact_parabola."""
     world = TRUTHS[name][0] if name in TRUTHS else None
-    return tuple(w for w in ERROR_WORLDS if w != world)
+    others = tuple(w for w in ERROR_WORLDS if w != world)
+    return others if world == "exact" else (*others, "exact_parabola")
 
 
 def upper_bound(count: int, series: int, confidence: float = 0.95) -> float:
@@ -1124,7 +1130,7 @@ def operating_characteristics(
 ) -> dict[str, Any]:
     """Label counts per scenario (every truth of TRUTHS and every mixed scenario), seeded from value `index` of
     OC_DRAW and mapped over the process pool in chunks of OC_CHUNK series, with the one-sided 95% Clopper-Pearson
-    upper bound on the rate of a deciding label that misreads the scenario; `margin` and `separation` replace
+    upper bound on the rate of a label of wrong_labels(); `margin` and `separation` replace
     KIND_MARGIN and SEPARATION for a calibration and `flips` replaces FLIP_GRID."""
     names = [*TRUTHS, *MIXED]
     seed = oc_seed(index)
@@ -1219,7 +1225,7 @@ def case_tables(record: dict[str, Any]) -> dict[str, str]:
     oc_record = record["operating_characteristics"]
     counts = oc_record["label_counts"]
     scenarios = [
-        "| scenario | series | label counts | misreading deciding labels (one-sided 95% upper bound) |",
+        "| scenario | series | label counts | misreading labels (one-sided 95% upper bound) |",
         "|---|---|---|---|",
     ]
     for name in sorted(counts):

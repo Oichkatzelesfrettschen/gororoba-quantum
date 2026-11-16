@@ -50,10 +50,13 @@ padding changes.
 
 Predicted raw selector contrast per arm at the retention where the center reads visibility 0.42, contraction
 share 0, through the mean bracket readout of the predecessor (`prediction.json`, `truths`). "CZ damping" is
-amplitude 0.019 and phase 0.031 per CZ qubit, the values that took the predecessor's full-histogram chi-square
-from 182,795 to 51,767 on 925 degrees of freedom in an exploratory refit; "x1.25" and "x3" scale both. The rows
-with "phase damping" put pure phase damping of that size on each qubit after every CZ or every pulse, outside the
-fit's noise models. A truth whose noise keeps the center below visibility 0.42 at every retention is taken at the
+amplitude 0.019 and phase 0.031 per CZ qubit, the CZ terms of the refit of the predecessor's full histograms with
+five noise terms and a selector flip of 0.0166 (chi-square 51,570 on 924 degrees of freedom, against 182,795 on
+920 for the exact circuit with ten per-batch retentions; model `five_noise_terms_selector_flip` of
+`results/quantum_inspire/pathion_null_rotation_scan_tuna_17_phase_refit.json`). No model of that refit fits: its
+least chi-square per degree of freedom is 46.3. "x1.25" and "x3" scale both terms. The rows with "phase damping"
+put pure phase damping of the stated size on each qubit after every CZ or every pulse, outside the fit's noise
+models. A truth whose noise keeps the center below visibility 0.42 at every retention is taken at the
 largest visibility it reaches. The last column is the readout flip at which the label's world fits (rule 3).
 
 <!-- generated from prediction.json by scripts/qi_pathion_null_phase_scan_cases.py: truths -->
@@ -114,18 +117,20 @@ or `phase_unresolved`, and in the 48 combinations of `nulls.json` (same director
 world. The fitted flip is not a clean readout measurement when a phase is present: under a q12 phase of -0.18
 rad the exact world fits its best flip at 0.03, and beside a true flip of 0.036 at the grid's end, 0.06, while
 the q12 world takes the flip itself. Rule 4's scaled separation stays: under the unscaled separation of 25, two
-flip-and-damping nulls read `q12_phase` in 29 and 48 of 500 series (value 8 of the draw below); at a scaled
+flip-and-damping nulls read `q12_phase` in 29 and 48 of 500 series (value 8 of the draw below, a record the later writes replaced and
+that is not retained); at a scaled
 separation of 30, one read it once in 500 (value 10, `separation_30_value_10.json`); at 40 none does, with the
 flip fixed (value 11) or fitted (value 12). `exact_parabola` beside exact gates without a flip appears at centers
 of +0.0023 to +0.0050, 1.0 to 2.3 times the control's threshold of 0.0022 and well below the predecessor's
-+0.0145, so the falsifier of the phase reading at the observed offset is `exact_parabola` or `none_adequate`
-together with a z12 parabola whose least point sits at phi = 0 (rule 5).
++0.0145 (`nulls.json`). At an offset near the predecessor's, `exact_parabola`, or `none_adequate` together with a
+z12 parabola whose least point sits at phi = 0 (rule 5), is the reading that removes the phase; near the control's
+threshold `exact_parabola` can also come from a damped weak phase (below).
 
 Operating characteristics (`prediction.json`, `operating_characteristics`): 5,000 simulated series per scenario
 of exact gates and 500 per other scenario, Gaussian contrasts and d2 splits at the design standard errors, every
 batch admitted, a static d2 split of +0.0083 on every circuit, seeded from value 12 of
-`docs/evidence/anu_qrng/draw-2026-11-15T084216Z.json`. The last column counts the deciding labels that misread the
-scenario (any error world for exact gates and for a mixed scenario, another error world for a single phase) with
+`docs/evidence/anu_qrng/draw-2026-11-15T084216Z.json`. The last column counts the labels that misread the scenario (any
+error world for exact gates; another error world or `exact_parabola` for a single phase or a mixed scenario) with
 the one-sided 95% Clopper-Pearson upper bound on their rate. Value 0 of the same draw calibrated the consistency
 margin of rule 4 (at margin 0 a single mechanism read `phase_mixed` in up to 94 of 500 series; at 6.63 in at most
 7) and value 9 the separation (`calibration.json` and `separation_calibration.json` in
@@ -164,8 +169,11 @@ margin of rule 4 (at margin 0 a single mechanism read `phase_mixed` in up to 94 
 | z12 from q12 phase -0.18, z8c from coupler phase -0.25 | 500 | `none_adequate` 500 | 0 (< 0.60%) |
 <!-- end of generated table -->
 
-No scenario reads a deciding label that misreads it: 0 in 40,000 series of exact gates (each null's rate below
-0.06%) and 0 in 10,000 series of phases and mixed scenarios. Each single q12 or coupler mechanism reads its own
+No null reads an error world: 0 in 40,000 series of exact gates (each null's rate below 0.06%). No phase or mixed
+scenario reads another error world in 10,000 series. One phase reads `exact_parabola`: a q12 phase of -0.15 rad
+under CZ damping x3 in 6 of 500 series (1 of 500 with the flip fixed, value 11), where the damping pulls the center
+offset below the control's threshold in 297 series; this is the cost of the fitted flip, which lets the exact
+world absorb part of a weak phase. Each single q12 or coupler mechanism reads its own
 label in 491 to 499 of 500 series, a selector flip of 0.036 or CZ damping up to 1.25 times the retained strength
 included. The q8 phase of -0.25 rad reads its own in 440 (459 beside a flip of 0.042); the smaller q8 phases lie
 within the separation and read `phase_unresolved` in most series and their own label in 23 and 29. A selector
@@ -251,8 +259,9 @@ deciding kinds are z12-10, z12-30 and z8c-10.
    0.001 point (the 99.9th percentile) of chi-square with one degree of freedom per fitted value (5 per deciding
    batch, 3 when its d2 splits are left out), less one per fitted parameter, one for the noise model and one for
    the readout flip: 70.70 (exact) and 59.70 (error world) for eight whole batches.
-4. Labels. `exact_parabola`: the exact world is adequate, so a phase on or around q12 is falsified as the cause of
-   the offset. `q12_phase`, `coupler_phase` or `q8_phase_at_coupler`: that world has the least sum, is adequate,
+4. Labels. `exact_parabola`: the exact world, at its fitted readout flip, is adequate, so the deciding arms need no
+   phase on or around q12 at this offset; a phase whose center offset lies near the control's threshold can read
+   it. `q12_phase`, `coupler_phase` or `q8_phase_at_coupler`: that world has the least sum, is adequate,
    lies below every other error world by at least the separation, and each deciding kind, summed over its admitted
    replicates, reads it at or below the upper 0.001 point on its own degrees of freedom (26.12 for the two-batch
    z12 kinds, 39.25 for z8c) and at most 6.63 above every other error world. The separation is 40 times the larger
@@ -286,7 +295,7 @@ deciding kinds are z12-10, z12-30 and z8c-10.
 | `q8_phase_at_coupler` | a single-qubit phase on q8 after each CZ of coupler 8-12 is adequate and preferred in each deciding kind | changes to that statement |
 | `phase_mixed` | the series prefers one error world and a deciding kind disagrees or fits it badly: two mechanisms, a change during the series, or sampling noise (up to 8 of 500 simulated series of one mechanism) | unchanged; the numbers are reported |
 | `phase_unresolved` | an error world is adequate and the least is not separated from another | unchanged; the numbers are reported |
-| `exact_parabola` | the deciding arms and their centers follow exact gates at the fitted readout flip; the offset is not a phase on or around q12, and a fitted flip above 0 names a selector misread conditioned on q12 reading 0 as its candidate cause | unchanged; the phase reading is falsified and the fitted flip is reported |
+| `exact_parabola` | the deciding arms and their centers follow exact gates at the fitted readout flip; no phase on or around q12 is needed at this offset, and a fitted flip above 0 names a selector misread conditioned on q12 reading 0 as a candidate cause. A weak phase near the control's threshold can read it (6 of 500 series of a q12 phase of -0.15 rad under CZ damping x3) | unchanged; the numbers and the fitted flip are reported |
 | `none_adequate` | no world fits at any noise model and readout flip of the fit | unchanged |
 | `offset_absent`, `offset_reversed`, `unresolved_guard` | numbers reported | unchanged |
 

@@ -212,6 +212,13 @@ def test_a_fitted_readout_flip_restores_the_planted_world(world: str, theta: flo
         _expect(0 < drop < 5, f"{w}: the bound moves by {drop}")
 
 
+def test_exact_parabola_misreads_a_phase_and_not_exact_gates() -> None:
+    _expect("exact_parabola" in ps.wrong_labels("q12 phase -0.18 rad"), "a phase read as exact gates is not counted")
+    _expect("exact_parabola" in ps.wrong_labels(next(iter(ps.MIXED))), "a mixed series read as exact is not counted")
+    _expect("exact_parabola" not in ps.wrong_labels("exact gates"), "exact gates read as exact gates is counted")
+    _expect("q12_phase" not in ps.wrong_labels("q12 phase -0.18 rad"), "a phase's own label is counted")
+
+
 def test_clopper_pearson_bounds_a_clean_count() -> None:
     _expect(math.isclose(ps.upper_bound(0, 5000), 1 - 0.05 ** (1 / 5000), rel_tol=1e-9), "the 5,000-series bound")
     _expect(math.isclose(ps.upper_bound(0, 500), 1 - 0.05 ** (1 / 500), rel_tol=1e-9), "the 500-series bound")

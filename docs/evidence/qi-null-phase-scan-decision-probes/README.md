@@ -44,7 +44,8 @@ noise models (a selector flip of 0.0166 to 0.05 beside CZ phase damping of 0.08 
 0.06 to 0.12) read `q12_phase` while fitting the q12 world at 1.26 to 1.97 per degree of freedom, leading the next
 error world by up to 45 unscaled and 29.0 scaled; single q12 and coupler phases at damping up to 1.25 times the
 retained strength led by 24 to 384 scaled. Value 8 had recorded the decision with an unscaled separation of 25,
-under which two of those nulls read `q12_phase` in 29 and 48 of 500 series.
+under which two of those nulls read `q12_phase` in 29 and 48 of 500 series; the writes on values 10 and 11
+replaced that record, and only these counts, read in the session, remain.
 
 `readout-flip/` holds the final design round: rule R5 beside a readout flip of the selector, the flip fitted as a
 nuisance parameter (rule R6, which the case records on value 12 of the draw), drifting flips and truths, the
