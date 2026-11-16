@@ -94,6 +94,16 @@ upload-artifact v7.0.2 and download-artifact v8.0.2. The workflow pins each
 release by its resolved commit SHA, avoiding the deprecated Node 20 actions
 reported by the initial hosted run.
 
+The macOS leg of the `arm` job once failed in its "Fetch main" step with `git: 'remote-https' is not a git
+command` and `fatal: remote helper 'https' aborted session` (exit 128, 0.2 s after `brew install flock coreutils`
+returned; run 43661745421, job 132652376957, image `macos-15-arm64/20261104.0514`, `/opt/homebrew/bin/git`
+2.56.0; no test ran). The Homebrew step poured only the flock 0.4.0 and coreutils 9.12_1 bottles and touched no
+git formula, and the next run of the same workflow (43662577177, ten minutes later) passed that step on the same
+image, the same git, the same two bottles and the same step order, which has stood since 2026-11-09. The failure is
+unreproduced and the workflow keeps its order. `hypothesis:` a transient state of the runner's Homebrew prefix
+hid `git-remote-https` from git's exec path; a second occurrence with `git --exec-path` and a listing of that
+directory in the step's log would test it.
+
 ## Selection and resource boundaries
 
 - PRs always run the behavioral `pr` tier and add affected `full` gates.
@@ -187,6 +197,18 @@ process tree. Separate collectors prevent parallel gates from mixing counters
 and remove the external GNU time dependency. macOS RSS bytes convert to KiB. Peak RSS is a process maximum, rather than a
 sum of simultaneous child memory. These resource fields complement overlapping
 elapsed times; elapsed totals remain distinct from billed runner intervals.
+
+The call budget of tests/conftest.py (`GOROROBA_TEST_CALL_SECONDS`, ci/AGENTS.md) reads wall time, so contention
+alone can fail a unit. Local runs of tests/gororoba_quantum/test_contract_suites.py on a loaded host failed three units
+with the call-budget text "over 1.5 times the 10 s pull-request budget": `runtime_contracts:schema_discrimination`
+(24.27, 23.03 and 19.04 s), `kernel_limit_contracts:_four_support_paths` (18.13 s) and
+`correction_collection_contracts:verify` (22.31 and 16.73 s). On a 4-vCPU cloud VM with the pinned Python 3.14.7
+environment (2026-11-15) `correction_collection_contracts:verify` took 3.12 s serially and 19.55 s under `-n 8`
+beside four CPU-bound loops, failing with the same text; the same load with the variable at 0 passed all 83 units,
+and an unloaded run with the variable at 1 failed that unit with the same text. A local run on a loaded host sets
+the variable to 0. A unit that fails there is classified only after a rerun on an unloaded host, or with the variable
+at 0: the rerun's result and its unloaded call time, compared with the unit's earlier unloaded time, decide between
+contention and a regression, since a slower unit can cross the budget only under load and give the same text.
 
 ## Exact arithmetic and dependency qualification
 

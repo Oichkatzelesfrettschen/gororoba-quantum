@@ -1373,6 +1373,13 @@
    "value": 17687,
    "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
    "index": 1007
+  },
+  {
+   "path": "tests/scripts/test_qx_local_series.py",
+   "name": "seed",
+   "value": 518,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-15T163052Z.json",
+   "index": 0
   }
  ],
  "runtime": [

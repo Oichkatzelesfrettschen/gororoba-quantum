@@ -192,3 +192,10 @@ The [Tuna early-label map review](tuna-early-label-map-review.md), its
 
 The [native numeric replay review](2026-10-30-native-numeric-replay-review.md) derived the identity-scoped
 replay contract of [design/native-numeric-replay.md](../../design/native-numeric-replay.md).
+
+The [Tuna-17 characterization case review](tuna17-characterization-case/reconciliation.md) reconciles the findings
+of one reviewer and two red-teamers on the case generator and its written cases.
+
+The [Quantum Inspire status document review](qi-status-document/reconciliation.md) reconciles the seven findings
+of its [reviewer report](qi-status-document/codex-report.md) on [the brief](qi-status-document/brief.md) for
+`scripts/qi_status.py`.

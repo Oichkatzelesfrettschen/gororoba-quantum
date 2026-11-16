@@ -1220,6 +1220,13 @@
       "question": "Does the hosted QX emulator's reset keep the rest of the register's relative phase, as cQASM's measure-and-flip does, or apply qxelarator 0.10.0's sqrt(|a0|^2 + |a1|^2) map?"
     },
     {
+      "id": "qi-qx-reset-phase-recheck-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00",
+      "family": "cQASM reset semantics on the hosted QX emulator",
+      "question": "On the preregistered |1> reset beside a |-> spectator input, does the hosted QX emulator on 2026-11-15 produce qxelarator 0.10.0's phase-dropping outcome or qxelarator 0.11.0's phase-preserving outcome?"
+    },
+    {
       "id": "qd-qpu-belenos-mesh-job-13-seeded-single",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13",
@@ -3423,6 +3430,13 @@
       "run": "results/quandela/runs/2026-11-14T203218Z-sim_belenos-bdsc_diagnostic-b1-j1",
       "family": "bdsc_diagnostic",
       "question": "Admit the successor acquisition pair's one-job sim:belenos rehearsal (b1-j1) of the diagnostic request and read its duration and billing."
+    },
+    {
+      "id": "qd-bdsc-diagnostic-acquisition-pair-sim-belenos-b1-j2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-15T180000Z-sim_belenos-bdsc_diagnostic-b1-j2",
+      "family": "bdsc_diagnostic",
+      "question": "Does the 24-iteration b1-j2 request of the successor tree finish inside sim:belenos's 300 s job limit, and what does a job that reaches the limit return?"
     },
     {
       "id": "qi-pathion-null-rotation-scan-qx-2026-11-15t001929-batch-00",
@@ -6931,7 +6945,7 @@
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
-      "boundary": "The source interpreter reads raw node tags directly; it does not translate before evaluating or invoke the target evaluator. The certificate checks positional parameter names and the executable body against the target quotation. CPython parsing, generic ast.iter_fields serialization, file reading and SHA-256 binding remain externally checked by sources-411. Both calculi use mathematical integer primitives and the existing _dimension and _index helper contracts. Function names, annotations and the leading docstring remain metadata; the view rejects unsupported parameter forms and decorators. Exceptions omit class, message and traceback, and fuel is not a Python resource bound. Module execution, arbitrary Python objects, helper rebinding and the CPython C implementation are outside this theorem.",
+      "boundary": "The source interpreter reads raw node tags directly; it does not translate before evaluating or invoke the target evaluator. The certificate checks positional parameter names and the executable body against the target quotation. CPython parsing, generic ast.iter_fields serialization, file reading and SHA-256 binding remain externally checked by ci/check_quantum_sources.sh of gororoba-math, which runs the generator cd_sign_source_ast.py with --check on demand. Both calculi use mathematical integer primitives and the existing _dimension and _index helper contracts. Function names, annotations and the leading docstring remain metadata; the view rejects unsupported parameter forms and decorators. Exceptions omit class, message and traceback, and fuel is not a Python resource bound. Module execution, arbitrary Python objects, helper rebinding and the CPython C implementation are outside this theorem.",
       "evidence": [
         {
           "path": "gororoba-math:rocq/quantum/CdSignAstTranslation.v",
@@ -10343,15 +10357,19 @@
     },
     {
       "id": "qi-qx-hosted-reset-drops-register-phase",
-      "statement": "The hosted QX emulator (QXsinglenodesimulator, backend type 1) does not apply cQASM 3.0's measure-and-flip reset to a qubit in |1> beside a qubit in |->: reset q[0] then H on q[1] reads q[1] = 0 in 2048 of 2048 shots, where measure-and-flip reads 1 in every shot and qxelarator 0.10.0's sqrt(|a0|^2 + |a1|^2) map reads 0, while the same program with X in place of the reset and a reset of an already-zero q[0] read q[1] = 1 in 2048 of 2048. On that input the hosted reset discards q[1]'s relative phase, so a QX law of a circuit that resets a |1>-weighted qubit beside a register carrying relative phase is not the cQASM law.",
+      "statement": "The hosted QX emulator (QXsinglenodesimulator, backend type 1) does not apply cQASM 3.0's measure-and-flip reset to a qubit in |1> beside a qubit in |->: reset q[0] then H on q[1] reads q[1] = 0 in 2048 of 2048 shots on each of the two batches, where measure-and-flip reads 1 in every shot and qxelarator 0.10.0's sqrt(|a0|^2 + |a1|^2) map reads 0, while the same program with X in place of the reset and a reset of an already-zero q[0] read q[1] = 1 in 2048 of 2048. On that input the hosted reset discards q[1]'s relative phase, so a QX law of a circuit that resets a |1>-weighted qubit beside a register carrying relative phase is not the cQASM law.",
       "domain": "implementation",
       "evidence_class": "preregistered emulator control",
       "status": "established",
-      "boundary": "One batch of three two-qubit circuits on 2026-10-18 under the emulator's deployment that day. It pins the outcome of one input, a |1> reset beside one |-> qubit: it rules out measure-and-flip there and agrees with the qxelarator sqrt map, but it does not establish that map on superposed or entangled reset inputs, where another phase-dropping implementation could differ. It says nothing about Tuna hardware, whose reset is physical. A redeployed emulator can change it.",
+      "boundary": "Two batches of three two-qubit circuits, on 2026-10-18 and on 2026-11-15 (the same programs, 2048 shots each, identical counts), under the emulator's deployment on those days. It pins the outcome of one input, a |1> reset beside one |-> qubit: it rules out measure-and-flip there and agrees with the qxelarator sqrt map, but it does not establish that map on superposed or entangled reset inputs, where another phase-dropping implementation could differ. It says nothing about Tuna hardware, whose reset is physical. A redeployed emulator can change it.",
       "evidence": [
         {
           "path": "results/quantum_inspire/qx_reset_phase_analysis.json",
           "sha256": "3a862e6bc95608b346731b863a7611a196ff694d5e87e6998e065407a8022782"
+        },
+        {
+          "path": "results/quantum_inspire/qx_reset_phase_analysis_2026-11-15.json",
+          "sha256": "1f954cea93ff19d5feceb4c4b836809c195a7180fcf4cf3eed6c35fc8530d940"
         }
       ],
       "documents": [
@@ -10359,11 +10377,13 @@
       ],
       "gates": {
         "core-456": "replay",
+        "core-771": "replay",
         "core-455": "freshness",
         "core-457": "admission"
       },
       "acquisitions": [
-        "qi-qx-reset-phase-batch-00"
+        "qi-qx-reset-phase-batch-00",
+        "qi-qx-reset-phase-recheck-batch-00"
       ],
       "assumptions": [],
       "depends_on": [],

@@ -1,0 +1,22 @@
+{
+ "schema": "qi-tuna17-characterization-cases-v1",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 1024,
+ "bit_order": "qubit 0 at the rightmost character",
+ "circuits": [
+  {
+   "file": "x90-0.cq",
+   "kind": "x90",
+   "pulses": 0,
+   "sha256": "2d78d57b89ecf2b806fba508734b560ae7042f4b0c1df8cfe1dc7f519285c28c"
+  },
+  {
+   "file": "x90-8.cq",
+   "kind": "x90",
+   "pulses": 32,
+   "sha256": "0defd2b7ba2c9a58b5115a5c221b469899cba5ef05b5f018f57f75fa51b398ec"
+  }
+ ]
+}

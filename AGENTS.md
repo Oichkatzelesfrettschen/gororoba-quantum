@@ -33,8 +33,8 @@ the two differ.
   bounded fixtures; historical replays, digest and source checks live in
   ci/gates.json and run on demand ([ci/AGENTS.md](ci/AGENTS.md#on-demand-gates)),
   never in a workflow.
-- The `pr.yml` checks `lint`, `types`, `tests` and `contracts` green on the head
-  admit a merge. No local gate run or premerge replay is required before a
+- The six `pr.yml` checks `lint`, `types`, `tests`, `contracts` and the two
+  `arm` legs green on the head admit a merge. No local gate run or premerge replay is required before a
   push, which overrides the local replica of the slowest CI lanes in the
   `triage-automated-review` skill; `sh ci/pr_checks.sh tests PATH` runs
   touched tests under the hosted environment.
@@ -261,12 +261,12 @@ lives; read it before writing one.
 - Hosted review runs in a fixed order, each stage at most once per PR: Codex,
   then Copilot only when the Codex round needed a fix, then the owner. When
   the PR is a merge candidate the operator requests the Codex review through
-  `scripts/codex_review_request.sh PR`, which posts `@codex review` and
+  `scripts/codex_review_request.sh PR`, which posts `@Codex review` and
   refuses a request whose PR diff equals the last reviewed head's or that
   would open a second round, then answers and resolves every thread in one
   push. When that push fixed at least one Codex finding, the fixed head has
   had no hosted review, so the operator requests the Copilot review once with
-  `gh pr edit PR --add-reviewer @copilot` and answers and resolves its
+  `gh pr edit PR --add-reviewer @Copilot` and answers and resolves its
   threads in one push; a Codex round with no thread, or whose threads were
   all refuted or bounded, earns no Copilot request. The operator then reports the PR's
   state to the owner, who decides the merge or a further round: further

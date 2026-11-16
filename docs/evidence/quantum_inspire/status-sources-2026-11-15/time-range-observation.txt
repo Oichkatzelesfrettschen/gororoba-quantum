@@ -1,0 +1,12 @@
+Status dashboard, panel 2 (range series), POST /api/public/dashboards/TOKEN/panels/2/query, 2026-11-15 UTC.
+Columns: hours named in timeRange, maxDataPoints, intervalMs, HTTP status, frames, points, first stamp ms, last stamp ms.
+The definition's own range and the panel target precede the rows.
+
+time {'from': 'now-6h', 'to': 'now'} refresh 10s timepicker {'hidden': True} meta {'publicDashboardEnabled': True}
+{"targets": [{"datasource": {"type": "prometheus", "uid": "prometheus-qtc"}, "disableTextWrap": false, "editorMode": "code", "exemplar": false, "fullMetaSearch": false, "includeNullMetadata": true, "instant": false, "legendFormat": "{{name}}", "range": true, "refId": "A", "useBackend": false}]}
+1 1000 3600 200 5 1081 1794743240000 1794764840000
+6 1000 21600 200 5 1081 1794743240000 1794764840000
+24 1000 86400 200 5 251 1794743222400 1794764822400
+168 1000 604800 200 5 1 1794742790400 1794742790400
+168 500 1209600 200 5 1 1794742790400 1794742790400
+720 1000 2592000 200 5 9 1794742272000 1794763008000

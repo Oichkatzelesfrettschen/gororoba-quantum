@@ -38,6 +38,10 @@ The multiplicities add up, 1 + 2 = 3 = mult(E8-bar) along N+- (germ (5, 3, 8)), 
 subvarieties of P^14) from the singular one. The vanishing of eta on the targets does not distinguish them, since
 eta(s) = eta(d) = 0 on both N+ and N-.
 
+Replay (2026-11-15, build host, Singular 4.4.1): `asymmetry.py` ran in 0.8 s at 42 MiB and rewrote
+`logs/asymmetry.json` with every germ tuple, component triple and meeting unchanged; only the `seconds` field of one
+row differs, and the retained file keeps its bytes (A5-002).
+
 ## The base locus is the B9 slice; the residual is the VB curve or the origin
 
 `base_locus.py FIELD INCIDENCE...` builds the producer's coordinate slice (nine variables, no elimination), the
@@ -65,6 +69,10 @@ of k[y_1..y_s], its Krull dimension l(I) is at most the germ dimension, and F(I)
 incidence with s above the germ dimension (V -> N+-, E8-bar -> Va+-, same-sign X, E8-bar -> N+-, E8-bar -> VB,
 Iso -> N+-, W8 -> N+-) therefore has a proper fiber, as recorded; smoothness of the source germ is neither needed nor
 sufficient.
+
+Replay (2026-11-15, build host): `base_locus.py FIELD` with the eight incidences, six workers, took 375 s at
+p32009, 164 s at p32029 and 355 s over Q(i) (one cell 178 s, 80 MB); the printed rows equal `logs/summary_*.txt` and
+the 24 per-row logs in `logs/` are byte-identical (A5-003).
 
 ## Prime decompositions of the quadric schemes, and the components of the E8-bar base locus
 
@@ -102,8 +110,9 @@ provenance gap (section 3B). The exact proof of the pair flip is
 | File | Content |
 |---|---|
 | `smith_torus.jsonl` (`smith_torus.py HEADER...`) | the 27 headers (nine at each specialization): the exponent-difference lattice of every displayed J and G polynomial has full rank (6, 7, 8 or 9, the number of variables) and invariant factors 1, ..., 1, 2, 2, so the diagonal torus fixing every polynomial up to a character has order 4 at every header |
-| `sweep_p32009.jsonl` (`signed_perm_sweep.py`) | 6,225 lines at p = 32009: 25 per-pair summaries (ordered pairs of headers with the same variable count) and 6,200 signed permutations t_i -> s_i t_pi(i) with span(J_a o sigma) = span(J_b); 68 of them map the G span onto itself, exactly 4 for each of 17 ordered pairs (36 within a header, 32 between the N+ and N- headers of one pair) |
+| `sweep_p32009.jsonl` (`signed_perm_sweep.py`) | 6,225 lines at p = 32009 (sha256 `9c54aab0658ed6e6dd1a9c2ccf04c578c527cb1997e863a73265038a1b51b27a`), and the same 6,225 lines at p = 32029: the program on the same nine slugs of `p32029-r9115` writes this file byte for byte (A5-032), so no second copy is retained; 25 per-pair summaries (ordered pairs of headers with the same variable count) and 6,200 signed permutations t_i -> s_i t_pi(i) with span(J_a o sigma) = span(J_b); 68 of them map the G span onto itself, exactly 4 for each of 17 ordered pairs (36 within a header, 32 between the N+ and N- headers of one pair) |
 | `sign_search.log` (`sign_search.py HEADER+ HEADER-`) | E8-bar -> N+ against E8-bar -> N- at (32009, 10754): all 2^9 diagonal sign vectors; 8 map J up to sign, and of those the 4 with t9 -> -t9 and t8 fixed leave the combined G span at rank 41 (all 21 generators of G- outside the moved G+), the 4 with t8 -> -t8 and t9 -> -t9 keep it at 21 (none outside); the logs at the other two specializations are identical |
+| `npm_map_qi.json` (`npm_map_qi.py OUT.json`) | the pair flip over Q(i): the producer's phase-one script with both rings rewritten to (0,I) gives E8-bar -> N+ and N- inputs whose 16 J and 21 G generators correspond under t8 -> -t8, t9 -> -t9 with coefficient +1 or -1 each, a bijection; t9 -> -t9 alone maps J and fails on G; with I -> root the Q(i) G equal the tracked headers term by term up to a scalar and the Q(i) J generate the header J at (32009, 10754) and (32029, 9115); two mutations fail; 158 s (A5-024) |
 | `npm_map.jsonl`, `map_p32009-r10754.json`, `map_p32009-r21255.json`, `map_p32029-r9115.json` (`npm_map.py`, `k2_transport.py`) | the pair flip t8 -> -t8, t9 -> -t9 as an integer identity on the 16 J and 21 G generators at each specialization (a sign for every index), and the transport of the 148 N- quadrics onto the N+ span (ranks 148, 148, union 148 at 32009 and 32029) |
 
 The sweep prunes permutations by a per-variable profile of J, so an empty result for a multi-generator J is not a

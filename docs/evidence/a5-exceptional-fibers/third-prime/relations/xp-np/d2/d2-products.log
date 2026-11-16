@@ -1,0 +1,13 @@
+RESULT generators 15
+RESULT targets 120
+RESULT products_ms 223
+RESULT std_ms 10320 size 188
+RESULT reduce_ms 184
+
+--- stderr ---
+Running as unit: run-p842771-i13412198.service
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 10.790s
+             CPU time consumed: 10.726s
+                   Memory peak: 99.3M (swap: 0B)
