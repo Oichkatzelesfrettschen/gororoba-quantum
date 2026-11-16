@@ -168,9 +168,17 @@ def flip_matrix(experiment: Experiment, flip: float) -> np.ndarray:
     return matrix
 
 
+def arm_law_item(item: tuple[Experiment, str, dict[str, float]]) -> np.ndarray:
+    """The law of one arm; the unit of work that arm_laws maps over the pool."""
+    experiment, arm, values = item
+    return law(experiment, arm, values)
+
+
 def arm_laws(experiment: Experiment, arms: list[str], values: dict[str, float]) -> dict[str, np.ndarray]:
-    """The law of each listed arm at one parameter point."""
-    return dict(zip(arms, [law(experiment, arm, values) for arm in arms], strict=True))
+    """The law of each listed arm at one parameter point. The arms are independent density-matrix simulations, so
+    they map over parallel.py; a call from inside a pool worker (a fit's residual) runs them serially there."""
+    laws = ordered_map(arm_law_item, [(experiment, arm, values) for arm in arms], min_items=2)
+    return dict(zip(arms, laws, strict=True))
 
 
 def arms_of(found: list[Observation]) -> list[str]:
