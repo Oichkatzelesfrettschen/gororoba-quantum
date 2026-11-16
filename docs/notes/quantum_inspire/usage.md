@@ -93,8 +93,19 @@ and stay unused for runs.
 | Ry emulator (type 5) | emulator ([KB emulator backends](site/kbase_emulator-backends.md)); the API flags it `is_hardware` | none | the hardware rules above, a choice stricter than the FAQ, since the runner keys on the flag | [ry-emulator.md](ry-emulator.md#do-a-ry-emulator-run) |
 | QX emulator (type 1) | emulator | none | the service's own ceilings: 5 circuits per batch, 5 queued batches; terms item 9 asks for syntax checking first | [qx-runs.md](qx-runs.md#do-a-qx-dry-run-remote-emulator) |
 
-[Rules this repository adds](#rules-this-repository-adds) holds the evidence
-that the API's queue count is in batches.
+[Rules this repository adds](#rules-this-repository-adds) holds the one observation
+that fits a user-scoped queue count in batch jobs, and what stays unmeasured.
+
+A twin run that rehearses a hardware series emulates its workflow, as well as its circuits, when it submits to the QX
+emulator (backend type 1) through `qi_platform.py submit` in the batch shape of the hardware plan: the REST sequence
+and the limit fields are the same on both backend types ([QX dry run](qx-runs.md#do-a-qx-dry-run-remote-emulator)).
+`qi_platform.py` itself applies the hardware batch size and the pause only to types flagged `is_hardware`, so the
+emulator rehearses the route and the records, and the hardware limits are checked from the plan. The local simulator
+qxelarator runs a cQASM program in process and applies no platform object, queue or limit; agreement with it is a
+syntax and plumbing check of QX's result semantics at the pinned version, for circuits without `reset`
+([qx-runs.md](qx-runs.md), steps 4 and 5), and says nothing about Tuna
+([QuTech-Delft/qx-simulator issue 220](https://github.com/QuTech-Delft/qx-simulator/issues/220) asks for that
+boundary in its documentation).
 
 ### Run on Tuna-17
 
@@ -226,15 +237,26 @@ From the same conditions:
   than three circuits and any batch while one of the account's batches is
   still queued, so at most three jobs are queued whether the FAQ's "jobs"
   means batches or circuits. The receipt records that scoped queue and the
-  applied limit. The queue count is in batches: the API endpoint names
-  "(batch) job queue statistics", and both retained five-circuit Tuna-17
-  receipts reported queue count 2 before their first child-job `queued_at`
-  timestamps (21:16:52 versus 21:17:29, and 22:11:41 versus 22:11:56 UTC on
-  2026-10-16; [first run](../../../results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/),
-  [witness run](../../../results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/)).
-  This is an inference from the API and retained runs; the FAQ itself says
-  "jobs" without distinguishing batches from their circuits, which is why the
-  hardware rule bounds both. Those two five-circuit Tuna-17 batches predate
+  applied limit. One observation fits a user-scoped queue count in batch jobs,
+  on the QX emulator: a three-job batch whose enqueue was confirmed at 15:23:31 UTC on 2026-10-17
+  ([batch-00](../../../results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-00/))
+  read as `number_of_jobs_in_queue` 1 with `queue_user_only` true four seconds later
+  ([batch-04](../../../results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-04/)).
+  The first child job of batch-00 carries a later `queued_at`, and the records hold no account batch listing of
+  that moment, so the reading is an inference about the unit: a status-filtered count of some other batch would
+  read the same. The batch statuses that count are unmeasured, and no hardware reading separates the units: the
+  two five-circuit
+  Tuna-17 receipts of 2026-10-16
+  ([first run](../../../results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/),
+  [witness run](../../../results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/)) are
+  `qi-submission-v1` records, which do not record whether the queue read was user-scoped, so their count of 2 has
+  an unresolved scope (the runner's first retained commit, 942319f82, reads with `user_only=True` and postdates
+  both runs). The API
+  describes `number_of_jobs_in_queue` as "The number of jobs in queue for a backendtype" under the summary
+  "(batch) job queue statistics", and the FAQ says "jobs" without distinguishing batches from their circuits,
+  which is why the hardware rule bounds both. The provider is asked for the unit, the operative number and the
+  counted statuses in [QuTech-Delft/quantuminspire issue 528](https://github.com/QuTech-Delft/quantuminspire/issues/528);
+  the rule here stays as it is until an answer arrives. Those two five-circuit Tuna-17 batches predate
   the rule and held five queued circuits. Between hardware batches a series
   collects the previous batch, passes its sanity checks and pauses before
   submitting the next. `submit` enforces the pause account-wide: it refuses a
