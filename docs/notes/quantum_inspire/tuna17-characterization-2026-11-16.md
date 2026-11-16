@@ -189,6 +189,34 @@ only on the agreement of AICc and BIC with the fit quality below.
   Falsifier: a spread above the scaled standard error on 5 or more qubits
   leaves a second source of error beyond the missing scale factor.
 
+### Additions registered after the first refit
+
+The first refit (H1 to H5 as registered above, plus the H2b model below) ran
+before these two entries were written. H2b is therefore a prediction recorded
+after its result, with no pre-registration status; H6 is registered before its
+model runs.
+
+- H2b, a delay offset that exists only when a wait instruction exists.
+  Chosen after the corrected populations of the six delays had been read, and
+  run in the first refit: the `t1-0` circuit holds no wait line, so a fixed idle or
+  scheduling overhead t0 in every wait would shorten the `t1-N` points (N > 0)
+  by exp(-t0 / T1) and leave the `t1-0` point alone. The model
+  exp(-(t + t0 [N > 0]) / T1) has 2 parameters. Prediction: a hardware
+  overhead is one value shared by the qubits, so a common t0 is not rejected
+  (likelihood ratio, 16 degrees of freedom, p above 0.01); falsifier: p below
+  0.01 refutes a shared overhead.
+- H6, a distribution of T1 inside one job. A qubit whose T1 switches between
+  values during the 7 s of one job (a coupled two-level defect or quasiparticle
+  bath) averages exp(-t / T1) over that distribution, which lengthens the tail.
+  The 2-parameter model takes a lognormal T1 with median T and log-width
+  sigma. Prediction, written after the refit showed the 80 us point above the
+  single-exponential fit on 16 of 17 qubits and the 5 us point below it on 14
+  of 17: sigma is 0.2 to 0.8 and the model lowers AICc by more than 4 against
+  the single exponential on at least 12 qubits, and it leaves chi-square / dof
+  above 3 on at least 12 (it does not remove the 5 us dip, which is a fast
+  loss, not a tail). Falsifier: chi-square / dof at most 3 on at least 12
+  qubits supports H6 as the shape.
+
 ## X90 repetition ladder
 
 Corrected P(0) after 32, 128 and 256 pulses (`ladder_clears` requires each
