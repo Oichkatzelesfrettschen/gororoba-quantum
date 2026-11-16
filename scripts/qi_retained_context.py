@@ -119,7 +119,7 @@ def characterization(root: Path) -> dict[int, dict[str, Any]]:
                 "single_exponential": row["t1_single_exponential"],
                 "chi_square_per_dof": _number(per_dof),
                 "us_se": _number(fit["us_se"]),
-                "us_se_scaled": _number(fit["us_se"] * math.sqrt(max(1.0, per_dof))),
+                "us_se_scaled": None if fit["us_se"] is None else _number(fit["us_se"] * math.sqrt(max(1.0, per_dof))),
             }
         found[row["qubit"]] = entry
     return found

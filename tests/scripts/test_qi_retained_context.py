@@ -219,6 +219,20 @@ def test_the_scaled_standard_error_never_shrinks_the_binomial_one(tmp_path: Path
         raise AssertionError(implied)
 
 
+def test_a_null_standard_error_stays_null_when_scaled(tmp_path: Path) -> None:
+    tree(tmp_path)
+    series(tmp_path)
+    path = tmp_path / retained.CHARACTERIZATION
+    analysis = json.loads(path.read_text(encoding="utf-8"))
+    analysis["qubits"][0]["t1"]["us_se"] = None
+    path.write_text(json.dumps(analysis), encoding="utf-8")
+    first = retained.summary(tmp_path)["qubits"][0]
+    if first["implied_t1"]["us_se"] is not None or first["implied_t1"]["us_se_scaled"] is not None:
+        raise AssertionError(first["implied_t1"])
+    if first["implied_t1"]["us"] != 24.8260 or first["readout"]["p1_given_0"] != 0.0123457:
+        raise AssertionError(first)
+
+
 def test_an_older_series_leaves_the_device_context_rows(tmp_path: Path) -> None:
     tree(tmp_path)
     series(tmp_path, late=False)
