@@ -84,7 +84,7 @@ def fit(rows: Mapping[str, Sequence[Row]]) -> dict[str, object]:
     if sxx <= 0.0:
         raise ConfoundedOrder("the twin batches carry no variation of the position offset")
     drift, var_drift = sxy / sxx, 1.0 / sxx
-    contrast, error, own_drift = {}, {}, {}
+    contrast, error, own_drift, own_diff_se = {}, {}, {}, {}
     for name, batch_rows in rows.items():
         total, s_bar, v_bar, w = weighted[name]
         contrast[name] = v_bar - drift * s_bar
@@ -95,12 +95,16 @@ def fit(rows: Mapping[str, Sequence[Row]]) -> dict[str, object]:
             if own <= 0.0
             else sum(wi * (s - s_bar) * (v - v_bar) for wi, (v, _, s) in zip(w, batch_rows, strict=True)) / own
         )
+        # The shared drift is the own drifts averaged with weights own / Sxx, so cov(own_T, g) = var(g) and
+        # var(own_T - g) = 1 / own_T - 1 / Sxx.
+        own_diff_se[name] = None if own <= 0.0 else math.sqrt(max(1.0 / own - var_drift, 0.0))
     return {
         "drift": drift,
         "drift_se": math.sqrt(var_drift),
         "contrast": contrast,
         "error": error,
         "template_drift": own_drift,
+        "template_drift_difference_se": own_diff_se,
     }
 
 
@@ -127,6 +131,10 @@ def operating_characteristics(
     the error ratio of the first template's contrast against the balanced design, when each twin batch flips its own
     sign independently with probability `rate` (a model: hypothesis, independent reordering, equal batch errors, a
     drift linear in the sign). The retained distribution of executed offsets replaces the flip model once measured."""
+    if not (math.isfinite(rate) and 0.0 <= rate <= 1.0) or templates < 1:
+        raise ValueError("the flip rate lies outside [0, 1] or the template count is not positive")
+    if not requested or any(x not in (-1, 1) for x in requested):
+        raise ValueError("the requested pattern is empty or holds an entry other than +1 or -1")
     n = templates * len(requested)
     ratios: list[tuple[float, float]] = []
     confounded = 0.0
@@ -170,8 +178,8 @@ def constrained_weights(times: Sequence[float], ses: Sequence[float], reference:
     """
     if order < 0 or len(times) != len(ses) or len(set(times)) < order + 1:
         raise ConfoundedOrder("the replicate times cannot separate the drift polynomial from the level")
-    if not all(math.isfinite(x) and x > 0.0 for x in ses) or not all(math.isfinite(t) for t in times):
-        raise ValueError("a replicate time or error is not usable")
+    if not all(math.isfinite(x) and x > 0.0 for x in ses) or not all(math.isfinite(t) for t in (*times, reference)):
+        raise ValueError("a replicate time, reference or error is not usable")
     shifted = np.asarray(times, dtype=float) - reference
     design = np.vander(shifted, order + 1, increasing=True)
     precision = np.diag(1.0 / np.asarray(ses, dtype=float) ** 2)
@@ -186,6 +194,8 @@ def level_at(
     values: Sequence[float], ses: Sequence[float], times: Sequence[float], reference: float, order: int = 1
 ) -> tuple[float, float]:
     """(level at `reference`, its standard error) from `constrained_weights`; the variance is sum w^2 se^2."""
+    if len(values) != len(times) or not all(math.isfinite(v) for v in values):
+        raise ValueError("a replicate value is not usable")
     weights = constrained_weights(times, ses, reference, order)
     level = sum(w * v for w, v in zip(weights, values, strict=True))
     return level, math.sqrt(sum(w * w * se * se for w, se in zip(weights, ses, strict=True)))
@@ -204,6 +214,8 @@ def drift_monitor(times: Sequence[float], values: Sequence[float], ses: Sequence
     n = len(times)
     if n < 3 or len(values) != n or len(ses) != n or len(set(times)) < 2:
         raise ConfoundedOrder("the reference series cannot fit a line and test its residual")
+    if not all(math.isfinite(x) and x > 0.0 for x in ses) or not all(math.isfinite(x) for x in (*times, *values)):
+        raise ValueError("a series time, value or error is not usable")
     weights = [1.0 / (se * se) for se in ses]
     total = sum(weights)
     mean_t = sum(w * t for w, t in zip(weights, times, strict=True)) / total
