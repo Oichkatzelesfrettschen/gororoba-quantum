@@ -1,6 +1,12 @@
 # Case: Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder
 
-Status: written case awaiting the owner's approval; nothing has been submitted. Generator and checker:
+Status: approved by the owner on 2026-11-16 and run; the six batches are retained under
+`results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00` to `-batch-05`, the
+analysis rows are `results/quantum_inspire/characterization_tuna_17_analysis.json`, and the record is
+[tuna17-characterization-2026-11-16.md](../../../../docs/notes/quantum_inspire/tuna17-characterization-2026-11-16.md).
+Every section below keeps the wording of the case as approved before the first submission, so "nothing has been
+submitted", "none holds today" and "that reader does not exist yet" read as of that writing; the reader of "Record" is
+`scripts/qi_retained_context.py` now. Generator and checker:
 `scripts/qi_tuna17_characterization_cases.py` (`--check results/quantum_inspire/cases` reproduces every file of
 this directory except this one, and the QX twin `../characterization_qx/`). The approval asked for covers two
 series in order: the QX dry run of the twin, then this Tuna-17 series.
