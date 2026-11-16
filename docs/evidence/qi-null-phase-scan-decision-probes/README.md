@@ -40,9 +40,13 @@ commit fc9c84b12 holds. It was written at 2026-11-15T08:44Z, before value 1 reco
 characteristics; the file times are the only record of that order. At margin 0 a single mechanism read
 `phase_mixed` in up to 94 of 500 series, at 6.63 in at most 7, and the case kept 6.63.
 
-`separation_calibration.json`, written by `calibrate_separation.py`, holds the label counts of 500 simulated series
-per scenario of `operating_characteristics()` at scaled separations 30, 35 and 40, seeded from value 9 of the same
-draw, with every other rule as the generator holds it. The script keeps the least separation under which no
+`separation_calibration.json`, written by `calibrate_separation.py r5`, holds the label counts of 500 simulated series
+per scenario at scaled separations 30, 35 and 40, seeded from value 9 of the same draw, under rule R5 (readout flip
+fixed at 0, the consistency margin of the generator) on the 25 scenarios that existed then, in their historical order
+(a scenario's position seeds its draw). The `r5` mode passes that rule, scenario list and series count explicitly
+and writes the retained file byte for byte (SHA-256 `53c1d77995c053ddcc7650470d8bfe9506f8e4e9138fa8b4cf4d993a4349d2d4`);
+`calibrate_separation.py r6 --index N` recalibrates under the current rule through `operating_characteristics()`
+with its defaults and writes `separation_calibration_r6.json`. The script keeps the least separation under which no
 scenario reads a deciding label of another world; all three read none, so it chose 30. `separation_30_value_10.json`
 holds the record at 30 on value 10: the null with selector flip 0.025 and CZ phase damping 0.13 read `q12_phase`
 in 1 of 500 series. The owner then fixed the separation at 40, recorded on value 11 with no wrong label
