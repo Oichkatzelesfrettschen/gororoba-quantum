@@ -6445,6 +6445,17 @@
       "replays": [
         "results/quantum_inspire/pathion_null_rotation_scan_tuna_17_analysis.json"
       ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/qi_pathion_null_rotation_scan_phase_refit.py --check results/quantum_inspire",
+      "name": "core-pathion-null-rotation-scan-phase-refit-replay",
+      "seconds": 50.0,
+      "workers": "all",
+      "replays": [
+        "results/quantum_inspire/pathion_null_rotation_scan_tuna_17_phase_refit.json"
+      ]
     }
   ],
   "excluded": [
