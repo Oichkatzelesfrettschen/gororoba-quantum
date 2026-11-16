@@ -3,9 +3,9 @@
 This directory retains four Singular runs that compute the defining ideal of a fiber cone as the special fiber of a
 saturated Rees ideal, on the weight slice of the nullity-8 closures (nine slice coordinates s1 to s9 with torus weights
 1, 0, 3, 2, 2, 1, 4, 4, 3; ledger A5-421) modulo p = 32009 with the root of -1 equal to 10754. The ledger rows
-A5-572 to A5-575 state the results and A5-576 to A5-578 state what remains open. The runs complete the three direct
-Rees runs whose prediction A5-457 recorded on 2026-11-14: the fiber cone of E8-bar has dimension 5, multiplicity 11 and
-148 minimal generators, all of degree 2.
+A5-572 to A5-575 state the results and A5-576 to A5-578 state what remains open. The two E8-bar runs at (32009, 10754) test the prediction that A5-457 recorded on
+2026-11-14 for the direct Rees runs: the fiber cone of E8-bar has dimension 5, multiplicity 11 and 148 minimal
+generators, all of degree 2. The third cell of that three-run falsifier, E8-bar -> N- at 32029, is not run (A5-576).
 
 ## Result
 
@@ -33,8 +33,12 @@ Rees runs whose prediction A5-457 recorded on 2026-11-14: the fiber cone of E8-b
   weights and Hilbert numerator of both E8-bar runs equal that cell's, and the Iso numerator equals the record's Iso -> N-
   cell over Q(i). The record has no E8bar -> N+ cell modulo 32009, so the 148 N+ relation lines (digest
   `b9b7372bce35e7ce286aa572f9b1ebf656d1ac04ba0e63349c640efed88658ee`) are bound by this run alone (A5-577).
-- The weight-slice cell and the header-slice cell of A5-570 are different slices of one germ: their relation lines use
-  different generator coordinates and do not match as spans. A5-571 (second root of the header slice) is not affected.
+- The relation lines of these cells and the header-slice K2 of A5-570 do not match as spans over F_32009: both sides have
+  rank 148 in the 21 variables y(1..21), and their supports hold 207 and 217 monomials (measured with this script's
+  parsers on the relation files of the A5-570 receipt and of the retained N- degree-2 run, and on the run lines).
+  hypothesis: the two slices of the germ give generators that differ by a linear change of coordinates, so the fiber
+  cones agree in Hilbert numerator without agreeing coordinate by coordinate. A5-571 (second root of the header slice)
+  is not affected.
 
 ## Mechanism
 
