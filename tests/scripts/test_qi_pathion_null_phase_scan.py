@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import math
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pytest
@@ -17,6 +18,8 @@ import qi_pathion_coset_coin_cases as cc
 import qi_pathion_null_phase_scan_cases as ps
 import qi_pathion_null_rotation_scan_cases as rs
 import qi_platform
+
+import parallel
 
 ROOT = Path(__file__).resolve().parents[2]
 CASES = ROOT / "results/quantum_inspire/cases"
@@ -281,6 +284,32 @@ def test_a_series_no_world_reaches_writes_its_decision_with_null_statistics() ->
 
 def _refuse(constant: str) -> None:
     raise AssertionError(f"the report holds the non-finite constant {constant}")
+
+
+def test_the_readout_flips_mapped_over_the_pool_equal_the_serial_loop(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The flips of one decision map over the pool and reduce in flip order, so the decision equals the serial loop's
+    and the pool receives one item per flip."""
+    matrix = ps.predecessor_matrix()
+    batches = ps.planted_batches(ps.truth_row("q12_phase", -0.18, matrix, 0.0075))
+    flips = (0.0, 0.0025, 0.005, 0.0075, 0.01)
+    mapped: list[int] = []
+    pool_map = ps.ordered_map
+
+    def record(function: Any, items: Any, **kwargs: Any) -> Any:
+        mapped.append(len(items))
+        return pool_map(function, items, **kwargs)
+
+    monkeypatch.setattr(ps, "ordered_map", record)
+    try:
+        monkeypatch.setenv("GOROROBA_WORKERS", "1")
+        serial = ps.decide(batches, lambda b: matrix, FAST, flips=flips)
+        monkeypatch.setenv("GOROROBA_WORKERS", "2")
+        pooled = ps.decide(batches, lambda b: matrix, FAST, flips=flips)
+    finally:
+        parallel._shutdown()
+    _expect(mapped == [len(flips), len(flips)], f"the flips were mapped as {mapped}")
+    _expect(pooled == serial, f"the pooled decision {pooled} differs from the serial {serial}")
+    _expect(pooled["numbers"]["readout_flip"]["q12_phase"] == 0.0075, "the planted flip is not the fitted flip")
 
 
 def test_every_label_is_reachable_and_one_label_is_returned() -> None:

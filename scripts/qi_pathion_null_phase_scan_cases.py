@@ -757,9 +757,8 @@ def flipped(matrix: np.ndarray, flip: float) -> np.ndarray:
 Fitted = dict[str, dict[str, Any]]
 
 
-def absorb(best: Fitted, flip: float, z12: list[dict[str, Any]], matrix_of: Any, models: str) -> None:
-    """Fit every deciding batch at readout flip `flip` and keep, per world, the noise model of least sum when it lies
-    below the sum `best` holds; flips are offered in increasing order, so a tie keeps the smaller."""
+def fit_at(flip: float, z12: list[dict[str, Any]], matrix_of: Any, models: str) -> Fitted:
+    """Fit every deciding batch at readout flip `flip` and keep, per world, the noise model of least sum."""
     fits = [
         fit_batch(
             tuple(b["arms"]),
@@ -771,19 +770,33 @@ def absorb(best: Fitted, flip: float, z12: list[dict[str, Any]], matrix_of: Any,
         )
         for b in z12
     ]
+    out: Fitted = {}
     for w in WORLDS:
         chi = np.stack([f[w]["chi2"] for f in fits])
         total = chi.sum(0)
         j = int(total.argmin())
-        if w not in best or total[j] < best[w]["total"]:
-            best[w] = {
-                "total": float(total[j]),
-                "flip": flip,
-                "model": j,
-                "chi2": chi[:, j].copy(),
-                "parameter": np.array([f[w]["parameter"][j] for f in fits]),
-                "predicted": np.stack([f[w]["predicted"][j] for f in fits]),
-            }
+        out[w] = {
+            "total": float(total[j]),
+            "flip": flip,
+            "model": j,
+            "chi2": chi[:, j].copy(),
+            "parameter": np.array([f[w]["parameter"][j] for f in fits]),
+            "predicted": np.stack([f[w]["predicted"][j] for f in fits]),
+        }
+    return out
+
+
+def keep_least(best: Fitted, fit: Fitted) -> None:
+    """Replace each world's entry of `best` by `fit`'s when its sum is smaller; fits are offered in increasing flip
+    order, so a tie keeps the smaller flip."""
+    for w in WORLDS:
+        if w not in best or fit[w]["total"] < best[w]["total"]:
+            best[w] = fit[w]
+
+
+def absorb(best: Fitted, flip: float, z12: list[dict[str, Any]], matrix_of: Any, models: str) -> None:
+    """Fit every deciding batch at readout flip `flip` and keep, per world, the fit of least sum."""
+    keep_least(best, fit_at(flip, z12, matrix_of, models))
 
 
 def clear_caches() -> None:
@@ -791,13 +804,24 @@ def clear_caches() -> None:
     RETENTION_CACHE.clear()
 
 
+def fit_flip(item: tuple[float, list[dict[str, Any]], dict[str, np.ndarray], str]) -> Fitted:
+    """fit_at() for one flip of fit_flips(), with each batch's assignment matrix supplied by name; the caches are
+    cleared before the fit returns, so a process holds one flip's tables at a time."""
+    flip, z12, matrices, models = item
+    fit = fit_at(flip, z12, lambda b: matrices[b["name"]], models)
+    clear_caches()
+    return fit
+
+
 def fit_flips(z12: list[dict[str, Any]], matrix_of: Any, models: str, flips: tuple[float, ...]) -> Fitted:
-    """The fit of every world over `flips`; the caches are cleared after each flip, so one decision holds one flip's
-    tables at a time."""
+    """The fit of every world over `flips`. The flips are independent, so they map over the process pool and reduce
+    in flip order, which keeps the smaller flip on a tie and returns what a serial loop returns. The pool holds at
+    most min(workers(), len(flips)) processes, each with the undamped and damped law tables and one flip's caches; a
+    caller inside a pool worker has one slot, so its flips run serially there."""
+    matrices = {b["name"]: matrix_of(b) for b in z12}
     best: Fitted = {}
-    for flip in flips:
-        absorb(best, flip, z12, matrix_of, models)
-        clear_caches()
+    for fit in ordered_map(fit_flip, [(flip, z12, matrices, models) for flip in flips], min_items=2):
+        keep_least(best, fit)
     return best
 
 
