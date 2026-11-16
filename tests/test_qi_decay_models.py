@@ -12,6 +12,7 @@ import math
 from collections.abc import Callable
 
 import numpy as np
+import pytest
 
 import qi_decay_models as models
 
@@ -138,3 +139,18 @@ def test_shared_parameter_test_accepts_a_shared_exponent_and_rejects_a_spread() 
     rejected = models.common_parameter(spread, "stretched", "exponent")
     if rejected["p_common_vs_free"] > 1e-6:
         raise AssertionError(rejected)
+
+
+def test_shared_parameter_test_gives_the_serial_value_bit_for_bit_in_the_process_pool(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def stretched(t_us: float, beta: float) -> Callable[[float], float]:
+        return lambda t: math.exp(-((t / t_us) ** beta))
+
+    datas = [make(stretched(t, 0.8)) for t in (15.0, 22.0, 30.0)]
+    found = {}
+    for workers in ("1", "2"):
+        monkeypatch.setenv("GOROROBA_WORKERS", workers)
+        found[workers] = models.common_parameter(datas, "stretched", "exponent")
+    if found["1"] != found["2"]:
+        raise AssertionError(found)

@@ -199,21 +199,13 @@ def execution_slope(t1: list[dict[str, Any]]) -> dict[str, Any]:
 
 def shot_records(series: dict[str, Any], edges: list[tuple[int, int]]) -> list[dict[str, Any]]:
     """Connected correlation contrast and overdispersion of every circuit that holds a single prepared state."""
-    found = []
-    for (run, name), shots in sorted(series["shots"].items()):
-        if not (name.startswith(("t1-", "readout-"))):
-            continue
-        bits = qi_bit_correlations.bit_array(shots)
-        correlation, error = qi_bit_correlations.connected_correlations(bits)
-        found.append(
-            {
-                "run": run,
-                "file": name,
-                "overdispersion": qi_bit_correlations.overdispersion(bits),
-                **qi_bit_correlations.coupled_contrast(correlation, error, edges),
-            }
-        )
-    return found
+    chosen = [(key, shots) for key, shots in sorted(series["shots"].items()) if key[1].startswith(("t1-", "readout-"))]
+    contrasts = parallel.ordered_map(
+        qi_bit_correlations.ShotContrast(edges), [shots for _, shots in chosen], min_items=2
+    )
+    return [
+        {"run": run, "file": name, **contrast} for ((run, name), _), contrast in zip(chosen, contrasts, strict=True)
+    ]
 
 
 def analyze(

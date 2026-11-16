@@ -26,6 +26,8 @@ from typing import Any
 import numpy as np
 from scipy import optimize, stats
 
+import parallel
+
 EPSILON = 1e-12
 LN_T_BOUNDS = (math.log(0.5), math.log(1.0e4))
 LN_RATIO_BOUNDS = (0.0, math.log(1.0e3))
@@ -381,20 +383,36 @@ def profile_interval(best: Fit, data: CountData, name: str, delta: float = 1.0) 
     return (None if low is None else convert(low), None if high is None else convert(high))
 
 
+class FitDeviance:
+    """Deviance of one dataset under a named model, optionally with parameters pinned.
+
+    A module-level class so that parallel.ordered_map can pickle it for the worker processes.
+    """
+
+    def __init__(self, model_name: str, fixed: dict[str, float] | None = None) -> None:
+        self.model_name = model_name
+        self.fixed = fixed
+
+    def __call__(self, data: CountData) -> float:
+        return fit(self.model_name, data, fixed=self.fixed).deviance
+
+
 def common_parameter(datas: list[CountData], model_name: str, name: str) -> dict[str, float]:
     """Likelihood-ratio test that all datasets share one value of a model parameter, each with its own timescale.
 
     The common value minimizes the pooled deviance of the model over a bounded scan; the pooled deviance of the
     single exponential and of the model with a free value per dataset bracket it. Freedom of the common-against-free
-    ratio is the number of datasets minus one.
+    ratio is the number of datasets minus one. The datasets are independent, so each deviance sum maps its fits over
+    the process pool and adds them in dataset order, which gives the serial sum bit for bit; the scan itself is
+    sequential.
     """
     model = MODELS[model_name]
     index = model.params.index(name)
-    free_total = sum(fit(model_name, data).deviance for data in datas)
-    single_total = sum(fit("single", data).deviance for data in datas)
+    free_total = sum(parallel.ordered_map(FitDeviance(model_name), datas, min_items=2))
+    single_total = sum(parallel.ordered_map(FitDeviance("single"), datas, min_items=2))
 
     def pooled(value: float) -> float:
-        return sum(fit(model_name, data, fixed={name: value}).deviance for data in datas)
+        return sum(parallel.ordered_map(FitDeviance(model_name, {name: value}), datas, min_items=2))
 
     scan = optimize.minimize_scalar(
         pooled, bounds=(model.lower[index], model.upper[index]), method="bounded", options={"xatol": 1e-6}

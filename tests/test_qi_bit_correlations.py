@@ -5,7 +5,9 @@ from __future__ import annotations
 import math
 
 import numpy as np
+import pytest
 
+import parallel
 import qi_bit_correlations as correlations
 
 
@@ -64,3 +66,27 @@ def test_coupled_contrast_finds_correlation_on_the_coupled_pairs_only() -> None:
         raise AssertionError(contrast)
     if not math.isclose(contrast["coupled_mean"], 0.125, abs_tol=1e-12) or abs(contrast["uncoupled_mean"]) > 1e-12:
         raise AssertionError(contrast)
+
+
+def test_shot_contrast_equals_the_direct_calls_and_survives_the_process_pool(monkeypatch: pytest.MonkeyPatch) -> None:
+    def record(shift: int) -> list[str]:
+        # Qubit 1 copies qubit 0; qubits 2 and 3 count through the sixteen patterns independently of them.
+        return [f"{(i >> 3) & 1}{(i >> 2) & 1}{(i >> shift) & 1}{(i >> shift) & 1}" for i in range(16)] * 4
+
+    edges = [(0, 1), (2, 3)]
+    items = [record(0), record(1), record(2)]
+    direct = []
+    for shots in items:
+        bits = correlations.bit_array(shots)
+        correlation, error = correlations.connected_correlations(bits)
+        direct.append(
+            {
+                "overdispersion": correlations.overdispersion(bits),
+                **correlations.coupled_contrast(correlation, error, edges),
+            }
+        )
+    contrast = correlations.ShotContrast(edges)
+    for workers in ("1", "2"):
+        monkeypatch.setenv("GOROROBA_WORKERS", workers)
+        if parallel.ordered_map(contrast, items, min_items=2) != direct:
+            raise AssertionError(f"GOROROBA_WORKERS={workers} differs from the direct calls")

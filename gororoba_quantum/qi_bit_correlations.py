@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import itertools
 import math
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from typing import Any
 
 import numpy as np
@@ -73,3 +73,19 @@ def coupled_contrast(correlation: np.ndarray, error: np.ndarray, edges: Iterable
         "welch_t": float(welch.statistic),
         "welch_p": float(welch.pvalue),
     }
+
+
+class ShotContrast:
+    """Overdispersion and the coupled-against-uncoupled contrast of one shot record.
+
+    A module-level class so that parallel.ordered_map can pickle it for the worker processes; the coupling edges are
+    fixed at construction and each record is an independent item.
+    """
+
+    def __init__(self, edges: Iterable[tuple[int, int]]) -> None:
+        self.edges = tuple((int(a), int(b)) for a, b in edges)
+
+    def __call__(self, shots: Sequence[str]) -> dict[str, Any]:
+        bits = bit_array(shots)
+        correlation, error = connected_correlations(bits)
+        return {"overdispersion": overdispersion(bits), **coupled_contrast(correlation, error, self.edges)}
