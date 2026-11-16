@@ -44,6 +44,64 @@ def calibrate(monkeypatch: pytest.MonkeyPatch) -> ModuleType:
     return module
 
 
+@pytest.fixture
+def probe(monkeypatch: pytest.MonkeyPatch) -> tuple[ModuleType, list[tuple[float, ...]]]:
+    module = _load("probe_decision")
+    seen: list[tuple[float, ...]] = []
+
+    def decide(batches: Any, matrix_of: Any, flips: tuple[float, ...] = ps.FLIP_GRID, **_: Any) -> dict[str, Any]:
+        seen.append(flips)
+        return {"label": "exact_parabola", "numbers": {"center_contrast": [0.0], "chi2": None}}
+
+    monkeypatch.setattr(ps, "build_tables", lambda: 0)
+    monkeypatch.setattr(ps, "predecessor_matrix", lambda: None)
+    monkeypatch.setattr(ps, "truth_row", lambda *a, **k: {ps.CENTER: {"visibility": 0.5, "contrast": 0.0}})
+    monkeypatch.setattr(ps, "planted_batches", lambda row: [{"splits": [0.0]}])
+    monkeypatch.setattr(ps, "decide", decide)
+    monkeypatch.setattr(module, "ordered_map", _serial)
+    monkeypatch.setattr(module, "q4_one", lambda item: {"world": item[0]})
+    return module, seen
+
+
+@pytest.mark.parametrize(
+    ("mode", "name", "flips"),
+    [
+        ("coverage", "coverage_r6.json", ps.FLIP_GRID),
+        ("nulls", "nulls_r6.json", ps.FLIP_GRID),
+        ("coverage-r5", "coverage.json", (0.0,)),
+        ("nulls-r5", "nulls.json", (0.0,)),
+    ],
+)
+def test_a_probe_mode_writes_the_file_of_its_rule(
+    probe: tuple[ModuleType, list[tuple[float, ...]]], tmp_path: Path, mode: str, name: str, flips: tuple[float, ...]
+) -> None:
+    module, seen = probe
+    module.main([mode, "--out", str(tmp_path)])
+    _expect(sorted(p.name for p in tmp_path.iterdir()) == [name], f"{mode} wrote {list(tmp_path.iterdir())}")
+    _expect(bool(seen) and all(f == flips for f in seen), f"{mode} fitted flips {set(seen)}")
+
+
+def test_the_current_rule_of_a_probe_writes_no_retained_r5_file(
+    probe: tuple[ModuleType, list[tuple[float, ...]]], tmp_path: Path
+) -> None:
+    module, _ = probe
+    for mode in ("coverage", "nulls", "q4-zero"):
+        module.main([mode, "--out", str(tmp_path)])
+    written = {p.name for p in tmp_path.iterdir()}
+    _expect(written == {"coverage_r6.json", "nulls_r6.json", "q4_zero.json"}, f"wrote {written}")
+    _expect(not written & R5_FILES, f"the current rule wrote {written & R5_FILES}")
+
+
+def test_a_probe_run_without_a_mode_writes_nothing(
+    probe: tuple[ModuleType, list[tuple[float, ...]]], tmp_path: Path
+) -> None:
+    module, _ = probe
+    for argv in ([], ["bogus"]):
+        with pytest.raises(SystemExit):
+            module.main([*argv, "--out", str(tmp_path)])
+    _expect(not list(tmp_path.iterdir()), "an invalid invocation wrote a file")
+
+
 def test_the_r6_calibration_writes_only_its_own_file(
     calibrate: ModuleType, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:

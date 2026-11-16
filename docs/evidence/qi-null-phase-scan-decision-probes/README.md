@@ -11,17 +11,24 @@ Run from the repository root under the pinned interpreter:
 ```sh
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 systemd-run --user --scope -q -p MemoryMax=16G -p MemorySwapMax=0 \
-	"$PYTHON" -B docs/evidence/qi-null-phase-scan-decision-probes/probe_decision.py MODE
+	"$PYTHON" -B docs/evidence/qi-null-phase-scan-decision-probes/probe_decision.py MODE [--out DIR]
 ```
+
+`--out` names the directory of the output file (default: this directory). A mode without a suffix runs the current
+rule R6, which fits the readout flip over `FLIP_GRID`, and writes an `_r6` file; a mode with the `-r5` suffix pins
+rule R5 (`flips=(0.0,)`, the flip fixed at 0) and is the only writer of the retained `coverage.json` and
+`nulls.json`.
 
 The probes read the damped law tables the generator builds on first use (3,009 s on a 12-thread host) and
 caches under `GOROROBA_SCAN_TABLES`.
 
 | Mode | Output | Content |
 |---|---|---|
-| `coverage` | `coverage.json` | the q12 truth (-0.15 rad) and the coupler truth (-0.25 rad) at each of the 49 multiples of the retained CZ damping the fit computes: center visibility and label |
-| `nulls` | `nulls.json` | no injected phase, a selector flip of 0.0166 to 0.05 beside CZ phase, pulse phase or CZ amplitude damping of 0.04 to 0.13 per qubit (48 combinations): label, center contrast, world sums |
-| `q4-zero` | `q4_zero.json` | the q4 angle of zero contrast by root finding on fractional q4 steps against the weighted line through the four q4 arms, for q12 phases of +-0.15 and +-0.18 rad and coupler phases of +-0.25 rad |
+| `coverage` | `coverage_r6.json` | the q12 truth (-0.15 rad) and the coupler truth (-0.25 rad) at each of the 49 multiples of the retained CZ damping the fit computes: center visibility and label, under rule R6 |
+| `coverage-r5` | `coverage.json` | the same probe under rule R5 |
+| `nulls` | `nulls_r6.json` | no injected phase, a selector flip of 0.0166 to 0.05 beside CZ phase, pulse phase or CZ amplitude damping of 0.04 to 0.13 per qubit (48 combinations): label, center contrast, world sums, under rule R6 |
+| `nulls-r5` | `nulls.json` | the same probe under rule R5 |
+| `q4-zero` | `q4_zero.json` | the q4 angle of zero contrast by root finding on fractional q4 steps against the weighted line through the four q4 arms, for q12 phases of +-0.15 and +-0.18 rad and coupler phases of +-0.25 rad; no decision runs, so the rule does not enter |
 
 `coverage.json` and `nulls.json` hold the probes with the readout flip fixed at 0 (rule R5). `coverage_r6.json` and
 `nulls_r6.json` hold the same two probes under the generator that fits the flip (rule R6): the q12 truth reads
