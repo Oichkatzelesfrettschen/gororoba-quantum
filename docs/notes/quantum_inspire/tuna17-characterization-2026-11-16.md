@@ -33,13 +33,19 @@ all 12 run directories before the analysis.
   attempt ran at repository commit 78c780bc6 and the final one at ed55e4dbc;
   the case, the analyzer, the Quantum Inspire reader and the submit script are
   identical at both. The timeout instants, the restart time and the two
-  commits come from the run host's collector logs and session notes, which
-  this change does not retain; every other timestamp here is in the retained
+  commits come from the collector's logs, which this change does not retain; every other timestamp here is in the retained
   `submission.json` and `results.json` files.
 - Batches 01 to 05 were submitted from 12:22:32Z to 12:32:25Z and collected by
   12:34:01Z. The opening readout pair therefore executed 12 min before the
   closing pair (12:21:51Z and 12:33:52Z), and the T1 waits ran between them,
   in two batches 2 min apart (12:25Z and 12:27Z).
+- Backend state. The retained files read the backend status at submission only.
+  Batch 00 reads `calibrating` at 04:01:27Z and its first job began executing
+  at 12:21:29Z (`queued_at`); the next read, at the submission of batch 01
+  (12:22:32Z), is `idle`, 41 s after batch 00's last job finished (12:21:51Z).
+  No retained file holds a status between the two reads, so the files do not
+  show whether execution began after the backend left `calibrating`; they show
+  `idle` after batch 00 ran.
 - Summed execution time is 119.8 s against the predicted 115.8 s (+3.5%), 0
   credits charged (the ledger snapshot of this change holds no transaction).
 
@@ -298,11 +304,11 @@ sqrt(chi-square / dof).
 | H1 readout floor | chi-square / dof at most 3 on 2 of 17 qubits for the opening, mean and time-interpolated pair and for the joint likelihood, and on 1 of 17 for the closing pair (median 34.8, range 1.4 to 465 for the mean pair) | refuted |
 | H2 delay unit or idle gate | wait lines read N on all 17 qubits for all six delays (`results.json` of the jobs carries no cycle time, so 20 ns per cycle rests on `cases.json` of the case and [cqasm.md](cqasm.md)); execution time rises 4.7 +- 15.0 ns per cycle per shot against 20 nominal; a common stretched exponent (0.90; per qubit 0.58 to 1.01) and a common delay offset (1.70 us; per qubit 0 to 13.5 us) are rejected (likelihood ratios 2310 and 2504 on 16 degrees of freedom, p below 1e-300) | refuted as one global calibration; realized delay undecided |
 | H3 two-rate decay | chi-square / dof at most 3 on 3 (biexponential), 2 (plateau) and 4 (stretched) of 17 qubits against 12 predicted; AICc falls by more than 4 on 12, 13 and 9 | not supported as a 3-parameter shape; tail excess real |
-| H4 drift | readout drift 0.001 to 0.014 (median 0.004); interpolated pair leaves chi-square / dof at most 3 on 2 of 17; a batch step is positive on 16 of 17 and its likelihood ratio exceeds 4 on 13 | drift refuted; batch step undecided (confounded with delay) |
+| H4 drift | readout drift 0.001 to 0.014 (median 0.004); interpolated pair leaves chi-square / dof at most 3 on 2 of 17; a batch step is positive on 16 of 17 and its likelihood ratio exceeds 4 on 13 | drift of the readout pair cannot account for the misfit; the batch step is tested in "Batch-offset test: results" (H4b) |
 | H5 crosstalk | Spearman rho 0.15 (p 0.56) with degree and -0.23 (p 0.37) with the neighbor mean; coupled against uncoupled pairs |z| at most 2.32 and Welch p at least 0.089 on all 10 circuits; overdispersion 0.99 to 1.03 | refuted within this series; crosstalk undecided |
 | H2b delay offset (after the fact) | chi-square / dof at most 3 on 2 of 17; AICc gain over 4 on 9 | common offset refuted |
 | H6 T1 distribution | sigma median 0.30 but range 0.01 to 1.33 (predicted 0.2 to 0.8); AICc gain over 4 on 12 (predicted at least 12); chi-square / dof at most 3 on 3 of 17 (predicted fewer than 12) | the AICc and chi-square clauses held, the sigma range did not; not sufficient as the shape |
-| Standard-error mechanism | factor sqrt(chi-square / dof) is 1.4 to 22 (median 5.8); scaled standard errors 0.25 to 4.6 us; the spread over six analyses (retained log fit, four readout choices, joint likelihood) exceeds the scaled error on 1 of 17 | supported |
+| Standard-error mechanism | the factor sqrt(chi-square / dof) (`se_scale`) is 1.4 to 22 (median 5.8) for the retained chi-square / dof of 1.9 to 496 (the refit's is 1.4 to 465); the retained standard error of 0.12 to 0.31 us times that factor is 0.25 to 4.6 us (`scaled_se_us`); the spread over six analyses (retained log fit, four readout choices, joint likelihood) exceeds the scaled error on 1 of 17 | supported |
 
 Predictions that failed. H3 predicted chi-square / dof at most 3 on at least 12
 qubits for a 2- or 3-parameter model and reaches 2 to 4. H4 predicted a batch
@@ -320,7 +326,9 @@ makes uninformative, and H2b predicted a common offset and reads a rejected one
   deviations, sign test p = 0.013) and the 80 us point above it on 16 of 17
   (median +4.7, p = 0.0003). The 0, 10, 20 and 40 us points show no coherent sign
   (median |z| at most 1.3). A fast loss in the first microseconds followed by a
-  slower tail is the shape; neither lengthening alone (stretched exponent below 1
+  slower tail is the pattern these six delays suggest and cannot establish
+  (in "Batch-offset test: results" the anchors exclude a level step as the source
+  of the larger steps on 6 qubits and leave it open on the other 11); neither lengthening alone (stretched exponent below 1
   on 10 of 17 qubits at the scaled interval) nor a plateau alone (nonzero on 11
   of 17) describes it.
 - The misfit concentrates on a few qubits. Qubits 8 and 13 fit a single
@@ -350,6 +358,63 @@ makes uninformative, and H2b predicted a common offset and reads a rejected one
   delay, so decay events of different qubits are independent to within 3% and
   no common-mode burst hides in the counts.
 
+### Batch-offset test: results
+
+`scripts/qi_tuna17_batch_step.py` writes
+`results/quantum_inspire/characterization_tuna_17_batch_step_analysis.json` from the
+retained counts (no provider read; the output is byte-identical at 1, 8 and 32
+workers). The models are the registered ones: `single_step` (T1 and an additive
+step on batch 02, 4 degrees of freedom) and `single_amplitude_step` (T1, a free
+amplitude and the step, 3 degrees of freedom), on the mean readout pair.
+
+- Fit quality. The three-parameter model reaches chi-square / dof at most 3 on 3
+  of 17 qubits (0, 8 and 13; median 25.6, range 1.2 to 220), the count of the
+  two-parameter model. The fitted amplitude is 0.99 to 1.00, so the free
+  zero-delay level adds nothing; the step is positive on 16 of 17 qubits (median
+  0.0092; 0.0003 below zero to 0.109) and its profile interval excludes zero on 15
+  of 17; AICc falls by more than 4 against the single exponential on 10 of 17. The
+  prediction (at most 7 qubits clear) held. The plateau, which is also a
+  late-delay offset, has the lower AICc than the step on 6 qubits and the step the
+  lower on 11 (median step minus plateau -2.5), so the two descriptions of the
+  three longest delays are not separated.
+- Anchors. Two circuits repeat byte for byte in three batches (sha256 of the
+  circuit text): the prepared-1 circuit (`readout-1` of batch 00 finished
+  12:21:40Z, `t1-0` of batch 01 12:25:32Z, `readout-1` of batch 05 12:33:52Z) and
+  the prepared-0 circuit (`readout-0` of batch 00 12:21:51Z, `x90-0` of batch 03
+  12:29:53Z, `readout-0` of batch 05 12:33:41Z). The shift d of the middle job
+  against the time interpolation of the outer two is
+  -0.0028 to +0.0056 (median +0.0009, standard error 0.001 to 0.003) for the prepared-0
+  circuit and -0.0145 to +0.0060 (median 0.0000, standard error 0.0015 to 0.0035) for the
+  prepared-1 circuit. No shift exceeds 0.015 (prediction held). The prepared-0 shifts have
+  `|z|` above 2 on 2 qubits (6 and 11), none above 3, a pooled sum of z squared of
+  23.5 on 17 degrees of freedom (p 0.13, prediction held) and are positive on 13 of
+  17 (sign test p 0.049). The prepared-1 shifts have `|z|` above 2 on 3 qubits (6, 11,
+  15) and above 3 on qubit 6 (z -6.2), and a pooled sum of 71.0 (p 1.5e-8), so the
+  registered pooled clause failed for the prepared-1 circuit: levels differ from
+  job to job by more than binomial noise. The three-level homogeneity statistic
+  pools to 110.9 (prepared 0) and 161.2 (prepared 1) on 34 degrees of freedom, which
+  includes the opening-to-closing readout drift of at most 0.0136 already
+  measured.
+- Steps against anchors. On the six qubits whose step is 0.02 or more (2, 9, 11, 12,
+  14, 15; 0.028 to 0.109) the step exceeds the prepared-0 shift by more than 3
+  standard errors on 6 of 6 (prediction: at least 4), and each step exceeds the
+  largest anchor shift of any qubit (0.0145) by a factor of 1.9 to 7.5. Over all 17
+  qubits the step exceeds the prepared-0 shift by more than 3 nominal standard
+  errors on 9 and lies within 2 on 7; the nominal errors are understated where the
+  model misfits, and with the profile widened by sqrt(chi-square / dof) the count
+  above 3 falls to 3 and 13 lie within 2.
+- Verdict. Step supported: no (3 of 17 clear, against the 12 required). Step
+  refuted as the sufficient explanation: yes (3 of 17 clear, at most 7 required),
+  whatever the anchors show. Step as a level shift: for the six qubits with a step of
+  0.02 or more, a level shift of the size the anchors measure (at most 0.0145) does
+  not produce the step, so the step there describes the shape of the three longest
+  delays; for the other 11 qubits the fitted step (at most 0.013) is of the size of
+  the batch-to-batch level scatter (anchor shifts up to 0.0145), so a level shift is
+  not excluded and is not separable from the tail with this design. The anchors
+  bound level shifts between the neighbors of batch 02 in time (batches 01 and 03)
+  and carry no job of batch 02, so a level that moved only during that batch is not
+  seen. An interleaved design (each delay in both batches) separates the two.
+
 ### What would decide
 
 - A dense scan of 0 to 10 us (about 0.5 us steps) tells a fast first-microsecond
@@ -357,7 +422,8 @@ makes uninformative, and H2b predicted a common offset and reads a rejected one
   6 delays here cannot.
 - Each delay run twice in interleaved order across batches separates the batch
   step (positive on 16 of 17 qubits, aliased with delay because batch 02 holds
-  the three longest delays) from a shape effect.
+  the three longest delays; "Batch-offset test: results" bounds it with anchors
+  and cannot resolve it below 0.02) from a shape effect.
 - A scan to about 300 us bounds the tail scale that is open above on 8 of 17
   qubits.
 - The single-qubit arm that the case calls for (see "Open") separates a neighbor
@@ -392,8 +458,13 @@ intervals widened by sqrt(chi-square / dof):
 | 15 | 22.9 | 22.7 to 23.1 | 20.4 to 25.7 | 165.6 | 156.1 | 24.7 +- 0.2 |
 | 16 | 22.5 | 22.3 to 22.7 | 22.0 to 23.1 | 7.8 | 7.5 | 22.2 +- 0.2 |
 
-T1 spans 12.8 to 31.8 us (median 22.5); the widened half-widths run 0.20 to
-3.8 us (median 1.1), against the retained standard errors of 0.1 to 0.3 us. The
+T1 spans 12.8 to 31.8 us (median 22.5). The widened half-widths of this table
+(the profile interval of the refit's `single` model widened by the square root of the
+refit's chi-square / dof of 1.4 to 465) run 0.20 to 3.8 us (median 1.1). They differ
+from the 0.25 to 4.6 us of the standard-error row above (`scaled_se_us`: the retained
+log fit's standard error of 0.12 to 0.31 us times the square root of its own chi-square /
+dof of 1.9 to 496), because the refit fits P1 directly and the retained fit its
+logarithm; both stand against the retained standard errors of 0.1 to 0.3 us. The
 timescale of the exponential component under the plateau model has median 20.5
 us (11.1 to 29.0) and the median of the lognormal model is 21.3 us, so the
 model choice moves a qubit's T1 by about 10%, and by 40% on qubit 14.
@@ -513,8 +584,11 @@ each: 10.2 s for `x90-64` and 6.0 s for `x90-0` at 8,192 shots.
   It is also the control that removes the neighbor-state candidate of the T1
   shape.
 - The T1 shape stays open as a mechanism: the registered explanations do not
-  restore the single exponential, the decisive measurements are a dense 0 to 10
-  us scan and an interleaved repeat of each delay ("What would decide"), and the
+  restore the single exponential, a batch step is refuted as the sufficient
+  explanation, excluded as a level shift on the 6 qubits with a step of 0.02 or
+  more and not separable from the tail on the other 11, the decisive
+  measurements are a dense 0 to 10 us scan and an interleaved repeat of each delay
+  ("What would decide"), and the
   case's verdict rule keeps its registered form.
 - The retained-context document reads these analysis rows: a newer series
   replaces a qubit's `readout` and `implied_t1` (the dashboard's figures) and
