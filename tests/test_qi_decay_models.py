@@ -111,6 +111,24 @@ def test_delay_offset_and_step_models_recover_their_generators() -> None:
         raise AssertionError(found.params)
 
 
+def test_amplitude_step_model_reads_the_step_from_its_own_slot() -> None:
+    stepped = make(single(22.0), step=0.02)
+    found = models.fit("single_amplitude_step", stepped)
+    if (
+        abs(found.params["batch_step"] - 0.02) > 1e-3
+        or abs(found.params["amplitude"] - 1.0) > 1e-3
+        or abs(found.params["T_us"] - 22.0) > 0.1
+        or found.freedom != 3
+    ):
+        raise AssertionError(found.params)
+    unstepped = make(single(22.0))
+    flat = models.fit("single_amplitude_step", unstepped)
+    if abs(flat.params["batch_step"]) > 1e-3 or flat.deviance > 1e-3:
+        raise AssertionError(flat.params)
+    if "single_amplitude_step" in models.MODELS or "single_amplitude_step" not in models.ALL_MODELS:
+        raise AssertionError("the step model must stay out of the committed battery")
+
+
 def test_lognormal_mixture_reduces_to_the_single_exponential_at_zero_width() -> None:
     t = np.asarray(DELAYS)
     mixture = models.MODELS["lognormal"].shape(t, np.asarray([math.log(22.0), 0.01]))

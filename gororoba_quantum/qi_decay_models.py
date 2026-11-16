@@ -67,6 +67,7 @@ class Model:
     starts: tuple[tuple[float, ...], ...]
     shape: Shape
     step: bool = False
+    step_index: int = 1
 
 
 def _single(t: np.ndarray, theta: np.ndarray) -> np.ndarray:
@@ -178,6 +179,24 @@ MODELS: dict[str, Model] = {
 }
 
 
+# Batch-offset models stay out of MODELS, which analyze_decay iterates, so the committed battery keeps its keys. The
+# step is additive on P1 for the points whose CountData.step is 1; step_index names its slot in the parameter vector.
+STEP_MODELS: dict[str, Model] = {
+    "single_amplitude_step": Model(
+        "single_amplitude_step",
+        ("T_us", "amplitude", "batch_step"),
+        (LN_T_BOUNDS[0], 0.5, -0.2),
+        (LN_T_BOUNDS[1], 1.5, 0.2),
+        (True, False, False),
+        tuple((s, 1.0, 0.0) for s in _LN_STARTS),
+        _amplitude,
+        step=True,
+        step_index=2,
+    ),
+}
+ALL_MODELS: dict[str, Model] = {**MODELS, **STEP_MODELS}
+
+
 def deviance(ones: np.ndarray, shots: np.ndarray, p: np.ndarray) -> float:
     """Binomial deviance 2 * sum[k ln(k / np) + (n - k) ln((n - k) / n(1 - p))], zero where a count is 0 or n."""
     p = np.clip(p, EPSILON, 1.0 - EPSILON)
@@ -251,7 +270,7 @@ def _objective(model: Model, data: CountData, joint: bool) -> Callable[[np.ndarr
         shape = model.shape(t, theta[:width])
         p = e01 + (e11 - e01) * shape
         if model.step:
-            p = p + theta[1] * step
+            p = p + theta[model.step_index] * step
         total = deviance(ones, shots, p)
         if readout is not None:
             total += deviance(readout[0], readout[1], np.asarray([theta[width], theta[width + 1]]))
@@ -272,7 +291,7 @@ def fit(
     warm is an optimizer vector of an earlier fit, tried first; with it only every fifth default start follows, which
     keeps a profile refit cheap while a second basin still gets a trial.
     """
-    model = MODELS[model_name]
+    model = ALL_MODELS[model_name]
     names = list(model.params) + (["e01", "e11"] if joint else [])
     lower = list(model.lower) + ([0.0, 0.0] if joint else [])
     upper = list(model.upper) + ([1.0, 1.0] if joint else [])
@@ -331,7 +350,7 @@ def fit(
     e11 = best_theta[width + 1] if joint else e11_fixed
     p = e01 + (e11 - e01) * model.shape(t, best_theta[:width])
     if model.step:
-        p = p + best_theta[1] * step
+        p = p + best_theta[model.step_index] * step
     cells = len(ones) + (2 if joint else 0)
     chi_square = pearson_chi_square(ones, shots, p)
     if joint and data.readout0 is not None and data.readout1 is not None:
@@ -361,7 +380,7 @@ def profile_interval(best: Fit, data: CountData, name: str, delta: float = 1.0) 
     The profile refits every other parameter with this one pinned. A deviance rise of 1.00 is the 68.3% interval of
     one parameter; delta = max(1, chi-square / dof) widens it for the overdispersion of a model that does not fit.
     """
-    model = MODELS[best.model]
+    model = ALL_MODELS[best.model]
     names = list(model.params) + (["e01", "e11"] if best.joint else [])
     index = names.index(name)
     lower = (list(model.lower) + [0.0, 0.0])[index] if best.joint else model.lower[index]
@@ -473,7 +492,7 @@ def _report(result: Fit, data: CountData) -> dict[str, Any]:
     """Fit summary with the profile interval of each parameter, nominal and widened by max(1, chi-square / dof)."""
     summary = result.summary()
     scale = max(1.0, result.chi_square / result.freedom) if result.freedom > 0 else 1.0
-    names = list(MODELS[result.model].params) + (["e01", "e11"] if result.joint else [])
+    names = list(ALL_MODELS[result.model].params) + (["e01", "e11"] if result.joint else [])
     summary["interval"] = {}
     summary["interval_scaled"] = {}
     for name in names:
@@ -531,3 +550,19 @@ def analyze_decay(task: dict[str, Any]) -> dict[str, Any]:
             "z": (ones - shots * p) / math.sqrt(shots * p * (1 - p)),
         }
     return report
+
+
+STEP_BATTERY = ("single", "plateau", "single_step", "single_amplitude", "single_amplitude_step")
+
+
+def analyze_step(task: dict[str, Any]) -> dict[str, Any]:
+    """One qubit's batch-offset battery on the mean readout pair: the single exponential, the plateau, the single
+    exponential with a step on the later batch, the free-amplitude exponential and the free-amplitude exponential with
+    a step, each with its profile intervals. task is the primitive dictionary of analyze_decay.
+    """
+    variants = readout_variants(task)
+    mean = build_data(task, *variants["mean"])
+    return {
+        "qubit": task["qubit"],
+        "models": {name: _report(fit(name, mean), mean) for name in STEP_BATTERY},
+    }
