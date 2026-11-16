@@ -8,6 +8,13 @@ so this summary gathers what the repository itself measured, each figure beside 
   with the two runs it compares, the idle detuning with its standard error, the Ramsey visibility at the map's two
   delays, and the largest coupler strength. The implied T1 carries that record's assumption: the whole P(1|1) drop
   is T1 decay during the wait, and readout fidelity is unchanged between the two runs.
+- per qubit, from the analysis row of a characterization series
+  (results/quantum_inspire/characterization_tuna_17_analysis.json, written by qi_tuna17_characterization_cases.py):
+  the closing readout pair and the fitted T1 of the series. A series newer than the device-context row replaces the
+  row's readout and implied_t1 (the figures the dashboard shows), and the device-context readout stays in
+  baseline_readout, which qi_tuna17_characterization_cases.py reads as the retained row of its tolerance verdict.
+  The fitted T1 is a single-exponential fit to the corrected populations of the series' own delays and readout pair,
+  not the implied T1's two-run difference.
 - per backend and UTC day, from each retained run's results.json: the job count, the median and largest time from
   a job's creation to its finish, and the median execution time the provider reports.
 
@@ -39,6 +46,9 @@ SCHEMA = "qi-retained-context-v1"
 CONTEXT = "results/quantum_inspire/readout_ringdown_tuna_17_device_context.json"
 RUNS = "results/quantum_inspire/runs"
 OUT = "docs/evidence/qi-status-context/retained-context.json"
+CHARACTERIZATION = "results/quantum_inspire/characterization_tuna_17_analysis.json"
+# One wait cycle of the Tuna and Starmon-7 control stack (docs/notes/quantum_inspire/platform-facts.md).
+CYCLE_US = 0.02
 SIGNIFICANT = 6
 
 
@@ -61,9 +71,54 @@ def run_utc(root: Path, run: str) -> str:
     return min(_instant(stamp) for stamp in stamps).isoformat()
 
 
+def characterization(root: Path) -> dict[int, dict[str, Any]]:
+    """Qubit -> the series' closing readout pair and fitted T1, each with its run instant, or {} without an analysis."""
+    path = root / CHARACTERIZATION
+    if not path.is_file():
+        return {}
+    analysis = json.loads(path.read_text(encoding="utf-8"))
+    manifests = {
+        name: json.loads((root / RUNS / name / "cases.json").read_text(encoding="utf-8")) for name in analysis["runs"]
+    }
+
+    def kinds(name: str) -> set[str]:
+        return {circuit["kind"] for circuit in manifests[name]["circuits"]}
+
+    paired = [name for name in manifests if "readout" in kinds(name)]
+    waited = [name for name in manifests if "t1" in kinds(name)]
+    if not paired or not waited:
+        return {}
+    closing = f"{RUNS}/{paired[-1]}"
+    longest = max(circuit.get("wait_cycles", 0) for name in waited for circuit in manifests[name]["circuits"])
+    found: dict[int, dict[str, Any]] = {}
+    for row in analysis["qubits"]:
+        pair = row["readout"][-1]
+        entry: dict[str, Any] = {
+            "readout": {
+                "run": closing,
+                "utc": run_utc(root, closing),
+                "shots": manifests[paired[-1]]["shots"],
+                "wait_before_readout_us": 0.0,
+                "p1_given_0": _number(pair["p1_given_0"]),
+                "p1_given_1": _number(pair["p1_given_1"]),
+            }
+        }
+        if "t1" in row:
+            entry["implied_t1"] = {
+                "us": _number(row["t1"]["us"]),
+                "wait_us": _number(longest * CYCLE_US),
+                "wait_run_utc": run_utc(root, f"{RUNS}/{waited[-1]}"),
+                "no_wait_run_utc": run_utc(root, f"{RUNS}/{waited[0]}"),
+                "fit_points": row["t1"]["points"],
+            }
+        found[row["qubit"]] = entry
+    return found
+
+
 def qubits(context: dict[str, Any], root: Path) -> list[dict[str, Any]]:
     """One row per qubit of the device-context record, each figure with the run it comes from."""
     rows = []
+    series = characterization(root)
     for name, entry in sorted(context["qubits"].items(), key=lambda item: int(item[0])):
         mapped = entry.get("coupler_map") or {}
         readout = entry.get("readout") or {}
@@ -96,6 +151,15 @@ def qubits(context: dict[str, Any], root: Path) -> list[dict[str, Any]]:
                 "max_abs_j_hz": _number(mapped.get("max_abs_j_hz")),
                 "couplers": len(mapped.get("couplers") or []),
             }
+        newer = series.get(int(name))
+        if newer and (not row.get("readout") or _instant(newer["readout"]["utc"]) > _instant(row["readout"]["utc"])):
+            if "readout" in row:
+                row["baseline_readout"] = row["readout"]
+            row["readout"] = newer["readout"]
+            if "implied_t1" in newer:
+                if "implied_t1" in row:
+                    row["baseline_implied_t1"] = row["implied_t1"]
+                row["implied_t1"] = newer["implied_t1"]
         rows.append(row)
     return rows
 
@@ -139,6 +203,7 @@ def summary(root: Path = ROOT) -> dict[str, Any]:
     source = root / CONTEXT
     text = source.read_bytes()
     context = json.loads(text)
+    series = characterization(root)
     return {
         "schema": SCHEMA,
         "profile": context.get("profile"),
@@ -149,6 +214,10 @@ def summary(root: Path = ROOT) -> dict[str, Any]:
                 run_utc(root, name) for name in (context.get("coupler_map") or {}).get("runs") or []
             ],
             "job_runs": RUNS,
+            "characterization_analysis": CHARACTERIZATION if series else None,
+            "characterization_analysis_sha256": hashlib.sha256((root / CHARACTERIZATION).read_bytes()).hexdigest()
+            if series
+            else None,
         },
         "implied_t1_assumption": "the whole P(1|1) drop between the no-wait and the wait run is T1 decay during the"
         " wait, and readout fidelity is unchanged between the two runs",

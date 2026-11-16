@@ -270,3 +270,25 @@ def test_a_run_of_another_width_backend_or_histogram_is_refused(tmp_path: Path) 
                 raise AssertionError(str(stop)) from stop
         else:
             raise AssertionError(f"runs {[run.parent.name for run in mixed]} were analyzed together")
+
+
+def test_retained_rows_read_the_baseline_a_newer_series_left_behind(tmp_path: Path) -> None:
+    document = tmp_path / "retained.json"
+    document.write_text(
+        json.dumps(
+            {
+                "qubits": [
+                    {
+                        "qubit": 0,
+                        "readout": {"p1_given_0": 0.01, "p1_given_1": 0.99},
+                        "baseline_readout": {"p1_given_0": 0.02, "p1_given_1": 0.96},
+                    },
+                    {"qubit": 1, "readout": {"p1_given_0": 0.03, "p1_given_1": 0.95}},
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    found = cases.retained_rows(document, 2)
+    if found != {0: {"p1_given_0": 0.02, "p1_given_1": 0.96}, 1: {"p1_given_0": 0.03, "p1_given_1": 0.95}}:
+        raise AssertionError(found)
