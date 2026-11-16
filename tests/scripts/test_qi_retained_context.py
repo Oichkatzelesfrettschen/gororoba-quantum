@@ -215,7 +215,21 @@ def test_the_scaled_standard_error_never_shrinks_the_binomial_one(tmp_path: Path
     analysis["qubits"][0]["t1_single_exponential"] = True
     path.write_text(json.dumps(analysis), encoding="utf-8")
     implied = retained.summary(tmp_path)["qubits"][0]["implied_t1"]
-    if implied["single_exponential"] is not True or implied["us_se_scaled"] != implied["us_se"] != 0.2:
+    if implied["single_exponential"] is not True or implied["us_se"] != 0.2:
+        raise AssertionError(implied)
+    if implied["us_se_scaled"] < implied["us_se"]:
+        raise AssertionError(implied)
+    if implied["us_se_scaled"] != implied["us_se"]:
+        raise AssertionError(implied)
+
+
+def test_the_scaled_standard_error_grows_with_chi_square_per_dof_above_one(tmp_path: Path) -> None:
+    tree(tmp_path)
+    series(tmp_path)
+    implied = retained.summary(tmp_path)["qubits"][0]["implied_t1"]
+    if implied["chi_square_per_dof"] <= 1.0:
+        raise AssertionError(implied)
+    if implied["us_se_scaled"] < implied["us_se"] or implied["us_se_scaled"] == implied["us_se"]:
         raise AssertionError(implied)
 
 
