@@ -66,20 +66,26 @@ contract: exact bytes within an identity, exact decisions and bounded floats acr
 
 The photonic circuit_params of the teleportation rehearsal compare through their realized unitary
 (`close_request` of `scripts/qd_teleportation_rehearsal.py`), which is item 4 of the contract for one field family.
-`photonic_template` takes `np.angle` of elimination residues that sit on the negative real axis with a
-rounding-sized imaginary part, and the sign of that part follows the last-ulp result of libm `hypot`. For the
-arguments (-0.6123724356957945, 0.2041241452319315) glibc 2.43 returns `...028` on an x86-64 Zen 4 core and `...027`
-on a Xeon and on a Neoverse N1 core. One residue then reads +pi on one identity and -pi on another, and the (alpha,
-beta) pairs of the later elimination steps move by pi, which multiplies two modes by -1 on both sides of a beam
-splitter and leaves the operator, column and ideal bit-identical. The retained `cases.json` of job-00 to job-03 keep
-their bytes; a rebuild passes when each setting's parameter vector realizes the retained vector's unitary within
-`GAUGE_TOLERANCE` = 1e-12, with no global phase quotiented because the unitary equals the setting's operator. Every
-other field keeps the exact comparison of `close`. Measured: the rebuilt and retained unitaries differ by at most
-6e-16 on the Zen 4 and Neoverse N1 hosts. The Neoverse N1 host rebuilds job-01 to job-03 with parameters up to 6.28
-rad (job-00, job-01) and 3.33 rad (job-02, job-03) from the retained ones, and the same comparator accepts every one;
-the CNOT unitary's signed zeros played no part. A parameter moved by 1e-11 moves the unitary by 3e-12, and an unpaired
-beta shift of pi moves it by 1.15. The plan step `semantic-comparator` stays open for
-the float fields of decision records.
+`photonic_template` takes `np.angle` of elimination residues and of the entries of each Givens inverse, and two
+inputs to that angle are not fixed across identities. A residue on the negative real axis has a rounding-sized
+imaginary part whose sign follows the last-ulp result of libm `hypot`: for the arguments (-0.6123724356957945,
+0.2041241452319315) glibc 2.43 returns `...028` on an x86-64 Zen 4 core and `...027` on a Xeon Platinum 8573C and on
+a Neoverse N1 core, one residue then reads +pi or -pi, and the (alpha, beta) pairs of the later steps move by pi, which
+multiplies two modes by -1 on both sides of a beam splitter. A beam splitter at theta = pi has a zero diagonal entry,
+so the unitary fixes alpha - beta and leaves alpha + beta free. On the Neoverse N1 core job-03 setting 1 differs from
+the retained vector in four blocks, three at theta = pi (one with alpha + beta moved by 0.37 rad, two by pi) and one
+pi-gauge block, and `cnot_unitary()` carries 5 negative-signed real zeros there against 12 on Zen 4. hypothesis: those signed zeros
+select the np.angle branch of the zero entries; the trace from a signed zero to a chosen branch is not isolated here.
+Operator, column and ideal stay bit-identical in every case.
+
+The retained `cases.json` of job-00 to job-03 keep their bytes; a rebuild passes when each setting's parameter vector
+realizes the retained vector's unitary within `GAUGE_TOLERANCE` = 1e-12, with no global phase quotiented because the
+unitary equals the setting's operator. Every other field keeps the exact comparison of `close`. Measured: the rebuilt
+and retained unitaries differ by at most 6e-16 on the Zen 4 and Neoverse N1 hosts. The Zen 4 host rebuilds job-00 with
+parameters up to pi from the retained ones; the Neoverse N1 host rebuilds job-00 and job-01 up to 6.28 rad and job-02
+and job-03 up to 3.33 rad, and the comparator accepts every one. For parameter x30 of one job-00 setting, a move of
+1e-11 moves the unitary by 3e-12, and an unpaired beta shift of pi moves it by 1.15. The plan step
+`semantic-comparator` stays open for the float fields of decision records.
 
 ## Migration
 
