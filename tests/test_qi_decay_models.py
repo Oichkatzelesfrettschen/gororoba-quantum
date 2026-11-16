@@ -9,11 +9,14 @@ overdispersed) and the likelihood-ratio test of a shared parameter in both direc
 from __future__ import annotations
 
 import math
+import os
 from collections.abc import Callable
+from typing import Any
 
 import numpy as np
 import pytest
 
+import parallel
 import qi_decay_models as models
 
 DELAYS = (0.0, 5.0, 10.0, 20.0, 40.0, 80.0)
@@ -172,3 +175,44 @@ def test_shared_parameter_test_gives_the_serial_value_bit_for_bit_in_the_process
         found[workers] = models.common_parameter(datas, "stretched", "exponent")
     if found["1"] != found["2"]:
         raise AssertionError(found)
+
+
+def biexponential(fast_us: float, slow_us: float, weight: float) -> Callable[[float], float]:
+    return lambda t: (1.0 - weight) * math.exp(-t / fast_us) + weight * math.exp(-t / slow_us)
+
+
+def test_fit_starts_in_the_process_pool_give_the_serial_fit_bit_for_bit(
+    monkeypatch: pytest.MonkeyPatch, forced_pool: Any
+) -> None:
+    data = make(biexponential(4.0, 40.0, 0.3))
+    runs = {}
+    for workers in (1, 2):
+        monkeypatch.setattr(parallel, "workers", lambda count=workers: count)
+        forced_pool.maps.clear()
+        first = models.fit("biexponential", data)
+        refit = models.fit("biexponential", data, fixed={"slow_weight": 0.25}, warm=first.theta)
+        joint = models.fit("single", data, joint=True)
+        runs[workers] = (first, refit, joint, list(forced_pool.maps))
+    if runs[1][:3] != runs[2][:3]:
+        raise AssertionError(runs)
+    pooled = [(name, count) for name, count in runs[2][3] if name == "StartMinimizer"]
+    if [count for _, count in pooled] != [20, 5, 5]:
+        raise AssertionError(runs[2][3])
+
+
+def fit_inside_worker(data: models.CountData) -> tuple[int, int, int, bool, tuple[float, ...]]:
+    """A fit called from an outer ordered_map worker: the worker's pool budget, its pool state and the fit."""
+    result = models.fit("biexponential", data)
+    return os.getpid(), parallel.workers(), parallel.default_threads(), parallel._pool is None, result.theta
+
+
+def test_fit_inside_an_outer_map_worker_runs_its_starts_serially(forced_pool: Any) -> None:
+    datas = [make(biexponential(4.0, 40.0, weight)) for weight in (0.2, 0.3, 0.4)]
+    found = parallel.ordered_map(fit_inside_worker, datas, min_items=1)
+    if forced_pool.pools != [2] or [name for name, _ in forced_pool.maps] != ["function"]:
+        raise AssertionError((forced_pool.pools, forced_pool.maps))
+    for (pid, workers, threads, no_pool, theta), data in zip(found, datas, strict=True):
+        if pid == os.getpid() or (workers, threads, no_pool) != (1, 1, True):
+            raise AssertionError((pid, workers, threads, no_pool))
+        if theta != models.fit("biexponential", data).theta:
+            raise AssertionError(theta)

@@ -29,6 +29,9 @@ from scipy import optimize, stats
 import parallel
 
 EPSILON = 1e-12
+# A start is about 12 ms of L-BFGS-B (measured with numpy 2.5.4 and scipy 1.18.1 on one qubit of the Tuna-17 series), so
+# two or more starts repay the transfer to a warm pool; a single start runs in the calling process.
+MIN_PARALLEL_STARTS = 2
 LN_T_BOUNDS = (math.log(0.5), math.log(1.0e4))
 LN_RATIO_BOUNDS = (0.0, math.log(1.0e3))
 
@@ -279,6 +282,49 @@ def _objective(model: Model, data: CountData, joint: bool) -> Callable[[np.ndarr
     return value
 
 
+def _expand(size: int, pinned: dict[int, float], free_index: list[int], reduced: np.ndarray) -> np.ndarray:
+    """The full optimizer vector: the pinned entries, then the free ones from the reduced vector."""
+    theta = np.empty(size)
+    for i, value in pinned.items():
+        theta[i] = value
+    for slot, i in enumerate(free_index):
+        theta[i] = reduced[slot]
+    return theta
+
+
+class StartMinimizer:
+    """One L-BFGS-B minimization of a model's deviance from a given start, as (deviance, full optimizer vector).
+
+    A module-level class holding primitives and the immutable data, so that parallel.ordered_map can pickle it for the
+    worker processes; each call rebuilds the objective and runs deterministic arithmetic, so a worker returns the bits
+    that the calling process would.
+    """
+
+    def __init__(
+        self, model_name: str, data: CountData, joint: bool, pinned: dict[int, float], free_index: list[int]
+    ) -> None:
+        self.model_name = model_name
+        self.data = data
+        self.joint = joint
+        self.pinned = pinned
+        self.free_index = free_index
+
+    def __call__(self, x0: tuple[float, ...]) -> tuple[float, np.ndarray]:
+        model = ALL_MODELS[self.model_name]
+        size = len(model.params) + (2 if self.joint else 0)
+        lower = list(model.lower) + ([0.0, 0.0] if self.joint else [])
+        upper = list(model.upper) + ([1.0, 1.0] if self.joint else [])
+        objective = _objective(model, self.data, self.joint)
+        result = optimize.minimize(
+            lambda x: objective(_expand(size, self.pinned, self.free_index, x)),
+            np.array(x0),
+            method="L-BFGS-B",
+            bounds=[(lower[i], upper[i]) for i in self.free_index],
+            options={"ftol": 1e-15, "gtol": 1e-10, "maxiter": 2000},
+        )
+        return float(result.fun), _expand(size, self.pinned, self.free_index, result.x)
+
+
 def fit(
     model_name: str,
     data: CountData,
@@ -290,6 +336,10 @@ def fit(
 
     warm is an optimizer vector of an earlier fit, tried first; with it only every fifth default start follows, which
     keeps a profile refit cheap while a second basin still gets a trial.
+
+    The starts are independent minimizations, mapped through parallel.ordered_map and reduced in start order with the
+    strict comparison of the serial loop, so the first of equal minima wins and the result equals the serial one bit
+    for bit. Inside a pool worker the map runs serially (parallel.default_threads), so pools never nest.
     """
     model = ALL_MODELS[model_name]
     names = list(model.params) + (["e01", "e11"] if joint else [])
@@ -309,39 +359,23 @@ def fit(
         starts = [start + tail for start in starts]
     if warm is not None:
         starts = [list(warm)] + starts[::5]
-    objective = _objective(model, data, joint)
     best_theta: np.ndarray | None = None
     best_value = math.inf
 
-    def expand(reduced: np.ndarray) -> np.ndarray:
-        theta = np.empty(len(names))
-        for i, value in pinned.items():
-            theta[i] = value
-        for slot, i in enumerate(free_index):
-            theta[i] = reduced[slot]
-        return theta
-
     if not free_index:
-        best_theta = expand(np.empty(0))
-        best_value = objective(best_theta)
+        best_theta = _expand(len(names), pinned, free_index, np.empty(0))
+        best_value = _objective(model, data, joint)(best_theta)
     else:
-        bounds = [(lower[i], upper[i]) for i in free_index]
-        seen: set[tuple[float, ...]] = set()
+        begun: dict[tuple[float, ...], tuple[float, ...]] = {}
         for start in starts:
-            x0 = np.array([min(max(start[i], lower[i]), upper[i]) for i in free_index])
-            key = tuple(np.round(x0, 9))
-            if key in seen:
-                continue
-            seen.add(key)
-            result = optimize.minimize(
-                lambda x: objective(expand(x)),
-                x0,
-                method="L-BFGS-B",
-                bounds=bounds,
-                options={"ftol": 1e-15, "gtol": 1e-10, "maxiter": 2000},
-            )
-            if result.fun < best_value:
-                best_value, best_theta = float(result.fun), expand(result.x)
+            x0 = tuple(float(min(max(start[i], lower[i]), upper[i])) for i in free_index)
+            begun.setdefault(tuple(float(v) for v in np.round(x0, 9)), x0)
+        minima = parallel.ordered_map(
+            StartMinimizer(model_name, data, joint, pinned, free_index), list(begun.values()), MIN_PARALLEL_STARTS
+        )
+        for value, theta in minima:
+            if value < best_value:
+                best_value, best_theta = value, theta
     if best_theta is None:
         raise ValueError(f"no start of {model_name} produced a fit")
     t, ones, shots, e01_fixed, e11_fixed, step = _arrays(data)
