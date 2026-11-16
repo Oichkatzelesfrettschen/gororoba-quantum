@@ -5512,6 +5512,39 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_plane_incidence.py --check",
+      "name": "core-a5-nullity4-qg-plane-incidence",
+      "seconds": 3.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/nullity4-qg-plane-incidence-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_rational_charts.py --check",
+      "name": "core-a5-nullity4-real-polar-rational-charts",
+      "seconds": 7.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/nullity4-real-polar-rational-charts-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_sl3_chart.py --check",
+      "name": "core-a5-nullity4-real-polar-sl3-chart",
+      "seconds": 4.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/nullity4-real-polar-sl3-chart-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --check docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json",
       "name": "core-757",
       "seconds": 1.3,
