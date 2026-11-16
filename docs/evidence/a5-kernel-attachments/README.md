@@ -1306,6 +1306,39 @@ continuous semialgebraic path; `A5-418` survives under the conditions its row st
 `z^T z` or from an independent conjugate variable, or a retained point at which `conjugate(z)^T z` differs from
 the squared Euclidean norm falsifies the audit (`A5-452`).
 
+## Over Q(i) the quadric rings of the weight slice are Cohen-Macaulay exactly when they are reduced
+
+Ledger row A5-548 states that a quadric ring of the fiber track is Cohen-Macaulay exactly when its quadric ideal is
+radical. The [run case](weight-slice-quadric-rings-case.md), written before the run, records the eight predictions and
+the falsifier; [`weight_slice_quadric_rings.py`](weight_slice_quadric_rings.py) decides both properties for the
+quadric ideal K of each cell over Q(i), and the record is
+[`weight-slice-quadric-rings-result.json`](weight-slice-quadric-rings-result.json) (Singular 4.4.1, 43 minutes on the
+Windows workstation; [run output](weight-slice-quadric-rings-run.txt), [memory sampler](weight-slice-quadric-rings-memory.txt)).
+
+The Cohen-Macaulay test is the length of the Artinian linear section: forms that lower the dimension to 0 are a system of
+parameters, whose quotient has length at least the degree, with equality exactly when the ring is Cohen-Macaulay.
+Reducedness is the equality of K with the intersection of its minimal primes from `minAssGTZ`; the Seidenberg chart
+certificate of the program decides none of the twelve rings, so the radical probe decides all of them. Four calibration
+ideals with known answers run first and reproduce.
+
+| Cell | Dimension, degree | Section length | Cohen-Macaulay | Reduced | Radical beyond K | Prediction |
+|---|---|---|---|---|---|---|
+| X- -> N-, X+ -> N+ | 4, 12 | 15 | no | no | three linear forms | holds |
+| Iso -> N-, Iso -> N+ | 5, 23 | 23 | yes | yes | none | holds |
+| W8 -> N-, W8 -> N+ | 6, 50 | 50 | yes | yes | none | holds |
+| E8-bar -> N-, E8-bar -> N+ | 5, 11 | 20 | no | no | five linear forms | holds |
+
+All eight cells are decided, none reached the Singular time limit, and no cell is reduced without being
+Cohen-Macaulay or the reverse, so A5-548 holds over Q(i) on the weight slice (rows A5-565 to A5-569). The rows for Iso,
+W8 and E8-bar agree with the reducedness already proved in A5-446, A5-447 and A5-451. The run tests the equivalence and
+leaves the rank-one nilradical clause of A5-548 and E8-bar -> VB, which is not a weight-slice cell, untested over Q(i).
+Its falsifier is a cell that is reduced and not Cohen-Macaulay or the reverse.
+
+The gate `core-a5-weight-slice-quadric-rings` of [ci/gates.json](../../../ci/gates.json) recomputes the record under
+Singular and compares it through `ci/replay_check.py`, skipping the Singular banner and the timing and load fields;
+`tests/test_a5_weight_slice_quadric_rings.py` re-derives every verdict from the stored numbers without Singular and
+rejects 27 mutations.
+
 ## Investigated questions
 
 ### Does the antiholomorphic first-order part survive on a boundary kernel?
