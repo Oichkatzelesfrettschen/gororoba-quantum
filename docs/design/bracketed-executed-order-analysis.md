@@ -57,7 +57,10 @@ x = +1, -1, +1, -1, equal batch errors), each batch flipping its sign independen
 `P(confounded)` equals (2 r^2 (1 - r)^2)^4 (a test pins it): a template ends one-directional with probability 2 r^2 (1 - r)^2,
 which is 0.109 at 7/19, and the series is confounded only when all four do. These figures cover the twin batches under a
 model (hypothesis: independent flips, equal errors, a drift linear in the offset). The retained twin batches give the measured
-flip rate: 3 of 12 (2 of 8 predecessor batches, 1 of 4 hosted-QX batches), with executed offsets -2, +1 and -3 against requested
+flip rate: 3 of 12 (2 of 8 predecessor batches, 1 of 4 hosted-QX batches; the QX run directories
+`results/quantum_inspire/runs/2026-11-15T184810Z-pathion_one_cz_null_bracketed_qx-batch-00..03` and
+`results/quantum_inspire/pathion_one_cz_null_bracketed_qx_analysis.json` arrive with the stacked PR 927, so this count resolves in the
+tree only after that PR lands), with executed offsets -2, +1 and -3 against requested
 +1, -1 and +1; the strict gate's 7 of 19 counts any permutation of a batch, readouts included, and overstates the twin-flip rate.
 Under the strict gate the 16 twin batches alone all stay intact with probability 0.75^16 = 0.010 at 0.25. They are not the probability that
 the series decides.

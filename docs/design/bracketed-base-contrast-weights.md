@@ -14,7 +14,8 @@ predecessor places the mean time of a template's two base batches 0.15 to 0.31 h
 largest plausible drift of 0.01 per hour that is a shift of 0.0015 to 0.0031, 9 to 19 percent of the 0.0164 contrast, and at the
 0.0017 per hour that b0's two base replicates show it is 0.0003 to 0.0005 (computed from `queued_at`). The retained data cannot
 separate such a term from replicate scatter: each template has two base batches, and the pooled slope against position
-(-0.0176 per rank, z -5.5) is carried by b0 alone. The label order does not cancel the term by itself: a forward-and-mirror order
+(-0.0176 per rank, z -5.5) loses its significance when b0 is omitted (z -1.21).
+The label order does not cancel the term by itself: a forward-and-mirror order
 cancels a linear drift only when the executed times are symmetric about the reference, and a platform that reorders breaks that.
 A published analysis of a fixed-order acquisition states the same degeneracy (arXiv 2608.18153v1, Sec. IV, Eqs. 15 and 16: a linear
 additive drift enters the combined score as S_obs = S_true + 2 beta and no model-independent correction exists without randomized
@@ -28,7 +29,8 @@ reference time tau_T (the mean executed time of the template's twin circuits), t
     v_r = mu_T + g_1 (t_r - tau_T) + ... + g_k (t_r - tau_T)^k + e_r,   var(e_r) = se_r^2.
 
 hypothesis: the selector offset that the twins and the base circuit read is one quantity, and its drift over a template's span is
-a polynomial of low order (k = 1 preregistered; k = 2 only when the monitor refuses k = 1).
+a polynomial of low order. Linear drift (k = 1) is the preregistered decision model; a failed monitor reads
+`unresolved_drift_model`. Quadratic weighting (k = 2) is a tested numerical capability with no decision path.
 
 ## Estimator
 
@@ -59,10 +61,12 @@ Every batch carries readout-0 and readout-1 circuits, so the bracket offset c_b 
 free series of the selector offset. `drift_monitor` fits a line by weighted least squares and tests the residual chi-square with
 n - 2 degrees of freedom at alpha 0.001 (`MONITOR_ALPHA`); a residual above the threshold means a step, burst or curve (the Quantum
 Inspire processors show error bursts and days-to-weeks excursions, arXiv 2602.18388v2), so the linear model is refused and the
-decision reads `unresolved_drift_model`; the slope bounds g_up for the calibration batches and is compared with the slope that the
-twin and base fits imply (a difference of more than 3 standard errors is a finding). Spectral and structure-function thresholds
+decision reads `unresolved_drift_model`; the slope bounds g_up for the calibration batches and is reported beside the decision. Its
+comparison with the drift that the twin and base fits imply stays a scope cut: the twin fit counts executed rank, `level_at` returns no
+slope, and no covariance-aware statistic in common units is preregistered. Spectral and structure-function thresholds
 at n = 35 follow arXiv 1907.13608v3 and need their own simulation before preregistration. hypothesis: the bracket offset drifts with
-the selector offset the contrasts read; falsifier: a series whose slope disagrees with the contrast-implied slope.
+the selector offset the contrasts read; falsifier: a series whose slope disagrees with the contrast-implied slope, once that comparison
+is defined.
 
 ## Validation before the real series
 
@@ -80,10 +84,11 @@ Reading of the stage-3 documents (arXiv 1603.05766v1, 2406.06488v1, 1810.08240v9
 every p-value follows the (1 + count) / (1 + b) convention, never zero. Drawing each batch's requested twin order from a QRNG
 value gives an unbiased contrast without a drift model only if the platform's reordering is independent of that draw (a table
 from `queued_at` tests it). The exact resolution is the limit: a template with 4 waves has 2^4 sign patterns and a smallest
-two-sided p of 0.125; 6 waves reach 0.031; 8 waves give power 0.87 to 1.00 at 0.016 and 4 waves give 0.00; the Bonferroni level for
-16 contrasts is 0.0031, below the floor of 1/70 for 8 batches. Range-only confidence sequences need 50 to 460 waves. The layer
+two-sided p of 0.125. Independent sign assignment gives minimum exact two-sided p-values 2 / 2^n: 0.125, 0.03125 and 0.0078125 for 4, 6
+and 8 waves. The Bonferroni level for 16 contrasts, 0.003125, stays below the 8-wave floor. A sweep simulation of the test's power is not
+retained in this tree, so no power figure is stated here. Range-only confidence sequences need 50 to 460 waves. The layer
 therefore cannot carry the decision of this 4-wave design: it enters only as a pooled global-null diagnostic (a sign-flip test over
-the 16 twin batches, floor 2^-16) and as a requirement for any successor with at least 6 waves per template. Sequential
+the 16 twin batches, floor 2^-15) and as a requirement for any successor with at least 6 waves per template. Sequential
 estimation of the selector offset (arXiv 1207.1655v2) reduces to the generalized least squares and Kalman filter of this model and
 is parked.
 
@@ -93,7 +98,10 @@ is parked.
   `level_at` per template, runs the monitor, adds the labels `unresolved_base_drift_confounded`, `unresolved_drift_model` and
   `unresolved_calibration_drift`, and keeps the strict result beside them.
 - The injection and blinding harness and its acceptance run (a remote host under the build-host ruling).
-- Power under reordering for the base contrasts; spectral monitor thresholds at n = 35.
+- Power under reordering for the base contrasts and of the sign-flip layer; spectral monitor thresholds at n = 35.
+- The slope comparison between the monitor and the twin and base fits (units, covariance and statistic).
+- The QRNG draw and indices of the injection and blinding harness: its commit takes them from a draw file under the seed rule of
+  `AGENTS.md` and cites each index in order.
 - Per-circuit execution times: `queued_at` is a job-level stamp that follows the previous job's `finished_at` by 0.03 to 0.19 s; a
   circuit's start inside a job is not recorded, which the weights treat as a time error of that size.
 

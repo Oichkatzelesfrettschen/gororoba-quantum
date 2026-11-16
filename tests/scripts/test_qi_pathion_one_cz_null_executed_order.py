@@ -181,3 +181,27 @@ def test_the_drift_monitor_passes_a_line_and_refuses_a_step() -> None:
     _expect(step["adequate"] is False, f"a 10-sigma step passed: {step}")
     with pytest.raises(eo.ConfoundedOrder):
         eo.drift_monitor([0.0, 1.0], [0.0, 0.0], [0.003, 0.003])
+
+
+def test_unusable_inputs_fail_closed_instead_of_returning_a_number() -> None:
+    times, ses = [0.0, 1.0], [0.004, 0.004]
+    with pytest.raises(ValueError):
+        eo.constrained_weights(times, ses, math.nan)
+    with pytest.raises(ValueError):
+        eo.constrained_weights(times, ses, math.inf)
+    series = [float(i) for i in range(6)]
+    for bad_ses in ([-0.003] * 6, [0.0] * 6, [math.nan] * 6):
+        with pytest.raises(ValueError):
+            eo.drift_monitor(series, series, bad_ses)
+    with pytest.raises(ValueError):
+        eo.drift_monitor(series, [math.nan] + series[1:], [0.003] * 6)
+    for kwargs in (
+        {"rate": -0.1},
+        {"rate": 1.1},
+        {"rate": math.nan},
+        {"rate": 0.2, "templates": 0},
+        {"rate": 0.2, "requested": ()},
+        {"rate": 0.2, "requested": (0, 0, 0, 0)},
+    ):
+        with pytest.raises(ValueError):
+            eo.operating_characteristics(templates=kwargs.pop("templates", 1), **kwargs)  # type: ignore[arg-type]
