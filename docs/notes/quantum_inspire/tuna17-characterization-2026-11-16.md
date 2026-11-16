@@ -218,6 +218,68 @@ model runs.
   loss, not a tail). Falsifier: chi-square / dof at most 3 on at least 12
   qubits supports H6 as the shape.
 
+### Batch-offset test registered before its last two pieces ran
+
+The delays split across two batches: 0, 250 and 500 cycles (0, 5 and 10 us) in
+batch 01 and 1000, 2000 and 4000 cycles (20, 40 and 80 us) in batch 02, so a
+level shift between the batches and a change of decay shape act on disjoint
+groups of delays. The residual signs of the single exponential (5 us below the
+fit, 80 us above) resemble a step, and the two-parameter `single_step` fit
+(T1 and an additive step of batch 02, 4 degrees of freedom) was already in the
+record before this entry: chi-square / dof at most 3 on 3 of 17 qubits, the
+step positive on 16 of 17 with a likelihood-ratio gain above 4 on 13. That
+result is exploratory. This entry registers, before they run, the prediction
+and falsifier for H4b and the two pieces not yet computed: a three-parameter
+step model and an anchor comparison.
+
+- H4b, one offset between batch 01 and batch 02 plus a single exponential.
+  Model `single_amplitude_step`: P1(t) = e01 + (e11 - e01) A exp(-t / T1) +
+  s [batch 02], with e01 and e11 from the mean readout pair, a free amplitude A
+  (0.5 to 1.5) and a free step s (-0.2 to 0.2). The third parameter is the
+  amplitude because it frees the zero-delay level of batch 01, so the step is
+  not pinned by an assumed readout value there; six points and three
+  parameters leave 3 degrees of freedom, and the two-parameter step model keeps
+  4. Profile-likelihood intervals of s and A follow the method above.
+- Anchor circuits. The prepared-1 circuit with no wait is byte-identical
+  across batches (`t1-0.cq` of batch 01, `readout-1.cq` of batches 00 and 05;
+  the three files have one sha256), and the prepared-0 circuit is as well
+  (`x90-0.cq` of batch 03, `readout-0.cq` of batches 00 and 05). Each qubit
+  therefore holds a prepared-1 level at three job times and a prepared-0 level at
+  three job times, ordered by the finish time of each job. Batch 02 holds no
+  anchor, so the anchors measure level shifts between its neighbors in time (01
+  and 03) and bound a shift at 02 by interpolation; they do not measure the
+  step itself. The anchor shift d0 is the batch-03 prepared-0 level minus the
+  level interpolated linearly in time between batches 00 and 05, and d1 the
+  batch-01 prepared-1 level minus the same interpolation of the prepared-1
+  pair, each with its binomial standard error (16,384 shots in batches 00 and 05
+  and 8,192 in batches 01 and 03) and its z. The comparison of a fitted step
+  with the anchors uses d0, because the batch-02 points sit near the ground
+  state, and reports d1 beside it.
+- Prediction. The three-parameter step model reaches chi-square / dof at most 3
+  on at most 7 of 17 qubits (about the same as the two-parameter model, 3 of
+  17), because a constant offset of the three longest delays cannot produce the
+  early dip at 5 us and the 80 us excess together. The anchor shifts d0 and d1
+  stay below 0.015 in magnitude on at least 15 of 17 qubits (the opening-to-closing
+  drift of the readout pair is at most 0.0136), and the pooled sum of z squared
+  over the 17 qubits stays within the chi-square range of 17 degrees of freedom
+  (p between 0.01 and 0.99). The fitted step then exceeds |d0| by more than 3
+  standard errors on at least 4 of the 6 qubits whose two-parameter step is 0.02
+  or more (qubits 2, 9, 11, 12, 14 and 15).
+- Verdict rules, fixed now. Supported: chi-square / dof at most 3 on at least
+  12 qubits for the three-parameter model and, on at least 12 qubits, a fitted
+  step within 2 standard errors of d0 (combined). Refuted as the sufficient
+  explanation: chi-square / dof at most 3 on at most 7 qubits; the step can
+  still contribute where the anchors show a shift. Refuted as a level shift:
+  the model fits (at least 12 qubits) while the anchors place |d0| more than 3
+  standard errors below the fitted step on more than 6 qubits (the step then
+  absorbs shape). Otherwise not separable from the decay shape with this
+  design. A design that separates the two runs each delay in both batches
+  (interleaved within one batch), as in "What would decide" below.
+- Backend state at execution. The retained files carry the backend status at
+  submission only (`backend_status_at_submit` of each batch); a status at the
+  start of execution is not retained. The report states what the job
+  timestamps bound.
+
 ## T1 shape: results
 
 `scripts/qi_tuna17_t1_shape.py` refits the retained counts (no provider read) with
