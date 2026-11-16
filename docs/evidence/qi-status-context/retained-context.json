@@ -1,4 +1,5 @@
 {
+ "fitted_t1_assumption": "an implied_t1 row with fit_points is a single-exponential fit of a series' own delays; single_exponential, chi_square_per_dof and us_se_scaled say whether the fit describes the decay",
  "implied_t1_assumption": "the whole P(1|1) drop between the no-wait and the wait run is T1 decay during the wait, and readout fidelity is unchanged between the two runs",
  "jobs": {
   "QXsinglenodesimulator": [
@@ -240,9 +241,13 @@
     ]
    },
    "implied_t1": {
+    "chi_square_per_dof": 4.89669,
     "fit_points": 5,
     "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
     "us": 17.087,
+    "us_se": 0.151064,
+    "us_se_scaled": 0.334282,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
@@ -286,9 +291,13 @@
     ]
    },
    "implied_t1": {
+    "chi_square_per_dof": 5.93879,
     "fit_points": 5,
     "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
     "us": 19.6468,
+    "us_se": 0.18514,
+    "us_se_scaled": 0.451178,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
@@ -332,9 +341,13 @@
     ]
    },
    "implied_t1": {
+    "chi_square_per_dof": 234.446,
     "fit_points": 5,
     "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
     "us": 24.8258,
+    "us_se": 0.220884,
+    "us_se_scaled": 3.38209,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
@@ -378,9 +391,13 @@
     ]
    },
    "implied_t1": {
+    "chi_square_per_dof": 83.3424,
     "fit_points": 5,
     "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
     "us": 13.1502,
+    "us_se": 0.117607,
+    "us_se_scaled": 1.07366,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
@@ -424,9 +441,13 @@
     ]
    },
    "implied_t1": {
+    "chi_square_per_dof": 68.9089,
     "fit_points": 6,
     "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
     "us": 24.8678,
+    "us_se": 0.227735,
+    "us_se_scaled": 1.89046,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
@@ -470,9 +491,13 @@
     ]
    },
    "implied_t1": {
+    "chi_square_per_dof": 12.0802,
     "fit_points": 5,
     "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
     "us": 20.3617,
+    "us_se": 0.199886,
+    "us_se_scaled": 0.694733,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
@@ -516,9 +541,13 @@
     ]
    },
    "implied_t1": {
+    "chi_square_per_dof": 23.4116,
     "fit_points": 5,
     "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
     "us": 16.2302,
+    "us_se": 0.16223,
+    "us_se_scaled": 0.784959,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
@@ -562,9 +591,13 @@
     ]
    },
    "implied_t1": {
+    "chi_square_per_dof": 36.6655,
     "fit_points": 6,
     "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
     "us": 27.6529,
+    "us_se": 0.278847,
+    "us_se_scaled": 1.68848,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
@@ -608,9 +641,13 @@
     ]
    },
    "implied_t1": {
+    "chi_square_per_dof": 2.01,
     "fit_points": 5,
     "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": true,
     "us": 18.9979,
+    "us_se": 0.177328,
+    "us_se_scaled": 0.251406,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
@@ -654,9 +691,13 @@
     ]
    },
    "implied_t1": {
+    "chi_square_per_dof": 51.0354,
     "fit_points": 5,
     "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
     "us": 22.0546,
+    "us_se": 0.233682,
+    "us_se_scaled": 1.66941,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
@@ -700,9 +741,13 @@
     ]
    },
    "implied_t1": {
+    "chi_square_per_dof": 17.3984,
     "fit_points": 6,
     "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
     "us": 32.21,
+    "us_se": 0.308351,
+    "us_se_scaled": 1.28618,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
@@ -746,9 +791,13 @@
     ]
    },
    "implied_t1": {
+    "chi_square_per_dof": 33.1929,
     "fit_points": 6,
     "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
     "us": 26.4048,
+    "us_se": 0.24997,
+    "us_se_scaled": 1.44016,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
@@ -792,9 +841,13 @@
     ]
    },
    "implied_t1": {
+    "chi_square_per_dof": 48.6988,
     "fit_points": 5,
     "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
     "us": 22.9413,
+    "us_se": 0.206316,
+    "us_se_scaled": 1.43977,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
@@ -838,9 +891,13 @@
     ]
    },
    "implied_t1": {
+    "chi_square_per_dof": 1.91324,
     "fit_points": 5,
     "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": true,
     "us": 23.7961,
+    "us_se": 0.265646,
+    "us_se_scaled": 0.367441,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
@@ -884,9 +941,13 @@
     ]
    },
    "implied_t1": {
+    "chi_square_per_dof": 496.218,
     "fit_points": 6,
     "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
     "us": 23.6425,
+    "us_se": 0.208455,
+    "us_se_scaled": 4.64353,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
@@ -930,9 +991,13 @@
     ]
    },
    "implied_t1": {
+    "chi_square_per_dof": 166.429,
     "fit_points": 6,
     "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
     "us": 24.7085,
+    "us_se": 0.21621,
+    "us_se_scaled": 2.78927,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
@@ -976,9 +1041,13 @@
     ]
    },
    "implied_t1": {
+    "chi_square_per_dof": 4.45676,
     "fit_points": 5,
     "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
     "us": 22.2312,
+    "us_se": 0.219023,
+    "us_se_scaled": 0.462381,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },

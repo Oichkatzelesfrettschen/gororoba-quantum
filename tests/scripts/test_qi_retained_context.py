@@ -170,7 +170,8 @@ def series(root: Path, late: bool = True) -> None:
                     {"p1_given_0": 0.011, "p1_given_1": 0.98},
                     {"p1_given_0": 0.0123456789, "p1_given_1": 0.9712345678},
                 ],
-                "t1": {"us": 24.8260081, "us_se": 0.2, "points": 5},
+                "t1": {"us": 24.8260081, "us_se": 0.2, "points": 5, "chi_square": 100.0, "freedom": 4},
+                "t1_single_exponential": False,
             }
         ],
     }
@@ -194,11 +195,28 @@ def test_a_newer_series_replaces_the_dashboard_figures_and_keeps_the_baseline(tm
         "wait_run_utc": "2026-11-16T12:27:40+00:00",
         "no_wait_run_utc": "2026-11-16T12:25:32+00:00",
         "fit_points": 5,
+        "single_exponential": False,
+        "chi_square_per_dof": 25.0,
+        "us_se": 0.2,
+        "us_se_scaled": 1.0,
     }
     if first["implied_t1"] != want or found["qubits"][1] != {"qubit": 10}:
         raise AssertionError(first["implied_t1"])
     if found["sources"]["characterization_analysis"] != retained.CHARACTERIZATION:
         raise AssertionError(found["sources"])
+
+
+def test_the_scaled_standard_error_never_shrinks_the_binomial_one(tmp_path: Path) -> None:
+    tree(tmp_path)
+    series(tmp_path)
+    path = tmp_path / retained.CHARACTERIZATION
+    analysis = json.loads(path.read_text(encoding="utf-8"))
+    analysis["qubits"][0]["t1"].update({"chi_square": 2.0, "freedom": 4})
+    analysis["qubits"][0]["t1_single_exponential"] = True
+    path.write_text(json.dumps(analysis), encoding="utf-8")
+    implied = retained.summary(tmp_path)["qubits"][0]["implied_t1"]
+    if implied["single_exponential"] is not True or implied["us_se_scaled"] != implied["us_se"] != 0.2:
+        raise AssertionError(implied)
 
 
 def test_an_older_series_leaves_the_device_context_rows(tmp_path: Path) -> None:

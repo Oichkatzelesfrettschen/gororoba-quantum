@@ -14,7 +14,10 @@ so this summary gathers what the repository itself measured, each figure beside 
   row's readout and implied_t1 (the figures the dashboard shows), and the device-context readout stays in
   baseline_readout, which qi_tuna17_characterization_cases.py reads as the retained row of its tolerance verdict.
   The fitted T1 is a single-exponential fit to the corrected populations of the series' own delays and readout pair,
-  not the implied T1's two-run difference.
+  not the implied T1's two-run difference. Its implied_t1 row also carries the fit's adequacy from the same analysis
+  row: single_exponential (the case's verdict), chi_square_per_dof, the binomial standard error us_se and
+  us_se_scaled, which multiplies it by sqrt(max(1, chi_square_per_dof)). A reader that shows us beside these rows
+  labels the figure by single_exponential.
 - per backend and UTC day, from each retained run's results.json: the job count, the median and largest time from
   a job's creation to its finish, and the median execution time the provider reports.
 
@@ -32,6 +35,7 @@ import argparse
 import datetime
 import hashlib
 import json
+import math
 import statistics
 import sys
 from pathlib import Path
@@ -104,12 +108,18 @@ def characterization(root: Path) -> dict[int, dict[str, Any]]:
             }
         }
         if "t1" in row:
+            fit = row["t1"]
+            per_dof = fit["chi_square"] / fit["freedom"]
             entry["implied_t1"] = {
-                "us": _number(row["t1"]["us"]),
+                "us": _number(fit["us"]),
                 "wait_us": _number(longest * CYCLE_US),
                 "wait_run_utc": run_utc(root, f"{RUNS}/{waited[-1]}"),
                 "no_wait_run_utc": run_utc(root, f"{RUNS}/{waited[0]}"),
-                "fit_points": row["t1"]["points"],
+                "fit_points": fit["points"],
+                "single_exponential": row["t1_single_exponential"],
+                "chi_square_per_dof": _number(per_dof),
+                "us_se": _number(fit["us_se"]),
+                "us_se_scaled": _number(fit["us_se"] * math.sqrt(max(1.0, per_dof))),
             }
         found[row["qubit"]] = entry
     return found
@@ -221,6 +231,8 @@ def summary(root: Path = ROOT) -> dict[str, Any]:
         },
         "implied_t1_assumption": "the whole P(1|1) drop between the no-wait and the wait run is T1 decay during the"
         " wait, and readout fidelity is unchanged between the two runs",
+        "fitted_t1_assumption": "an implied_t1 row with fit_points is a single-exponential fit of a series' own delays;"
+        " single_exponential, chi_square_per_dof and us_se_scaled say whether the fit describes the decay",
         "qubits": qubits(context, root),
         "jobs": jobs(root / RUNS),
     }
