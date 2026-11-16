@@ -12,6 +12,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+import pytest
 import qi_tuna17_characterization_cases as cases
 
 
@@ -292,3 +293,22 @@ def test_retained_rows_read_the_baseline_a_newer_series_left_behind(tmp_path: Pa
     found = cases.retained_rows(document, 2)
     if found != {0: {"p1_given_0": 0.02, "p1_given_1": 0.96}, 1: {"p1_given_0": 0.03, "p1_given_1": 0.95}}:
         raise AssertionError(found)
+
+
+@pytest.mark.audit
+@pytest.mark.parametrize(
+    ("prefix", "analysis"),
+    [
+        ("2026-11-16T0401Z-characterization_tuna_17-*", "characterization_tuna_17_analysis.json"),
+        ("2026-11-16T0355Z-characterization_qx-*", "characterization_qx_analysis.json"),
+    ],
+)
+def test_retained_series_reanalyze_to_the_committed_rows_under_the_regenerated_context(
+    prefix: str, analysis: str
+) -> None:
+    root = Path(__file__).resolve().parents[2] / "results/quantum_inspire"
+    runs = sorted((root / "runs").glob(prefix))
+    nqubits = json.loads((runs[0] / "cases.json").read_text(encoding="utf-8"))["nqubits"]
+    found = cases.analyze(runs, cases.retained_rows(cases.RETAINED_CONTEXT, nqubits))
+    if json.dumps(found, indent=1, allow_nan=False) + "\n" != (root / analysis).read_text(encoding="utf-8"):
+        raise AssertionError(f"{analysis} differs from the analysis of its retained runs")
