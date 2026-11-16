@@ -801,6 +801,36 @@ def fit_flips(z12: list[dict[str, Any]], matrix_of: Any, models: str, flips: tup
     return best
 
 
+# Why a statistic reads null: every noise model, parameter and readout flip of a world leaves a batch's center
+# visibility further from the world's reachable range than VISIBILITY_TOLERANCE, which fit_batch() scores as an
+# infinite chi-square. Comparisons inside decide() keep the infinity; JSON has no infinity, so the numbers it returns
+# hold null there and name the worlds.
+UNREACHABLE_REASON = (
+    "no noise model, parameter and readout flip of the listed worlds reproduces a deciding batch's center visibility "
+    "within VISIBILITY_TOLERANCE, so their chi-square statistics are infinite; null marks an infinite statistic"
+)
+
+
+def finite_or_none(value: Any) -> Any:
+    """`value` with each non-finite float replaced by None, through nested dicts, lists and tuples."""
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    if isinstance(value, dict):
+        return {k: finite_or_none(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [finite_or_none(v) for v in value]
+    return value
+
+
+def reportable(numbers: dict[str, Any], best: dict[str, float]) -> dict[str, Any]:
+    """The numbers of decide() as JSON: unchanged while every world's least sum is finite, otherwise with null for each
+    infinite statistic and an "unavailable" field naming the worlds and UNREACHABLE_REASON."""
+    unreachable = sorted(w for w in WORLDS if not math.isfinite(best[w]))
+    if not unreachable:
+        return numbers
+    return {**finite_or_none(numbers), "unavailable": {"worlds": unreachable, "reason": UNREACHABLE_REASON}}
+
+
 def decide(
     batches: list[dict[str, Any]],
     matrix_of: Any,
@@ -875,7 +905,7 @@ def decide(
         label = "phase_unresolved"
     else:
         label = "none_adequate"
-    return {"label": label, "numbers": numbers}
+    return {"label": label, "numbers": reportable(numbers, best)}
 
 
 def parabola_minimum(points: list[tuple[float, float, float]]) -> dict[str, float] | None:
@@ -1547,6 +1577,11 @@ def mixed_label(name: str) -> str:
     return str(decide(scenario_batches(name), lambda b: matrix)["label"])
 
 
+def report_text(report: dict[str, Any]) -> str:
+    """The analysis report as JSON; a non-finite number outside decide()'s reportable() fields stops the write."""
+    return json.dumps(report, indent=1, sort_keys=True, allow_nan=False) + "\n"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -1567,7 +1602,7 @@ def main() -> int:
         if args.out is None:
             parser.error("--analyze needs --out")
         report = analyze(args.analyze)
-        args.out.write_text(json.dumps(report, indent=1, sort_keys=True, allow_nan=False) + "\n", encoding="utf-8")
+        args.out.write_text(report_text(report), encoding="utf-8")
         print(f"wrote {args.out}")
         if "qx_control" in report and not (report["complete"] and report["qx_control"]["pass"]):
             return 1

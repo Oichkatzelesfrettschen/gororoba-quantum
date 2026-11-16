@@ -255,6 +255,34 @@ def test_a_missing_deciding_kind_reads_unresolved_guard(kind: str) -> None:
     _expect(ps.decide(batches, lambda b: matrix, FAST)["label"] == "unresolved_guard", f"a lost {kind} is not refused")
 
 
+def test_a_series_no_world_reaches_writes_its_decision_with_null_statistics() -> None:
+    """A center visibility above every world's reachable range gives infinite chi-squares; the numbers report them as
+    null beside the worlds and the reason, and the analysis report serializes under allow_nan=False."""
+    matrix = ps.predecessor_matrix()
+    batches = ps.planted_batches(ps.truth_row("q12_phase", -0.18, matrix))
+    reachable = ps.decide(batches, lambda b: matrix, FAST, flips=NO_FLIP)
+    _expect("unavailable" not in reachable["numbers"], "a reachable series reports an unavailable statistic")
+    for batch in batches:
+        batch["center_visibility"] = 1.5
+    decision = ps.decide(batches, lambda b: matrix, FAST, flips=NO_FLIP)
+    numbers = decision["numbers"]
+    _expect(decision["label"] == "none_adequate", f"an unreachable series reads {decision['label']}")
+    _expect(all(v is None for v in numbers["chi2"].values()), f"chi2 reads {numbers['chi2']}")
+    _expect(numbers["separation_needed"] is None, f"separation_needed reads {numbers['separation_needed']}")
+    _expect(
+        all(v is None for rows in numbers["batch_chi2"].values() for v in rows.values()),
+        f"batch_chi2 reads {numbers['batch_chi2']}",
+    )
+    _expect(numbers["unavailable"]["worlds"] == sorted(ps.WORLDS), f"unavailable reads {numbers['unavailable']}")
+    _expect(numbers["unavailable"]["reason"] == ps.UNREACHABLE_REASON, "the reason is missing")
+    text = ps.report_text({"decision": decision})
+    _expect(json.loads(text, parse_constant=_refuse)["decision"]["label"] == "none_adequate", "the report misreads")
+
+
+def _refuse(constant: str) -> None:
+    raise AssertionError(f"the report holds the non-finite constant {constant}")
+
+
 def test_every_label_is_reachable_and_one_label_is_returned() -> None:
     matrix = ps.predecessor_matrix()
     seen = set()
