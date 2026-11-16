@@ -201,6 +201,14 @@ def verdict(cm: dict[str, Any], radical: dict[str, Any] | None) -> dict[str, Any
     return {"reduced": reduced, "reduced_basis": basis, "hypothesis_holds": holds}
 
 
+def undecided_row(name: str, variables: int | None, generators: int | None, stage: str) -> dict[str, Any]:
+    """The row of a ring whose `stage` reached the Singular time limit."""
+    return {"ring": name, "variables": variables, "generators": generators, "krull_dim": None, "degree": None,
+            "length": None, "cohen_macaulay": None, "chart": None, "radical": None, "reduced": None,
+            "reduced_basis": f"undecided: {stage} reached the Singular time limit",
+            "hypothesis_holds": None, "measurements": {}}  # fmt: skip
+
+
 def decide(name: str, n: int, polys: list[str], steps: Path | None) -> dict[str, Any]:
     """Both steps of one ring; a finished step is written before the next starts and read back on a rerun."""
     text = ",\n".join(polys)
@@ -235,10 +243,7 @@ def decide(name: str, n: int, polys: list[str], steps: Path | None) -> dict[str,
 
     first = step("cm", CM_SCRIPT)
     if first is None:
-        return {"ring": name, "variables": n, "generators": len(polys), "krull_dim": None, "degree": None,
-                "length": None, "cohen_macaulay": None, "chart": None, "radical": None, "reduced": None,
-                "reduced_basis": "undecided: the Cohen-Macaulay step reached the Singular time limit",
-                "hypothesis_holds": None, "measurements": {}}  # fmt: skip
+        return undecided_row(name, n, len(polys), "the Cohen-Macaulay step")
     cm = cm_row(first["values"])
     measurements = {"cm": {"seconds": first["seconds"], "load_1min": first["load_1min"]}}
     radical = None
@@ -267,7 +272,17 @@ def calibration(steps: Path | None) -> list[dict[str, Any]]:
 def cell(item: tuple[str, str, dict[str, str], Path | None]) -> dict[str, Any]:
     source, orbit, retained, steps = item
     name = ws.incidence_name(orbit, source)
-    run = ws.run_singular(ws.fiber_script(ws.orbit_task(orbit), source, 0, 0))
+    try:
+        run = ws.run_singular(ws.fiber_script(ws.orbit_task(orbit), source, 0, 0))
+    except RuntimeError as error:
+        # The producer raises RuntimeError past its time limit; the cell then has no relations to decide and
+        # keeps an unavailable digest. Any other Singular failure stays fatal.
+        if "exceeded" not in str(error):
+            raise
+        return undecided_row(name, None, None, "the relation regeneration") | {
+            "relations_sha256": None,
+            "relations_match_retained": False,
+        }
     summary = ws.summarize_fiber_run(run)
     row = decide(name, summary["generator_count"], polynomials(sorted(run["relations"])), steps)
     row |= {
@@ -281,7 +296,9 @@ def problems(record: dict[str, Any]) -> list[str]:
     found = [f"calibration: {row['ring']} gives {row['cohen_macaulay']}, {row['reduced']}"
              for row in record["calibration"] if not row["reproduced"]]  # fmt: skip
     for row in record["cells"]:
-        if not row["relations_match_retained"]:
+        if row["relations_sha256"] is None:
+            found.append(f"{row['ring']}: the relations are unavailable")
+        elif not row["relations_match_retained"]:
             found.append(f"{row['ring']}: the relations differ from the retained weight-slice record")
         if row["hypothesis_holds"] is None:
             found.append(f"{row['ring']}: reducedness is undecided")

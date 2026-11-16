@@ -283,13 +283,13 @@ def test_the_producer_reports_an_undecided_ring_and_a_falsifying_ring() -> None:
     _same(any("calibration" in line for line in wsqr.problems(unreproduced)), True)
 
 
-def test_the_cells_run_through_the_pool_in_order_under_the_memory_cap(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
-    _same(wsqr.MAX_WORKERS, 6)
-    if wsqr.MAX_WORKERS * wsqr.ws.SINGULAR_ADDRESS_SPACE_BYTES > wsqr.MEMORY_BUDGET_BYTES:
-        raise AssertionError("the worker cap exceeds the memory budget")
-    calls: list[tuple[str, int, int]] = []
+def _patched_main(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    run_singular: Callable[[str], dict[str, Any]],
+    calls: list[tuple[str, int, int]],
+) -> Path:
+    """Point the producer at constructed relations: the pool runs serially and every cell digest is retained."""
 
     def serial_map(function: Callable[[Any], Any], items: list[Any], min_items: int = 64) -> list[Any]:
         calls.append((function.__name__, len(items), int(os.environ["GOROROBA_WORKERS"])))
@@ -305,9 +305,9 @@ def test_the_cells_run_through_the_pool_in_order_under_the_memory_cap(
     monkeypatch.setattr(wsqr, "decide", fake_decide)
     monkeypatch.setattr(wsqr, "polynomials", lambda lines: list(lines))
     monkeypatch.setattr(wsqr.ws, "singular_version", lambda: ("banner", "4.4.1"))
-    monkeypatch.setattr(wsqr.ws, "fiber_script", lambda *args: "script")
+    monkeypatch.setattr(wsqr.ws, "fiber_script", lambda orbit, source, *rest: f"{source}:{orbit}")
     monkeypatch.setattr(wsqr.ws, "orbit_task", lambda orbit: orbit)
-    monkeypatch.setattr(wsqr.ws, "run_singular", lambda script: {"relations": ["r"]})
+    monkeypatch.setattr(wsqr.ws, "run_singular", run_singular)
     monkeypatch.setattr(
         wsqr.ws, "summarize_fiber_run", lambda run: {"generator_count": 1, "relations_sha256": "digest"}
     )
@@ -317,10 +317,62 @@ def test_the_cells_run_through_the_pool_in_order_under_the_memory_cap(
     (tmp_path / "weight-slice.json").write_text(json.dumps({"cells": cells}), encoding="utf-8")
     out = tmp_path / "out.json"
     monkeypatch.setattr(sys, "argv", ["weight_slice_quadric_rings.py", "--out", str(out)])
+    return out
+
+
+def test_the_cells_run_through_the_pool_in_order_under_the_memory_cap(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    _same(wsqr.MAX_WORKERS, 6)
+    if wsqr.MAX_WORKERS * wsqr.ws.SINGULAR_ADDRESS_SPACE_BYTES > wsqr.MEMORY_BUDGET_BYTES:
+        raise AssertionError("the worker cap exceeds the memory budget")
+    calls: list[tuple[str, int, int]] = []
+    out = _patched_main(monkeypatch, tmp_path, lambda script: {"relations": ["r"]}, calls)
     _same(wsqr.main(), 0)
     written = json.loads(out.read_text(encoding="utf-8"))
-    _same([row["ring"] for row in written["cells"]], list(retained))
+    _same([row["ring"] for row in written["cells"]], [wsqr.ws.incidence_name(o, s) for s, o in wsqr.CELLS])
     _same([row["ring"] for row in written["calibration"]], list(wsqr.CALIBRATION))
     _same(written["complete"], True)
     _same([call[:2] for call in calls], [("calibration_ring", 4), ("cell", 8)])
     _same(all(1 <= call[2] <= 6 for call in calls), True)
+
+
+def test_a_relation_regeneration_timeout_leaves_one_cell_undecided_and_the_record_written(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    def run_singular(script: str) -> dict[str, Any]:
+        if script == "iso:N+":
+            raise RuntimeError("Singular exceeded 3600 s")
+        return {"relations": ["r"]}
+
+    out = _patched_main(monkeypatch, tmp_path, run_singular, [])
+    _same(wsqr.main(), 1)
+    written = json.loads(out.read_text(encoding="utf-8"))
+    rows = {row["ring"]: row for row in written["cells"]}
+    _same(len(rows), 8)
+    stuck = rows["Iso->N+"]
+    _same(
+        (stuck["relations_sha256"], stuck["relations_match_retained"], stuck["hypothesis_holds"]), (None, False, None)
+    )
+    _same(stuck["reduced_basis"], "undecided: the relation regeneration reached the Singular time limit")
+    _same(
+        all(
+            row["relations_match_retained"] and row["hypothesis_holds"]
+            for name, row in rows.items()
+            if name != "Iso->N+"
+        ),
+        True,
+    )
+    _same(any("Iso->N+: the relations are unavailable" in line for line in written["problems"]), True)
+    _same(written["hypothesis_holds_on_every_cell"], False)
+
+
+def test_a_singular_failure_other_than_the_time_limit_still_aborts_the_run(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    def run_singular(script: str) -> dict[str, Any]:
+        raise RuntimeError("Singular exited 1")
+
+    _patched_main(monkeypatch, tmp_path, run_singular, [])
+    with pytest.raises(RuntimeError, match="exited 1"):
+        wsqr.main()
