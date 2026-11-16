@@ -364,15 +364,35 @@ def replayed_models(
     }
 
 
+def stored_minimum(search: dict[str, Any]) -> float | None:
+    """The lowest chi-square that the stored statistics of a model's search hold: its start fits, its phase profile
+    or the sum of its batch profiles; None for a model that ran no start."""
+    if "start_histogram_chi2" in search:
+        return float(min(search["start_histogram_chi2"]))
+    if "profile_histogram_chi2" in search:
+        return float(min(search["profile_histogram_chi2"]))
+    if "batch_histogram_chi2" in search:
+        return float(sum(search["batch_histogram_chi2"].values()))
+    return None
+
+
 def verify_search(models: dict[str, dict[str, Any]]) -> None:
-    """No start reaches a chi-square below the headline by more than the tolerance, and the headline stands at or
-    below the fit from the stored start."""
+    """No stored start, profile point or batch profile sum reaches a chi-square below the headline by more than the
+    tolerance, the stored best stays at or above the headline, and the headline stands at or below the fit from the
+    stored start."""
     problems = []
     for name, model in models.items():
         headline = model["histogram_chi2"]
+        search = model["search"]
         slack = TOLERANCE * max(1.0, abs(headline))
-        if model["search"]["best_histogram_chi2"] < headline - slack:
-            problems.append(f"{name}: {model['search']['best_histogram_chi2']!r} below the headline {headline!r}")
+        if search["best_histogram_chi2"] < headline - slack:
+            problems.append(f"{name}: {search['best_histogram_chi2']!r} below the headline {headline!r}")
+        lowest = stored_minimum(search)
+        if lowest is None:
+            if search.get("starts"):
+                problems.append(f"{name}: {search['starts']} starts stored with no per-start statistic")
+        elif lowest < headline - slack:
+            problems.append(f"{name}: a stored search statistic {lowest!r} is below the headline {headline!r}")
         if headline > model["stored_start_histogram_chi2"] + slack:
             problems.append(f"{name}: headline {headline!r} above its stored-start fit")
     if problems:
@@ -596,8 +616,24 @@ def self_test() -> str:
         raise AssertionError(f"planted retention {PLANTED_RETENTION} profiled as {retention} at {retention_chi2}")
     fake = {"histogram_chi2": 100.0, "stored_start_histogram_chi2": 100.0, "search": {"best_histogram_chi2": 100.0}}
     verify_search({"m": fake})
+    verify_search(
+        {
+            "m": {
+                **fake,
+                "search": {
+                    "best_histogram_chi2": 100.0,
+                    "start_histogram_chi2": [100.0, 40000.0],
+                    "starts": 2,
+                },
+            }
+        }
+    )
     for bad in (
         {"search": {"best_histogram_chi2": 99.0}},
+        {"search": {"best_histogram_chi2": 100.0, "start_histogram_chi2": [100.0, 40000.0, 99.0]}},
+        {"search": {"best_histogram_chi2": 100.0, "profile_histogram_chi2": [101.0, 99.0]}},
+        {"search": {"best_histogram_chi2": 100.0, "batch_histogram_chi2": {"a": 60.0, "b": 39.0}}},
+        {"search": {"best_histogram_chi2": 100.0, "starts": 4}},
         {"stored_start_histogram_chi2": 99.0},
     ):
         try:

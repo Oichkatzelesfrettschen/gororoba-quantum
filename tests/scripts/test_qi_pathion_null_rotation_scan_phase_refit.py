@@ -40,6 +40,19 @@ CHI2 = {
 }
 
 
+def _search(name: str) -> dict[str, Any]:
+    """The search section of a model: the statistics of its kind (start fits, phase profile or batch profiles)."""
+    chi2 = CHI2[name]
+    search: dict[str, Any] = {"best_histogram_chi2": chi2, "best_minus_headline": 0.0, "spread_histogram_chi2": 0.2}
+    if name == refit.EXACT:
+        return {**search, "starts": 0}
+    if name == refit.RETENTION:
+        return {**search, "starts": 2, "batch_histogram_chi2": {"batch-01": chi2 / 2, "batch-03": chi2 / 2}}
+    if name.startswith("cz_noise"):
+        return {**search, "starts": 3, "profile_histogram_chi2": [chi2 + 5.0, chi2 + 0.5, chi2 + 9.0]}
+    return {**search, "starts": 4, "start_histogram_chi2": [chi2, chi2 + 0.1, chi2 + 0.2, chi2]}
+
+
 def _model(name: str) -> dict[str, Any]:
     free = FREE[name]
     return {
@@ -59,12 +72,7 @@ def _model(name: str) -> dict[str, Any]:
         "headline_start": "stored start",
         "stored_start_histogram_chi2": CHI2[name],
         "stored_start_optimizer_status": 3,
-        "search": {
-            "starts": 4,
-            "best_histogram_chi2": CHI2[name],
-            "best_minus_headline": 0.0,
-            "spread_histogram_chi2": 0.2,
-        },
+        "search": _search(name),
     }
 
 
@@ -144,6 +152,34 @@ def test_check_rejects_a_stored_search_that_found_a_lower_minimum(tmp_path: Path
         refit.check(tmp_path, fresh=refit.without_search(record))
 
 
+@pytest.mark.parametrize(
+    ("name", "statistic", "position", "value"),
+    [
+        (MODEL, "start_histogram_chi2", 0, 40000.0),
+        ("cz_noise_flip_q12_z_after_pulse", "profile_histogram_chi2", 1, 40000.0),
+        (refit.RETENTION, "batch_histogram_chi2", "batch-01", 1000.0),
+    ],
+)
+def test_check_rejects_a_stored_search_statistic_below_the_headline(
+    tmp_path: Path, name: str, statistic: str, position: int | str, value: float
+) -> None:
+    record = _fake_record()
+    _store(tmp_path, record)
+    refit.check(tmp_path, fresh=refit.without_search(record))
+    record["models"][name]["search"][statistic][position] = value
+    _store(tmp_path, record)
+    with pytest.raises(ValueError, match="stored search statistic"):
+        refit.check(tmp_path, fresh=refit.without_search(record))
+
+
+def test_check_rejects_a_search_that_stores_starts_without_their_statistics(tmp_path: Path) -> None:
+    record = _fake_record()
+    del record["models"][MODEL]["search"]["start_histogram_chi2"]
+    _store(tmp_path, record)
+    with pytest.raises(ValueError, match="no per-start statistic"):
+        refit.check(tmp_path, fresh=refit.without_search(record))
+
+
 def test_check_rejects_a_record_without_its_search(tmp_path: Path) -> None:
     record = _fake_record()
     _store(tmp_path, refit.without_search(record))
@@ -163,6 +199,7 @@ def test_check_rejects_a_larger_model_that_fits_worse_than_the_model_it_contains
     record = _fake_record()
     worse = record["models"]["five_noise_terms_q12_z_after_pulse"]
     worse["histogram_chi2"] = worse["stored_start_histogram_chi2"] = worse["search"]["best_histogram_chi2"] = 42949.0
+    worse["search"]["start_histogram_chi2"] = [42949.0] * 4
     _store(tmp_path, record)
     with pytest.raises(ValueError, match="nesting order"):
         refit.check(tmp_path, fresh=refit.without_search(record))
@@ -305,6 +342,19 @@ def test_the_retained_record_is_complete_and_degrees_of_freedom_follow_the_free_
         _expect(model["n_free"] == len(model["free"]), f"{name} lists a different number of free parameters")
         _expect(set(model["start"]) == set(model["free"]) == set(model["x_scale"]), f"{name} stores a partial config")
         _expect(model["min_expected_probability"] > refit.CLIP, f"{name} reaches the probability floor")
+
+
+@pytest.mark.audit
+def test_a_planted_start_score_below_the_retained_headline_is_rejected() -> None:
+    models = _retained()["models"]
+    planted = copy.deepcopy(models)
+    planted[MODEL]["search"]["start_histogram_chi2"][0] = 40000.0
+    with pytest.raises(ValueError, match="stored search statistic"):
+        refit.verify_search(planted)
+    profiled = copy.deepcopy(models)
+    profiled["cz_noise_flip_q12_z_after_pulse"]["search"]["profile_histogram_chi2"][0] = 40000.0
+    with pytest.raises(ValueError, match="stored search statistic"):
+        refit.verify_search(profiled)
 
 
 @pytest.mark.audit
