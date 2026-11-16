@@ -106,6 +106,89 @@ points per qubit; the readout correction uses the mean of both pairs).
   (CASE.md, last hypothesis), or a second, slower population contributes; no
   arm in this series separates the two.
 
+## T1 shape: predictions written before the refit
+
+The single-exponential verdict fails on 15 of 17 qubits where the case predicted
+17 of 17. This section records the hypotheses, each with its prediction and
+falsifier, before any refit of the retained counts ran; the results follow in
+"T1 shape: results". The inputs are the retained counts only (no provider
+read): six delays (0, 250, 500, 1000, 2000, 4000 cycles) at 8,192 shots, and
+the opening and closing readout pairs at 16,384 shots. The registered verdict
+rule and the retained `--analyze` rows stay unchanged.
+
+Method, fixed in advance. Each T1 point is a binomial count; the goodness of fit
+is Pearson chi-square with the model's fitted probability in the variance (the
+retained analyzer uses the observed fraction), and the intervals are profile
+likelihoods of the binomial deviance (68.3% at a deviance rise of 1.00), widened
+by the factor sqrt(chi-square / dof) where that exceeds 1. No bootstrap runs, so
+no random seed enters. Model comparison uses the binomial deviance with AICc and
+BIC at six points, where three parameters leave 3 degrees of freedom and an
+AICc penalty that is itself uncertain; a 3-parameter model counts as supported
+only on the agreement of AICc and BIC with the fit quality below.
+
+- H1, readout floor. The retained analyzer already maps each point through the
+  mean readout pair, (p - e01) / (e11 - e01), so the model
+  P1(t) = e01 + (e11 - e01) exp(-t / T1) with e01 and e11 fixed from the opening
+  pair, the closing pair and their mean differs from the retained fit only in
+  keeping every point (the analyzer drops points under a corrected population of
+  0.05) and in fitting P1 directly instead of its logarithm. Prediction: the
+  offsets are already in the retained fit, so the refit leaves chi-square / dof
+  above 3 on at least 9 of 17 qubits for each of the three choices, with the
+  late points above the model. A variant that takes e01 and e11 as free
+  parameters constrained by the readout counts (the joint likelihood) carries
+  the covariance of the shared pair. Falsifier: chi-square / dof at most 3 on at
+  least 9 qubits and a median at most 2 supports H1.
+- H2, delay unit or idle-gate calibration. Prediction: every wait line reads
+  `wait(N)` with N the file's delay on all 17 qubits, `cases.json` and
+  [cqasm.md](cqasm.md) give 20 ns per cycle, and the execution time of the six
+  jobs rises with N by 0.164 ms per cycle (20 ns x 8,192 shots) to within 25%.
+  A one-parameter rescale of time changes T1 and leaves the shape, so the
+  discriminating test is a common warp: the stretched exponent fitted per qubit
+  carries a shared value only if one clock error acts on all qubits. Falsifier:
+  consistent units, a slope within 25% of nominal and a per-qubit exponent
+  spread that rejects a common exponent (likelihood ratio, 16 degrees of
+  freedom, p below 0.01) refute H2; a common exponent other than 1 with a
+  nonlinear execution-time slope supports it.
+- H3, two-rate decay. Prediction: a plateau (one residual fraction c), a
+  stretched exponential or a biexponential reaches chi-square / dof at most 3 on
+  at least 12 of 17 qubits and lowers AICc by more than 4 against the single
+  exponential on at least 12; the second scale is slower than the first, with a
+  positive weight, on at least 15 of 17 qubits. The window ends at 80 us, about
+  3.5 T1, so the slow scale is bounded below and unbounded above on most
+  qubits; I expect "supported in sign, undecided in magnitude" for the tail.
+  Falsifier: chi-square / dof above 3 on most qubits for every model of at most
+  3 parameters, a faster second scale on 4 or more qubits, or an AICc gain
+  under 2.
+- H4, drift during the 8 h 20 min queue and the 12 min run. Prediction:
+  refuted. The opening-to-closing change of any readout probability is at most
+  0.0136 (mean per-qubit maximum 0.0054), which moves a corrected population by
+  at most 0.015, below the excess at 80 us. Test: e01 and e11 interpolated
+  linearly in the job finish times between the opening and the closing pair, and
+  the step between batch 01 and batch 02 (2 min apart). Falsifier: the
+  interpolated model brings chi-square / dof to at most 3 on at least 9 qubits,
+  or the batch step exceeds 2 standard errors on at least 9 qubits.
+- H5, simultaneous driving and crosstalk. All 17 qubits are excited and read
+  together, so a qubit's decay sits beside neighbors in the same state. Test, on
+  the joint 17-bit strings and the 24-edge coupling map of the catalogue:
+  Spearman correlation of each qubit's standardized residual (the 80 us point
+  against the single-exponential fit to the earlier points) with its degree and
+  with the mean residual of its neighbors, and the connected correlation of
+  coupled against uncoupled pairs at 80 us. Prediction: |rho| below 0.6 on both
+  (n = 17), and a coupled-pair excess within 3 standard errors of the uncoupled
+  pairs; the series holds no single-qubit arm, so a null here narrows the claim
+  to "no map-aligned pattern in this series". Falsifier: |rho| at least 0.6 (p
+  below 0.01) or a coupled-pair excess above 3 standard errors supports H5.
+- Standard-error mechanism. The retained fit is a weighted straight-line fit of
+  the logarithm of the corrected population, whose slope variance
+  sw / (sw sxx - sx^2) assumes the line is right, so it carries no factor of
+  chi-square / dof, and it ignores the covariance of the shared readout pair.
+  Prediction: scaling the quoted standard errors by sqrt(chi-square / dof)
+  (1.4 to 22 over the retained rows) widens them to 0.3 to 4.5 us, and the
+  spread of T1 over the alternative analyses (retained log fit, direct fit with
+  the opening, closing or mean pair) then falls inside the scaled interval.
+  Falsifier: a spread above the scaled standard error on 5 or more qubits
+  leaves a second source of error beyond the missing scale factor.
+
 ## X90 repetition ladder
 
 Corrected P(0) after 32, 128 and 256 pulses (`ladder_clears` requires each
