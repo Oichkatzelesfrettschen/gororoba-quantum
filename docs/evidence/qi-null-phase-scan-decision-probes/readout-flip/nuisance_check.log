@@ -1,8 +1,8 @@
 check ok: matched_shared == ps.matched (bitwise) on 4 worlds x 2 tables x 2 arm sets x 2 flips x 2 mixes
-check ok: null: flip 0.0166, CZ phase damping 0.10: decide() == flip-0 slice on 6 series: ['phase_unresolved', 'none_adequate', 'none_adequate', 'phase_unresolved', 'none_adequate', 'none_adequate']
-check ok: null: flip 0.025, CZ phase damping 0.16: decide() == flip-0 slice on 6 series: ['phase_unresolved', 'phase_unresolved', 'phase_unresolved', 'phase_unresolved', 'phase_unresolved', 'phase_unresolved']
+check ok: null: flip 0.0166, CZ phase damping 0.10: decide() == flip-0 slice on 6 series: ['phase_unresolved', 'none_adequate', 'phase_unresolved', 'phase_unresolved', 'none_adequate', 'none_adequate']
+check ok: null: flip 0.025, CZ phase damping 0.16: decide() == flip-0 slice on 6 series: ['phase_unresolved', 'phase_unresolved', 'none_adequate', 'phase_unresolved', 'phase_unresolved', 'phase_unresolved']
 check ok: TRUTHS: coupler 8-12 phase -0.25 rad: decide() == flip-0 slice on 6 series: ['coupler_phase', 'coupler_phase', 'coupler_phase', 'coupler_phase', 'coupler_phase', 'coupler_phase']
-check ok: TRUTHS: q8 phase at coupler 8-12 +0.10 rad: decide() == flip-0 slice on 6 series: ['phase_unresolved', 'phase_unresolved', 'phase_unresolved', 'phase_unresolved', 'phase_unresolved', 'phase_unresolved']
-check ok: true: coupler 8-12 phase -0.25 rad, flip 0.0166: decide() == flip-0 slice on 6 series: ['none_adequate', 'none_adequate', 'none_adequate', 'none_adequate', 'none_adequate', 'none_adequate']
-check ok: flip only: flip 0.025, no gate noise: decide() == flip-0 slice on 6 series: ['none_adequate', 'none_adequate', 'none_adequate', 'none_adequate', 'none_adequate', 'none_adequate']
+check ok: TRUTHS: q8 phase at coupler 8-12 -0.25 rad, selector flip 0.042: decide() == flip-0 slice on 6 series: ['none_adequate', 'none_adequate', 'none_adequate', 'none_adequate', 'none_adequate', 'none_adequate']
+check ok: TRUTHS: exact gates, selector flip 0.036, CZ phase damping 0.16: decide() == flip-0 slice on 6 series: ['phase_unresolved', 'none_adequate', 'phase_unresolved', 'phase_unresolved', 'phase_unresolved', 'phase_unresolved']
+check ok: TRUTHS: exact gates, selector flip 0.025, pulse phase damping 0.10: decide() == flip-0 slice on 6 series: ['phase_unresolved', 'phase_unresolved', 'none_adequate', 'none_adequate', 'none_adequate', 'phase_unresolved']
 known-good flip-only 0.025: current none_adequate, nuisance exact_parabola, exact chi2 0.0000 at flip 0.025, exact chi2 at flip 0 285.455

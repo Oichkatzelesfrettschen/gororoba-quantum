@@ -1,12 +1,12 @@
-done null: flip 0.036, CZ phase damping 0.13 200 series 490.45s current {'none_adequate': 200} nuisance {'exact_parabola': 26, 'none_adequate': 1, 'phase_unresolved': 173}
-done null: flip 0.025, CZ phase damping 0.16 200 series 498.38s current {'none_adequate': 23, 'offset_absent': 1, 'phase_unresolved': 176} nuisance {'exact_parabola': 29, 'offset_absent': 1, 'phase_unresolved': 170}
-done null: flip 0.0166, CZ phase damping 0.10 200 series 503.15s current {'none_adequate': 171, 'phase_unresolved': 29} nuisance {'exact_parabola': 21, 'none_adequate': 4, 'phase_unresolved': 175}
-done null: flip 0.0166, pulse phase damping 0.10 200 series 508.64s current {'exact_parabola': 92, 'none_adequate': 27, 'offset_absent': 5, 'phase_unresolved': 76} nuisance {'exact_parabola': 194, 'offset_absent': 5, 'phase_unresolved': 1}
-done null: flip 0.036, CZ phase damping 0.16 200 series 693.45s current {'none_adequate': 112, 'phase_unresolved': 88} nuisance {'exact_parabola': 24, 'none_adequate': 1, 'phase_unresolved': 175}
-done null: flip 0.025, pulse phase damping 0.10 200 series 706.84s current {'none_adequate': 137, 'phase_unresolved': 63} nuisance {'exact_parabola': 197, 'none_adequate': 1, 'phase_unresolved': 2}
-done null: flip 0.0166, CZ phase damping 0.13 200 series 715.88s current {'none_adequate': 24, 'offset_absent': 1, 'phase_unresolved': 175} nuisance {'exact_parabola': 18, 'none_adequate': 1, 'offset_absent': 1, 'phase_unresolved': 180}
-done null: flip 0.025, CZ phase damping 0.10 200 series 713.57s current {'none_adequate': 200} nuisance {'exact_parabola': 33, 'phase_unresolved': 167}
-done null: flip 0.0166, CZ phase damping 0.16 200 series 465.15s current {'exact_parabola': 2, 'offset_absent': 44, 'phase_unresolved': 154} nuisance {'exact_parabola': 20, 'offset_absent': 44, 'phase_unresolved': 136}
-done null: flip 0.036, CZ phase damping 0.10 200 series 496.63s current {'none_adequate': 200} nuisance {'exact_parabola': 34, 'none_adequate': 1, 'phase_unresolved': 165}
-done null: flip 0.036, pulse phase damping 0.10 200 series 521.82s current {'none_adequate': 200} nuisance {'exact_parabola': 199, 'phase_unresolved': 1}
-done null: flip 0.025, CZ phase damping 0.13 200 series 541.69s current {'none_adequate': 155, 'phase_unresolved': 45} nuisance {'exact_parabola': 20, 'phase_unresolved': 180}
+done null: flip 0.0166, CZ phase damping 0.16 200 series 720.7s current {'none_adequate': 6, 'offset_absent': 35, 'phase_unresolved': 159} nuisance {'exact_parabola': 13, 'none_adequate': 1, 'offset_absent': 35, 'phase_unresolved': 151}
+done null: flip 0.0166, CZ phase damping 0.10 200 series 853.27s current {'none_adequate': 167, 'phase_unresolved': 33} nuisance {'exact_parabola': 24, 'none_adequate': 2, 'phase_unresolved': 174}
+done null: flip 0.036, CZ phase damping 0.10 200 series 857.21s current {'none_adequate': 200} nuisance {'exact_parabola': 30, 'none_adequate': 2, 'phase_unresolved': 168}
+done null: flip 0.025, CZ phase damping 0.16 200 series 863.52s current {'none_adequate': 16, 'phase_unresolved': 184} nuisance {'exact_parabola': 26, 'none_adequate': 2, 'phase_unresolved': 172}
+done null: flip 0.025, CZ phase damping 0.10 200 series 863.86s current {'none_adequate': 200} nuisance {'exact_parabola': 31, 'none_adequate': 1, 'phase_unresolved': 168}
+done null: flip 0.036, CZ phase damping 0.16 200 series 876.77s current {'none_adequate': 94, 'phase_unresolved': 106} nuisance {'exact_parabola': 31, 'none_adequate': 1, 'phase_unresolved': 168}
+done null: flip 0.0166, pulse phase damping 0.10 200 series 1049.04s current {'exact_parabola': 99, 'none_adequate': 26, 'offset_absent': 7, 'phase_unresolved': 68} nuisance {'exact_parabola': 193, 'offset_absent': 7}
+done null: flip 0.0166, CZ phase damping 0.13 200 series 1089.39s current {'none_adequate': 29, 'offset_absent': 3, 'phase_unresolved': 168} nuisance {'exact_parabola': 18, 'none_adequate': 2, 'offset_absent': 3, 'phase_unresolved': 177}
+done null: flip 0.025, CZ phase damping 0.13 200 series 1107.16s current {'none_adequate': 153, 'phase_unresolved': 47} nuisance {'exact_parabola': 17, 'phase_unresolved': 183}
+done null: flip 0.025, pulse phase damping 0.10 200 series 1109.19s current {'exact_parabola': 3, 'none_adequate': 152, 'phase_unresolved': 45} nuisance {'exact_parabola': 198, 'none_adequate': 1, 'phase_unresolved': 1}
+done null: flip 0.036, CZ phase damping 0.13 200 series 1128.19s current {'none_adequate': 200} nuisance {'exact_parabola': 28, 'none_adequate': 2, 'phase_unresolved': 170}
+done null: flip 0.036, pulse phase damping 0.10 200 series 1126.39s current {'none_adequate': 200} nuisance {'exact_parabola': 199, 'phase_unresolved': 1}

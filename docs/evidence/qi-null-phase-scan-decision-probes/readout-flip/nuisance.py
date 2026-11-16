@@ -228,7 +228,7 @@ def finish(z12: list[dict], best: Best, extra: int, margin: float = ps.KIND_MARG
     names = [b["name"] for b in z12]
     kinds = [b["kind"] for b in z12]
     bests = dict(best.total)
-    free = {w: ps.freedom(w, values) - extra for w in WORLDS}
+    free = {w: ps.freedom(w, values, flip_fitted=False) - extra for w in WORLDS}
     limit = {w: float(chi2_law.ppf(1 - ps.ADEQUACY_ALPHA, free[w])) for w in WORLDS}
     adequate = {w: bests[w] <= limit[w] for w in WORLDS}
     per_batch = {w: dict(zip(names, best.per_batch[w], strict=True)) for w in ps.ERROR_WORLDS}

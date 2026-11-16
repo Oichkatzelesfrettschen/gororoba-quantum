@@ -104,8 +104,10 @@ expected values the q12 truth of -0.15 rad reads `q12_phase` from multiple 0 thr
 -0.25 rad reads `coupler_phase` from 0 through 1.875 (`coverage.json` in
 `docs/evidence/qi-null-phase-scan-decision-probes/`, computed with the readout flip fixed at 0). Stronger damping
 reads `phase_unresolved`, and from multiple 2.875 on the q12 truth's center offset falls below the control's
-threshold and reads `offset_absent`; no multiple reads a wrong error world. With the flip fitted, the truths at
-multiples 1, 1.25 and 3 read the same labels at expected values.
+threshold and reads `offset_absent`; no multiple reads a wrong error world. With the flip fitted
+(`coverage_r6.json`, the current generator), the coupler truth keeps its range and the q12 truth reads `q12_phase`
+through multiple 2.0 and `phase_unresolved` from 2.0625 (it read it through 2.125 with the flip fixed at 0); the
+truths at multiples 1, 1.25 and 3 read the same labels at expected values, and no multiple reads a wrong error world.
 
 The predecessor's readout world beside exact gates (a selector flip when d0 reads 0) is fitted by rule 3: flips of
 0.0166 and 0.036 read `exact_parabola` at expected values with the exact world's flip at 0.0175 and 0.035, the
@@ -114,6 +116,7 @@ scored 121.9 and 598.3 against its bound and the series read `none_adequate`; so
 beside such a flip, in 290 to 300 of 300 exploratory series, which would have made `none_adequate` the likely
 reading of a device with both. The flip beside phase damping on every CZ or every pulse reads `exact_parabola`
 or `phase_unresolved`, and in the 48 combinations of `nulls.json` (same directory, flip fixed at 0) no error
+world; with the flip fitted (`nulls_r6.json`) 42 of the 48 read `exact_parabola`, 6 `offset_absent` and none an error
 world. The fitted flip is not a clean readout measurement when a phase is present: under a q12 phase of -0.18
 rad the exact world fits its best flip at 0.03, and beside a true flip of 0.036 at the grid's end, 0.06, while
 the q12 world takes the flip itself. Rule 4's scaled separation stays: under the unscaled separation of 25, two
@@ -173,8 +176,8 @@ No null reads an error world: 0 in 40,000 series of exact gates (each null's rat
 scenario reads another error world in 10,000 series. One phase reads `exact_parabola`: a q12 phase of -0.15 rad
 under CZ damping x3 in 6 of 500 series (1 of 500 with the flip fixed, value 11), where the damping pulls the center
 offset below the control's threshold in 297 series; this is the cost of the fitted flip, which lets the exact
-world absorb part of a weak phase. A probe outside the record (`readout-flip/small_phase.log`, pseudo-random
-seed, not a draw value) draws 300 series for each of 18 small phases, a q12 phase of -0.12, -0.08, -0.05, +0.05,
+world absorb part of a weak phase. A probe outside the record (`readout-flip/small_phase.log`, seeded by index 1 of
+`docs/evidence/anu_qrng/draw-2026-11-16T041214Z.json`) draws 300 series for each of 18 small phases, a q12 phase of -0.12, -0.08, -0.05, +0.05,
 +0.08 and +0.12 rad and a coupler phase of -0.12, -0.08 and +0.08 rad, each at selector flip 0 and 0.036: none
 reads `exact_parabola` (0 of 5,400, upper 95% bound 0.06%; 0 of 300 per scenario, below 0.99%) and none reads
 another deciding label, including the scenarios whose expected center offset lies 3.5 to 3.9 standard errors
@@ -323,11 +326,12 @@ deciding kinds are z12-10, z12-30 and z8c-10.
   with it, its own label in 195 to 200 of 200. In the same exploratory draws a null whose flip drifts from 0 to
   0.036 or 0.05 during the series read no deciding label, and a true q12 or coupler phase beside a flip drifting
   from 0 to 0.036 read its own label in about half its series and `none_adequate` or `phase_mixed` otherwise
-  (`docs/evidence/qi-null-phase-scan-decision-probes/readout-flip/`; pseudo-random seeds, not draw values).
+  (`docs/evidence/qi-null-phase-scan-decision-probes/readout-flip/`; `nuisance.py` and `small_phase.py` take indices 0 and 1 of
+  `docs/evidence/anu_qrng/draw-2026-11-16T041214Z.json`, `final_round.py` a fixed pseudo-random seed).
 - Power on weak phases. In the exploratory probe a q12 phase of 0.05 rad reads its own label in 0 of 300 series at
-  either flip, one of 0.08 rad in 0 to 128 (116 and 128 of 300 for -0.08 at flip 0 and 0.036, 0 for +0.08), and one
-  of 0.12 rad in 109 to 298 (298 for -0.12 at both flips, 132 and 109 for +0.12); a coupler phase of 0.08 rad reads
-  its own in 0 of 300 and one of -0.12 rad in 42 and 34. Nearly all the rest read `offset_absent` (center offset
+  either flip, one of 0.08 rad in 0 to 144 (100 and 144 of 300 for -0.08 at flip 0 and 0.036, 0 and 1 for +0.08), and one
+  of 0.12 rad in 103 to 299 (297 and 299 for -0.12 at flip 0 and 0.036, 127 and 103 for +0.12); a coupler phase of
+  0.08 rad reads its own in 0 of 300 and one of -0.12 rad in 42 and 29. Nearly all the rest read `offset_absent` (center offset
   below the control's threshold, flip 0) or `phase_unresolved`, so a run that reads either bounds no phase from
   above.
 - Choosing among 62 noise models and 25 readout flips costs more than the two degrees of freedom the bound
