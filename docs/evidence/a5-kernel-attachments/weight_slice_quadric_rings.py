@@ -25,8 +25,9 @@ weight-slice record binds.
   nothing for one choice of forms, and the radical probe then decides the ring.
 - Radical probe, on every ring the chart leaves undecided (each ring the Cohen-Macaulay test rejects, and a
   Cohen-Macaulay ring whose chart is not radical): R = rad K, the intersection of the minimal primes from
-  minAssGTZ (the method of A5-447; primdec's radical() on W8 -> N- ran past 15 minutes). R = K decides the ring reduced; a generator of R
-  outside K decides it not reduced. The linear part of R and whether its square lies in K are recorded.
+  minAssGTZ (the method of A5-447; primdec's radical() on W8 -> N- ran past 15 minutes). R = K decides the ring
+  reduced; a generator of R outside K decides it not reduced. The linear part of R and whether its square lies in K
+  are recorded.
 
 The probes follow the computed values and never the predicted ones. Four calibration ideals with known answers run
 first in every run, one for each pair of answers: the twisted cubic (Cohen-Macaulay, reduced), the double plane
@@ -146,7 +147,12 @@ def cm_row(values: dict[str, list[str]]) -> dict[str, Any]:
         "length": length,
         "cohen_macaulay": length == e,
         "parameter_forms": values["forms"][0],
-        "chart": {"dim": chart_dim, "length": chart_length, "squarefree_eliminants": squarefree, "variables": variables},
+        "chart": {
+            "dim": chart_dim,
+            "length": chart_length,
+            "squarefree_eliminants": squarefree,
+            "variables": variables,
+        },
     }
 
 
