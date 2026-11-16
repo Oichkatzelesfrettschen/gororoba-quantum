@@ -54,6 +54,17 @@ the copies here call it that way. Run them from the repository root under the pi
    200 series is 0.0247 alone, 0.0242 beside pulse phase damping and 0.0256 to 0.0268 beside CZ phase damping of
    0.10 to 0.16, which it partly absorbs (`nuisance_flips.json`, the per-scenario flips of the part files).
 
+8. Small true phases do not read `exact_parabola`. A q12 phase of -0.12, -0.08, -0.05, +0.05, +0.08 and +0.12 rad
+   and a coupler phase of -0.12, -0.08 and +0.08 rad, each at selector flip 0 and 0.036 (300 series per scenario,
+   seed 20261120), read `exact_parabola` in 0 of 5,400 series and no other deciding label, with expected center
+   offsets of 1.4 to 8.5 standard errors at flip 0 (3.5 to 3.9 at the threshold) and 23 to 31 at flip 0.036. The
+   absorption of a phase by the fitted flip appears beside CZ damping that pulls the center toward the control's
+   threshold (q12 -0.15 rad, damping x3: 6 of 500 series of the value-12 record), not in these scenarios. The
+   weak phases are missed: a q12 phase of 0.05 rad reads its own label in 0 of 300 series, 0.08 rad in 0 to 128,
+   0.12 rad in 109 to 298; a coupler phase of 0.08 rad in 0 and -0.12 rad in 42 and 34 (`small_phase.log`); nearly
+   all the rest read `offset_absent` or `phase_unresolved`.
+
 Cost: the R6 fit takes 25 times the fits of R5 per series (`nuisance_time.log`). The generator fits every series
 of a simulation at one flip before the next, so a worker holds one flip's tables at a time; the value-12 record
-(50,000 series, 39,656 of them past the control and fitted) took 70 minutes on 28 workers.
+(50,000 series, 39,656 of them past the control and fitted) took 70 minutes on 28 workers; the same write on 22 workers beside the 6-worker small-phase probe took 81 minutes
+and `--check` 74 minutes on 22 workers.

@@ -173,7 +173,14 @@ No null reads an error world: 0 in 40,000 series of exact gates (each null's rat
 scenario reads another error world in 10,000 series. One phase reads `exact_parabola`: a q12 phase of -0.15 rad
 under CZ damping x3 in 6 of 500 series (1 of 500 with the flip fixed, value 11), where the damping pulls the center
 offset below the control's threshold in 297 series; this is the cost of the fitted flip, which lets the exact
-world absorb part of a weak phase. Each single q12 or coupler mechanism reads its own
+world absorb part of a weak phase. A probe outside the record (`readout-flip/small_phase.log`, pseudo-random
+seed, not a draw value) draws 300 series for each of 18 small phases, a q12 phase of -0.12, -0.08, -0.05, +0.05,
++0.08 and +0.12 rad and a coupler phase of -0.12, -0.08 and +0.08 rad, each at selector flip 0 and 0.036: none
+reads `exact_parabola` (0 of 5,400, upper 95% bound 0.06%; 0 of 300 per scenario, below 0.99%) and none reads
+another deciding label, including the scenarios whose expected center offset lies 3.5 to 3.9 standard errors
+from zero, just above the control's threshold. Of the record's phase scenarios and these probes, the fitted flip
+reads a phase as `exact_parabola` only in the scenario above, where CZ damping pulls the center toward the threshold.
+These weak phases are missed instead (limits below). Each single q12 or coupler mechanism reads its own
 label in 491 to 499 of 500 series, a selector flip of 0.036 or CZ damping up to 1.25 times the retained strength
 included. The q8 phase of -0.25 rad reads its own in 440 (459 beside a flip of 0.042); the smaller q8 phases lie
 within the separation and read `phase_unresolved` in most series and their own label in 23 and 29. A selector
@@ -295,7 +302,7 @@ deciding kinds are z12-10, z12-30 and z8c-10.
 | `q8_phase_at_coupler` | a single-qubit phase on q8 after each CZ of coupler 8-12 is adequate and preferred in each deciding kind | changes to that statement |
 | `phase_mixed` | the series prefers one error world and a deciding kind disagrees or fits it badly: two mechanisms, a change during the series, or sampling noise (up to 8 of 500 simulated series of one mechanism) | unchanged; the numbers are reported |
 | `phase_unresolved` | an error world is adequate and the least is not separated from another | unchanged; the numbers are reported |
-| `exact_parabola` | the deciding arms and their centers follow exact gates at the fitted readout flip; no phase on or around q12 is needed at this offset, and a fitted flip above 0 names a selector misread conditioned on q12 reading 0 as a candidate cause. A weak phase near the control's threshold can read it (6 of 500 series of a q12 phase of -0.15 rad under CZ damping x3) | unchanged; the numbers and the fitted flip are reported |
+| `exact_parabola` | the deciding arms and their centers follow exact gates at the fitted readout flip; no phase on or around q12 is needed at this offset, and a fitted flip above 0 names a selector misread conditioned on q12 reading 0 as a candidate cause. A weak phase near the control's threshold can read it (6 of 500 series of a q12 phase of -0.15 rad under CZ damping x3; 0 of 5,400 for q12 and coupler phases of 0.05 to 0.12 rad) | unchanged; the numbers and the fitted flip are reported |
 | `none_adequate` | no world fits at any noise model and readout flip of the fit | unchanged |
 | `offset_absent`, `offset_reversed`, `unresolved_guard` | numbers reported | unchanged |
 
@@ -317,6 +324,12 @@ deciding kinds are z12-10, z12-30 and z8c-10.
   0.036 or 0.05 during the series read no deciding label, and a true q12 or coupler phase beside a flip drifting
   from 0 to 0.036 read its own label in about half its series and `none_adequate` or `phase_mixed` otherwise
   (`docs/evidence/qi-null-phase-scan-decision-probes/readout-flip/`; pseudo-random seeds, not draw values).
+- Power on weak phases. In the exploratory probe a q12 phase of 0.05 rad reads its own label in 0 of 300 series at
+  either flip, one of 0.08 rad in 0 to 128 (116 and 128 of 300 for -0.08 at flip 0 and 0.036, 0 for +0.08), and one
+  of 0.12 rad in 109 to 298 (298 for -0.12 at both flips, 132 and 109 for +0.12); a coupler phase of 0.08 rad reads
+  its own in 0 of 300 and one of -0.12 rad in 42 and 34. Nearly all the rest read `offset_absent` (center offset
+  below the control's threshold, flip 0) or `phase_unresolved`, so a run that reads either bounds no phase from
+  above.
 - Choosing among 62 noise models and 25 readout flips costs more than the two degrees of freedom the bound
   removes; the bound is calibrated by the operating characteristics, not by the count.
 - The consistency margin of rule 4 (6.63) was calibrated on value 0 of the draw for the decision with two error
