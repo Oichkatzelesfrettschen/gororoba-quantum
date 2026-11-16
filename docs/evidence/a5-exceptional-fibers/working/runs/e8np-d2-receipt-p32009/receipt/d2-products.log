@@ -1,0 +1,13 @@
+RESULT generators 21
+RESULT targets 231
+RESULT products_ms 15189
+RESULT std_ms 8490422 size 980
+RESULT reduce_ms 35283
+
+--- stderr ---
+Running as unit: run-p290585-i282059.service
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 2h 22min 22.870s
+             CPU time consumed: 2h 18min 16.761s
+                   Memory peak: 4.9G (swap: 0B)

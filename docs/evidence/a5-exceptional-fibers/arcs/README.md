@@ -292,7 +292,7 @@ Hence L = K2 in every degree, given K2 inside L, so h_d = HF(k[y]/K2, d) for eve
   primes that the package does not make.
 - The two certified families are dense in the two components by rank and irreducibility. The 15 unclassified
   near-e = -1 families and arcs with several terms per parameter are unexplored and not needed.
-- K2 inside L rests on the degree-2 receipts and the sign-isomorphism row cited under the reduced-fiber statement, not on this package; A5-559 takes it as its one premise.
+- K2 inside L rests on the degree-2 receipts (N+ at 32009 by the direct receipt of A5-570, with the sign-isomorphism row cited under the reduced-fiber statement as a cross-check), not on this package; A5-559 takes it as its one premise.
 - The arc bound (861) is superseded at degree 5: r_18 = 952 on N- at both primes (`../n18-laptop/`) reaches the K2
   count, and the sign isomorphism carries it to N+.
 - The fibers over the other points of V(J + G) are untested beyond the 120 survey arcs.

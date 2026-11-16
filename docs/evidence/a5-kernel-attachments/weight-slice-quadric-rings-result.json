@@ -1,0 +1,487 @@
+{
+ "calibration": [
+  {
+   "chart": {
+    "dim": 0,
+    "length": 3,
+    "squarefree_eliminants": 2,
+    "variables": 4
+   },
+   "cohen_macaulay": true,
+   "degree": 3,
+   "generators": 3,
+   "hypothesis_holds": true,
+   "known_cohen_macaulay": true,
+   "known_reduced": true,
+   "krull_dim": 2,
+   "length": 3,
+   "measurements": {
+    "cm": {
+     "load_1min": 0.5439453125,
+     "seconds": 0.0
+    },
+    "radical": {
+     "load_1min": 73.23388671875,
+     "seconds": 0.1
+    }
+   },
+   "parameter_forms": "y(1),y(4)",
+   "radical": {
+    "linear_forms": 0,
+    "linear_outside_K": true,
+    "linear_square_in_K": true,
+    "radical_degree": 3,
+    "radical_dim": 2,
+    "radical_equal": true
+   },
+   "reduced": true,
+   "reduced_basis": "rad K = K",
+   "reproduced": true,
+   "ring": "twisted cubic",
+   "variables": 4
+  },
+  {
+   "chart": {
+    "dim": 0,
+    "length": 2,
+    "squarefree_eliminants": 2,
+    "variables": 3
+   },
+   "cohen_macaulay": true,
+   "degree": 2,
+   "generators": 1,
+   "hypothesis_holds": false,
+   "known_cohen_macaulay": true,
+   "known_reduced": false,
+   "krull_dim": 2,
+   "length": 2,
+   "measurements": {
+    "cm": {
+     "load_1min": 0.5439453125,
+     "seconds": 0.0
+    },
+    "radical": {
+     "load_1min": 73.23388671875,
+     "seconds": 0.1
+    }
+   },
+   "parameter_forms": "y(2),y(3)",
+   "radical": {
+    "linear_forms": 1,
+    "linear_outside_K": true,
+    "linear_square_in_K": true,
+    "radical_degree": 1,
+    "radical_dim": 2,
+    "radical_equal": false
+   },
+   "reduced": false,
+   "reduced_basis": "rad K contains an element outside K",
+   "reproduced": true,
+   "ring": "double plane",
+   "variables": 3
+  },
+  {
+   "chart": {
+    "dim": 0,
+    "length": 2,
+    "squarefree_eliminants": 4,
+    "variables": 4
+   },
+   "cohen_macaulay": false,
+   "degree": 2,
+   "generators": 4,
+   "hypothesis_holds": false,
+   "known_cohen_macaulay": false,
+   "known_reduced": true,
+   "krull_dim": 2,
+   "length": 3,
+   "measurements": {
+    "cm": {
+     "load_1min": 0.5439453125,
+     "seconds": 0.0
+    },
+    "radical": {
+     "load_1min": 73.23388671875,
+     "seconds": 0.1
+    }
+   },
+   "parameter_forms": "y(1)+y(3),y(2)+y(4)",
+   "radical": {
+    "linear_forms": 0,
+    "linear_outside_K": true,
+    "linear_square_in_K": true,
+    "radical_degree": 2,
+    "radical_dim": 2,
+    "radical_equal": true
+   },
+   "reduced": true,
+   "reduced_basis": "rad K = K",
+   "reproduced": true,
+   "ring": "two planes meeting in a point",
+   "variables": 4
+  },
+  {
+   "chart": {
+    "dim": 0,
+    "length": 1,
+    "squarefree_eliminants": 2,
+    "variables": 2
+   },
+   "cohen_macaulay": false,
+   "degree": 1,
+   "generators": 2,
+   "hypothesis_holds": true,
+   "known_cohen_macaulay": false,
+   "known_reduced": false,
+   "krull_dim": 1,
+   "length": 2,
+   "measurements": {
+    "cm": {
+     "load_1min": 0.5439453125,
+     "seconds": 0.0
+    },
+    "radical": {
+     "load_1min": 73.23388671875,
+     "seconds": 0.1
+    }
+   },
+   "parameter_forms": "y(2)",
+   "radical": {
+    "linear_forms": 1,
+    "linear_outside_K": true,
+    "linear_square_in_K": true,
+    "radical_degree": 1,
+    "radical_dim": 1,
+    "radical_equal": false
+   },
+   "reduced": false,
+   "reduced_basis": "rad K contains an element outside K",
+   "reproduced": true,
+   "ring": "line with an embedded point",
+   "variables": 2
+  }
+ ],
+ "cells": [
+  {
+   "chart": {
+    "dim": 0,
+    "length": 13,
+    "squarefree_eliminants": 4,
+    "variables": 15
+   },
+   "cohen_macaulay": false,
+   "degree": 12,
+   "generators": 69,
+   "hypothesis_holds": true,
+   "krull_dim": 4,
+   "length": 15,
+   "measurements": {
+    "cm": {
+     "load_1min": 1.30322265625,
+     "seconds": 0.9
+    },
+    "radical": {
+     "load_1min": 68.189453125,
+     "seconds": 0.6
+    }
+   },
+   "parameter_forms": "y(1),y(9),y(11)+y(13),y(7)+y(8)+y(15)",
+   "radical": {
+    "linear_forms": 3,
+    "linear_outside_K": true,
+    "linear_square_in_K": true,
+    "radical_degree": 12,
+    "radical_dim": 4,
+    "radical_equal": false
+   },
+   "reduced": false,
+   "reduced_basis": "rad K contains an element outside K",
+   "relations_match_retained": true,
+   "relations_sha256": "55b9928144fd01d6de2b4438418e1ea8c765e8658016c3524eacc616298525de",
+   "ring": "X-->N-",
+   "variables": 15
+  },
+  {
+   "chart": {
+    "dim": 0,
+    "length": 13,
+    "squarefree_eliminants": 4,
+    "variables": 15
+   },
+   "cohen_macaulay": false,
+   "degree": 12,
+   "generators": 69,
+   "hypothesis_holds": true,
+   "krull_dim": 4,
+   "length": 15,
+   "measurements": {
+    "cm": {
+     "load_1min": 64.4541015625,
+     "seconds": 2.3
+    },
+    "radical": {
+     "load_1min": 64.73828125,
+     "seconds": 0.6
+    }
+   },
+   "parameter_forms": "y(1),y(9),y(11)+y(13),y(7)+y(8)+y(15)",
+   "radical": {
+    "linear_forms": 3,
+    "linear_outside_K": true,
+    "linear_square_in_K": true,
+    "radical_degree": 12,
+    "radical_dim": 4,
+    "radical_equal": false
+   },
+   "reduced": false,
+   "reduced_basis": "rad K contains an element outside K",
+   "relations_match_retained": true,
+   "relations_sha256": "6a41e14d70d75c4a72e768630ef77d9f1ec9e6582b626fa05e759cd3a130011d",
+   "ring": "X+->N+",
+   "variables": 15
+  },
+  {
+   "chart": {
+    "dim": 0,
+    "length": 23,
+    "squarefree_eliminants": 3,
+    "variables": 17
+   },
+   "cohen_macaulay": true,
+   "degree": 23,
+   "generators": 68,
+   "hypothesis_holds": true,
+   "krull_dim": 5,
+   "length": 23,
+   "measurements": {
+    "cm": {
+     "load_1min": 1.63818359375,
+     "seconds": 2.5
+    },
+    "radical": {
+     "load_1min": 63.99462890625,
+     "seconds": 16.0
+    }
+   },
+   "parameter_forms": "y(1),y(7),y(14),y(13)+y(15),y(4)+y(12)+y(17)",
+   "radical": {
+    "linear_forms": 0,
+    "linear_outside_K": true,
+    "linear_square_in_K": true,
+    "radical_degree": 23,
+    "radical_dim": 5,
+    "radical_equal": true
+   },
+   "reduced": true,
+   "reduced_basis": "rad K = K",
+   "relations_match_retained": true,
+   "relations_sha256": "f98219385df2a2cd47a8312d57a9861396d986234ec3f4175dad3fdc4182c955",
+   "ring": "Iso->N-",
+   "variables": 17
+  },
+  {
+   "chart": {
+    "dim": 0,
+    "length": 23,
+    "squarefree_eliminants": 3,
+    "variables": 17
+   },
+   "cohen_macaulay": true,
+   "degree": 23,
+   "generators": 68,
+   "hypothesis_holds": true,
+   "krull_dim": 5,
+   "length": 23,
+   "measurements": {
+    "cm": {
+     "load_1min": 61.1259765625,
+     "seconds": 6.6
+    },
+    "radical": {
+     "load_1min": 59.67431640625,
+     "seconds": 14.0
+    }
+   },
+   "parameter_forms": "y(1),y(7),y(14),y(13)+y(15),y(4)+y(12)+y(17)",
+   "radical": {
+    "linear_forms": 0,
+    "linear_outside_K": true,
+    "linear_square_in_K": true,
+    "radical_degree": 23,
+    "radical_dim": 5,
+    "radical_equal": true
+   },
+   "reduced": true,
+   "reduced_basis": "rad K = K",
+   "relations_match_retained": true,
+   "relations_sha256": "f4d0152eabd91b56306e683641831f8ca69c86cecaa1350744afe97e85be81ee",
+   "ring": "Iso->N+",
+   "variables": 17
+  },
+  {
+   "chart": {
+    "dim": 0,
+    "length": 50,
+    "squarefree_eliminants": 3,
+    "variables": 24
+   },
+   "cohen_macaulay": true,
+   "degree": 50,
+   "generators": 144,
+   "hypothesis_holds": true,
+   "krull_dim": 6,
+   "length": 50,
+   "measurements": {
+    "cm": {
+     "load_1min": 60.5732421875,
+     "seconds": 160.8
+    },
+    "radical": {
+     "load_1min": 57.39453125,
+     "seconds": 117.2
+    }
+   },
+   "parameter_forms": "y(4),y(11),y(21),y(15)+y(18),2*y(1)+3*y(2)+y(3)+2*y(4)+3*y(5)+y(6)+2*y(7)+3*y(8)+y(9)+2*y(10)+3*y(11)+y(12)+2*y(13)+3*y(14)+y(15)+2*y(16)+3*y(17)+y(18)+2*y(19)+3*y(20)+y(21)+2*y(22)+3*y(23)+y(24),2*y(1)+5*y(2)+5*y(3)+2*y(4)+y(5)+2*y(6)+5*y(7)+5*y(8)+2*y(9)+y(10)+2*y(11)+5*y(12)+5*y(13)+2*y(14)+y(15)+2*y(16)+5*y(17)+5*y(18)+2*y(19)+y(20)+2*y(21)+5*y(22)+5*y(23)+2*y(24)",
+   "radical": {
+    "linear_forms": 0,
+    "linear_outside_K": true,
+    "linear_square_in_K": true,
+    "radical_degree": 50,
+    "radical_dim": 6,
+    "radical_equal": true
+   },
+   "reduced": true,
+   "reduced_basis": "rad K = K",
+   "relations_match_retained": true,
+   "relations_sha256": "10964885cae3177d8a8585e05b263269193199b7a37a5a9679bc76e843523b1d",
+   "ring": "W8->N-",
+   "variables": 24
+  },
+  {
+   "chart": {
+    "dim": 0,
+    "length": 50,
+    "squarefree_eliminants": 3,
+    "variables": 24
+   },
+   "cohen_macaulay": true,
+   "degree": 50,
+   "generators": 144,
+   "hypothesis_holds": true,
+   "krull_dim": 6,
+   "length": 50,
+   "measurements": {
+    "cm": {
+     "load_1min": 57.69775390625,
+     "seconds": 153.9
+    },
+    "radical": {
+     "load_1min": 48.1240234375,
+     "seconds": 104.8
+    }
+   },
+   "parameter_forms": "y(4),y(11),y(21),y(15)+y(18),2*y(1)+3*y(2)+y(3)+2*y(4)+3*y(5)+y(6)+2*y(7)+3*y(8)+y(9)+2*y(10)+3*y(11)+y(12)+2*y(13)+3*y(14)+y(15)+2*y(16)+3*y(17)+y(18)+2*y(19)+3*y(20)+y(21)+2*y(22)+3*y(23)+y(24),2*y(1)+5*y(2)+5*y(3)+2*y(4)+y(5)+2*y(6)+5*y(7)+5*y(8)+2*y(9)+y(10)+2*y(11)+5*y(12)+5*y(13)+2*y(14)+y(15)+2*y(16)+5*y(17)+5*y(18)+2*y(19)+y(20)+2*y(21)+5*y(22)+5*y(23)+2*y(24)",
+   "radical": {
+    "linear_forms": 0,
+    "linear_outside_K": true,
+    "linear_square_in_K": true,
+    "radical_degree": 50,
+    "radical_dim": 6,
+    "radical_equal": true
+   },
+   "reduced": true,
+   "reduced_basis": "rad K = K",
+   "relations_match_retained": true,
+   "relations_sha256": "10aabdd3a560da6672d3e438a3a4c2aef10fbed007b034afff8c592e85beb8d1",
+   "ring": "W8->N+",
+   "variables": 24
+  },
+  {
+   "chart": {
+    "dim": 0,
+    "length": 17,
+    "squarefree_eliminants": 5,
+    "variables": 21
+   },
+   "cohen_macaulay": false,
+   "degree": 11,
+   "generators": 148,
+   "hypothesis_holds": true,
+   "krull_dim": 5,
+   "length": 20,
+   "measurements": {
+    "cm": {
+     "load_1min": 42.5068359375,
+     "seconds": 36.4
+    },
+    "radical": {
+     "load_1min": 36.927734375,
+     "seconds": 1.5
+    }
+   },
+   "parameter_forms": "y(1),y(10),y(19),2*y(1)+3*y(2)+y(3)+2*y(4)+3*y(5)+y(6)+2*y(7)+3*y(8)+y(9)+2*y(10)+3*y(11)+y(12)+2*y(13)+3*y(14)+y(15)+2*y(16)+3*y(17)+y(18)+2*y(19)+3*y(20)+y(21),2*y(1)+5*y(2)+5*y(3)+2*y(4)+y(5)+2*y(6)+5*y(7)+5*y(8)+2*y(9)+y(10)+2*y(11)+5*y(12)+5*y(13)+2*y(14)+y(15)+2*y(16)+5*y(17)+5*y(18)+2*y(19)+y(20)+2*y(21)",
+   "radical": {
+    "linear_forms": 5,
+    "linear_outside_K": true,
+    "linear_square_in_K": true,
+    "radical_degree": 11,
+    "radical_dim": 5,
+    "radical_equal": false
+   },
+   "reduced": false,
+   "reduced_basis": "rad K contains an element outside K",
+   "relations_match_retained": true,
+   "relations_sha256": "f4c808509571d7830d453654b16de85c254f876ef65c541f879a5097265d3b6e",
+   "ring": "E8bar->N-",
+   "variables": 21
+  },
+  {
+   "chart": {
+    "dim": 0,
+    "length": 17,
+    "squarefree_eliminants": 5,
+    "variables": 21
+   },
+   "cohen_macaulay": false,
+   "degree": 11,
+   "generators": 148,
+   "hypothesis_holds": true,
+   "krull_dim": 5,
+   "length": 20,
+   "measurements": {
+    "cm": {
+     "load_1min": 27.6767578125,
+     "seconds": 35.9
+    },
+    "radical": {
+     "load_1min": 28.26171875,
+     "seconds": 1.2
+    }
+   },
+   "parameter_forms": "y(1),y(10),y(19),2*y(1)+3*y(2)+y(3)+2*y(4)+3*y(5)+y(6)+2*y(7)+3*y(8)+y(9)+2*y(10)+3*y(11)+y(12)+2*y(13)+3*y(14)+y(15)+2*y(16)+3*y(17)+y(18)+2*y(19)+3*y(20)+y(21),2*y(1)+5*y(2)+5*y(3)+2*y(4)+y(5)+2*y(6)+5*y(7)+5*y(8)+2*y(9)+y(10)+2*y(11)+5*y(12)+5*y(13)+2*y(14)+y(15)+2*y(16)+5*y(17)+5*y(18)+2*y(19)+y(20)+2*y(21)",
+   "radical": {
+    "linear_forms": 5,
+    "linear_outside_K": true,
+    "linear_square_in_K": true,
+    "radical_degree": 11,
+    "radical_dim": 5,
+    "radical_equal": false
+   },
+   "reduced": false,
+   "reduced_basis": "rad K contains an element outside K",
+   "relations_match_retained": true,
+   "relations_sha256": "cb9c0862b2dedc4a46d2fc579904e5efd18f07b5b3976e5b29e84bb2af7bcb7a",
+   "ring": "E8bar->N+",
+   "variables": 21
+  }
+ ],
+ "complete": true,
+ "field": "Q(i)",
+ "hypothesis_holds_on_every_cell": true,
+ "problems": [],
+ "schema": "gororoba.a5.weight-slice-quadric-rings/1",
+ "tools": {
+  "singular": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Oct 12 2026 04:31:22",
+  "singular_version": "4.4.1"
+ }
+}
