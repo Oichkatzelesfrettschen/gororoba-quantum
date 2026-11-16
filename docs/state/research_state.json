@@ -3612,6 +3612,90 @@
       "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-20",
       "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
       "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-characterization-qx-2026-11-16t0355-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0355Z-characterization_qx-characterization_qx-batch-00",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (QX twin, 10 qubits)",
+      "question": "On the QX emulator, does the twin of the Tuna-17 characterization series return the noiseless outcome of every circuit, as the control the Tuna-17 series requires?"
+    },
+    {
+      "id": "qi-characterization-qx-2026-11-16t0355-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0355Z-characterization_qx-characterization_qx-batch-01",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (QX twin, 10 qubits)",
+      "question": "On the QX emulator, does the twin of the Tuna-17 characterization series return the noiseless outcome of every circuit, as the control the Tuna-17 series requires?"
+    },
+    {
+      "id": "qi-characterization-qx-2026-11-16t0355-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0355Z-characterization_qx-characterization_qx-batch-02",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (QX twin, 10 qubits)",
+      "question": "On the QX emulator, does the twin of the Tuna-17 characterization series return the noiseless outcome of every circuit, as the control the Tuna-17 series requires?"
+    },
+    {
+      "id": "qi-characterization-qx-2026-11-16t0355-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0355Z-characterization_qx-characterization_qx-batch-03",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (QX twin, 10 qubits)",
+      "question": "On the QX emulator, does the twin of the Tuna-17 characterization series return the noiseless outcome of every circuit, as the control the Tuna-17 series requires?"
+    },
+    {
+      "id": "qi-characterization-qx-2026-11-16t0355-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0355Z-characterization_qx-characterization_qx-batch-04",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (QX twin, 10 qubits)",
+      "question": "On the QX emulator, does the twin of the Tuna-17 characterization series return the noiseless outcome of every circuit, as the control the Tuna-17 series requires?"
+    },
+    {
+      "id": "qi-characterization-qx-2026-11-16t0355-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0355Z-characterization_qx-characterization_qx-batch-05",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (QX twin, 10 qubits)",
+      "question": "On the QX emulator, does the twin of the Tuna-17 characterization series return the noiseless outcome of every circuit, as the control the Tuna-17 series requires?"
+    },
+    {
+      "id": "qi-characterization-tuna-17-2026-11-16t0401-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (17 qubits)",
+      "question": "On Tuna-17, do the per-qubit readout pair, the single-exponential T1 and the X90 repetition ladder of 2026-10-16 and 2026-10-17 still describe each of the 17 qubits, with an opening and a closing readout pair?"
+    },
+    {
+      "id": "qi-characterization-tuna-17-2026-11-16t0401-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (17 qubits)",
+      "question": "On Tuna-17, do the per-qubit readout pair, the single-exponential T1 and the X90 repetition ladder of 2026-10-16 and 2026-10-17 still describe each of the 17 qubits, with an opening and a closing readout pair?"
+    },
+    {
+      "id": "qi-characterization-tuna-17-2026-11-16t0401-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-02",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (17 qubits)",
+      "question": "On Tuna-17, do the per-qubit readout pair, the single-exponential T1 and the X90 repetition ladder of 2026-10-16 and 2026-10-17 still describe each of the 17 qubits, with an opening and a closing readout pair?"
+    },
+    {
+      "id": "qi-characterization-tuna-17-2026-11-16t0401-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (17 qubits)",
+      "question": "On Tuna-17, do the per-qubit readout pair, the single-exponential T1 and the X90 repetition ladder of 2026-10-16 and 2026-10-17 still describe each of the 17 qubits, with an opening and a closing readout pair?"
+    },
+    {
+      "id": "qi-characterization-tuna-17-2026-11-16t0401-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-04",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (17 qubits)",
+      "question": "On Tuna-17, do the per-qubit readout pair, the single-exponential T1 and the X90 repetition ladder of 2026-10-16 and 2026-10-17 still describe each of the 17 qubits, with an opening and a closing readout pair?"
+    },
+    {
+      "id": "qi-characterization-tuna-17-2026-11-16t0401-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (17 qubits)",
+      "question": "On Tuna-17, do the per-qubit readout pair, the single-exponential T1 and the X90 repetition ladder of 2026-10-16 and 2026-10-17 still describe each of the 17 qubits, with an opening and a closing readout pair?"
     }
   ],
   "claims": [

@@ -1,0 +1,34 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-11-16T04:01:27+00:00",
+ "approval": "owner 2026-11-16T03:51Z (question tool): QX then Tuna-17; QX dry run 2026-11-16T0355Z passed (all 14 jobs noiseless, analysis as predicted); characterization_tuna_17 on Tuna-17 (type 7), 14 jobs, 147456 shots, 115.8 s, 0 credits expected",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "540e5aae91ca28299ff42c8a2bad628c6b7856ac8356718cf9bcd304017cf272",
+ "backend_status_at_submit": "calibrating",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 1,
+ "batch_job": 959020,
+ "project": 859120,
+ "shots": 16384,
+ "jobs": [
+  {
+   "file": "readout-0.cq",
+   "job": 1742700,
+   "sha256": "a36928ee64d24ae0e45618bfb9192a49f1d6993a9b320bae474cd5ea7a75a74d"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1742701,
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+  }
+ ],
+ "submitted_utc": "2026-11-16T04:01:27+00:00"
+}

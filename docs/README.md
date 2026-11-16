@@ -619,6 +619,7 @@ differs from it only in the `cd_core.py` digest.
 | [providers.md](notes/providers.md) | provider interpreter variables and MCP server names, with the guide of each provider |
 | [tuna17-bipartite-designs.md](notes/quantum_inspire/tuna17-bipartite-designs.md) | Tuna-17 cubic Walsh classes and box-kite packing |
 | [tuna17-null-rotation-scan-phase-refit.md](notes/quantum_inspire/tuna17-null-rotation-scan-phase-refit.md) | Tuna-17 null rotation scan: gate-noise and q12 phase refit of the retained histograms, with chi-square and degrees of freedom of seven models |
+| [tuna17-characterization-2026-11-16.md](notes/quantum_inspire/tuna17-characterization-2026-11-16.md) | Tuna-17 per-qubit readout, T1 and X90 repetition ladder of 2026-11-16 with the QX twin: provenance, measured values and deviations from the preregistered prediction |
 | [quandela/literature.md](notes/quandela/literature.md) | published methods for characterizing a Belenos-class mesh |
 | [quandela/quickstart.md](notes/quandela/quickstart.md) | Quandela Cloud quick start |
 | [quandela/roadmap-2026-03.md](notes/quandela/roadmap-2026-03.md) | Quandela March 2026 roadmap and the Welinq interconnect announcement: networking and modular-system statements with page and target year |
