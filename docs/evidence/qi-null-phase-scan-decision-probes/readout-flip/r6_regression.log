@@ -1,0 +1,7 @@
+flip-0 slice reproduces value 11 in all 25 scenarios
+decide() reproduces nuisance.py on 20 series of true: q12 phase -0.18 rad, flip 0.0166: ['q12_phase']
+decide() reproduces nuisance.py on 20 series of null: flip 0.025, CZ phase damping 0.13: ['exact_parabola', 'phase_unresolved']
+decide() reproduces nuisance.py on 20 series of TRUTHS: q8 phase at coupler 8-12 -0.25 rad: ['none_adequate', 'phase_unresolved', 'q8_phase_at_coupler']
+decide() reproduces nuisance.py on 20 series of gap: drift null flip 0.0166 to 0.036, CZ phase damping 0.13: ['exact_parabola', 'none_adequate', 'phase_unresolved']
+regression=pass
+exit=0

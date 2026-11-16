@@ -137,7 +137,7 @@ margin of rule 4 (at margin 0 a single mechanism read `phase_mixed` in up to 94 
 `docs/evidence/qi-null-phase-scan-decision-probes/`).
 
 <!-- generated from prediction.json by scripts/qi_pathion_null_phase_scan_cases.py: operating_characteristics -->
-| scenario | series | label counts | misreading deciding labels (one-sided 95% upper bound) |
+| scenario | series | label counts | misreading labels (one-sided 95% upper bound) |
 |---|---|---|---|
 | coupler 8-12 phase +0.25 rad | 500 | `coupler_phase` 493, `none_adequate` 2, `phase_mixed` 2, `phase_unresolved` 3 | 0 (< 0.60%) |
 | coupler 8-12 phase -0.25 rad | 500 | `coupler_phase` 496, `none_adequate` 1, `phase_mixed` 3 | 0 (< 0.60%) |
@@ -156,7 +156,7 @@ margin of rule 4 (at margin 0 a single mechanism read `phase_mixed` in up to 94 
 | q12 phase -0.15 rad | 500 | `none_adequate` 2, `phase_mixed` 3, `q12_phase` 495 | 0 (< 0.60%) |
 | q12 phase -0.15 rad with CZ damping | 500 | `phase_mixed` 1, `q12_phase` 499 | 0 (< 0.60%) |
 | q12 phase -0.15 rad with CZ damping x1.25 | 500 | `none_adequate` 3, `phase_mixed` 3, `q12_phase` 494 | 0 (< 0.60%) |
-| q12 phase -0.15 rad with CZ damping x3 | 500 | `exact_parabola` 6, `none_adequate` 1, `offset_absent` 297, `phase_unresolved` 196 | 0 (< 0.60%) |
+| q12 phase -0.15 rad with CZ damping x3 | 500 | `exact_parabola` 6, `none_adequate` 1, `offset_absent` 297, `phase_unresolved` 196 | 6 (< 2.35%) |
 | q12 phase -0.18 rad | 500 | `none_adequate` 1, `phase_mixed` 4, `q12_phase` 495 | 0 (< 0.60%) |
 | q12 phase -0.18 rad, selector flip 0.036 | 500 | `none_adequate` 4, `phase_mixed` 4, `q12_phase` 492 | 0 (< 0.60%) |
 | q8 phase at coupler 8-12 +0.10 rad | 500 | `offset_absent` 3, `phase_unresolved` 474, `q8_phase_at_coupler` 23 | 0 (< 0.60%) |
