@@ -32,12 +32,15 @@ all 12 run directories before the analysis.
   submitted nothing; the third collection began at about 12:13Z. The first
   attempt ran at repository commit 78c780bc6 and the final one at ed55e4dbc;
   the case, the analyzer, the Quantum Inspire reader and the submit script are
-  identical at both.
+  identical at both. The timeout instants, the restart time and the two
+  commits come from the run host's collector logs and session notes, which
+  this change does not retain; every other timestamp here is in the retained
+  `submission.json` and `results.json` files.
 - Batches 01 to 05 were submitted from 12:22:32Z to 12:32:25Z and collected by
   12:34:01Z. The opening readout pair therefore executed 12 min before the
   closing pair (12:21:51Z and 12:33:52Z), and the T1 waits ran between them,
   in two batches 2 min apart (12:25Z and 12:27Z).
-- Summed execution time is 119.8 s against the predicted 115.8 s (+3.4%), 0
+- Summed execution time is 119.8 s against the predicted 115.8 s (+3.5%), 0
   credits charged (the ledger snapshot of this change holds no transaction).
 
 ## Readout
@@ -84,7 +87,8 @@ points per qubit; the readout correction uses the mean of both pairs).
 - Fitted T1 spans 13.2 to 32.2 us (median 22.9 us), against the predicted
   5.1 to 52.0 us. The pre-flight falsifier "T1 outside a factor of two of its
   implied value" is met on qubits 6 (2.95), 9 (4.29) and 15 (3.94), the three
-  qubits whose implied value rested on the shortest waits; qubit 7 sits at
+  qubits with the lowest implied values (5.5, 5.1 and 6.3 us; each implied
+  value rests on one 2 us wait); qubit 7 sits at
   0.53, inside the factor.
 - The single-exponential verdict is false on 15 of 17 qubits (true only on
   qubits 8 and 13), against a prediction of true on all 17. The quoted
@@ -146,12 +150,13 @@ pulse follows from these rows and none is reported.
 The twin returned exactly the noiseless outcome of every circuit: P(1|0) = 0
 and P(1|1) = 1 on all 10 qubits in both pairs, corrected populations of 1 at
 every T1 wait and every ladder count, `ladder_clears` true and no T1 fitted
-(a flat decay), as the twin's prediction states. Its execution time was 178.2
-s against the pre-flight bound of about 44 s: the 4,352-line `x90-64` job
+(a flat decay), as the twin's `CASE.md` states. Its execution time was 178.2
+s against the 44.2 s of the twin's `prediction.json`, which its `CASE.md` calls an
+upper figure for the emulator: the 2,565-line `x90-64` text
 took 109.5 s, `x90-32` 54.8 s and `x90-8` 13.8 s at 1,024 shots, so the
 emulator's time grows with the gate count while the model of
 [usage.md](usage.md) carries no gate term. The Tuna-17 jobs ran 6.0 to 11.3 s
-each regardless of pulse count.
+each: 10.2 s for `x90-64` and 6.0 s for `x90-0` at 8,192 shots.
 
 ## Open
 
