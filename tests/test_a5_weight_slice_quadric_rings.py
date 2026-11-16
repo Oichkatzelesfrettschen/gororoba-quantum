@@ -1,12 +1,14 @@
 """The retained Q(i) quadric-ring record of the weight slice, re-derived from its stored numbers.
 
-No Singular runs. `audit` recomputes every verdict from the dimension, degree, length and radical fields of the
-retained record, so a field edited to flip a verdict is reported; the mutations below prove it. The record replays
-under Singular on demand through the gate `core-a5-weight-slice-quadric-rings` of ci/gates.json.
+No Singular runs. `audit` recomputes every verdict from the dimension, degree, length and radical fields of a
+record, so a field edited to flip a verdict is reported. The default tests drive the producer and `audit_row` on
+constructed rows; the tests that read the retained record, its relation digests and its recorded predictions carry the
+audit marker and run through `pytest -m audit`. The record replays under Singular on demand through the gate
+`core-a5-weight-slice-quadric-rings` of ci/gates.json.
 """
 
-import copy
 import json
+import os
 import sys
 from collections.abc import Callable
 from pathlib import Path
@@ -119,12 +121,14 @@ def audit(record: dict[str, Any], retained: dict[str, str]) -> list[str]:
     return found
 
 
+@pytest.mark.audit
 def test_the_retained_record_passes_the_audit_and_the_producer_check() -> None:
     record = _record()
     _same(audit(record, _retained_digests()), [])
     _same(wsqr.problems(record), [])
 
 
+@pytest.mark.audit
 def test_the_record_is_the_bytes_the_program_writes_for_it() -> None:
     record = _record()
     text = json.dumps(record, indent=1, sort_keys=True) + "\n"
@@ -132,6 +136,7 @@ def test_the_record_is_the_bytes_the_program_writes_for_it() -> None:
     _same(all("measurements" not in row for row in wsqr.comparable(record)["cells"]), True)
 
 
+@pytest.mark.audit
 def test_the_two_nonreduced_families_carry_nilpotent_linear_forms_and_the_reduced_ones_none() -> None:
     cells = {row["ring"]: row for row in _record()["cells"]}
     for name in ("X-->N-", "X+->N+"):
@@ -191,6 +196,7 @@ MUTATIONS: list[tuple[str, Callable[[dict[str, Any]], None]]] = [
 ]
 
 
+@pytest.mark.audit
 @pytest.mark.parametrize(("label", "mutate"), MUTATIONS, ids=[label for label, _ in MUTATIONS])
 def test_every_mutation_of_a_deciding_field_is_reported(label: str, mutate: Callable[[dict[str, Any]], None]) -> None:
     record = _record()
@@ -224,14 +230,97 @@ def test_the_cohen_macaulay_step_rejects_a_section_that_is_not_a_system_of_param
         wsqr.cm_row({**values, "cm": ["4 12 0 11"]})
 
 
+def _row(**fields: Any) -> dict[str, Any]:
+    row: dict[str, Any] = {
+        "ring": "R",
+        "krull_dim": 2,
+        "degree": 3,
+        "length": 3,
+        "cohen_macaulay": True,
+        "chart": {"dim": 0, "length": 3, "squarefree_eliminants": 4, "variables": 4},
+        "radical": None,
+        "reduced": True,
+        "hypothesis_holds": True,
+        "relations_sha256": "d",
+        "relations_match_retained": True,
+    }
+    return {**row, **fields}
+
+
+def _nonreduced_row() -> dict[str, Any]:
+    radical = {
+        "radical_equal": False,
+        "linear_forms": 1,
+        "linear_square_in_K": True,
+        "linear_outside_K": True,
+        "radical_dim": 2,
+        "radical_degree": 3,
+    }
+    return _row(degree=4, length=5, cohen_macaulay=False, radical=radical, reduced=False)
+
+
+def test_the_row_audit_accepts_constructed_rows_and_reports_each_flipped_verdict() -> None:
+    _same(audit_row(_row()), [])
+    _same(audit_row(_nonreduced_row()), [])
+    for flipped in (_row(length=4), _row(reduced=False), _row(hypothesis_holds=False)):
+        if not audit_row(flipped):
+            raise AssertionError(flipped)
+    for changed in ({"reduced": True}, {"cohen_macaulay": True}, {"radical": None}):
+        if not audit_row({**_nonreduced_row(), **changed}):
+            raise AssertionError(changed)
+
+
 def test_the_producer_reports_an_undecided_ring_and_a_falsifying_ring() -> None:
-    record = _record()
-    undecided = copy.deepcopy(record)
-    undecided["cells"][0]["hypothesis_holds"] = None
+    record: dict[str, Any] = {"calibration": [], "cells": [_row(ring="A")]}
+    _same(wsqr.problems(record), [])
+    undecided = {**record, "cells": [_row(ring="A", hypothesis_holds=None)]}
     _same(any("undecided" in line for line in wsqr.problems(undecided)), True)
-    falsified = copy.deepcopy(record)
-    falsified["cells"][0]["hypothesis_holds"] = False
+    falsified = {**record, "cells": [_row(ring="A", hypothesis_holds=False)]}
     _same(any("reduced" in line for line in wsqr.problems(falsified)), True)
-    differing = copy.deepcopy(record)
-    differing["cells"][0]["relations_match_retained"] = False
+    differing = {**record, "cells": [_row(ring="A", relations_match_retained=False)]}
     _same(any("retained" in line for line in wsqr.problems(differing)), True)
+    unreproduced = {"calibration": [_row(ring="C", reproduced=False)], "cells": []}
+    _same(any("calibration" in line for line in wsqr.problems(unreproduced)), True)
+
+
+def test_the_cells_run_through_the_pool_in_order_under_the_memory_cap(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    _same(wsqr.MAX_WORKERS, 6)
+    if wsqr.MAX_WORKERS * wsqr.ws.SINGULAR_ADDRESS_SPACE_BYTES > wsqr.MEMORY_BUDGET_BYTES:
+        raise AssertionError("the worker cap exceeds the memory budget")
+    calls: list[tuple[str, int, int]] = []
+
+    def serial_map(function: Callable[[Any], Any], items: list[Any], min_items: int = 64) -> list[Any]:
+        calls.append((function.__name__, len(items), int(os.environ["GOROROBA_WORKERS"])))
+        return [function(item) for item in items]
+
+    def fake_decide(name: str, n: int, polys: list[str], steps: Path | None) -> dict[str, Any]:
+        known = wsqr.CALIBRATION.get(name)
+        cohen_macaulay, reduced = (True, True) if known is None else (known[2], known[3])
+        return _row(ring=name, cohen_macaulay=cohen_macaulay, reduced=reduced)
+
+    monkeypatch.setenv("GOROROBA_WORKERS", "64")
+    monkeypatch.setattr(wsqr.parallel, "ordered_map", serial_map)
+    monkeypatch.setattr(wsqr, "decide", fake_decide)
+    monkeypatch.setattr(wsqr, "polynomials", lambda lines: list(lines))
+    monkeypatch.setattr(wsqr.ws, "singular_version", lambda: ("banner", "4.4.1"))
+    monkeypatch.setattr(wsqr.ws, "fiber_script", lambda *args: "script")
+    monkeypatch.setattr(wsqr.ws, "orbit_task", lambda orbit: orbit)
+    monkeypatch.setattr(wsqr.ws, "run_singular", lambda script: {"relations": ["r"]})
+    monkeypatch.setattr(
+        wsqr.ws, "summarize_fiber_run", lambda run: {"generator_count": 1, "relations_sha256": "digest"}
+    )
+    retained = {wsqr.ws.incidence_name(orbit, source): "digest" for source, orbit in wsqr.CELLS}
+    monkeypatch.setattr(wsqr, "WEIGHT_SLICE", tmp_path / "weight-slice.json")
+    cells = [{"incidence": name, "relations_sha256": digest, "characteristic": 0} for name, digest in retained.items()]
+    (tmp_path / "weight-slice.json").write_text(json.dumps({"cells": cells}), encoding="utf-8")
+    out = tmp_path / "out.json"
+    monkeypatch.setattr(sys, "argv", ["weight_slice_quadric_rings.py", "--out", str(out)])
+    _same(wsqr.main(), 0)
+    written = json.loads(out.read_text(encoding="utf-8"))
+    _same([row["ring"] for row in written["cells"]], list(retained))
+    _same([row["ring"] for row in written["calibration"]], list(wsqr.CALIBRATION))
+    _same(written["complete"], True)
+    _same([call[:2] for call in calls], [("calibration_ring", 4), ("cell", 8)])
+    _same(all(1 <= call[2] <= 6 for call in calls), True)
