@@ -282,7 +282,7 @@ def test_a_client_built_by_its_constructor_keeps_the_guard_across_a_token_refres
     now = [1000.0]
 
     def base_init(self: qi_platform.Client) -> None:
-        self.session = http  # type: ignore[assignment]
+        self.session = http
         self.expires = float("inf")
 
     monkeypatch.setattr(qi_platform.Client, "__init__", base_init)
