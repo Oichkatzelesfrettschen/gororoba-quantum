@@ -1,8 +1,9 @@
 # Tuna-17 per-qubit characterization batch (draft case)
 
-Status: draft. It is no written case in the sense of root AGENTS.md ("Hardware services"): no generator, circuit
-file, prediction record or QX conformance run exists, nothing is approved and nothing is submitted. "Not built"
-lists what precedes the owner's approval.
+Status: design note. The written case that awaits the owner's approval is
+[results/quantum_inspire/cases/characterization_tuna_17/CASE.md](../../../results/quantum_inspire/cases/characterization_tuna_17/CASE.md),
+with its generator `scripts/qi_tuna17_characterization_cases.py`, its 14 circuits and its QX twin; nothing is
+approved and nothing is submitted. This note keeps the design reasoning.
 
 ## Question
 
@@ -50,14 +51,13 @@ Six batches of at most 3 circuits, one queued at a time, each after the pause `q
 | 4 | x90-32, x90-64 | 8,192 |
 | 5 | readout-0, readout-1 | 16,384 |
 
-Each qubit is measured once per shot, so the largest count per qubit per job is 16,384, under the provider's
-500,000. Total: 14 jobs and 147,456 shots.
+The largest job holds 16,384 shots, under the backend type's limit of 131,072. Total: 14 jobs and 147,456 shots.
 
 ## Expected seconds and credits
 
-Estimate: about 110 s of execution. Basis: retained Tuna-17 jobs of 16,384 shots executed in 9.9 to 12.6 s
-([platform facts](platform-facts.md)), which gives 4 x 12 s for the readout circuits; the ten 8,192-shot
-circuits take half of that plus their own wait (at most 80 us per shot, 0.7 s), about 6.5 s each. Every job sits
+115.8 s of execution by the model of [usage.md](usage.md) ("Run on Tuna-17"), 2.6 s per job plus 0.53 ms per shot
+plus each circuit's wait per shot; retained Tuna-17 jobs of 16,384 shots executed in 9.9 to 12.6 s
+([platform facts](platform-facts.md)), which the model's 11.3 s matches. Every job sits
 far below the 300 s job limit. Credits: 0; the account's ledger holds no charge after its retained jobs
 ([usage.md](usage.md)).
 
@@ -76,14 +76,13 @@ far below the 300 s job limit. Credits: 0; the account's ledger holds no charge 
   assignment correction). Falsifier: a non-monotone or two-rate decay, which a spurious two-level system produces.
 - hypothesis: the provider's tip that Q5, Q6 and Q7 sit away from their flux sweet spot shows as the lowest
   visibility in the retained map and need not lower T1; this run tests the T1 half.
-- `X90` ladder: P(0) at 256 pulses stays above 0.5 on every qubit the retained crosstalk run did not flag.
+- `X90` ladder: P(0) at 32, 128 and 256 pulses stays above 0.5 on every qubit the retained crosstalk run did not flag.
 
 ## Record
 
 The analysis writes one row per qubit with its run instant, and `scripts/qi_retained_context.py` then reads the
 new rows, so the dashboard's "Our own Tuna-17 measurements" table shows the new date.
 
-## Not built
+## Not run
 
-The circuit generator and its 14 files, the QX conformance run of each circuit, the prediction record with its
-decision thresholds, the analysis script, and the case directory under `results/quantum_inspire/cases/`.
+The QX dry run of the twin and the Tuna-17 series; both wait for the owner's approval of the written case.
