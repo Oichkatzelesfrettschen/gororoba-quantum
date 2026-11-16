@@ -1337,7 +1337,8 @@ Its falsifier is a cell that is reduced and not Cohen-Macaulay or the reverse.
 The gate `core-a5-weight-slice-quadric-rings` of [ci/gates.json](../../../ci/gates.json) recomputes the record under
 Singular and compares it through `ci/replay_check.py`, skipping the Singular banner and the timing and load fields;
 `tests/test_a5_weight_slice_quadric_rings.py` re-derives every verdict from the stored numbers without Singular and
-rejects 27 mutations.
+rejects 27 mutations. The [review record](../../archive/reviews/pr936/README.md) holds the reviewers, the heads
+they read and the disposition of each finding.
 
 ## Investigated questions
 
