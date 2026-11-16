@@ -1380,6 +1380,27 @@
    "value": 518,
    "record": "docs/evidence/anu_qrng/draw-2026-11-15T163052Z.json",
    "index": 0
+  },
+  {
+   "path": "docs/evidence/qi-null-phase-scan-decision-probes/readout-flip/nuisance.py",
+   "name": "SEED",
+   "value": 47387,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-16T041214Z.json",
+   "index": 0
+  },
+  {
+   "path": "docs/evidence/qi-null-phase-scan-decision-probes/readout-flip/small_phase.py",
+   "name": "SEED",
+   "value": 9893,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-16T041214Z.json",
+   "index": 1
+  },
+  {
+   "path": "docs/evidence/qi-null-phase-scan-decision-probes/readout-flip/final_round.py",
+   "name": "SEED",
+   "value": 35685,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-16T041214Z.json",
+   "index": 2
   }
  ],
  "runtime": [

@@ -1,0 +1,252 @@
+{
+ "schema": "qi-pathion-null-phase-scan-series-v1",
+ "backend": "tuna_17",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "kind": "readout",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "kind": "bridge",
+   "files": [
+    "b0-rx.cq",
+    "b0-rxz.cq",
+    "b0-rx-repeat.cq"
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "kind": "readout",
+   "files": [
+    "readout-1.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-03",
+   "kind": "z12-10",
+   "files": [
+    "b0-rxz-z12-m10.cq",
+    "b0-rxz.cq",
+    "b0-rxz-z12-p10.cq"
+   ]
+  },
+  {
+   "batch": "batch-04",
+   "kind": "readout",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-05",
+   "kind": "z8c-10",
+   "files": [
+    "b0-rxz-z8c-m10.cq",
+    "b0-rxz.cq",
+    "b0-rxz-z8c-p10.cq"
+   ]
+  },
+  {
+   "batch": "batch-06",
+   "kind": "readout",
+   "files": [
+    "readout-1.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-07",
+   "kind": "q4-near",
+   "files": [
+    "b0-rxz-q4-m5.cq",
+    "b0-rxz.cq",
+    "b0-rxz-q4-p5.cq"
+   ]
+  },
+  {
+   "batch": "batch-08",
+   "kind": "readout",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-09",
+   "kind": "z12-30",
+   "files": [
+    "b0-rxz-z12-m30.cq",
+    "b0-rxz.cq",
+    "b0-rxz-z12-p30.cq"
+   ]
+  },
+  {
+   "batch": "batch-10",
+   "kind": "readout",
+   "files": [
+    "readout-1.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-11",
+   "kind": "q4-far",
+   "files": [
+    "b0-rxz-q4-m10.cq",
+    "b0-rxz.cq",
+    "b0-rxz-q4-p10.cq"
+   ]
+  },
+  {
+   "batch": "batch-12",
+   "kind": "readout",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-13",
+   "kind": "z8c-10",
+   "files": [
+    "b0-rxz-z8c-m10.cq",
+    "b0-rxz.cq",
+    "b0-rxz-z8c-p10.cq"
+   ]
+  },
+  {
+   "batch": "batch-14",
+   "kind": "readout",
+   "files": [
+    "readout-1.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-15",
+   "kind": "z8c-10",
+   "files": [
+    "b0-rxz-z8c-p10.cq",
+    "b0-rxz.cq",
+    "b0-rxz-z8c-m10.cq"
+   ]
+  },
+  {
+   "batch": "batch-16",
+   "kind": "readout",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-17",
+   "kind": "q4-far",
+   "files": [
+    "b0-rxz-q4-p10.cq",
+    "b0-rxz.cq",
+    "b0-rxz-q4-m10.cq"
+   ]
+  },
+  {
+   "batch": "batch-18",
+   "kind": "readout",
+   "files": [
+    "readout-1.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-19",
+   "kind": "z12-30",
+   "files": [
+    "b0-rxz-z12-p30.cq",
+    "b0-rxz.cq",
+    "b0-rxz-z12-m30.cq"
+   ]
+  },
+  {
+   "batch": "batch-20",
+   "kind": "readout",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-21",
+   "kind": "q4-near",
+   "files": [
+    "b0-rxz-q4-p5.cq",
+    "b0-rxz.cq",
+    "b0-rxz-q4-m5.cq"
+   ]
+  },
+  {
+   "batch": "batch-22",
+   "kind": "readout",
+   "files": [
+    "readout-1.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-23",
+   "kind": "z8c-10",
+   "files": [
+    "b0-rxz-z8c-p10.cq",
+    "b0-rxz.cq",
+    "b0-rxz-z8c-m10.cq"
+   ]
+  },
+  {
+   "batch": "batch-24",
+   "kind": "readout",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-25",
+   "kind": "z12-10",
+   "files": [
+    "b0-rxz-z12-p10.cq",
+    "b0-rxz.cq",
+    "b0-rxz-z12-m10.cq"
+   ]
+  },
+  {
+   "batch": "batch-26",
+   "kind": "readout",
+   "files": [
+    "readout-1.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-27",
+   "kind": "bridge",
+   "files": [
+    "b0-rx-repeat.cq",
+    "b0-rxz.cq",
+    "b0-rx.cq"
+   ]
+  },
+  {
+   "batch": "batch-28",
+   "kind": "readout",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  }
+ ]
+}
