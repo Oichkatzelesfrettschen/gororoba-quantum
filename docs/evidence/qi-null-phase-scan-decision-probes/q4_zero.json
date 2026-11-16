@@ -1,0 +1,44 @@
+[
+ {
+  "world": "q12_phase",
+  "theta": -0.18,
+  "root_degrees": 12.28329098776621,
+  "line_degrees": 12.388162422573986,
+  "error": 0.10487143480777661
+ },
+ {
+  "world": "q12_phase",
+  "theta": 0.18,
+  "root_degrees": -13.116754529041206,
+  "line_degrees": -13.601385148133899,
+  "error": -0.4846306190926928
+ },
+ {
+  "world": "q12_phase",
+  "theta": -0.15,
+  "root_degrees": 10.173042113530563,
+  "line_degrees": 10.417979416089057,
+  "error": 0.244937302558494
+ },
+ {
+  "world": "q12_phase",
+  "theta": 0.15,
+  "root_degrees": -10.77904285798353,
+  "line_degrees": -11.260949746426924,
+  "error": -0.4819068884433939
+ },
+ {
+  "world": "coupler_phase",
+  "theta": -0.25,
+  "root_degrees": 9.941493621250372,
+  "line_degrees": 10.165975103734437,
+  "error": 0.22448148248406596
+ },
+ {
+  "world": "coupler_phase",
+  "theta": 0.25,
+  "root_degrees": -12.344744418154026,
+  "line_degrees": -12.698016714481726,
+  "error": -0.35327229632770063
+ }
+]
