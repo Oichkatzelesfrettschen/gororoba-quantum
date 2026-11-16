@@ -37,7 +37,10 @@ hypothesis or a relation digest differs from the retained record.
 
 Usage, from the repository root: "$PYTHON" docs/evidence/a5-kernel-attachments/weight_slice_quadric_rings.py
 --out OUT.json [--steps DIR] [--cells xm:N-,iso:N-]; `--steps DIR` keeps each finished step as one JSON file and
-reads it back on a rerun, so an interrupted run resumes.
+reads it back on a rerun, so an interrupted run resumes. The calibration rings and then the cells run through
+parallel.ordered_map, which returns rows in input order, so the record keeps the serial run's bytes apart from the
+timing fields. Each Singular call holds up to 8 GiB of address space, so at most six calls run at once (six limits
+fit the 52.5 GB workstation budget of the case file); GOROROBA_WORKERS below six lowers the cap.
 """
 
 from __future__ import annotations
@@ -56,8 +59,13 @@ sys.path.insert(0, str(HERE))
 
 import weight_slice_fiber_relations as ws  # noqa: E402
 
+import parallel  # noqa: E402
+
 SCHEMA = "gororoba.a5.weight-slice-quadric-rings/1"
 WEIGHT_SLICE = HERE / "weight-slice-fiber-relations-result.json"
+# The workstation memory budget of the case file; each Singular call is limited to ws.SINGULAR_ADDRESS_SPACE_BYTES.
+MEMORY_BUDGET_BYTES = 52_500_000_000
+MAX_WORKERS = MEMORY_BUDGET_BYTES // ws.SINGULAR_ADDRESS_SPACE_BYTES
 # (source, orbit): the cells of the weight-slice record that carry degree-2 relations.
 CELLS: tuple[tuple[str, str], ...] = (
     ("xm", "N-"),
@@ -243,17 +251,21 @@ def decide(name: str, n: int, polys: list[str], steps: Path | None) -> dict[str,
             "measurements": measurements}  # fmt: skip
 
 
+def calibration_ring(item: tuple[str, Path | None]) -> dict[str, Any]:
+    name, steps = item
+    n, polys, cm_known, reduced_known = CALIBRATION[name]
+    row = decide(name, n, list(polys), steps)
+    row |= {"known_cohen_macaulay": cm_known, "known_reduced": reduced_known}
+    row["reproduced"] = row["cohen_macaulay"] is cm_known and row["reduced"] is reduced_known
+    return row
+
+
 def calibration(steps: Path | None) -> list[dict[str, Any]]:
-    rows = []
-    for name, (n, polys, cm_known, reduced_known) in CALIBRATION.items():
-        row = decide(name, n, list(polys), steps)
-        row |= {"known_cohen_macaulay": cm_known, "known_reduced": reduced_known}
-        row["reproduced"] = row["cohen_macaulay"] is cm_known and row["reduced"] is reduced_known
-        rows.append(row)
-    return rows
+    return list(parallel.ordered_map(calibration_ring, [(name, steps) for name in CALIBRATION], min_items=1))
 
 
-def cell(source: str, orbit: str, retained: dict[str, str], steps: Path | None) -> dict[str, Any]:
+def cell(item: tuple[str, str, dict[str, str], Path | None]) -> dict[str, Any]:
+    source, orbit, retained, steps = item
     name = ws.incidence_name(orbit, source)
     run = ws.run_singular(ws.fiber_script(ws.orbit_task(orbit), source, 0, 0))
     summary = ws.summarize_fiber_run(run)
@@ -304,6 +316,7 @@ def main() -> int:
         for item in json.loads(WEIGHT_SLICE.read_text(encoding="utf-8"))["cells"]
         if item["characteristic"] == 0
     }
+    os.environ["GOROROBA_WORKERS"] = str(min(parallel.workers(), MAX_WORKERS))
     banner, version = ws.singular_version()
     record: dict[str, Any] = {
         "schema": SCHEMA,
@@ -314,7 +327,8 @@ def main() -> int:
     }
     calibrated = all(row["reproduced"] for row in record["calibration"])
     if calibrated:
-        record["cells"] = [cell(source, orbit, retained, args.steps) for source, orbit in chosen]
+        items = [(source, orbit, retained, args.steps) for source, orbit in chosen]
+        record["cells"] = list(parallel.ordered_map(cell, items, min_items=1))
     record["problems"] = problems(record)
     record["complete"] = calibrated and len(record["cells"]) == len(CELLS)
     record["hypothesis_holds_on_every_cell"] = calibrated and record["problems"] == []
