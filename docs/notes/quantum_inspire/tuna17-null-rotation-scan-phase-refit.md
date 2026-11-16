@@ -3,7 +3,7 @@
 Status: exploratory post-hoc fit of retained shots. It submits no provider job, draws no random number, changes no
 retained record and no preregistered verdict (the series reads `unresolved_none` in
 [the analysis](../../../results/quantum_inspire/pathion_null_rotation_scan_tuna_17_analysis.json)). Entry:
-`scripts/qi_pathion_null_rotation_scan_phase_refit.py`; record:
+`scripts/qi_pathion_null_rotation_scan_phase_refit.py` (forward model and fits: `gororoba_quantum/gate_noise_histogram_fit.py`); record:
 [pathion_null_rotation_scan_tuna_17_phase_refit.json](../../../results/quantum_inspire/pathion_null_rotation_scan_tuna_17_phase_refit.json);
 test: `tests/scripts/test_qi_pathion_null_rotation_scan_phase_refit.py`. Subject: the 30 data circuits of the 21
 retained batches `results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-*`,
@@ -126,6 +126,9 @@ export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 GOROROBA_WORKERS=4
 "$PYTHON" -B -W error scripts/qi_pathion_null_rotation_scan_phase_refit.py --check results/quantum_inspire
 "$PYTHON" -B -W error scripts/qi_pathion_null_rotation_scan_phase_refit.py --profile results/quantum_inspire
 ```
+
+The `--check` replay is the on-demand gate `core-pathion-null-rotation-scan-phase-refit-replay` of `ci/gates.json`
+(`sh ci/pr_checks.sh gates --gates core-pathion-null-rotation-scan-phase-refit-replay`).
 
 ## Limits
 
