@@ -569,8 +569,9 @@ def self_test() -> str:
     """The simulator against the exact and noisy laws of the repository, then a planted parameter recovered."""
     exact_arms = (rs.RETAINED, rs.CENTER, "b0-rx-all-p20")
     exact = gnf.arm_laws(experiment(), list(exact_arms), {})
-    for arm in exact_arms:
-        gap = float(np.abs(exact[arm] - rs.forward_law(arm)).max())
+    references = ordered_map(rs.forward_law, list(exact_arms), min_items=2)
+    for arm, reference_law in zip(exact_arms, references, strict=True):
+        gap = float(np.abs(exact[arm] - reference_law).max())
         if gap > 1e-10:
             raise AssertionError(f"the simulator differs from forward_law on {arm} by {gap}")
     noise = (0.002, 0.003, 0.01, 0.004, 0.005)
