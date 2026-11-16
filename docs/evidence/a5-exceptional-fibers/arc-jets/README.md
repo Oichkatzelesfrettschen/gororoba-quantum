@@ -212,7 +212,7 @@ the gate. The direct verifier command above always requests the exact export rep
   the minimum valuation of the nine coordinates t_i, which generate m_R.
 - The equalities through degree seven rest on K2 inside L at each prime. The jets bound h_d from below only and cannot prove
   h_d < HF(k[y]/K2, d); a plateau below the K2 value would have been a lower bound alone.
-- Generators of L in degree eight and above: none, by A5-559. Open: characteristic zero and the degree-two receipt of the N+ header at the root 21255 of p = 32009 (the receipt of
+- Generators of L in degree eight and above: none, by A5-559. Open: characteristic zero and the degree-two receipt of the N+ header at the root 21255 of p = 32009 (A5-571; the receipt of
   A5-570 covers the root 10754 of the retained headers).
 
 ## Routes that did not close degree 6
