@@ -369,33 +369,16 @@ def optimize(spec: FitSpec, found: list[Observation], start: tuple[float, ...]) 
 def fit_item(item: tuple[FitSpec, list[Observation]]) -> tuple[str, dict[str, Any]]:
     spec, found = item
     result, values = optimize(spec, found, spec.start)
-    record = summary(found, predict(found, values), len(spec.free), float(2 * result.cost), values)
-    record["free"] = list(spec.free)
-    record["start"] = dict(zip(spec.free, spec.start, strict=True))
-    record["x_scale"] = dict(zip(spec.free, spec.x_scale, strict=True))
-    record["diff_step"] = DIFF_STEP
-    record["bounds"] = {k: [lo, hi] for k, lo, hi in zip(spec.free, spec.lower, spec.upper, strict=True)}
-    record["at_bound"] = [
-        k
-        for k, v, lo, hi in zip(spec.free, result.x, spec.lower, spec.upper, strict=True)
-        if v <= lo + BOUND_FRACTION * (hi - lo) or v >= hi - BOUND_FRACTION * (hi - lo)
-    ]
-    record["optimizer_status"] = int(result.status)
-    return spec.name, record
+    return spec.name, {
+        "values": values,
+        "histogram_chi2": float(2 * result.cost),
+        "optimizer_status": int(result.status),
+    }
 
 
 def exact_item(found: list[Observation]) -> tuple[str, dict[str, Any]]:
-    predicted = predict(found, {})
-    histogram = float(np.sum(pearson(found, predicted) ** 2))
-    record = summary(found, predicted, 0, histogram, {})
-    record["free"] = []
-    record["start"] = {}
-    record["x_scale"] = {}
-    record["diff_step"] = None
-    record["bounds"] = {}
-    record["at_bound"] = []
-    record["optimizer_status"] = None
-    return EXACT, record
+    histogram = float(np.sum(pearson(found, predict(found, {})) ** 2))
+    return EXACT, {"values": {}, "histogram_chi2": histogram, "optimizer_status": None}
 
 
 RETENTION_START = 0.45
@@ -423,24 +406,55 @@ def retention_item(found: list[Observation]) -> tuple[str, dict[str, Any]]:
     result = least_squares(
         residual, [RETENTION_START] * count, bounds=([RETENTION_BOUNDS[0]] * count, [RETENTION_BOUNDS[1]] * count)
     )
-    record = summary(found, predicted(result.x), count, float(2 * result.cost), {})
-    record["free"] = [f"retention_{b}" for b in batches]
-    record["start"] = {f"retention_{b}": RETENTION_START for b in batches}
-    record["x_scale"] = {f"retention_{b}": 1.0 for b in batches}
-    record["diff_step"] = None
-    record["bounds"] = {f"retention_{b}": list(RETENTION_BOUNDS) for b in batches}
-    record["at_bound"] = [
-        f"retention_{b}"
-        for b, v in zip(batches, result.x, strict=True)
-        if v <= 0.05 + BOUND_FRACTION * 0.95 or v >= 1.0 - BOUND_FRACTION * 0.95
-    ]
-    record["optimizer_status"] = int(result.status)
-    record["values"] = {f"retention_{b}": float(v) for b, v in zip(batches, result.x, strict=True)}
+    values = {f"retention_{b}": float(v) for b, v in zip(batches, result.x, strict=True)}
+    record = {"values": values, "histogram_chi2": float(2 * result.cost), "optimizer_status": int(result.status)}
     return RETENTION, record
 
 
+def config(name: str, found: list[Observation]) -> dict[str, Any]:
+    """The free parameters of a model with their stored starts, step scales, difference step and bounds."""
+    if name == EXACT:
+        return {"free": [], "start": {}, "x_scale": {}, "diff_step": None, "bounds": {}}
+    if name == RETENTION:
+        free = [f"retention_{b}" for b in sorted({o["batch"] for o in found})]
+        return {
+            "free": free,
+            "start": dict.fromkeys(free, RETENTION_START),
+            "x_scale": dict.fromkeys(free, 1.0),
+            "diff_step": None,
+            "bounds": {k: list(RETENTION_BOUNDS) for k in free},
+        }
+    spec = next(s for s in SPECS if s.name == name)
+    return {
+        "free": list(spec.free),
+        "start": dict(zip(spec.free, spec.start, strict=True)),
+        "x_scale": dict(zip(spec.free, spec.x_scale, strict=True)),
+        "diff_step": DIFF_STEP,
+        "bounds": {k: [lo, hi] for k, lo, hi in zip(spec.free, spec.lower, spec.upper, strict=True)},
+    }
+
+
+def evaluate(found: list[Observation], name: str, values: dict[str, float]) -> dict[str, Any]:
+    """The statistics of a model at one parameter point: chi-squares, degrees of freedom, smallest expected
+    probability and the parameters that sit on a bound."""
+    if name == RETENTION:
+        exact = {arm: law(arm, {}) for arm in sorted({o["arm"] for o in found})}
+        predicted = [o["matrix"] @ contract(exact[o["arm"]], values[f"retention_{o['batch']}"]) for o in found]
+    else:
+        predicted = predict(found, values)
+    histogram = float(np.sum(pearson(found, predicted) ** 2))
+    bounds = config(name, found)["bounds"]
+    record = summary(found, predicted, len(bounds), histogram, values)
+    record["at_bound"] = [
+        k
+        for k, (lo, hi) in bounds.items()
+        if values[k] <= lo + BOUND_FRACTION * (hi - lo) or values[k] >= hi - BOUND_FRACTION * (hi - lo)
+    ]
+    return record
+
+
 def fit_all(found: list[Observation]) -> dict[str, dict[str, Any]]:
-    """Every model's fit; the independent fits map over the process pool and return in declaration order."""
+    """Every model's fit from its stored start; the independent fits map over the process pool, in declaration order."""
     results = dict(ordered_map(fit_item, [(spec, found) for spec in SPECS], min_items=2))
     exact_name, exact = exact_item(found)
     retention_name, retention = retention_item(found)
@@ -457,6 +471,9 @@ RETENTION_POINTS = 96
 NEAR_LOWER = 0.01
 NEAR_ZERO = 1e-4
 SearchItem = tuple[FitSpec, list[Observation], tuple[float, ...]]
+# A model's search: its record, the candidate points (label, chi-square, parameter values) and the chi-squares of
+# its full-model fits.
+SearchResult = tuple[dict[str, Any], list[tuple[str, float, dict[str, float]]], list[float]]
 
 
 def clipped(spec: FitSpec, point: list[float] | tuple[float, ...]) -> tuple[float, ...]:
@@ -470,7 +487,7 @@ def search_item(item: SearchItem) -> tuple[float, list[float]]:
     return float(2 * result.cost), [float(v) for v in result.x]
 
 
-def phase_search(spec: FitSpec, found: list[Observation]) -> dict[str, Any]:
+def phase_search(spec: FitSpec, found: list[Observation]) -> SearchResult:
     """The last free parameter, a phase, is fixed on a grid across its bounds and the others are fitted from a start
     near their lower bounds, the stored start and the bound midpoints; each local minimum of the profile is then
     refined with the phase free."""
@@ -503,7 +520,7 @@ def phase_search(spec: FitSpec, found: list[Observation]) -> dict[str, Any]:
         if (i == 0 or profile[i] <= profile[i - 1]) and (i == PHASE_POINTS - 1 or profile[i] <= profile[i + 1])
     ]
     refined = ordered_map(search_item, [(spec, found, (*nuisance[i], grid[i])) for i in basins], min_items=2)
-    return {
+    record = {
         "method": f"{phase} fixed on {PHASE_POINTS} grid points across its bounds, the other parameters fitted from "
         "three starts (near the lower bounds, the stored start, the bound midpoints), then every local minimum of "
         "the profile refined with the phase free",
@@ -511,24 +528,37 @@ def phase_search(spec: FitSpec, found: list[Observation]) -> dict[str, Any]:
         "phase_grid": grid,
         "profile_histogram_chi2": profile,
         "refined_phases": [grid[i] for i in basins],
-        "best_histogram_chi2": min([*profile, *(r[0] for r in refined)]),
     }
+    candidates = [
+        (f"profile at {phase}={grid[i]:.4f}", profile[i], dict(zip(spec.free, (*nuisance[i], grid[i]), strict=True)))
+        for i in range(PHASE_POINTS)
+    ] + [
+        (f"refinement from {phase}={grid[i]:.4f}", r[0], dict(zip(spec.free, r[1], strict=True)))
+        for i, r in zip(basins, refined, strict=True)
+    ]
+    return record, candidates, [r[0] for r in refined]
 
 
-def noise_search(spec: FitSpec, found: list[Observation], values: dict[str, float]) -> dict[str, Any]:
+def noise_search(spec: FitSpec, found: list[Observation], values: dict[str, float]) -> SearchResult:
     """The fit from the stored start, a start near zero, the bound midpoints and the fitted point."""
     zero = tuple(NEAR_ZERO for _ in spec.free)
     middle = tuple((lo + hi) / 2 for lo, hi in zip(spec.lower, spec.upper, strict=True))
     fitted = tuple(values[k] for k in spec.free)
     starts = (spec.start, zero, middle, fitted)
+    labels = ("stored start", "start of 1e-4", "bound midpoints", "fitted point")
     results = ordered_map(search_item, [(spec, found, start) for start in starts], min_items=2)
-    return {
+    record = {
         "method": "the fit from the stored start, a start of 1e-4 in every parameter, the bound midpoints and the "
         "fitted point",
         "starts": len(starts),
+        "start_labels": list(labels),
         "start_histogram_chi2": [r[0] for r in results],
-        "best_histogram_chi2": min(r[0] for r in results),
     }
+    candidates = [
+        (f"search from the {label}", r[0], dict(zip(spec.free, r[1], strict=True)))
+        for label, r in zip(labels, results, strict=True)
+    ]
+    return record, candidates, [r[0] for r in results]
 
 
 def retention_profile_item(item: tuple[str, list[Observation], dict[str, np.ndarray]]) -> tuple[str, float, float]:
@@ -547,62 +577,149 @@ def retention_profile_item(item: tuple[str, list[Observation], dict[str, np.ndar
     return batch, min(float(result.fun), values[best]), float(result.x)
 
 
-def retention_search(found: list[Observation]) -> dict[str, Any]:
+def retention_search(found: list[Observation]) -> SearchResult:
     """The objective is a sum over batches, so each batch's retention is profiled on its own."""
     batches = sorted({o["batch"] for o in found})
     exact = {arm: law(arm, {}) for arm in sorted({o["arm"] for o in found})}
     items = [(b, [o for o in found if o["batch"] == b], exact) for b in batches]
     results = ordered_map(retention_profile_item, items, min_items=2)
-    return {
+    record = {
         "method": f"one-dimensional bounded profile of each batch's retention: {RETENTION_POINTS} grid points across "
         "the bounds, then a bounded scalar refinement around the lowest",
         "starts": len(batches),
         "batch_histogram_chi2": {b: chi2 for b, chi2, _ in results},
-        "best_histogram_chi2": float(sum(chi2 for _, chi2, _ in results)),
     }
+    total = float(sum(chi2 for _, chi2, _ in results))
+    point = {f"retention_{b}": r for b, _, r in results}
+    return record, [("batch profiles", total, point)], [total]
 
 
-def search_all(found: list[Observation], models: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
-    """The search record of every model; `models` supplies the headline values and chi-squares."""
-    searches: dict[str, dict[str, Any]] = {
-        EXACT: {"method": "no free parameter", "starts": 0, "best_histogram_chi2": models[EXACT]["histogram_chi2"]},
+def search_all(found: list[Observation], stored: dict[str, dict[str, Any]]) -> dict[str, SearchResult]:
+    """The search of every model; `stored` holds the fits from the stored starts."""
+    searches: dict[str, SearchResult] = {
+        EXACT: ({"method": "no free parameter", "starts": 0}, [], []),
         RETENTION: retention_search(found),
     }
     for spec in SPECS:
         if spec.name.startswith("cz_noise"):
             searches[spec.name] = phase_search(spec, found)
         else:
-            searches[spec.name] = noise_search(spec, found, models[spec.name]["values"])
-    for name, record in searches.items():
-        record["best_minus_headline"] = record["best_histogram_chi2"] - models[name]["histogram_chi2"]
+            searches[spec.name] = noise_search(spec, found, stored[spec.name]["values"])
     return {name: searches[name] for name in MODEL_NAMES}
 
 
+def headline_models(
+    found: list[Observation], stored: dict[str, dict[str, Any]], searches: dict[str, SearchResult]
+) -> dict[str, dict[str, Any]]:
+    """Each model at the lowest chi-square of its stored-start fit and its search, with the start that produced it."""
+    models: dict[str, dict[str, Any]] = {}
+    for name in MODEL_NAMES:
+        record, candidates, fits = searches[name]
+        start = stored[name]
+        label, _, values = min(
+            [("stored start", start["histogram_chi2"], start["values"]), *candidates], key=lambda c: c[1]
+        )
+        headline = evaluate(found, name, values)
+        converged = [start["histogram_chi2"], *fits] if name != EXACT else [start["histogram_chi2"]]
+        block = {
+            **record,
+            "best_histogram_chi2": headline["histogram_chi2"],
+            "best_minus_headline": 0.0,
+            "spread_histogram_chi2": max(converged) - min(converged),
+        }
+        models[name] = {
+            **config(name, found),
+            **headline,
+            "headline_start": label,
+            "stored_start_histogram_chi2": start["histogram_chi2"],
+            "stored_start_optimizer_status": start["optimizer_status"],
+            "search": block,
+        }
+    return models
+
+
+def replayed_models(
+    found: list[Observation], stored: dict[str, dict[str, Any]], retained: dict[str, dict[str, Any]]
+) -> dict[str, dict[str, Any]]:
+    """Each retained headline point evaluated again, beside the replayed fit from the stored start."""
+    return {
+        name: {
+            **config(name, found),
+            **evaluate(found, name, retained[name]["values"]),
+            "headline_start": retained[name]["headline_start"],
+            "stored_start_histogram_chi2": stored[name]["histogram_chi2"],
+            "stored_start_optimizer_status": stored[name]["optimizer_status"],
+        }
+        for name in MODEL_NAMES
+    }
+
+
 def verify_search(models: dict[str, dict[str, Any]]) -> None:
-    """No start of the search reaches a chi-square below the headline by more than the tolerance."""
-    lower = []
+    """No start reaches a chi-square below the headline by more than the tolerance, and the headline stands at or
+    below the fit from the stored start."""
+    problems = []
     for name, model in models.items():
-        search = model["search"]
         headline = model["histogram_chi2"]
-        if search["best_histogram_chi2"] < headline - TOLERANCE * max(1.0, abs(headline)):
-            lower.append(f"{name}: {search['best_histogram_chi2']!r} below the headline {headline!r}")
-    if lower:
-        raise ValueError(f"the search found a lower minimum: {lower}")
+        slack = TOLERANCE * max(1.0, abs(headline))
+        if model["search"]["best_histogram_chi2"] < headline - slack:
+            problems.append(f"{name}: {model['search']['best_histogram_chi2']!r} below the headline {headline!r}")
+        if headline > model["stored_start_histogram_chi2"] + slack:
+            problems.append(f"{name}: headline {headline!r} above its stored-start fit")
+    if problems:
+        raise ValueError(f"the search found a lower minimum or the headline is not the lowest: {problems}")
+
+
+# A model and the smaller model it contains: the smaller one's parameters absent from the larger stand at zero.
+NESTING = (
+    (RETENTION, EXACT),
+    ("five_noise_terms", EXACT),
+    ("five_noise_terms_selector_flip", "five_noise_terms"),
+    ("five_noise_terms_q12_z_after_pulse", "five_noise_terms"),
+    ("five_noise_terms_q12_z_after_pulse", "cz_noise_flip_q12_z_after_pulse"),
+)
+NESTING_ZERO = 1e-6
+
+
+def verify_nesting(models: dict[str, dict[str, Any]]) -> None:
+    """A larger model fits at least as well as the smaller model it contains, within the tolerance."""
+    problems = []
+    for larger, smaller in NESTING:
+        big, small = models[larger], models[smaller]
+        for key in small["free"]:
+            if key in big["free"]:
+                lower, upper = big["bounds"][key]
+                if not lower <= small["values"][key] <= upper:
+                    problems.append(f"{smaller} holds {key}={small['values'][key]!r} outside the bounds of {larger}")
+            elif abs(small["values"][key]) > NESTING_ZERO:
+                problems.append(f"{smaller} holds {key}={small['values'][key]!r}, so {larger} does not contain it")
+        slack = TOLERANCE * max(1.0, abs(small["histogram_chi2"]))
+        if big["histogram_chi2"] > small["histogram_chi2"] + slack:
+            problems.append(
+                f"{larger} reads {big['histogram_chi2']!r}, above the {smaller} model it contains "
+                f"({small['histogram_chi2']!r})"
+            )
+    if problems:
+        raise ValueError(f"the models break the nesting order: {problems}")
 
 
 # Record -------------------------------------------------------------------------------------------------------------
 
 
-def build(search: bool = True) -> dict[str, Any]:
-    """The record: every model's headline fit and, with `search`, its multistart or profile search."""
+def build(search: bool = True, retained: dict[str, dict[str, Any]] | None = None) -> dict[str, Any]:
+    """The record. With `search`, every headline is the lowest point of the stored-start fit and the search; without
+    it, the headline points of `retained` are evaluated again beside the replayed stored-start fits."""
     found, runs = observations()
     kinds = sorted({o["kind"] for o in found})
     if len(found) != 30 or kinds != ["all10", "all20", "bridge", "q4-10", "q8-10"]:
         raise ValueError(f"expected 30 scan circuits of five kinds, read {len(found)} of {kinds}")
-    models = fit_all(found)
+    stored = fit_all(found)
     if search:
-        for name, record in search_all(found, models).items():
-            models[name]["search"] = record
+        models = headline_models(found, stored, search_all(found, stored))
+        verify_nesting(models)
+    elif retained is None:
+        raise ValueError("a replay without the search needs the retained models")
+    else:
+        models = replayed_models(found, stored, retained)
     return {
         "schema": SCHEMA,
         "evidence_class": "exploratory post-hoc fit of retained shots; no provider job, no random draw",
@@ -666,32 +783,32 @@ def without_search(record: dict[str, Any]) -> dict[str, Any]:
 
 
 def check(directory: Path, fresh: dict[str, Any] | None = None) -> None:
-    """The retained record holds the replayed headline fits, and its stored search found no lower minimum.
+    """The headline points of the retained record evaluate again to the stored statistics, the fit from each stored
+    start replays, no stored search found a lower minimum and the nesting order of the models holds.
 
     A difference raises ValueError listing the first of them. The search itself replays under `profile`."""
     retained = json.loads((directory / RECORD).read_text(encoding="utf-8"))
     if any("search" not in model for model in retained["models"].values()):
         raise ValueError(f"{directory / RECORD} stores no search section for a model")
-    found = differences(without_search(retained), build(search=False) if fresh is None else fresh)
+    replay = build(search=False, retained=retained["models"]) if fresh is None else fresh
+    found = differences(without_search(retained), replay)
     if found:
         raise ValueError(f"{directory / RECORD} differs from the replay in {len(found)} places: {found[:10]}")
     verify_search(retained["models"])
+    verify_nesting(retained["models"])
 
 
-def profile(directory: Path, fresh: dict[str, dict[str, Any]] | None = None) -> None:
-    """Replay the multistart and profile search: it equals the stored one and finds no lower minimum."""
+def profile(directory: Path, fresh: dict[str, Any] | None = None) -> None:
+    """Replay the whole search: the record equals it, no start beats a headline and the nesting order holds."""
     retained = json.loads((directory / RECORD).read_text(encoding="utf-8"))
-    models = retained["models"]
-    if fresh is None:
-        found, _ = observations()
-        if data_digest(found) != retained["data_sha256"]:
-            raise ValueError(f"the retained counts differ from {directory / RECORD}")
-        fresh = search_all(found, models)
-    stored = {name: model["search"] for name, model in models.items()}
-    problems = differences(stored, fresh)
+    replay = build() if fresh is None else fresh
+    problems = differences(retained, replay)
     if problems:
-        raise ValueError(f"the stored search differs from its replay in {len(problems)} places: {problems[:10]}")
-    verify_search({name: {**model, "search": fresh[name]} for name, model in models.items()})
+        raise ValueError(
+            f"{directory / RECORD} differs from its search replay in {len(problems)} places: {problems[:10]}"
+        )
+    verify_search(replay["models"])
+    verify_nesting(replay["models"])
 
 
 # Self-test ----------------------------------------------------------------------------------------------------------
@@ -765,14 +882,37 @@ def self_test() -> str:
     _, retention_chi2, retention = retention_profile_item(("planted", retained, exact))
     if abs(retention - PLANTED_RETENTION) > 1e-6 or retention_chi2 > 1e-3:
         raise AssertionError(f"planted retention {PLANTED_RETENTION} profiled as {retention} at {retention_chi2}")
-    lower = {"m": {"histogram_chi2": 100.0, "search": {"best_histogram_chi2": 99.0}}}
+    fake = {"histogram_chi2": 100.0, "stored_start_histogram_chi2": 100.0, "search": {"best_histogram_chi2": 100.0}}
+    verify_search({"m": fake})
+    for bad in (
+        {"search": {"best_histogram_chi2": 99.0}},
+        {"stored_start_histogram_chi2": 99.0},
+    ):
+        try:
+            verify_search({"m": {**fake, **bad}})
+        except ValueError:
+            continue
+        raise AssertionError(f"verify_search passes {bad}")
+    largest_first = (
+        "five_noise_terms_q12_z_after_pulse",
+        "five_noise_terms_selector_flip",
+        RETENTION,
+        "cz_noise_flip_q12_z_after_pulse",
+        "five_noise_terms",
+        EXACT,
+    )
+    ordered = {
+        name: {"free": [], "values": {}, "bounds": {}, "histogram_chi2": 10.0 * rank}
+        for rank, name in enumerate(largest_first)
+    }
+    verify_nesting(ordered)
+    ordered[RETENTION]["histogram_chi2"] = 1e9
     try:
-        verify_search(lower)
+        verify_nesting(ordered)
     except ValueError:
         pass
     else:
-        raise AssertionError("a search that finds a lower minimum passes verify_search")
-    verify_search({"m": {"histogram_chi2": 100.0, "search": {"best_histogram_chi2": 100.0 - 1e-6}}})
+        raise AssertionError("verify_nesting passes a larger model that fits worse than the model it contains")
     return (
         f"qi_pathion_null_rotation_scan_phase_refit self-test: OK (noisy_law gap {gap:.1e}; planted q12 phase "
         f"{fit['values'][f'z{Z_QUBIT}']:+.5f} recovered, chi-square {fit['histogram_chi2']:.2e}, "

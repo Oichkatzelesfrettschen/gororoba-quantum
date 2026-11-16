@@ -26,13 +26,13 @@
      0.2
     ]
    },
-   "contrast_chi2": 428.3591930052746,
+   "contrast_chi2": 428.37920719958896,
    "contrast_chi2_by_kind": {
-    "all10": 117.97929620352248,
-    "all20": 157.07951411226418,
-    "bridge": 22.696576505533052,
-    "q4-10": 98.34769883621081,
-    "q8-10": 32.25610734774407
+    "all10": 117.98466808145545,
+    "all20": 157.07638371415646,
+    "bridge": 22.70104021382174,
+    "q4-10": 98.35987877319229,
+    "q8-10": 32.257236416963025
    },
    "diff_step": 0.001,
    "dof": 926,
@@ -42,13 +42,13 @@
     "flip",
     "c12"
    ],
-   "histogram_chi2": 42848.81982093294,
-   "min_expected_probability": 0.003109615965619581,
+   "headline_start": "refinement from c12=-0.1500",
+   "histogram_chi2": 42848.819772607036,
+   "min_expected_probability": 0.003109631976052884,
    "n_free": 4,
-   "optimizer_status": 3,
    "search": {
     "best_histogram_chi2": 42848.819772607036,
-    "best_minus_headline": -4.832590639125556e-05,
+    "best_minus_headline": 0.0,
     "method": "c12 fixed on 17 grid points across its bounds, the other parameters fitted from three starts (near the lower bounds, the stored start, the bound midpoints), then every local minimum of the profile refined with the phase free",
     "phase_grid": [
      -0.4,
@@ -91,6 +91,7 @@
     "refined_phases": [
      -0.15000000000000002
     ],
+    "spread_histogram_chi2": 4.832590639125556e-05,
     "starts": 52
    },
    "start": {
@@ -99,11 +100,13 @@
     "cp": 0.03,
     "flip": 0.017
    },
+   "stored_start_histogram_chi2": 42848.81982093294,
+   "stored_start_optimizer_status": 3,
    "values": {
-    "c12": -0.15075325082996546,
-    "ca": 0.019391566974021043,
-    "cp": 0.027166957838362524,
-    "flip": 2.681654625120201e-11
+    "c12": -0.15074742357484183,
+    "ca": 0.019391498632578896,
+    "cp": 0.027167328573601646,
+    "flip": 1.4284763821720052e-15
    },
    "x_scale": {
     "c12": 0.03,
@@ -134,13 +137,13 @@
      0.4
     ]
    },
-   "contrast_chi2": 428.35919300623397,
+   "contrast_chi2": 428.3792071995425,
    "contrast_chi2_by_kind": {
-    "all10": 117.97929620379875,
-    "all20": 157.07951411207372,
-    "bridge": 22.69657650575251,
-    "q4-10": 98.34769883680474,
-    "q8-10": 32.256107347804225
+    "all10": 117.98466808145398,
+    "all20": 157.07638371425236,
+    "bridge": 22.701040213788612,
+    "q4-10": 98.35987877308526,
+    "q8-10": 32.25723641696229
    },
    "diff_step": 0.001,
    "dof": 926,
@@ -150,13 +153,13 @@
     "flip",
     "z12"
    ],
-   "histogram_chi2": 42848.8198209331,
-   "min_expected_probability": 0.003109615965619716,
+   "headline_start": "refinement from z12=-0.1500",
+   "histogram_chi2": 42848.81977260698,
+   "min_expected_probability": 0.003109631976051592,
    "n_free": 4,
-   "optimizer_status": 3,
    "search": {
-    "best_histogram_chi2": 42848.819772606985,
-    "best_minus_headline": -4.832611739402637e-05,
+    "best_histogram_chi2": 42848.81977260698,
+    "best_minus_headline": 0.0,
     "method": "z12 fixed on 17 grid points across its bounds, the other parameters fitted from three starts (near the lower bounds, the stored start, the bound midpoints), then every local minimum of the profile refined with the phase free",
     "phase_grid": [
      -0.4,
@@ -199,6 +202,7 @@
     "refined_phases": [
      -0.15000000000000002
     ],
+    "spread_histogram_chi2": 4.832611739402637e-05,
     "starts": 52
    },
    "start": {
@@ -207,11 +211,13 @@
     "flip": 0.017,
     "z12": 0.0
    },
+   "stored_start_histogram_chi2": 42848.8198209331,
+   "stored_start_optimizer_status": 3,
    "values": {
-    "ca": 0.01939156697402734,
-    "cp": 0.02716695783835859,
-    "flip": 2.681655161482639e-11,
-    "z12": -0.15075325082968735
+    "ca": 0.019391498632590615,
+    "cp": 0.027167328573548533,
+    "flip": 1.2411571961334294e-15,
+    "z12": -0.15074742357488288
    },
    "x_scale": {
     "ca": 0.01,
@@ -234,17 +240,20 @@
    "diff_step": null,
    "dof": 930,
    "free": [],
+   "headline_start": "stored start",
    "histogram_chi2": 2696334.4621445406,
    "min_expected_probability": 0.0022724665792942457,
    "n_free": 0,
-   "optimizer_status": null,
    "search": {
     "best_histogram_chi2": 2696334.4621445406,
     "best_minus_headline": 0.0,
     "method": "no free parameter",
+    "spread_histogram_chi2": 0.0,
     "starts": 0
    },
    "start": {},
+   "stored_start_histogram_chi2": 2696334.4621445406,
+   "stored_start_optimizer_status": null,
    "values": {},
    "x_scale": {}
   },
@@ -292,13 +301,13 @@
      1.0
     ]
    },
-   "contrast_chi2": 1179.109209888352,
+   "contrast_chi2": 1179.1039176399788,
    "contrast_chi2_by_kind": {
-    "all10": 235.9445274923203,
-    "all20": 199.2159752528039,
-    "bridge": 157.12942312447436,
-    "q4-10": 457.0056346754173,
-    "q8-10": 129.81364934333624
+    "all10": 235.9443447123186,
+    "all20": 199.21088009987974,
+    "bridge": 157.12942312447214,
+    "q4-10": 457.0056346754187,
+    "q8-10": 129.8136350278897
    },
    "diff_step": null,
    "dof": 920,
@@ -314,10 +323,10 @@
     "retention_batch-17",
     "retention_batch-19"
    ],
-   "histogram_chi2": 182795.3544793889,
-   "min_expected_probability": 0.013262949598998241,
+   "headline_start": "batch profiles",
+   "histogram_chi2": 182795.35447275508,
+   "min_expected_probability": 0.013263030410904432,
    "n_free": 10,
-   "optimizer_status": 2,
    "search": {
     "batch_histogram_chi2": {
      "batch-01": 26208.223855610297,
@@ -332,8 +341,9 @@
      "batch-19": 21308.344356514335
     },
     "best_histogram_chi2": 182795.35447275508,
-    "best_minus_headline": -6.6338106989860535e-06,
+    "best_minus_headline": 0.0,
     "method": "one-dimensional bounded profile of each batch's retention: 96 grid points across the bounds, then a bounded scalar refinement around the lowest",
+    "spread_histogram_chi2": 6.6338106989860535e-06,
     "starts": 10
    },
    "start": {
@@ -348,17 +358,19 @@
     "retention_batch-17": 0.45,
     "retention_batch-19": 0.45
    },
+   "stored_start_histogram_chi2": 182795.3544793889,
+   "stored_start_optimizer_status": 2,
    "values": {
-    "retention_batch-01": 0.44853226625435044,
-    "retention_batch-03": 0.4678336480229574,
-    "retention_batch-05": 0.4679582418652257,
-    "retention_batch-07": 0.5478084111501351,
-    "retention_batch-09": 0.47540654054023923,
-    "retention_batch-11": 0.4604101329447252,
-    "retention_batch-13": 0.5989057196810554,
-    "retention_batch-15": 0.47394381595285395,
-    "retention_batch-17": 0.47144983179530925,
-    "retention_batch-19": 0.48072932352389947
+    "retention_batch-01": 0.4485320768067874,
+    "retention_batch-03": 0.4678336650828569,
+    "retention_batch-05": 0.4679583543339295,
+    "retention_batch-07": 0.5478055603231675,
+    "retention_batch-09": 0.47540653420661916,
+    "retention_batch-11": 0.46041013765399835,
+    "retention_batch-13": 0.5989026063867441,
+    "retention_batch-15": 0.47394385467554584,
+    "retention_batch-17": 0.47144983654219735,
+    "retention_batch-19": 0.4807309238596758
    },
    "x_scale": {
     "retention_batch-01": 1.0,
@@ -401,13 +413,13 @@
      0.3
     ]
    },
-   "contrast_chi2": 1126.1382959094508,
+   "contrast_chi2": 1126.152144682887,
    "contrast_chi2_by_kind": {
-    "all10": 281.0341259104559,
-    "all20": 131.89732200365555,
-    "bridge": 158.45355632346866,
-    "q4-10": 454.4849043998241,
-    "q8-10": 100.26838727204667
+    "all10": 281.02949574096584,
+    "all20": 131.92157667845905,
+    "bridge": 158.45334742226902,
+    "q4-10": 454.4825334222255,
+    "q8-10": 100.26519141896749
    },
    "diff_step": 0.001,
    "dof": 925,
@@ -418,19 +430,26 @@
     "ca",
     "cp"
    ],
-   "histogram_chi2": 51766.95171652455,
-   "min_expected_probability": 0.0034898080085146495,
+   "headline_start": "search from the fitted point",
+   "histogram_chi2": 51766.788905587964,
+   "min_expected_probability": 0.0034895299218728943,
    "n_free": 5,
-   "optimizer_status": 3,
    "search": {
     "best_histogram_chi2": 51766.788905587964,
-    "best_minus_headline": -0.16281093658471946,
+    "best_minus_headline": 0.0,
     "method": "the fit from the stored start, a start of 1e-4 in every parameter, the bound midpoints and the fitted point",
+    "spread_histogram_chi2": 0.1982054554973729,
     "start_histogram_chi2": [
      51766.95171652455,
      51766.98711104346,
      51766.78890608486,
      51766.788905587964
+    ],
+    "start_labels": [
+     "stored start",
+     "start of 1e-4",
+     "bound midpoints",
+     "fitted point"
     ],
     "starts": 4
    },
@@ -441,12 +460,14 @@
     "pa": 0.003,
     "pp": 0.003
    },
+   "stored_start_histogram_chi2": 51766.95171652455,
+   "stored_start_optimizer_status": 3,
    "values": {
-    "ca": 0.01943221942472489,
-    "cd": 7.919059768583166e-06,
-    "cp": 0.03231349229927279,
-    "pa": 3.0573953379554433e-15,
-    "pp": 1.7556588846275876e-09
+    "ca": 0.019431847086849516,
+    "cd": 7.876023698449248e-11,
+    "cp": 0.03232914656815009,
+    "pa": 5.470722835859834e-19,
+    "pp": 1.3363762134279143e-15
    },
    "x_scale": {
     "ca": 0.03,
@@ -459,7 +480,8 @@
   "five_noise_terms_q12_z_after_pulse": {
    "at_bound": [
     "pa",
-    "pp"
+    "pp",
+    "cd"
    ],
    "bounds": {
     "ca": [
@@ -487,13 +509,13 @@
      0.3
     ]
    },
-   "contrast_chi2": 427.96460616367284,
+   "contrast_chi2": 428.3213850553136,
    "contrast_chi2_by_kind": {
-    "all10": 117.91185659126018,
-    "all20": 156.7318764887819,
-    "bridge": 22.702347893636173,
-    "q4-10": 98.35968077032325,
-    "q8-10": 32.25884441967134
+    "all10": 117.96872780654101,
+    "all20": 157.08608479872345,
+    "bridge": 22.688083699946755,
+    "q4-10": 98.32461630359978,
+    "q8-10": 32.253872446502605
    },
    "diff_step": 0.001,
    "dof": 924,
@@ -505,19 +527,26 @@
     "cp",
     "z12"
    ],
-   "histogram_chi2": 42849.03833110383,
-   "min_expected_probability": 0.0031125483560857274,
+   "headline_start": "search from the bound midpoints",
+   "histogram_chi2": 42848.82018299395,
+   "min_expected_probability": 0.0031096058824734074,
    "n_free": 6,
-   "optimizer_status": 3,
    "search": {
     "best_histogram_chi2": 42848.82018299395,
-    "best_minus_headline": -0.21814810988144018,
+    "best_minus_headline": 0.0,
     "method": "the fit from the stored start, a start of 1e-4 in every parameter, the bound midpoints and the fitted point",
+    "spread_histogram_chi2": 0.582869704652694,
     "start_histogram_chi2": [
      42849.03833110383,
      42849.4030526986,
      42848.82018299395,
      42848.875661188846
+    ],
+    "start_labels": [
+     "stored start",
+     "start of 1e-4",
+     "bound midpoints",
+     "fitted point"
     ],
     "starts": 4
    },
@@ -529,13 +558,15 @@
     "pp": 0.003,
     "z12": 0.0
    },
+   "stored_start_histogram_chi2": 42849.03833110383,
+   "stored_start_optimizer_status": 3,
    "values": {
-    "ca": 0.019394846753102855,
-    "cd": 8.160724796115388e-05,
-    "cp": 0.026997846551768893,
-    "pa": 5.471139657231831e-16,
-    "pp": 6.416231122117415e-12,
-    "z12": -0.15079604857222334
+    "ca": 0.019391449238805286,
+    "cd": 1.0669404109981209e-07,
+    "cp": 0.02716658758057758,
+    "pa": 5.835338180394566e-19,
+    "pp": 1.995603068364374e-15,
+    "z12": -0.150764180617597
    },
    "x_scale": {
     "ca": 0.03,
@@ -578,13 +609,13 @@
      0.3
     ]
    },
-   "contrast_chi2": 703.7064522609136,
+   "contrast_chi2": 703.7059354207043,
    "contrast_chi2_by_kind": {
-    "all10": 193.84749501925816,
-    "all20": 94.57457728217773,
-    "bridge": 46.57950416091261,
-    "q4-10": 322.00534729930774,
-    "q8-10": 46.69952849925737
+    "all10": 193.84728566091968,
+    "all20": 94.57523680410405,
+    "bridge": 46.579191390980846,
+    "q4-10": 322.00489268322474,
+    "q8-10": 46.699328881475026
    },
    "diff_step": 0.001,
    "dof": 924,
@@ -596,19 +627,26 @@
     "cp",
     "flip"
    ],
-   "histogram_chi2": 51570.04870694276,
-   "min_expected_probability": 0.0034742086210259315,
+   "headline_start": "search from the fitted point",
+   "histogram_chi2": 51570.04565810056,
+   "min_expected_probability": 0.0034742026678825305,
    "n_free": 6,
-   "optimizer_status": 3,
    "search": {
-    "best_histogram_chi2": 51570.04565810055,
-    "best_minus_headline": -0.0030488422125927173,
+    "best_histogram_chi2": 51570.04565810056,
+    "best_minus_headline": 0.0,
     "method": "the fit from the stored start, a start of 1e-4 in every parameter, the bound midpoints and the fitted point",
+    "spread_histogram_chi2": 0.006696100128465332,
     "start_histogram_chi2": [
      51570.04870694276,
      51570.05235420068,
      51570.04565857578,
      51570.04565810055
+    ],
+    "start_labels": [
+     "stored start",
+     "start of 1e-4",
+     "bound midpoints",
+     "fitted point"
     ],
     "starts": 4
    },
@@ -620,13 +658,15 @@
     "pa": 0.003,
     "pp": 0.003
    },
+   "stored_start_histogram_chi2": 51570.04870694276,
+   "stored_start_optimizer_status": 3,
    "values": {
-    "ca": 0.01935356640738773,
-    "cd": 1.792913713990536e-07,
-    "cp": 0.031077133020323014,
-    "flip": 0.01660556413527073,
-    "pa": 6.300514611699973e-17,
-    "pp": 1.6347685038690935e-12
+    "ca": 0.019353544869893626,
+    "cd": 1.5857261964780375e-10,
+    "cp": 0.031077475922113774,
+    "flip": 0.01660562491335403,
+    "pa": 5.647592759665388e-15,
+    "pp": 1.9524672908429972e-14
    },
    "x_scale": {
     "ca": 0.03,

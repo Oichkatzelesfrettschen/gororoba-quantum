@@ -19,27 +19,61 @@ def _expect(condition: bool, message: str) -> None:
         raise AssertionError(message)
 
 
-def _fake_record() -> dict[str, Any]:
-    model = {
-        "n_free": 2,
-        "dof": 928,
-        "histogram_chi2": 51767.25,
+FREE = {
+    refit.EXACT: [],
+    refit.RETENTION: [],
+    "five_noise_terms": ["ca", "cp"],
+    "five_noise_terms_selector_flip": ["ca", "cp", "flip"],
+    "five_noise_terms_q12_z_after_pulse": ["ca", "cp", "z12"],
+    "cz_noise_flip_q12_z_after_pulse": ["ca", "cp", "flip", "z12"],
+    "cz_noise_flip_q12_z_after_cz": ["ca", "cp", "flip", "c12"],
+}
+VALUES = {"ca": 0.01943, "cp": 0.03233, "flip": 0.0, "z12": -0.15, "c12": -0.15}
+CHI2 = {
+    refit.EXACT: 2696334.5,
+    refit.RETENTION: 182795.25,
+    "five_noise_terms": 51767.25,
+    "five_noise_terms_selector_flip": 51570.0,
+    "five_noise_terms_q12_z_after_pulse": 42849.0,
+    "cz_noise_flip_q12_z_after_pulse": 42848.9,
+    "cz_noise_flip_q12_z_after_cz": 42848.9,
+}
+
+
+def _model(name: str) -> dict[str, Any]:
+    free = FREE[name]
+    return {
+        "n_free": len(free),
+        "dof": 930 - len(free),
+        "histogram_chi2": CHI2[name],
         "min_expected_probability": 1.5e-4,
         "contrast_chi2": 1126.5,
         "contrast_chi2_by_kind": {"all10": 281.0, "bridge": 158.5},
-        "values": {"ca": 0.01943, "cp": 0.03233},
-        "free": ["ca", "cp"],
-        "start": {"ca": 0.005, "cp": 0.005},
-        "x_scale": {"ca": 0.03, "cp": 0.03},
+        "values": {k: VALUES[k] for k in free},
+        "free": list(free),
+        "start": dict.fromkeys(free, 0.005),
+        "x_scale": dict.fromkeys(free, 0.03),
         "diff_step": 1e-3,
+        "bounds": {k: [-1.0, 1.0] for k in free},
         "at_bound": [],
-        "search": {"starts": 4, "best_histogram_chi2": 51767.25, "best_minus_headline": 0.0},
+        "headline_start": "stored start",
+        "stored_start_histogram_chi2": CHI2[name],
+        "stored_start_optimizer_status": 3,
+        "search": {
+            "starts": 4,
+            "best_histogram_chi2": CHI2[name],
+            "best_minus_headline": 0.0,
+            "spread_histogram_chi2": 0.2,
+        },
     }
+
+
+def _fake_record() -> dict[str, Any]:
     return {
         "schema": refit.SCHEMA,
         "observations": 30,
         "data_sha256": refit.data_digest([]),
-        "models": {MODEL: model},
+        "models": {name: _model(name) for name in refit.MODEL_NAMES},
     }
 
 
@@ -117,33 +151,65 @@ def test_check_rejects_a_record_without_its_search(tmp_path: Path) -> None:
         refit.check(tmp_path, fresh=refit.without_search(record))
 
 
-def test_profile_accepts_the_replayed_search_and_rejects_a_lower_or_changed_one(tmp_path: Path) -> None:
+def test_check_rejects_a_headline_above_its_own_stored_start_fit(tmp_path: Path) -> None:
+    record = _fake_record()
+    record["models"][MODEL]["stored_start_histogram_chi2"] = 40000.0
+    _store(tmp_path, record)
+    with pytest.raises(ValueError, match="headline is not the lowest"):
+        refit.check(tmp_path, fresh=refit.without_search(record))
+
+
+def test_check_rejects_a_larger_model_that_fits_worse_than_the_model_it_contains(tmp_path: Path) -> None:
+    record = _fake_record()
+    worse = record["models"]["five_noise_terms_q12_z_after_pulse"]
+    worse["histogram_chi2"] = worse["stored_start_histogram_chi2"] = worse["search"]["best_histogram_chi2"] = 42949.0
+    _store(tmp_path, record)
+    with pytest.raises(ValueError, match="nesting order"):
+        refit.check(tmp_path, fresh=refit.without_search(record))
+
+
+def test_profile_accepts_the_replayed_record_and_rejects_a_changed_or_lower_one(tmp_path: Path) -> None:
     record = _fake_record()
     _store(tmp_path, record)
-    stored = {MODEL: copy.deepcopy(record["models"][MODEL]["search"])}
-    refit.profile(tmp_path, fresh=copy.deepcopy(stored))
-    lower = copy.deepcopy(stored)
-    lower[MODEL]["best_histogram_chi2"] = 42849.0
-    with pytest.raises(ValueError, match="differs from its replay"):
-        refit.profile(tmp_path, fresh=lower)
-    lower_stored = copy.deepcopy(record)
-    lower_stored["models"][MODEL]["search"] = lower[MODEL]
-    _store(tmp_path, lower_stored)
-    with pytest.raises(ValueError, match="lower minimum"):
-        refit.profile(tmp_path, fresh=lower)
-    changed = copy.deepcopy(stored)
-    changed[MODEL]["starts"] = 5
-    _store(tmp_path, record)
-    with pytest.raises(ValueError, match="differs from its replay"):
+    refit.profile(tmp_path, fresh=copy.deepcopy(record))
+    changed = copy.deepcopy(record)
+    changed["models"][MODEL]["search"]["starts"] = 5
+    with pytest.raises(ValueError, match="differs from its search replay"):
         refit.profile(tmp_path, fresh=changed)
+    moved = copy.deepcopy(record)
+    moved["models"][MODEL]["headline_start"] = "refinement"
+    with pytest.raises(ValueError, match="differs from its search replay"):
+        refit.profile(tmp_path, fresh=moved)
+    lower = copy.deepcopy(record)
+    lower["models"][MODEL]["search"]["best_histogram_chi2"] = 42849.0
+    _store(tmp_path, lower)
+    with pytest.raises(ValueError, match="lower minimum"):
+        refit.profile(tmp_path, fresh=copy.deepcopy(lower))
 
 
 def test_verify_search_allows_a_difference_inside_the_tolerance_only() -> None:
-    inside = {"m": {"histogram_chi2": 100.0, "search": {"best_histogram_chi2": 100.0 - 0.5 * refit.TOLERANCE * 100}}}
-    outside = {"m": {"histogram_chi2": 100.0, "search": {"best_histogram_chi2": 100.0 - 2 * refit.TOLERANCE * 100}}}
+    model = {"histogram_chi2": 100.0, "stored_start_histogram_chi2": 100.0}
+    inside = {"m": {**model, "search": {"best_histogram_chi2": 100.0 - 0.5 * refit.TOLERANCE * 100}}}
+    outside = {"m": {**model, "search": {"best_histogram_chi2": 100.0 - 2 * refit.TOLERANCE * 100}}}
     refit.verify_search(inside)
     with pytest.raises(ValueError, match="lower minimum"):
         refit.verify_search(outside)
+
+
+@pytest.mark.parametrize(("larger", "smaller"), refit.NESTING)
+def test_a_larger_model_may_not_fit_worse_than_the_model_it_contains(larger: str, smaller: str) -> None:
+    models = _fake_record()["models"]
+    refit.verify_nesting(models)
+    models[larger]["histogram_chi2"] = models[smaller]["histogram_chi2"] * 1.001 + 1.0
+    with pytest.raises(ValueError, match=larger):
+        refit.verify_nesting(models)
+
+
+def test_the_nesting_order_needs_the_extra_parameters_of_the_smaller_model_at_zero() -> None:
+    models = _fake_record()["models"]
+    models["cz_noise_flip_q12_z_after_pulse"]["values"]["flip"] = 0.05
+    with pytest.raises(ValueError, match="does not contain"):
+        refit.verify_nesting(models)
 
 
 def test_main_check_and_profile_exit_nonzero_on_a_mutated_record(
@@ -152,11 +218,9 @@ def test_main_check_and_profile_exit_nonzero_on_a_mutated_record(
     record = _fake_record()
     _store(tmp_path, record)
     monkeypatch.setattr(
-        refit, "build", lambda search=True: copy.deepcopy(record if search else refit.without_search(record))
-    )
-    monkeypatch.setattr(refit, "observations", lambda: ([], []))
-    monkeypatch.setattr(
-        refit, "search_all", lambda found, models: {MODEL: copy.deepcopy(record["models"][MODEL]["search"])}
+        refit,
+        "build",
+        lambda search=True, retained=None: copy.deepcopy(record if search else refit.without_search(record)),
     )
     for flag in ("--check", "--profile"):
         monkeypatch.setattr("sys.argv", ["phase_refit", flag, str(tmp_path)])
@@ -173,7 +237,7 @@ def test_main_check_and_profile_exit_nonzero_on_a_mutated_record(
 
 def test_main_write_stores_the_built_record(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     record = _fake_record()
-    monkeypatch.setattr(refit, "build", lambda search=True: copy.deepcopy(record))
+    monkeypatch.setattr(refit, "build", lambda search=True, retained=None: copy.deepcopy(record))
     monkeypatch.setattr("sys.argv", ["phase_refit", "--write", str(tmp_path / "out")])
     _expect(refit.main() == 0, "--write fails")
     stored = json.loads((tmp_path / "out" / refit.RECORD).read_text(encoding="utf-8"))
@@ -247,10 +311,11 @@ def test_the_retained_record_is_complete_and_degrees_of_freedom_follow_the_free_
 def test_the_retained_search_found_no_lower_minimum_and_ran_every_start() -> None:
     models = _retained()["models"]
     refit.verify_search(models)
+    refit.verify_nesting(models)
     for name, model in models.items():
         search = model["search"]
         _expect(search["starts"] >= (0 if name == refit.EXACT else 4), f"{name} ran {search['starts']} starts")
-        _expect(
-            abs(search["best_minus_headline"] - (search["best_histogram_chi2"] - model["histogram_chi2"])) < 1e-6,
-            f"{name} stores an inconsistent search gap",
-        )
+        _expect(search["best_histogram_chi2"] == model["histogram_chi2"], f"{name} headline is not the best found")
+        _expect(search["best_minus_headline"] == 0.0, f"{name} stores a nonzero search gap")
+        _expect(model["headline_start"], f"{name} names no start for its headline")
+        _expect(search["spread_histogram_chi2"] >= 0.0, f"{name} stores a negative spread")
