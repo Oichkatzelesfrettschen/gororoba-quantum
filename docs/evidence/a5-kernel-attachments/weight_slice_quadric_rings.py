@@ -16,12 +16,16 @@ weight-slice record binds.
   parameters. Sparse forms keep the Q(i) coefficients small: on X- -> N- the dense forms with coefficients near
   32003 left one Singular call running past 3600 s, and the sparse forms decide the cell in seconds.
 - Reduced, for a Cohen-Macaulay ring: l_1, ..., l_a is then a regular sequence, A_1 = A/(l_1, ..., l_{a-1}) is
-  Cohen-Macaulay of dimension 1 and every point of Proj A_1 lies in the chart l_a = 1. When the chart ideal Z is
-  radical of length e, Proj A_1 is reduced, A_1 has no embedded prime, so A_1 is reduced, and a graded ring with a
-  homogeneous nonzerodivisor of positive degree and reduced quotient is reduced. A chart that is not radical decides
+  Cohen-Macaulay of dimension 1 and every point of Proj A_1 lies in the chart l_a = 1. When the chart ideal Z has
+  length e and is radical, Proj A_1 is reduced, A_1 has no embedded prime, so A_1 is reduced, and a graded ring with a
+  homogeneous nonzerodivisor of positive degree and reduced quotient is reduced. Z is radical when each variable has a
+  squarefree univariate polynomial in Z (Seidenberg's lemma in characteristic 0); the program reads these from
+  finduni(Z) and tests gcd(f, f') = 1. This sufficient test replaces radical(Z), whose computation on the
+  W8 -> N- chart (length 50, 24 variables) ran for more than 15 minutes. A chart that fails the test decides
   nothing for one choice of forms, and the radical probe then decides the ring.
 - Radical probe, on every ring the chart leaves undecided (each ring the Cohen-Macaulay test rejects, and a
-  Cohen-Macaulay ring whose chart is not radical): R = rad K. R = K decides the ring reduced; a generator of R
+  Cohen-Macaulay ring whose chart is not radical): R = rad K, the intersection of the minimal primes from
+  minAssGTZ (the method of A5-447; primdec's radical() on W8 -> N- ran past 15 minutes). R = K decides the ring reduced; a generator of R
   outside K decides it not reduced. The linear part of R and whether its square lies in K are recorded.
 
 The probes follow the computed values and never the predicted ones. Four calibration ideals with known answers run
@@ -94,9 +98,11 @@ print("RESULT forms "+string(Lf));
 ideal Q=std(sK+Lf);
 print("RESULT cm "+string(a)+" "+string(e)+" "+string(dim(Q))+" "+string(vdim(Q)));
 ideal L1; for(k=1;k<a;k++){{ L1[k]=Lf[k]; }}
-ideal Z=std(sK+L1+ideal(Lf[a]-1));
-ideal RZ=std(radical(Z));
-print("RESULT chart "+string(dim(Z))+" "+string(vdim(Z))+" "+string(vdim(RZ)));
+option(redSB); ideal Z=std(sK+L1+ideal(Lf[a]-1));
+int sq=0; ideal U; poly f;
+if(dim(Z)==0){{ U=finduni(Z);
+  for(j=1;j<=nv;j++){{ f=U[j]; if(deg(gcd(f,diff(f,var(j))))==0){{ sq=sq+1; }} }} }}
+print("RESULT chart "+string(dim(Z))+" "+string(vdim(Z))+" "+string(sq)+" "+string(nv));
 print("RESULT done 1");
 quit;
 """
@@ -104,7 +110,8 @@ quit;
 
 RADICAL_SCRIPT = (
     HEAD
-    + """ideal R=std(radical(sK)); ideal N=simplify(jet(R,1),2);
+    + """list P=minAssGTZ(K); ideal R=P[1]; int k; for(k=2;k<=size(P);k++){{ R=intersect(R,P[k]); }} R=std(R);
+ideal N=simplify(jet(R,1),2);
 print("RESULT radical_equal "+string(size(reduce(R,sK))==0));
 print("RESULT linear "+string(size(N))+" "+string(size(reduce(N*N,sK))==0)+" "+string(size(reduce(N,sK))==size(N)));
 print("RESULT radical "+string(dim(R))+" "+string(mult(R)));
@@ -128,7 +135,7 @@ def polynomials(lines: list[str]) -> list[str]:
 
 def cm_row(values: dict[str, list[str]]) -> dict[str, Any]:
     a, e, section_dim, length = (int(token) for token in values["cm"][0].split())
-    chart_dim, chart_length, chart_radical_length = (int(token) for token in values["chart"][0].split())
+    chart_dim, chart_length, squarefree, variables = (int(token) for token in values["chart"][0].split())
     if section_dim != 0:
         raise RuntimeError(f"the linear forms are not a system of parameters (dimension {section_dim})")
     if length < e:
@@ -139,7 +146,7 @@ def cm_row(values: dict[str, list[str]]) -> dict[str, Any]:
         "length": length,
         "cohen_macaulay": length == e,
         "parameter_forms": values["forms"][0],
-        "chart": {"dim": chart_dim, "length": chart_length, "radical_length": chart_radical_length},
+        "chart": {"dim": chart_dim, "length": chart_length, "squarefree_eliminants": squarefree, "variables": variables},
     }
 
 
@@ -163,7 +170,7 @@ def chart_decides(cm: dict[str, Any]) -> bool:
         cm["cohen_macaulay"]
         and chart["dim"] == 0
         and chart["length"] == cm["degree"]
-        and chart["radical_length"] == cm["degree"]
+        and chart["squarefree_eliminants"] == chart["variables"]
     )
 
 
