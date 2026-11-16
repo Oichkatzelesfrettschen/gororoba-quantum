@@ -104,7 +104,8 @@ points per qubit; the readout correction uses the mean of both pairs).
   readout pair, which is taken with every neighbor prepared in the excited
   state while late T1 points are read with neighbors near the ground state
   (CASE.md, last hypothesis), or a second, slower population contributes; no
-  arm in this series separates the two.
+  arm in this series separates the two; "T1 shape: results" below refits the
+  counts.
 
 ## T1 shape: predictions written before the refit
 
@@ -217,6 +218,176 @@ model runs.
   loss, not a tail). Falsifier: chi-square / dof at most 3 on at least 12
   qubits supports H6 as the shape.
 
+## T1 shape: results
+
+`scripts/qi_tuna17_t1_shape.py` refits the retained counts (no provider read) with
+the binomial-likelihood models of `gororoba_quantum/qi_decay_models.py` and writes
+`results/quantum_inspire/characterization_tuna_17_t1_shape_analysis.json`
+(command: `"$PYTHON" scripts/qi_tuna17_t1_shape.py OUT RUN_DIR...` over the six
+run directories of the series; the interpreter is the analysis one with numpy 2.5.4
+and scipy 1.18.1). The retained `--analyze` rows and the case's verdict rule are
+unchanged. The records use the mean of the opening and closing readout pairs
+unless a row says otherwise. The 80 us population is the last of six points, and
+the intervals are profile likelihoods (68.3%), also given widened by
+sqrt(chi-square / dof).
+
+| Hypothesis | Measured | Verdict |
+|---|---|---|
+| H1 readout floor | chi-square / dof at most 3 on 2 of 17 qubits for the opening, closing, mean and time-interpolated pair and for the joint likelihood (median 34.8, range 1.4 to 465 for the mean pair) | refuted |
+| H2 delay unit or idle gate | wait lines read N on all 17 qubits for all six delays; execution time rises 4.7 +- 15.0 ns per cycle per shot against 20 nominal; a common stretched exponent (0.90; per qubit 0.58 to 1.01) and a common delay offset (1.70 us; per qubit 0 to 13.5 us) are rejected (likelihood ratios 2310 and 2504 on 16 degrees of freedom, p below 1e-300) | refuted as one global calibration; realized delay undecided |
+| H3 two-rate decay | chi-square / dof at most 3 on 3 (biexponential), 2 (plateau) and 4 (stretched) of 17 qubits against 12 predicted; AICc falls by more than 4 on 12, 13 and 9 | not supported as a 3-parameter shape; tail excess real |
+| H4 drift | readout drift 0.001 to 0.014 (median 0.004); interpolated pair leaves chi-square / dof at most 3 on 2 of 17; a batch step is positive on 16 of 17 and its likelihood ratio exceeds 4 on 13 | drift refuted; batch step undecided (confounded with delay) |
+| H5 crosstalk | Spearman rho 0.15 (p 0.56) with degree and -0.23 (p 0.37) with the neighbor mean; coupled against uncoupled pairs |z| at most 2.32 and Welch p at least 0.089 on all 10 circuits; overdispersion 0.99 to 1.03 | refuted within this series; crosstalk undecided |
+| H2b delay offset (after the fact) | chi-square / dof at most 3 on 2 of 17; AICc gain over 4 on 9 | common offset refuted |
+| H6 T1 distribution | sigma 0.01 to 1.33 (median 0.30); AICc gain over 4 on 12; chi-square / dof at most 3 on 3 of 17 | predictions held; not sufficient as the shape |
+| Standard-error mechanism | factor sqrt(chi-square / dof) is 1.4 to 22 (median 5.8); scaled standard errors 0.25 to 4.6 us; the spread over six analyses (retained log fit, four readout choices, joint likelihood) exceeds the scaled error on 1 of 17 | supported |
+
+Predictions that failed. H3 predicted chi-square / dof at most 3 on at least 12
+qubits for a 2- or 3-parameter model and reaches 2 to 4; H4 predicted a step
+under 2 standard errors on at least 9 qubits and reads above on 13 (the second
+clause of its falsifier), while its drift clause stands refuted; H5 and H1 held
+as predicted, and so did the standard-error prediction. H2 predicted an
+execution-time slope within 25% of 20 ns per cycle per shot and reads 4.7 ns
+(+- 15.0), which the error makes uninformative; H2b predicted a common offset
+and reads a rejected one (recorded after the fact).
+
+### Observations
+
+- The single exponential leaves two residuals that share a sign across qubits:
+  the 5 us point lies below the fit on 14 of 17 qubits (median -2.5 standard
+  deviations, sign test p = 0.013) and the 80 us point above it on 16 of 17
+  (median +4.7, p = 0.0003). The 0, 10, 20 and 40 us points show no coherent sign
+  (median |z| at most 1.3). A fast loss in the first microseconds followed by a
+  slower tail is the shape; neither lengthening alone (stretched exponent below 1
+  on 10 of 17 qubits at the scaled interval) nor a plateau alone (nonzero on 11
+  of 17) describes it.
+- The misfit concentrates on a few qubits. Qubits 8 and 13 fit a single
+  exponential (chi-square / dof 1.4 and 2.2). Qubits 2, 3 and 4 stay above 40 for
+  the single exponential and above 13 under every other model; qubits 14 and 15
+  fall from 465 and 166 to 2.5 (stretched) and 3.7 (biexponential). No model wins
+  across qubits: seven of the eight models are the lowest-AICc model on some
+  qubit (batch step on 5, plateau on 4, delay offset on 3, biexponential on 2,
+  single, free amplitude and stretched on 1 each; the lognormal on none).
+- The refit leaves T1 unchanged: 12.8 to 31.8 us (median 22.5) against the
+  retained 13.2 to 32.2 (median 22.9). The retained log fit differs from the
+  direct fit by up to 25% (qubit 14: 23.6 against 17.8 us); the retained fit
+  weights the logarithm of each point and leaves its intercept free, where the
+  direct fit anchors the 0 us point at the measured e11.
+- The pre-registered H1 readout variants agree because the retained analyzer
+  already applies the same linear map (e01, e11 from the mean pair). The joint
+  likelihood, which carries the covariance of the shared readout pair, widens
+  the nominal T1 interval by 3% to 12% (32,768 readout shots per state); it
+  cannot account for chi-square / dof of 1.4 to 465.
+- The delay offset of H2b, fitted per qubit, reaches 5.8, 13.5 and 6.4 us on
+  qubits 2, 14 and 15 and stays at most 0.5 us on qubits 1, 4, 5, 6, 8, 10, 13
+  and 16, so it follows the misfit and is not a shared overhead. The execution-time slope cannot decide the
+  realized delay: its standard error (15 ns per cycle per shot) is as large as
+  the nominal 20 ns.
+- The overdispersion index of the 17-bit records (variance of the number of
+  excited qubits over the sum of binomial variances) is 0.99 to 1.03 at every
+  delay, so decay events of different qubits are independent to within 3% and
+  no common-mode burst hides in the counts.
+
+### What would decide
+
+- A dense scan of 0 to 10 us (about 0.5 us steps) tells a fast first-microsecond
+  loss, a coherent exchange with a defect and an aliased oscillation apart; the
+  6 delays here cannot.
+- Each delay run twice in interleaved order across batches separates the batch
+  step (positive on 16 of 17 qubits, aliased with delay because batch 02 holds
+  the three longest delays) from a shape effect.
+- A scan to about 300 us bounds the tail scale that is open above on 8 of 17
+  qubits.
+- The single-qubit arm that the case calls for (see "Open") separates a neighbor
+  effect from the qubit's own T1: this series cannot, since all 17 qubits are
+  excited together.
+- The parameter bounds force a positive second-component weight, so the sign of
+  a second scale cannot be tested here; the residual sign pattern is the only
+  sign evidence.
+
+### Corrected T1
+
+No registered model fits, so T1 is the effective single-exponential value with
+intervals widened by sqrt(chi-square / dof):
+
+| Qubit | T1 fit (us) | 68% interval | widened interval | chi-square / dof | joint-likelihood chi-square / dof | retained fit (us) |
+|---|---|---|---|---|---|---|
+| 0 | 17.2 | 17.0 to 17.3 | 16.8 to 17.6 | 7.6 | 6.8 | 17.1 +- 0.2 |
+| 1 | 19.8 | 19.6 to 20.0 | 19.4 to 20.2 | 6.1 | 5.8 | 19.6 +- 0.2 |
+| 2 | 23.9 | 23.7 to 24.1 | 21.3 to 26.9 | 215.3 | 212.7 | 24.8 +- 0.2 |
+| 3 | 12.8 | 12.7 to 12.9 | 11.9 to 13.7 | 64.9 | 63.3 | 13.2 +- 0.1 |
+| 4 | 24.2 | 24.0 to 24.4 | 22.7 to 25.8 | 57.8 | 57.2 | 24.9 +- 0.2 |
+| 5 | 20.5 | 20.3 to 20.7 | 20.0 to 21.1 | 10.1 | 9.9 | 20.4 +- 0.2 |
+| 6 | 15.9 | 15.8 to 16.1 | 15.3 to 16.6 | 22.4 | 20.3 | 16.2 +- 0.2 |
+| 7 | 27.3 | 27.0 to 27.5 | 25.9 to 28.8 | 34.8 | 34.6 | 27.7 +- 0.3 |
+| 8 | 19.0 | 18.8 to 19.1 | 18.8 to 19.2 | 1.4 | 1.4 | 19.0 +- 0.2 |
+| 9 | 22.0 | 21.8 to 22.2 | 20.7 to 23.3 | 43.2 | 42.0 | 22.1 +- 0.2 |
+| 10 | 31.8 | 31.5 to 32.0 | 30.7 to 32.9 | 14.7 | 14.3 | 32.2 +- 0.3 |
+| 11 | 25.3 | 25.1 to 25.5 | 24.0 to 26.7 | 38.3 | 34.9 | 26.4 +- 0.2 |
+| 12 | 23.0 | 22.8 to 23.2 | 21.9 to 24.2 | 37.7 | 37.3 | 22.9 +- 0.2 |
+| 13 | 23.9 | 23.7 to 24.1 | 23.6 to 24.2 | 2.2 | 2.1 | 23.8 +- 0.3 |
+| 14 | 17.8 | 17.6 to 18.0 | 14.4 to 22.0 | 465.1 | 362.9 | 23.6 +- 0.2 |
+| 15 | 22.9 | 22.7 to 23.1 | 20.4 to 25.7 | 165.6 | 156.1 | 24.7 +- 0.2 |
+| 16 | 22.5 | 22.3 to 22.7 | 22.0 to 23.1 | 7.8 | 7.5 | 22.2 +- 0.2 |
+
+T1 spans 12.8 to 31.8 us (median 22.5); the widened half-widths run 0.20 to
+3.8 us (median 1.1), against the retained standard errors of 0.1 to 0.3 us. The
+timescale of the exponential component under the plateau model has median 20.5
+us (11.1 to 29.0) and the median of the lognormal model is 21.3 us, so the
+model choice moves a qubit's T1 by about 10%, and by 40% on qubit 14.
+
+### Model table
+
+Pearson chi-square / dof of each model on the mean readout pair (6 points; the
+dof of the models with 1, 2 and 3 parameters are 5, 4 and 3), and the model of
+the lowest AICc:
+
+| Qubit | single | free amplitude | delay offset | batch step | plateau | stretched | lognormal | biexponential | lowest AICc |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | 7.6 | 8.8 | 4.1 | 1.6 | 3.1 | 2.4 | 2.0 | 2.9 | single_step |
+| 1 | 6.1 | 7.6 | 7.6 | 6.2 | 4.6 | 7.4 | 6.0 | 6.1 | plateau |
+| 2 | 215.3 | 248.4 | 30.4 | 166.4 | 232.2 | 93.7 | 147.6 | 40.5 | delay_offset |
+| 3 | 64.9 | 75.9 | 13.9 | 71.3 | 75.8 | 32.7 | 51.2 | 18.6 | delay_offset |
+| 4 | 57.8 | 71.5 | 72.3 | 70.3 | 58.0 | 72.0 | 65.8 | 77.4 | plateau |
+| 5 | 10.1 | 12.6 | 12.6 | 12.1 | 9.9 | 12.7 | 11.7 | 13.2 | plateau |
+| 6 | 22.4 | 19.3 | 28.0 | 27.7 | 26.5 | 27.9 | 28.0 | 35.3 | single_amplitude |
+| 7 | 34.8 | 42.7 | 27.5 | 42.5 | 42.3 | 34.9 | 39.9 | 36.6 | delay_offset |
+| 8 | 1.4 | 1.7 | 1.3 | 1.8 | 1.8 | 1.7 | 1.8 | 2.4 | single |
+| 9 | 43.2 | 51.1 | 38.2 | 27.2 | 40.9 | 33.2 | 35.3 | 42.6 | single_step |
+| 10 | 14.7 | 17.6 | 18.3 | 16.7 | 9.4 | 16.7 | 13.1 | 12.5 | plateau |
+| 11 | 38.3 | 35.5 | 18.5 | 6.5 | 17.1 | 8.2 | 8.2 | 9.0 | single_step |
+| 12 | 37.7 | 46.0 | 12.8 | 19.9 | 34.3 | 13.8 | 22.3 | 13.2 | biexponential |
+| 13 | 2.2 | 2.6 | 2.1 | 0.9 | 1.6 | 1.8 | 1.7 | 2.1 | single_step |
+| 14 | 465.1 | 503.8 | 45.1 | 45.7 | 102.4 | 2.5 | 3.7 | 8.6 | stretched |
+| 15 | 165.6 | 190.1 | 5.6 | 60.6 | 105.3 | 10.7 | 29.8 | 3.7 | biexponential |
+| 16 | 7.8 | 9.7 | 7.6 | 4.3 | 4.7 | 7.2 | 6.4 | 6.2 | single_step |
+
+Parameters of the shape models (the intervals widen the profile by
+sqrt(chi-square / dof); "open" marks an end at a parameter bound; the biexponential
+fast scale sits at its 0.5 us bound on qubits 2, 3 and 7, and the slow scale at its
+bound of 1000 times the fast one on qubits 1, 4, 5, 6, 10, 13 and 16, where its
+weight is 0.01 to 0.04):
+
+| Qubit | plateau T (us) | plateau fraction | stretched exponent | lognormal sigma | biexp. fast (us) | biexp. slow / fast | biexp. slow weight |
+|---|---|---|---|---|---|---|---|
+| 0 | 16.6 | 0.009 (0.006 to 0.013) | 0.95 (0.93 to 0.96) | 0.30 | 13.6 | 1.8 | 0.36 |
+| 1 | 19.2 | 0.010 (0.004 to 0.016) | 0.99 (0.96 to 1.02) | 0.21 | 19.2 | 1000 (bound) | 0.01 |
+| 2 | 21.3 | 0.040 (open to 0.107) | 0.78 (0.70 to 0.87) | 0.74 | 0.5 | 62.6 | 0.83 |
+| 3 | 12.5 | 0.007 (open to 0.024) | 0.85 (0.79 to 0.91) | 0.48 | 0.5 | 31.3 | 0.84 |
+| 4 | 22.5 | 0.025 (open to 0.053) | 0.99 (0.91 to 1.08) | 0.27 | 22.5 | 1000 (bound) | 0.02 |
+| 5 | 20.0 | 0.010 (0.000 to 0.021) | 1.00 (0.96 to 1.04) | 0.18 | 20.0 | 1000 (bound) | 0.01 |
+| 6 | 15.7 | 0.006 (open to 0.019) | 1.01 (0.94 to 1.08) | 0.02 | 15.7 | 1000 (bound) | 0.01 |
+| 7 | 26.6 | 0.011 (open to 0.046) | 0.94 (0.88 to 1.01) | 0.28 | 0.5 | 58.8 | 0.95 |
+| 8 | 19.0 | 0.000 (open to 0.002) | 0.99 (0.98 to 1.01) | 0.01 | 19.0 | 31.3 | 0.00 |
+| 9 | 20.5 | 0.023 (0.002 to 0.047) | 0.91 (0.85 to 0.97) | 0.42 | 5.6 | 4.5 | 0.87 |
+| 10 | 29.0 | 0.039 (0.019 to 0.059) | 0.98 (0.93 to 1.02) | 0.31 | 29.0 | 1000 (bound) | 0.04 |
+| 11 | 22.2 | 0.046 (0.028 to 0.065) | 0.88 (0.85 to 0.90) | 0.53 | 9.3 | 3.5 | 0.75 |
+| 12 | 21.5 | 0.022 (0.003 to 0.042) | 0.90 (0.86 to 0.93) | 0.43 | 3.7 | 7.1 | 0.89 |
+| 13 | 23.4 | 0.008 (0.003 to 0.014) | 0.98 (0.96 to 0.99) | 0.20 | 23.4 | 1000 (bound) | 0.01 |
+| 14 | 11.1 | 0.133 (0.094 to 0.172) | 0.58 (0.56 to 0.59) | 1.33 | 4.7 | 9.4 | 0.51 |
+| 15 | 18.0 | 0.084 (0.037 to 0.133) | 0.74 (0.71 to 0.77) | 0.90 | 2.9 | 11.3 | 0.78 |
+| 16 | 21.6 | 0.016 (0.008 to 0.024) | 0.97 (0.94 to 1.00) | 0.26 | 21.6 | 1000 (bound) | 0.02 |
+
 ## X90 repetition ladder
 
 Corrected P(0) after 32, 128 and 256 pulses (`ladder_clears` requires each
@@ -273,8 +444,27 @@ each: 10.2 s for `x90-64` and 6.0 s for `x90-0` at 8,192 shots.
 
 - No claim cites the twelve new acquisitions; the claim that interprets this
   series is a later change.
-- CASE.md "Record" asks the retaining change to extend
-  `scripts/qi_retained_context.py` to read these analysis rows so the
-  dashboard's table shows the new date; that reader is not extended here,
-  because the analyzer's default `--retained` input is that document.
-- `CASE.md` still reads "nothing has been submitted"; it is not edited here.
+- The single-qubit arm that the case's rule calls for on qubits 5, 7 and 14
+  (predicted to clear, failed) and on 0, 4, 10, 11 and 16 (unpredicted failures)
+  is proposed in
+  [issue 941](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/941).
+  It is also the control that removes the neighbor-state candidate of the T1
+  shape.
+- The T1 shape stays open as a mechanism: the registered explanations do not
+  restore the single exponential, the decisive measurements are a dense 0 to 10
+  us scan and an interleaved repeat of each delay ("What would decide"), and the
+  case's verdict rule keeps its registered form.
+- The retained-context document reads these analysis rows: a newer series
+  replaces a qubit's `readout` and `implied_t1` (the dashboard's figures) and
+  keeps the earlier row in `baseline_readout` and `baseline_implied_t1`, where
+  `scripts/qi_tuna17_characterization_cases.py` reads its tolerance baseline;
+  `--analyze` over the six runs with the regenerated document reproduces the
+  retained analysis rows byte for byte. The dashboard column "Implied T1" shows
+  the series' fitted T1 for these qubits, a single-exponential fit and no longer
+  a two-run difference.
+- Twenty jobs of the usage ledger, 1742623 to 1742642, have no retained run:
+  QX emulator jobs (backend type 1) of 2,048 shots in four batch jobs of five
+  (958991 to 958994), created 2026-11-15 between 18:48 and 18:54 UTC, all
+  completed with 0 credits and 0.004 to 0.80 s of execution. The ledger records
+  no circuit names, and no retained run directory names these ids, so the ledger
+  alone does not identify their owner; nothing here changes them.
