@@ -1,0 +1,49 @@
+b0-rxz             exact                          max |difference| 1.041e-16
+b0-rxz             q12 phase -0.15                max |difference| 1.318e-16
+b0-rxz             q12 phase +0.18                max |difference| 9.714e-17
+b0-rxz             CZ damping x1                  max |difference| 4.857e-17
+b0-rxz             CZ damping x3                  max |difference| 5.551e-17
+b0-rxz             pulse damping 0.003, CZ x1     max |difference| 4.163e-17
+b0-rxz             coupler phase -0.25 vs delta -0.25 max |difference| 4.637e-02 (different scope)
+b0-rxz             q8 phase -0.25 vs c8 -0.25     max |difference| 4.399e-02 (different scope)
+b0-rxz-z12-p30     exact                          max |difference| 9.714e-17
+b0-rxz-z12-p30     q12 phase -0.15                max |difference| 7.633e-17
+b0-rxz-z12-p30     q12 phase +0.18                max |difference| 9.714e-17
+b0-rxz-z12-p30     CZ damping x1                  max |difference| 4.857e-17
+b0-rxz-z12-p30     CZ damping x3                  max |difference| 3.469e-17
+b0-rxz-z12-p30     pulse damping 0.003, CZ x1     max |difference| 5.551e-17
+b0-rxz-z12-p30     coupler phase -0.25 vs delta -0.25 max |difference| 3.513e-02 (different scope)
+b0-rxz-z12-p30     q8 phase -0.25 vs c8 -0.25     max |difference| 3.239e-02 (different scope)
+b0-rxz-z12-m10     exact                          max |difference| 1.388e-16
+b0-rxz-z12-m10     q12 phase -0.15                max |difference| 1.110e-16
+b0-rxz-z12-m10     q12 phase +0.18                max |difference| 1.041e-16
+b0-rxz-z12-m10     CZ damping x1                  max |difference| 5.551e-17
+b0-rxz-z12-m10     CZ damping x3                  max |difference| 6.245e-17
+b0-rxz-z12-m10     pulse damping 0.003, CZ x1     max |difference| 6.939e-17
+b0-rxz-z12-m10     coupler phase -0.25 vs delta -0.25 max |difference| 4.371e-02 (different scope)
+b0-rxz-z12-m10     q8 phase -0.25 vs c8 -0.25     max |difference| 4.821e-02 (different scope)
+b0-rxz-z8c-p10     exact                          max |difference| 8.327e-17
+b0-rxz-z8c-p10     q12 phase -0.15                max |difference| 1.041e-16
+b0-rxz-z8c-p10     q12 phase +0.18                max |difference| 1.110e-16
+b0-rxz-z8c-p10     CZ damping x1                  max |difference| 4.163e-17
+b0-rxz-z8c-p10     CZ damping x3                  max |difference| 4.857e-17
+b0-rxz-z8c-p10     pulse damping 0.003, CZ x1     max |difference| 5.551e-17
+b0-rxz-z8c-p10     coupler phase -0.25 vs delta -0.25 max |difference| 3.843e-02 (different scope)
+b0-rxz-z8c-p10     q8 phase -0.25 vs c8 -0.25     max |difference| 3.854e-02 (different scope)
+b0-rxz-q4-p10      exact                          max |difference| 1.665e-16
+b0-rxz-q4-p10      q12 phase -0.15                max |difference| 1.388e-16
+b0-rxz-q4-p10      q12 phase +0.18                max |difference| 1.804e-16
+b0-rxz-q4-p10      CZ damping x1                  max |difference| 6.939e-17
+b0-rxz-q4-p10      CZ damping x3                  max |difference| 3.816e-17
+b0-rxz-q4-p10      pulse damping 0.003, CZ x1     max |difference| 6.939e-17
+b0-rxz-q4-p10      coupler phase -0.25 vs delta -0.25 max |difference| 3.825e-02 (different scope)
+b0-rxz-q4-p10      q8 phase -0.25 vs c8 -0.25     max |difference| 4.372e-02 (different scope)
+b0-rxz-q4-m5       exact                          max |difference| 1.388e-16
+b0-rxz-q4-m5       q12 phase -0.15                max |difference| 1.110e-16
+b0-rxz-q4-m5       q12 phase +0.18                max |difference| 1.318e-16
+b0-rxz-q4-m5       CZ damping x1                  max |difference| 4.163e-17
+b0-rxz-q4-m5       CZ damping x3                  max |difference| 4.857e-17
+b0-rxz-q4-m5       pulse damping 0.003, CZ x1     max |difference| 6.245e-17
+b0-rxz-q4-m5       coupler phase -0.25 vs delta -0.25 max |difference| 4.741e-02 (different scope)
+b0-rxz-q4-m5       q8 phase -0.25 vs c8 -0.25     max |difference| 4.206e-02 (different scope)
+worst same-mechanism difference 1.804e-16; scope differences 3.239e-02 to 4.821e-02

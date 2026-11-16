@@ -23,6 +23,16 @@ caches under `GOROROBA_SCAN_TABLES`.
 | `nulls` | `nulls.json` | no injected phase, a selector flip of 0.0166 to 0.05 beside CZ phase, pulse phase or CZ amplitude damping of 0.04 to 0.13 per qubit (48 combinations): label, center contrast, world sums |
 | `q4-zero` | `q4_zero.json` | the q4 angle of zero contrast by root finding on fractional q4 steps against the weighted line through the four q4 arms, for q12 phases of +-0.15 and +-0.18 rad and coupler phases of +-0.25 rad |
 
+`coverage.json` and `nulls.json` hold the probes with the readout flip fixed at 0 (rule R5). `coverage_r6.json` and
+`nulls_r6.json` hold the same two probes under the generator that fits the flip (rule R6): the q12 truth reads
+`q12_phase` through multiple 2.0 (R5: 2.125), the coupler truth through 1.875 as before, and the 48 nulls read
+`exact_parabola` (42) or `offset_absent` (6) where R5 read `none_adequate` (29), `phase_unresolved` (5),
+`exact_parabola` (8) or `offset_absent` (6); `q4_zero.json` is unchanged. `analyzer_crosscheck.py` compares the
+generator's laws (`elementary_error_laws.py`) with the histogram-fit model of `gate_noise_histogram_fit.py` on six
+arms of the case and reports them in `analyzer_crosscheck.log`: a q12 z rotation, CZ damping and pulse damping
+agree to 2e-16, while a conditional phase and a q8 rotation differ by 0.032 to 0.048 in outcome probability, since
+the histogram model applies them at every CZ that touches the qubit and the case at coupler 8-12 alone.
+
 `calibration.json` holds the label counts of 500 simulated series per scenario at consistency margins 0 and 6.63,
 seeded from value 0 of `docs/evidence/anu_qrng/draw-2026-11-15T084216Z.json` through
 `operating_characteristics(index=0, margin=m)`, under the decision with two error worlds (q12 and coupler) that
