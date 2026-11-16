@@ -552,12 +552,13 @@ PLANTED_RETENTION = 0.6
 def planted_observations(values: dict[str, float]) -> list[Observation]:
     """Expected counts of the planted model through a perfect readout, one circuit per arm."""
     identity = np.eye(rs.NOUT)
+    laws = gnf.arm_laws(experiment(), list(PLANTED_ARMS), values)
     return [
         {
             "batch": f"planted-{n}",
             "kind": "planted",
             "arm": arm,
-            "counts": PLANTED_SHOTS * gnf.law(experiment(), arm, values),
+            "counts": PLANTED_SHOTS * laws[arm],
             "matrix": identity,
         }
         for n, arm in enumerate(PLANTED_ARMS)
@@ -566,8 +567,10 @@ def planted_observations(values: dict[str, float]) -> list[Observation]:
 
 def self_test() -> str:
     """The simulator against the exact and noisy laws of the repository, then a planted parameter recovered."""
-    for arm in (rs.RETAINED, rs.CENTER, "b0-rx-all-p20"):
-        gap = float(np.abs(gnf.law(experiment(), arm, {}) - rs.forward_law(arm)).max())
+    exact_arms = (rs.RETAINED, rs.CENTER, "b0-rx-all-p20")
+    exact = gnf.arm_laws(experiment(), list(exact_arms), {})
+    for arm in exact_arms:
+        gap = float(np.abs(exact[arm] - rs.forward_law(arm)).max())
         if gap > 1e-10:
             raise AssertionError(f"the simulator differs from forward_law on {arm} by {gap}")
     noise = (0.002, 0.003, 0.01, 0.004, 0.005)
