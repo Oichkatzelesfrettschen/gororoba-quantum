@@ -180,6 +180,58 @@ def test_the_comparator_accepts_the_np_angle_gauge_and_refuses_a_changed_unitary
         rehearsal.close_request(half, manifest, circuit, "cases.json")
 
 
+def theta_pi_blocks(setting: dict[str, Any]) -> list[int]:
+    """The elimination blocks of a setting whose beam-splitter angle is pi."""
+    values = setting["circuit_params"]
+    blocks = (len(values) - rehearsal.LOGICAL) // 5
+    return [b for b in range(blocks) if abs(values[f"x{rehearsal.LOGICAL + 5 * b + 2}"] - math.pi) < 1e-12]
+
+
+def shifted_pair(manifest: dict[str, Any], blocks: list[int], alpha: float, beta: float) -> dict[str, Any]:
+    """The manifest with alpha and beta of the given blocks of settings[0] moved by the given amounts."""
+    shifted = copy.deepcopy(manifest)
+    values = shifted["settings"][0]["circuit_params"]
+    for block in blocks:
+        start = rehearsal.LOGICAL + 5 * block
+        for index, delta in ((start, beta), (start + 1, -beta), (start + 3, alpha), (start + 4, -alpha)):
+            values[f"x{index}"] += delta
+    return shifted
+
+
+def test_the_comparator_accepts_a_common_phase_shift_of_a_theta_pi_block_and_refuses_an_unequal_one() -> None:
+    """A beam splitter at theta = pi realizes only alpha - beta, so a common shift of both leaves the unitary alone.
+
+    A block of photonic_template applies PS(m, beta), PS(m + 1, -beta), BS.Rx(theta), PS(m, alpha), PS(m + 1, -alpha),
+    which is D(alpha) BS D(beta) with D(x) = diag(e^{ix}, e^{-ix}) and BS = [[cos(theta/2), i sin(theta/2)], [i
+    sin(theta/2), cos(theta/2)]]. The entries are U00 = cos(theta/2) e^{i(alpha+beta)}, U11 = cos(theta/2)
+    e^{-i(alpha+beta)}, U01 = i sin(theta/2) e^{i(alpha-beta)} and U10 = i sin(theta/2) e^{-i(alpha-beta)}. At
+    theta = pi the diagonal vanishes and alpha + beta drops out, so alpha + d and beta + d for any d give the same
+    block, and the np.angle of a zero entry may land on any such pair. Blocks 0, 1 and 6 of settings[0] of the
+    retained job-00 request sit at theta = pi. Shifting alpha alone moves alpha - beta and the unitary. The same
+    common shift on a block with cos(theta/2) != 0 moves alpha + beta and the unitary, so the acceptance rests on
+    theta = pi."""
+    manifest, circuit = load("cases.json"), load("circuit.json")
+    pi_blocks = theta_pi_blocks(manifest["settings"][0])
+    if pi_blocks[:3] != [0, 1, 6]:
+        raise AssertionError(f"the retained setting has theta = pi blocks {pi_blocks}")
+    shift = 0.37
+    common = shifted_pair(manifest, pi_blocks, shift, shift)
+    old, new = manifest["settings"][0]["circuit_params"], common["settings"][0]["circuit_params"]
+    moved = max(abs(old[name] - new[name]) for name in old)
+    if not shift - 1e-9 < moved < shift + 1e-9:
+        raise AssertionError(f"the fixture moves a parameter by {moved}, not by {shift}")
+    rehearsal.close_request(common, manifest, circuit, "cases.json")
+    if 2 in pi_blocks:
+        raise AssertionError("block 2 is a theta = pi block")
+    for mutant in (
+        shifted_pair(manifest, pi_blocks, shift, 0.0),
+        shifted_pair(manifest, pi_blocks, shift, -shift),
+        shifted_pair(manifest, [2], shift, shift),
+    ):
+        with pytest.raises(ValueError, match=r"settings\[0\]\.circuit_params: the realized unitaries differ"):
+            rehearsal.close_request(mutant, manifest, circuit, "cases.json")
+
+
 @pytest.mark.parametrize("amount", [1e-11, 1e-6, 1e-3])
 def test_the_comparator_refuses_a_parameter_that_moves_the_unitary(amount: float) -> None:
     manifest, circuit = load("cases.json"), load("circuit.json")
