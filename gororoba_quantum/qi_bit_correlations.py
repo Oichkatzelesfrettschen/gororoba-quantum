@@ -24,8 +24,8 @@ def bit_array(shots: Iterable[str]) -> np.ndarray:
         raise ValueError("no shots")
     width = len(rows[0])
     joined = "".join(rows)
-    if len(joined) != width * len(rows) or set(joined) - {"0", "1"}:
-        raise ValueError("shots differ in width or hold a character other than 0 and 1")
+    if width == 0 or any(len(row) != width for row in rows) or set(joined) - {"0", "1"}:
+        raise ValueError("shots differ in width, have zero width, or hold a character other than 0 and 1")
     array = np.frombuffer(joined.encode("ascii"), dtype=np.uint8).reshape(len(rows), width) - ord("0")
     return array[:, ::-1].astype(float)
 

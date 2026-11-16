@@ -18,7 +18,8 @@ def test_bit_array_puts_qubit_zero_at_the_rightmost_character() -> None:
 
 
 def test_bit_array_rejects_ragged_or_non_binary_shots() -> None:
-    for shots in ([], ["01", "1"], ["0a"]):
+    # The last two ragged records keep the total length at the first width times the shot count.
+    for shots in ([], ["01", "1"], ["0a"], ["01", "0", "111"], ["11", "", "1111"], [""], ["", ""]):
         try:
             correlations.bit_array(shots)
         except ValueError:
