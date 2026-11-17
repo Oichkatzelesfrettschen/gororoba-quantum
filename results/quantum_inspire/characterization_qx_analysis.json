@@ -1,0 +1,334 @@
+{
+ "schema": "qi-tuna17-characterization-analysis-v1",
+ "runs": [
+  "2026-11-16T0355Z-characterization_qx-characterization_qx-batch-00",
+  "2026-11-16T0355Z-characterization_qx-characterization_qx-batch-01",
+  "2026-11-16T0355Z-characterization_qx-characterization_qx-batch-02",
+  "2026-11-16T0355Z-characterization_qx-characterization_qx-batch-03",
+  "2026-11-16T0355Z-characterization_qx-characterization_qx-batch-04",
+  "2026-11-16T0355Z-characterization_qx-characterization_qx-batch-05"
+ ],
+ "nqubits": 10,
+ "qubits": [
+  {
+   "qubit": 0,
+   "readout": [
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    },
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    }
+   ],
+   "readout_drift": 0.0,
+   "readout_stable": true,
+   "t1": {
+    "us": null,
+    "us_se": null,
+    "points": 6,
+    "chi_square": 0.0,
+    "freedom": 4,
+    "chi_square_probability": 1.0
+   },
+   "t1_single_exponential": false,
+   "ladder_p0": {
+    "0": 1.0,
+    "32": 1.0,
+    "128": 1.0,
+    "256": 1.0
+   },
+   "ladder_p0_at_longest": 1.0,
+   "ladder_clears": true
+  },
+  {
+   "qubit": 1,
+   "readout": [
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    },
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    }
+   ],
+   "readout_drift": 0.0,
+   "readout_stable": true,
+   "t1": {
+    "us": null,
+    "us_se": null,
+    "points": 6,
+    "chi_square": 0.0,
+    "freedom": 4,
+    "chi_square_probability": 1.0
+   },
+   "t1_single_exponential": false,
+   "ladder_p0": {
+    "0": 1.0,
+    "32": 1.0,
+    "128": 1.0,
+    "256": 1.0
+   },
+   "ladder_p0_at_longest": 1.0,
+   "ladder_clears": true
+  },
+  {
+   "qubit": 2,
+   "readout": [
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    },
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    }
+   ],
+   "readout_drift": 0.0,
+   "readout_stable": true,
+   "t1": {
+    "us": null,
+    "us_se": null,
+    "points": 6,
+    "chi_square": 0.0,
+    "freedom": 4,
+    "chi_square_probability": 1.0
+   },
+   "t1_single_exponential": false,
+   "ladder_p0": {
+    "0": 1.0,
+    "32": 1.0,
+    "128": 1.0,
+    "256": 1.0
+   },
+   "ladder_p0_at_longest": 1.0,
+   "ladder_clears": true
+  },
+  {
+   "qubit": 3,
+   "readout": [
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    },
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    }
+   ],
+   "readout_drift": 0.0,
+   "readout_stable": true,
+   "t1": {
+    "us": null,
+    "us_se": null,
+    "points": 6,
+    "chi_square": 0.0,
+    "freedom": 4,
+    "chi_square_probability": 1.0
+   },
+   "t1_single_exponential": false,
+   "ladder_p0": {
+    "0": 1.0,
+    "32": 1.0,
+    "128": 1.0,
+    "256": 1.0
+   },
+   "ladder_p0_at_longest": 1.0,
+   "ladder_clears": true
+  },
+  {
+   "qubit": 4,
+   "readout": [
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    },
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    }
+   ],
+   "readout_drift": 0.0,
+   "readout_stable": true,
+   "t1": {
+    "us": null,
+    "us_se": null,
+    "points": 6,
+    "chi_square": 0.0,
+    "freedom": 4,
+    "chi_square_probability": 1.0
+   },
+   "t1_single_exponential": false,
+   "ladder_p0": {
+    "0": 1.0,
+    "32": 1.0,
+    "128": 1.0,
+    "256": 1.0
+   },
+   "ladder_p0_at_longest": 1.0,
+   "ladder_clears": true
+  },
+  {
+   "qubit": 5,
+   "readout": [
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    },
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    }
+   ],
+   "readout_drift": 0.0,
+   "readout_stable": true,
+   "t1": {
+    "us": null,
+    "us_se": null,
+    "points": 6,
+    "chi_square": 0.0,
+    "freedom": 4,
+    "chi_square_probability": 1.0
+   },
+   "t1_single_exponential": false,
+   "ladder_p0": {
+    "0": 1.0,
+    "32": 1.0,
+    "128": 1.0,
+    "256": 1.0
+   },
+   "ladder_p0_at_longest": 1.0,
+   "ladder_clears": true
+  },
+  {
+   "qubit": 6,
+   "readout": [
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    },
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    }
+   ],
+   "readout_drift": 0.0,
+   "readout_stable": true,
+   "t1": {
+    "us": null,
+    "us_se": null,
+    "points": 6,
+    "chi_square": 0.0,
+    "freedom": 4,
+    "chi_square_probability": 1.0
+   },
+   "t1_single_exponential": false,
+   "ladder_p0": {
+    "0": 1.0,
+    "32": 1.0,
+    "128": 1.0,
+    "256": 1.0
+   },
+   "ladder_p0_at_longest": 1.0,
+   "ladder_clears": true
+  },
+  {
+   "qubit": 7,
+   "readout": [
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    },
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    }
+   ],
+   "readout_drift": 0.0,
+   "readout_stable": true,
+   "t1": {
+    "us": null,
+    "us_se": null,
+    "points": 6,
+    "chi_square": 0.0,
+    "freedom": 4,
+    "chi_square_probability": 1.0
+   },
+   "t1_single_exponential": false,
+   "ladder_p0": {
+    "0": 1.0,
+    "32": 1.0,
+    "128": 1.0,
+    "256": 1.0
+   },
+   "ladder_p0_at_longest": 1.0,
+   "ladder_clears": true
+  },
+  {
+   "qubit": 8,
+   "readout": [
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    },
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    }
+   ],
+   "readout_drift": 0.0,
+   "readout_stable": true,
+   "t1": {
+    "us": null,
+    "us_se": null,
+    "points": 6,
+    "chi_square": 0.0,
+    "freedom": 4,
+    "chi_square_probability": 1.0
+   },
+   "t1_single_exponential": false,
+   "ladder_p0": {
+    "0": 1.0,
+    "32": 1.0,
+    "128": 1.0,
+    "256": 1.0
+   },
+   "ladder_p0_at_longest": 1.0,
+   "ladder_clears": true
+  },
+  {
+   "qubit": 9,
+   "readout": [
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    },
+    {
+     "p1_given_0": 0.0,
+     "p1_given_1": 1.0
+    }
+   ],
+   "readout_drift": 0.0,
+   "readout_stable": true,
+   "t1": {
+    "us": null,
+    "us_se": null,
+    "points": 6,
+    "chi_square": 0.0,
+    "freedom": 4,
+    "chi_square_probability": 1.0
+   },
+   "t1_single_exponential": false,
+   "ladder_p0": {
+    "0": 1.0,
+    "32": 1.0,
+    "128": 1.0,
+    "256": 1.0
+   },
+   "ladder_p0_at_longest": 1.0,
+   "ladder_clears": true
+  }
+ ]
+}
