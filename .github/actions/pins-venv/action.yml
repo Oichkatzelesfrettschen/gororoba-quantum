@@ -21,7 +21,7 @@ runs:
       uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
       with:
         path: ${{ steps.venv.outputs.path }}
-        key: pins-venv-${{ runner.os == 'macOS' && 'macos-15' || 'ubuntu-26.04' }}-${{ runner.arch }}-py3.14.7-${{ hashFiles('requirements.txt', 'ci/requirements-ci.txt', 'ci/install_pins.sh', 'ci/patches/**') }}
+        key: pins-venv-${{ runner.os == 'macOS' && 'macos-26' || 'ubuntu-26.04' }}-${{ runner.arch }}-py3.14.7-${{ hashFiles('requirements.txt', 'ci/requirements-ci.txt', 'ci/install_pins.sh', 'ci/patches/**') }}
     - name: Install pinned dependencies
       if: steps.pins-cache.outputs.cache-hit != 'true'
       shell: sh
