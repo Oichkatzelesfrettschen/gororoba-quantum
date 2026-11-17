@@ -86,6 +86,34 @@ by digest (`sha256.txt` of the directory, and `qi-reduction.log` for the second)
 are 39.8 s against 21.7 s and 128.5 s against 56.0 s; a fake-Singular test pins the bytes, the cell order and the stop at
 a failing cell.
 
+## Hosted Copilot round (head 1ddc65e13)
+
+Two threads, both confirmed against the source, and one failing hosted lane.
+
+- Thread 4596406398 (`run_kcompare.sh:19`): the launcher exits 0 and writes `kcompare.done` when a Singular cell exits
+  nonzero or prints no verdict, because the captured status is never propagated and `grep ... || true` accepts missing result
+  lines. The launcher is bound by digest, so `run_kcompare_v2.sh` is its successor. It passes a cell only when Singular exits 0
+  and the log holds the whole `KCMP RESULT` line with `equal 1 control_drop_unequal 1 control_added_unequal 1` and the terminal
+  `KCMP DONE` line, writes `kcompare.done` only after every cell passed, and otherwise stops at the first failing cell with
+  `kcompare.failed` and status 1. `tests/test_a5_rees_kcompare_launcher.py` runs it against a fake Singular: a known-good run
+  writes the marker; a Singular that exits 7, one that omits the verdict line, one that exits 0 after a SIGTERM without the
+  terminal line (Singular exits 0 on SIGTERM; `timeout` reports 124 for a run past its limit) and a later failing cell each leave
+  `kcompare.failed` and no `kcompare.done`. The README replay command points at the successor.
+- Thread 4596406429 (`check_rees_fibers.py:172`): `log_verdict` does not reject a line whose stripped text starts with `?`
+  (a Singular error diagnostic; Singular continues after it), though `run_singular` of `weight_slice_fiber_relations.py` does.
+  `log_verdict` rejects it, the self-test and the toy test gain that known-bad mutant (17 mutations), and the four retained logs
+  and the nine other retained logs of the two Rees directories (no line starting with `?`) still pass. The checker is bound
+  by the `sha256.txt` of its directory, which `check()` verifies, so that row is refreshed and no other file pins its digest.
+- Failing hosted `tests` lane (run on 1ddc65e13): one failure, `test_qi_successor_prints_cells_in_order_with_controls_unequal`
+  took 16.82 s against the 10 s budget (a test fails at 1.5 times the budget); the three other tests of
+  `tests/test_a5_rees_kcompare_parallel.py` took 11.96 s to 14.75 s. The file is new on this branch (cf112b1f2), so the branch
+  introduced it and `origin/main` does not have it. Each test now runs on the iso-nm cell without the start delay of the fake
+  (1.6 s to 3.5 s on a compute host) in the pull-request lane, and on all three cells marked `audit` (6 s to 7.3 s).
+- The two failures of `tests/test_a5_weight_slice_fiber_relations.py` on a compute host are not from this branch: both are
+  `audit` tests, both fail at `origin/main` (b7c2b373c) in a scratch worktree (the input digest of
+  `nullity8-fiber-import-result.json` that the weight-slice record binds differs from the tracked file, which changed with
+  f4b11e4a8 and a919eb929 on main), and that is a defect of main with its own repair.
+
 ## Statement for the owner's pending decision on A5-409
 
 The falsifier text of A5-409 is met literally, for incidences it lists (Iso to N-, X- to N-) at root 10754, by two unit-replacement
