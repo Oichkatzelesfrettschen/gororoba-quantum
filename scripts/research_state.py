@@ -1459,27 +1459,39 @@ def _with_synthetic_rows(
     return records, ledger
 
 
-# One self-test case: name, the rejection text its validation must contain (None
-# for a baseline that must pass), the registry, and the quantum_inspire run records
-# and ledger to install (None keeps the retained ones).
-Case = tuple[str, str | None, dict[str, Any], dict[str, dict[str, Any]] | None, dict[str, Any] | None]
+# One self-test case: its name, the rejection text its validation must contain (None for a
+# baseline that must pass), and the builder that derives the registry, run records and ledger
+# from the retained ones. A builder returns None for the run records or the ledger to keep the
+# retained ones. Builders run in the process that validates the case, so the case copies
+# (hundreds of megabytes of run records each) live one at a time per worker.
+Built = tuple[dict[str, Any], dict[str, dict[str, Any]] | None, dict[str, Any] | None]
+CaseBuilder = Callable[[dict[str, Any], QuantumInspireRuns], Built]
+CaseSpec = tuple[str, str | None, CaseBuilder]
+
+# Resident bytes one pool worker needs: its own Context (about 1.3 GB of retained run records)
+# plus the deep copies of the case it validates (measured peak below 2 GiB).
+SELF_TEST_WORKER_BYTES = 2 * 2**30
 
 
 class CaseVerdict:
-    """Validates one self-test case and returns the ValueError text, or None when it validates.
+    """Builds and validates one self-test case by index; returns the ValueError text, or None when it validates.
 
-    The serial path reuses the caller's context. A pickled copy carries none
-    and each pool worker loads its own once, so every process validates against
-    the repository facts of its own Context.
+    The serial path reuses the caller's context. A pickled copy carries only the registry and
+    each pool worker loads its own Context once, so every process validates against the
+    repository facts of its own Context. The pool starts workers under the spawn method on
+    every platform (parallel.py), so no Context is shared copy-on-write and the memory bound
+    is the worker count that parallel.ordered_map derives from SELF_TEST_WORKER_BYTES.
     """
 
-    def __init__(self, context: Context | None = None) -> None:
+    def __init__(self, registry: dict[str, Any], context: Context | None = None) -> None:
+        self._registry = registry
+        self._specs: list[CaseSpec] | None = None
         self._loaded: tuple[Context, QuantumInspireRuns, dict[str, dict[str, Any]], dict[str, Any]] | None = None
         if context is not None:
             self._loaded = self._adopt(context)
 
     def __getstate__(self) -> dict[str, Any]:
-        return {"_loaded": None}
+        return {"_registry": self._registry, "_specs": None, "_loaded": None}
 
     @staticmethod
     def _adopt(context: Context) -> tuple[Context, QuantumInspireRuns, dict[str, dict[str, Any]], dict[str, Any]]:
@@ -1488,11 +1500,13 @@ class CaseVerdict:
             raise ValueError("the quantum_inspire provider is not the run-directory adapter")
         return context, qi, qi.records, qi.ledger
 
-    def __call__(self, case: Case) -> str | None:
-        _, _, registry, records, ledger = case
+    def __call__(self, index: int) -> str | None:
         if self._loaded is None:
             self._loaded = self._adopt(Context())
+        if self._specs is None:
+            self._specs = _case_specs()
         context, qi, retained_records, retained_ledger = self._loaded
+        registry, records, ledger = self._specs[index][2](self._registry, qi)
         qi.records = retained_records if records is None else records
         qi.ledger = retained_ledger if ledger is None else ledger
         try:
@@ -1504,48 +1518,81 @@ class CaseVerdict:
         return None
 
 
-def _cases(registry: dict[str, Any], qi: QuantumInspireRuns) -> list[Case]:
-    """Every self-test case in the order the rules are exercised, each on its own deep copies."""
-    records, ledger = qi.records, qi.ledger
-    cases: list[Case] = [("retained state", None, copy.deepcopy(registry), None, None)]
-    for name, mutate, expected in _mutations():
-        candidate = copy.deepcopy(registry)
-        mutate(candidate)
-        cases.append((name, expected, candidate, None, None))
-    receipts = copy.deepcopy(records)
-    for record in receipts.values():
-        record["submission"]["schema"] = "qi-submission-v2"
-        record["submission"]["state"] = "enqueued"
-        record["submission"]["cases_sha256"] = record["cases_sha256"]
-        for row in record["submission"]["jobs"]:
-            row["sha256"] = record["circuits"][row["file"]]
-    cases.append(("v2 receipts", None, copy.deepcopy(registry), receipts, None))
-    for name, mutate_files, expected in _qi_mutations():
-        mutated_records, mutated_ledger = copy.deepcopy(records), copy.deepcopy(ledger)
-        mutate_files(mutated_records, mutated_ledger)
-        cases.append((name, expected, copy.deepcopy(registry), mutated_records, mutated_ledger))
-    baseline_records, baseline_ledger = _with_synthetic_rows(records, ledger)
-    cases.append(("synthetic transaction rows", None, copy.deepcopy(registry), baseline_records, baseline_ledger))
-    for name, mutate_rows, expected in _qi_row_mutations():
-        mutated_records, mutated_ledger = copy.deepcopy(baseline_records), copy.deepcopy(baseline_ledger)
-        mutate_rows(mutated_records, mutated_ledger)
-        cases.append((name, expected, copy.deepcopy(registry), mutated_records, mutated_ledger))
-    declared_ledger = _with_declared_job(ledger)
-    cases.append(("declared unretained job", None, copy.deepcopy(registry), None, declared_ledger))
-    for name, mutate_declared, declared_expected in _qi_declared_mutations():
-        mutated_ledger = copy.deepcopy(declared_ledger)
-        mutate_declared(mutated_ledger)
-        cases.append((name, declared_expected, copy.deepcopy(registry), None, mutated_ledger))
-    return cases
+def _case_specs() -> list[CaseSpec]:
+    """Every self-test case in the order the rules are exercised; each builder copies what it mutates."""
+
+    def retained(registry: dict[str, Any], _qi: QuantumInspireRuns) -> Built:
+        return copy.deepcopy(registry), None, None
+
+    def v2_receipts(registry: dict[str, Any], qi: QuantumInspireRuns) -> Built:
+        receipts = copy.deepcopy(qi.records)
+        for record in receipts.values():
+            record["submission"]["schema"] = "qi-submission-v2"
+            record["submission"]["state"] = "enqueued"
+            record["submission"]["cases_sha256"] = record["cases_sha256"]
+            for row in record["submission"]["jobs"]:
+                row["sha256"] = record["circuits"][row["file"]]
+        return copy.deepcopy(registry), receipts, None
+
+    def synthetic(registry: dict[str, Any], qi: QuantumInspireRuns) -> Built:
+        records, ledger = _with_synthetic_rows(qi.records, qi.ledger)
+        return copy.deepcopy(registry), records, ledger
+
+    def declared(registry: dict[str, Any], qi: QuantumInspireRuns) -> Built:
+        return copy.deepcopy(registry), None, _with_declared_job(qi.ledger)
+
+    def registry_mutation(mutate: Callable[[dict[str, Any]], None]) -> CaseBuilder:
+        def build(registry: dict[str, Any], _qi: QuantumInspireRuns) -> Built:
+            candidate = copy.deepcopy(registry)
+            mutate(candidate)
+            return candidate, None, None
+
+        return build
+
+    def file_mutation(mutate: Callable[[dict[str, dict[str, Any]], dict[str, Any]], None]) -> CaseBuilder:
+        def build(registry: dict[str, Any], qi: QuantumInspireRuns) -> Built:
+            records, ledger = copy.deepcopy(qi.records), copy.deepcopy(qi.ledger)
+            mutate(records, ledger)
+            return copy.deepcopy(registry), records, ledger
+
+        return build
+
+    def row_mutation(mutate: Callable[[dict[str, dict[str, Any]], dict[str, Any]], None]) -> CaseBuilder:
+        def build(registry: dict[str, Any], qi: QuantumInspireRuns) -> Built:
+            records, ledger = _with_synthetic_rows(qi.records, qi.ledger)
+            mutate(records, ledger)
+            return copy.deepcopy(registry), records, ledger
+
+        return build
+
+    def declared_mutation(mutate: Callable[[dict[str, Any]], None]) -> CaseBuilder:
+        def build(registry: dict[str, Any], qi: QuantumInspireRuns) -> Built:
+            ledger = _with_declared_job(qi.ledger)
+            mutate(ledger)
+            return copy.deepcopy(registry), None, ledger
+
+        return build
+
+    specs: list[CaseSpec] = [("retained state", None, retained)]
+    specs.extend((name, expected, registry_mutation(mutate)) for name, mutate, expected in _mutations())
+    specs.append(("v2 receipts", None, v2_receipts))
+    specs.extend((name, expected, file_mutation(mutate)) for name, mutate, expected in _qi_mutations())
+    specs.append(("synthetic transaction rows", None, synthetic))
+    specs.extend((name, expected, row_mutation(mutate)) for name, mutate, expected in _qi_row_mutations())
+    specs.append(("declared unretained job", None, declared))
+    specs.extend((name, expected, declared_mutation(mutate)) for name, mutate, expected in _qi_declared_mutations())
+    return specs
 
 
 def self_test(registry: dict[str, Any], context: Context) -> int:
     qi = context.providers["quantum_inspire"]
     if not isinstance(qi, QuantumInspireRuns):
         raise ValueError("the quantum_inspire provider is not the run-directory adapter")
-    cases = _cases(registry, qi)
-    verdicts = parallel.ordered_map(CaseVerdict(context), cases, min_items=2)
-    for (name, expected, *_), verdict in zip(cases, verdicts, strict=True):
+    specs = _case_specs()
+    verdicts = parallel.ordered_map(
+        CaseVerdict(registry, context), list(range(len(specs))), min_items=2, worker_bytes=SELF_TEST_WORKER_BYTES
+    )
+    for (name, expected, _), verdict in zip(specs, verdicts, strict=True):
         if expected is None:
             if verdict is not None:
                 raise ValueError(verdict)
@@ -1554,7 +1601,7 @@ def self_test(registry: dict[str, Any], context: Context) -> int:
         else:
             require(expected in verdict, f"mutation {name!r} failed for another reason: {verdict}")
     _check_declared_retained_summary(qi)
-    return sum(1 for case in cases if case[1] is not None)
+    return sum(1 for spec in specs if spec[1] is not None)
 
 
 def _check_declared_retained_summary(qi: QuantumInspireRuns) -> None:
