@@ -4,6 +4,9 @@ A fake Singular on PATH answers each regenerated producer script with a canned o
 logs, so the successors run their whole pipeline (producer scripts, worker pool, parsing, digest ties, rank analysis,
 file writes) without Singular. The first Singular process to start sleeps, so the cell that is first in the list
 finishes last and the cell order of the output is the order of the list and not of completion.
+
+Each test runs once on the smallest cell, which the pull-request lane keeps, and once on every cell, which the audit
+lane keeps: the three-cell runs take over 10 s on a hosted runner.
 """
 
 from __future__ import annotations
@@ -35,7 +38,7 @@ import parallel  # noqa: E402
 
 FAKE = """#!/bin/sh
 # argv: -q --no-warn --no-rc SCRIPT; the answer is FAKE_SINGULAR_DIR/<sha256 of SCRIPT>.out
-if mkdir "$FAKE_SINGULAR_DIR/first" 2>/dev/null; then sleep 1.5; fi
+if mkdir "$FAKE_SINGULAR_DIR/first" 2>/dev/null; then sleep "${FAKE_SINGULAR_DELAY:-0}"; fi
 digest=$(sha256sum "$4" | cut -d' ' -f1)
 [ -f "$FAKE_SINGULAR_DIR/$digest.out" ] || { echo "no canned answer for $digest" >&2; exit 3; }
 cat "$FAKE_SINGULAR_DIR/$digest.out"
@@ -64,6 +67,19 @@ def _canned(stem: str, generators: int, count: int, relations: list[str] | None 
     return "\n".join([*head, *lines]) + "\n"
 
 
+CELL_SETS = [
+    pytest.param("iso-nm", id="iso-nm"),
+    pytest.param(None, id="all-cells", marks=pytest.mark.audit),
+]
+
+
+def _restrict(module: Any, only: str | None, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Limit the module to one cell and drop the start delay of the fake, or leave every cell and the delay."""
+    if only is not None:
+        monkeypatch.setattr(module, "CELLS", [cell for cell in module.CELLS if cell[0] == only])
+        monkeypatch.setenv("FAKE_SINGULAR_DELAY", "0")
+
+
 @pytest.fixture
 def fake_singular(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[Path]:
     """A Singular on PATH that serves canned answers; the worker pool restarts so its processes inherit the setup."""
@@ -77,6 +93,7 @@ def fake_singular(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[P
     parallel._shutdown()
     monkeypatch.setenv("PATH", f"{binary}{os.pathsep}{os.environ['PATH']}")
     monkeypatch.setenv("FAKE_SINGULAR_DIR", str(answers))
+    monkeypatch.setenv("FAKE_SINGULAR_DELAY", "1.5")
     monkeypatch.setenv("GOROROBA_WORKERS", "3")
     yield answers
     parallel._shutdown()
@@ -92,17 +109,26 @@ def _serve_modular(answers: Path) -> None:
         _serve(answers, orbit, source, 32009, 10754, _canned(stem, generators, count))
 
 
+@pytest.mark.parametrize("only", CELL_SETS)
 def test_kcompare_successor_writes_the_retained_files_in_cell_order(
-    fake_singular: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+    only: str | None,
+    fake_singular: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
 ) -> None:
+    _restrict(kcompare_v2, only, monkeypatch)
     _serve_modular(fake_singular)
     work = tmp_path / "work"
     work.mkdir()
     shutil.copy(DIRECTORY / "kcompare-tail.sing", work / "kcompare-tail.sing")
     monkeypatch.setattr(kcompare_v2, "HERE", work)
     kcompare_v2.prepare()
-    if capsys.readouterr().out != (DIRECTORY / "prepare.log").read_text(encoding="utf-8"):
-        raise AssertionError("the printed lines differ from the retained prepare.log")
+    names = {cell for cell, *_rest in kcompare_v2.CELLS} | {f"kcmp-{cell}.sing" for cell, *_rest in kcompare_v2.CELLS}
+    retained_lines = (DIRECTORY / "prepare.log").read_text(encoding="utf-8").splitlines(keepends=True)
+    expected = "".join(line for line in retained_lines if line.split()[1] in names | {"DONE"})
+    if capsys.readouterr().out != expected:
+        raise AssertionError("the printed lines differ from those of the retained prepare.log")
     for cell, *_rest in kcompare_v2.CELLS:
         for prefix in ("KA", "KH", "kcmp"):
             retained = DIRECTORY / f"{prefix}-{cell}.sing"
@@ -112,11 +138,18 @@ def test_kcompare_successor_writes_the_retained_files_in_cell_order(
         raise AssertionError("a cell without a header file wrote a KH file")
 
 
+@pytest.mark.parametrize("only", CELL_SETS)
 def test_kcompare_successor_stops_on_a_digest_that_is_not_the_runs(
-    fake_singular: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+    only: str | None,
+    fake_singular: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
 ) -> None:
+    _restrict(kcompare_v2, only, monkeypatch)
     _serve_modular(fake_singular)
-    cell, stem, orbit, source, generators, count = kcompare_v2.CELLS[1]
+    spoiled = min(1, len(kcompare_v2.CELLS) - 1)
+    cell, stem, orbit, source, generators, count = kcompare_v2.CELLS[spoiled]
     relations = ["RELATION" + line[3:] for line in (RUNS / f"{stem}.log").read_text().split("\n") if line[:4] == "REL "]
     _serve(
         fake_singular,
@@ -135,7 +168,9 @@ def test_kcompare_successor_stops_on_a_digest_that_is_not_the_runs(
     if not str(stopped.value).startswith(f"FAIL {cell}: producer digest"):
         raise AssertionError(stopped.value)
     printed = capsys.readouterr().out.splitlines()
-    if [line.split()[1] for line in printed if line.startswith(("TIE", "WROTE"))] != ["e8-nm", "kcmp-e8-nm.sing"]:
+    done = [name for name, *_rest in kcompare_v2.CELLS[:spoiled]]
+    expected = [item for name in done for item in (name, f"kcmp-{name}.sing")]
+    if [line.split()[1] for line in printed if line.startswith(("TIE", "WROTE"))] != expected:
         raise AssertionError(printed)
 
 
@@ -153,9 +188,11 @@ def _serve_qi(answers: Path, spoil: str | None = None) -> dict[tuple[str, str], 
     return digests
 
 
+@pytest.mark.parametrize("only", CELL_SETS)
 def test_qi_successor_prints_cells_in_order_with_controls_unequal(
-    fake_singular: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+    only: str | None, fake_singular: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
+    _restrict(qi_v2, only, monkeypatch)
     digests = _serve_qi(fake_singular)
     monkeypatch.setattr(qi_v2, "record_digests", lambda: (digests, digests))
     if qi_v2.main() != 0:
@@ -172,15 +209,24 @@ def test_qi_successor_prints_cells_in_order_with_controls_unequal(
         raise AssertionError("the full lines are not in cell order")
 
 
+@pytest.mark.parametrize("only", CELL_SETS)
 def test_qi_successor_stops_at_the_cell_whose_relations_are_not_the_records(
-    fake_singular: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+    only: str | None, fake_singular: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    digests = _serve_qi(fake_singular, spoil="e8-np")
+    _restrict(qi_v2, only, monkeypatch)
+    names = [cell for cell, *_rest in qi_v2.CELLS]
+    spoil = names[min(1, len(names) - 1)]
+    digests = _serve_qi(fake_singular, spoil=spoil)
     monkeypatch.setattr(qi_v2, "record_digests", lambda: (digests, digests))
     with pytest.raises(SystemExit) as stopped:
         qi_v2.main()
-    if str(stopped.value) != "FAIL e8-np: Q(i) digest is not that of the records":
+    if str(stopped.value) != f"FAIL {spoil}: Q(i) digest is not that of the records":
         raise AssertionError(stopped.value)
     printed: list[Any] = [line.split()[1] for line in capsys.readouterr().out.splitlines() if line.startswith("QIRED")]
-    if "iso-nm" in printed or printed.count("e8-nm") < 4:
+    position = names.index(spoil)
+    if (
+        any(printed.count(name) < 4 for name in names[:position])
+        or printed.count(spoil) != 1
+        or any(name in printed for name in names[position + 1 :])
+    ):
         raise AssertionError(printed)
