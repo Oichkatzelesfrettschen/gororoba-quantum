@@ -64,6 +64,12 @@ or of `../e8-rees-fibers-v2-p32009/` writes out a linear change of the 21 genera
 that README that the two slices differ by a linear change of coordinates stays open (A5-583); the closing computation is
 named in that row.
 
+The `transport 0 0` line of `../e8np-d2-receipt-p32009/post.log` is a different map. `post_check.py` there flips the signs
+of the y coordinates by the parity of the t8 and t9 degree and compares the N+ receipt relations with the N- receipt
+relations, two header-slice sets that the sign isomorphism of the basepoints relates. It therefore relates K2 at N+ to K2
+at N- and leaves the weight slice out; no file writes out or tests a map between the header-slice and the weight-slice
+generators (A5-583).
+
 ## Files
 
 | File | Content |
