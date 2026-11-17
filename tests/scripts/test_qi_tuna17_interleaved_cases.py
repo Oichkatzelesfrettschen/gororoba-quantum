@@ -1,0 +1,606 @@
+"""Contract for scripts/qi_tuna17_interleaved_cases.py: the three arms obey the provider's batch and shot limits, the
+order is a function of one draw and keeps every anchor and delay, the files regenerate byte for byte (or wait for the
+draw), the submit path refuses every backend status but idle, the estimator recovers its classes from exact synthetic
+series and the phase fit recovers a z rotation it was given. No test draws a random number: the fixture order comes
+from a hash stream."""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import math
+from pathlib import Path
+from typing import Any
+
+import pytest
+import qi_tuna17_interleaved_cases as cases
+
+
+def retained_fixture() -> dict[str, Any]:
+    """Seventeen qubits of retained-shaped inputs: a plateau model on every qubit but one."""
+    qubits = []
+    for qubit in range(17):
+        qubits.append(
+            {
+                "qubit": qubit,
+                "e01": 0.03,
+                "e11": 0.96,
+                "single_us": 20.0 + qubit,
+                "single_interval_us": [19.0 + qubit, 21.0 + qubit],
+                "plateau_us": 19.0 + qubit,
+                "plateau": 0.0 if qubit == 8 else 0.02,
+                "population": {str(c): math.exp(-c * 0.02 / (20.0 + qubit)) for c in (0, 250, 500, 1000, 2000, 4000)},
+                "ladder_p0": {"0": 1.0, "32": 0.9, "128": 0.1 if qubit % 2 else 0.7, "256": 0.6},
+            }
+        )
+    return {"qubits": qubits, "tau2": 0.0027**2, "anchor_jobs": 3, "count": 8192}
+
+
+def draw_record(values: list[int]) -> dict[str, Any]:
+    raw = json.dumps({"success": True, "type": "uint16", "length": str(len(values)), "data": values})
+    return {
+        "schema": "anu-qrng-draw-v1",
+        "source": "fixture",
+        "retrieved_utc": "2026-01-01T00:00:00Z",
+        "raw": raw,
+        "raw_sha256": hashlib.sha256(raw.encode()).hexdigest(),
+        "type": "uint16",
+        "values": values,
+    }
+
+
+def test_budget_and_measurement_limits() -> None:
+    for name, profile in cases.PROFILES.items():
+        budget = cases.budget(name)
+        longest = max(cases.job_seconds(profile, row) for row in cases.library(name).values())
+        if budget["total"]["jobs"] != 194 or budget["total"]["batches"] != 65 or longest >= 300:
+            raise AssertionError((name, budget["total"], longest))
+        if profile["shots"] > (2048 if name == "qx" else 131072):
+            raise AssertionError(name)
+    total = cases.budget("tuna_17")["total"]
+    if total["shots"] != 1589248 or total["expected_execution_seconds"] != 1364.9:
+        raise AssertionError(total)
+    if max(cases.T1_ROUND_CYCLES) * cases.CYCLE_SECONDS != 240e-6:
+        raise AssertionError("the longest delay moved")
+
+
+def test_library_reuses_retained_bytes_and_stays_on_the_grid() -> None:
+    from qi_tuna17_characterization_cases import T1_CYCLES, circuits  # noqa: PLC0415
+
+    retained = circuits(17)
+    rows = cases.library("tuna_17")
+    if (
+        rows["readout-0.cq"]["text"] != retained["readout-0.cq"][0]
+        or rows["t1-0.cq"]["text"] != retained["readout-1.cq"][0]
+    ):
+        raise AssertionError("an anchor differs from the retained circuit")
+    for cycles in T1_CYCLES:
+        if rows[f"t1-{cycles}.cq"]["text"] != retained[f"t1-{cycles}.cq"][0]:
+            raise AssertionError(cycles)
+    if any(r["text"].count("measure") != 1 for r in rows.values()):
+        raise AssertionError("a circuit measures more than once")
+    for row in rows.values():
+        if row["kind"] == "ramsey" and abs(row["angle"] / (math.pi / 36) - round(row["angle"] / (math.pi / 36))) > 1e-9:
+            raise AssertionError(row)
+    if (
+        rows["single-q14-x90-64.cq"]["text"].count("X90 q[14]") != 256
+        or "q[13]" in rows["single-q14-x90-64.cq"]["text"]
+    ):
+        raise AssertionError("the single-qubit ladder drives another qubit")
+
+
+def test_order_is_a_function_of_the_draw_and_keeps_anchors_and_delays() -> None:
+    values = cases.synthetic_values(2000)
+    for name in cases.PROFILES:
+        plan = cases.schedule(name, values)
+        if plan != cases.schedule(name, values) or plan == cases.schedule(name, cases.synthetic_values(2001)[1:]):
+            raise AssertionError("the order does not follow the draw")
+        for arm, batches in plan["arms"].items():
+            if any(len(b["circuits"]) > cases.BATCH_LIMIT for b in batches):
+                raise AssertionError(arm)
+            if sorted(n for b in batches for n in b["circuits"]) != sorted(cases.usage(name)[arm]):
+                raise AssertionError(arm)
+        for index in range(cases.ROUNDS):
+            round_delays = [b["wait_cycles"] for b in plan["arms"]["interleaved_t1"] if b["round"] == index]
+            if sorted(round_delays) != sorted(cases.T1_ROUND_CYCLES):
+                raise AssertionError(index)
+        if any({"readout-0.cq", "t1-0.cq"} - set(b["circuits"]) for b in plan["arms"]["interleaved_t1"]):
+            raise AssertionError("an interleaved batch lacks an anchor")
+    with pytest.raises(ValueError, match="needs more"):
+        cases.schedule("tuna_17", values[:50])
+
+
+def test_rejection_keeps_the_modulus_unbiased() -> None:
+    stream = cases.Stream([65535, 65534, 7])
+    if stream.below(3) != 2 or stream.position != 2:
+        raise AssertionError("a value past the last whole multiple of the modulus was kept")
+    counts = [0, 0, 0]
+    for value in range(65536):
+        if value < (65536 // 3) * 3:
+            counts[value % 3] += 1
+    if len(set(counts)) != 1:
+        raise AssertionError(counts)
+    if cases.qrng_values_needed("tuna_17") > cases.DRAW_LENGTH:
+        raise AssertionError("the request is shorter than the order")
+
+
+def test_pending_state_writes_no_batches_then_the_draw_creates_them(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    retained = retained_fixture()
+    cases.write(tmp_path / "cases", draw_root=tmp_path, retained=retained)
+    directory = cases.case_directory(tmp_path / "cases", "tuna_17")
+    if (
+        (directory / "schedule.json").exists()
+        or list(directory.glob("*/batch-*"))
+        or not (directory / "qrng_request.json").is_file()
+    ):
+        raise AssertionError("a pending case holds batches or lacks its request")
+    if cases.check(tmp_path / "cases", draw_root=tmp_path, retained=retained):
+        raise AssertionError(cases.check(tmp_path / "cases", draw_root=tmp_path, retained=retained))
+    (directory / "CASE.md").write_text("handwritten\n", encoding="utf-8")
+    (directory / "stray.cq").write_text("stray\n", encoding="utf-8")
+    if cases.check(tmp_path / "cases", draw_root=tmp_path, retained=retained) != [
+        f"{directory / 'stray.cq'} is not generated"
+    ]:
+        raise AssertionError("a stray file went unnamed")
+    values = cases.synthetic_values(400)
+    path = "docs/evidence/anu_qrng/draw-2026-01-01T000000Z.json"
+    (tmp_path / path).parent.mkdir(parents=True)
+    (tmp_path / path).write_text(json.dumps(draw_record(values)), encoding="utf-8")
+    monkeypatch.setattr(cases, "DRAW", path)
+    cases.write(tmp_path / "cases2", draw_root=tmp_path, retained=retained)
+    ready = cases.case_directory(tmp_path / "cases2", "tuna_17")
+    manifest = json.loads((ready / "interleaved_t1" / "batch-00" / "cases.json").read_text(encoding="utf-8"))
+    if manifest["arm"] != "interleaved_t1" or manifest["qrng_draw"] != path or len(manifest["circuits"]) != 3:
+        raise AssertionError(manifest)
+    if len(list(ready.glob("*/batch-*"))) != 65 or (ready / "qrng_request.json").exists():
+        raise AssertionError("a drawn case lacks its 65 batches or keeps its request")
+    if cases.check(tmp_path / "cases2", draw_root=tmp_path, retained=retained):
+        raise AssertionError("a drawn case does not regenerate")
+    (ready / "interleaved_t1" / "batch-03" / "readout-0.cq").write_text("changed\n", encoding="utf-8")
+    if "readout-0.cq differs" not in "".join(cases.check(tmp_path / "cases2", draw_root=tmp_path, retained=retained)):
+        raise AssertionError("a changed circuit went unnamed")
+
+
+@pytest.mark.parametrize(
+    "document",
+    [
+        cases.synthetic_status("calibrating"),
+        cases.synthetic_status("executing"),
+        cases.synthetic_status("offline"),
+        cases.synthetic_status("idle", instance="calibrating"),
+        cases.synthetic_status("idle", queue=1),
+        {"error": "x"},
+        {},
+        [],
+        None,
+        {"backend_types": []},
+        {"backend_types": [{"id": 7, "status": "idle"}]},
+        {
+            "backend_types": [
+                {"id": 7, "status": "idle", "instances": [{}], "queue_own": {"number_of_jobs_in_queue": 0}}
+            ]
+        },
+    ],
+)
+def test_submit_path_refuses_every_status_but_idle(tmp_path: Path, document: Any) -> None:
+    series, runs = tmp_path / "arm", tmp_path / "runs"
+    (series / "batch-00").mkdir(parents=True)
+    (series / "batch-00" / "cases.json").write_text("{}", encoding="utf-8")
+    called: list[list[str]] = []
+
+    def run_command(argv: list[str]) -> tuple[int, str]:
+        called.append(argv)
+        return 0, ""
+
+    with pytest.raises(cases.AdmissionRefused):
+        cases.submit_series(
+            series,
+            runs,
+            "S",
+            "approval",
+            7,
+            command=["py"],
+            read_status=lambda: document,
+            run_command=run_command,
+            launch=lambda argv: cases.FakeProcess(),
+            sleep=lambda s: None,
+        )
+    if called or runs.exists():
+        raise AssertionError("a refused status still reached the submit command or created a run directory")
+
+
+def test_idle_backend_submits_once_and_records_admission_and_trace(tmp_path: Path) -> None:
+    series, runs = tmp_path / "case" / "arm", tmp_path / "runs"
+    (series / "batch-00").mkdir(parents=True)
+    (series / "batch-00" / "cases.json").write_text("{}", encoding="utf-8")
+    called: list[list[str]] = []
+    outputs = iter([(1, "refused: wait 7 more seconds"), (0, "")])
+    slept: list[float] = []
+
+    def run_command(argv: list[str]) -> tuple[int, str]:
+        called.append(argv)
+        return next(outputs)
+
+    cases.submit_series(
+        series,
+        runs,
+        "S",
+        "approval",
+        7,
+        command=["py", "platform"],
+        read_status=lambda: cases.synthetic_status("idle"),
+        run_command=run_command,
+        launch=lambda argv: cases.FakeProcess(3),
+        sleep=slept.append,
+    )
+    run = runs / "S-case-arm-batch-00"
+    admitted = json.loads((run / "admission.json").read_text(encoding="utf-8"))
+    trace = json.loads((run / "status-trace.json").read_text(encoding="utf-8"))["rows"]
+    if len(called) != 2 or called[0][:4] != ["py", "platform", "submit", str(run)] or slept[0] != 8:
+        raise AssertionError((called, slept))
+    if (
+        admitted["status"] != "idle"
+        or admitted["queue_own"] != 0
+        or len(trace) != 5
+        or {r["status"] for r in trace} != {"idle"}
+    ):
+        raise AssertionError((admitted, trace))
+
+
+def test_status_is_read_again_before_every_retry(tmp_path: Path) -> None:
+    series, runs = tmp_path / "case" / "arm", tmp_path / "runs"
+    (series / "batch-00").mkdir(parents=True)
+    (series / "batch-00" / "cases.json").write_text("{}", encoding="utf-8")
+    labels = iter(["idle", "idle", "calibrating"])
+    called: list[list[str]] = []
+
+    def run_command(argv: list[str]) -> tuple[int, str]:
+        called.append(argv)
+        return 1, "refused: wait 5 more seconds"
+
+    with pytest.raises(cases.AdmissionRefused):
+        cases.submit_series(
+            series,
+            runs,
+            "S",
+            "approval",
+            7,
+            command=["py"],
+            read_status=lambda: cases.synthetic_status(next(labels)),
+            run_command=run_command,
+            launch=lambda argv: cases.FakeProcess(),
+            sleep=lambda s: None,
+        )
+    if len(called) != 2:
+        raise AssertionError(called)
+    admitted = json.loads((runs / "S-case-arm-batch-00" / "admission.json").read_text(encoding="utf-8"))
+    if admitted["attempt"] != 2:
+        raise AssertionError(admitted)
+
+
+def always_idle() -> dict[str, Any]:
+    return cases.synthetic_status("idle")
+
+
+def accepted(argv: list[str]) -> tuple[int, str]:
+    return 0, ""
+
+
+def test_run_names_carry_the_case_and_a_changed_or_repeated_arm_stops(tmp_path: Path) -> None:
+    series, runs = tmp_path / "case_a" / "arm", tmp_path / "runs"
+    (series / "batch-00").mkdir(parents=True)
+    (series / "batch-00" / "cases.json").write_text("{}", encoding="utf-8")
+
+    def run(stamp: str) -> list[str]:
+        return cases.submit_series(
+            series,
+            runs,
+            stamp,
+            "approval",
+            7,
+            command=["py"],
+            read_status=always_idle,
+            run_command=accepted,
+            launch=lambda argv: cases.FakeProcess(),
+            sleep=lambda s: None,
+        )
+
+    run("S")
+    if not (runs / "S-case_a-arm-batch-00" / "status-trace.json").is_file():
+        raise AssertionError(sorted(p.name for p in runs.iterdir()))
+    with pytest.raises(RuntimeError, match="holds this arm under stamp S"):
+        run("T")
+    (series / "batch-00" / "cases.json").write_text('{"changed": 1}', encoding="utf-8")
+    with pytest.raises(RuntimeError, match="differs from"):
+        run("S")
+
+
+def test_trace_rows_are_kept_across_a_resumed_collection(tmp_path: Path) -> None:
+    series, runs = tmp_path / "case" / "arm", tmp_path / "runs"
+    (series / "batch-00").mkdir(parents=True)
+    (series / "batch-00" / "cases.json").write_text("{}", encoding="utf-8")
+
+    def run(polls: int) -> None:
+        cases.submit_series(
+            series,
+            runs,
+            "S",
+            "approval",
+            7,
+            command=["py"],
+            read_status=always_idle,
+            run_command=accepted,
+            launch=lambda argv: cases.FakeProcess(polls),
+            sleep=lambda s: None,
+        )
+
+    run(2)
+    held = runs / "S-case-arm-batch-00"
+    first = len(json.loads((held / "status-trace.json").read_text(encoding="utf-8"))["rows"])
+    (held / "submission.json").write_text("{}", encoding="utf-8")
+    run(1)
+    again = len(json.loads((held / "status-trace.json").read_text(encoding="utf-8"))["rows"])
+    if again != first + 3:
+        raise AssertionError((first, again))
+
+
+def test_a_plateau_survives_batch_levels_of_the_retained_size() -> None:
+    shifts = [0.0145 * math.sin(2.1 * b) for b in range(cases.ROUNDS * len(cases.T1_ROUND_CYCLES))]
+    for plateau in (0.01, 0.02):
+        model = {"shape": "plateau", "theta": [20.0, plateau], "e01": 0.03, "e11": 0.96}
+        verdict = cases.analyze_interleaved(cases.synthetic_interleaved([model], shifts))["qubits"][0]["verdict"]
+        if verdict != "tail_plateau":
+            raise AssertionError((plateau, verdict))
+
+
+def test_job_level_variance_ignores_a_level_common_to_both_anchors() -> None:
+    shifts = [0.01 * math.sin(b) for b in range(20)]
+    common = cases.job_level_variance([0.03 + s for s in shifts], [0.96 + s for s in shifts], 8192)
+    own = cases.job_level_variance([0.03 + s for s in shifts], [0.96 - s for s in shifts], 8192)
+    if common != 0.0 or not 0.5 * 0.01**2 < own < 2 * 0.01**2:
+        raise AssertionError((common, own))
+
+
+def test_start_status_comes_from_the_last_read_within_the_gap(tmp_path: Path) -> None:
+    (tmp_path / "status-trace.json").write_text(
+        json.dumps(
+            {
+                "rows": [
+                    {"utc": "2026-01-01T00:00:00+00:00", "status": "calibrating"},
+                    {"utc": "2026-01-01T00:01:00+00:00", "status": "idle"},
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    jobs = [
+        {"file": f, "job": {"queued_at": t}}
+        for f, t in (
+            ("a", "2026-01-01T00:01:10Z"),
+            ("b", "2026-01-01T00:00:30Z"),
+            ("c", "2026-01-01T00:03:00Z"),
+            ("d", "2025-12-31T23:59:00Z"),
+        )
+    ]
+    (tmp_path / "results.json").write_text(json.dumps({"jobs": jobs}), encoding="utf-8")
+    found = {r["file"]: r["status"] for r in cases.execution_start_statuses(tmp_path)}
+    if found != {"a": "idle", "b": "calibrating", "c": "unobserved", "d": "unobserved"}:
+        raise AssertionError(found)
+
+
+def write_run(run: Path, rows: list[dict[str, Any]], p1: dict[str, list[float]], shots: int, start: str) -> None:
+    """A run directory in the layout of gororoba_quantum/qi_records.py, with P1 per qubit realized as shot lists."""
+    from collections import Counter  # noqa: PLC0415
+
+    (run / "raw").mkdir(parents=True)
+    nqubits = len(next(iter(p1.values())))
+    circuits = []
+    for row in rows:
+        text = f"circuit {row['file']}\n"
+        (run / row["file"]).write_text(text, encoding="utf-8")
+        circuits.append({**row, "sha256": hashlib.sha256(text.encode()).hexdigest()})
+    manifest = {
+        "arm": "interleaved_t1",
+        "meta": {},
+        "backend": "tuna_17",
+        "backend_type_id": 7,
+        "nqubits": nqubits,
+        "shots": shots,
+        "circuits": circuits,
+    }
+    (run / "cases.json").write_text(json.dumps(manifest), encoding="utf-8")
+    identity = sum(run.name.encode()) * 100
+    jobs = [{"file": row["file"], "job": identity + i} for i, row in enumerate(rows)]
+    receipt = {
+        "schema": "qi-submission-v1",
+        "approval": "fixture",
+        "backend_status_at_submit": "idle",
+        "backend": "tuna_17",
+        "backend_type_id": 7,
+        "shots": shots,
+        "batch_job": identity,
+        "jobs": jobs,
+    }
+    (run / "submission.json").write_text(json.dumps(receipt), encoding="utf-8")
+    collected = []
+    for entry in jobs:
+        ones = [round(p * shots) for p in p1[entry["file"]]]
+        values = [
+            "".join("1" if shot < ones[nqubits - 1 - place] else "0" for place in range(nqubits))
+            for shot in range(shots)
+        ]
+        (run / "raw" / f"{entry['file']}.json").write_text(json.dumps(values), encoding="utf-8")
+        job = {
+            "id": entry["job"],
+            "batch_job_id": identity,
+            "number_of_shots": shots,
+            "status": "completed",
+            "created_on": "2026-01-01T00:00:00Z",
+            "queued_at": start,
+        }
+        result = {
+            "job_id": entry["job"],
+            "shots_requested": shots,
+            "shots_done": shots,
+            "results": dict(Counter(values)),
+        }
+        collected.append({"file": entry["file"], "job": job, "results": [result]})
+    (run / "results.json").write_text(json.dumps({"schema": "qi-collection-v1", "jobs": collected}), encoding="utf-8")
+
+
+def test_sanity_demands_anchors_records_and_a_start_status(tmp_path: Path) -> None:
+    rows: list[dict[str, Any]] = [
+        {"file": "readout-0.cq", "kind": "anchor0", "driven": []},
+        {"file": "t1-0.cq", "kind": "anchor1", "driven": [0, 1, 2, 3, 4]},
+        {"file": "t1-250.cq", "kind": "t1", "driven": [0, 1, 2, 3, 4], "wait_cycles": 250},
+    ]
+    good = {"readout-0.cq": [0.02] * 5, "t1-0.cq": [0.96] * 5, "t1-250.cq": [0.5] * 5}
+    run = tmp_path / "run-a"
+    write_run(run, rows, good, 200, "2026-01-01T00:01:10+00:00")
+    if cases.sanity(run) != [str(p) for p in cases.sanity(run)] or not any(
+        "admission.json is missing" in p for p in cases.sanity(run)
+    ):
+        raise AssertionError(cases.sanity(run))
+    (run / "admission.json").write_text("{}", encoding="utf-8")
+    trace = {"rows": [{"utc": "2026-01-01T00:01:00+00:00", "status": "idle"}]}
+    (run / "status-trace.json").write_text(json.dumps(trace), encoding="utf-8")
+    if cases.sanity(run):
+        raise AssertionError(cases.sanity(run))
+    trace["rows"][0]["status"] = "calibrating"
+    (run / "status-trace.json").write_text(json.dumps(trace), encoding="utf-8")
+    if "began while the backend status read calibrating" not in "".join(cases.sanity(run)):
+        raise AssertionError(cases.sanity(run))
+    wrong = tmp_path / "run-b"
+    write_run(wrong, rows, {**good, "t1-0.cq": [0.04] * 5}, 200, "2026-01-01T00:01:10+00:00")
+    if "read the wrong side of 0.5" not in "".join(cases.sanity(wrong)):
+        raise AssertionError(cases.sanity(wrong))
+
+
+def test_design_identifies_the_batch_level_only_through_the_anchors() -> None:
+    summary = cases.design_summary(0.03, 0.96, (20.0, 0.02), 0.0027**2, 8192)
+    if (
+        summary["rank_with_anchors"] != summary["columns_with_anchors"]
+        or summary["rank_without_anchors"] >= summary["columns_without_anchors"]
+    ):
+        raise AssertionError(summary)
+    errors = cases.expected_errors(
+        0.03, 0.96, {"single_us": 20.0, "plateau_us": 19.0, "plateau": 0.02}, 0.0027**2, 8192
+    )
+    if not 0.0005 < errors["se_plateau"] < 0.005 or errors["plateau_z"] < 4:
+        raise AssertionError(errors)
+
+
+MODELS = [
+    {"shape": "single", "theta": [22.0], "e01": 0.03, "e11": 0.96},
+    {"shape": "plateau", "theta": [20.0, 0.03], "e01": 0.03, "e11": 0.96},
+    {"shape": "two_rate", "theta": [4.0, 60.0, 0.4], "e01": 0.03, "e11": 0.96},
+]
+
+
+@pytest.mark.parametrize(
+    ("model", "shifted", "verdict"),
+    [(0, False, "single_exponential"), (0, True, "level_shift"), (1, True, "tail_plateau"), (2, False, "two_rate")],
+)
+def test_estimator_recovers_its_class_under_batch_levels(model: int, shifted: bool, verdict: str) -> None:
+    shifts = [0.012 * math.sin(b) for b in range(cases.ROUNDS * len(cases.T1_ROUND_CYCLES))] if shifted else None
+    rows = cases.analyze_interleaved(cases.synthetic_interleaved([MODELS[model]], shifts))["qubits"]
+    if [r["verdict"] for r in rows] != [verdict]:
+        raise AssertionError(rows[0])
+
+
+def test_flat_noiseless_series_reads_as_a_single_exponential() -> None:
+    flat = {"shape": "single", "theta": [1.0e6], "e01": 0.0, "e11": 1.0}
+    pooled = cases.analyze_interleaved(cases.synthetic_interleaved([flat] * 3))
+    if [r["verdict"] for r in pooled["qubits"]] != ["single_exponential"] * 3 or pooled["pooled"][
+        "single_exponential_accepted"
+    ] != 3:
+        raise AssertionError(pooled)
+
+
+def test_phase_fit_recovers_a_given_rotation_and_names_the_verdicts() -> None:
+    angles = [s * math.pi / 36 for s in cases.PHASE_STEPS]
+
+    def fringe(phase: float, amplitude: float = 0.46) -> list[tuple[float, float, int]]:
+        return [(a, round((0.5 + amplitude * math.cos(a + phase)) * 8192) / 8192, 8192) for a in angles]
+
+    for phase, verdict in (
+        (-0.15, "supports_target"),
+        (0.15, "supports_target_opposite_sign"),
+        (0.0, "null"),
+        (-0.4, "other"),
+        (-0.15, "supports_target"),
+    ):
+        fit = cases.fringe_fit(fringe(phase))
+        if (
+            fit is None
+            or abs(fit["phase"] - phase) > 0.005
+            or cases.phase_verdict(fit) != verdict
+            or not 0.003 < fit["phase_se"] < 0.01
+        ):
+            raise AssertionError((phase, fit))
+    flat = cases.fringe_fit(fringe(0.0, 0.0))
+    if flat is not None and cases.phase_verdict(flat) != "no_fringe":
+        raise AssertionError(flat)
+
+
+def test_single_and_phase_arms_read_exact_series() -> None:
+    rows = {
+        "readout-0.cq": {"kind": "anchor0"},
+        "single-q3-prep1.cq": {"kind": "single_prep1", "qubit": 3},
+        "single-q3-t1-250.cq": {"kind": "single_t1", "qubit": 3, "wait_cycles": 250},
+        "single-q3-x90-8.cq": {"kind": "single_x90", "qubit": 3, "pulses": 32},
+        "single-q3-x90-32.cq": {"kind": "single_x90", "qubit": 3, "pulses": 128},
+        "single-q3-x90-64.cq": {"kind": "single_x90", "qubit": 3, "pulses": 256},
+    }
+
+    def vec(value: float) -> list[float]:
+        return [0.0, 0.0, 0.0, value]
+
+    p1 = {"readout-0.cq": vec(0.03), "single-q3-prep1.cq": vec(0.96), "single-q3-t1-250.cq": vec(0.03 + 0.93 * 0.8)}
+    p1.update({"single-q3-x90-8.cq": vec(0.1), "single-q3-x90-32.cq": vec(0.9), "single-q3-x90-64.cq": vec(0.3)})
+    batch = {"meta": {"qubit": 3}, "shots": 8192, "rows": rows, "p1": p1}
+    found = cases.analyze_single([batch], None)["qubits"][0]
+    if abs(found["population"]["250"] - 0.8) > 1e-9 or found["ladder_clears"] is not False:
+        raise AssertionError(found)
+    angles = {s: s * math.pi / 36 for s in cases.PHASE_STEPS}
+    ramsey_rows = {f"r{s}": {"kind": "ramsey", "qubit": 12, "wait_cycles": 0, "angle": a} for s, a in angles.items()}
+    ramsey_p1 = {f"r{s}": [0.5 + 0.46 * math.cos(a + 0.15)] * 13 for s, a in angles.items()}
+    scans = cases.analyze_phase([{"shots": 8192, "rows": ramsey_rows, "p1": ramsey_p1}])["scans"]
+    if scans[0]["verdict"] != "supports_target_opposite_sign" or abs(scans[0]["phase"] - 0.15) > 0.005:
+        raise AssertionError(scans)
+
+
+def test_local_twin_check_names_a_circuit_off_its_law() -> None:
+    rows = cases.library("qx")
+    by_text = {row["text"]: row for row in rows.values()}
+    nqubits = cases.PROFILES["qx"]["nqubits"]
+
+    def exact(text: str, iterations: int) -> dict[str, int]:
+        row = by_text[text]
+        driven = set(row["driven"])
+        ones = round(row["expected_p1"] * iterations)
+
+        def make(bit: bool) -> str:
+            return "".join(("1" if bit and q in driven else "0") for q in reversed(range(nqubits)))
+
+        return (
+            {make(True): ones, make(False): iterations - ones}
+            if 0 < ones < iterations
+            else {make(row["expected_p1"] == 1.0): iterations}
+        )
+
+    if cases.local(exact):
+        raise AssertionError(cases.local(exact))
+
+    def broken(text: str, iterations: int) -> dict[str, int]:
+        return {"0" * nqubits: iterations}
+
+    if not any("t1-250" in p for p in cases.local(broken)):
+        raise AssertionError("a circuit off its law went unnamed")
+
+
+def test_self_test_reports_no_problem() -> None:
+    if cases.self_test():
+        raise AssertionError(cases.self_test())

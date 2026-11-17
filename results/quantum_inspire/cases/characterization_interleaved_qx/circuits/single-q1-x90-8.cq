@@ -1,0 +1,40 @@
+version 3.0
+
+qubit[10] q
+bit[10] b
+
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+X90 q[1]
+
+barrier q
+b = measure q

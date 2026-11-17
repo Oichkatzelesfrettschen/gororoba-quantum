@@ -1,0 +1,10 @@
+{
+ "schema": "qi-tuna17-interleaved-cases-v1-qrng-request",
+ "source": "ANU Quantum Numbers (docs/notes/qrng/README.md, first in the fallback order)",
+ "command": "\"$PYTHON\" scripts/anu_qrng.py draw --out docs/evidence/anu_qrng --length 256 --type uint16",
+ "values_requested": 256,
+ "values_needed_without_rejection": 190,
+ "consumption": "index order, each value once; Stream.below rejects a value at or above floor(65536 / n) * n",
+ "after_the_draw": "set DRAW in scripts/qi_tuna17_interleaved_cases.py to the retained path and run --write",
+ "approval": "none: a free ANU draw (AGENTS.md, Hardware services)"
+}

@@ -1,0 +1,347 @@
+{
+ "schema": "qi-tuna17-interleaved-prediction-v1",
+ "profile": "tuna_17",
+ "budget": {
+  "per_arm": {
+   "interleaved_t1": {
+    "batches": 22,
+    "jobs": 66,
+    "shots": 540672,
+    "expected_execution_seconds": 469.4
+   },
+   "single_qubit": {
+    "batches": 32,
+    "jobs": 96,
+    "shots": 786432,
+    "expected_execution_seconds": 673.3
+   },
+   "q12_phase": {
+    "batches": 11,
+    "jobs": 32,
+    "shots": 262144,
+    "expected_execution_seconds": 222.2
+   }
+  },
+  "total": {
+   "batches": 65,
+   "jobs": 194,
+   "shots": 1589248,
+   "expected_execution_seconds": 1364.9
+  },
+  "seconds_model": "2.6 s per job plus 0.53 ms per shot plus the circuit's wait per shot",
+  "credits_expected": 0,
+  "retained_characterization": {
+   "batches": 6,
+   "jobs": 14,
+   "shots": 147456,
+   "expected_execution_seconds": 115.8
+  }
+ },
+ "noiseless_outcome": {
+  "readout-0": "all 0",
+  "t1": "all driven qubits 1",
+  "x90": "all 0",
+  "ramsey": "driven qubit P1 = (1 + cos angle) / 2, phase offset 0"
+ },
+ "thresholds": {
+  "lack_of_fit_probability": 0.01,
+  "aicc_gain": 4.0,
+  "pooled_qubits": 12,
+  "phase_target_rad": -0.15,
+  "phase_half_width_rad": 0.05,
+  "phase_null_rad": 0.05,
+  "min_fringe_amplitude": 0.25
+ },
+ "interleaved_t1": {
+  "job_level_sigma": 0.00343,
+  "job_level_basis": "excess variance of the retained series' three prepared-0 and three prepared-1 anchor jobs",
+  "expected_errors": [
+   {
+    "qubit": 0,
+    "se_single_us": 0.1269,
+    "se_plateau_us": 0.1399,
+    "se_plateau": 0.001895,
+    "plateau_z": 4.845
+   },
+   {
+    "qubit": 1,
+    "se_single_us": 0.1524,
+    "se_plateau_us": 0.1713,
+    "se_plateau": 0.00212,
+    "plateau_z": 4.578
+   },
+   {
+    "qubit": 2,
+    "se_single_us": 0.1776,
+    "se_plateau_us": 0.1895,
+    "se_plateau": 0.002058,
+    "plateau_z": 19.28
+   },
+   {
+    "qubit": 3,
+    "se_single_us": 0.09482,
+    "se_plateau_us": 0.1042,
+    "se_plateau": 0.00184,
+    "plateau_z": 3.727
+   },
+   {
+    "qubit": 4,
+    "se_single_us": 0.1905,
+    "se_plateau_us": 0.2102,
+    "se_plateau": 0.002153,
+    "plateau_z": 11.43
+   },
+   {
+    "qubit": 5,
+    "se_single_us": 0.1621,
+    "se_plateau_us": 0.1829,
+    "se_plateau": 0.002209,
+    "plateau_z": 4.623
+   },
+   {
+    "qubit": 6,
+    "se_single_us": 0.1237,
+    "se_plateau_us": 0.1389,
+    "se_plateau": 0.002106,
+    "plateau_z": 2.702
+   },
+   {
+    "qubit": 7,
+    "se_single_us": 0.2306,
+    "se_plateau_us": 0.271,
+    "se_plateau": 0.002531,
+    "plateau_z": 4.31
+   },
+   {
+    "qubit": 8,
+    "se_single_us": 0.1463,
+    "se_plateau_us": 0.1676,
+    "se_plateau": 0.002159,
+    "plateau_z": 0.0
+   },
+   {
+    "qubit": 9,
+    "se_single_us": 0.1816,
+    "se_plateau_us": 0.199,
+    "se_plateau": 0.002222,
+    "plateau_z": 10.49
+   },
+   {
+    "qubit": 10,
+    "se_single_us": 0.2604,
+    "se_plateau_us": 0.3036,
+    "se_plateau": 0.002722,
+    "plateau_z": 14.32
+   },
+   {
+    "qubit": 11,
+    "se_single_us": 0.2068,
+    "se_plateau_us": 0.2213,
+    "se_plateau": 0.002324,
+    "plateau_z": 19.89
+   },
+   {
+    "qubit": 12,
+    "se_single_us": 0.1718,
+    "se_plateau_us": 0.1885,
+    "se_plateau": 0.001997,
+    "plateau_z": 10.88
+   },
+   {
+    "qubit": 13,
+    "se_single_us": 0.2029,
+    "se_plateau_us": 0.233,
+    "se_plateau": 0.002353,
+    "plateau_z": 3.598
+   },
+   {
+    "qubit": 14,
+    "se_single_us": 0.1427,
+    "se_plateau_us": 0.1144,
+    "se_plateau": 0.002262,
+    "plateau_z": 58.61
+   },
+   {
+    "qubit": 15,
+    "se_single_us": 0.1838,
+    "se_plateau_us": 0.1801,
+    "se_plateau": 0.002382,
+    "plateau_z": 35.28
+   },
+   {
+    "qubit": 16,
+    "se_single_us": 0.1779,
+    "se_plateau_us": 0.2005,
+    "se_plateau": 0.002255,
+    "plateau_z": 6.949
+   }
+  ],
+  "design": {
+   "batches": 22,
+   "columns_with_anchors": 25,
+   "rank_with_anchors": 25,
+   "columns_without_anchors": 23,
+   "rank_without_anchors": 22,
+   "se_plateau_with_free_batch_levels": 0.002123,
+   "se_T_us_with_free_batch_levels": 0.1957
+  },
+  "design_qubit": 9
+ },
+ "single_qubit": {
+  "qubits": [
+   {
+    "qubit": 5,
+    "retained_population": {
+     "250": 0.7868,
+     "1000": 0.3485,
+     "4000": 0.02942
+    },
+    "retained_t1_us": 20.53,
+    "retained_t1_widened_us": [
+     19.96,
+     21.11
+    ],
+    "retained_ladder_p0": {
+     "32": 0.3888,
+     "128": 0.7668,
+     "256": 0.5304
+    },
+    "predicted_ladder": "clears"
+   },
+   {
+    "qubit": 7,
+    "retained_population": {
+     "250": 0.7783,
+     "1000": 0.4617,
+     "4000": 0.05537
+    },
+    "retained_t1_us": 27.29,
+    "retained_t1_widened_us": [
+     25.88,
+     28.79
+    ],
+    "retained_ladder_p0": {
+     "32": 0.9226,
+     "128": 0.463,
+     "256": 0.1353
+    },
+    "predicted_ladder": "fails"
+   },
+   {
+    "qubit": 14,
+    "retained_population": {
+     "250": 0.6172,
+     "1000": 0.3385,
+     "4000": 0.09212
+    },
+    "retained_t1_us": 17.78,
+    "retained_t1_widened_us": [
+     14.37,
+     21.97
+    ],
+    "retained_ladder_p0": {
+     "32": 0.02857,
+     "128": 0.8431,
+     "256": 0.7129
+    },
+    "predicted_ladder": "fails"
+   },
+   {
+    "qubit": 0,
+    "retained_population": {
+     "250": 0.7344,
+     "1000": 0.3192,
+     "4000": 0.01656
+    },
+    "retained_t1_us": 17.16,
+    "retained_t1_widened_us": [
+     16.77,
+     17.55
+    ],
+    "retained_ladder_p0": {
+     "32": 0.9142,
+     "128": 0.4853,
+     "256": 0.5317
+    },
+    "predicted_ladder": "clears"
+   },
+   {
+    "qubit": 4,
+    "retained_population": {
+     "250": 0.8212,
+     "1000": 0.3708,
+     "4000": 0.05622
+    },
+    "retained_t1_us": 24.22,
+    "retained_t1_widened_us": [
+     22.72,
+     25.82
+    ],
+    "retained_ladder_p0": {
+     "32": 0.9399,
+     "128": 0.5506,
+     "256": 0.1924
+    },
+    "predicted_ladder": "fails"
+   },
+   {
+    "qubit": 10,
+    "retained_population": {
+     "250": 0.8524,
+     "1000": 0.5168,
+     "4000": 0.1059
+    },
+    "retained_t1_us": 31.75,
+    "retained_t1_widened_us": [
+     30.68,
+     32.86
+    ],
+    "retained_ladder_p0": {
+     "32": 0.8916,
+     "128": 0.08772,
+     "256": 0.8397
+    },
+    "predicted_ladder": "fails"
+   },
+   {
+    "qubit": 11,
+    "retained_population": {
+     "250": 0.8013,
+     "1000": 0.4489,
+     "4000": 0.06646
+    },
+    "retained_t1_us": 25.31,
+    "retained_t1_widened_us": [
+     23.98,
+     26.72
+    ],
+    "retained_ladder_p0": {
+     "32": 0.01199,
+     "128": 0.7812,
+     "256": 0.4172
+    },
+    "predicted_ladder": "fails"
+   },
+   {
+    "qubit": 16,
+    "retained_population": {
+     "250": 0.7887,
+     "1000": 0.4214,
+     "4000": 0.04198
+    },
+    "retained_t1_us": 22.52,
+    "retained_t1_widened_us": [
+     21.97,
+     23.07
+    ],
+    "retained_ladder_p0": {
+     "32": 0.9009,
+     "128": 0.1995,
+     "256": 0.5592
+    },
+    "predicted_ladder": "fails"
+   }
+  ],
+  "ladder_rule": "fails when the retained corrected P(0) falls to 0.25 or below at any of 32, 128, 256 pulses"
+ }
+}

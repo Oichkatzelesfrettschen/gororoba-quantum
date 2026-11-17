@@ -1,0 +1,65 @@
+{
+ "schema": "qi-tuna17-interleaved-cases-v1",
+ "profile": "qx",
+ "backend": "QXsinglenodesimulator",
+ "shots": 1024,
+ "cycle_seconds": 2e-08,
+ "t1_round_wait_cycles": [
+  50,
+  125,
+  250,
+  375,
+  500,
+  1000,
+  2000,
+  4000,
+  6000,
+  8000,
+  12000
+ ],
+ "rounds": 2,
+ "single_qubits": [
+  5,
+  7,
+  9,
+  0,
+  4,
+  6,
+  3,
+  1
+ ],
+ "single_t1_wait_cycles": [
+  250,
+  1000,
+  4000
+ ],
+ "single_ladder_pulses": [
+  32,
+  128,
+  256
+ ],
+ "phase_qubits": [
+  9,
+  8,
+  4
+ ],
+ "phase_wait_cycles": 25,
+ "phase_steps_pi_over_36": [
+  0,
+  9,
+  18,
+  27,
+  36,
+  45,
+  54,
+  63
+ ],
+ "batch_limit": 3,
+ "batches": {
+  "interleaved_t1": 22,
+  "single_qubit": 32,
+  "q12_phase": 11
+ },
+ "qrng_draw": null,
+ "schedule": "pending: DRAW is None, see qrng_request.json"
+}

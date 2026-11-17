@@ -1,0 +1,11 @@
+version 3.0
+
+qubit[10] q
+bit[10] b
+
+X90 q[8]
+Rz(5.497787143782138) q[8]
+X90 q[8]
+
+barrier q
+b = measure q
