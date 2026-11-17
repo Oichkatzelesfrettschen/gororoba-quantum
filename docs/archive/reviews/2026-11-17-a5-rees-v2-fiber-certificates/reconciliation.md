@@ -124,3 +124,6 @@ root 10754, two of the ten rows", and a successor row would carry the new fact; 
 route-specific claim and adds the Iso and X- results as an alternative route with the falsifier narrowed to
 `nullity16_rees_fibers.py` under the original cap. Both readings are consistent with the evidence; the choice depends on whether
 A5-409 describes the rows or its script, and it stays with the owner.
+
+Owner ruling of 2026-11-17: A5-409 describes its script. The row keeps the status stalled, its basis records the two
+unit-replacement results as another route, and its falsifier names `nullity16_rees_fibers.py` under the original limits.
