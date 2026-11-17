@@ -1220,6 +1220,13 @@
       "question": "Does the hosted QX emulator's reset keep the rest of the register's relative phase, as cQASM's measure-and-flip does, or apply qxelarator 0.10.0's sqrt(|a0|^2 + |a1|^2) map?"
     },
     {
+      "id": "qi-qx-reset-phase-recheck-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00",
+      "family": "cQASM reset semantics on the hosted QX emulator",
+      "question": "On the preregistered |1> reset beside a |-> spectator input, does the hosted QX emulator on 2026-11-15 produce qxelarator 0.10.0's phase-dropping outcome or qxelarator 0.11.0's phase-preserving outcome?"
+    },
+    {
       "id": "qd-qpu-belenos-mesh-job-13-seeded-single",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13",
@@ -3409,6 +3416,202 @@
       "run": "results/quandela/cases/ascella_two_photon_character/job-01",
       "family": "ascella_two_photon_character",
       "question": "Retain the canceled two-photon character job and its zero returned samples as an operational outcome."
+    },
+    {
+      "id": "qd-ascella-predecessor-acquisition-pair-sim-ascella",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-14T203025Z-sim_ascella-ascella_predecessor-sim-ascella-billing-rule",
+      "family": "ascella_predecessor",
+      "question": "Admit the successor acquisition pair's sim:ascella rehearsal of the target-slot request: one job, platform-bound request, billing rule v2."
+    },
+    {
+      "id": "qd-bdsc-diagnostic-acquisition-pair-sim-belenos-b1-j1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-14T203218Z-sim_belenos-bdsc_diagnostic-b1-j1",
+      "family": "bdsc_diagnostic",
+      "question": "Admit the successor acquisition pair's one-job sim:belenos rehearsal (b1-j1) of the diagnostic request and read its duration and billing."
+    },
+    {
+      "id": "qd-bdsc-diagnostic-acquisition-pair-sim-belenos-b1-j2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-15T180000Z-sim_belenos-bdsc_diagnostic-b1-j2",
+      "family": "bdsc_diagnostic",
+      "question": "Does the 24-iteration b1-j2 request of the successor tree finish inside sim:belenos's 300 s job limit, and what does a job that reaches the limit return?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-qx-2026-11-15t001929-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-00",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On the QX emulator, do b0, its Rx(pi/2) form and the eight scaled-pulse arms of the rotation scan reproduce their ideal laws, as the control the Tuna-17 rotation scan requires?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-qx-2026-11-15t001929-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-01",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On the QX emulator, do b0, its Rx(pi/2) form and the eight scaled-pulse arms of the rotation scan reproduce their ideal laws, as the control the Tuna-17 rotation scan requires?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-qx-2026-11-15t001929-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-02",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On the QX emulator, do b0, its Rx(pi/2) form and the eight scaled-pulse arms of the rotation scan reproduce their ideal laws, as the control the Tuna-17 rotation scan requires?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-qx-2026-11-15t001929-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-03",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On the QX emulator, do b0, its Rx(pi/2) form and the eight scaled-pulse arms of the rotation scan reproduce their ideal laws, as the control the Tuna-17 rotation scan requires?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-00",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-01",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-02",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-03",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-04",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-05",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-06",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-07",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-08",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-08",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-09",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-09",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-10",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-10",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-11",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-11",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-12",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-12",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-13",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-13",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-14",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-14",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-15",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-15",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-16",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-16",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-17",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-17",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-18",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-18",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-19",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-19",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-20",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-20",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
     }
   ],
   "claims": [
@@ -5206,7 +5409,7 @@
       "boundary": "Finite Boolean permutation action; Qiskit phase and workspace behavior are checked separately by modular_arithmetic.py operator checks.",
       "evidence": [
         {
-          "path": "proofs/TargetFlipN21.v",
+          "path": "gororoba-math:rocq/quantum/TargetFlipN21.v",
           "sha256": "494e3e9c1a4370c46f37e26b0f9e7cb301d8acf8ac96f94e2512ad57612e0fc6"
         },
         {
@@ -5221,9 +5424,7 @@
       "documents": [
         "gororoba_quantum/MODULAR_SYNTHESIS.md"
       ],
-      "gates": {
-        "core-067": "freshness"
-      },
+      "gates": {},
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [],
@@ -5240,15 +5441,15 @@
       "boundary": "The retained verification receipt pins Rocq 9.3.0 / OCaml 5.5.1 with Stdlib 9.2.0 after fresh compilation, kernel checks and assumption queries; the initial receipts used 9.1.1. The scalar proof alone leaves the general Cayley-Dickson embedding and tower bridge open; open_gororoba separately formalizes a concrete 16D average/detail transport retaining all coordinates. Current external builds use Rocq 9.3.0; historical receipts keep their recorded identity.",
       "evidence": [
         {
-          "path": "proofs/FoldAverageDescent.v",
+          "path": "gororoba-math:rocq/quantum/FoldAverageDescent.v",
           "sha256": "c30eb3e2b4979e231314d65187073a327c984016919ffc82d4a86cd6310eeafb"
         },
         {
-          "path": "proofs/TerminalChannelSeparation.v",
+          "path": "gororoba-math:rocq/quantum/TerminalChannelSeparation.v",
           "sha256": "992c9705fbad7c64728cc709acff248f8d0b2e716cc3572d726ce905d86d3521"
         },
         {
-          "path": "proofs/TerminalChannelSeparationReal.v",
+          "path": "gororoba-math:rocq/quantum/TerminalChannelSeparationReal.v",
           "sha256": "b1227ae6842e33967def112c9cf69b37b2c9c0b04a7f4b7af3b9f8d3bb3dc797"
         },
         {
@@ -6191,7 +6392,7 @@
       "boundary": "Finite step only; the analytic and semialgebraic steps of the generic theorem are cited, and CI verifies receipt bytes, not a fresh kernel check.",
       "evidence": [
         {
-          "path": "proofs/StiefelWitnessInvertible.v",
+          "path": "gororoba-math:rocq/quantum/StiefelWitnessInvertible.v",
           "sha256": "58473d43db57a20b6b767eb6ea2bb55e9f1232e249faa0aa9542d9e3f52bf8d3"
         },
         {
@@ -6208,7 +6409,6 @@
         "docs/evidence/stiefel_witness/README.md"
       ],
       "gates": {
-        "core-275": "replay",
         "sources-243": "bytes",
         "sources-245": "bytes"
       },
@@ -6582,7 +6782,7 @@
       "boundary": "The rows are read through the tower sign sigma of CdTowerBasisSign.v, which claim cd-sign-python-semantics-rocq proves equal to the return value of cd_core.cd_sign for every k; claim cd-associator-anf-rocq proves the associator-phase degree on the same tower.",
       "evidence": [
         {
-          "path": "proofs/CdSignRowAnf.v",
+          "path": "gororoba-math:rocq/quantum/CdSignRowAnf.v",
           "sha256": "bea8796c80b2b3ade99274d20156228a1ed5498f6139d0c957cc043880e760a0"
         },
         {
@@ -6623,7 +6823,7 @@
       "boundary": "The phases are read through the tower sign sigma of CdTowerBasisSign.v, which claim cd-sign-python-semantics-rocq proves equal to the return value of cd_core.cd_sign for every k; claim cd-associator-census-rocq counts the pairs by degree in Rocq.",
       "evidence": [
         {
-          "path": "proofs/CdAssociatorAnf.v",
+          "path": "gororoba-math:rocq/quantum/CdAssociatorAnf.v",
           "sha256": "5fbec4bf0a2160766ee7d7d74c5b5139d65b1c31ada7bbfe5e1dd65abc479d1b"
         },
         {
@@ -6664,7 +6864,7 @@
       "boundary": "The phases are read through the tower sign sigma of CdTowerBasisSign.v, which claim cd-sign-python-semantics-rocq proves equal to the return value of cd_core.cd_sign for every k.",
       "evidence": [
         {
-          "path": "proofs/CdAssociatorCensus.v",
+          "path": "gororoba-math:rocq/quantum/CdAssociatorCensus.v",
           "sha256": "bbd2562527a32c820259181a336db5b89bea03a85ea81caacb79b0452392591b"
         },
         {
@@ -6705,7 +6905,7 @@
       "boundary": "Claim cd-sign-python-translation-rocq closes the former extractor node-map gap with a kernel-checked translation certificate and independent raw-AST execution. Parsing, generic serialization and source-byte/hash binding remain external checks. The int behavior of the guards _dimension and _index, whose ast.dump digests and clauses on every int from -3 to 70 the existing contract pins, and the evaluator's reading of the cited Python Language Reference sections remain outside the proof. _dimension tests type(dim) is int before any operator runs, so bool and every int subclass, whose overridden operators need not compute as integers, are rejected, and _index reads each index through operator.index, which returns an exact int; tower_bridge.py remains as an independent finite cross-check through dimension 64.",
       "evidence": [
         {
-          "path": "proofs/CdSignPythonSemantics.v",
+          "path": "gororoba-math:rocq/quantum/CdSignPythonSemantics.v",
           "sha256": "60ef84be2575d2ade2c925813310cd77d2fa64b347c258e6c2f0b69a64eb09d5"
         },
         {
@@ -6745,14 +6945,14 @@
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
-      "boundary": "The source interpreter reads raw node tags directly; it does not translate before evaluating or invoke the target evaluator. The certificate checks positional parameter names and the executable body against the target quotation. CPython parsing, generic ast.iter_fields serialization, file reading and SHA-256 binding remain externally checked by sources-411. Both calculi use mathematical integer primitives and the existing _dimension and _index helper contracts. Function names, annotations and the leading docstring remain metadata; the view rejects unsupported parameter forms and decorators. Exceptions omit class, message and traceback, and fuel is not a Python resource bound. Module execution, arbitrary Python objects, helper rebinding and the CPython C implementation are outside this theorem.",
+      "boundary": "The source interpreter reads raw node tags directly; it does not translate before evaluating or invoke the target evaluator. The certificate checks positional parameter names and the executable body against the target quotation. CPython parsing, generic ast.iter_fields serialization, file reading and SHA-256 binding remain externally checked by ci/check_quantum_sources.sh of gororoba-math, which runs the generator cd_sign_source_ast.py with --check on demand. Both calculi use mathematical integer primitives and the existing _dimension and _index helper contracts. Function names, annotations and the leading docstring remain metadata; the view rejects unsupported parameter forms and decorators. Exceptions omit class, message and traceback, and fuel is not a Python resource bound. Module execution, arbitrary Python objects, helper rebinding and the CPython C implementation are outside this theorem.",
       "evidence": [
         {
-          "path": "proofs/CdSignAstTranslation.v",
+          "path": "gororoba-math:rocq/quantum/CdSignAstTranslation.v",
           "sha256": "25f7fe47ba1b26dc4a349779000d5adc48ef798308ddead3ef1eb892ee5ed6f6"
         },
         {
-          "path": "proofs/CdSignSourceCertificate.v",
+          "path": "gororoba-math:rocq/quantum/CdSignSourceCertificate.v",
           "sha256": "6c83e82d0708f93e3e294f0302b62f7f2609a1aa8827f0381423f480c3b6f510"
         },
         {
@@ -6781,8 +6981,7 @@
         "docs/evidence/cd-sign-python-semantics/README.md"
       ],
       "gates": {
-        "sources-410": "bytes",
-        "sources-411": "freshness"
+        "sources-410": "bytes"
       },
       "acquisitions": [],
       "assumptions": [],
@@ -6852,7 +7051,7 @@
       "boundary": "This proves Proposition 5's displayed point-indicator identity and exact degree for the existing tower associator, including m = 0 and n = 3. The positive-polarity ANF monomial counts, the gate realization and its resource counts remain written consequences in claim cd-associator-point-indicator-pairs; this bundle does not formalize a circuit language or an optimality theorem. The connection to the retained Python source uses claims cd-sign-python-semantics-rocq and cd-sign-python-translation-rocq with their stated trust boundaries.",
       "evidence": [
         {
-          "path": "proofs/CdAssociatorPointIndicators.v",
+          "path": "gororoba-math:rocq/quantum/CdAssociatorPointIndicators.v",
           "sha256": "f8107462007e7f99203c6eb8eb6ce1938f807593a1bdb0afb8eb9374d736434f"
         },
         {
@@ -10158,15 +10357,19 @@
     },
     {
       "id": "qi-qx-hosted-reset-drops-register-phase",
-      "statement": "The hosted QX emulator (QXsinglenodesimulator, backend type 1) does not apply cQASM 3.0's measure-and-flip reset to a qubit in |1> beside a qubit in |->: reset q[0] then H on q[1] reads q[1] = 0 in 2048 of 2048 shots, where measure-and-flip reads 1 in every shot and qxelarator 0.10.0's sqrt(|a0|^2 + |a1|^2) map reads 0, while the same program with X in place of the reset and a reset of an already-zero q[0] read q[1] = 1 in 2048 of 2048. On that input the hosted reset discards q[1]'s relative phase, so a QX law of a circuit that resets a |1>-weighted qubit beside a register carrying relative phase is not the cQASM law.",
+      "statement": "The hosted QX emulator (QXsinglenodesimulator, backend type 1) does not apply cQASM 3.0's measure-and-flip reset to a qubit in |1> beside a qubit in |->: reset q[0] then H on q[1] reads q[1] = 0 in 2048 of 2048 shots on each of the two batches, where measure-and-flip reads 1 in every shot and qxelarator 0.10.0's sqrt(|a0|^2 + |a1|^2) map reads 0, while the same program with X in place of the reset and a reset of an already-zero q[0] read q[1] = 1 in 2048 of 2048. On that input the hosted reset discards q[1]'s relative phase, so a QX law of a circuit that resets a |1>-weighted qubit beside a register carrying relative phase is not the cQASM law.",
       "domain": "implementation",
       "evidence_class": "preregistered emulator control",
       "status": "established",
-      "boundary": "One batch of three two-qubit circuits on 2026-10-18 under the emulator's deployment that day. It pins the outcome of one input, a |1> reset beside one |-> qubit: it rules out measure-and-flip there and agrees with the qxelarator sqrt map, but it does not establish that map on superposed or entangled reset inputs, where another phase-dropping implementation could differ. It says nothing about Tuna hardware, whose reset is physical. A redeployed emulator can change it.",
+      "boundary": "Two batches of three two-qubit circuits, on 2026-10-18 and on 2026-11-15 (the same programs, 2048 shots each, identical counts), under the emulator's deployment on those days. It pins the outcome of one input, a |1> reset beside one |-> qubit: it rules out measure-and-flip there and agrees with the qxelarator sqrt map, but it does not establish that map on superposed or entangled reset inputs, where another phase-dropping implementation could differ. It says nothing about Tuna hardware, whose reset is physical. A redeployed emulator can change it.",
       "evidence": [
         {
           "path": "results/quantum_inspire/qx_reset_phase_analysis.json",
           "sha256": "3a862e6bc95608b346731b863a7611a196ff694d5e87e6998e065407a8022782"
+        },
+        {
+          "path": "results/quantum_inspire/qx_reset_phase_analysis_2026-11-15.json",
+          "sha256": "1f954cea93ff19d5feceb4c4b836809c195a7180fcf4cf3eed6c35fc8530d940"
         }
       ],
       "documents": [
@@ -10174,11 +10377,13 @@
       ],
       "gates": {
         "core-456": "replay",
+        "core-771": "replay",
         "core-455": "freshness",
         "core-457": "admission"
       },
       "acquisitions": [
-        "qi-qx-reset-phase-batch-00"
+        "qi-qx-reset-phase-batch-00",
+        "qi-qx-reset-phase-recheck-batch-00"
       ],
       "assumptions": [],
       "depends_on": [],

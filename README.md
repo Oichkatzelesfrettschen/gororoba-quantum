@@ -44,7 +44,7 @@ gaps and unresolved dependencies separately from the registry.
   rotations, ANF networks, scratch-free cycle transpositions, or explicit
   one-clean-ancilla cycle transpositions, or bounded minimum-cost Boolean
   target flips. `target_flip.py` factors whole-register permutations before
-  expanding their predicates; `proofs/TargetFlipN21.v` certifies the three
+  expanding their predicates; gororoba-math `rocq/quantum/TargetFlipN21.v` certifies the three
   scheduled N=21 multiplier witnesses.
 - `gororoba_quantum/factoring.py`, `order_finding.py`, and `hybrid_shor.py` --
   classical admission and decoding around faithful `|1>` semiclassical order
@@ -173,7 +173,8 @@ cd gororoba_quantum
 "$PYTHON" annihilator_strata.py --max-dimension 256
 "$PYTHON" factoring.py
 "$PYTHON" target_flip.py
-"$PYTHON" target_flip_certificate.py --check
+# TargetFlipN21.v is rendered and checked by gororoba-math ci/check_quantum_sources.sh
+# (docs/runbooks/rocq-replay-route.md)
 "$PYTHON" modular_arithmetic.py
 "$PYTHON" order_finding.py
 "$PYTHON" compile_evidence.py --seeds 20261010 \

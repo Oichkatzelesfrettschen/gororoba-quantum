@@ -12,8 +12,9 @@ homogeneous generator in degrees three to seven beyond the 148 quadrics.
 
 Each header carries its own arcs, quadratic relation file and column bases. The N+ ranks are measured directly
 on N+; the N+ upper bound at 32009 uses the retained sign transport of the N- degree-two membership receipt
-(described below). Every equality holds over its named prime field. Characteristic zero and degrees eight and
-above remain open.
+(described below). Every equality holds over its named prime field. Degrees eight and above are settled by
+[the order functions of the arc package](../arcs/README.md#the-relation-ideal-in-every-degree-a5-559), L = K2 in every
+degree (A5-559); characteristic zero on these slices remains open.
 
 ## Method
 
@@ -34,13 +35,14 @@ receipts that ledger row A5-251 already rests on (`../witnesses.jsonl`, `k2-span
 `working/distribute/out/a5-e8-d2/e8nm_p1` (p = 32009) and `e8nm_p2` (p = 32029) each certify the 148 relations of
 the K2 file the run uses (`membership_check` 148 checked, 0 failures, relation file digest equal to the K2 file's).
 For N+ at p = 32029 the row of `e8np_p2` does the same for the N+ header (input `p32029-r9115/e8-np.sing`, relation
-file `3c2294f7...`, the K2 file of the N+ run, 148 checked, 0 failures). The repository holds no degree-two receipt
-of the N+ header at p = 32009: its K2 file `working/runs/e8_a2/e8_k2.rel` (`bbe9bb73...`) is the image of the N-
-K2 file under the sign isomorphism t8, t9 -> -t8, -t9 (the `sign-isomorphism` row at 32009: every J and G generator
-of the two headers agrees up to sign and the two K2 files have zero mutual remainders after the y signs), so K2
-inside L for N+ at 32009 is the N- receipt carried by that isomorphism (A5-013), as in A5-079 and A5-082. At 32009
-the N+ upper bound HF(k[y]/K2, d) therefore rests on that transport; the N+ jet ranks themselves, the lower bound,
-are computed on the N+ header at both primes.
+file `3c2294f7...`, the K2 file of the N+ run, 148 checked, 0 failures). For N+ at p = 32009 the receipt of
+`working/runs/e8np-d2-receipt-p32009/receipt/` does the same for the N+ header (input `p32009-r10754/e8-np.sing`,
+relation file `50c1047d...`, 148 checked, 0 failures), and its relations generate the same ideal as the K2 file
+`working/runs/e8_a2/e8_k2.rel` (`bbe9bb73...`; mutual remainders 0, 0; A5-570). That K2 file is also the image of the
+N- K2 file under the sign isomorphism t8, t9 -> -t8, -t9 (the `sign-isomorphism` row at 32009: every J and G
+generator of the two headers agrees up to sign and the two K2 files have zero mutual remainders after the y signs, A5-013),
+and the receipt agrees with that transport. The N+ jet ranks themselves, the lower bound, are computed on the N+
+header at both primes.
 
 The arcs are Phi(w, rho, sigma, e_par, zeta) of ../arcs with polynomial parameters of four terms each. Six families
 repeat in the order of `FAMILIES`: the valuations (2, 2, 2, 2) with e_par(0) away from 0 and +-1 (limits on the scroll
@@ -210,8 +212,8 @@ the gate. The direct verifier command above always requests the exact export rep
   the minimum valuation of the nine coordinates t_i, which generate m_R.
 - The equalities through degree seven rest on K2 inside L at each prime. The jets bound h_d from below only and cannot prove
   h_d < HF(k[y]/K2, d); a plateau below the K2 value would have been a lower bound alone.
-- Open: generators of L in degree eight and above, characteristic zero, and a direct degree-two membership
-  receipt of the N+ header at p = 32009 (the upper bound there rests on the N- receipt and the sign isomorphism).
+- Generators of L in degree eight and above: none, by A5-559. Open: characteristic zero and the degree-two receipt of the N+ header at the root 21255 of p = 32009 (A5-571; the receipt of
+  A5-570 covers the root 10754 of the retained headers).
 
 ## Routes that did not close degree 6
 

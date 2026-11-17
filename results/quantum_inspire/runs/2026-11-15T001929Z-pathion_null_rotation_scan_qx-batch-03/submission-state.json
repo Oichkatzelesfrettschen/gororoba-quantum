@@ -1,0 +1,49 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-11-15T01:02:41+00:00",
+ "approval": "QX twin only for now (owner, question tool, 2026-11-14)",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "2d87027487913c71f0679cc90514c25cfb9536cb0254c41f4fc075a885d560bd",
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "b0-rx-all-p20.cq",
+   "job": 1741772,
+   "sha256": "7eaad26134e0b6651adae133bd5fb20667cdb2dada392955ef3c4b642fb9febe"
+  }
+ ],
+ "project": 858385,
+ "batch_job": 958278,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-11-15T01:02:42+00:00",
+  "approval": "QX twin only for now (owner, question tool, 2026-11-14)",
+  "backend": "QXsinglenodesimulator",
+  "backend_type_id": 1,
+  "cases_sha256": "2d87027487913c71f0679cc90514c25cfb9536cb0254c41f4fc075a885d560bd",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 5,
+  "batch_job": 958278,
+  "project": 858385,
+  "shots": 2048,
+  "jobs": [
+   {
+    "file": "b0-rx-all-p20.cq",
+    "job": 1741772,
+    "sha256": "7eaad26134e0b6651adae133bd5fb20667cdb2dada392955ef3c4b642fb9febe"
+   }
+  ],
+  "submitted_utc": "2026-11-15T01:02:42+00:00"
+ },
+ "confirmed_utc": "2026-11-15T01:02:42+00:00"
+}

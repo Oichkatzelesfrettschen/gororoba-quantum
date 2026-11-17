@@ -1,0 +1,49 @@
+LIB "elim.lib";
+proc ssat(ideal I, ideal K) { def S = sat(I, K); if (typeof(S) == "list") { return(S[1]); } return(S); }
+proc isunit(ideal I) { ideal S = std(I); return(size(S) == 1 and S[1] == 1); }
+proc cert(string name, int ok) { print("CERT " + name + " " + string(ok)); }
+proc cal(string name, int ok) { print("CAL " + name + " " + string(ok)); }
+
+ring R = 0, (c0, s, t, v, p, m), dp;
+poly rel = m2 + 1 + v2 + p2;
+vector X = [c0, -t, s];
+vector Y = [c0*v - p*t, c0*p - m*s + v*t, -m*t - v*s];
+poly A1 = X[2]*Y[3] - X[3]*Y[2];
+poly A2 = X[3]*Y[1] - X[1]*Y[3];
+poly A3 = X[1]*Y[2] - X[2]*Y[1];
+poly n = c0^2 + s^2 + t^2;
+poly r = m*c0 + p*s;
+poly q = v*(c0^2 - s^2 - t^2) - 2*p*c0*t;
+poly F = n*(n + r^2) + q^2;
+poly D = 8*p6 + 25*p4*v2 + 12*p4 + 26*p2*v4 + 16*p2*v2 + 6*p2 + 9*v6 + 3*v4 - 5*v2 + 1;
+ideal mc = c0, s, t;
+ideal relI = std(ideal(rel));
+ideal JF = diff(F, c0), diff(F, s), diff(F, t);
+ideal IB = std(ideal(A1, A2, A3) + rel);
+ideal J = std(JF + rel);
+ideal H = diff(diff(F, c0), c0), diff(diff(F, c0), s), diff(diff(F, c0), t), diff(diff(F, s), s), diff(diff(F, s), t), diff(diff(F, t), t);
+
+cert("quartic_is_minus_the_cross_square", size(reduce(F + A1^2 + A2^2 + A3^2, relI)) == 0);
+cert("partials_lie_in_the_base_ideal", size(reduce(JF, IB)) == 0);
+
+ideal K = ssat(J, IB);
+ideal K2 = ssat(K, mc);
+cal("singular_points_off_the_base_without_rho_saturation_unit", isunit(K2));
+cert("singular_points_lie_on_the_base_scheme", isunit(ssat(K2, p)));
+
+ideal U1 = ssat(std(IB + ideal(n)), mc);
+cal("base_points_avoid_the_conic_without_rho_saturation_unit", isunit(U1));
+cert("base_points_avoid_the_conic_n", isunit(ssat(U1, p)));
+
+ideal U2 = ssat(std(IB + H), mc);
+cal("hessian_nonzero_without_rho_saturation_unit", isunit(U2));
+cert("hessian_nonzero_at_the_base_points", isunit(ssat(U2, p)));
+
+cal("hessian_nonzero_off_the_base_unit", isunit(ssat(std(H + rel), mc)));
+
+ideal T = std(quotient(J, IB));
+ideal T2 = ssat(T, mc);
+cert("quotient_route_unit_off_the_discriminant", isunit(ssat(T2, p*D)));
+cal("quotient_route_unit_without_discriminant_saturation", isunit(ssat(T2, p)));
+print("MARKER DONE certificates");
+quit;

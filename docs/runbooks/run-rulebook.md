@@ -255,7 +255,8 @@ the closest entry and say what changed.
 ### E8-bar -> N+-: the defining ideal of the fiber cone by elimination from S[I T] / (m_R S) S[I T]
 
 - Question and decisive outcome: the kernel L of k[y_1..y_21] -> S[I T] / (m_R S) S[I T] for the E8-bar slice, where
-  I = I S is proved (A5-309). L = K2 closes A5-009 and gives h_6 = 1,666; a generator of L above degree 2 gives the
+  I = I S is proved (A5-309). L = K2 closes A5-009 on the header slice (on the weight slice A5-457 later proves
+  L = K by order functions) and gives h_6 = 1,666; a generator of L above degree 2 gives the
   true h_6 between 1,526 and 1,666. A run that does not finish proves nothing.
 - Formulation: one elimination of T from (y_j - T G_j) over the polynomial model of S (variables w, rho, sigma, zeta,
   a, b, u with u (1 + w) = 1 and b^2 = F), then elimination of the seven S variables from the result plus m_R S, in a
@@ -754,3 +755,48 @@ the closest entry and say what changed.
   relation in J + m I^2 is certified for the ten cells in 100 s (A5-474), which makes A5-457 unconditional. At
   08:02 PST the three E8-bar Rees runs were still in the Rees standard basis: `c-e8-nm-p` after 20 h 7 min at
   4.1 GB, `k-e8-nm-p2` and `k-e8-np-p` after 16 h 42 min at 3.7 and 4.4 GB, no FIBER line.
+  2026-11-14, single-pivot calibration on Iso at N- modulo 32009 (the saturation of J plus the 16 relations
+  y_a G_p - y_p G_a by the pivot G_p in place of the 2 x 2 minors): Rees standard basis in 911 s against 1,241 s,
+  colon certificate at 8,701 s against 8,685 s, the same fiber (dimension 5, multiplicity 23, 68 generators). The
+  pivot form moves no time out of the saturation, so the E8-bar pivot run was not started; the block route is the
+  open A5-542, which restates A5-506, refuted modulo 32009.
+  2026-11-15, function field: the y-degree-1 block script of A5-542 with `s2` a transcendental parameter over
+  GF(32009) runs in 24 min at 240 MB on one core (span module standard basis 495 s, block reductions 23 min) and
+  returns 32 generators in 11 blocks, the table of `s2 = 3567`. A 15-minute limit stops it inside the reductions,
+  and the block table prints only at the end, so a run that is cut returns no count.
+
+### Singular locus of the degree-11 component of the E8-bar fiber cone (plane and line, or a divisor)
+
+- Question and decisive outcome: the dimension and components of the singular locus of the minimal prime of
+  dimension 5 and degree 11 of the E8-bar quadric ideal over Q(i). Codimension 1 would make the component
+  non-normal; codimension 2 or more, with its Cohen-Macaulay property, makes it normal (ledger A5-503, A5-504).
+- Formulation: 25 quadrics in 12 variables in codimension 7. The full ideal of 7 x 7 Jacobian minors has
+  380,714,400 generators; `slocus` over Q(i) and modulo 32009, and the minors of nine dense combinations of the
+  quadrics modulo 32009, each ended with `no more memory` at a 20 GB address-space cap on the workstation. Chosen:
+  the route of A5-505, kept minors of the sparse quadrics for an outer bound, a decomposition of the bound, and the
+  Fitting ideal of the pruned Jacobian cokernel on each component, with a two-sided rank bound on every result.
+- Host and tool versions: an 84 GB cloud VM with 4 vCPUs shared with another session's four processes, Singular
+  4.4.1 from passagemath-singular 10.8.13 in a user-level environment, Python 3.14.7.
+- Launch line and environment: `e8_component_geometry.py` from a clone of this session at `origin/main` plus the
+  producer, in tmux with a full log and `/usr/bin/time -v`; scratch scripts before it under a 55 GB `ulimit -v` and
+  a 12 h `timeout`.
+- Runner and exit status: the producer's own `run_singular` (8 GiB address space, 3,600 s, exit status and `?`
+  lines checked, `RESULT done 1` required); the launcher appends `EXIT <status>` to the log.
+- Departures from the foundations: the VM was already allocated for other work under its standing run policy, so
+  this entry adds no VM case; the record was built on the VM and copied into the worktree, with the sha256 of the
+  producer and of its two inputs compared on both sides before the copy. The first build ran in the VM's shared
+  checkout, whose HEAD this session moved to `origin/main` without reading its state while another session's job
+  ran from it; the checkout stood at the other commit from 20:15:13 to 20:39:15 UTC before it was restored. The
+  rule that follows: a session clones its own tree on a shared machine and reads `git status`, the reflog and the
+  working directories of live processes before any checkout in a tree it did not create.
+- Parallelism: two Singular processes (one per basepoint) on 4 vCPUs that another session's job already filled.
+- Memory and time limits: none reached; peak resident set 135,464 kB.
+- Checkpoints: the log, the `.time` file and the record.
+- End state: record copied and checked with `--check`; the VM left running for its other user.
+- Outcome: 10 min 57 s for both basepoints in the first build beside another job, 5 min 43 s in the rebuild after
+  review (isolated singular parts kept; same values), 9 min 3 s for the build that adds the vertex space, the
+  scroll matrix and three tangent cones (A5-508, A5-509, A5-511) with the cones in a local ordering, and 6 min 25 s
+  for the committed record, which takes the cones in a global ordering by the deformation to the normal cone and
+  changes no value; a first exact pass in scratch took 3.7 s to bound the locus in
+  dimension 4 and 137 s to reach dimension 3. Result: a plane and a line (A5-504). Two traps are in A5-505: row
+  sets in arithmetic progression alone stall, and a cokernel multiplicity read inside a qring misreports the rank.

@@ -52,7 +52,7 @@ settings before its negative ones and lacked a `t = 0` arm, which its null
 re-test supplied, and the Tuna-17 kernel cancellation probe ran in
 +, -, +, - order at its larger angle, so that endpoint is withheld.
 The exact algebra is specified in `gororoba_quantum/cd_core.py`; selected
-statements are kernel-checked in Rocq (`proofs/`).
+statements are kernel-checked in Rocq (gororoba-math `rocq/quantum`).
 
 Hardware results so far (claim ids in the registry):
 

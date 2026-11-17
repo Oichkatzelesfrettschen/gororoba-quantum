@@ -164,8 +164,8 @@ status:
     exported declaration. Each listed declaration is kernel-checked by rocq
     check on the toolchain of its bundle's toolchain.txt, except
     proofs/TargetFlipN21.v, whose receipt is the compile and check tail in
-    docs/evidence/rocq_kaggle_replay/result.json under the toolchain of
-    ci/rocq_toolchain.pin. Every axioms list below is the theorem-specific
+    docs/evidence/rocq_kaggle_replay/result.json under the Rocq 9.3.0 toolchain
+    that file records. Every axioms list below is the theorem-specific
     Print Assumptions output; sources over nat, Z and Q close with no
     axioms, and the real-valued sources (the terminal-channel certificate
     and the real pair tower with its annihilator theorem) depend on the two

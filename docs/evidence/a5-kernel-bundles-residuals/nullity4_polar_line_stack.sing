@@ -1,0 +1,27 @@
+// Row modules of the stack of B and B D_1 of nullity4_polar_line_module.py over the ring of x = (s, v1, mu)
+// modulo the cone, with or without the slack 1 - w mu; tests/test_a5_nullity4_polar_line_stack.py writes it
+option(redSB);
+ring rpu = 0, (w, mu, v1, s), dp;
+qring qpu = std(ideal(s^2 + v1^2 + mu^2, 1 - w * mu));
+matrix Spu[14][8] = 0, s, v1, -mu, -mu, -v1, s, 0, -mu, -v1, s, 0, 0, -s, -v1, mu, -v1, mu, 0, s, -s, 0, -mu, -v1, v1, -mu, 0, -s, -s, 0, -mu, -v1, -mu, -v1, s, 0, 0, -s, -v1, mu, 0, -s, -v1, mu, mu, v1, -s, 0, -s, 0, -mu, -v1, v1, -mu, 0, -s, -mu, v1, -s, 0, 0, s, v1, mu, 0, s, v1, mu, mu, -v1, s, 0, s, 0, -mu, v1, -v1, -mu, 0, s, -s, 0, mu, -v1, -v1, -mu, 0, s, 0, s, v1, mu, mu, -v1, s, 0, mu, -v1, s, 0, 0, -s, -v1, -mu, -v1, -mu, 0, s, -s, 0, mu, -v1;
+module Gpu = std(module(transpose(Spu)));
+int fpu = size(reduce(freemodule(8), Gpu)) == 0;
+ring rpc = 0, (w, mu, v1, s), dp;
+qring qpc = std(ideal(s^2 + v1^2 + mu^2));
+matrix Spc[14][8] = 0, s, v1, -mu, -mu, -v1, s, 0, -mu, -v1, s, 0, 0, -s, -v1, mu, -v1, mu, 0, s, -s, 0, -mu, -v1, v1, -mu, 0, -s, -s, 0, -mu, -v1, -mu, -v1, s, 0, 0, -s, -v1, mu, 0, -s, -v1, mu, mu, v1, -s, 0, -s, 0, -mu, -v1, v1, -mu, 0, -s, -mu, v1, -s, 0, 0, s, v1, mu, 0, s, v1, mu, mu, -v1, s, 0, s, 0, -mu, v1, -v1, -mu, 0, s, -s, 0, mu, -v1, -v1, -mu, 0, s, 0, s, v1, mu, mu, -v1, s, 0, mu, -v1, s, 0, 0, -s, -v1, -mu, -v1, -mu, 0, s, -s, 0, mu, -v1;
+module Gpc = std(module(transpose(Spc)));
+int fpc = size(reduce(freemodule(8), Gpc)) == 0;
+print("stack sigma=1 unit_off_mu_zero=" + string(fpu) + " unit_without_saturation=" + string(fpc));
+ring rmu = 0, (w, mu, v1, s), dp;
+qring qmu = std(ideal(s^2 + v1^2 + mu^2, 1 - w * mu));
+matrix Smu[14][8] = 0, s, v1, -mu, mu, v1, -s, 0, -mu, -v1, s, 0, 0, s, v1, -mu, -v1, mu, 0, s, s, 0, mu, v1, -v1, mu, 0, s, -s, 0, -mu, -v1, mu, v1, -s, 0, 0, -s, -v1, mu, 0, s, v1, -mu, mu, v1, -s, 0, s, 0, mu, v1, v1, -mu, 0, -s, -mu, v1, -s, 0, 0, -s, -v1, -mu, 0, s, v1, mu, -mu, v1, -s, 0, s, 0, -mu, v1, v1, mu, 0, -s, s, 0, -mu, v1, -v1, -mu, 0, s, 0, -s, -v1, -mu, mu, -v1, s, 0, -mu, v1, -s, 0, 0, -s, -v1, -mu, v1, mu, 0, -s, -s, 0, mu, -v1;
+module Gmu = std(module(transpose(Smu)));
+int fmu = size(reduce(freemodule(8), Gmu)) == 0;
+ring rmc = 0, (w, mu, v1, s), dp;
+qring qmc = std(ideal(s^2 + v1^2 + mu^2));
+matrix Smc[14][8] = 0, s, v1, -mu, mu, v1, -s, 0, -mu, -v1, s, 0, 0, s, v1, -mu, -v1, mu, 0, s, s, 0, mu, v1, -v1, mu, 0, s, -s, 0, -mu, -v1, mu, v1, -s, 0, 0, -s, -v1, mu, 0, s, v1, -mu, mu, v1, -s, 0, s, 0, mu, v1, v1, -mu, 0, -s, -mu, v1, -s, 0, 0, -s, -v1, -mu, 0, s, v1, mu, -mu, v1, -s, 0, s, 0, -mu, v1, v1, mu, 0, -s, s, 0, -mu, v1, -v1, -mu, 0, s, 0, -s, -v1, -mu, mu, -v1, s, 0, -mu, v1, -s, 0, 0, -s, -v1, -mu, v1, mu, 0, -s, -s, 0, mu, -v1;
+module Gmc = std(module(transpose(Smc)));
+int fmc = size(reduce(freemodule(8), Gmc)) == 0;
+print("stack sigma=-1 unit_off_mu_zero=" + string(fmu) + " unit_without_saturation=" + string(fmc));
+print("MARKER DONE nullity4_polar_line_stack");
+quit;

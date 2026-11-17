@@ -5,6 +5,7 @@ from __future__ import annotations
 import functools
 import hashlib
 import json
+import os
 import re
 import sys
 from datetime import datetime
@@ -13,6 +14,7 @@ from typing import Any
 from urllib.parse import urlsplit
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
+import math_sources  # noqa: E402
 import parallel  # noqa: E402
 
 SCHEMA = "work-plan-v1"
@@ -88,6 +90,18 @@ def strings(value: Any, label: str) -> None:
 
 
 def local_path(root: Path, reference: str) -> Path:
+    """The file a reference names: a path under root, or a ``gororoba-math:rocq/quantum/NAME.v`` source of the
+    gororoba-math checkout that $GOROROBA_MATH names at the pin (gororoba_quantum/math_sources.py)."""
+    reference = math_sources.relocated_reference(reference, root) or reference
+    if reference.startswith(math_sources.REFERENCE_PREFIX):
+        require(
+            math_sources.REFERENCE_PATTERN.fullmatch(reference) is not None,
+            f"malformed gororoba-math reference: {reference}",
+        )
+        try:
+            return math_sources.resolve_reference(reference, math_sources.checkout(os.environ, root), root)
+        except math_sources.MathSourcesError as error:
+            raise ValueError(str(error)) from error
     path = PurePosixPath(reference.split("#", 1)[0])
     require(bool(path.parts) and not path.is_absolute() and ".." not in path.parts, "repository-relative path required")
     require(not str(path).startswith("docs/local/"), "ignored local planning sources need a retained successor")
@@ -96,8 +110,22 @@ def local_path(root: Path, reference: str) -> Path:
     return target
 
 
+def deferred(root: Path, value: str) -> bool:
+    """Whether a reference names a source of gororoba-math while GOROROBA_MATH is unset.
+
+    The file is unreadable then, so existence and digest checks leave the reference unchecked; the gates that declare
+    ``requires: ["gororoba-math"]`` (core-270, core-plan-tracker) skip without the checkout and never report a pass.
+    """
+    named = math_sources.relocated_reference(value, root) or value
+    return math_sources.REFERENCE_PATTERN.fullmatch(named) is not None and not os.environ.get(
+        math_sources.ENVIRONMENT_VARIABLE
+    )
+
+
 def reference(root: Path, value: str) -> None:
     text(value, "reference")
+    if deferred(root, value):
+        return
     if value.startswith("https://"):
         parsed = urlsplit(value)
         require(
@@ -216,7 +244,7 @@ def receipt_freshness(root: Path, plan: dict[str, Any]) -> list[str]:
         for evidence in newest["evidence"]:
             if evidence["ref"].startswith("https://"):
                 continue
-            if evidence_digest(root, evidence["ref"]) != evidence["sha256"]:
+            if not deferred(root, evidence["ref"]) and evidence_digest(root, evidence["ref"]) != evidence["sha256"]:
                 stale.append(f"{item['id']}: revalidation required for {evidence['ref']}")
     return sorted(set(stale))
 

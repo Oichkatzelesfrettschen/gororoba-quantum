@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-11-15T01:25:43+00:00",
+ "approval": "Submit to Tuna-17 now (owner, question tool, 2026-11-14)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "ccc750b92220c3e60e856f5c148be2383396c1c039339304ecdbbf40af33f06a",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 1,
+ "batch_job": 958286,
+ "project": 858393,
+ "shots": 131072,
+ "jobs": [
+  {
+   "file": "b0-rx-all-m20.cq",
+   "job": 1741790,
+   "sha256": "e77e43d805821e1ec11d324fea11ebf467e918768dad9d768b007e077648eec6"
+  },
+  {
+   "file": "b0-rx.cq",
+   "job": 1741791,
+   "sha256": "e1b6a989cd172da07f9c49f34afabaadc7ee5adfa2f21c6058e75b3be17cbead"
+  },
+  {
+   "file": "b0-rx-all-p20.cq",
+   "job": 1741792,
+   "sha256": "ff5a4145a06cd60c2e032380eaecd4ce560b1b36ed7c1d0c725f142ea51d7be1"
+  }
+ ],
+ "submitted_utc": "2026-11-15T01:25:43+00:00"
+}

@@ -1,0 +1,3146 @@
+[
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-00",
+  "file": "b0-rx-all-m10.cq",
+  "backend": "QX",
+  "shots": 2048,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "detected": false,
+   "whitened_rank": 5,
+   "log10_p": -0.2675,
+   "peak_power": 7.8584,
+   "cycles_per_shot": 0.020250787,
+   "cycles_per_shot_se": 6.82e-05,
+   "bits": {},
+   "block_log10_p_adjusted": 0.0
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.456,
+   "cycles_per_shot": 0.024390175,
+   "cycles_per_shot_se": 5.4e-05,
+   "whitened_rank": 5,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.00035548388671875
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-00",
+  "file": "b0-rx.cq",
+  "backend": "QX",
+  "shots": 2048,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "detected": false,
+   "whitened_rank": 5,
+   "log10_p": -0.6197,
+   "peak_power": 9.2191,
+   "cycles_per_shot": 0.019,
+   "cycles_per_shot_se": 6.27e-05,
+   "bits": {},
+   "block_log10_p_adjusted": 0.0
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.7015,
+   "cycles_per_shot": 0.016883446,
+   "cycles_per_shot_se": 5.26e-05,
+   "whitened_rank": 5,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.00037255712890625
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-00",
+  "file": "b0.cq",
+  "backend": "QX",
+  "shots": 2048,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "detected": false,
+   "whitened_rank": 5,
+   "log10_p": -0.923,
+   "peak_power": 10.311,
+   "cycles_per_shot": 0.020527803,
+   "cycles_per_shot_se": 5.93e-05,
+   "bits": {},
+   "block_log10_p_adjusted": -0.3216
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.7967,
+   "cycles_per_shot": 0.016869235,
+   "cycles_per_shot_se": 5.17e-05,
+   "whitened_rank": 5,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.00035019921875
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-01",
+  "file": "b0-rx-all-p10.cq",
+  "backend": "QX",
+  "shots": 2048,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "detected": false,
+   "whitened_rank": 5,
+   "log10_p": 0.0,
+   "peak_power": 5.9428,
+   "cycles_per_shot": 0.021,
+   "cycles_per_shot_se": 7.8e-05,
+   "bits": {},
+   "block_log10_p_adjusted": -0.05364
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -1.796,
+   "cycles_per_shot": 0.038184462,
+   "cycles_per_shot_se": 4.68e-05,
+   "whitened_rank": 5,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.00036183447265625
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-01",
+  "file": "b0-rx-q4-m10.cq",
+  "backend": "QX",
+  "shots": 2048,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "detected": false,
+   "whitened_rank": 5,
+   "log10_p": -0.274,
+   "peak_power": 7.885,
+   "cycles_per_shot": 0.019703242,
+   "cycles_per_shot_se": 6.76e-05,
+   "bits": {},
+   "block_log10_p_adjusted": -0.4243
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.7891,
+   "cycles_per_shot": 0.025213096,
+   "cycles_per_shot_se": 5.19e-05,
+   "whitened_rank": 5,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.00036519580078125
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-01",
+  "file": "b0-rx-q4-p10.cq",
+  "backend": "QX",
+  "shots": 2048,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "detected": false,
+   "whitened_rank": 5,
+   "log10_p": -1.086,
+   "peak_power": 10.877,
+   "cycles_per_shot": 0.01948272,
+   "cycles_per_shot_se": 5.77e-05,
+   "bits": {},
+   "block_log10_p_adjusted": -0.05215
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.5213,
+   "cycles_per_shot": 0.029958116,
+   "cycles_per_shot_se": 5.35e-05,
+   "whitened_rank": 5,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.00036143798828125
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-02",
+  "file": "b0-rx-all-m20.cq",
+  "backend": "QX",
+  "shots": 2048,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "detected": false,
+   "whitened_rank": 5,
+   "log10_p": -0.433,
+   "peak_power": 8.5129,
+   "cycles_per_shot": 0.019545404,
+   "cycles_per_shot_se": 6.52e-05,
+   "bits": {},
+   "block_log10_p_adjusted": -0.006188
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.5179,
+   "cycles_per_shot": 0.039673852,
+   "cycles_per_shot_se": 5.36e-05,
+   "whitened_rank": 5,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.00035194921875
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-02",
+  "file": "b0-rx-q8-m10.cq",
+  "backend": "QX",
+  "shots": 2048,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "detected": false,
+   "whitened_rank": 5,
+   "log10_p": -0.1261,
+   "peak_power": 7.2721,
+   "cycles_per_shot": 0.019,
+   "cycles_per_shot_se": 7.07e-05,
+   "bits": {},
+   "block_log10_p_adjusted": -0.2454
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.06392,
+   "cycles_per_shot": 0.026284468,
+   "cycles_per_shot_se": 5.72e-05,
+   "whitened_rank": 5,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0003742587890625
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-02",
+  "file": "b0-rx-q8-p10.cq",
+  "backend": "QX",
+  "shots": 2048,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "detected": false,
+   "whitened_rank": 5,
+   "log10_p": -0.4314,
+   "peak_power": 8.5068,
+   "cycles_per_shot": 0.019,
+   "cycles_per_shot_se": 6.53e-05,
+   "bits": {},
+   "block_log10_p_adjusted": -0.04946
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.8819,
+   "cycles_per_shot": 0.016833463,
+   "cycles_per_shot_se": 5.13e-05,
+   "whitened_rank": 5,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.00035094482421875
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-03",
+  "file": "b0-rx-all-p20.cq",
+  "backend": "QX",
+  "shots": 2048,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "detected": false,
+   "whitened_rank": 5,
+   "log10_p": -0.4338,
+   "peak_power": 8.5159,
+   "cycles_per_shot": 0.01943509,
+   "cycles_per_shot_se": 6.55e-05,
+   "bits": {},
+   "block_log10_p_adjusted": 0.0
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.8864,
+   "cycles_per_shot": 0.017281445,
+   "cycles_per_shot_se": 5.13e-05,
+   "whitened_rank": 5,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0003386943359375
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-00",
+  "file": "readout-0.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 12,
+   "log10_p": -0.7304,
+   "peak_power": 23.806,
+   "cycles_per_shot": 0.020337134,
+   "cycles_per_shot_se": 2.44e-06,
+   "bits": {},
+   "block_log10_p_adjusted": 0.0
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": 0.0,
+   "cycles_per_shot": 0.023606241,
+   "cycles_per_shot_se": 2.41e-06,
+   "whitened_rank": 12,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0006018620910644532
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-00",
+  "file": "readout-1.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 15,
+   "log10_p": -0.3775,
+   "peak_power": 26.363,
+   "cycles_per_shot": 0.019656458,
+   "cycles_per_shot_se": 2.32e-06,
+   "bits": {},
+   "block_log10_p_adjusted": -0.853
+  },
+  "secondary": {
+   "detected": true,
+   "log10_p": -13.08,
+   "cycles_per_shot": 0.021440145,
+   "cycles_per_shot_se": 1.4e-06,
+   "whitened_rank": 15,
+   "bits": {
+    "6": {
+     "first": 0.02767,
+     "phase": -2.88,
+     "second": 0.004534,
+     "third": 0.002597,
+     "se": 0.00289,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.000610660400390625
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-01",
+  "file": "b0-rx-all-m10.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": true,
+   "whitened_rank": 16,
+   "log10_p": -18.1,
+   "peak_power": 86.429,
+   "cycles_per_shot": 0.020111953,
+   "cycles_per_shot_se": 3.21e-07,
+   "bits": {
+    "4": {
+     "first": 0.01695,
+     "phase": -2.76,
+     "second": 0.004134,
+     "third": 0.003169,
+     "se": 0.00185,
+     "first_significant": true,
+     "second_significant": false
+    },
+    "8": {
+     "first": 0.01044,
+     "phase": -2.749,
+     "second": 0.0005852,
+     "third": 0.001233,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    },
+    "12": {
+     "first": 0.01009,
+     "phase": 0.3911,
+     "second": 0.003175,
+     "third": 0.0001913,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -9.587
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -5.14,
+   "cycles_per_shot": 0.020116125,
+   "cycles_per_shot_se": 5.03e-07,
+   "whitened_rank": 16,
+   "bits": {
+    "4": {
+     "first": 0.009963,
+     "phase": -2.804,
+     "second": 0.003945,
+     "third": 0.002178,
+     "se": 0.00185,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005301833267211914
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-01",
+  "file": "b0-rx-all-p10.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 16,
+   "log10_p": -5.599,
+   "peak_power": 49.422,
+   "cycles_per_shot": 0.020117719,
+   "cycles_per_shot_se": 4.23e-07,
+   "bits": {
+    "4": {
+     "first": 0.01166,
+     "phase": -2.215,
+     "second": 0.0006843,
+     "third": 0.0009186,
+     "se": 0.00194,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -74.46
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -1.865,
+   "cycles_per_shot": 0.020118181,
+   "cycles_per_shot_se": 4.27e-07,
+   "whitened_rank": 16,
+   "bits": {
+    "4": {
+     "first": 0.01166,
+     "phase": -2.19,
+     "second": 0.001285,
+     "third": 0.00139,
+     "se": 0.00194,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005060940628051758
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-01",
+  "file": "b0-rx.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "detected": true,
+   "whitened_rank": 15,
+   "log10_p": -6.293,
+   "peak_power": 49.943,
+   "cycles_per_shot": 0.020114019,
+   "cycles_per_shot_se": 4.21e-07,
+   "bits": {
+    "4": {
+     "first": 0.01288,
+     "phase": 1.858,
+     "second": 0.003458,
+     "third": 0.002318,
+     "se": 0.00194,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -11.16
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -4.322,
+   "cycles_per_shot": 0.020116808,
+   "cycles_per_shot_se": 4.98e-07,
+   "whitened_rank": 15,
+   "bits": {
+    "4": {
+     "first": 0.009753,
+     "phase": 1.903,
+     "second": 0.004159,
+     "third": 0.003023,
+     "se": 0.00194,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005248316802978516
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-02",
+  "file": "readout-0.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 13,
+   "log10_p": -0.498,
+   "peak_power": 24.216,
+   "cycles_per_shot": 0.020148837,
+   "cycles_per_shot_se": 2.42e-06,
+   "bits": {},
+   "block_log10_p_adjusted": -0.08287
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.5324,
+   "cycles_per_shot": 0.033053098,
+   "cycles_per_shot_se": 2.28e-06,
+   "whitened_rank": 13,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0005451183471679688
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-02",
+  "file": "readout-1.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 14,
+   "log10_p": -1.343,
+   "peak_power": 29.099,
+   "cycles_per_shot": 0.020785006,
+   "cycles_per_shot_se": 2.21e-06,
+   "bits": {},
+   "block_log10_p_adjusted": -0.2227
+  },
+  "secondary": {
+   "detected": true,
+   "log10_p": -12.09,
+   "cycles_per_shot": 0.021432978,
+   "cycles_per_shot_se": 1.45e-06,
+   "whitened_rank": 14,
+   "bits": {
+    "4": {
+     "first": 0.009994,
+     "phase": -2.718,
+     "second": 0.004565,
+     "third": 0.002217,
+     "se": 0.00186,
+     "first_significant": true,
+     "second_significant": false
+    },
+    "6": {
+     "first": 0.02137,
+     "phase": 0.9648,
+     "second": 0.003216,
+     "third": 0.003646,
+     "se": 0.00288,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005490111694335937
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-03",
+  "file": "b0-rx-q4-m10.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "detected": true,
+   "whitened_rank": 15,
+   "log10_p": -6.271,
+   "peak_power": 49.871,
+   "cycles_per_shot": 0.020115684,
+   "cycles_per_shot_se": 4.22e-07,
+   "bits": {
+    "4": {
+     "first": 0.01454,
+     "phase": 0.4956,
+     "second": 0.003349,
+     "third": 0.005863,
+     "se": 0.00189,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -5.305
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -5.004,
+   "cycles_per_shot": 0.020117422,
+   "cycles_per_shot_se": 4.54e-07,
+   "whitened_rank": 15,
+   "bits": {
+    "4": {
+     "first": 0.01303,
+     "phase": 0.4461,
+     "second": 0.003228,
+     "third": 0.002594,
+     "se": 0.00189,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005218549118041992
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-03",
+  "file": "b0-rx-q4-p10.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 15,
+   "log10_p": -0.461,
+   "peak_power": 29.355,
+   "cycles_per_shot": 0.019915941,
+   "cycles_per_shot_se": 5.49e-07,
+   "bits": {},
+   "block_log10_p_adjusted": -5.688
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.3416,
+   "cycles_per_shot": 0.039722652,
+   "cycles_per_shot_se": 8.79e-07,
+   "whitened_rank": 15,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0005291010665893555
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-03",
+  "file": "b0-rx.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 15,
+   "log10_p": -1.006,
+   "peak_power": 31.581,
+   "cycles_per_shot": 0.020950346,
+   "cycles_per_shot_se": 5.31e-07,
+   "bits": {},
+   "block_log10_p_adjusted": -2.662
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.3823,
+   "cycles_per_shot": 0.02730266,
+   "cycles_per_shot_se": 5.64e-07,
+   "whitened_rank": 15,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.000525893653869629
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-04",
+  "file": "readout-0.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 11,
+   "log10_p": -0.8751,
+   "peak_power": 22.964,
+   "cycles_per_shot": 0.020140763,
+   "cycles_per_shot_se": 2.48e-06,
+   "bits": {},
+   "block_log10_p_adjusted": -0.06993
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -1.306,
+   "cycles_per_shot": 0.03102785,
+   "cycles_per_shot_se": 2.26e-06,
+   "whitened_rank": 11,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0006274601745605468
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-04",
+  "file": "readout-1.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 14,
+   "log10_p": -1.456,
+   "peak_power": 29.55,
+   "cycles_per_shot": 0.01981346,
+   "cycles_per_shot_se": 2.19e-06,
+   "bits": {},
+   "block_log10_p_adjusted": -0.02362
+  },
+  "secondary": {
+   "detected": true,
+   "log10_p": -8.24,
+   "cycles_per_shot": 0.021443484,
+   "cycles_per_shot_se": 1.6e-06,
+   "whitened_rank": 14,
+   "bits": {
+    "6": {
+     "first": 0.02152,
+     "phase": 1.669,
+     "second": 0.006284,
+     "third": 0.004718,
+     "se": 0.00288,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005469505920410156
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-05",
+  "file": "b0-rx-q8-m10.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "detected": true,
+   "whitened_rank": 15,
+   "log10_p": -25.85,
+   "peak_power": 105.22,
+   "cycles_per_shot": 0.020110587,
+   "cycles_per_shot_se": 2.9e-07,
+   "bits": {
+    "4": {
+     "first": 0.02458,
+     "phase": -1.754,
+     "second": 0.002715,
+     "third": 0.005356,
+     "se": 0.00194,
+     "first_significant": true,
+     "second_significant": false
+    },
+    "12": {
+     "first": 0.01138,
+     "phase": 1.461,
+     "second": 0.0004239,
+     "third": 0.004804,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -9.193
+  },
+  "secondary": {
+   "detected": true,
+   "log10_p": -12.26,
+   "cycles_per_shot": 0.020110734,
+   "cycles_per_shot_se": 2.91e-07,
+   "whitened_rank": 15,
+   "bits": {
+    "4": {
+     "first": 0.02441,
+     "phase": -1.755,
+     "second": 0.00266,
+     "third": 0.005491,
+     "se": 0.00194,
+     "first_significant": true,
+     "second_significant": false
+    },
+    "12": {
+     "first": 0.01149,
+     "phase": 1.467,
+     "second": 0.0005298,
+     "third": 0.0044,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005102019119262696
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-05",
+  "file": "b0-rx-q8-p10.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 16,
+   "log10_p": -1.652,
+   "peak_power": 35.565,
+   "cycles_per_shot": 0.019106854,
+   "cycles_per_shot_se": 4.99e-07,
+   "bits": {},
+   "block_log10_p_adjusted": -15.56
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": 0.0,
+   "cycles_per_shot": 0.011131474,
+   "cycles_per_shot_se": 5.27e-07,
+   "whitened_rank": 16,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0005238918762207032
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-05",
+  "file": "b0-rx.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 15,
+   "log10_p": -0.309,
+   "peak_power": 28.712,
+   "cycles_per_shot": 0.020982231,
+   "cycles_per_shot_se": 5.57e-07,
+   "bits": {},
+   "block_log10_p_adjusted": -10.32
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": 0.0,
+   "cycles_per_shot": 0.028945733,
+   "cycles_per_shot_se": 7.2e-07,
+   "whitened_rank": 15,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0005311730804443359
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-06",
+  "file": "readout-0.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 12,
+   "log10_p": -0.4904,
+   "peak_power": 22.817,
+   "cycles_per_shot": 0.020243858,
+   "cycles_per_shot_se": 2.49e-06,
+   "bits": {},
+   "block_log10_p_adjusted": -1.235
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.6894,
+   "cycles_per_shot": 0.031239312,
+   "cycles_per_shot_se": 2.33e-06,
+   "whitened_rank": 12,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0006066293029785157
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-06",
+  "file": "readout-1.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 15,
+   "log10_p": -0.9277,
+   "peak_power": 28.79,
+   "cycles_per_shot": 0.019980723,
+   "cycles_per_shot_se": 2.22e-06,
+   "bits": {},
+   "block_log10_p_adjusted": 0.0
+  },
+  "secondary": {
+   "detected": true,
+   "log10_p": -13.04,
+   "cycles_per_shot": 0.021445488,
+   "cycles_per_shot_se": 1.42e-06,
+   "whitened_rank": 15,
+   "bits": {
+    "6": {
+     "first": 0.02102,
+     "phase": 1.076,
+     "second": 0.003158,
+     "third": 0.005522,
+     "se": 0.0029,
+     "first_significant": true,
+     "second_significant": false
+    },
+    "9": {
+     "first": 0.01007,
+     "phase": 0.8094,
+     "second": 0.002795,
+     "third": 0.005297,
+     "se": 0.00177,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005538395080566406
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-07",
+  "file": "b0-rx-all-m20.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "detected": true,
+   "whitened_rank": 15,
+   "log10_p": -38.84,
+   "peak_power": 139.0,
+   "cycles_per_shot": 0.020112788,
+   "cycles_per_shot_se": 2.52e-07,
+   "bits": {
+    "12": {
+     "first": 0.02919,
+     "phase": 0.7811,
+     "second": 0.0006253,
+     "third": 0.005609,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -0.768
+  },
+  "secondary": {
+   "detected": true,
+   "log10_p": -22.6,
+   "cycles_per_shot": 0.020117304,
+   "cycles_per_shot_se": 5.1e-07,
+   "whitened_rank": 15,
+   "bits": {
+    "12": {
+     "first": 0.01273,
+     "phase": 0.6653,
+     "second": 0.002247,
+     "third": 0.001569,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005071110000610351
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-07",
+  "file": "b0-rx-all-p20.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "detected": true,
+   "whitened_rank": 15,
+   "log10_p": -32.88,
+   "peak_power": 123.65,
+   "cycles_per_shot": 0.020119264,
+   "cycles_per_shot_se": 2.68e-07,
+   "bits": {
+    "4": {
+     "first": 0.02317,
+     "phase": -2.768,
+     "second": 0.002358,
+     "third": 0.006313,
+     "se": 0.00194,
+     "first_significant": true,
+     "second_significant": false
+    },
+    "8": {
+     "first": 0.01879,
+     "phase": 0.4292,
+     "second": 0.001872,
+     "third": 0.004813,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -25.94
+  },
+  "secondary": {
+   "detected": true,
+   "log10_p": -9.572,
+   "cycles_per_shot": 0.020123376,
+   "cycles_per_shot_se": 4.52e-07,
+   "whitened_rank": 15,
+   "bits": {
+    "4": {
+     "first": 0.01174,
+     "phase": -2.641,
+     "second": 0.004219,
+     "third": 0.002439,
+     "se": 0.00194,
+     "first_significant": true,
+     "second_significant": false
+    },
+    "8": {
+     "first": 0.01025,
+     "phase": 0.8865,
+     "second": 0.00464,
+     "third": 0.005179,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005316511535644531
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-07",
+  "file": "b0-rx.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 15,
+   "log10_p": -1.706,
+   "peak_power": 34.294,
+   "cycles_per_shot": 0.020123938,
+   "cycles_per_shot_se": 5.09e-07,
+   "bits": {},
+   "block_log10_p_adjusted": -3.095
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.1055,
+   "cycles_per_shot": 0.02012213,
+   "cycles_per_shot_se": 5.28e-07,
+   "whitened_rank": 15,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0005086763458251953
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-08",
+  "file": "readout-0.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 11,
+   "log10_p": 0.0,
+   "peak_power": 18.021,
+   "cycles_per_shot": 0.019545325,
+   "cycles_per_shot_se": 2.8e-06,
+   "bits": {},
+   "block_log10_p_adjusted": -0.671
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.4842,
+   "cycles_per_shot": 0.015271913,
+   "cycles_per_shot_se": 2.34e-06,
+   "whitened_rank": 11,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0006190213928222656
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-08",
+  "file": "readout-1.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 14,
+   "log10_p": -0.9813,
+   "peak_power": 27.63,
+   "cycles_per_shot": 0.019491256,
+   "cycles_per_shot_se": 2.26e-06,
+   "bits": {},
+   "block_log10_p_adjusted": -0.9246
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -5.451,
+   "cycles_per_shot": 0.021455297,
+   "cycles_per_shot_se": 1.73e-06,
+   "whitened_rank": 14,
+   "bits": {
+    "6": {
+     "first": 0.02121,
+     "phase": -0.9329,
+     "second": 0.002029,
+     "third": 0.005883,
+     "se": 0.00293,
+     "first_significant": true,
+     "second_significant": false
+    },
+    "9": {
+     "first": 0.00895,
+     "phase": -1.553,
+     "second": 0.002037,
+     "third": 0.0003568,
+     "se": 0.00175,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005509857788085937
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-09",
+  "file": "b0-repeat.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "detected": true,
+   "whitened_rank": 15,
+   "log10_p": -9.725,
+   "peak_power": 60.459,
+   "cycles_per_shot": 0.020115573,
+   "cycles_per_shot_se": 3.83e-07,
+   "bits": {
+    "4": {
+     "first": 0.01526,
+     "phase": 0.8017,
+     "second": 0.002321,
+     "third": 0.003371,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -0.628
+  },
+  "secondary": {
+   "detected": true,
+   "log10_p": -8.49,
+   "cycles_per_shot": 0.02011789,
+   "cycles_per_shot_se": 4.19e-07,
+   "whitened_rank": 15,
+   "bits": {
+    "4": {
+     "first": 0.01135,
+     "phase": 0.8819,
+     "second": 0.004172,
+     "third": 0.001081,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005065894165039062
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-09",
+  "file": "b0-rx.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 15,
+   "log10_p": -3.931,
+   "peak_power": 42.22,
+   "cycles_per_shot": 0.020111428,
+   "cycles_per_shot_se": 4.58e-07,
+   "bits": {
+    "4": {
+     "first": 0.01197,
+     "phase": -0.5404,
+     "second": 0.001998,
+     "third": 0.002517,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -0.9061
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -1.219,
+   "cycles_per_shot": 0.027700212,
+   "cycles_per_shot_se": 6.55e-07,
+   "whitened_rank": 15,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0005260732803344727
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-09",
+  "file": "b0.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 15,
+   "log10_p": -4.501,
+   "peak_power": 44.133,
+   "cycles_per_shot": 0.020109165,
+   "cycles_per_shot_se": 4.48e-07,
+   "bits": {
+    "4": {
+     "first": 0.01412,
+     "phase": 2.21,
+     "second": 0.003131,
+     "third": 0.002079,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -1.042
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -2.438,
+   "cycles_per_shot": 0.020110745,
+   "cycles_per_shot_se": 4.74e-07,
+   "whitened_rank": 15,
+   "bits": {
+    "4": {
+     "first": 0.0129,
+     "phase": 2.217,
+     "second": 0.00337,
+     "third": 0.002816,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005300721206665039
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-10",
+  "file": "readout-0.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 13,
+   "log10_p": -2.516,
+   "peak_power": 32.044,
+   "cycles_per_shot": 0.020402663,
+   "cycles_per_shot_se": 2.1e-06,
+   "bits": {},
+   "block_log10_p_adjusted": -0.2682
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -1.225,
+   "cycles_per_shot": 0.020404706,
+   "cycles_per_shot_se": 2.12e-06,
+   "whitened_rank": 13,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.00060994091796875
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-10",
+  "file": "readout-1.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 14,
+   "log10_p": -0.6211,
+   "peak_power": 26.106,
+   "cycles_per_shot": 0.01975857,
+   "cycles_per_shot_se": 2.33e-06,
+   "bits": {},
+   "block_log10_p_adjusted": -0.1721
+  },
+  "secondary": {
+   "detected": true,
+   "log10_p": -6.727,
+   "cycles_per_shot": 0.021450135,
+   "cycles_per_shot_se": 1.66e-06,
+   "whitened_rank": 14,
+   "bits": {
+    "6": {
+     "first": 0.02247,
+     "phase": 0.3563,
+     "second": 0.007811,
+     "third": 0.00219,
+     "se": 0.0029,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005514737854003906
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-11",
+  "file": "b0-rx-repeat.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 16,
+   "log10_p": -5.381,
+   "peak_power": 48.705,
+   "cycles_per_shot": 0.020115603,
+   "cycles_per_shot_se": 4.27e-07,
+   "bits": {
+    "4": {
+     "first": 0.01412,
+     "phase": 2.122,
+     "second": 0.002161,
+     "third": 0.007522,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -13.2
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -4.133,
+   "cycles_per_shot": 0.020117145,
+   "cycles_per_shot_se": 4.58e-07,
+   "whitened_rank": 16,
+   "bits": {
+    "4": {
+     "first": 0.01303,
+     "phase": 2.116,
+     "second": 0.002435,
+     "third": 0.007283,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005066340026855468
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-11",
+  "file": "b0-rx.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 16,
+   "log10_p": -1.485,
+   "peak_power": 34.914,
+   "cycles_per_shot": 0.020111867,
+   "cycles_per_shot_se": 5.04e-07,
+   "bits": {
+    "4": {
+     "first": 0.01014,
+     "phase": -0.0122,
+     "second": 0.002431,
+     "third": 0.003875,
+     "se": 0.00194,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -19.36
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.2082,
+   "cycles_per_shot": 0.028322401,
+   "cycles_per_shot_se": 7.73e-07,
+   "whitened_rank": 16,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0005172758483886719
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-11",
+  "file": "b0.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 15,
+   "log10_p": -4.962,
+   "peak_power": 45.654,
+   "cycles_per_shot": 0.020115142,
+   "cycles_per_shot_se": 4.41e-07,
+   "bits": {
+    "4": {
+     "first": 0.01357,
+     "phase": 0.2501,
+     "second": 0.003418,
+     "third": 0.003134,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -0.1132
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -3.791,
+   "cycles_per_shot": 0.02011742,
+   "cycles_per_shot_se": 4.94e-07,
+   "whitened_rank": 15,
+   "bits": {
+    "4": {
+     "first": 0.01206,
+     "phase": 0.4131,
+     "second": 0.003458,
+     "third": 0.00207,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005264134750366211
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-12",
+  "file": "readout-0.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 12,
+   "log10_p": -0.9967,
+   "peak_power": 24.871,
+   "cycles_per_shot": 0.020125637,
+   "cycles_per_shot_se": 2.39e-06,
+   "bits": {},
+   "block_log10_p_adjusted": 0.0
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.6894,
+   "cycles_per_shot": 0.035371074,
+   "cycles_per_shot_se": 2.38e-06,
+   "whitened_rank": 12,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0006161317138671875
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-12",
+  "file": "readout-1.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 15,
+   "log10_p": -0.1446,
+   "peak_power": 25.276,
+   "cycles_per_shot": 0.020141997,
+   "cycles_per_shot_se": 2.37e-06,
+   "bits": {},
+   "block_log10_p_adjusted": -0.1085
+  },
+  "secondary": {
+   "detected": true,
+   "log10_p": -15.82,
+   "cycles_per_shot": 0.021451451,
+   "cycles_per_shot_se": 1.35e-06,
+   "whitened_rank": 15,
+   "bits": {
+    "6": {
+     "first": 0.02613,
+     "phase": 1.046,
+     "second": 0.006275,
+     "third": 0.003552,
+     "se": 0.00291,
+     "first_significant": true,
+     "second_significant": false
+    },
+    "9": {
+     "first": 0.009261,
+     "phase": 0.7298,
+     "second": 0.001823,
+     "third": 0.001115,
+     "se": 0.00175,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005452888488769531
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-13",
+  "file": "b0-rx-all-m20.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": true,
+   "whitened_rank": 16,
+   "log10_p": -42.2,
+   "peak_power": 150.12,
+   "cycles_per_shot": 0.020117304,
+   "cycles_per_shot_se": 2.43e-07,
+   "bits": {
+    "4": {
+     "first": 0.01189,
+     "phase": -0.5888,
+     "second": 0.001995,
+     "third": 0.002809,
+     "se": 0.00182,
+     "first_significant": true,
+     "second_significant": false
+    },
+    "12": {
+     "first": 0.02771,
+     "phase": 2.694,
+     "second": 0.001338,
+     "third": 0.001321,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -3.475
+  },
+  "secondary": {
+   "detected": true,
+   "log10_p": -31.04,
+   "cycles_per_shot": 0.02011786,
+   "cycles_per_shot_se": 2.46e-07,
+   "whitened_rank": 16,
+   "bits": {
+    "4": {
+     "first": 0.01124,
+     "phase": -0.6067,
+     "second": 0.002421,
+     "third": 0.001789,
+     "se": 0.00182,
+     "first_significant": true,
+     "second_significant": false
+    },
+    "12": {
+     "first": 0.02744,
+     "phase": 2.694,
+     "second": 0.001123,
+     "third": 0.001521,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005068161392211914
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-13",
+  "file": "b0-rx-all-p20.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "detected": true,
+   "whitened_rank": 15,
+   "log10_p": -45.65,
+   "peak_power": 156.31,
+   "cycles_per_shot": 0.020124413,
+   "cycles_per_shot_se": 2.38e-07,
+   "bits": {
+    "4": {
+     "first": 0.02754,
+     "phase": 0.2314,
+     "second": 0.001905,
+     "third": 0.005707,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    },
+    "8": {
+     "first": 0.02118,
+     "phase": -2.927,
+     "second": 0.002522,
+     "third": 0.0002973,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -11.18
+  },
+  "secondary": {
+   "detected": true,
+   "log10_p": -35.82,
+   "cycles_per_shot": 0.02012513,
+   "cycles_per_shot_se": 2.44e-07,
+   "whitened_rank": 15,
+   "bits": {
+    "4": {
+     "first": 0.02709,
+     "phase": 0.2319,
+     "second": 0.002048,
+     "third": 0.004615,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    },
+    "8": {
+     "first": 0.02044,
+     "phase": -2.934,
+     "second": 0.002169,
+     "third": 0.0006811,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005308092575073242
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-13",
+  "file": "b0-rx.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 16,
+   "log10_p": -3.129,
+   "peak_power": 41.025,
+   "cycles_per_shot": 0.02012226,
+   "cycles_per_shot_se": 4.65e-07,
+   "bits": {
+    "4": {
+     "first": 0.01235,
+     "phase": -3.051,
+     "second": 0.003185,
+     "third": 0.003011,
+     "se": 0.00194,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -2.506
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -1.862,
+   "cycles_per_shot": 0.020124948,
+   "cycles_per_shot_se": 5.71e-07,
+   "whitened_rank": 16,
+   "bits": {
+    "4": {
+     "first": 0.009736,
+     "phase": -3.091,
+     "second": 0.0002286,
+     "third": 0.001732,
+     "se": 0.00194,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005241543273925781
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-14",
+  "file": "readout-0.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 12,
+   "log10_p": -0.8381,
+   "peak_power": 24.241,
+   "cycles_per_shot": 0.019803815,
+   "cycles_per_shot_se": 2.42e-06,
+   "bits": {},
+   "block_log10_p_adjusted": -0.2774
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -1.296,
+   "cycles_per_shot": 0.030393438,
+   "cycles_per_shot_se": 2.22e-06,
+   "whitened_rank": 12,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0006085423583984374
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-14",
+  "file": "readout-1.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 15,
+   "log10_p": -0.5236,
+   "peak_power": 27.026,
+   "cycles_per_shot": 0.020389366,
+   "cycles_per_shot_se": 2.29e-06,
+   "bits": {},
+   "block_log10_p_adjusted": -0.888
+  },
+  "secondary": {
+   "detected": true,
+   "log10_p": -12.43,
+   "cycles_per_shot": 0.021439364,
+   "cycles_per_shot_se": 1.43e-06,
+   "whitened_rank": 15,
+   "bits": {
+    "4": {
+     "first": 0.008922,
+     "phase": -1.53,
+     "second": 0.001502,
+     "third": 0.0006744,
+     "se": 0.0015,
+     "first_significant": true,
+     "second_significant": false
+    },
+    "6": {
+     "first": 0.02144,
+     "phase": 2.287,
+     "second": 0.008919,
+     "third": 0.003308,
+     "se": 0.00289,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005543253784179688
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-15",
+  "file": "b0-rx-q8-m10.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": true,
+   "whitened_rank": 16,
+   "log10_p": -19.37,
+   "peak_power": 89.948,
+   "cycles_per_shot": 0.020118392,
+   "cycles_per_shot_se": 3.14e-07,
+   "bits": {
+    "4": {
+     "first": 0.02114,
+     "phase": 1.08,
+     "second": 0.003731,
+     "third": 0.005887,
+     "se": 0.00194,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -0.9217
+  },
+  "secondary": {
+   "detected": true,
+   "log10_p": -6.175,
+   "cycles_per_shot": 0.020117477,
+   "cycles_per_shot_se": 3.17e-07,
+   "whitened_rank": 16,
+   "bits": {
+    "4": {
+     "first": 0.02095,
+     "phase": 1.073,
+     "second": 0.005158,
+     "third": 0.004286,
+     "se": 0.00194,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.000508239730834961
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-15",
+  "file": "b0-rx-q8-p10.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 16,
+   "log10_p": -0.7688,
+   "peak_power": 32.034,
+   "cycles_per_shot": 0.020122156,
+   "cycles_per_shot_se": 5.26e-07,
+   "bits": {},
+   "block_log10_p_adjusted": -2.586
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": 0.0,
+   "cycles_per_shot": 0.027436254,
+   "cycles_per_shot_se": 6.25e-07,
+   "whitened_rank": 16,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0005325456771850586
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-15",
+  "file": "b0-rx.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 16,
+   "log10_p": -0.4035,
+   "peak_power": 30.49,
+   "cycles_per_shot": 0.02009688,
+   "cycles_per_shot_se": 5.39e-07,
+   "bits": {},
+   "block_log10_p_adjusted": -2.669
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.4052,
+   "cycles_per_shot": 0.030137888,
+   "cycles_per_shot_se": 6.33e-07,
+   "whitened_rank": 16,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0005064609756469726
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-16",
+  "file": "readout-0.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 12,
+   "log10_p": -0.09336,
+   "peak_power": 21.105,
+   "cycles_per_shot": 0.02051943,
+   "cycles_per_shot_se": 2.59e-06,
+   "bits": {},
+   "block_log10_p_adjusted": 0.0
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.4264,
+   "cycles_per_shot": 0.016774492,
+   "cycles_per_shot_se": 2.27e-06,
+   "whitened_rank": 12,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0005402573547363281
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-16",
+  "file": "readout-1.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 15,
+   "log10_p": -0.3149,
+   "peak_power": 26.075,
+   "cycles_per_shot": 0.020207936,
+   "cycles_per_shot_se": 2.33e-06,
+   "bits": {},
+   "block_log10_p_adjusted": 0.0
+  },
+  "secondary": {
+   "detected": true,
+   "log10_p": -11.37,
+   "cycles_per_shot": 0.021436434,
+   "cycles_per_shot_se": 1.47e-06,
+   "whitened_rank": 15,
+   "bits": {
+    "6": {
+     "first": 0.02277,
+     "phase": 0.9004,
+     "second": 0.003973,
+     "third": 0.003821,
+     "se": 0.00293,
+     "first_significant": true,
+     "second_significant": false
+    },
+    "9": {
+     "first": 0.009559,
+     "phase": 0.2458,
+     "second": 0.003444,
+     "third": 0.003989,
+     "se": 0.00172,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005597415771484375
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-17",
+  "file": "b0-rx-q4-m10.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": true,
+   "whitened_rank": 16,
+   "log10_p": -9.214,
+   "peak_power": 60.772,
+   "cycles_per_shot": 0.020105805,
+   "cycles_per_shot_se": 3.82e-07,
+   "bits": {
+    "4": {
+     "first": 0.01669,
+     "phase": -0.05285,
+     "second": 0.001332,
+     "third": 0.0004715,
+     "se": 0.0019,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -7.003
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -4.731,
+   "cycles_per_shot": 0.020110427,
+   "cycles_per_shot_se": 6.49e-07,
+   "whitened_rank": 16,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0005078021850585938
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-17",
+  "file": "b0-rx-q4-p10.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 16,
+   "log10_p": -0.5181,
+   "peak_power": 30.981,
+   "cycles_per_shot": 0.020824178,
+   "cycles_per_shot_se": 5.36e-07,
+   "bits": {},
+   "block_log10_p_adjusted": -28.45
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": 0.0,
+   "cycles_per_shot": 0.025263696,
+   "cycles_per_shot_se": 6.45e-07,
+   "whitened_rank": 16,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0005451156768798829
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-17",
+  "file": "b0-rx.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 16,
+   "log10_p": -4.164,
+   "peak_power": 44.632,
+   "cycles_per_shot": 0.020118703,
+   "cycles_per_shot_se": 4.45e-07,
+   "bits": {
+    "4": {
+     "first": 0.01414,
+     "phase": -2.128,
+     "second": 0.002564,
+     "third": 0.002549,
+     "se": 0.00194,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -15.0
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": 0.0,
+   "cycles_per_shot": 0.020717484,
+   "cycles_per_shot_se": 5.42e-07,
+   "whitened_rank": 16,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0005092307739257813
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-18",
+  "file": "readout-0.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 12,
+   "log10_p": -1.3,
+   "peak_power": 26.051,
+   "cycles_per_shot": 0.019558835,
+   "cycles_per_shot_se": 2.33e-06,
+   "bits": {},
+   "block_log10_p_adjusted": -0.11
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.3366,
+   "cycles_per_shot": 0.016203597,
+   "cycles_per_shot_se": 2.3e-06,
+   "whitened_rank": 12,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0006134935913085938
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-18",
+  "file": "readout-1.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 15,
+   "log10_p": -0.6616,
+   "peak_power": 27.638,
+   "cycles_per_shot": 0.019951333,
+   "cycles_per_shot_se": 2.26e-06,
+   "bits": {},
+   "block_log10_p_adjusted": -0.4969
+  },
+  "secondary": {
+   "detected": true,
+   "log10_p": -6.948,
+   "cycles_per_shot": 0.021438439,
+   "cycles_per_shot_se": 1.64e-06,
+   "whitened_rank": 15,
+   "bits": {
+    "6": {
+     "first": 0.01976,
+     "phase": -2.05,
+     "second": 0.004994,
+     "third": 0.001073,
+     "se": 0.00289,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005459959716796875
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-19",
+  "file": "b0-rx-all-m10.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": true,
+   "whitened_rank": 16,
+   "log10_p": -28.99,
+   "peak_power": 115.84,
+   "cycles_per_shot": 0.02011227,
+   "cycles_per_shot_se": 2.77e-07,
+   "bits": {
+    "4": {
+     "first": 0.02389,
+     "phase": -0.7825,
+     "second": 0.005507,
+     "third": 0.007239,
+     "se": 0.00189,
+     "first_significant": true,
+     "second_significant": false
+    },
+    "12": {
+     "first": 0.01216,
+     "phase": 2.686,
+     "second": 0.001332,
+     "third": 0.003926,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -9.464
+  },
+  "secondary": {
+   "detected": true,
+   "log10_p": -12.76,
+   "cycles_per_shot": 0.020116513,
+   "cycles_per_shot_se": 4.57e-07,
+   "whitened_rank": 16,
+   "bits": {
+    "4": {
+     "first": 0.01099,
+     "phase": -0.6273,
+     "second": 0.002318,
+     "third": 0.001919,
+     "se": 0.00189,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005064754791259766
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-19",
+  "file": "b0-rx-all-p10.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": true,
+   "whitened_rank": 16,
+   "log10_p": -8.257,
+   "peak_power": 57.843,
+   "cycles_per_shot": 0.020114685,
+   "cycles_per_shot_se": 3.91e-07,
+   "bits": {
+    "4": {
+     "first": 0.01258,
+     "phase": 1.052,
+     "second": 0.0004408,
+     "third": 0.0009514,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    },
+    "8": {
+     "first": 0.0127,
+     "phase": -1.858,
+     "second": 0.004052,
+     "third": 0.003838,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   },
+   "block_log10_p_adjusted": -28.05
+  },
+  "secondary": {
+   "detected": true,
+   "log10_p": -6.853,
+   "cycles_per_shot": 0.020117649,
+   "cycles_per_shot_se": 4.95e-07,
+   "whitened_rank": 16,
+   "bits": {
+    "4": {
+     "first": 0.01082,
+     "phase": 1.129,
+     "second": 0.0009388,
+     "third": 0.002337,
+     "se": 0.00195,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005314316177368164
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-19",
+  "file": "b0-rx.cq",
+  "backend": "Tuna-17",
+  "shots": 131072,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 16,
+   "log10_p": -2.235,
+   "peak_power": 37.774,
+   "cycles_per_shot": 0.019634102,
+   "cycles_per_shot_se": 4.84e-07,
+   "bits": {},
+   "block_log10_p_adjusted": -13.88
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.7554,
+   "cycles_per_shot": 0.019637184,
+   "cycles_per_shot_se": 5.43e-07,
+   "whitened_rank": 16,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0005258078460693359
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-20",
+  "file": "readout-0.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 12,
+   "log10_p": -0.4732,
+   "peak_power": 22.744,
+   "cycles_per_shot": 0.019679684,
+   "cycles_per_shot_se": 2.49e-06,
+   "bits": {},
+   "block_log10_p_adjusted": 0.0
+  },
+  "secondary": {
+   "detected": false,
+   "log10_p": -0.3739,
+   "cycles_per_shot": 0.03013768,
+   "cycles_per_shot_se": 2.34e-06,
+   "whitened_rank": 12,
+   "bits": {}
+  },
+  "exec_seconds_per_shot": 0.0005442778930664062
+ },
+ {
+  "run": "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-20",
+  "file": "readout-1.cq",
+  "backend": "Tuna-17",
+  "shots": 32768,
+  "primary": {
+   "bits_scanned": [
+    0,
+    1,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "detected": false,
+   "whitened_rank": 15,
+   "log10_p": -0.08169,
+   "peak_power": 24.975,
+   "cycles_per_shot": 0.020256011,
+   "cycles_per_shot_se": 2.38e-06,
+   "bits": {},
+   "block_log10_p_adjusted": -0.03716
+  },
+  "secondary": {
+   "detected": true,
+   "log10_p": -13.93,
+   "cycles_per_shot": 0.021435255,
+   "cycles_per_shot_se": 1.39e-06,
+   "whitened_rank": 15,
+   "bits": {
+    "4": {
+     "first": 0.008186,
+     "phase": -0.4669,
+     "second": 0.001875,
+     "third": 0.005428,
+     "se": 0.00154,
+     "first_significant": true,
+     "second_significant": false
+    },
+    "6": {
+     "first": 0.02627,
+     "phase": -2.9,
+     "second": 0.001583,
+     "third": 0.002946,
+     "se": 0.00291,
+     "first_significant": true,
+     "second_significant": false
+    }
+   }
+  },
+  "exec_seconds_per_shot": 0.0005458146667480469
+ }
+]

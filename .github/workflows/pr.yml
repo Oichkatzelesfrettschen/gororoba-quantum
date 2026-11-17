@@ -3,8 +3,8 @@ name: pr
 # Pull-request regression checks of the repository's own code through
 # ci/pr_checks.sh: Ruff, mypy and the pytest suite with the audit marker
 # deselected (pyproject.toml), its contract suites in a parallel job. The gates of ci/gates.json (record replays,
-# digest and source checks, research-script runs) run on demand, and
-# proofs.yml compiles a proof change. A job or step that reaches its timeout fails.
+# digest and source checks, research-script runs) run on demand, and no workflow compiles Rocq.
+# A job or step that reaches its timeout fails.
 # workflow_dispatch serves a pull request that GITHUB_TOKEN opened, whose
 # pull_request event starts no workflow; check runs attach to the dispatched
 # commit, which is that pull request's head.
@@ -30,7 +30,8 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
-        # The W8 N = 16 export tables (235 MB, docs/evidence/a5-exceptional-fibers/w8-n16-azure/README.md) are
+        # The W8 N = 16 export tables (235 MB, docs/evidence/a5-exceptional-fibers/w8-n16-azure/README.md) and the
+        # E8-bar and W8 products files at 32057 (473 MiB, docs/evidence/a5-exceptional-fibers/third-prime/README.md) are
         # evidence no check reads; leaving their blobs unfetched keeps checkout inside each job's limit.
         with:
           filter: blob:none
@@ -40,6 +41,8 @@ jobs:
             !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/q[BM]*.txt
             !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/qM7.txt.part*
             !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/s.txt
+            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/sq.txt.part*
+            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/nf-d2.txt*
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
         with:
           python-version: "3.14.7"
@@ -56,7 +59,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
-        # The W8 N = 16 export tables (235 MB, docs/evidence/a5-exceptional-fibers/w8-n16-azure/README.md) are
+        # The W8 N = 16 export tables (235 MB, docs/evidence/a5-exceptional-fibers/w8-n16-azure/README.md) and the
+        # E8-bar and W8 products files at 32057 (473 MiB, docs/evidence/a5-exceptional-fibers/third-prime/README.md) are
         # evidence no check reads; leaving their blobs unfetched keeps checkout inside each job's limit.
         with:
           filter: blob:none
@@ -66,6 +70,8 @@ jobs:
             !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/q[BM]*.txt
             !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/qM7.txt.part*
             !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/s.txt
+            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/sq.txt.part*
+            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/nf-d2.txt*
       - uses: ./.github/actions/pins-venv
       - name: mypy
         timeout-minutes: 4
@@ -77,7 +83,8 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
-        # The W8 N = 16 export tables (235 MB, docs/evidence/a5-exceptional-fibers/w8-n16-azure/README.md) are
+        # The W8 N = 16 export tables (235 MB, docs/evidence/a5-exceptional-fibers/w8-n16-azure/README.md) and the
+        # E8-bar and W8 products files at 32057 (473 MiB, docs/evidence/a5-exceptional-fibers/third-prime/README.md) are
         # evidence no check reads; leaving their blobs unfetched keeps checkout inside each job's limit.
         with:
           filter: blob:none
@@ -87,6 +94,8 @@ jobs:
             !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/q[BM]*.txt
             !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/qM7.txt.part*
             !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/s.txt
+            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/sq.txt.part*
+            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/nf-d2.txt*
       - uses: ./.github/actions/pins-venv
       # ci/seed_provenance.py compares the reproduction-seed baseline with main's.
       - name: Fetch main
@@ -113,7 +122,8 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
-        # The W8 N = 16 export tables (235 MB, docs/evidence/a5-exceptional-fibers/w8-n16-azure/README.md) are
+        # The W8 N = 16 export tables (235 MB, docs/evidence/a5-exceptional-fibers/w8-n16-azure/README.md) and the
+        # E8-bar and W8 products files at 32057 (473 MiB, docs/evidence/a5-exceptional-fibers/third-prime/README.md) are
         # evidence no check reads; leaving their blobs unfetched keeps checkout inside each job's limit.
         with:
           filter: blob:none
@@ -123,6 +133,8 @@ jobs:
             !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/q[BM]*.txt
             !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/qM7.txt.part*
             !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/s.txt
+            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/sq.txt.part*
+            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/nf-d2.txt*
       - uses: ./.github/actions/pins-venv
       - name: pytest
         timeout-minutes: 5
@@ -149,7 +161,8 @@ jobs:
         runner: [ubuntu-26.04-arm, macos-15]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
-        # The W8 N = 16 export tables (235 MB, docs/evidence/a5-exceptional-fibers/w8-n16-azure/README.md) are
+        # The W8 N = 16 export tables (235 MB, docs/evidence/a5-exceptional-fibers/w8-n16-azure/README.md) and the
+        # E8-bar and W8 products files at 32057 (473 MiB, docs/evidence/a5-exceptional-fibers/third-prime/README.md) are
         # evidence no check reads; leaving their blobs unfetched keeps checkout inside each job's limit.
         with:
           filter: blob:none
@@ -159,6 +172,8 @@ jobs:
             !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/q[BM]*.txt
             !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/qM7.txt.part*
             !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/s.txt
+            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/sq.txt.part*
+            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/nf-d2.txt*
       - uses: ./.github/actions/pins-venv
       # ci/pr_checks.sh holds its shared lock with flock, and the scripts under test call GNU timeout and the GNU
       # forms of the coreutils; macOS ships neither, so Homebrew's flock and coreutils supply them. gnubin joins

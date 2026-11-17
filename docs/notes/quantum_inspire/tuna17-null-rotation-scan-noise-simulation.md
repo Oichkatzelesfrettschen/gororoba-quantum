@@ -1,0 +1,191 @@
+# Tuna-17 injected-rotation scan under physical noise: simulation case
+
+Status: numerical simulation on Kaggle, run under the standing approval for Kaggle sessions below 12 hours (root
+AGENTS.md, "Hardware services"). It submits nothing to Quantum Inspire. Entry:
+`scripts/qi_pathion_null_rotation_scan_noise.py`. Subject: the written case
+[pathion_null_rotation_scan_tuna_17](../../../results/quantum_inspire/cases/pathion_null_rotation_scan_tuna_17/CASE.md).
+
+## What the run measures
+
+The written case's operating characteristics draw each truth from a noise model its fit contains, admit every
+batch and leave the bridge out. This run draws whole series of counts from gate noise and reads each one with the
+case's own decision (`count_statistics`, `decide`, `outcome` of
+`scripts/qi_pathion_null_rotation_scan_cases.py`), through the readout guard, the bridge and the per-batch fit:
+
+- five one-parameter noise families on the five region qubits (two-qubit depolarizing per CZ, phase damping per
+  pulse, phase damping per CZ, amplitude damping per CZ, amplitude with phase damping on pulses and CZ), each set
+  to the center-arm visibility 0.44 of the retained b0 runs;
+- per family the planted truths: no offset; every root of an x rotation on all pulses and on q8's pulses, of a y and
+  of a z rotation on all pulses, and of an amplitude scale on every pulse angle, each at center contrast +0.0164; a
+  selector flip conditioned on q12 and a selector dropout conditioned on the coin at that contrast; a CZ
+  conditional-phase error of -0.08 and +0.08 rad;
+- three regimes per truth. `stable`: the mean retained bracket rates held fixed, the fit carrying all five
+  families. `retained_walk`: the readout walks through the sixteen retained brackets of the one-CZ series in
+  recorded order (q11's e10 moves between 0.03 and 0.43 there), same fit. `stable_family_left_out`: stable
+  readout, and the fit carries the four families other than the one the truth was drawn from, so the truth's
+  noise is absent from the fit's noise models;
+- 12 series per family, truth and regime at the case's shots (131,072 per data circuit, 32,768 per readout
+  circuit), all 21 batches.
+
+Cross-checks inside the kernel: the noisy laws against Qiskit Aer's density-matrix method on the T4
+(`GOROROBA_AER_DEVICE=GPU`), and the ten circuits of the QX twin on qxelarator 0.10.0 at 131,072 shots against
+their `ideal` laws.
+
+## Scan set
+
+The earlier scan set (all pulses at +-5 and +-10 degrees, q8's pulses at +-5 and +-10 degrees) was read by a fit
+of two contractions. Under amplitude damping per CZ its expected-value labels read a y and a z rotation as
+`pulse_x` (at -0.0727 rad, that computation's sizing of the center contrast +0.0164). With the damping family in the fit the labels turn undecided: a y rotation at
+-0.0711 rad (the case's sizing at the design readout) and an x rotation of q8's pulses differ by a chi-square of
+15 at expected values, below the separation of 25. The shot-level run sizes the same truth at -0.0716 rad
+(visibility 0.44 through the mean retained brackets).
+
+Two repairs follow. The fit carries the five gate-noise families as noise models beside its 13 contraction shares
+(`noise_models` in the scan module). The scan set is chosen among five candidates of four scan kinds each by
+expected-value decisions under seven noise truths (95 planted truths), once with every family in the fit and once with the truth's own
+family left out (67 planted truths). The gap is the smallest chi-square distance between a truth's class and the
+nearest other class; a decision needs 25.
+
+| Scan set | Undecided of 95 | Smallest gap | Undecided of 67, family left out | Smallest gap, family left out |
+|---|---|---|---|---|
+| all +-5, q8 +-5, q8 +-10, all +-10 (earlier set) | 4 | 10.4 | 3 | 13.4 |
+| all +-5, all +-15, q8 +-10, all +-10 | 0 | 28.2 | 2 | 16.6 |
+| all +-5, q4 +-10, q8 +-10, all +-10 | 3 | 9.7 | 2 | 16.3 |
+| all +-5, q8 +-15, q8 +-10, all +-10 | 3 | 10.5 | 2 | 8.7 |
+| all +-10, q4 +-10, q8 +-10, all +-20 (adopted) | 0 | 55.1 | 0 | 50.3 |
+
+No candidate reads a wrong class at expected values. Every candidate holds four scan kinds, so the
+batch count stays at 21. The adopted set's +-20 degree arms lean on the premise that `Rx(pi/2 + k pi/36)` is
+the X90 pulse at a scaled amplitude, which the bridge tests at k = 0 only.
+
+## Falsifiers
+
+- A truth whose class the decision names wrongly in more than 1 of 12 series, in any regime, falsifies the case's
+  statement that no simulated run reads a class other than its truth's, for that noise family. Over one family and
+  regime (about 17 truths, 204 series) more than 3 wrong series falsify it as well.
+- A `stable` scenario whose x truth on all pulses reads `pulse_x` in fewer than 10 of 12 series falsifies the
+  case's operating-characteristic row (at least 0.9983) for that family.
+- A `retained_walk` regime in which fewer than half of the series admit all eight scan batches and both bridge
+  batches falsifies the guard and bracket layout as a workable design at the retained readout behavior.
+- A `stable_family_left_out` scenario may read `unresolved_none`: the adequacy limit refuses a fit whose noise
+  models miss the truth's noise. A wrong class there, under the first falsifier's count, shows that the limit
+  fails to protect the decision against a noise family outside the fit.
+
+Measured on the build host before the push, four series per regime under amplitude damping per CZ: no offset reads
+`offset_absent` in 12 of 12; a y rotation at -0.0716 rad reads `pulse_other` in 4 (stable), 3 (walk, one
+`unresolved_bridge`) and 2 (family left out, two `unresolved_none`); a y rotation at +0.0621 rad reads
+`pulse_other` in 4, 4 and 3 (one `unresolved_none`). The `unresolved_bridge` series holds two bridge differences
+of -2.1 and -2.3 standard errors, whose pooled value passes 3; the bridge rule refuses 7 of 2,000 walk series
+drawn with equal `Rx(pi/2)` and `X90` laws (0.35 percent).
+
+## Result
+
+Record: `results/kaggle/2026-11-14T043839Z-gororoba-null-rotation-scan-gate-noise-fit` (schema
+`qi-pathion-null-rotation-scan-noise-v2`, kernel wall time 39,186 s of the 39,600 s limit). It holds 80 scenarios
+(16 truths in each of five families), 2,880 series, 192 per family and regime; the falsifiers and the time budget,
+written before the run, estimated 17 truths, 204 series and 85 scenarios. The Aer cross-check on the T4 agrees on 150 laws within
+3.6e-16; the ten qxelarator circuits lie within 3.09 standard errors of their ideal laws.
+
+| Falsifier | Reading | Verdict |
+|---|---|---|
+| wrong class in more than 1 of 12 series of a truth, or more than 3 in a family and regime | 1 wrong series of 2,880: the CZ conditional-phase error of -0.08 rad under phase damping per pulse reads `pulse_x` once in the retained walk; every other cell holds 0 | not falsified on this record; falsified for that one truth on the 200-series sizing record below |
+| all-pulse x truth reads `pulse_x` in fewer than 10 of 12 `stable` series | 12 of 12 in eight of the ten scenarios, 11 of 12 (one `unresolved_bridge`) in the two under phase damping per pulse | not falsified |
+| fewer than half of the walk series admit all eight scan batches and both bridge batches | every series admits all eight scan batches; the bridge holds in 957 of 960 | not falsified |
+| a wrong class in the family-left-out regime | 0 of 960 | not falsified |
+
+The 14 modeled truths of a family (2,520 series over the record) hold no wrong class. Of their series 180 read
+`offset_absent` under no offset, 1,179 of 1,260 x-class series read `pulse_x`, 864 of 1,080 other-class series
+(360 of them the conditional-phase truths) read `pulse_other`, and 339 of 360 readout series read `readout`;
+the rest read an unresolved label or `x_excluded`. The family-left-out regime reads `unresolved_none` in 104 of
+960 series against 51 under `stable`. The bridge rule refuses 11 of 2,880 series (0.38 percent).
+
+The one wrong series is a false `pulse_x` under a mechanism outside the modeled worlds: at -0.08 rad of CZ
+conditional phase under phase damping per pulse the x class leads the expected-value fit (chi-square 29.8 against
+36.8). The written case states that limit under "Mechanisms outside the modeled worlds".
+
+Rate of that false reading: `docs/evidence/qi-null-rotation-scan-conditional-phase-sizing/record.json` holds 200
+series per regime of the -0.08 rad conditional-phase truth under each of the two phase-damping families, drawn
+from the record's seed, so its first 12 series of each regime equal the record's. Under phase damping per pulse
+the truth reads `pulse_x` in 5 of 200 `stable` series, 6 of 200 walk series and 1 of 200 family-left-out series:
+11 of 400 with every family in the fit (2.8 percent, 95 percent interval 1.4 to 4.9 percent) and 12 of 600 over
+the three regimes (2.0 percent, 1.0 to 3.5 percent). Under phase damping per CZ it reads `pulse_x` in 0 of 600
+(below 0.61 percent at 95 percent confidence). The other labels are `unresolved_both` (759 of 1,200),
+`unresolved_none` (402), `pulse_other` (26, the truth's class) and `unresolved_bridge` (1). A `pulse_x` reading
+of the hardware run therefore does not exclude this mechanism: other sizes of the conditional phase and other
+noise strengths are unsized, and at this one size and noise family the truth reads `pulse_x` in about 3 percent of
+series. Without the first 12 series of each regime, which hold the series that prompted the sizing, the counts are
+5 of 188, 5 of 188 and 1 of 188.
+
+The first falsifier's counts are met on this record. Cut into 16 cells of 12 series per regime, the truth reads
+`pulse_x` twice in one `stable` cell and in one walk cell (2 of 32 cells with every family in the fit), and it
+alone holds 5 and 6 wrong series in 200 of one family and regime, above the count of 3 in about 204. The Kaggle
+record's cell held 1 of 12 and stayed within the rule by its draw. The statement the falsifier tests, that no
+simulated run reads a class other than its truth's, is therefore falsified for this truth under phase damping
+per pulse and stands for the 14 modeled truths alone (0 wrong of 2,520 series), which is the scope the written
+case gives it.
+
+```sh
+"$PYTHON" -B -W error scripts/qi_pathion_null_rotation_scan_noise.py --run OUT.json --series 200 \
+	--kinds pulse_dephasing cz_dephasing --truths cz_phase@-0.08
+```
+
+The run took 1 h 54 min 14 s on a four-core x86-64 virtual machine (0.73 GB resident) at commit `88418db13`.
+
+The run ended 414 s before its limit, so a repeat at these counts needs fewer series or a reduced truth list.
+
+Replay on a CPU: the record's first series of every scenario and regime, its expected-value labels and its summary
+reproduce on a four-core x86-64 virtual machine under the pinned Python 3.14.7 environment at commit `88418db13`
+(80 scenarios, 1 h 29 min 42 s wall, 0.67 GB resident). The check runs on demand, since its time exceeds an
+admission gate's:
+
+```sh
+"$PYTHON" -B -W error scripts/qi_pathion_null_rotation_scan_noise.py --series 1 --replay \
+	results/kaggle/2026-11-14T043839Z-gororoba-null-rotation-scan-gate-noise-fit/output/output/null-rotation-scan-noise.json
+```
+
+## Record of the earlier decision
+
+`results/kaggle/2026-11-13T222402Z-gororoba-null-rotation-scan-noise` holds the same simulation of the earlier
+decision (the two-contraction fit and the earlier scan set, 40 series per scenario, two regimes, record schema
+`qi-pathion-null-rotation-scan-noise-v1`). Its Aer cross-check agrees on 150 laws within 2.7e-16 and its ten
+qxelarator circuits lie within 2.81 standard errors of their ideal laws. The earlier decision names a wrong class
+in 14 of its family, truth and regime cells: under amplitude damping per CZ a y rotation reads wrongly in 17 of 40
+`stable` series and 9 of 40 walk series, a z rotation in 9 and 5, and the selector flip in 13 and 6; the
+remaining cells hold 1 to 6 wrong series of 40. That record is the shot-level ground for the two repairs above,
+and the run below repeats it on the repaired decision.
+
+## What the simulation cannot answer
+
+The channel Tuna-17 applies during b0 is unpublished, and the retained b0 histograms deviate from every modeled
+world by a deviance of 880 to 7,900 on 31 outcomes, so the five families are sensitivity points, not an estimate of
+the device. T1, T2, leakage, residual ZZ and pulse shapes are outside the run.
+
+## Machine, time, quota
+
+Kaggle `NvidiaTeslaT4` (two T4, 4 CPU cores), `--with qx-emulator --with exact-arithmetic`, `--timeout 39600`.
+Measured on the build host: the strength-grid tables of the five families take 99 CPU-minutes, built once at the
+start of the run; one series takes about 20 s of one core (36 series and 6 expected-value labels in 357 s on four
+cores). 85 scenarios at 12 series and three regimes give about 61,000 core-seconds, 4.7 hours on four cores at the
+build host's rate with the tables; the 11-hour limit leaves a factor of 2.3 for slower cores. The damping families
+run first. The kernel carries its own slug: a push to the earlier run's slug first lists that slug's versions
+through a signed-in browser session (`require_no_live_version` in `scripts/kaggle_run.py`), and a new slug holds
+no version. The entry rewrites its record after every scenario. GPU quota used: at most 11 of the weekly hours.
+
+```sh
+export PYTHON="${PYTHON:-python3}"
+STOPPED=results/quantum_inspire/runs/2026-11-06T221626Z-pathion_coset_block_tuna_17
+"$PYTHON" scripts/kaggle_run.py push scripts/qi_pathion_null_rotation_scan_noise.py \
+	--slug gororoba-null-rotation-scan-gate-noise-fit --machine NvidiaTeslaT4 --timeout 39600 \
+	--with qx-emulator --with exact-arithmetic \
+	--include results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.v3.json \
+	--include results/quantum_inspire/cases/pathion_coset_coin_tuna_17/batch-02 \
+	--include results/quantum_inspire/cases/pathion_null_rotation_scan_qx \
+	--include results/quantum_inspire/cases/pathion_null_rotation_scan_tuna_17/batch-01/cases.json \
+	--include docs/evidence/anu_qrng/draw-2026-11-13T172143Z.json \
+	--include "$STOPPED-batch-00/raw/readout-0.cq.json" \
+	--include "$STOPPED-batch-01/raw/readout-1.cq.json" \
+	--include "$STOPPED-batch-02" \
+	--include "$STOPPED-batch-03/raw/readout-1.cq.json" \
+	-- --run /kaggle/working/output/null-rotation-scan-noise.json --series 12 --cross-check \
+	--kinds cz_damping damping_and_dephasing cz_depolarizing pulse_dephasing cz_dephasing
+```

@@ -3,21 +3,9 @@
 from __future__ import annotations
 
 import ast
-import hashlib
 
 import cd_sign_source_ast as source_ast
 import pytest
-
-
-def test_complete_source_export_and_digest_match_the_certificate() -> None:
-    source = source_ast.SOURCE.read_bytes()
-    proof = source_ast.PROOF.read_text(encoding="utf-8")
-    start, stop = source_ast.span(proof)
-    term = source_ast.generated(source.decode("utf-8"))
-    closure = source_ast.closure_source(source.decode("utf-8")).encode("utf-8")
-    if proof[start:stop] != term or hashlib.sha256(closure).hexdigest() not in term:
-        raise AssertionError("the complete raw source AST or its exact source-byte digest differs")
-
 
 # A small module shaped like cd_core's cd_sign and its helpers, so the closure contract does not depend on the
 # spelling of the retained source, which other changes legitimately edit.

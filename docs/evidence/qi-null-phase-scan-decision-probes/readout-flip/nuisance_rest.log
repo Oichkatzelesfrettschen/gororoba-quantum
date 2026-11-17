@@ -1,0 +1,33 @@
+done TRUTHS: exact gates 200 series 0.08s current {'offset_absent': 200} nuisance {'offset_absent': 200}
+done TRUTHS: q12 phase +0.18 rad 200 series 859.9s current {'phase_mixed': 4, 'q12_phase': 196} nuisance {'phase_mixed': 2, 'q12_phase': 198}
+done null: flip 0.05, CZ phase damping 0.10 200 series 861.73s current {'none_adequate': 200} nuisance {'exact_parabola': 39, 'phase_unresolved': 161}
+done TRUTHS: exact gates, selector flip 0.0166 when q12 reads 0 200 series 866.96s current {'none_adequate': 200} nuisance {'exact_parabola': 200}
+done TRUTHS: q12 phase -0.18 rad 200 series 869.28s current {'none_adequate': 1, 'phase_mixed': 1, 'q12_phase': 198} nuisance {'none_adequate': 1, 'phase_mixed': 1, 'q12_phase': 198}
+done TRUTHS: coupler 8-12 phase -0.25 rad 200 series 872.31s current {'coupler_phase': 199, 'phase_mixed': 1} nuisance {'coupler_phase': 200}
+done null: flip 0.05, CZ phase damping 0.16 200 series 878.78s current {'none_adequate': 198, 'phase_unresolved': 2} nuisance {'exact_parabola': 43, 'none_adequate': 1, 'phase_unresolved': 156}
+done TRUTHS: q12 phase -0.15 rad 200 series 1015.16s current {'phase_mixed': 2, 'q12_phase': 198} nuisance {'none_adequate': 1, 'phase_mixed': 2, 'q12_phase': 197}
+done TRUTHS: exact gates, selector flip 0.036 when q12 reads 0 200 series 1008.84s current {'none_adequate': 200} nuisance {'exact_parabola': 200}
+done TRUTHS: coupler 8-12 phase +0.25 rad 200 series 1051.89s current {'coupler_phase': 196, 'none_adequate': 1, 'phase_mixed': 3} nuisance {'coupler_phase': 196, 'none_adequate': 1, 'phase_mixed': 3}
+done TRUTHS: exact gates with CZ damping 200 series 0.35s current {'offset_absent': 199, 'offset_reversed': 1} nuisance {'offset_absent': 199, 'offset_reversed': 1}
+done null: flip 0.05, CZ phase damping 0.13 200 series 1125.81s current {'none_adequate': 200} nuisance {'exact_parabola': 28, 'phase_unresolved': 172}
+done null: flip 0.05, pulse phase damping 0.10 200 series 1124.69s current {'none_adequate': 200} nuisance {'exact_parabola': 198, 'phase_unresolved': 2}
+done TRUTHS: q8 phase at coupler 8-12 -0.17 rad 200 series 916.56s current {'none_adequate': 2, 'offset_absent': 14, 'phase_unresolved': 175, 'q8_phase_at_coupler': 9} nuisance {'none_adequate': 3, 'offset_absent': 14, 'phase_unresolved': 177, 'q8_phase_at_coupler': 6}
+done TRUTHS: q12 phase -0.15 rad with CZ damping 200 series 1064.41s current {'phase_mixed': 2, 'q12_phase': 198} nuisance {'none_adequate': 1, 'phase_mixed': 1, 'q12_phase': 198}
+done TRUTHS: coupler 8-12 phase -0.25 rad with CZ damping x1.25 200 series 1044.43s current {'coupler_phase': 197, 'none_adequate': 1, 'phase_mixed': 2} nuisance {'coupler_phase': 197, 'none_adequate': 1, 'phase_mixed': 2}
+done TRUTHS: q12 phase -0.15 rad with CZ damping x1.25 200 series 1072.41s current {'phase_mixed': 2, 'q12_phase': 198} nuisance {'phase_mixed': 2, 'q12_phase': 198}
+done TRUTHS: q8 phase at coupler 8-12 -0.25 rad, pulse phase damping 0.10 200 series 1050.09s current {'phase_unresolved': 200} nuisance {'none_adequate': 1, 'phase_unresolved': 199}
+done true: q12 phase -0.18 rad, flip 0.0166 200 series 1053.5s current {'none_adequate': 188, 'phase_mixed': 5, 'q12_phase': 7} nuisance {'phase_mixed': 1, 'q12_phase': 199}
+done TRUTHS: exact gates, selector flip 0.0166, CZ phase damping 0.10 200 series 1073.08s current {'none_adequate': 165, 'phase_unresolved': 35} nuisance {'exact_parabola': 25, 'phase_unresolved': 175}
+done TRUTHS: exact gates, selector flip 0.036, CZ phase damping 0.16 200 series 1071.41s current {'none_adequate': 114, 'phase_unresolved': 86} nuisance {'exact_parabola': 30, 'none_adequate': 1, 'phase_unresolved': 169}
+done flip only: flip 0.025, no gate noise 200 series 1053.97s current {'none_adequate': 200} nuisance {'exact_parabola': 200}
+done MIXED: z12 from q12 phase -0.18, z8c from coupler phase -0.25 200 series 1102.06s current {'none_adequate': 200} nuisance {'none_adequate': 200}
+done TRUTHS: q12 phase -0.15 rad with CZ damping x3 200 series 510.67s current {'offset_absent': 116, 'phase_unresolved': 84} nuisance {'offset_absent': 116, 'phase_unresolved': 84}
+done TRUTHS: q8 phase at coupler 8-12 +0.10 rad 200 series 937.09s current {'offset_absent': 1, 'phase_unresolved': 190, 'q8_phase_at_coupler': 9} nuisance {'none_adequate': 1, 'offset_absent': 1, 'phase_unresolved': 189, 'q8_phase_at_coupler': 9}
+done TRUTHS: q8 phase at coupler 8-12 -0.25 rad 200 series 943.18s current {'phase_mixed': 3, 'phase_unresolved': 19, 'q8_phase_at_coupler': 178} nuisance {'phase_mixed': 3, 'phase_unresolved': 19, 'q8_phase_at_coupler': 178}
+done TRUTHS: coupler 8-12 phase -0.25 rad with CZ damping 200 series 1019.76s current {'coupler_phase': 198, 'phase_mixed': 2} nuisance {'coupler_phase': 198, 'none_adequate': 2}
+done flip only: flip 0.05, no gate noise 200 series 928.15s current {'none_adequate': 200} nuisance {'exact_parabola': 199, 'phase_unresolved': 1}
+done true: coupler 8-12 phase -0.25 rad, flip 0.0166 200 series 945.52s current {'coupler_phase': 1, 'none_adequate': 199} nuisance {'coupler_phase': 199, 'none_adequate': 1}
+done TRUTHS: exact gates, selector flip 0.025, CZ phase damping 0.13 200 series 946.62s current {'none_adequate': 160, 'phase_unresolved': 40} nuisance {'exact_parabola': 17, 'phase_unresolved': 183}
+done TRUTHS: q8 phase at coupler 8-12 -0.25 rad, CZ phase damping 0.12 200 series 1012.67s current {'none_adequate': 10, 'phase_unresolved': 186, 'q8_phase_at_coupler': 4} nuisance {'none_adequate': 9, 'phase_unresolved': 189, 'q8_phase_at_coupler': 2}
+done MIXED: z12 from coupler phase -0.25, z8c from q12 phase -0.18 200 series 957.16s current {'none_adequate': 191, 'phase_mixed': 9} nuisance {'none_adequate': 184, 'phase_mixed': 2, 'phase_unresolved': 14}
+done TRUTHS: exact gates, selector flip 0.025, pulse phase damping 0.10 200 series 1011.76s current {'exact_parabola': 2, 'none_adequate': 153, 'phase_unresolved': 45} nuisance {'exact_parabola': 198, 'phase_unresolved': 2}

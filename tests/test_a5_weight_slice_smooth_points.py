@@ -34,10 +34,9 @@ def _cell(record: dict[str, Any], orbit: str, source: str) -> dict[str, Any]:
     return cell
 
 
-def test_the_retained_record_passes_and_agrees_with_the_weight_slice_record() -> None:
+def test_the_retained_record_passes_its_checker() -> None:
     record = _record()
     _same(smooth.problems(record), [])
-    _same(smooth.slice_problems(record), [])
     _same(record["pass"], True)
 
 
@@ -137,12 +136,64 @@ def test_the_checker_rejects_each_mutation_of_the_retained_record(name: str) -> 
         raise AssertionError((name, found))
 
 
-def test_the_slice_comparison_rejects_other_relations_and_other_primes() -> None:
-    record = copy.deepcopy(_record())
-    _cell(record, "N-", "w8")["relations_sha256"] = "0" * 64
-    _cell(record, "N+", "e8")["relation_count"] = 147
+def test_the_slice_comparison_rejects_other_relations_counts_and_primes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # A constructed weight-slice record: the comparison reads the cells of characteristic 0 and the first two
+    # entries of each minimal prime.
+    cells = [
+        {
+            "orbit": "N-",
+            "source": "w8",
+            "characteristic": 0,
+            "relations_sha256": "a" * 64,
+            "relation_count": 144,
+            "hilbert": {"minimal_primes": [[6, 20, 9], [6, 30, 4]]},
+        },
+        {
+            "orbit": "N+",
+            "source": "e8",
+            "characteristic": 0,
+            "relations_sha256": "b" * 64,
+            "relation_count": 148,
+            "hilbert": {"minimal_primes": [[5, 40, 2]]},
+        },
+        {
+            "orbit": "N-",
+            "source": "w8",
+            "characteristic": 32009,
+            "relations_sha256": "c" * 64,
+            "relation_count": 1,
+            "hilbert": {"minimal_primes": []},
+        },
+    ]
+    fixture = tmp_path / "weight-slice.json"
+    fixture.write_text(json.dumps({"cells": cells}), encoding="utf-8")
+    monkeypatch.setattr(smooth, "WEIGHT_SLICE", fixture)
+    record = {
+        "cells": [
+            {
+                "orbit": "N-",
+                "source": "w8",
+                "relations_sha256": "a" * 64,
+                "relation_count": 144,
+                "primes": [[6, 20], [6, 30]],
+            },
+            {"orbit": "N+", "source": "e8", "relations_sha256": "b" * 64, "relation_count": 148, "primes": [[5, 40]]},
+        ]
+    }
+    _same(smooth.slice_problems(record), [])
+    record["cells"][0]["relations_sha256"] = "c" * 64
+    record["cells"][1]["relation_count"] = 147
     found = smooth.slice_problems(record)
+    _same(len(found), 2)
     for fragment in ("relations differ", "relation count differs"):
+        if not any(fragment in problem for problem in found):
+            raise AssertionError((fragment, found))
+    record["cells"][0]["primes"] = [[6, 20]]
+    record["cells"].append({"orbit": "N+", "source": "iso"})
+    found = smooth.slice_problems(record)
+    for fragment in ("minimal primes differ", "holds no such cell"):
         if not any(fragment in problem for problem in found):
             raise AssertionError((fragment, found))
 
@@ -150,6 +201,7 @@ def test_the_slice_comparison_rejects_other_relations_and_other_primes() -> None
 @pytest.mark.audit
 def test_the_retained_record_binds_the_current_input_digests() -> None:
     record = _record()
+    _same(smooth.slice_problems(record), [])
     _same(sorted(record["inputs"]), sorted(smooth.INPUTS))
     for name in smooth.INPUTS:
         _same(record["inputs"][name], hashlib.sha256((ATTACH / name).read_bytes()).hexdigest())

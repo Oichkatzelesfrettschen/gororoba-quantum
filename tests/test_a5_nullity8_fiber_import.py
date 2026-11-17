@@ -151,7 +151,7 @@ def test_a_changed_ledger_status_fails_the_fiber_row() -> None:
     statuses = fi.ledger_statuses()
     rows, cm = fi._jsonl(fi.HILBERT), fi._jsonl(fi.COHEN_MACAULAY)
     _same(fi.fiber_row(FIBER["E8bar into N"], statuses, rows, cm)["sources_agree"], True)
-    promoted = {**statuses, "A5-009": "proved"}
+    promoted = {**statuses, "A5-009": "survives"}
     _same(fi.fiber_row(FIBER["E8bar into N"], promoted, rows, cm)["sources_agree"], False)
     _same(fi._status_block((("A5-000", "proved"),), statuses)[0]["match"], False)
 

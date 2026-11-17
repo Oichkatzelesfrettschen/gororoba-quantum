@@ -1,0 +1,299 @@
+"""Contracts for math_sources: the Rocq sources of gororoba-math that retained records cite resolve only at the pin
+with their retained digests, and a source no record cites is never read.
+
+Each test builds a repository root and a gororoba-math checkout in tmp_path, so no check reads another repository.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import subprocess
+from pathlib import Path
+
+import pytest
+
+import math_sources
+
+SOURCES = {
+    "CdOne.v": b"Definition one := 1.\n",
+    "CdTwo.v": b"Require CdOne.\n",
+    "Standalone.v": b"Definition s := 0.\n",
+    "Uncited.v": b"Definition u := 3.\n",
+}
+CITED = ("CdOne.v", "CdTwo.v", "Standalone.v")
+LOCAL = {"Kept.v": b"Definition kept := 2.\n"}
+
+
+def sha(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def git(directory: Path, *arguments: str) -> str:
+    return subprocess.run(
+        ["git", "-C", str(directory), "-c", "user.name=t", "-c", "user.email=t@example.invalid", *arguments],
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.strip()
+
+
+def build_math(directory: Path, sources: dict[str, bytes]) -> str:
+    quantum = directory / "rocq/quantum"
+    quantum.mkdir(parents=True)
+    (quantum / "_RocqProject").write_text('-Q . ""\n' + "".join(f"{name}\n" for name in sources), encoding="utf-8")
+    for name, data in sources.items():
+        (quantum / name).write_bytes(data)
+    git(directory, "init", "-q")
+    git(directory, "add", ".")
+    git(directory, "commit", "-q", "-m", "fixture")
+    return git(directory, "rev-parse", "HEAD")
+
+
+def build_root(directory: Path, pin: str) -> None:
+    (directory / "ci").mkdir(parents=True)
+    (directory / "ci/gororoba_math.pin").write_text(pin + "\n", encoding="utf-8")
+    bundle = directory / "docs/evidence/bundle"
+    bundle.mkdir(parents=True)
+    rows = "".join(f"{sha(SOURCES[name])}  proofs/{name}\n" for name in ("CdOne.v", "CdTwo.v"))
+    (bundle / "source_hashes.sha256").write_text(rows, encoding="utf-8")
+    (bundle / "replay_rocq.sh").write_text("# bundle script\n", encoding="utf-8")
+    (directory / "docs/state").mkdir(parents=True)
+    evidence = [{"path": "proofs/Standalone.v", "sha256": sha(SOURCES["Standalone.v"])}]
+    (directory / "docs/state/research_state.json").write_text(json.dumps({"claims": [{"evidence": evidence}]}))
+    (directory / "proofs").mkdir()
+    for name, data in LOCAL.items():
+        (directory / "proofs" / name).write_bytes(data)
+    (directory / "results").mkdir()
+    (directory / "results/record.json").write_text("{}", encoding="utf-8")
+
+
+@pytest.fixture
+def fixture(tmp_path: Path) -> tuple[Path, Path]:
+    math = tmp_path / "math"
+    math.mkdir()
+    pin = build_math(math, SOURCES)
+    root = tmp_path / "root"
+    build_root(root, pin)
+    return root, math
+
+
+def test_checkout_resolves_the_pinned_commit(fixture: tuple[Path, Path]) -> None:
+    root, math = fixture
+    found = math_sources.checkout({"GOROROBA_MATH": str(math)}, root)
+    if found != math or math_sources.moved_names(math) != sorted(SOURCES, key=list(SOURCES).index):
+        raise AssertionError((found, math_sources.moved_names(math)))
+
+
+def test_unset_variable_fails_with_a_message(fixture: tuple[Path, Path]) -> None:
+    root, _math = fixture
+    for environ in ({}, {"GOROROBA_MATH": ""}):
+        with pytest.raises(math_sources.MathSourcesError, match="GOROROBA_MATH is unset"):
+            math_sources.checkout(environ, root)
+
+
+def test_head_off_the_pin_fails(fixture: tuple[Path, Path]) -> None:
+    root, math = fixture
+    (math / "rocq/quantum/Extra.v").write_bytes(b"x\n")
+    git(math, "add", ".")
+    git(math, "commit", "-q", "-m", "second")
+    with pytest.raises(math_sources.MathSourcesError, match="names"):
+        math_sources.checkout({"GOROROBA_MATH": str(math)}, root)
+    math_sources.checkout({"GOROROBA_MATH": str(math)}, root, verify_pin=False)
+
+
+def test_path_without_project_file_fails(fixture: tuple[Path, Path], tmp_path: Path) -> None:
+    root, _math = fixture
+    with pytest.raises(math_sources.MathSourcesError, match="holds no rocq/quantum/_RocqProject"):
+        math_sources.checkout({"GOROROBA_MATH": str(tmp_path)}, root)
+
+
+def test_recorded_digests_join_ledgers_and_registry(fixture: tuple[Path, Path]) -> None:
+    root, _math = fixture
+    recorded = math_sources.recorded_digests(root)
+    if recorded != {name: sha(SOURCES[name]) for name in CITED} or math_sources.cited_names(root) != sorted(CITED):
+        raise AssertionError(recorded)
+
+
+def test_conflicting_digests_fail(fixture: tuple[Path, Path], monkeypatch: pytest.MonkeyPatch) -> None:
+    root, _math = fixture
+    other = root / "docs/evidence/other"
+    other.mkdir()
+    (other / "source_hashes.sha256").write_text(f"{sha(b'x')}  proofs/CdOne.v\n", encoding="utf-8")
+    with pytest.raises(math_sources.MathSourcesError, match="CdOne.v has 2 recorded digests"):
+        math_sources.recorded_digests(root)
+    monkeypatch.setattr(math_sources, "STALE_MANIFESTS", frozenset({"docs/evidence/other/source_hashes.sha256"}))
+    if math_sources.recorded_digests(root)["CdOne.v"] != sha(SOURCES["CdOne.v"]):
+        raise AssertionError("a ledger named stale leaves the other records in force")
+
+
+def test_a_flipped_byte_fails_the_digest_check(fixture: tuple[Path, Path]) -> None:
+    root, math = fixture
+    math_sources.verified_sources(math, root)
+    path = math / "rocq/quantum/CdTwo.v"
+    path.write_bytes(path.read_bytes().replace(b"One", b"Ond"))
+    with pytest.raises(math_sources.MathSourcesError, match="CdTwo.v differs from the retained digest"):
+        math_sources.verified_sources(math, root)
+
+
+def test_a_source_no_record_cites_is_never_read(fixture: tuple[Path, Path], tmp_path: Path) -> None:
+    root, math = fixture
+    (math / "rocq/quantum/Uncited.v").write_bytes(b"changed freely\n")
+    (math / "rocq/quantum/New.v").write_bytes(b"x\n")
+    (math / "rocq/quantum/_RocqProject").write_text('-Q . ""\nCdOne.v\nCdTwo.v\nStandalone.v\nUncited.v\nNew.v\n')
+    if set(math_sources.verified_sources(math, root)) != set(CITED):
+        raise AssertionError("only cited sources are verified")
+    shadow = math_sources.shadow_root(tmp_path / "shadow", math, root)
+    if {path.name for path in (shadow / "proofs").iterdir()} != set(CITED):
+        raise AssertionError("the shadow root holds cited sources only")
+
+
+def test_a_named_source_without_a_recorded_digest_fails(fixture: tuple[Path, Path]) -> None:
+    root, math = fixture
+    with pytest.raises(math_sources.MathSourcesError, match="no retained record holds a digest of Uncited.v"):
+        math_sources.verified_sources(math, root, ["Uncited.v"])
+
+
+def test_a_cited_source_the_project_file_omits_fails(fixture: tuple[Path, Path], tmp_path: Path) -> None:
+    root, math = fixture
+    (math / "rocq/quantum/_RocqProject").write_text('-Q . ""\nCdOne.v\nCdTwo.v\nUncited.v\n', encoding="utf-8")
+    for attempt in (
+        lambda: math_sources.verified_sources(math, root),
+        lambda: math_sources.shadow_root(tmp_path / "shadow", math, root),
+    ):
+        with pytest.raises(math_sources.MathSourcesError, match="Standalone.v is cited by a retained record"):
+            attempt()
+
+
+def test_reference_names_a_source_of_the_project_file(fixture: tuple[Path, Path]) -> None:
+    root, math = fixture
+    if (
+        math_sources.resolve_reference("gororoba-math:rocq/quantum/CdOne.v", math, root)
+        != math / "rocq/quantum/CdOne.v"
+    ):
+        raise AssertionError("reference resolves to the checkout file")
+    for bad in ("proofs/CdOne.v", "gororoba-math:rocq/quantum/Missing.v", "gororoba-math:rocq/quantum/a/CdOne.v"):
+        with pytest.raises(math_sources.MathSourcesError):
+            math_sources.resolve_reference(bad, math, root)
+
+
+def test_shadow_root_holds_the_cited_sources_and_the_repository_entries(
+    fixture: tuple[Path, Path], tmp_path: Path
+) -> None:
+    root, math = fixture
+    shadow = math_sources.shadow_root(tmp_path / "shadow", math, root)
+    expected = {name: SOURCES[name] for name in CITED}
+    found = {path.name: path.read_bytes() for path in (shadow / "proofs").iterdir()}
+    if found != expected:
+        raise AssertionError(sorted(found))
+    if not (shadow / "results/record.json").is_file() or not (shadow / "docs/state/research_state.json").is_file():
+        raise AssertionError("top-level entries of the repository stay reachable")
+    if (shadow / ".git").exists():
+        raise AssertionError("the shadow root carries no git directory")
+
+
+def test_a_local_proofs_copy_never_shadows_the_checkout(fixture: tuple[Path, Path], tmp_path: Path) -> None:
+    root, math = fixture
+    (root / "proofs/CdOne.v").write_bytes(b"stale local copy\n")
+    shadow = math_sources.shadow_root(tmp_path / "shadow", math, root)
+    if (shadow / "proofs/CdOne.v").read_bytes() != SOURCES["CdOne.v"]:
+        raise AssertionError("a cited name comes from gororoba-math")
+
+
+def test_plan_references_into_gororoba_math_defer_while_the_variable_is_unset(
+    fixture: tuple[Path, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import plan_records
+
+    root, math = fixture
+    (root / "proofs/CdOne.v").unlink(missing_ok=True)
+    monkeypatch.delenv("GOROROBA_MATH", raising=False)
+    new, legacy = "gororoba-math:rocq/quantum/CdOne.v", "proofs/CdOne.v"
+    if not (plan_records.deferred(root, new) and plan_records.deferred(root, legacy)):
+        raise AssertionError("an unset GOROROBA_MATH defers references into gororoba-math")
+    if plan_records.deferred(root, "proofs/Kept.v") or plan_records.deferred(root, "ci/gororoba_math.pin"):
+        raise AssertionError("a tracked file is never deferred")
+    plan_records.reference(root, new)
+    monkeypatch.setenv("GOROROBA_MATH", str(math))
+    if plan_records.deferred(root, new) or plan_records.local_path(root, legacy) != math / "rocq/quantum/CdOne.v":
+        raise AssertionError("a set GOROROBA_MATH resolves both spellings to the checkout")
+
+
+def test_a_source_that_is_a_symbolic_link_is_refused_even_with_the_right_bytes(
+    fixture: tuple[Path, Path], tmp_path: Path
+) -> None:
+    root, math = fixture
+    target = tmp_path / "outside.v"
+    target.write_bytes(SOURCES["CdOne.v"])
+    link = math / "rocq/quantum/CdOne.v"
+    link.unlink()
+    link.symlink_to(target)
+    for attempt in (
+        lambda: math_sources.verified_source("CdOne.v", math, root),
+        lambda: math_sources.verified_sources(math, root),
+        lambda: math_sources.resolve_reference("gororoba-math:rocq/quantum/CdOne.v", math, root),
+        lambda: math_sources.shadow_root(tmp_path / "shadow", math, root),
+    ):
+        with pytest.raises(math_sources.MathSourcesError, match="symbolic link"):
+            attempt()
+
+
+def test_a_source_directory_that_resolves_outside_the_checkout_is_refused(
+    fixture: tuple[Path, Path], tmp_path: Path
+) -> None:
+    root, math = fixture
+    outside = tmp_path / "elsewhere"
+    outside.mkdir()
+    for name, data in SOURCES.items():
+        (outside / name).write_bytes(data)
+    (outside / "_RocqProject").write_text((math / "rocq/quantum/_RocqProject").read_text(encoding="utf-8"))
+    for child in (math / "rocq/quantum").iterdir():
+        child.unlink()
+    (math / "rocq/quantum").rmdir()
+    (math / "rocq/quantum").symlink_to(outside)
+    with pytest.raises(math_sources.MathSourcesError, match="outside the checkout"):
+        math_sources.verified_source("CdOne.v", math, root)
+
+
+def test_resolve_reference_checks_the_retained_digest(fixture: tuple[Path, Path]) -> None:
+    root, math = fixture
+    (math / "rocq/quantum/CdOne.v").write_bytes(b"changed\n")
+    with pytest.raises(math_sources.MathSourcesError, match="differs from the retained digest"):
+        math_sources.resolve_reference("gororoba-math:rocq/quantum/CdOne.v", math, root)
+
+
+def test_a_malformed_reference_is_neither_deferred_nor_resolved(
+    fixture: tuple[Path, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import plan_records
+
+    root, math = fixture
+    bad = "gororoba-math:rocq/quantum/../x.v"
+    for variable in (None, str(math)):
+        if variable is None:
+            monkeypatch.delenv("GOROROBA_MATH", raising=False)
+        else:
+            monkeypatch.setenv("GOROROBA_MATH", variable)
+        if plan_records.deferred(root, bad):
+            raise AssertionError("a reference outside the grammar was deferred")
+        with pytest.raises(ValueError, match="malformed gororoba-math reference"):
+            plan_records.reference(root, bad)
+
+
+def test_shadow_root_writes_the_verified_bytes_and_verified_bytes_reads_once(
+    fixture: tuple[Path, Path], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root, math = fixture
+    reads: list[str] = []
+    original = Path.read_bytes
+
+    def recording_read_bytes(self: Path) -> bytes:
+        reads.append(self.name)
+        return original(self)
+
+    monkeypatch.setattr(Path, "read_bytes", recording_read_bytes)
+    shadow = math_sources.shadow_root(tmp_path / "shadow", math, root)
+    if any(name in SOURCES for name in reads):
+        raise AssertionError(f"a moved source was read a second time through Path.read_bytes: {reads}")
+    if (shadow / "proofs/CdOne.v").read_bytes() != math_sources.verified_bytes("CdOne.v", math, root):
+        raise AssertionError("the shadow copy is the verified content")

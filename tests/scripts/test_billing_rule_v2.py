@@ -15,9 +15,10 @@ import pytest
 import qd_platform
 
 ROOT = Path(__file__).resolve().parents[2]
-# docs/evidence/quandela-billing-rule-successor/README.md records these producer digests.
+# docs/evidence/quandela-billing-rule-successor/README.md records these producer digests; bdsc_certificate.py is
+# pinned as of ed5a25b19 (its billing wording is unchanged since c0e43b8e8, the commit of the first record).
 PINNED_PRODUCERS = {
-    "scripts/bdsc_certificate.py": "5dbcd027eb24a303ba5757e00b0123e846bc3c86dab70a24dc1ae1f98b197753",
+    "scripts/bdsc_certificate.py": "ed65031756cfd6fede08bfe0f9d1ea058b31025e7885cbd13424a2c8dec4699f",
     "scripts/ascella_predecessor_case.py": "2310aa98d1c0c68812d7edcbd30fd6a0713ca5fb6ab1e1b8c3c96e3d845b197b",
 }
 

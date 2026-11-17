@@ -82,7 +82,7 @@ to 2,556 CX before routing. The prior cycle has 2,694 RCCX and 449 CCX gates,
 equivalent to 10,776 CX. Open-control X gates restore their input state even
 on the disabled phase branch.
 
-`proofs/TargetFlipN21.v` independently evaluates the integer gate word and
+gororoba-math `rocq/quantum/TargetFlipN21.v` independently evaluates the integer gate word and
 the modular formula. Rocq proves all 64 packed phase/data inputs for each
 multiplier, including padding states 21 through 31 and the disabled control.
 The exporter binds the proof's witness lists to the compiler's actual output.
@@ -310,7 +310,8 @@ From the repository root, use the pinned runtime:
 ```sh
 PYTHON="${PYTHON:-$(command -v python3)}"
 "$PYTHON" gororoba_quantum/target_flip.py
-"$PYTHON" gororoba_quantum/target_flip_certificate.py --check
+# TargetFlipN21.v is rendered and checked by gororoba-math ci/check_quantum_sources.sh
+# (docs/runbooks/rocq-replay-route.md)
 "$PYTHON" gororoba_quantum/compile_evidence.py \
   --candidate target_flip_one_clean \
   --out results/hw_estimate/n21_target_flip_compilation.json

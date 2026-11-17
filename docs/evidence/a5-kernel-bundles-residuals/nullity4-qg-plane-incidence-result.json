@@ -1,0 +1,195 @@
+{
+ "complements": {
+  "s = -1, identity": {
+   "control": 3,
+   "frame_not_orthogonal": false,
+   "x": [
+    7,
+    false,
+    true,
+    true
+   ],
+   "y": [
+    9,
+    true,
+    false,
+    true
+   ],
+   "z": [
+    9,
+    true,
+    true,
+    false
+   ]
+  },
+  "s = -1, unipotent": {
+   "control": 3,
+   "frame_not_orthogonal": true,
+   "x": [
+    7,
+    false,
+    true,
+    true
+   ],
+   "y": [
+    9,
+    true,
+    false,
+    false
+   ],
+   "z": [
+    9,
+    true,
+    false,
+    false
+   ]
+  },
+  "s = 1, identity": {
+   "control": 3,
+   "frame_not_orthogonal": false,
+   "x": [
+    7,
+    false,
+    true,
+    true
+   ],
+   "y": [
+    9,
+    true,
+    false,
+    true
+   ],
+   "z": [
+    9,
+    true,
+    true,
+    false
+   ]
+  },
+  "s = 1, unipotent": {
+   "control": 3,
+   "frame_not_orthogonal": true,
+   "x": [
+    7,
+    false,
+    true,
+    true
+   ],
+   "y": [
+    9,
+    true,
+    false,
+    false
+   ],
+   "z": [
+    9,
+    true,
+    false,
+    false
+   ]
+  }
+ },
+ "field": "Q(i) for every vector, rank and Jacobian",
+ "generic_complements": {
+  "y": [
+   3,
+   false
+  ],
+  "z": [
+   3,
+   false
+  ]
+ },
+ "incidence": {
+  "s = 0, x": [
+   true,
+   12,
+   13,
+   11,
+   2,
+   true,
+   true,
+   4,
+   4,
+   4
+  ],
+  "s = 0, y": [
+   true,
+   12,
+   13,
+   11,
+   2,
+   true,
+   true,
+   4,
+   4,
+   4
+  ],
+  "s = 0, z": [
+   true,
+   12,
+   13,
+   11,
+   2,
+   true,
+   true,
+   4,
+   4,
+   4
+  ],
+  "s = 2, x": [
+   true,
+   12,
+   13,
+   11,
+   2,
+   true,
+   true,
+   4,
+   4,
+   4
+  ],
+  "s = 2, y": [
+   true,
+   12,
+   13,
+   11,
+   2,
+   true,
+   true,
+   4,
+   4,
+   4
+  ],
+  "s = 2, z": [
+   true,
+   12,
+   13,
+   11,
+   2,
+   true,
+   true,
+   4,
+   4,
+   4
+  ]
+ },
+ "inputs": {
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py": "745edad5ec0fe70aa3167564c25f17983054504b4706d4db82c57cd73fa16d72",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_intersection.py": "90e20458f9eca6c2462c86dfedb5ec23fa31ff976150391c5aa9dc76882fe17e",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_orbit_types.py": "4c05a2b5716cf0c2ad3e56fffc396877e73bee894779405c5143a2cbd5e758bb",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_plane_incidence.py": "3a698cf123672e3f362c58354c4830d60de50bdae741e1d4fcd791f7a6cfe507"
+ },
+ "pass": true,
+ "schema": "a5-kernel-bundles-residuals-nullity4-qg-plane-incidence-v1",
+ "unipotent": {
+  "element": [
+   0,
+   9,
+   1
+  ],
+  "equivariant": true,
+  "order": 3,
+  "unitary": false
+ }
+}

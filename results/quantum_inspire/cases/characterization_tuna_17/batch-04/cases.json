@@ -1,0 +1,22 @@
+{
+ "schema": "qi-tuna17-characterization-cases-v1",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "shots": 8192,
+ "bit_order": "qubit 0 at the rightmost character",
+ "circuits": [
+  {
+   "file": "x90-32.cq",
+   "kind": "x90",
+   "pulses": 128,
+   "sha256": "846ee4473784407ee28bc85b0f576c5a16e2bdc6b943522286a32e90a05d4b1b"
+  },
+  {
+   "file": "x90-64.cq",
+   "kind": "x90",
+   "pulses": 256,
+   "sha256": "54b9f30a2d419ab1328a6649f1124e79c6d089d43058fc4212813cb58abd9cd6"
+  }
+ ]
+}

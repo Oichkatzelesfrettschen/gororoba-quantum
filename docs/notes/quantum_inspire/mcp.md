@@ -21,7 +21,7 @@ fails on authentication returns the `Client` error text, which
 | `qi_jobs(latest=20)` | most recent jobs, newest first | read-only | allow |
 | `qi_job(job_id)` | one job, its result metadata and, unless completed, its logs | read-only | allow |
 | `qi_results(job_id, include_raw=False)` | outcome counts, and every shot on request | read-only | allow |
-| `qi_run_local(cqasm, shots=1024)` | local qxelarator emulation, at most 24 qubits and 100000 shots | read-only, closed world | allow |
+| `qi_run_local(cqasm, shots=1024, seed=None)` | local qxelarator emulation, at most 24 qubits and 100000 shots; `seed` (0 to 2**31 - 1) makes the counts replayable | read-only, closed world | allow |
 | `qi_compile(cqasm, backend_type_id, stage="decomposition")` | remote compilation; creates project, algorithm, commit and file; executes nothing | mutating | ask |
 | `qi_submit_case(case_dir, backend_type_id, approval)` | one batch from retained `cases.json` and checked cQASM files; enables raw shots and uses the durable submission guard | mutating | ask |
 | `qi_submit(cqasm, backend_type_id, shots, approval, raw_data=True)` | legacy signature; refuses execution and names `qi_submit_case` as its replacement | refuses execution | no execution |
@@ -78,6 +78,9 @@ QuTech publishes a Grafana public dashboard per backend and a Status
 dashboard at https://monitoring.qutech.support (Grafana 13.1.1 on
 2026-10-22). `scripts/qi_monitoring.py` reads them through Grafana's
 public-dashboard API, with no account, and both tools above wrap it.
+`scripts/qi_status.py` joins those dashboards with the compute API's backend instances and queues in one
+document; the [status-source observations of 2026-11-15](../../evidence/quantum_inspire/status-sources-2026-11-15/README.md)
+record what each source reports, the link service's burst answers and the dashboards' fixed time range.
 
 The public [Status dashboard](https://monitoring.qutech.support/public-dashboards/b9a0daeda64d4044b88f78b40ba5482a)
 is the destination verified on 23 October 2026 for the stable

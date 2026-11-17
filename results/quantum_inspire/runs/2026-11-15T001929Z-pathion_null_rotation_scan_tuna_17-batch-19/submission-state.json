@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-11-15T02:05:05+00:00",
+ "approval": "Submit to Tuna-17 now (owner, question tool, 2026-11-14)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "8f81bef9b5661beb08e2f85db4555068e665cd11bc081d8c29efe16086c18149",
+ "shots": 131072,
+ "jobs": [
+  {
+   "file": "b0-rx-all-p10.cq",
+   "job": 1741821,
+   "sha256": "c391f0a1d3a6184e8ad463a6cbcd94400c03190e36d780e7ea725def83e19a48"
+  },
+  {
+   "file": "b0-rx.cq",
+   "job": 1741822,
+   "sha256": "e1b6a989cd172da07f9c49f34afabaadc7ee5adfa2f21c6058e75b3be17cbead"
+  },
+  {
+   "file": "b0-rx-all-m10.cq",
+   "job": 1741823,
+   "sha256": "06c3554182d219f54a7302359f12c530cb69e01a47a0e34ea98a5dbcaa46190c"
+  }
+ ],
+ "project": 858405,
+ "batch_job": 958299,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-11-15T02:05:08+00:00",
+  "approval": "Submit to Tuna-17 now (owner, question tool, 2026-11-14)",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "8f81bef9b5661beb08e2f85db4555068e665cd11bc081d8c29efe16086c18149",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 958299,
+  "project": 858405,
+  "shots": 131072,
+  "jobs": [
+   {
+    "file": "b0-rx-all-p10.cq",
+    "job": 1741821,
+    "sha256": "c391f0a1d3a6184e8ad463a6cbcd94400c03190e36d780e7ea725def83e19a48"
+   },
+   {
+    "file": "b0-rx.cq",
+    "job": 1741822,
+    "sha256": "e1b6a989cd172da07f9c49f34afabaadc7ee5adfa2f21c6058e75b3be17cbead"
+   },
+   {
+    "file": "b0-rx-all-m10.cq",
+    "job": 1741823,
+    "sha256": "06c3554182d219f54a7302359f12c530cb69e01a47a0e34ea98a5dbcaa46190c"
+   }
+  ],
+  "submitted_utc": "2026-11-15T02:05:09+00:00"
+ },
+ "confirmed_utc": "2026-11-15T02:05:09+00:00"
+}

@@ -1,12 +1,12 @@
-"""The kernel certificates of proofs/CdTowerCanonicalKernels.v against cd_core and the A_5 strata representatives.
+"""The kernel certificates of CdTowerCanonicalKernels.v (retained here as certificates.json) against cd_core and the A_5
+strata representatives.
 
 docs/evidence/cd-tower-kernel-certificates/certificates.json holds, for the canonical point y of each of the twelve
 orbits of nullity 8, 12 and 16, the integer data (d, P, V, C) with L V = 0, d I = P L + V C and C V = d I_n for the
 matrix L of z -> y z. The Rocq file proves the same identities for the pair-tower product by vm_compute. The tests
 here recompute y from the split coordinates of docs/evidence/a5-strata-regularity/strata_regularity.py and L from
 cd_core.cd_sign, check the three identities in integer arithmetic, compare the nullity with the rank of L modulo
-primes that do and do not divide d, require the Rocq file to be the rendering of the JSON, and require three
-mutated inputs to fail.
+primes that do and do not divide d, and require three mutated inputs to fail.
 """
 
 import json
@@ -81,11 +81,6 @@ def test_modular_nullity_equals_the_certified_one_exactly_off_the_scalar() -> No
                 wrong.append((record["name"], prime, value))
     if wrong:
         raise AssertionError(f"modular nullities contradict the certificates: {wrong}")
-
-
-def test_rocq_file_is_the_rendering_of_the_certificates() -> None:
-    if kc.ROCQ_FILE.read_text(encoding="utf-8") != kc.render(records()):
-        raise AssertionError("proofs/CdTowerCanonicalKernels.v differs from the rendering of certificates.json")
 
 
 def test_mutated_inputs_fail_the_identities() -> None:

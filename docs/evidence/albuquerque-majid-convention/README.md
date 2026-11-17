@@ -36,7 +36,7 @@ sources-395 runs
 which recomputes the record and compares its bytes; the run takes about 1 s.
 The replay checks the convention on finite dimensions from the Python side.
 The all-n statement is the Rocq theorem `am_sign` of
-[CdTowerBasisSign.v](../../../proofs/CdTowerBasisSign.v): the
+gororoba-math `rocq/quantum/CdTowerBasisSign.v`: the
 Corollary 4.3 exponent, built by a Fixpoint from the trivial group, satisfies
 (-1)^f(a, b) = sigma_k(b, a) for every k, with sigma_k the transcription of
 cd_sign that the
