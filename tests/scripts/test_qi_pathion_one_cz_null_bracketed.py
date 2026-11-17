@@ -12,6 +12,7 @@ import hashlib
 import itertools
 import json
 import math
+import platform
 import shutil
 from collections import Counter
 from datetime import datetime, timedelta, timezone
@@ -379,6 +380,25 @@ def test_the_qx_manifests_keep_the_bytes_that_the_retained_receipts_bind() -> No
         stored = (CASES / bc.QX_SERIES / batch / "cases.json").read_bytes()
         _expect(hashlib.sha256(stored).hexdigest() == digest, f"the stored {batch} manifest changed")
         _expect(json.loads(stored)["preregistered"] == bc.control_preregistered(), f"{batch} states another text")
+
+
+LINUX_X86_64 = platform.system() == "Linux" and platform.machine() in {"x86_64", "AMD64"}
+
+
+@pytest.mark.skipif(not LINUX_X86_64, reason="the rebuilt manifests are measured byte-equal on linux x86_64 only")
+def test_the_rebuilt_qx_manifests_equal_the_stored_bytes_and_the_receipt_digests(
+    built: dict[str, dict[str, str]],
+) -> None:
+    # Measured on linux x86_64 with the CI-pinned interpreter: 4 of 4 rebuilt manifests have the sha256 of the stored
+    # file and of the receipt's cases_sha256. hypothesis: a last-bit libm difference or a fused multiply-add on
+    # darwin-arm64 flips a digit of the 12-digit rounded float fields (a rebuild failed there), which
+    # test_the_qx_manifests_keep_the_bytes_that_the_retained_receipts_bind avoids by reading the stored bytes; issue
+    # 945 tracks a platform-stable serialization.
+    for batch, digest in QX_MANIFEST_SHA256.items():
+        rebuilt = built[bc.QX_SERIES][f"{batch}/cases.json"].encode()
+        stored = (CASES / bc.QX_SERIES / batch / "cases.json").read_bytes()
+        _expect(hashlib.sha256(rebuilt).hexdigest() == digest, f"the rebuilt {batch} manifest differs from the receipt")
+        _expect(rebuilt == stored, f"the rebuilt {batch} manifest differs from the stored file")
 
 
 def _survival(dof: int, x: float) -> float:
@@ -1352,6 +1372,74 @@ def test_start_stamps_rank_by_instant_and_not_by_text() -> None:
 def test_an_unusable_stamp_is_refused_by_name(stamp: Any) -> None:
     with pytest.raises(bc.UnusableOrder):
         bc.stamp_instant(stamp)
+
+
+def _fine_stamps(reversed_batch: str | None = None) -> tuple[dict[str, str], dict[str, str]]:
+    """Canonical and mixed-spelling start stamps of one series. Job p of batch n starts p x 50 ms into minute n, so the
+    jobs of a batch fall within one second; a batch named by `reversed_batch` runs its jobs in the reverse order. The
+    spelled stamps write p = 0 without a fraction ('...:00Z', which sorts after '...:00.05Z' as text), p % 3 == 1 with
+    its trailing zeros trimmed, p % 3 == 2 with a +00:00 offset and the others with six digits and Z."""
+    canonical: dict[str, str] = {}
+    spelled: dict[str, str] = {}
+    for row in bc.batch_rows(bc.TUNA_SERIES):
+        files = [circuit["file"] for circuit in row["circuits"]]
+        ran = files[::-1] if row["batch"] == reversed_batch else files
+        minute = int(row["batch"][-2:])
+        for p, name in enumerate(ran):
+            head, micros = f"2026-11-08T01:{minute:02d}:00", p * 50_000
+            key = f"{row['batch']}/{name}"
+            canonical[key] = f"{head}.{micros:06d}Z"
+            if p == 0:
+                spelled[key] = f"{head}Z"
+            elif p % 3 == 1:
+                spelled[key] = f"{head}.{micros:06d}".rstrip("0") + "Z"
+            elif p % 3 == 2:
+                spelled[key] = f"{head}.{micros:06d}+00:00"
+            else:
+                spelled[key] = canonical[key]
+    return canonical, spelled
+
+
+@pytest.mark.parametrize("reversed_batch", [None, f"batch-{TWIN_BATCHES[0]:02d}"])
+def test_mixed_stamp_spellings_rank_by_instant_in_every_path_that_reads_the_order(
+    small_shots: dict[str, list[str]], manifest: dict[str, Any], reversed_batch: str | None
+) -> None:
+    canonical, spelled = _fine_stamps(reversed_batch)
+    twin = f"batch-{TWIN_BATCHES[0]:02d}"
+    files = [
+        circuit["file"] for circuit in next(r for r in bc.batch_rows(bc.TUNA_SERIES) if r["batch"] == twin)["circuits"]
+    ]
+    by_text = sorted(files, key=lambda name: spelled[f"{twin}/{name}"])
+    by_instant = sorted(files, key=lambda name: canonical[f"{twin}/{name}"])
+    _expect(by_text != by_instant, "the premise: the text order of the spelled stamps differs from the instant order")
+    _expect(bc.twin_offsets(spelled) == bc.twin_offsets(canonical), "twin offsets")
+    _expect(bc.circuit_seconds(spelled) == bc.circuit_seconds(canonical), "seconds")
+    gate, plain = bc.order_gate(spelled), bc.order_gate(canonical)
+    _expect(gate == plain and gate is not None, "the strict gate")
+    _expect(gate["batches"][twin]["executed"] == by_instant, "the strict gate ran the batch in text order")
+    _expect(gate["intact"] is (reversed_batch is None), f"intact {gate['intact']}")
+    got, want = bc.evaluate(small_shots, manifest, spelled), bc.evaluate(small_shots, manifest, canonical)
+    _expect(got["decision"] == want["decision"], "the decision")
+    _expect(got["executed_order_fit"] == want["executed_order_fit"], "the executed-order fit")
+    _expect(got["order_ignored_label"] == want["order_ignored_label"], "the pool that ignores the order")
+    _expect(got["order_gate"] == want["order_gate"], "the record of the strict gate")
+
+
+def test_circuits_of_a_twin_batch_that_start_at_one_instant_withhold_the_decision_and_one_microsecond_apart_rank(
+    small_shots: dict[str, list[str]], manifest: dict[str, Any]
+) -> None:
+    twin = f"batch-{TWIN_BATCHES[0]:02d}"
+    coin0, coin1 = f"{twin}/{oc.twin_file('b0', 0)}", f"{twin}/{oc.twin_file('b0', 1)}"
+    stamps = _stamped()
+    stamps[coin1] = stamps[coin0]
+    tied = bc.evaluate(small_shots, manifest, stamps)
+    _expect(tied["decision"]["label"] == "unresolved_order", f"{tied['decision']['label']}")
+    _expect("one instant" in tied["executed_order_fit"]["reason"], f"{tied['executed_order_fit']}")
+    stamps[coin1] = stamps[coin0].replace(".000000Z", ".000001Z")
+    apart = bc.evaluate(small_shots, manifest, stamps)
+    _expect(apart["decision"]["label"] != "unresolved_order", f"{apart['decision']['label']}")
+    _expect(apart["executed_order_fit"]["status"] != "unusable", f"{apart['executed_order_fit']}")
+    _expect(bc.stamp_instant(stamps[coin1]) - bc.stamp_instant(stamps[coin0]) == 1, "one microsecond")
 
 
 def test_a_stamp_outside_the_series_layout_is_ignored_and_a_missing_layout_stamp_is_not() -> None:

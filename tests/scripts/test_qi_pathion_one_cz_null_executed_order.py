@@ -299,3 +299,38 @@ def test_a_template_with_one_offset_has_no_own_drift_and_one_varying_template_ha
         _expect(solved["template_drift"][name] is None, f"{name}: {solved['template_drift'][name]}")  # type: ignore[index]
     _expect(abs(solved["template_drift"]["b0"] - solved["drift"]) < 1e-12, "b0's own drift is the shared drift")  # type: ignore[index]
     _expect(solved["template_drift_difference_se"]["b0"] < 1e-6, f"{solved['template_drift_difference_se']['b0']}")  # type: ignore[index]
+
+
+def test_the_shared_drift_covariance_of_a_three_batch_fixture_follows_the_hand_arithmetic() -> None:
+    # Template A holds two batches at x = 3 and 1 and template B one batch at x = 2, every error 1 (weight 1), values
+    # A: 0.30 and 0.10, B: 0.35.
+    #   x_A = (3 + 1) / 2 = 2, v_A = 0.20, W_A = 2; x_B = 2, v_B = 0.35, W_B = 1.
+    #   Sxx = (3 - 2)^2 + (1 - 2)^2 = 2 (B has one offset and adds nothing); Sxy = (3 - 2)(0.30 - 0.20) +
+    #   (1 - 2)(0.10 - 0.20) = 0.2; g = Sxy / Sxx = 0.1 and var(g) = 1 / Sxx = 0.5.
+    #   t_A = 0.20 - 0.1 x 2 = 0 and t_B = 0.35 - 0.1 x 2 = 0.15.
+    #   var(t_A) = 1 / 2 + 2^2 x 0.5 = 2.5, var(t_B) = 1 / 1 + 2^2 x 0.5 = 3 and cov(t_A, t_B) = x_A x_B var(g) = 2.
+    # The pool of (t_A, t_B) with S = [[2.5, 2], [2, 3]]: det S = 3.5, S^-1 1 = (1, 0.5) / 3.5, 1' S^-1 1 = 3 / 7, so
+    # the weights are (2/3, 1/3), the mean is 0.15 / 3 = 0.05 and the variance is 7 / 3; the residuals (-0.05, 0.10)
+    # give the chi-square (3 x 0.0025 + 2 x 2 x 0.005 + 2.5 x 0.01) / 3.5 = 0.015.
+    # The independent pool of the same contrasts reads variance 1 / (1 / 2.5 + 1 / 3), about 1.364, below the 7/3 here.
+    rows = {"A": [(0.30, 1.0, 3.0), (0.10, 1.0, 1.0)], "B": [(0.35, 1.0, 2.0)]}
+    solved = eo.fit(rows)
+    close = lambda got, want: _expect(abs(got - want) < 1e-12, f"{got} against {want}")  # noqa: E731
+    close(solved["drift"], 0.1)
+    close(solved["drift_se"] ** 2, 0.5)  # type: ignore[operator]
+    close(solved["contrast"]["A"], 0.0)  # type: ignore[index]
+    close(solved["contrast"]["B"], 0.15)  # type: ignore[index]
+    close(solved["error"]["A"] ** 2, 2.5)  # type: ignore[index]
+    close(solved["error"]["B"] ** 2, 3.0)  # type: ignore[index]
+    cov = solved["covariance"]
+    close(cov["A"]["B"], 2.0)  # type: ignore[index]
+    close(cov["B"]["A"], 2.0)  # type: ignore[index]
+    mean, se, chi2_value, weights = eo.pool_correlated(
+        [solved["contrast"]["A"], solved["contrast"]["B"]],  # type: ignore[index]
+        [[cov["A"]["A"], cov["A"]["B"]], [cov["B"]["A"], cov["B"]["B"]]],  # type: ignore[index]
+    )
+    close(mean, 0.05)
+    close(se**2, 7.0 / 3.0)
+    close(chi2_value, 0.015)
+    close(weights[0], 2.0 / 3.0)
+    close(weights[1], 1.0 / 3.0)
