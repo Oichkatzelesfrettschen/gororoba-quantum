@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import itertools
 import json
 import math
 import shutil
@@ -1590,22 +1591,17 @@ def test_one_template_that_alone_varies_its_offset_departs_from_nothing() -> Non
     # Its own drift and the shared drift are one quantity; the two weighted sums differ by rounding of about 1e-18, and
     # the error of the difference is zero, so a comparison with no floor reads a departure there (measured on 652 of
     # 1,970 random series that vary one template: own - shared = 1.7e-18 against an error of 0).
-    rnd = np.random.default_rng(20261116)
-    for _ in range(200):
-        offsets = {t: [int(rnd.choice([-1, 1]))] * 4 for t in ("k4", "k8", "k12")}
-        offsets["b0"] = [int(x) for x in rnd.choice([-3, -1, 1, 3], size=4)]
-        if len(set(offsets["b0"])) == 1:
+    for pattern in itertools.product((-3, -1, 1, 3), repeat=4):
+        if len(set(pattern)) == 1:
             continue
-        ses = rnd.uniform(0.003, 0.008, size=4)
-        rows = {
-            t: [(0.01 * s + (0.0164 if t == "b0" else 0.0), float(ses[i]), float(s)) for i, s in enumerate(v)]
-            for t, v in offsets.items()
-        }
-        try:
+        for ses in ((0.003, 0.004, 0.005, 0.006), (0.0075, 0.0031, 0.0052, 0.0045), (0.0055,) * 4):
+            offsets = {"k4": [1] * 4, "k8": [-1] * 4, "k12": [1] * 4, "b0": list(pattern)}
+            rows = {
+                t: [(0.01 * s + (0.0164 if t == "b0" else 0.0), ses[i], float(s)) for i, s in enumerate(v)]
+                for t, v in offsets.items()
+            }
             fitted = eo.fit(rows)
-        except eo.ConfoundedOrder:
-            continue
-        _expect(bc.stray_templates(fitted) == [], f"{offsets['b0']}: {bc.stray_templates(fitted)}")
+            _expect(bc.stray_templates(fitted) == [], f"{pattern} {ses}: {bc.stray_templates(fitted)}")
     # A real departure still reads: b0's own drift 0.06 against 0.01 in the others. The shared drift is their weighted
     # mean, 0.0275, so every template departs from it by more than three errors of the difference.
     rows = {

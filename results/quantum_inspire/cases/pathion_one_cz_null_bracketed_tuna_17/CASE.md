@@ -130,9 +130,9 @@ the tests.
    `queued_at`. Twin
    batches that leave every template one offset read
    `unresolved_order_confounded`; a template whose own drift departs from the shared one by more than three
-   errors of the difference reads `unresolved_drift_heterogeneity`. Each reading carries the label of the pool that
-   ignores the order beside it as `label_if_order_ignored`, and the strict reading of every batch (`order_gate`) stays in
-   the record and decides nothing. Measured from the retained `queued_at` stamps, 7 of the predecessor series' 19
+   errors of the difference reads `unresolved_drift_heterogeneity`. Every record carries the label of the pool that
+   ignores the order (`order_ignored_label`; a withheld decision repeats it as `label_if_order_ignored`), and the strict
+   reading of every batch (`order_gate`) stays in the record and decides nothing. Measured from the retained `queued_at` stamps, 7 of the predecessor series' 19
    batches (01, 06, 08, 10, 12, 15 and 16) ran out of the listed order and 2 of the 8 twin batches of that series had
    their twins reversed; the case requests the order and the analysis reads the order that ran. The three X-only
    calibration batches of the predecessor follow (3, 3 and 2
@@ -292,9 +292,9 @@ and `unresolved_drift_heterogeneity` 0.0105 (the false alarms), and `unresolved_
 rule corrects, linear in executed position and time; a drift of another shape is the monitor's and the gate's business
 and is not tabulated (hypothesis: a step or a burst trips `unresolved_drift_model`, as the monitor tests pin).
 
-#### The pool that ignores the order (`label_if_order_ignored`)
+#### The pool that ignores the order (`order_ignored_label`)
 
-The three older tables describe the label that every reading carries beside the decision, `label_if_order_ignored`: the plain
+The three older tables describe the label that every record carries beside the decision, `order_ignored_label`: the plain
 pool of the batch contrasts, which the registered rule replaces. Stationary 920, `batch_drift_sd_0.003` 921,
 `pair_common_drift_sd_0.003` 922. A base contrast is a Gaussian draw at the design standard error; the two twins of a batch draw
 binomial selector counts at P = 1/2 + c -/+ t / 2 and the real estimator reads them. Three tables: stationary; the

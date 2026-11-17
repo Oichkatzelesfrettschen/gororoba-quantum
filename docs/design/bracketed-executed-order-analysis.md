@@ -86,7 +86,7 @@ the series decides.
   decision.
 - Integration (done): `evaluate` in `scripts/qi_pathion_one_cz_null_bracketed_cases.py` maps the stamps to `executed_offset`
   (`twin_offsets`), replaces the twin rows by `adjusted_rows` (`executed_twin_fit`), emits the five labels (`WITHHELD_LABELS`) and keeps the
-  label of the pool that ignores the order as `label_if_order_ignored` and the strict result as `order_gate`.
+  label of the pool that ignores the order as `order_ignored_label` (repeated as `label_if_order_ignored` in a withheld decision) and the strict result as `order_gate`.
 - Power under reordering (done): `prediction.json` holds five tables of the registered rule, simulated with reordering at 0.5
   per batch, a linear drift and a planted departure (CASE.md, "Operating characteristics"): 91.6 to 93.3 percent at the design
   effect, a heterogeneity-gate false-alarm rate of about 1.0 percent and detection of 46 and 94 percent at departures of
