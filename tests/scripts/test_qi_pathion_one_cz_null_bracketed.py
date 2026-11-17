@@ -22,6 +22,7 @@ import qi_pathion_coset_coin_cases as cc
 import qi_pathion_one_cz_null_analysis as ana
 import qi_pathion_one_cz_null_bracketed_cases as bc
 import qi_pathion_one_cz_null_cases as oc
+import qi_pathion_one_cz_null_executed_order as eo
 import qi_pathion_one_cz_null_rule_v2 as rule
 import qi_platform_wave as wave
 
@@ -438,7 +439,7 @@ def worlds(built: dict[str, dict[str, str]], manifest: dict[str, Any]) -> dict[s
 def test_each_simulated_world_reads_its_rule_v2_row(
     world: str, worlds: dict[str, dict[str, list[str]]], manifest: dict[str, Any]
 ) -> None:
-    result = bc.evaluate(worlds[world], manifest)
+    result = bc.evaluate(worlds[world], manifest, _stamped())
     _expect(result["decision"]["label"] == WORLD_LABELS[world], f"{world}: {result['decision']}")
 
 
@@ -771,6 +772,23 @@ def test_analyze_scores_the_collected_tuna_series_and_reports_an_incomplete_one(
     _expect(sanity["batches"] == [f"batch-{n:02d}" for n in range(8)] and sanity["drift"], "sanity")
 
 
+@pytest.mark.audit
+def test_analyze_fails_closed_when_a_collected_job_lacks_its_start_stamp(
+    tmp_path: Path, built: dict[str, dict[str, str]], worlds: dict[str, dict[str, list[str]]]
+) -> None:
+    dirs = _runs(tmp_path, bc.TUNA_SERIES, built[bc.TUNA_SERIES], worlds["over_rotation"])
+    results = dirs[1] / "results.json"
+    record = json.loads(results.read_text(encoding="utf-8"))
+    record["jobs"][0]["job"]["queued_at"] = None
+    results.write_text(json.dumps(record), encoding="utf-8")
+    try:
+        scored = bc.analyze(dirs, tmp_path / "cases")
+    except KeyError, TypeError, ValueError:
+        return
+    decision = scored["decision"]
+    _expect(decision["label"] == "unresolved_order" and decision["decided"] is False, f"{decision}")
+
+
 # The executed order of the batches --------------------------------------------------------------------------------
 
 
@@ -802,63 +820,176 @@ def test_the_retained_start_stamps_order_the_executions_of_a_predecessor_batch()
 
 
 @pytest.fixture
-def stub_decision(monkeypatch: pytest.MonkeyPatch) -> dict[str, Any]:
-    """bc.evaluate with the simulated series replaced by a fixed rule-v2 reading, so the gate alone is under test."""
-    reading = {"label": "zero", "outcome": "stub", "a5_186": "stub", "decided": True, "numbers": {}}
-    monkeypatch.setattr(bc, "evaluate_decision", lambda shots, manifest, executed=None: {"decision": dict(reading)})
+def contrasts_of(monkeypatch: pytest.MonkeyPatch) -> Any:
+    """bc.evaluate on synthetic twin contrasts: the simulated series is replaced by (value, se) rows that follow the
+    drift model v = t + g x with x the offset the given stamps execute, so the order rule alone is under test."""
+    state: dict[str, Any] = {}
+
+    def fake(shots: dict[str, list[str]], manifest: dict[str, Any], executed: Any = None) -> dict[str, Any]:
+        rows = state["rows"]
+        return {
+            "decision": bc.decide_estimates(rows),
+            "batch_contrasts": {t: {k: [list(x) for x in v] for k, v in rows[t].items()} for t in rows},
+        }
+
+    monkeypatch.setattr(bc, "evaluate_decision", fake)
     monkeypatch.setattr(bc, "batch_brackets", lambda shots, manifest: {})
-    return reading
+
+    def evaluate(
+        stamps: dict[str, Any] | None, truth_stamps: dict[str, str] | None = None, drift: Any = 0.01
+    ) -> dict[str, Any]:
+        """The record for `stamps`; the data follow the offsets of `truth_stamps` (the stamps when omitted) and a drift
+        per template (a number for one shared drift)."""
+        offsets = bc.twin_offsets(truth_stamps if truth_stamps is not None else stamps)
+        per = drift if isinstance(drift, dict) else dict.fromkeys(oc.TEMPLATES, drift)
+        twin: dict[str, list[tuple[float, float]]] = {t: [] for t in oc.TEMPLATES}
+        for batch, (template, _, _) in sorted(bc.twin_layout().items()):
+            twin[template].append((TRUE_TWIN[template] + per[template] * offsets[batch], TWIN_SE))
+        state["rows"] = {t: {"base": [(0.0, BASE_SE)] * 4, "twin": twin[t]} for t in oc.TEMPLATES}
+        return bc.evaluate({}, {}, stamps)
+
+    return evaluate
 
 
-def test_a_series_that_ran_in_its_requested_order_keeps_the_decision(stub_decision: dict[str, Any]) -> None:
-    ordered = bc.evaluate({}, {}, _stamped())
-    _expect(ordered["order_gate"]["intact"] is True, f"{ordered['order_gate']}")
-    _expect(ordered["decision"] == stub_decision, "an intact order changed the decision")
-    _expect(bc.evaluate({}, {})["order_gate"] is None, "a series without stamps reported a gate")
+TRUE_TWIN = {"b0": 0.0164, "k4": 0.0, "k8": 0.0, "k12": 0.0}
+TWIN_SE = 0.0055
+BASE_SE = 0.004
+
+
+def _stamps_of(batch: str, order: list[str], stamps: dict[str, str]) -> dict[str, str]:
+    """`stamps` with the circuits of `batch` executed in `order`, one second apart."""
+    out = dict(stamps)
+    for position, name in enumerate(order):
+        out[f"{batch}/{name}"] = f"2026-11-08T01:{int(batch[-2:]):02d}:{position:02d}.000000Z"
+    return out
+
+
+def test_a_series_that_kept_its_requested_order_pools_to_the_plain_pool(contrasts_of: Any) -> None:
+    record = contrasts_of(_stamped())
+    fit = record["executed_order_fit"]
+    _expect(fit["status"] == "fitted" and record["order_gate"]["intact"] is True, f"{fit['status']}")
+    for template in oc.TEMPLATES:
+        weights = [1.0 / TWIN_SE**2] * 4
+        _expect(
+            abs(fit["contrast"][template] - TRUE_TWIN[template]) < 1e-12, f"{template}: {fit['contrast'][template]}"
+        )
+        _expect(abs(fit["error"][template] - 1.0 / math.sqrt(sum(weights))) < 1e-12, f"{template}: {fit['error']}")
+    _expect(abs(fit["drift"] - 0.01) < 1e-12, f"drift {fit['drift']}")
+    _expect(record["decision"]["label"] == record["order_ignored_label"], "an order that was kept changed the label")
+
+
+def test_a_reordered_batch_is_analyzed_on_its_executed_order_and_matches_the_series_submitted_in_order(
+    contrasts_of: Any,
+) -> None:
+    # The platform ran three twin batches out of the requested order, to executed offsets -2, +1 and -1 (the retained
+    # batches show -2, +1 and -3). The data carry a drift of 0.01 per position, so the plain
+    # pool of the reordered series is biased while the executed-order fit recovers the contrasts of the series that kept
+    # its order, and reads the executed offset of each batch rather than the requested one.
+    layout = bc.twin_layout()
+    batches = sorted(layout)
+    requested = _stamped()
+    plan = {
+        batches[0]: lambda c0, c1, r0, r1: [c1, r0, c0, r1],
+        batches[5]: lambda c0, c1, r0, r1: [r0, r1, c0, c1],
+        batches[9]: lambda c0, c1, r0, r1: [c1, c0, r0, r1],
+    }
+    stamps = dict(requested)
+    for batch, order in plan.items():
+        template, c0, c1 = layout[batch]
+        stamps = _stamps_of(batch, order(c0, c1, "readout-0.cq", "readout-1.cq"), stamps)
+    kept = contrasts_of(requested)
+    ran = contrasts_of(stamps)
+    expected = {
+        batch: (rank(stamps, batch, layout[batch][2]) - rank(stamps, batch, layout[batch][1])) for batch in batches
+    }
+    _expect(ran["executed_order_fit"]["offsets"] == expected, f"{ran['executed_order_fit']['offsets']}")
+    _expect([expected[b] for b in plan] == [-2, 1, -1], f"{[expected[b] for b in plan]}")
+    _expect(ran["order_gate"]["intact"] is False and kept["order_gate"]["intact"] is True, "the strict reading")
+    for template in oc.TEMPLATES:
+        _expect(
+            abs(ran["executed_order_fit"]["contrast"][template] - kept["executed_order_fit"]["contrast"][template])
+            < 1e-12,
+            f"{template}: {ran['executed_order_fit']['contrast'][template]}",
+        )
+    _expect(abs(ran["executed_order_fit"]["drift"] - 0.01) < 1e-12, f"{ran['executed_order_fit']['drift']}")
+    plain_pool = {t: sum(v for v, _ in ran["batch_contrasts"][t]["twin"]) / 4 for t in oc.TEMPLATES}
+    _expect(
+        max(abs(plain_pool[t] - TRUE_TWIN[t]) for t in oc.TEMPLATES) > 1e-3,
+        f"the plain pool of the reordered series is not biased: {plain_pool}",
+    )
+    _expect(ran["decision"]["label"] == kept["decision"]["label"], f"{ran['decision']['label']}")
+    _expect(not ran["decision"]["label"].startswith(("unresolved_order", "unresolved_drift")), "the fit withheld it")
+    _expect(
+        any(ran["executed_order_fit"]["error"][t] > kept["executed_order_fit"]["error"][t] for t in oc.TEMPLATES),
+        "a reordered batch costs precision",
+    )
+
+
+def rank(stamps: dict[str, str], batch: str, name: str) -> int:
+    """Executed place of circuit `name` among the circuits of `batch`, from the stamps alone."""
+    own = sorted(key for key in stamps if key.startswith(f"{batch}/"))
+    return sorted(own, key=lambda key: stamps[key]).index(f"{batch}/{name}")
 
 
 @pytest.mark.parametrize(
-    ("label", "swap"),
+    "defect",
     [
-        ("reversed twins", lambda files: [files[0], files[2], files[1], files[3]]),
-        ("template outside its readouts", lambda files: [files[1], files[0], files[2], files[3]]),
-        ("readouts exchanged", lambda files: [files[3], files[1], files[2], files[0]]),
+        "no stamps",
+        "empty stamps",
+        "a twin batch lacks one stamp",
+        "a base batch lacks one stamp",
+        "a stamp is null",
+        "two jobs of a twin batch share a stamp",
     ],
 )
-def test_a_batch_out_of_its_requested_order_reads_unresolved_order(
-    label: str, swap: Any, stub_decision: dict[str, Any]
-) -> None:
+def test_an_unusable_order_fails_closed_and_decides_nothing(contrasts_of: Any, defect: str) -> None:
+    stamps: dict[str, Any] | None = _stamped()
     twin_batch = f"batch-{TWIN_BATCHES[0]:02d}"
-    record = bc.evaluate({}, {}, _stamped(lambda row, files: swap(files) if row["batch"] == twin_batch else files))
-    gate = record["order_gate"]
-    broken = [name for name, entry in gate["batches"].items() if not entry["intact"]]
-    _expect(gate["intact"] is False and broken == [twin_batch], f"{label}: broken {broken}")
+    if defect == "no stamps":
+        stamps = None
+    elif defect == "empty stamps":
+        stamps = {}
+    elif defect == "a twin batch lacks one stamp":
+        del stamps[f"{twin_batch}/readout-0.cq"]  # type: ignore[union-attr]
+    elif defect == "a base batch lacks one stamp":
+        del stamps["batch-00/readout-0.cq"]  # type: ignore[union-attr]
+    elif defect == "a stamp is null":
+        stamps[f"{twin_batch}/readout-1.cq"] = None  # type: ignore[index]
+    else:
+        stamps[f"{twin_batch}/{oc.twin_file('b0', 0)}"] = stamps[f"{twin_batch}/readout-0.cq"]  # type: ignore[index]
+    record = contrasts_of(stamps, truth_stamps=_stamped())
     decision = record["decision"]
-    _expect(decision["label"] == "unresolved_order" and decision["decided"] is False, f"{label}: {decision}")
-    _expect(decision["label_if_order_ignored"] == "zero", f"{label}: {decision['label_if_order_ignored']}")
-
-
-def test_a_missing_start_stamp_is_not_an_intact_order(stub_decision: dict[str, Any]) -> None:
-    stamps = _stamped()
-    batch = f"batch-{TWIN_BATCHES[0]:02d}"
-    gone = f"{batch}/readout-0.cq"
-    del stamps[gone]
-    record = bc.evaluate({}, {}, stamps)
-    gate = record["order_gate"]
-    _expect(gate["intact"] is False, f"a batch without one stamp left the series intact: {gate['intact']}")
-    _expect(gate["batches"][batch]["missing_stamps"] == ["readout-0.cq"], f"{gate['batches'][batch]}")
-    _expect(len(gate["batches"]) == len(list(bc.batch_rows(bc.TUNA_SERIES))), "a batch left the gate")
-    _expect(record["decision"]["label"] == "unresolved_order", f"{record['decision']['label']}")
-    stamps = _stamped()
-    stamps[gone] = None  # type: ignore[assignment]
-    nulled = bc.order_gate(stamps)
-    _expect(nulled is not None and nulled["intact"] is False, "a null stamp left the series intact")
+    _expect(decision["label"] == "unresolved_order" and decision["decided"] is False, f"{defect}: {decision}")
+    _expect("label_if_order_ignored" in decision and record["executed_order_fit"]["status"] == "unusable", defect)
     _expect(bc.order_gate({}) is None, "an empty mapping read as an intact order")
 
 
-def test_two_jobs_with_one_start_stamp_do_not_order_a_batch(stub_decision: dict[str, Any]) -> None:
+def test_a_series_whose_templates_keep_one_offset_is_confounded(contrasts_of: Any) -> None:
+    # Every twin batch executed with the coin-0 twin first: each template then has the one offset +1 and no drift is
+    # separable from the contrasts.
+    layout = bc.twin_layout()
     stamps = _stamped()
-    batch = f"batch-{TWIN_BATCHES[0]:02d}"
-    stamps[f"{batch}/{oc.twin_file('b0', 0)}"] = stamps[f"{batch}/readout-0.cq"]
-    record = bc.evaluate({}, {}, stamps)
-    _expect(record["decision"]["label"] == "unresolved_order", f"{record['decision']['label']}")
+    for batch, (_, c0, c1) in layout.items():
+        stamps = _stamps_of(batch, ["readout-0.cq", c0, c1, "readout-1.cq"], stamps)
+    record = contrasts_of(stamps, truth_stamps=_stamped())
+    _expect(record["decision"]["label"] == "unresolved_order_confounded", f"{record['decision']}")
+    _expect(record["decision"]["decided"] is False and record["executed_order_fit"]["status"] == "confounded", "d")
+
+
+def test_a_template_whose_own_drift_departs_from_the_shared_drift_reads_heterogeneity(contrasts_of: Any) -> None:
+    common = contrasts_of(_stamped(), drift=0.01)
+    _expect(common["decision"]["label"] != "unresolved_drift_heterogeneity", f"{common['decision']['label']}")
+    own = {"b0": 0.01, "k4": 0.06, "k8": 0.01, "k12": 0.01}
+    record = contrasts_of(_stamped(), drift=own)
+    decision = record["decision"]
+    _expect(decision["label"] == "unresolved_drift_heterogeneity" and decision["decided"] is False, f"{decision}")
+    _expect("label_if_drift_common" in decision, "the label the rule would have read stays beside it")
+    fit = record["executed_order_fit"]
+    _expect(abs(fit["template_drift"]["k4"] - 0.06) < 1e-12, f"{fit['template_drift']}")
+
+
+def test_the_executed_offset_orders_by_stamp_and_refuses_a_tie() -> None:
+    stamps = {"a": "2026-11-08T01:00:03Z", "b": "2026-11-08T01:00:01Z", "c": "2026-11-08T01:00:02Z"}
+    _expect(eo.executed_offset(stamps, "a", "b") == -2, "a ran third and b first")
+    with pytest.raises(eo.ConfoundedOrder):
+        eo.executed_offset({**stamps, "c": stamps["a"]}, "a", "b")

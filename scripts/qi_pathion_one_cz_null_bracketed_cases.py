@@ -24,7 +24,9 @@ Order. Four rounds of eight batches (`batch_order`): a forward round (the predec
 mirror reversed, the forward round again and its mirror, then the three X-only calibration batches of `oc`: 35 batches,
 which `waves` groups three to a wave (12 waves). A mirror round runs the coin-1 twin before the coin-0 twin, so a linear
 drift per circuit position enters the forward and mirror replicates of t with opposite signs and cancels in the pooled
-contrast to first order.
+contrast to first order. The platform sets the execution order, so the decision does not assume the requested order: it
+fits the drift on the position offsets that the per-job start stamps give (`evaluate`, `twin_offsets`,
+qi_pathion_one_cz_null_executed_order.py), and `order_gate` records which batches kept their order.
 
 Usage: "$PYTHON" scripts/qi_pathion_one_cz_null_bracketed_cases.py
        (--write DIR | --check DIR | --operating-characteristics | --sanity RUN_DIR... | --analyze RUN_DIR... --out FILE
@@ -50,6 +52,7 @@ import qi_pathion_coset_block_series as pcs  # noqa: E402
 import qi_pathion_coset_coin_cases as cc  # noqa: E402
 import qi_pathion_one_cz_null_analysis as ana  # noqa: E402
 import qi_pathion_one_cz_null_cases as oc  # noqa: E402
+import qi_pathion_one_cz_null_executed_order as eo  # noqa: E402
 import qi_pathion_one_cz_null_rule_v2 as rule  # noqa: E402
 import qi_platform_wave  # noqa: E402
 
@@ -324,13 +327,13 @@ evaluate_decision = ana.rebound(
 def order_gate(executed: dict[str, str] | None) -> dict[str, Any] | None:
     """Whether every batch ran its circuits in the requested order, read from the provider's per-job start stamps.
 
-    `executed` maps "batch/file" to the job's `queued_at`, which in the retained Tuna-17 series follows the previous
-    job's `finished_at` by 0.03 to 0.19 s and so orders the executions (measured on the 19 retained batches of the
-    predecessor series; provider behavior, not a documented guarantee). The queue fixes the order requested, not the
-    order executed (the provider's terms allow priority without regard to the queue): 7 of those 19 batches ran out
-    of the requested order. The mirror of the rounds cancels a linear drift only when each batch keeps its requested
-    order, so a batch whose stamps order its circuits otherwise, tie two of them or lack one is not intact, and the
-    series is intact only when every expected batch is (issue 894). None when no stamps are read.
+    The record is a reading beside the decision: the decision reads the executed order through `executed_twin_fit`
+    and no reordered batch withholds it. `executed` maps "batch/file" to the job's `queued_at`, which in the retained
+    Tuna-17 series follows the previous job's `finished_at` by 0.03 to 0.19 s and so orders the executions (measured on
+    the 19 retained batches of the predecessor series; provider behavior, not a documented guarantee). The queue fixes
+    the order requested, not the order executed (the provider's terms allow priority without regard to the queue): 7 of
+    those 19 batches ran out of the requested order. A batch whose stamps order its circuits otherwise, tie two of them
+    or lack one is not intact (issue 894). None when no stamps are read.
     """
     if not executed:
         return None
@@ -353,28 +356,150 @@ def order_gate(executed: dict[str, str] | None) -> dict[str, Any] | None:
     }
 
 
+class UnusableOrder(ValueError):
+    """The start stamps of a series cannot order its circuits: none were read, one is missing, or two circuits of a twin
+    batch carry one stamp. The executed-order rule decides nothing then (`unresolved_order`)."""
+
+
+# A template whose own drift departs from the shared drift by more than this many errors of the difference reads
+# `unresolved_drift_heterogeneity` (rule 3 of docs/design/bracketed-executed-order-analysis.md).
+DRIFT_HETEROGENEITY_SE = 3.0
+
+
+def twin_layout() -> dict[str, tuple[str, str, str]]:
+    """Per twin batch of the Tuna-17 series, (template, coin-0 twin file, coin-1 twin file)."""
+    return {
+        row["batch"]: (row["template"], oc.twin_file(row["template"], 0), oc.twin_file(row["template"], 1))
+        for row in batch_rows(TUNA_SERIES)
+        if row["kind"] == "twin"
+    }
+
+
+def twin_offsets(executed: dict[str, str] | None) -> dict[str, int]:
+    """Executed position offset x of every twin batch: the executed place of its coin-1 twin minus that of its coin-0
+    twin among the circuits of the batch, ordered by `queued_at`.
+
+    Every circuit of every batch of the series needs a stamp, and no two circuits of a twin batch may share one;
+    otherwise UnusableOrder."""
+    if not executed:
+        raise UnusableOrder("no start stamps were read")
+    for row in batch_rows(TUNA_SERIES):
+        absent = [c["file"] for c in row["circuits"] if not executed.get(f"{row['batch']}/{c['file']}")]
+        if absent:
+            raise UnusableOrder(f"{row['batch']} lacks the start stamps of {absent}")
+    offsets: dict[str, int] = {}
+    for batch, (_, coin0, coin1) in twin_layout().items():
+        stamps = {
+            c["file"]: str(executed[f"{batch}/{c['file']}"])
+            for row in batch_rows(TUNA_SERIES)
+            if row["batch"] == batch
+            for c in row["circuits"]
+        }
+        try:
+            offsets[batch] = eo.executed_offset(stamps, coin0, coin1)
+        except eo.ConfoundedOrder as error:
+            raise UnusableOrder(f"{batch}: {error}") from error
+    return offsets
+
+
+def twin_batch_ids(contrasts: dict[str, dict[str, list[Any]]]) -> dict[str, list[str]]:
+    """The twin batches of each template in the order `batch_estimates` lists their contrasts (sorted by batch)."""
+    ids: dict[str, list[str]] = {template: [] for template in contrasts}
+    for batch, (template, _, _) in sorted(twin_layout().items()):
+        ids[template].append(batch)
+    for template, listed in ids.items():
+        if len(listed) != len(contrasts[template]["twin"]):
+            raise ValueError(f"{template} holds {len(contrasts[template]['twin'])} twin contrasts, not {len(listed)}")
+    return ids
+
+
+def executed_twin_fit(
+    contrasts: dict[str, dict[str, list[Any]]], offsets: dict[str, int]
+) -> tuple[dict[str, dict[str, list[tuple[float, float]]]], dict[str, Any]]:
+    """The rows rule v2 pools under the executed-order rule, and the fit beside them.
+
+    `contrasts` is the record's `batch_contrasts` (per template the (value, se) of every base and twin batch).
+    Each twin value is reduced by the shared drift times its batch's executed offset and its error is inflated by the
+    drift's uncertainty (`qi_pathion_one_cz_null_executed_order.adjusted_rows`); a batch run in the requested order has
+    the offset the layout requests, so a series that kept its order is pooled to the same value as the plain pool.
+    ConfoundedOrder when no template varies its offset (no separable drift)."""
+    ids = twin_batch_ids(contrasts)
+    fit_rows = {
+        template: [
+            (float(v), float(se), float(offsets[batch]))
+            for (v, se), batch in zip(c["twin"], ids[template], strict=True)
+        ]
+        for template, c in contrasts.items()
+    }
+    adjusted = eo.adjusted_rows(fit_rows)
+    rows = {
+        template: {"base": [(float(v), float(se)) for v, se in c["base"]], "twin": adjusted[template]}
+        for template, c in contrasts.items()
+    }
+    fitted = eo.fit(fit_rows)
+    fitted["offsets"] = {batch: offsets[batch] for template in ids for batch in ids[template]}
+    return rows, fitted
+
+
+def unresolved(record: dict[str, Any], label: str, why: str) -> None:
+    """Replace the decision by an undecided `label`; the label of the plain pool and of the fit stay beside it."""
+    outcome, effect = oc.OUTCOMES["unresolved"]
+    decision = record["decision"]
+    record["decision"] = {
+        **decision,
+        "label": label,
+        "outcome": outcome,
+        "a5_186": effect,
+        "decided": False,
+        "label_if_order_ignored": record["order_ignored_label"],
+        "why": why,
+    }
+
+
 def evaluate(
     shots: dict[str, list[str]], manifest: dict[str, Any], executed: dict[str, str] | None = None
 ) -> dict[str, Any]:
-    """The rule-v2 decision of a complete Tuna-17 series, with the per-batch bracket offsets beside it.
+    """The rule-v2 decision of a complete Tuna-17 series on its executed order, with the per-batch bracket offsets
+    beside it.
 
-    A series with a batch out of its requested order reads `unresolved_order` and decides nothing; the label the rule
-    would have read stays beside it as `label_if_order_ignored`."""
+    Registered rule (owner ruling 2026-11-16, issue 791): the twin contrasts are fitted on the order the provider
+    executed, recorded per job as `queued_at`; each twin value is corrected for one drift shared by the twin batches
+    and rule v2 pools the corrected rows. A stamp that is missing or tied inside a twin batch reads `unresolved_order`;
+    a series whose twin batches all keep one offset per template reads `unresolved_order_confounded`; a template whose
+    own drift departs from the shared one reads `unresolved_drift_heterogeneity`. The label of the pool that ignores
+    the order stays beside every reading as `label_if_order_ignored`, and the strict reading of
+    `order_gate` stays as a record that decides nothing."""
     record: dict[str, Any] = evaluate_decision(shots, manifest, executed)
     record["twin_brackets"] = batch_brackets(shots, manifest)
-    gate = order_gate(executed)
-    record["order_gate"] = gate
-    if gate is not None and not gate["intact"]:
-        outcome, effect = oc.OUTCOMES["unresolved"]
-        decision = record["decision"]
-        record["decision"] = {
-            **decision,
-            "label": "unresolved_order",
-            "outcome": outcome,
-            "a5_186": effect,
-            "decided": False,
-            "label_if_order_ignored": decision["label"],
-        }
+    record["order_gate"] = order_gate(executed)
+    plain = record["decision"]
+    record["order_ignored_label"] = plain["label"]
+    try:
+        offsets = twin_offsets(executed)
+    except UnusableOrder as error:
+        record["executed_order_fit"] = {"status": "unusable", "reason": str(error)}
+        unresolved(record, "unresolved_order", str(error))
+        return record
+    contrasts = {t: {k: [tuple(x) for x in v] for k, v in c.items()} for t, c in record["batch_contrasts"].items()}
+    try:
+        rows, fitted = executed_twin_fit(contrasts, offsets)
+    except eo.ConfoundedOrder as error:
+        record["executed_order_fit"] = {"status": "confounded", "reason": str(error)}
+        unresolved(record, "unresolved_order_confounded", str(error))
+        return record
+    record["executed_order_fit"] = {"status": "fitted", **fitted}
+    record["decision"] = decide_estimates(rows)
+    stray = [
+        template
+        for template in oc.TEMPLATES
+        if fitted["template_drift"][template] is not None
+        and abs(fitted["template_drift"][template] - fitted["drift"])
+        > DRIFT_HETEROGENEITY_SE * fitted["template_drift_difference_se"][template]
+    ]
+    if stray:
+        common = record["decision"]["label"]
+        unresolved(record, "unresolved_drift_heterogeneity", f"own drift departs from the shared drift: {stray}")
+        record["decision"]["label_if_drift_common"] = common
     return record
 
 

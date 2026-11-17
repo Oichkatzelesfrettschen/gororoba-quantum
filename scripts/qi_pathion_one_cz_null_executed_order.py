@@ -8,8 +8,8 @@ cancels in the pooled contrast. The platform sets the execution order, not the q
 batches and 2 of the 4 hosted QX batches ran out of order by `queued_at`), and a reordered batch changes its own x,
 for example to -3 when the coin-1 twin runs three places before the coin-0 twin.
 
-The strict gate (`order_gate` of `qi_pathion_one_cz_null_bracketed_cases`) refuses the whole series on one reordered
-batch, which at that rate decides almost never. This module reads x from the executed order instead and fits one drift
+A rule that refused the whole series on one reordered batch would decide almost never at that rate, so the decision
+(`evaluate` of `qi_pathion_one_cz_null_bracketed_cases`) reads x from the executed order and fits one drift
 g shared by the twin batches beside one contrast per template, by weighted least squares:
 
     v_b = t_T + g x_b + e_b,   w_b = 1 / se_b^2,   T = the template of batch b.
