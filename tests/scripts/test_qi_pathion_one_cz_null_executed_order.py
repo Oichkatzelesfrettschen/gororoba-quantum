@@ -101,6 +101,17 @@ def test_templates_that_are_each_one_directional_in_opposite_directions_are_conf
         eo.fit(rows)
 
 
+def test_the_enumerated_confounded_probability_of_two_templates_matches_its_closed_form() -> None:
+    for rate in (0.1, 0.25, 7 / 19):
+        per_template = 2 * rate**2 * (1 - rate) ** 2  # a template [+, -, +, -] ends one-directional
+        seen = eo.operating_characteristics(rate, templates=2)["confounded"]
+        _expect(math.isclose(seen, per_template**2, rel_tol=1e-9), f"rate {rate}: {seen} against {per_template**2}")
+    _expect(
+        eo.operating_characteristics(0.0, templates=2)["mean_error_ratio"] == 1.0, "a balanced design pays no error"
+    )
+
+
+@pytest.mark.audit
 def test_the_enumerated_confounded_probability_matches_its_closed_form() -> None:
     for rate in (0.1, 0.25, 7 / 19):
         per_template = 2 * rate**2 * (1 - rate) ** 2  # a template [+, -, +, -] ends one-directional
