@@ -48,18 +48,22 @@ NEGATED = {"iso-nm": frozenset(range(6, 16))}
 QUADRICS = (
     "option(redSB);def R0=basering;ideal sJ=std(ReducedJ);ideal GG=ReducedG;",
     "int n=ncols(GG);int i;int k;int f;int e;int b;int j;",
+    '"STAGE std_J_done "+string(rtimer);',
     "for(i=1;i<=n;i++){GG[i]=reduce(GG[i],sJ);}",
     "ring Y=0,(y(1..n)),dp;ideal kb=kbase(std(ideal(0)),2);int c=ncols(kb);",
     'for(i=1;i<=c;i++){"RESULT target_"+string(i),kb[i];}',
     "setring R0;ideal P;poly q;intvec ev;",
     "for(i=1;i<=c;i++){setring Y;ev=leadexp(kb[i]);setring R0;q=1;",
-    "for(f=1;f<=n;f++){for(e=1;e<=ev[f];e++){q=reduce(q*GG[f],sJ);}}P[i]=q;}",
+    "for(f=1;f<=n;f++){for(e=1;e<=ev[f];e++){q=reduce(q*GG[f],sJ);}}P[i]=q;",
+    '"STAGE product "+string(i)+" of "+string(c)+" "+string(rtimer);}',
     # m is the ideal of the slice variables, as in the receipts; the producer ring still carries t3 and t8
     "ideal SliceM=@SLICE@;ideal Q=sJ;for(k=1;k<=ncols(SliceM);k++){for(i=1;i<=c;i++){Q=Q,SliceM[k]*P[i];}}",
-    'ideal sQ=std(Q);"RESULT sq_size",size(sQ);ideal N=reduce(P,sQ);',
+    '"STAGE std_Q_start generators "+string(size(Q))+" "+string(rtimer);',
+    'ideal sQ=std(Q);"RESULT sq_size",size(sQ);"STAGE std_Q_done "+string(rtimer);ideal N=reduce(P,sQ);',
+    '"STAGE normal_forms_done "+string(rtimer);',
     "ideal mons;poly h;for(b=1;b<=c;b++){h=N[b];while(h!=0){mons=mons,leadmonom(h);h=h-lead(h);}}",
     'mons=simplify(mons,6);"RESULT monomials",size(mons);',
-    "matrix M=coeffs(N,mons);module S=syz(module(M));",
+    'matrix M=coeffs(N,mons);module S=syz(module(M));"STAGE syzygies_done "+string(rtimer);',
     '"RESULT targets",c;"RESULT relations",size(S);string row;',
     "for(j=1;j<=size(S);j++){row=string(S[j][1]);",
     'for(b=2;b<=c;b++){row=row+";"+string(S[j][b]);}"RESULT rel_"+string(j),row;}',
@@ -172,12 +176,26 @@ def _modular_rows(
     return rows
 
 
-def check(slug: str, timeout: int = 4 * reduction_check.TIMEOUT_SECONDS) -> dict[str, Any]:
+def singular_script(slug: str, cores: int = 0) -> str:
+    """The Singular script of the check. With cores > 0 the two standard bases over Q(i) come from nfmodStd
+    (nfmodstd.lib: standard bases modulo primes on `cores` processes, Chinese remaindering and rational
+    reconstruction, then the final test that the input reduces to zero and the result is a standard basis)."""
     body = reduction_check._script(slug, None, rees.MODULAR_PRIME, extra=False)
     header = (reduction_check.HEADERS / f"p{SOURCES[slug][0][0]}-r{SOURCES[slug][0][1]}" / f"{slug}.sing").read_text()
     ring_line = header.splitlines()[0]
     slice_vars = ring_line[ring_line.index("(") + 1 : ring_line.index(")")]
-    script = body.replace("\nquit;\n", "\n") + "\n".join(QUADRICS).replace("@SLICE@", slice_vars) + "\nquit;\n"
+    quadrics = "\n".join(QUADRICS).replace("@SLICE@", slice_vars)
+    if cores:
+        for direct, modular in (("std(ReducedJ)", "nfmodStd(ReducedJ)"), ("ideal sQ=std(Q)", "ideal sQ=nfmodStd(Q)")):
+            if quadrics.count(direct) != 1:
+                raise SystemExit(f"the script holds {quadrics.count(direct)} copies of {direct}")
+            quadrics = quadrics.replace(direct, modular)
+        quadrics = f'LIB "nfmodstd.lib";setcores({cores});\n' + quadrics
+    return body.replace("\nquit;\n", "\n") + quadrics + "\nquit;\n"
+
+
+def check(slug: str, timeout: int = 4 * reduction_check.TIMEOUT_SECONDS, cores: int = 0) -> dict[str, Any]:
+    script = singular_script(slug, cores)
     outcome = rees._run_singular(script, "quadrics_qi", timeout)
     if outcome.status != "completed":
         raise SystemExit(f"{slug}: {outcome.status} {outcome.diagnostic}")
@@ -218,6 +236,7 @@ def check(slug: str, timeout: int = 4 * reduction_check.TIMEOUT_SECONDS) -> dict
         "qi_has_imaginary_part": any(b != 0 for r in echelon for _, b in r),
         "sq_size": int(res["sq_size"]),
         "monomials": int(res["monomials"]),
+        "engine": f"nfmodStd on {cores} processes" if cores else "std",
         "wall_seconds": round(outcome.wall_nanoseconds / 1e9, 1),
         "peak_rss_kib": outcome.peak_rss_kib,
         "primes": rows,
@@ -233,9 +252,15 @@ def main() -> None:
     parser.add_argument(
         "--timeout", type=int, default=4 * reduction_check.TIMEOUT_SECONDS, help="seconds for the Singular call"
     )
+    parser.add_argument("--cores", type=int, default=0, help="processes of nfmodStd; 0 runs std over Q(i)")
+    parser.add_argument("--dump-script", type=Path, help="write the Singular script there and exit")
     arguments = parser.parse_args()
-    result = check(arguments.slug, arguments.timeout)
-    (HERE / f"quadrics-{arguments.slug}.json").write_text(json.dumps(result, indent=1) + "\n", encoding="utf-8")
+    if arguments.dump_script:
+        arguments.dump_script.write_text(singular_script(arguments.slug, arguments.cores), encoding="utf-8")
+        return
+    result = check(arguments.slug, arguments.timeout, arguments.cores)
+    name = f"quadrics-{arguments.slug}-modular.json" if arguments.cores else f"quadrics-{arguments.slug}.json"
+    (HERE / name).write_text(json.dumps(result, indent=1) + "\n", encoding="utf-8")
     print(json.dumps(result, indent=1))
 
 
