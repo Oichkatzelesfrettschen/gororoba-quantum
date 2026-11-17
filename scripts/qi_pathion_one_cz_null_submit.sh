@@ -26,7 +26,7 @@
 #
 # QI_PYTHON names the Quantum Inspire interpreter, QI_PLATFORM the runner (default scripts/qi_platform.py),
 # SANITY_COMMAND the per-batch check that takes the run directory last (default: the case generator's --sanity under
-# PYTHON), QI_COLLECT_TIMEOUT the seconds one collection waits for its batch (default 3600; a batch still queued at
+# PYTHON, the bracketed generator's for a series named pathion_one_cz_null_bracketed_*), QI_COLLECT_TIMEOUT the seconds one collection waits for its batch (default 3600; a batch still queued at
 # the timeout stops the script and stays queued for the resuming call), and QI_PAUSE_SLEEP=0 prints the wait without
 # sleeping (tests).
 set -eu
@@ -42,7 +42,6 @@ stamp=$4
 approval=$5
 : "${QI_PYTHON:?QI_PYTHON must name the Quantum Inspire interpreter}"
 platform=${QI_PLATFORM:-scripts/qi_platform.py}
-sanity=${SANITY_COMMAND:-"${PYTHON:-python3} scripts/qi_pathion_one_cz_null_cases.py --sanity"}
 max_refusals=10
 collect_timeout=${QI_COLLECT_TIMEOUT:-3600}
 case $collect_timeout in
@@ -52,6 +51,12 @@ case $collect_timeout in
 	;;
 esac
 name=$(basename "$series")
+# The bracketed series carry their own per-batch check; the predecessor's refuses their run directories.
+case $name in
+pathion_one_cz_null_bracketed_*) sanity_default="${PYTHON:-python3} scripts/qi_pathion_one_cz_null_bracketed_cases.py --sanity" ;;
+*) sanity_default="${PYTHON:-python3} scripts/qi_pathion_one_cz_null_cases.py --sanity" ;;
+esac
+sanity=${SANITY_COMMAND:-$sanity_default}
 
 mkdir -p "$runs"
 for other in "$runs"/*-"$name"-batch-*; do

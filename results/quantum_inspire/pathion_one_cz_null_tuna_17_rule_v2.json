@@ -1,0 +1,277 @@
+{
+ "operating_characteristics": {
+  "batch_drift_sd_0.003": {
+   "absent": {
+    "offset_absent": 8386,
+    "superposition_only": 27,
+    "unresolved": 134,
+    "unresolved_batch": 723,
+    "unresolved_block": 727,
+    "unresolved_negative_twin": 1,
+    "zero": 1
+   },
+   "coin_dropout": {
+    "b0_like": 7268,
+    "intermediate": 1124,
+    "offset_absent": 1,
+    "superposition_only": 21,
+    "unresolved": 32,
+    "unresolved_batch": 692,
+    "unresolved_block": 760,
+    "unresolved_context": 101
+   },
+   "over_rotation": {
+    "intermediate": 64,
+    "offset_absent": 1,
+    "superposition_only": 24,
+    "unresolved": 95,
+    "unresolved_batch": 713,
+    "unresolved_block": 745,
+    "unresolved_context": 92,
+    "zero": 8268
+   },
+   "over_rotation_x_all_after": {
+    "intermediate": 3,
+    "offset_absent": 1,
+    "superposition_only": 27,
+    "unresolved": 462,
+    "unresolved_batch": 732,
+    "unresolved_block": 777,
+    "unresolved_context": 818,
+    "zero": 7180
+   },
+   "over_rotation_x_all_before": {
+    "b0_like": 1140,
+    "intermediate": 6902,
+    "offset_absent": 1,
+    "superposition_only": 42,
+    "unresolved": 61,
+    "unresolved_batch": 710,
+    "unresolved_block": 765,
+    "unresolved_context": 379,
+    "zero": 1
+   },
+   "over_rotation_y_axis": {
+    "b0_like": 6,
+    "intermediate": 4069,
+    "offset_absent": 1,
+    "superposition_only": 36,
+    "unresolved": 46,
+    "unresolved_batch": 727,
+    "unresolved_block": 755,
+    "unresolved_context": 94,
+    "zero": 4266
+   },
+   "q12_correlation": {
+    "intermediate": 50,
+    "offset_absent": 3,
+    "superposition_only": 26,
+    "unresolved": 98,
+    "unresolved_batch": 684,
+    "unresolved_block": 765,
+    "unresolved_context": 96,
+    "zero": 8278
+   },
+   "superposition_only": {
+    "intermediate": 1,
+    "offset_absent": 2,
+    "superposition_only": 7680,
+    "unresolved": 664,
+    "unresolved_batch": 726,
+    "unresolved_block": 790,
+    "unresolved_context": 66,
+    "unresolved_negative_twin": 72
+   },
+   "twin_opposite_sign": {
+    "offset_absent": 1,
+    "superposition_only": 88,
+    "unresolved_batch": 706,
+    "unresolved_block": 790,
+    "unresolved_negative_twin": 8415
+   }
+  },
+  "draws_per_world": 20000,
+  "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-07T185234Z.json",
+  "seed_index": 0,
+  "stationary": {
+   "absent": {
+    "offset_absent": 9720,
+    "superposition_only": 1,
+    "unresolved": 13,
+    "unresolved_batch": 88,
+    "unresolved_block": 178
+   },
+   "coin_dropout": {
+    "b0_like": 9240,
+    "intermediate": 445,
+    "superposition_only": 3,
+    "unresolved": 6,
+    "unresolved_batch": 72,
+    "unresolved_block": 204,
+    "unresolved_context": 31
+   },
+   "over_rotation": {
+    "intermediate": 14,
+    "superposition_only": 3,
+    "unresolved": 18,
+    "unresolved_batch": 98,
+    "unresolved_block": 197,
+    "unresolved_context": 26,
+    "zero": 9644
+   },
+   "over_rotation_x_all_after": {
+    "intermediate": 1,
+    "superposition_only": 4,
+    "unresolved": 221,
+    "unresolved_batch": 79,
+    "unresolved_block": 218,
+    "unresolved_context": 609,
+    "zero": 8868
+   },
+   "over_rotation_x_all_before": {
+    "b0_like": 770,
+    "intermediate": 8728,
+    "superposition_only": 6,
+    "unresolved": 14,
+    "unresolved_batch": 80,
+    "unresolved_block": 185,
+    "unresolved_context": 217
+   },
+   "over_rotation_y_axis": {
+    "b0_like": 1,
+    "intermediate": 4697,
+    "superposition_only": 3,
+    "unresolved": 13,
+    "unresolved_batch": 84,
+    "unresolved_block": 204,
+    "unresolved_context": 27,
+    "zero": 4970
+   },
+   "q12_correlation": {
+    "intermediate": 10,
+    "superposition_only": 3,
+    "unresolved": 16,
+    "unresolved_batch": 69,
+    "unresolved_block": 188,
+    "unresolved_context": 24,
+    "zero": 9688
+   },
+   "superposition_only": {
+    "superposition_only": 9399,
+    "unresolved": 295,
+    "unresolved_batch": 75,
+    "unresolved_block": 204,
+    "unresolved_context": 14,
+    "unresolved_negative_twin": 13
+   },
+   "twin_opposite_sign": {
+    "superposition_only": 17,
+    "unresolved_batch": 86,
+    "unresolved_block": 191,
+    "unresolved_negative_twin": 9706
+   }
+  }
+ },
+ "outcomes": {
+  "b0_like": {
+   "a5_186": "refuted as stated: the resolved 6-CZ response is inconsistent with the model's bounded prediction of zero",
+   "outcome": "6-CZ blocks read the b0 value in both contexts: consistent with a coin-conditioned selector dropout, and the over-rotation and the q12 correlation are excluded"
+  },
+  "intermediate": {
+   "a5_186": "unchanged; the numbers are reported",
+   "outcome": "unresolved: the 6-CZ response is resolved above zero and sits outside the b0 band, an intermediate response that matches no modeled mechanism"
+  },
+  "offset_absent": {
+   "a5_186": "unchanged",
+   "outcome": "offset absent: b0's base contrast no longer reads positive at the control level; nothing about the mechanism is decided"
+  },
+  "superposition_only": {
+   "a5_186": "refuted as modeled: the over-rotation predicts the offset in the classical-coin twin as well",
+   "outcome": "the offset exists only with the coin in superposition: b0's classical-coin twin reads below the base contrast, where the over-rotation, the coin-conditioned dropout and the q12 correlation all predict the same value"
+  },
+  "unresolved": {
+   "a5_186": "unchanged; the numbers are reported",
+   "outcome": "unresolved: the contrasts match no preregistered row"
+  },
+  "unresolved_batch": {
+   "a5_186": "unchanged; the numbers are reported",
+   "outcome": "unresolved: replicate batches disagree beyond the heterogeneity bound"
+  },
+  "unresolved_block": {
+   "a5_186": "unchanged; the numbers are reported",
+   "outcome": "unresolved: the three 6-CZ blocks disagree beyond the heterogeneity bound"
+  },
+  "unresolved_context": {
+   "a5_186": "unchanged; the numbers are reported",
+   "outcome": "unresolved: the 6-CZ base and twin contrasts disagree beyond three standard errors"
+  },
+  "unresolved_negative_twin": {
+   "a5_186": "unchanged; the numbers are reported",
+   "outcome": "unresolved: b0's classical-coin twin contrast reads below zero by more than three standard errors, a response that matches no modeled mechanism (each predicts a twin contrast at or above zero)"
+  },
+  "zero": {
+   "a5_186": "survives: its falsifier, a resolved nonzero 6-CZ response inconsistent with the model's bounded prediction of zero, is unmet; a post-schedule q12 correlation stays open",
+   "outcome": "6-CZ blocks read zero in both contexts: the coin-conditioned selector dropout is excluded; consistent with the over-rotation, the assignment-level q12 flip being excluded by the retained brackets; a post-schedule q12 correlation remains"
+  }
+ },
+ "rule": "qi-pathion-one-cz-null-rule-v2",
+ "supersedes": "the twin control (item 4) of the preregistered rule in scripts/qi_pathion_one_cz_null_cases.py",
+ "twin_control": "b0 twin contrast t0 above 3.0 se; if not, t0 within 3.0 se of zero (|t0| <= 3.0 se) and s0 - t0 above 3.0 combined se, the offset exists only with the coin in superposition; t0 below -3.0 se is unresolved (negative twin); otherwise unresolved",
+ "unit": "worlds and operating characteristics in ten-thousandths: 164 is 0.0164, 9706 is a share of 0.9706",
+ "worlds": {
+  "absent": {
+   "s_b0": 0,
+   "s_k": 0,
+   "t_b0": 0,
+   "t_k": 0
+  },
+  "coin_dropout": {
+   "s_b0": 164,
+   "s_k": 164,
+   "t_b0": 170,
+   "t_k": 170
+  },
+  "over_rotation": {
+   "s_b0": 164,
+   "s_k": 0,
+   "t_b0": 166,
+   "t_k": 0
+  },
+  "over_rotation_x_all_after": {
+   "s_b0": 164,
+   "s_k": -40,
+   "t_b0": 164,
+   "t_k": 0
+  },
+  "over_rotation_x_all_before": {
+   "s_b0": 164,
+   "s_k": 76,
+   "t_b0": 164,
+   "t_k": 103
+  },
+  "over_rotation_y_axis": {
+   "s_b0": 164,
+   "s_k": 38,
+   "t_b0": 164,
+   "t_k": 39
+  },
+  "q12_correlation": {
+   "s_b0": 164,
+   "s_k": 0,
+   "t_b0": 170,
+   "t_k": 0
+  },
+  "superposition_only": {
+   "s_b0": 164,
+   "s_k": 164,
+   "t_b0": 0,
+   "t_k": 0
+  },
+  "twin_opposite_sign": {
+   "s_b0": 164,
+   "s_k": 0,
+   "t_b0": -164,
+   "t_k": 0
+  }
+ }
+}

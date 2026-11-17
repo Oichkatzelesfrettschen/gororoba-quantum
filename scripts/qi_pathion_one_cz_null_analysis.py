@@ -19,6 +19,9 @@ numeric identity:
 - `pooled` and `heterogeneity` multiply where the predecessor squares with the libm pow call, whose result is not
   always the correctly rounded square.
 - `contraction_per_cz_implied` is the correctly rounded `cz`-th root of the stored corrected visibility.
+- a deterministic arm (rate 0 or 1) takes the variance of its finite-count interval (`arm_variance`), and `pooled`
+  refuses any other error that is not positive and finite, so no pooled sum divides by zero. Both apply only where
+  the predecessor raised ZeroDivisionError, so the retained record keeps its bytes.
 
 No decimal rounding enters: a rounding grid cannot absorb a drift of 1e-12 relative and still has values that
 straddle a cell boundary under some numeric identity. The record names the predecessor record by sha256 and states
@@ -63,6 +66,9 @@ PREDECESSOR_SHA256 = "e39956c54bd79740a94785712c398ba5fe65b33a9e03c58c2ca179374a
 PREDECESSOR_BATCH_CASES_SHA256 = "d55ad60baa08b9c9422587aa8ec252de6b148ebb85e8319f42bb6e48a2c95225"
 SUCCESSOR_RECORD = "results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.v3.json"
 ZERO_WEIGHT = Fraction(pkm.ZERO)
+# Standard errors whose squares and reciprocal squares stay representable in a double.
+MIN_ERROR = 1.0e-100
+MAX_ERROR = 1.0e100
 # The exact value and the predecessor's float path (a central difference of floats that cancels, then LAPACK and
 # einsum) agree within this bound per float; the retained record differs from the exact value by at most 4.1e-14
 # absolute and 2.0e-12 relative.
@@ -99,8 +105,45 @@ def rebound(function: Callable[..., Any], **overrides: Any) -> Any:
     return clone
 
 
+def arm_variance(rate: float, shots: int) -> float:
+    """Variance of an arm's measured rate over `shots` shots.
+
+    An interior rate gives rate (1 - rate) / shots. A deterministic arm (rate 0 or 1, as in a run whose selector
+    never flips) has no sampling variance by that formula, yet `shots` shots bound its true rate only to a finite
+    interval: the Agresti-Coull interval at z = Z_RESOLVE, with center (shots rate + z^2 / 2) / (shots + z^2) and
+    variance center (1 - center) / (shots + z^2), is the finite-count interval of the arm. The adjustment applies
+    to a deterministic arm alone, so every other float of a record keeps the predecessor's arithmetic."""
+    if shots < 1:
+        raise ValueError("an arm needs at least one shot")
+    if 0.0 < rate < 1.0:
+        return rate * (1 - rate) / shots
+    z2 = float(oc.Z_RESOLVE * oc.Z_RESOLVE)
+    center = (shots * rate + z2 / 2) / (shots + z2)
+    return center * (1 - center) / (shots + z2)
+
+
+def selector_estimate(plus: np.ndarray, minus: np.ndarray) -> tuple[float, float]:
+    """pca.selector_stat with arm_variance: the selector contrast of two coin piles and its standard error, finite
+    when either arm is deterministic."""
+    n_plus, n_minus = int(plus.sum()), int(minus.sum())
+    p, m = float(plus[:8].sum() / n_plus), float(minus[:8].sum() / n_minus)
+    return p - m, math.sqrt(arm_variance(p, n_plus) + arm_variance(m, n_minus))
+
+
+def require_finite_errors(values: list[tuple[float, float]]) -> None:
+    """Refuse an empty list and a pair whose standard error lies outside [MIN_ERROR, MAX_ERROR]: inverse-variance
+    weights are undefined or not representable there (the square underflows or overflows), and an estimator supplies
+    a finite-count error through arm_variance."""
+    if not values:
+        raise ValueError("no estimates to pool")
+    for value, se in values:
+        if not (math.isfinite(se) and MIN_ERROR <= se <= MAX_ERROR):
+            raise ValueError(f"a pooled estimate ({value!r}, se {se!r}) has no positive finite standard error")
+
+
 def pooled(values: list[tuple[float, float]]) -> tuple[float, float]:
     """Inverse-variance mean and its standard error of (value, se) pairs, with products where pow would square."""
+    require_finite_errors(values)
     weights = [1.0 / (se * se) for _, se in values]
     mean = sum(w * v for w, (v, _) in zip(weights, values, strict=True)) / sum(weights)
     return mean, math.sqrt(1.0 / sum(weights))
@@ -210,7 +253,7 @@ def batch_estimates(
         raw = statistics_record(next(results))
         corrected = statistics_record(next(results)) if batch in brackets else None
         plus, minus = cc.piles(counts)
-        rows[template]["base"].append(pca.selector_stat(plus, minus))
+        rows[template]["base"].append(selector_estimate(plus, minus))
         detail[template][batch] = template_row(template, templates[template], counts, raw, corrected)
     for (batch, template), pair in sorted(twins.items()):
         if set(pair) != {0, 1}:
@@ -221,7 +264,7 @@ def batch_estimates(
             n = len(pair[coin])
             p = sum(1 for s in pair[coin] if pca.bit(s, qubit) == 0) / n
             rates.append(p)
-            variances.append(p * (1 - p) / n)
+            variances.append(arm_variance(p, n))
         rows[template]["twin"].append((rates[0] - rates[1], math.sqrt(sum(variances))))
     return rows, detail
 

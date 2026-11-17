@@ -32,19 +32,21 @@ marked "inferred" has no page or run behind it.
   site-hosted backend reached through a remote service. The job error
   "RSP returned failure" names a remote service process whose expansion no
   page gives.
-- **Consequence of the flag** (`scripts/qi_platform.py`, `submit`):
+- **Consequence of the flag** (`scripts/qi_platform.py` and `scripts/qi_platform_wave.py`, `submit`):
   `is_hardware` selects the hardware submission rules, so a Ry batch holds at
-  most `HARDWARE_BATCH_CIRCUITS` = 3 circuits and goes in only when none of
-  the account's batches is queued, although the Ry emulator costs no metered
-  quota ([usage.md](usage.md)). Code that filters backends on `is_hardware`
+  most the manifest's policy circuits (3 under the default `legacy`, with none
+  of the account's batches queued; 5 per batch and 3 queued Ry batches through
+  `qi_platform_wave.py` when the manifest selects `wave-v1`, with a 60 s pause), although the Ry emulator costs no metered quota
+  ([usage.md](usage.md#queue-rules-the-faq-governs)). Code that filters backends on `is_hardware`
   must also read the identifier.
 - **Shared pause.** The same flag puts Ry under the account-wide hardware
-  guard of `submit`: a batch is refused while any job on an `is_hardware`
-  backend type, Ry or Tuna-17, is unfinished or finished less than
-  `HARDWARE_PAUSE_SECONDS` ago (30 s by default, [usage.md](usage.md#pause-escalation)). Ry and Tuna-17 batches therefore
+  guard of `submit`: a batch is refused while a job on an `is_hardware`
+  backend type, Ry or Tuna-17, finished less than `HARDWARE_PAUSE_SECONDS` ago
+  or is unfinished (under `legacy`, or on the other type under `wave-v1`) (30 s by default, [usage.md](usage.md#pause-escalation)). Ry and Tuna-17 batches therefore
   interleave on one clock, and a Ry submit inside a Tuna batch's window is
   refused before any remote write ("wait N more seconds") and retried, as
-  [tuna-17.md](tuna-17.md) describes.
+  [tuna-17.md](tuna-17.md) describes. Under `wave-v1` the queued-batch count is
+  per backend type and an unfinished job on the other type still refuses.
 
 ## Qubits, geometry and topology
 

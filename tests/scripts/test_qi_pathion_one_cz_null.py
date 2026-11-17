@@ -651,6 +651,37 @@ def test_the_submission_sequence_resumes_a_series_without_a_second_submit(tmp_pa
     _expect(all(ln.endswith("--timeout 7200") for ln in lines if ln.startswith("collect")), f"{lines}")
 
 
+@pytest.mark.parametrize(
+    ("series", "generator"),
+    [
+        ("pathion_one_cz_null_bracketed_qx", "qi_pathion_one_cz_null_bracketed_cases.py"),
+        ("pathion_one_cz_null_qx", "qi_pathion_one_cz_null_cases.py"),
+    ],
+)
+def test_the_default_sanity_check_is_the_generator_of_the_series(tmp_path: Path, series: str, generator: str) -> None:
+    recorder = tmp_path / "recorder.sh"
+    recorder.write_text(f'#!/bin/sh\necho "$@" >> {tmp_path}/sanity.log\n', encoding="utf-8")
+    recorder.chmod(0o755)
+    script, log = _stub(tmp_path, [])
+    (tmp_path / "cases" / series / "batch-00").mkdir(parents=True)
+    done = subprocess.run(
+        ["sh", str(SUBMIT), "7", str(tmp_path / "cases" / series), str(tmp_path / "runs"), "STAMP", "QUOTE"],
+        capture_output=True,
+        text=True,
+        env={
+            "PATH": "/usr/bin:/bin",
+            "QI_PYTHON": sys.executable,
+            "QI_PLATFORM": str(script),
+            "PYTHON": str(recorder),
+            "QI_PAUSE_SLEEP": "0",
+        },
+        check=False,
+    )
+    _expect(done.returncode == 0, f"exit {done.returncode}: {done.stderr}")
+    checked = (tmp_path / "sanity.log").read_text(encoding="utf-8")
+    _expect(f"scripts/{generator} --sanity" in checked, f"the default check was {checked!r}")
+
+
 def test_the_submission_sequence_stops_at_a_checkpoint_without_a_receipt(tmp_path: Path) -> None:
     code, calls, err = _submit(tmp_path, [], held={"batch-00": ("submission-state.json",)})
     _expect(code != 0 and calls == "" and "reconcile" in err, f"{code} {calls} {err}")
