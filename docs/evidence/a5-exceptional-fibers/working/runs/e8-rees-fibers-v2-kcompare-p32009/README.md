@@ -4,7 +4,7 @@ The runs of `../e8-rees-fibers-v2-p32009/` decide the fiber ideal L of three wei
 -1 = 10754) by comparing it with the quadric ideal K that each script builds from its own degree-2 relations. This directory
 decides, in Singular 4.4.1, that each script's K is the ideal of the relations that `weight_slice_fiber_relations.py`
 regenerates for the same cell, and measures how those weight-slice relations sit against the header-slice relation sets K2 of
-A5-570. The ledger rows are A5-579 to A5-581 (the K equalities), A5-582 (the span measurement) and A5-583 (the open hypothesis).
+A5-570. The ledger rows are A5-579 to A5-581 (the K equalities), A5-582 (the span measurement), A5-583 (the open hypothesis) and A5-584 (the Q(i) set of A5-474 reduced modulo 32009).
 
 ## Result
 
@@ -26,6 +26,31 @@ A5-570. The ledger rows are A5-579 to A5-581 (the K equalities), A5-582 (the spa
   count, the generator count and the relation digest equal those of the run's own `REL` lines; the digest of the N- cell also
   occurs in `weight-slice-fiber-relations-result.json`. The producer's Singular is the installed 4.4.1 of the comparison.
 
+## The Q(i) set of A5-474 against the modular relations
+
+A5-474 names the degree-2 relations that the weight-slice producer returns over Q(i): the weight-slice set, not the
+header-slice set. Its digests are `f4c808509571d7830d453654b16de85c254f876ef65c541f879a5097265d3b6e` (E8-bar -> N-),
+`cb9c0862b2dedc4a46d2fc579904e5efd18f07b5b3976e5b29e84bb2af7bcb7a` (E8-bar -> N+) and
+`f98219385df2a2cd47a8312d57a9861396d986234ec3f4175dad3fdc4182c955` (Iso -> N-), in `weight-slice-relation-membership-result.json`
+and in the weight-slice record. The rows A5-579 to A5-581 compare each script's K with the producer's relations regenerated
+modulo 32009, which are other lines (the modular digests of the table above). `qi_reduction_compare.py` closes the step
+between the two: it regenerates both line sets with the producer, requires the Q(i) digest to equal the digest of the
+record and of the A5-474 membership record and the modular digest to equal the digest of the run's REL lines, reduces the
+Q(i) lines with i sent to 10754 and compares the ranks over F_32009 (`compare_reduction` of the producer).
+
+| Cell | Reduced Q(i) rank | Modular rank | Joint rank | Spans equal | Drop-Q(i) control | Drop-modular control |
+|---|---|---|---|---|---|---|
+| E8-bar -> N- | 148 | 148 | 148 | yes | unequal (147, 148) | unequal (148, 147) |
+| E8-bar -> N+ | 148 | 148 | 148 | yes | unequal (147, 148) | unequal (148, 147) |
+| Iso -> N- | 68 | 68 | 68 | yes | unequal (67, 68) | unequal (68, 67) |
+
+Generators of one degree determine the ideal through their span, so equal spans are equal ideals: the rank comparison
+decides the span of the reduced A5-474 set against the modular set, and the mutual reduction of A5-579 to A5-581 decides
+the ideal of each script's K against the modular set. The script K of each cell is therefore the reduction modulo 32009 of
+the A5-474 relation ideal at (32009, 10754) (A5-584); it is not the header-slice K2 of A5-570, which A5-582 measures as
+another quadric ideal in the retained coordinates. `qi-reduction.log` holds the output (banner, script digest, one
+verdict line per cell, `QIRED ALL DONE`, `EXIT 0`).
+
 ## Span of the weight-slice relations against the header slice
 
 `SPAN` lines compare the 148 weight-slice relations K with the header-slice relation set K2 over the same variables y(1..21)
@@ -46,6 +71,7 @@ named in that row.
 | `kcompare.py` | `prepare`: regenerates the producer relations, checks their digests, writes `KA-CELL.sing`, `KH-CELL.sing` and `kcmp-CELL.sing`, prints the support and union-rank lines |
 | `kcompare-tail.sing` | the Singular comparison, controls and verdict lines appended to each cut run script |
 | `run_kcompare.sh` | the launcher: one Singular process per cell in turn, tool version and script digest at the top of each log, a timing file, an `EXIT` line, and `kcompare.done` as the completion marker |
+| `qi_reduction_compare.py`, `qi-reduction.log` | the Q(i) against modular comparison of the producer relations, its banner, script digest, verdict lines and `EXIT` line |
 | `KA-CELL.sing` | the producer relations as an ideal in y(1..g) |
 | `KH-CELL.sing` | the header-slice relation file as an ideal (N- and N+ of E8-bar) |
 | `kcmp-CELL.sing`, `kcmp-CELL.log`, `kcmp-CELL.time` | the comparison script, its Singular output and the `/usr/bin/time -v` record |

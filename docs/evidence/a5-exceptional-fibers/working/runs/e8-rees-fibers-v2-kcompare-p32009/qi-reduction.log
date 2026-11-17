@@ -1,0 +1,20 @@
+Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Dec  6 2025 11:10:58
+fa250b8f7e83761bada395c36b5ad280831ba01fb9568dbfec97baaffcb52a85  qi_reduction_compare.py
+Python 3.14.7
+QIRED e8-nm qi_relations_sha256 f4c808509571d7830d453654b16de85c254f876ef65c541f879a5097265d3b6e in_weight_slice_record 1 in_a5_474_record 1 modular_relations_sha256 42b1d8ff03d4c505597b39fe303c52ac45fcdc4d35bbf01d0b8e7e23a97367d0 run_relations_sha256 42b1d8ff03d4c505597b39fe303c52ac45fcdc4d35bbf01d0b8e7e23a97367d0
+QIRED e8-nm full qi 148 modular 148 reduced_rank 148 modular_rank 148 joint_rank 148 spaces_equal 1
+QIRED e8-nm control_drop_qi qi 147 modular 148 reduced_rank 147 modular_rank 148 joint_rank 148 spaces_equal 0
+QIRED e8-nm control_drop_modular qi 148 modular 147 reduced_rank 148 modular_rank 147 joint_rank 148 spaces_equal 0
+QIRED RESULT cell e8-nm spaces_equal 1 control_drop_qi_unequal 1 control_drop_modular_unequal 1 pass 1
+QIRED e8-np qi_relations_sha256 cb9c0862b2dedc4a46d2fc579904e5efd18f07b5b3976e5b29e84bb2af7bcb7a in_weight_slice_record 1 in_a5_474_record 1 modular_relations_sha256 b9b7372bce35e7ce286aa572f9b1ebf656d1ac04ba0e63349c640efed88658ee run_relations_sha256 b9b7372bce35e7ce286aa572f9b1ebf656d1ac04ba0e63349c640efed88658ee
+QIRED e8-np full qi 148 modular 148 reduced_rank 148 modular_rank 148 joint_rank 148 spaces_equal 1
+QIRED e8-np control_drop_qi qi 147 modular 148 reduced_rank 147 modular_rank 148 joint_rank 148 spaces_equal 0
+QIRED e8-np control_drop_modular qi 148 modular 147 reduced_rank 148 modular_rank 147 joint_rank 148 spaces_equal 0
+QIRED RESULT cell e8-np spaces_equal 1 control_drop_qi_unequal 1 control_drop_modular_unequal 1 pass 1
+QIRED iso-nm qi_relations_sha256 f98219385df2a2cd47a8312d57a9861396d986234ec3f4175dad3fdc4182c955 in_weight_slice_record 1 in_a5_474_record 1 modular_relations_sha256 4b9f84948f9ffa00f5e735ccc8943b6be0b7afc4a932f8a3c600b92b6e3e99c5 run_relations_sha256 4b9f84948f9ffa00f5e735ccc8943b6be0b7afc4a932f8a3c600b92b6e3e99c5
+QIRED iso-nm full qi 68 modular 68 reduced_rank 68 modular_rank 68 joint_rank 68 spaces_equal 1
+QIRED iso-nm control_drop_qi qi 67 modular 68 reduced_rank 67 modular_rank 68 joint_rank 68 spaces_equal 0
+QIRED iso-nm control_drop_modular qi 68 modular 67 reduced_rank 68 modular_rank 67 joint_rank 68 spaces_equal 0
+QIRED RESULT cell iso-nm spaces_equal 1 control_drop_qi_unequal 1 control_drop_modular_unequal 1 pass 1
+QIRED ALL DONE
+EXIT 0
