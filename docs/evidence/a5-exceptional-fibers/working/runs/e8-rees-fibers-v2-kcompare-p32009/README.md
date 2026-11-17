@@ -77,7 +77,8 @@ generators (A5-583).
 | `kcompare.py` | `prepare`: regenerates the producer relations, checks their digests, writes `KA-CELL.sing`, `KH-CELL.sing` and `kcmp-CELL.sing`, prints the support and union-rank lines |
 | `kcompare_v2.py` | the parallel successor of `kcompare.py` (`prepare`): the three Singular regenerations and the rank analyses run through `parallel.ordered_map`, the checks, printed lines and file writes follow in cell order, and its lines and files equal those of `kcompare.py` |
 | `kcompare-tail.sing` | the Singular comparison, controls and verdict lines appended to each cut run script |
-| `run_kcompare.sh` | the launcher: one Singular process per cell in turn, tool version and script digest at the top of each log, a timing file, an `EXIT` line, and `kcompare.done` as the completion marker |
+| `run_kcompare.sh` | the launcher of the retained run: one Singular process per cell in turn, tool version and script digest at the top of each log, a timing file, an `EXIT` line, and `kcompare.done` as the completion marker; it exits 0 and writes the marker when a cell fails or prints no verdict |
+| `run_kcompare_v2.sh` | the successor launcher for a replay: it passes a cell only when Singular exits 0 and the log holds the `KCMP RESULT` line with `equal 1 control_drop_unequal 1 control_added_unequal 1` and the terminal `KCMP DONE` line, writes `kcompare.done` (ending in `KCOMPARE ALL DONE`) when every cell passed, and otherwise stops at the first failing cell with `kcompare.failed` and exit status 1 |
 | `qi_reduction_compare_v2.py` | the parallel successor of `qi_reduction_compare.py`: the six Singular regenerations and the nine reductions run through `parallel.ordered_map`, and its `QIRED` lines equal those of `qi-reduction.log` |
 | `qi_reduction_compare.py`, `qi-reduction.log` | the Q(i) against modular comparison of the producer relations, its banner, script digest, verdict lines and `EXIT` line |
 | `KA-CELL.sing` | the producer relations as an ideal in y(1..g) |
@@ -90,8 +91,8 @@ generators (A5-583).
 ## Replay
 
 From this directory, with the producer's Python dependencies and Singular 4.4.1 on the path, `python -B kcompare.py prepare`
-rewrites the `KA`, `KH` and `kcmp` files and `sh run_kcompare.sh Singular 3000 e8-nm e8-np iso-nm` runs the comparison (under a
-minute); the launcher refuses to overwrite a log. The banner line of every retained log of the v2 runs, of their replay and of
+rewrites the `KA`, `KH` and `kcmp` files and `sh run_kcompare_v2.sh Singular 3000 e8-nm e8-np iso-nm` runs the comparison (under a
+minute); the launcher refuses to overwrite a log, a `kcompare.done` or a `kcompare.failed`. Singular exits 0 on SIGTERM, so a run killed at the limit is told apart by its missing `KCMP DONE` line. The banner line of every retained log of the v2 runs, of their replay and of
 these comparison logs reads `Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Dec  6 2025 11:10:58`.
 
 ## Parallel successors
@@ -105,6 +106,7 @@ processes at once) and `qi_reduction_compare_v2.py` took 56.0 s against 128.5 s 
 `f81a5ac3...` of those in `qi-reduction.log`. `tests/test_a5_rees_kcompare_parallel.py` runs both against a fake Singular that serves
 the retained run logs' relations, checks the written files against the retained bytes, and checks that the cell order of the output holds when the first
 process finishes last and that a failing cell stops the output at that cell.
+`tests/test_a5_rees_kcompare_launcher.py` runs `run_kcompare_v2.sh` against a fake Singular: three cells that pass write `kcompare.done`; a Singular that exits 7, one that omits the verdict line and one that exits 0 after SIGTERM at the limit each leave `kcompare.failed`, exit status 1 and no `kcompare.done`.
 
 ## Scope
 
