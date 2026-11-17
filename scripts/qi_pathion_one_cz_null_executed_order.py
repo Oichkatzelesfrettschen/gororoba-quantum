@@ -25,7 +25,8 @@ has one x in all its twin batches has Sxx = 0 and no separable drift (the templa
 hypothesis: one drift g, linear in the executed position difference, is common to every template (a device property of
 the selector offset between consecutive jobs). The fit reports each template's own drift beside it, `template_drift`,
 so a template whose drift departs from g by more than its error is a finding and not a quiet bias. Scope: the twin
-contrasts only; the base and calibration batches reorder as well and carry no rule here.
+contrasts; the base and calibration batches take the time rules below (`constrained_weights`, `level_rows`,
+`drift_monitor`).
 """
 
 from __future__ import annotations
@@ -199,6 +200,34 @@ def level_at(
     weights = constrained_weights(times, ses, reference, order)
     level = sum(w * v for w, v in zip(weights, values, strict=True))
     return level, math.sqrt(sum(w * w * se * se for w, se in zip(weights, ses, strict=True)))
+
+
+def level_rows(
+    values: Sequence[float], ses: Sequence[float], times: Sequence[float], reference: float
+) -> tuple[list[tuple[float, float]], dict[str, float]]:
+    """The (value, se) rows of one template's base replicates that the preregistered rule pools, and the level fit.
+
+    The linear drift of `level_at` (order 1) has the weighted slope g and the level mu at `reference`. Each value is
+    reduced by g (t - reference) and each error is multiplied by f = sqrt(1 + (t_w - reference)^2 / S_tt), so the
+    inverse-variance mean of the rows is mu and their pooled error is f / sqrt(W), the error of `level_at`. A
+    replicate set whose weighted mean time is the reference has f = 1 and the plain pooled error. Fewer than two
+    distinct times leave the drift unseparated (ConfoundedOrder)."""
+    level, level_se = level_at(values, ses, times, reference, 1)
+    weights = [1.0 / (se * se) for se in ses]
+    total = sum(weights)
+    mean_t = sum(w * t for w, t in zip(weights, times, strict=True)) / total
+    mean_v = sum(w * v for w, v in zip(weights, values, strict=True)) / total
+    stt = sum(w * (t - mean_t) ** 2 for w, t in zip(weights, times, strict=True))
+    slope = sum(w * (t - mean_t) * (v - mean_v) for w, t, v in zip(weights, times, values, strict=True)) / stt
+    inflate = level_se * math.sqrt(total)
+    rows = [(v - slope * (t - reference), se * inflate) for v, se, t in zip(values, ses, times, strict=True)]
+    return rows, {
+        "level": level,
+        "level_se": level_se,
+        "slope": slope,
+        "weighted_time": mean_t,
+        "cost": inflate * inflate,
+    }
 
 
 MONITOR_ALPHA = 0.001

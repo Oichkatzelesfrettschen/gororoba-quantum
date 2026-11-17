@@ -12,7 +12,7 @@ import json
 import math
 import shutil
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -821,8 +821,9 @@ def test_the_retained_start_stamps_order_the_executions_of_a_predecessor_batch()
 
 @pytest.fixture
 def contrasts_of(monkeypatch: pytest.MonkeyPatch) -> Any:
-    """bc.evaluate on synthetic twin contrasts: the simulated series is replaced by (value, se) rows that follow the
-    drift model v = t + g x with x the offset the given stamps execute, so the order rule alone is under test."""
+    """bc.evaluate on synthetic contrasts: the simulated series is replaced by (value, se) rows that follow the drift
+    models v = t + g x (twin, x the executed position offset of the given stamps) and v = mu + h (t - tau) (base, t the
+    executed start of the base circuit), so the order rule alone is under test."""
     state: dict[str, Any] = {}
 
     def fake(shots: dict[str, list[str]], manifest: dict[str, Any], executed: Any = None) -> dict[str, Any]:
@@ -832,25 +833,63 @@ def contrasts_of(monkeypatch: pytest.MonkeyPatch) -> Any:
             "batch_contrasts": {t: {k: [list(x) for x in v] for k, v in rows[t].items()} for t in rows},
         }
 
+    def reference(shots: Any, manifest: Any, seconds: dict[str, float]) -> tuple[list[float], list[float], list[float]]:
+        times = [
+            (seconds[f"{row['batch']}/readout-0.cq"] + seconds[f"{row['batch']}/readout-1.cq"]) / 2
+            for row in sorted(bc.batch_rows(bc.TUNA_SERIES), key=lambda r: r["batch"])
+            if row["kind"] in ("base", "twin")
+        ]
+        middle = sorted(times)[len(times) // 2]
+        values = [0.02 + state["monitor_slope"] * t + (state["monitor_step"] if t > middle else 0.0) for t in times]
+        return times, values, [1e-4] * len(times)
+
+    def calibration(shots: Any, manifest: Any, seconds: dict[str, float]) -> list[dict[str, Any]]:
+        started = {
+            row["batch"]: [seconds[f"{row['batch']}/{c['file']}"] for c in row["circuits"]]
+            for row in bc.batch_rows(bc.TUNA_SERIES)
+            if row["kind"] == "joint"
+        }
+        return [{"batch": b, "time": sum(t) / len(t), "se": 1e-3} for b, t in started.items()]
+
     monkeypatch.setattr(bc, "evaluate_decision", fake)
     monkeypatch.setattr(bc, "batch_brackets", lambda shots, manifest: {})
+    monkeypatch.setattr(bc, "bracket_series", reference)
+    monkeypatch.setattr(bc, "calibration_readings", calibration)
 
     def evaluate(
-        stamps: dict[str, Any] | None, truth_stamps: dict[str, str] | None = None, drift: Any = 0.01
+        stamps: dict[str, Any] | None,
+        truth_stamps: dict[str, str] | None = None,
+        drift: Any = 0.01,
+        base_slope: float = 0.0,
+        monitor_slope: float = 0.0,
+        monitor_step: float = 0.0,
     ) -> dict[str, Any]:
-        """The record for `stamps`; the data follow the offsets of `truth_stamps` (the stamps when omitted) and a drift
-        per template (a number for one shared drift)."""
-        offsets = bc.twin_offsets(truth_stamps if truth_stamps is not None else stamps)
+        """The record for `stamps`; the data follow the offsets and the start times of `truth_stamps` (the stamps when
+        omitted), a twin drift per template (a number for one shared drift) and a base drift of `base_slope` per
+        second about the template's twin reference time."""
+        truth = truth_stamps if truth_stamps is not None else stamps
+        offsets = bc.twin_offsets(truth)
+        seconds = bc.circuit_seconds(truth)  # type: ignore[arg-type]
+        tau = bc.twin_reference_times(seconds)
         per = drift if isinstance(drift, dict) else dict.fromkeys(oc.TEMPLATES, drift)
         twin: dict[str, list[tuple[float, float]]] = {t: [] for t in oc.TEMPLATES}
         for batch, (template, _, _) in sorted(bc.twin_layout().items()):
             twin[template].append((TRUE_TWIN[template] + per[template] * offsets[batch], TWIN_SE))
-        state["rows"] = {t: {"base": [(0.0, BASE_SE)] * 4, "twin": twin[t]} for t in oc.TEMPLATES}
+        base = {
+            t: [
+                (BASE_MU + base_slope * (seconds[f"{batch}/{t}.cq"] - tau[t]), BASE_SE)
+                for batch in bc.base_batch_ids()[t]
+            ]
+            for t in oc.TEMPLATES
+        }
+        state.update(monitor_slope=monitor_slope, monitor_step=monitor_step)
+        state["rows"] = {t: {"base": base[t], "twin": twin[t]} for t in oc.TEMPLATES}
         return bc.evaluate({}, {}, stamps)
 
     return evaluate
 
 
+BASE_MU = 0.0164
 TRUE_TWIN = {"b0": 0.0164, "k4": 0.0, "k8": 0.0, "k12": 0.0}
 TWIN_SE = 0.0055
 BASE_SE = 0.004
@@ -938,6 +977,7 @@ def rank(stamps: dict[str, str], batch: str, name: str) -> int:
         "empty stamps",
         "a twin batch lacks one stamp",
         "a base batch lacks one stamp",
+        "a base circuit lacks its stamp",
         "a stamp is null",
         "two jobs of a twin batch share a stamp",
     ],
@@ -953,6 +993,8 @@ def test_an_unusable_order_fails_closed_and_decides_nothing(contrasts_of: Any, d
         del stamps[f"{twin_batch}/readout-0.cq"]  # type: ignore[union-attr]
     elif defect == "a base batch lacks one stamp":
         del stamps["batch-00/readout-0.cq"]  # type: ignore[union-attr]
+    elif defect == "a base circuit lacks its stamp":
+        del stamps["batch-00/b0.cq"]  # type: ignore[union-attr]
     elif defect == "a stamp is null":
         stamps[f"{twin_batch}/readout-1.cq"] = None  # type: ignore[index]
     else:
@@ -983,9 +1025,92 @@ def test_a_template_whose_own_drift_departs_from_the_shared_drift_reads_heteroge
     record = contrasts_of(_stamped(), drift=own)
     decision = record["decision"]
     _expect(decision["label"] == "unresolved_drift_heterogeneity" and decision["decided"] is False, f"{decision}")
-    _expect("label_if_drift_common" in decision, "the label the rule would have read stays beside it")
+    _expect("label_if_nothing_withheld" in decision, "the label the rule would have read stays beside it")
     fit = record["executed_order_fit"]
     _expect(abs(fit["template_drift"]["k4"] - 0.06) < 1e-12, f"{fit['template_drift']}")
+
+
+def test_the_base_level_of_a_hand_computed_fixture() -> None:
+    # Three replicates of one template at times 0, 1 and 3 with equal errors 0.002, the level read at time 2. By hand:
+    # mean time 4/3, S_tt about the weighted mean 14/9 x ... the slope is 0.023 / 7, the level 0.118 / 7, and the
+    # error is 0.002 sqrt(3 / 7) (cost 1 + (2/3)^2 / (14/9) = 9 / 7 over the plain error 0.002 / sqrt(3)).
+    rows, fit = eo.level_rows([0.010, 0.014, 0.020], [0.002] * 3, [0.0, 1.0, 3.0], 2.0)
+    _expect(abs(fit["slope"] - 0.023 / 7) < 1e-15, f"slope {fit['slope']}")
+    _expect(abs(fit["level"] - 0.118 / 7) < 1e-15, f"level {fit['level']}")
+    _expect(abs(fit["level_se"] - 0.002 * math.sqrt(3 / 7)) < 1e-15, f"error {fit['level_se']}")
+    _expect(abs(fit["cost"] - 9 / 7) < 1e-12, f"cost {fit['cost']}")
+    weights = [1.0 / (se * se) for _, se in rows]
+    mean = sum(w * v for w, (v, _) in zip(weights, rows, strict=True)) / sum(weights)
+    _expect(abs(mean - 0.118 / 7) < 1e-15, f"the pooled rows read {mean}")
+    _expect(abs(1.0 / math.sqrt(sum(weights)) - fit["level_se"]) < 1e-15, "the pooled error")
+
+
+def test_replicates_centered_on_the_reference_time_pool_to_the_plain_pool() -> None:
+    values = [0.010, 0.020, 0.015, 0.017]
+    rows, fit = eo.level_rows(values, [0.002] * 4, [-3.0, -1.0, 1.0, 3.0], 0.0)
+    _expect(abs(fit["level"] - sum(values) / 4) < 1e-12, f"{fit['level']}")
+    _expect(abs(fit["cost"] - 1.0) < 1e-12 and all(abs(se - 0.002) < 1e-12 for _, se in rows), f"{fit['cost']}")
+    with pytest.raises(eo.ConfoundedOrder):
+        eo.level_rows(values, [0.002] * 4, [1.0] * 4, 0.0)
+
+
+def _seconds_of(stamps: dict[str, str], keys: list[str]) -> list[float]:
+    """Start times of `keys` in seconds after the earliest stamp, from the stamps alone."""
+    origin = min(datetime.fromisoformat(v).timestamp() for v in stamps.values())
+    return [datetime.fromisoformat(stamps[k]).timestamp() - origin for k in keys]
+
+
+def test_a_base_batch_executed_out_of_order_gets_the_time_weights_of_its_executed_positions(
+    contrasts_of: Any,
+) -> None:
+    # Two b0 base batches ran 20 minutes after their requested slot, one of them with its template circuit last. The
+    # data carry a base drift of 1e-4 per second about the twin reference time: the fit at the executed times recovers
+    # the level of the series that kept its order, and the plain pool of the base rows is biased by the drift.
+    requested = _stamped()
+    ids = bc.base_batch_ids()["b0"]
+    moved = _stamps_of(ids[2], ["readout-0.cq", "readout-1.cq", "b0.cq"], requested)
+    stamps = dict(moved)
+    for batch in (ids[0], ids[2]):
+        for key in [k for k in moved if k.startswith(f"{batch}/")]:
+            stamps[key] = (datetime.fromisoformat(moved[key]) + timedelta(minutes=20)).isoformat()
+    kept = contrasts_of(requested, base_slope=1e-4)
+    ran = contrasts_of(stamps, base_slope=1e-4)
+    keys = [f"{batch}/b0.cq" for batch in ids]
+    fit = ran["base_level_fit"]["templates"]["b0"]
+    _expect(fit["times"] == _seconds_of(stamps, keys), f"{fit['times']} against the stamps")
+    spread = [t - u for t, u in zip(fit["times"], kept["base_level_fit"]["templates"]["b0"]["times"], strict=True)]
+    _expect(spread[0] - spread[1] == 1200.0 and spread[2] - spread[3] == 1201.0, f"the executed times {spread}")
+    for result in (kept, ran):
+        _expect(abs(result["base_level_fit"]["templates"]["b0"]["level"] - BASE_MU) < 1e-9, "the level")
+    plain = sum(v for v, _ in ran["batch_contrasts"]["b0"]["base"]) / 4
+    _expect(abs(plain - BASE_MU) > 1e-3, f"the plain base pool is not biased: {plain}")
+    _expect(ran["decision"]["label"] == kept["decision"]["label"], f"{ran['decision']['label']}")
+    # With no base drift the level is the plain pooled value of the series that kept its order.
+    still = contrasts_of(requested, base_slope=0.0)
+    _expect(abs(still["base_level_fit"]["templates"]["b0"]["level"] - BASE_MU) < 1e-15, "no drift, no shift")
+
+
+def test_base_replicates_that_share_one_start_time_read_base_drift_confounded(contrasts_of: Any) -> None:
+    stamps = _stamped()
+    for batch in bc.base_batch_ids()["b0"]:
+        stamps[f"{batch}/b0.cq"] = "2026-11-08T01:00:00.500000Z"
+    record = contrasts_of(stamps, truth_stamps=_stamped())
+    _expect(record["decision"]["label"] == "unresolved_base_drift_confounded", f"{record['decision']['label']}")
+    _expect(record["decision"]["decided"] is False and record["base_level_fit"]["status"] == "confounded", "d")
+
+
+def test_a_reference_series_that_is_not_a_line_reads_drift_model_and_flags_the_calibration(contrasts_of: Any) -> None:
+    line = contrasts_of(_stamped(), monitor_slope=0.0)
+    _expect(line["drift_monitor"]["adequate"] is True, f"{line['drift_monitor']}")
+    _expect(line["decision"]["label"] != "unresolved_drift_model", f"{line['decision']['label']}")
+    _expect(not any(r["unresolved_calibration_drift"] for r in line["calibration_drift"]), "a flat series")
+    step = contrasts_of(_stamped(), monitor_step=0.05)
+    _expect(step["decision"]["label"] == "unresolved_drift_model", f"{step['decision']['label']}")
+    _expect(step["decision"]["decided"] is False and step["drift_monitor"]["adequate"] is False, "step")
+    steep = contrasts_of(_stamped(), monitor_slope=1e-4)
+    _expect(steep["drift_monitor"]["adequate"] is True, "a steep line is still a line")
+    _expect(all(r["unresolved_calibration_drift"] for r in steep["calibration_drift"]), f"{steep['calibration_drift']}")
+    _expect(len(steep["calibration_drift"]) == 3 and steep["calibration_drift"][0]["sigma_sys"] > 1e-3, "sigma_sys")
 
 
 def test_the_executed_offset_orders_by_stamp_and_refuses_a_tie() -> None:
