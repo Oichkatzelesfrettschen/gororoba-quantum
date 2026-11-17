@@ -1415,7 +1415,9 @@ def test_mixed_stamp_spellings_rank_by_instant_in_every_path_that_reads_the_orde
     _expect(bc.twin_offsets(spelled) == bc.twin_offsets(canonical), "twin offsets")
     _expect(bc.circuit_seconds(spelled) == bc.circuit_seconds(canonical), "seconds")
     gate, plain = bc.order_gate(spelled), bc.order_gate(canonical)
-    _expect(gate == plain and gate is not None, "the strict gate")
+    if gate is None:
+        raise AssertionError("the strict gate read no stamps")
+    _expect(gate == plain, "the strict gate")
     _expect(gate["batches"][twin]["executed"] == by_instant, "the strict gate ran the batch in text order")
     _expect(gate["intact"] is (reversed_batch is None), f"intact {gate['intact']}")
     got, want = bc.evaluate(small_shots, manifest, spelled), bc.evaluate(small_shots, manifest, canonical)
