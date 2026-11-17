@@ -71,11 +71,11 @@ Singular produced the log (a log edited consistently, with `sha256.txt` regenera
 the Singular banner, the digest of the retained script on line 2, the single `EXIT 0`, the absence of failure lines,
 every certificate line, the equality of the generator counts, dimension and multiplicity across the K and FIBER lines,
 the degree of every generator, the linear independence of the relation lines over F_32009 and the Hilbert arithmetic; then
-the ties to the weight-slice record listed above, the `sha256.txt` table, and the replay below. `--self-test` rejects 16
+the ties to the weight-slice record listed above, the `sha256.txt` table, and the replay below. `--self-test` rejects 17
 mutated copies of the Iso log (a nonzero `outside_K`, an `EXIT 1`, each certificate flag, a lost colon line, a changed
 multiplicity, numerator or generator degree, a dropped or duplicated relation, a wrong script digest, a failure
-line, and three truncations: a log cut before its FIBER lines with and without an appended `EXIT 0`, and a log without
-its terminal FIBER line). Singular 4.4.1 exits 0 on SIGTERM (measured), so an `EXIT 0` alone does not show that a run
+line, three truncations (a log cut before its FIBER lines with and without an appended `EXIT 0`, and a log without
+its terminal FIBER line), and a Singular diagnostic line that starts with `?`, which Singular prints before it continues). Singular 4.4.1 exits 0 on SIGTERM (measured), so an `EXIT 0` alone does not show that a run
 finished; `run2.sh` only records the exit status, wrapped in `timeout` (status 124 on its own timeout), and the check
 is the reader that requires the FIBER lines. `tests/test_a5_rees_fibers_check.py` runs the same verdict on a constructed toy log in the default lane and the
 retained logs under `pytest -m audit`.

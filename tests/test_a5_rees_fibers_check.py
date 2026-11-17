@@ -103,6 +103,7 @@ def test_a_complete_log_passes() -> None:
         (_RESULT_TAIL, ""),
         (_RESULT_TAIL + "EXIT 0\n", ""),
         ("FIBER outside_K 0 K_outside_fiber 0\n", ""),
+        ("EXIT 0", "   ? `y(3)` is undefined\nEXIT 0"),
     ],
 )
 @pytest.mark.usefixtures("_toy_run")

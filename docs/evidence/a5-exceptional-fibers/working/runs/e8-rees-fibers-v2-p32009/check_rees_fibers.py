@@ -170,6 +170,8 @@ def log_verdict(name: str, text: str, sing_sha256: str) -> list[str]:
     for marker in FAIL_MARKERS:
         if any(marker in line and "redefining" not in line for line in lines):
             problems.append(f"the log holds {marker!r}")
+    if any(line.lstrip().startswith("?") for line in lines):
+        problems.append("the log holds a Singular diagnostic line that starts with '?'")
     try:
         unit = _single(lines, "CERT unit_identity_bad")
         if unit != ["0", "all_positive_degree", "1"]:
@@ -305,6 +307,8 @@ def self_test() -> list[str]:
         "truncated before FIBER, EXIT 0": text[: text.index("FIBER bound")] + "EXIT 0\n",
         "truncated before FIBER, no EXIT": text[: text.index("FIBER bound")],
         "terminal FIBER line removed": text.replace("FIBER outside_K 0 K_outside_fiber 0\n", ""),
+        # Singular continues after an error diagnostic, so the log can still end with EXIT 0 and every result line.
+        "diagnostic line": text.replace("EXIT 0", "   ? `y(3)` is undefined\nEXIT 0"),
     }
     for label, mutant in mutants.items():
         if mutant == text:
