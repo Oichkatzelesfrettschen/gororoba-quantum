@@ -5,13 +5,16 @@ then Copilot only when the Codex round needed a fix, then the owner
 (AGENTS.md, "Reviews and merges").
 
 Codex, the chatgpt-codex-connector app, reviews only on request: an issue
-comment `@codex review` asks for a review of the current head. The operator
+comment `@Codex review` asks for a review of the current head; the mention
+carries the capital C by the owner's ruling of 2026-11-15
+([codex-review-stalls.md](codex-review-stalls.md) holds the measurements).
+The operator
 requests one when the PR is a merge candidate, through
 `scripts/codex_review_request.sh PR`: it refuses a request when the PR's own
 diff (`git patch-id --verbatim` of merge-base..head against current main,
 without context lines) equals the last reviewed head's, so a merge of main
 earns none, and when a round was already requested. Copilot reviews on
-request as well: `gh pr edit PR --add-reviewer @copilot`, once, after the
+request as well: `gh pr edit PR --add-reviewer @Copilot`, once, after the
 Codex threads are resolved, and only when resolving them pushed a fix: the
 fixed head is then code no hosted reviewer has read. When the Codex app reports exhausted code-review
 quota, the owner decides how the PR proceeds. A round that never completes
@@ -75,7 +78,7 @@ follows [codex-review-stalls.md](codex-review-stalls.md).
    refuses one and names the owner.
 7. When the Codex round's push fixed at least one finding (a `Fixed in`
    reply), request the Copilot review of that head with
-   `gh pr edit PR --add-reviewer @copilot` and work its threads through
+   `gh pr edit PR --add-reviewer @Copilot` and work its threads through
    steps 2 to 5, in one push. A Codex round with no thread, or with only
    `Refuted:` and `Boundary:` replies, left the reviewed head unchanged and
    earns no Copilot request.
@@ -113,8 +116,8 @@ A PR merges after this sequence:
    the head that round reviewed, accepts its verdict, waits on the current
    head's checks and requests nothing (the plain form treats a new head as an
    unreviewed round and re-requests after the stall interval).
-3. The `pr.yml` checks `lint`, `types`, `tests` and `contracts` pass on the
-   head. A push that changes the head reruns them; a red job gets its fix commit on the branch.
+3. The six `pr.yml` checks `lint`, `types`, `tests`, `contracts` and the two
+   `arm` legs pass on the head. A push that changes the head reruns them; a red job gets its fix commit on the branch.
 4. GitHub reports mergeable_state clean. While a PR's mergeable_state is
    `dirty`, GitHub starts no new `pull_request`-triggered run (a
    `workflow_dispatch` run still can), so a wait loop exits on `dirty`
@@ -125,7 +128,7 @@ A PR merges after this sequence:
 When the owner says "just merge", that is the decision of step 5, given at
 once: the operator merges and cleans up and does nothing else, with no edited
 body, no exception record and no further review. Steps 3 and 4 still bind the
-merge itself, because branch protection on `main` requires the four checks
+merge itself, because branch protection on `main` requires the six checks
 with admins enforced and refuses an earlier merge; while they run, one
 background loop polls them and calls the merge once they pass and the state
 is clean.

@@ -1,0 +1,1079 @@
+{
+ "fitted_t1_assumption": "an implied_t1 row with fit_points is a single-exponential fit of a series' own delays; single_exponential, chi_square_per_dof and us_se_scaled say whether the fit describes the decay",
+ "implied_t1_assumption": "the whole P(1|1) drop between the no-wait and the wait run is T1 decay during the wait, and readout fidelity is unchanged between the two runs",
+ "jobs": {
+  "QXsinglenodesimulator": [
+   {
+    "day": "2026-10-16",
+    "jobs": 20,
+    "max_turnaround_seconds": 38.4133,
+    "median_execution_seconds": 0.22984,
+    "median_turnaround_seconds": 8.4819,
+    "shots": 40960
+   },
+   {
+    "day": "2026-10-17",
+    "jobs": 82,
+    "max_turnaround_seconds": 28.6229,
+    "median_execution_seconds": 0.048852,
+    "median_turnaround_seconds": 6.89519,
+    "shots": 167936
+   },
+   {
+    "day": "2026-10-18",
+    "jobs": 11,
+    "max_turnaround_seconds": 8.36579,
+    "median_execution_seconds": 0.059743,
+    "median_turnaround_seconds": 6.38724,
+    "shots": 22528
+   },
+   {
+    "day": "2026-10-22",
+    "jobs": 41,
+    "max_turnaround_seconds": 8.11197,
+    "median_execution_seconds": 0.058236,
+    "median_turnaround_seconds": 6.69623,
+    "shots": 83968
+   },
+   {
+    "day": "2026-10-23",
+    "jobs": 18,
+    "max_turnaround_seconds": 12.636,
+    "median_execution_seconds": 2.09281,
+    "median_turnaround_seconds": 9.848,
+    "shots": 36864
+   },
+   {
+    "day": "2026-10-27",
+    "jobs": 3,
+    "max_turnaround_seconds": 7.52007,
+    "median_execution_seconds": 0.418324,
+    "median_turnaround_seconds": 7.1704,
+    "shots": 6144
+   },
+   {
+    "day": "2026-10-30",
+    "jobs": 9,
+    "max_turnaround_seconds": 41.1555,
+    "median_execution_seconds": 11.316,
+    "median_turnaround_seconds": 29.6933,
+    "shots": 18432
+   },
+   {
+    "day": "2026-11-06",
+    "jobs": 24,
+    "max_turnaround_seconds": 9.34996,
+    "median_execution_seconds": 0.212326,
+    "median_turnaround_seconds": 7.41609,
+    "shots": 49152
+   },
+   {
+    "day": "2026-11-07",
+    "jobs": 16,
+    "max_turnaround_seconds": 9.77205,
+    "median_execution_seconds": 0.196218,
+    "median_turnaround_seconds": 8.97339,
+    "shots": 32768
+   },
+   {
+    "day": "2026-11-15",
+    "jobs": 13,
+    "max_turnaround_seconds": 9.82648,
+    "median_execution_seconds": 0.720792,
+    "median_turnaround_seconds": 8.4262,
+    "shots": 26624
+   },
+   {
+    "day": "2026-11-16",
+    "jobs": 14,
+    "max_turnaround_seconds": 170.225,
+    "median_execution_seconds": 0.0078065,
+    "median_turnaround_seconds": 6.28134,
+    "shots": 14336
+   }
+  ],
+  "Rydberg": [
+   {
+    "day": "2026-10-16",
+    "jobs": 1,
+    "max_turnaround_seconds": 17.3563,
+    "median_execution_seconds": 16.2575,
+    "median_turnaround_seconds": 17.3563,
+    "shots": 1024
+   },
+   {
+    "day": "2026-10-17",
+    "jobs": 15,
+    "max_turnaround_seconds": 68.807,
+    "median_execution_seconds": 18.6669,
+    "median_turnaround_seconds": 38.7993,
+    "shots": 15360
+   }
+  ],
+  "tuna_17": [
+   {
+    "day": "2026-10-16",
+    "jobs": 20,
+    "max_turnaround_seconds": 230.497,
+    "median_execution_seconds": 11.0912,
+    "median_turnaround_seconds": 95.2887,
+    "shots": 327680
+   },
+   {
+    "day": "2026-10-17",
+    "jobs": 106,
+    "max_turnaround_seconds": 2205.91,
+    "median_execution_seconds": 7.26888,
+    "median_turnaround_seconds": 57.7763,
+    "shots": 1175552
+   },
+   {
+    "day": "2026-10-18",
+    "jobs": 33,
+    "max_turnaround_seconds": 1673.27,
+    "median_execution_seconds": 72.3145,
+    "median_turnaround_seconds": 195.265,
+    "shots": 4325376
+   },
+   {
+    "day": "2026-10-22",
+    "jobs": 51,
+    "max_turnaround_seconds": 1461.95,
+    "median_execution_seconds": 18.0122,
+    "median_turnaround_seconds": 258.424,
+    "shots": 1277952
+   },
+   {
+    "day": "2026-10-23",
+    "jobs": 18,
+    "max_turnaround_seconds": 325.462,
+    "median_execution_seconds": 11.5484,
+    "median_turnaround_seconds": 216.046,
+    "shots": 294912
+   },
+   {
+    "day": "2026-10-27",
+    "jobs": 9,
+    "max_turnaround_seconds": 1942.13,
+    "median_execution_seconds": 5.14559,
+    "median_turnaround_seconds": 1011.09,
+    "shots": 36864
+   },
+   {
+    "day": "2026-10-30",
+    "jobs": 9,
+    "max_turnaround_seconds": 3113.81,
+    "median_execution_seconds": 41.5801,
+    "median_turnaround_seconds": 346.013,
+    "shots": 679824
+   },
+   {
+    "day": "2026-11-06",
+    "jobs": 12,
+    "max_turnaround_seconds": 472.996,
+    "median_execution_seconds": 10.9523,
+    "median_turnaround_seconds": 57.0657,
+    "shots": 196608
+   },
+   {
+    "day": "2026-11-07",
+    "jobs": 25,
+    "max_turnaround_seconds": 4285.78,
+    "median_execution_seconds": 23.3849,
+    "median_turnaround_seconds": 2087.79,
+    "shots": 1392640
+   },
+   {
+    "day": "2026-11-08",
+    "jobs": 41,
+    "max_turnaround_seconds": 4227.94,
+    "median_execution_seconds": 18.977,
+    "median_turnaround_seconds": 2256.97,
+    "shots": 1507328
+   },
+   {
+    "day": "2026-11-15",
+    "jobs": 52,
+    "max_turnaround_seconds": 375.789,
+    "median_execution_seconds": 66.4026,
+    "median_turnaround_seconds": 76.0434,
+    "shots": 4653056
+   },
+   {
+    "day": "2026-11-16",
+    "jobs": 14,
+    "max_turnaround_seconds": 30025.0,
+    "median_execution_seconds": 7.92505,
+    "median_turnaround_seconds": 82.6955,
+    "shots": 147456
+   }
+  ]
+ },
+ "profile": "tuna_17",
+ "qubits": [
+  {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 14.1847,
+    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0165405,
+    "p1_given_1": 0.968933,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
+   "coupler_map": {
+    "couplers": 2,
+    "detuning_hz": 18478.1,
+    "detuning_se_hz": 1452.01,
+    "max_abs_j_hz": 7902.75,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.974123,
+     0.755046
+    ]
+   },
+   "implied_t1": {
+    "chi_square_per_dof": 4.89669,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 17.087,
+    "us_se": 0.151064,
+    "us_se_scaled": 0.334282,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
+   },
+   "qubit": 0,
+   "readout": {
+    "p1_given_0": 0.0101318,
+    "p1_given_1": 0.974487,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+    "shots": 16384,
+    "utc": "2026-11-16T12:33:41.128707+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 25.4796,
+    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0261841,
+    "p1_given_1": 0.970398,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
+   "coupler_map": {
+    "couplers": 2,
+    "detuning_hz": 55464.8,
+    "detuning_se_hz": 1145.03,
+    "max_abs_j_hz": 19281.8,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.985444,
+     0.957703
+    ]
+   },
+   "implied_t1": {
+    "chi_square_per_dof": 5.93879,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 19.6468,
+    "us_se": 0.18514,
+    "us_se_scaled": 0.451178,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
+   },
+   "qubit": 1,
+   "readout": {
+    "p1_given_0": 0.0280762,
+    "p1_given_1": 0.974792,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+    "shots": 16384,
+    "utc": "2026-11-16T12:33:41.128707+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 17.7789,
+    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0134277,
+    "p1_given_1": 0.972534,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
+   "coupler_map": {
+    "couplers": 3,
+    "detuning_hz": 6247.84,
+    "detuning_se_hz": 1308.05,
+    "max_abs_j_hz": 7902.75,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.968438,
+     0.897224
+    ]
+   },
+   "implied_t1": {
+    "chi_square_per_dof": 234.446,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 24.8258,
+    "us_se": 0.220884,
+    "us_se_scaled": 3.38209,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
+   },
+   "qubit": 2,
+   "readout": {
+    "p1_given_0": 0.0103149,
+    "p1_given_1": 0.984436,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+    "shots": 16384,
+    "utc": "2026-11-16T12:33:41.128707+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 9.27136,
+    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0125122,
+    "p1_given_1": 0.957642,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
+   "coupler_map": {
+    "couplers": 2,
+    "detuning_hz": -21614.9,
+    "detuning_se_hz": 1336.43,
+    "max_abs_j_hz": 11730.8,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.95011,
+     0.878586
+    ]
+   },
+   "implied_t1": {
+    "chi_square_per_dof": 83.3424,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 13.1502,
+    "us_se": 0.117607,
+    "us_se_scaled": 1.07366,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
+   },
+   "qubit": 3,
+   "readout": {
+    "p1_given_0": 0.0135498,
+    "p1_given_1": 0.960022,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+    "shots": 16384,
+    "utc": "2026-11-16T12:33:41.128707+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 15.599,
+    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0114746,
+    "p1_given_1": 0.951416,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
+   "coupler_map": {
+    "couplers": 4,
+    "detuning_hz": 26688.5,
+    "detuning_se_hz": 1384.59,
+    "max_abs_j_hz": 19281.8,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.965908,
+     0.845515
+    ]
+   },
+   "implied_t1": {
+    "chi_square_per_dof": 68.9089,
+    "fit_points": 6,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 24.8678,
+    "us_se": 0.227735,
+    "us_se_scaled": 1.89046,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
+   },
+   "qubit": 4,
+   "readout": {
+    "p1_given_0": 0.0112305,
+    "p1_given_1": 0.955017,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+    "shots": 16384,
+    "utc": "2026-11-16T12:33:41.128707+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 15.1261,
+    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0373535,
+    "p1_given_1": 0.963745,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
+   "coupler_map": {
+    "couplers": 4,
+    "detuning_hz": 321522.0,
+    "detuning_se_hz": 9631.8,
+    "max_abs_j_hz": 11730.8,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.813396,
+     0.110761
+    ]
+   },
+   "implied_t1": {
+    "chi_square_per_dof": 12.0802,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 20.3617,
+    "us_se": 0.199886,
+    "us_se_scaled": 0.694733,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
+   },
+   "qubit": 5,
+   "readout": {
+    "p1_given_0": 0.0333862,
+    "p1_given_1": 0.963501,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+    "shots": 16384,
+    "utc": "2026-11-16T12:33:41.128707+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 5.49741,
+    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0352173,
+    "p1_given_1": 0.932129,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
+   "coupler_map": {
+    "couplers": 2,
+    "detuning_hz": 323668.0,
+    "detuning_se_hz": 3381.74,
+    "max_abs_j_hz": 7823.68,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.686826,
+     0.294973
+    ]
+   },
+   "implied_t1": {
+    "chi_square_per_dof": 23.4116,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 16.2302,
+    "us_se": 0.16223,
+    "us_se_scaled": 0.784959,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
+   },
+   "qubit": 6,
+   "readout": {
+    "p1_given_0": 0.0377808,
+    "p1_given_1": 0.959473,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+    "shots": 16384,
+    "utc": "2026-11-16T12:33:41.128707+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 52.0291,
+    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0349731,
+    "p1_given_1": 0.936035,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
+   "coupler_map": {
+    "couplers": 3,
+    "detuning_hz": -115766.0,
+    "detuning_se_hz": 8708.2,
+    "max_abs_j_hz": 3143.19,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.809804,
+     0.0950932
+    ]
+   },
+   "implied_t1": {
+    "chi_square_per_dof": 36.6655,
+    "fit_points": 6,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 27.6529,
+    "us_se": 0.278847,
+    "us_se_scaled": 1.68848,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
+   },
+   "qubit": 7,
+   "readout": {
+    "p1_given_0": 0.0302124,
+    "p1_given_1": 0.935059,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+    "shots": 16384,
+    "utc": "2026-11-16T12:33:41.128707+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 18.0558,
+    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0323486,
+    "p1_given_1": 0.945679,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
+   "coupler_map": {
+    "couplers": 4,
+    "detuning_hz": 28630.3,
+    "detuning_se_hz": 1356.74,
+    "max_abs_j_hz": 6612.76,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.937788,
+     0.911532
+    ]
+   },
+   "implied_t1": {
+    "chi_square_per_dof": 2.01,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": true,
+    "us": 18.9979,
+    "us_se": 0.177328,
+    "us_se_scaled": 0.251406,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
+   },
+   "qubit": 8,
+   "readout": {
+    "p1_given_0": 0.0354614,
+    "p1_given_1": 0.98175,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+    "shots": 16384,
+    "utc": "2026-11-16T12:33:41.128707+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 5.14269,
+    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0194702,
+    "p1_given_1": 0.92572,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
+   "coupler_map": {
+    "couplers": 3,
+    "detuning_hz": -13435.6,
+    "detuning_se_hz": 1466.42,
+    "max_abs_j_hz": 3730.18,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.938599,
+     0.875596
+    ]
+   },
+   "implied_t1": {
+    "chi_square_per_dof": 51.0354,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 22.0546,
+    "us_se": 0.233682,
+    "us_se_scaled": 1.66941,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
+   },
+   "qubit": 9,
+   "readout": {
+    "p1_given_0": 0.0200195,
+    "p1_given_1": 0.916992,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+    "shots": 16384,
+    "utc": "2026-11-16T12:33:41.128707+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 18.7183,
+    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0548706,
+    "p1_given_1": 0.978271,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
+   "coupler_map": {
+    "couplers": 2,
+    "detuning_hz": 39154.5,
+    "detuning_se_hz": 1160.83,
+    "max_abs_j_hz": 3143.19,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.981375,
+     1.03364
+    ]
+   },
+   "implied_t1": {
+    "chi_square_per_dof": 17.3984,
+    "fit_points": 6,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 32.21,
+    "us_se": 0.308351,
+    "us_se_scaled": 1.28618,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
+   },
+   "qubit": 10,
+   "readout": {
+    "p1_given_0": 0.0491333,
+    "p1_given_1": 0.974976,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+    "shots": 16384,
+    "utc": "2026-11-16T12:33:41.128707+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 22.3764,
+    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0164185,
+    "p1_given_1": 0.953857,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
+   "coupler_map": {
+    "couplers": 4,
+    "detuning_hz": 7021.29,
+    "detuning_se_hz": 1327.79,
+    "max_abs_j_hz": 31434.1,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.95997,
+     0.853334
+    ]
+   },
+   "implied_t1": {
+    "chi_square_per_dof": 33.1929,
+    "fit_points": 6,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 26.4048,
+    "us_se": 0.24997,
+    "us_se_scaled": 1.44016,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
+   },
+   "qubit": 11,
+   "readout": {
+    "p1_given_0": 0.0230713,
+    "p1_given_1": 0.935364,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+    "shots": 16384,
+    "utc": "2026-11-16T12:33:41.128707+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 20.973,
+    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.00518799,
+    "p1_given_1": 0.970764,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
+   "coupler_map": {
+    "couplers": 4,
+    "detuning_hz": -56571.8,
+    "detuning_se_hz": 1251.19,
+    "max_abs_j_hz": 10353.1,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.954619,
+     0.857017
+    ]
+   },
+   "implied_t1": {
+    "chi_square_per_dof": 48.6988,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 22.9413,
+    "us_se": 0.206316,
+    "us_se_scaled": 1.43977,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
+   },
+   "qubit": 12,
+   "readout": {
+    "p1_given_0": 0.00640869,
+    "p1_given_1": 0.978455,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+    "shots": 16384,
+    "utc": "2026-11-16T12:33:41.128707+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 22.9606,
+    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0287476,
+    "p1_given_1": 0.911316,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
+   "coupler_map": {
+    "couplers": 2,
+    "detuning_hz": -1476.64,
+    "detuning_se_hz": 1357.91,
+    "max_abs_j_hz": 7501.98,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     1.06273,
+     1.00208
+    ]
+   },
+   "implied_t1": {
+    "chi_square_per_dof": 1.91324,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": true,
+    "us": 23.7961,
+    "us_se": 0.265646,
+    "us_se_scaled": 0.367441,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
+   },
+   "qubit": 13,
+   "readout": {
+    "p1_given_0": 0.0246582,
+    "p1_given_1": 0.91803,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+    "shots": 16384,
+    "utc": "2026-11-16T12:33:41.128707+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 13.0612,
+    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0376587,
+    "p1_given_1": 0.974121,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
+   "coupler_map": {
+    "couplers": 3,
+    "detuning_hz": 24573.5,
+    "detuning_se_hz": 1415.93,
+    "max_abs_j_hz": 31434.1,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.934678,
+     0.75936
+    ]
+   },
+   "implied_t1": {
+    "chi_square_per_dof": 496.218,
+    "fit_points": 6,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 23.6425,
+    "us_se": 0.208455,
+    "us_se_scaled": 4.64353,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
+   },
+   "qubit": 14,
+   "readout": {
+    "p1_given_0": 0.036499,
+    "p1_given_1": 0.9505,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+    "shots": 16384,
+    "utc": "2026-11-16T12:33:41.128707+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 6.27035,
+    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.055542,
+    "p1_given_1": 0.980408,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
+   "coupler_map": {
+    "couplers": 2,
+    "detuning_hz": -2541.46,
+    "detuning_se_hz": 1383.62,
+    "max_abs_j_hz": 5322.01,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.936266,
+     0.880542
+    ]
+   },
+   "implied_t1": {
+    "chi_square_per_dof": 166.429,
+    "fit_points": 6,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 24.7085,
+    "us_se": 0.21621,
+    "us_se_scaled": 2.78927,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
+   },
+   "qubit": 15,
+   "readout": {
+    "p1_given_0": 0.0430298,
+    "p1_given_1": 0.976257,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+    "shots": 16384,
+    "utc": "2026-11-16T12:33:41.128707+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 16.6033,
+    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0339966,
+    "p1_given_1": 0.971191,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
+   "coupler_map": {
+    "couplers": 2,
+    "detuning_hz": -1509.19,
+    "detuning_se_hz": 1376.99,
+    "max_abs_j_hz": 5322.01,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.957892,
+     0.882093
+    ]
+   },
+   "implied_t1": {
+    "chi_square_per_dof": 4.45676,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 22.2312,
+    "us_se": 0.219023,
+    "us_se_scaled": 0.462381,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
+   },
+   "qubit": 16,
+   "readout": {
+    "p1_given_0": 0.0304565,
+    "p1_given_1": 0.968079,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+    "shots": 16384,
+    "utc": "2026-11-16T12:33:41.128707+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  }
+ ],
+ "schema": "qi-retained-context-v1",
+ "sources": {
+  "characterization_analysis": "results/quantum_inspire/characterization_tuna_17_analysis.json",
+  "characterization_analysis_sha256": "f54809ac302c9df77388cefa6a4a9e3b8f3eb8050c09157b45a6a5d9bfa3e398",
+  "coupler_map_runs_utc": [
+   "2026-10-16T22:52:57.598151+00:00",
+   "2026-10-16T22:58:51.391397+00:00",
+   "2026-10-16T23:03:07.275580+00:00",
+   "2026-10-16T23:07:25.837391+00:00"
+  ],
+  "device_context": "results/quantum_inspire/readout_ringdown_tuna_17_device_context.json",
+  "device_context_sha256": "293a97af8c510d022e8e90b3949a54ab779ee23317ed776a5de43811e6bd798c",
+  "job_runs": "results/quantum_inspire/runs"
+ }
+}

@@ -1,0 +1,13 @@
+RESULT generators 24
+RESULT targets 300
+RESULT products_ms 2448
+RESULT membership_failures 0
+RESULT membership_ms 313204
+
+--- stderr ---
+Running as unit: run-p1896497-i14450291.service
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 5min 15.738s
+             CPU time consumed: 5min 9.500s
+                   Memory peak: 1.2G (swap: 0B)

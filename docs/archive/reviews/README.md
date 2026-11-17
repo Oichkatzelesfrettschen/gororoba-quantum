@@ -19,6 +19,8 @@ repository-relative; a branch name stands for its worktree.
 | [legacy-branch-mining/README.md](legacy-branch-mining/README.md) | Content check of the fourteen legacy archive branches against main at 4b144ee81: one unique receipt checker retained, per-branch verdict and delete-or-keep recommendation (2026-11-09) |
 | [a5-vb7-w8-char0/README.md](a5-vb7-w8-char0/README.md) | Codex audits of the E8-bar -> VB degree-7 and W8 characteristic-0 plan, the final direction review, the PR review and the Iso saturation trace, each finding reconciled against the source |
 | [ibm-wide-coset-and-tuna-6cz/README.md](ibm-wide-coset-and-tuna-6cz/README.md) | Review of the wide-coset nullity and Tuna-17 six-CZ claims: literature on drift and systematics, the setting comparison, the Codex review and its reconciliation |
+| [qi-null-phase-scan-case/reconciliation.md](qi-null-phase-scan-case/reconciliation.md) | Reconciliation of six review rounds on the Tuna-17 null phase scan case (PR 914): codex and the Advisor on the first design, codex and agy Flash on rule R1, codex on rules R2 to R6, the Advisor on the seed provenance, hosted Codex and hosted Copilot; the q8 world, scaled separation, readout-flip nuisance, JSON-safe unreachable fits, pooled flip fits, the engine-move boundary and the R5 and R6 record split; with the four briefs |
+| [qi-tuna17-characterization-record/reconciliation.md](qi-tuna17-characterization-record/reconciliation.md) | Advisor review of the Tuna-17 characterization record (PR 940): the batch-offset confound of the T1 delays and its anchor test, the main merge, the retained-context keys the dashboard reads, the self-test memory, the body figures, the pin sweep; with the brief |
 | [findings-32d/brief.md](findings-32d/brief.md) | Brief for the adversarial synthesis of PRs #788, #789, #790 and the A_5 findings at main fb122e569: ledger audit, new conjectures, cross-program connections, remaining computations by host (2026-11-08) |
 | [findings-32d/review-codex-daybreak-blue.md](findings-32d/review-codex-daybreak-blue.md) | Codex gpt-daybreak-blue-latest review: within-PUB covariance in #788, the Iso equality overclaim, #790 ledger states, the A5 dependency-ledger audit and a costed host table |
 | [findings-32d/review-grok.md](findings-32d/review-grok.md) | Grok Build review: ledger audit, the maximum two-term nullity, N_hat saturation hiding a dead placement, single-site instrument faults, costs and PR defects |
@@ -192,3 +194,10 @@ The [Tuna early-label map review](tuna-early-label-map-review.md), its
 
 The [native numeric replay review](2026-10-30-native-numeric-replay-review.md) derived the identity-scoped
 replay contract of [design/native-numeric-replay.md](../../design/native-numeric-replay.md).
+
+The [Tuna-17 characterization case review](tuna17-characterization-case/reconciliation.md) reconciles the findings
+of one reviewer and two red-teamers on the case generator and its written cases.
+
+The [Quantum Inspire status document review](qi-status-document/reconciliation.md) reconciles the seven findings
+of its [reviewer report](qi-status-document/codex-report.md) on [the brief](qi-status-document/brief.md) for
+`scripts/qi_status.py`.

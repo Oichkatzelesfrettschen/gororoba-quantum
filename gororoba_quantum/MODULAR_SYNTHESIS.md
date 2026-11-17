@@ -310,7 +310,8 @@ From the repository root, use the pinned runtime:
 ```sh
 PYTHON="${PYTHON:-$(command -v python3)}"
 "$PYTHON" gororoba_quantum/target_flip.py
-"$PYTHON" gororoba_quantum/target_flip_certificate.py --check
+# TargetFlipN21.v is rendered and checked by gororoba-math ci/check_quantum_sources.sh
+# (docs/runbooks/rocq-replay-route.md)
 "$PYTHON" gororoba_quantum/compile_evidence.py \
   --candidate target_flip_one_clean \
   --out results/hw_estimate/n21_target_flip_compilation.json

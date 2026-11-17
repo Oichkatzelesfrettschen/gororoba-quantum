@@ -1,0 +1,125 @@
+{
+ "kind_margin": 6.63,
+ "label_counts": {
+  "coupler 8-12 phase +0.25 rad": {
+   "coupler_phase": 495,
+   "none_adequate": 1,
+   "phase_mixed": 4
+  },
+  "coupler 8-12 phase -0.25 rad": {
+   "coupler_phase": 498,
+   "none_adequate": 2
+  },
+  "coupler 8-12 phase -0.25 rad with CZ damping": {
+   "coupler_phase": 492,
+   "none_adequate": 2,
+   "phase_mixed": 6
+  },
+  "coupler 8-12 phase -0.25 rad with CZ damping x1.25": {
+   "coupler_phase": 493,
+   "none_adequate": 1,
+   "phase_mixed": 6
+  },
+  "exact gates": {
+   "exact_parabola": 1,
+   "offset_absent": 499
+  },
+  "exact gates with CZ damping": {
+   "offset_absent": 499,
+   "offset_reversed": 1
+  },
+  "exact gates, selector flip 0.0166 when q12 reads 0": {
+   "none_adequate": 500
+  },
+  "exact gates, selector flip 0.0166, CZ phase damping 0.10": {
+   "none_adequate": 409,
+   "phase_unresolved": 91
+  },
+  "exact gates, selector flip 0.025, CZ phase damping 0.13": {
+   "none_adequate": 388,
+   "phase_unresolved": 111,
+   "q12_phase": 1
+  },
+  "exact gates, selector flip 0.025, pulse phase damping 0.10": {
+   "exact_parabola": 3,
+   "none_adequate": 372,
+   "phase_unresolved": 125
+  },
+  "exact gates, selector flip 0.036 when q12 reads 0": {
+   "none_adequate": 500
+  },
+  "exact gates, selector flip 0.036, CZ phase damping 0.16": {
+   "none_adequate": 284,
+   "phase_unresolved": 216
+  },
+  "q12 phase +0.18 rad": {
+   "none_adequate": 2,
+   "phase_mixed": 9,
+   "q12_phase": 489
+  },
+  "q12 phase -0.15 rad": {
+   "phase_mixed": 2,
+   "q12_phase": 498
+  },
+  "q12 phase -0.15 rad with CZ damping": {
+   "phase_mixed": 5,
+   "q12_phase": 495
+  },
+  "q12 phase -0.15 rad with CZ damping x1.25": {
+   "none_adequate": 1,
+   "phase_mixed": 3,
+   "q12_phase": 496
+  },
+  "q12 phase -0.15 rad with CZ damping x3": {
+   "exact_parabola": 1,
+   "offset_absent": 338,
+   "phase_unresolved": 160,
+   "q12_phase": 1
+  },
+  "q12 phase -0.18 rad": {
+   "none_adequate": 1,
+   "phase_mixed": 4,
+   "q12_phase": 495
+  },
+  "q8 phase at coupler 8-12 +0.10 rad": {
+   "offset_absent": 6,
+   "phase_mixed": 1,
+   "phase_unresolved": 366,
+   "q8_phase_at_coupler": 127
+  },
+  "q8 phase at coupler 8-12 -0.17 rad": {
+   "none_adequate": 1,
+   "offset_absent": 52,
+   "phase_unresolved": 288,
+   "q8_phase_at_coupler": 159
+  },
+  "q8 phase at coupler 8-12 -0.25 rad": {
+   "none_adequate": 2,
+   "phase_mixed": 2,
+   "phase_unresolved": 10,
+   "q8_phase_at_coupler": 486
+  },
+  "q8 phase at coupler 8-12 -0.25 rad, CZ phase damping 0.12": {
+   "none_adequate": 19,
+   "phase_mixed": 1,
+   "phase_unresolved": 454,
+   "q8_phase_at_coupler": 26
+  },
+  "q8 phase at coupler 8-12 -0.25 rad, pulse phase damping 0.10": {
+   "phase_unresolved": 497,
+   "q8_phase_at_coupler": 3
+  },
+  "z12 from coupler phase -0.25, z8c from q12 phase -0.18": {
+   "none_adequate": 467,
+   "phase_mixed": 33
+  },
+  "z12 from q12 phase -0.18, z8c from coupler phase -0.25": {
+   "none_adequate": 500
+  }
+ },
+ "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-15T084216Z.json",
+ "seed_index": 10,
+ "separation": 30.0,
+ "series_per_truth": 500,
+ "static_d2_split": 0.0083
+}

@@ -1,0 +1,622 @@
+{
+ "schema": "qi-tuna17-characterization-analysis-v1",
+ "runs": [
+  "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+  "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+  "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-02",
+  "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+  "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-04",
+  "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05"
+ ],
+ "nqubits": 17,
+ "qubits": [
+  {
+   "qubit": 0,
+   "readout": [
+    {
+     "p1_given_0": 0.01165771484375,
+     "p1_given_1": 0.9747314453125
+    },
+    {
+     "p1_given_0": 0.0101318359375,
+     "p1_given_1": 0.9744873046875
+    }
+   ],
+   "readout_within_tolerance": true,
+   "readout_drift": 0.00152587890625,
+   "readout_stable": true,
+   "t1": {
+    "us": 17.08702439601897,
+    "us_se": 0.15106432616220683,
+    "points": 5,
+    "chi_square": 14.690076213110116,
+    "freedom": 3,
+    "chi_square_probability": 0.00210160018379205
+   },
+   "t1_single_exponential": false,
+   "t1_beyond_window": false,
+   "ladder_p0": {
+    "0": 1.0009183318027803,
+    "32": 0.9141518097469837,
+    "128": 0.4852591912346813,
+    "256": 0.5317457804236994
+   },
+   "ladder_p0_at_longest": 0.5317457804236994,
+   "ladder_clears": false
+  },
+  {
+   "qubit": 1,
+   "readout": [
+    {
+     "p1_given_0": 0.02691650390625,
+     "p1_given_1": 0.97265625
+    },
+    {
+     "p1_given_0": 0.028076171875,
+     "p1_given_1": 0.97479248046875
+    }
+   ],
+   "readout_within_tolerance": true,
+   "readout_drift": 0.00213623046875,
+   "readout_stable": true,
+   "t1": {
+    "us": 19.646770076704968,
+    "us_se": 0.18513953184081336,
+    "points": 5,
+    "chi_square": 17.816368095122513,
+    "freedom": 3,
+    "chi_square_probability": 0.000479918444982465
+   },
+   "t1_single_exponential": false,
+   "t1_beyond_window": false,
+   "ladder_p0": {
+    "0": 1.0027414048893764,
+    "32": 0.9234019222086047,
+    "128": 0.18109398180997227,
+    "256": 0.6402309230471521
+   },
+   "ladder_p0_at_longest": 0.6402309230471521,
+   "ladder_clears": false
+  },
+  {
+   "qubit": 2,
+   "readout": [
+    {
+     "p1_given_0": 0.008544921875,
+     "p1_given_1": 0.98468017578125
+    },
+    {
+     "p1_given_0": 0.01031494140625,
+     "p1_given_1": 0.98443603515625
+    }
+   ],
+   "readout_within_tolerance": true,
+   "readout_drift": 0.00177001953125,
+   "readout_stable": true,
+   "t1": {
+    "us": 24.82580816964312,
+    "us_se": 0.22088374562284624,
+    "points": 5,
+    "chi_square": 703.3394349510878,
+    "freedom": 3,
+    "chi_square_probability": 3.96205916862812e-152
+   },
+   "t1_single_exponential": false,
+   "t1_beyond_window": false,
+   "ladder_p0": {
+    "0": 1.0006572152849498,
+    "32": 0.9530873470409664,
+    "128": 0.7081025255844522,
+    "256": 0.2345319688292179
+   },
+   "ladder_p0_at_longest": 0.2345319688292179,
+   "ladder_clears": false
+  },
+  {
+   "qubit": 3,
+   "readout": [
+    {
+     "p1_given_0": 0.0123291015625,
+     "p1_given_1": 0.96142578125
+    },
+    {
+     "p1_given_0": 0.0135498046875,
+     "p1_given_1": 0.96002197265625
+    }
+   ],
+   "readout_within_tolerance": true,
+   "readout_drift": 0.00140380859375,
+   "readout_stable": true,
+   "t1": {
+    "us": 13.150191808289943,
+    "us_se": 0.11760714188978899,
+    "points": 5,
+    "chi_square": 250.02723653480143,
+    "freedom": 3,
+    "chi_square_probability": 6.455588388286521e-54
+   },
+   "t1_single_exponential": false,
+   "t1_beyond_window": false,
+   "ladder_p0": {
+    "0": 0.9988408410342274,
+    "32": 0.5367228000128795,
+    "128": 0.8476349937212223,
+    "256": 0.7100814631162057
+   },
+   "ladder_p0_at_longest": 0.7100814631162057,
+   "ladder_clears": true,
+   "ladder": {
+    "decay_pulses": 321.56165526913384,
+    "decay_pulses_se": 7.365301417831216,
+    "chi_square_probability": 2.079383523792506e-58
+   }
+  },
+  {
+   "qubit": 4,
+   "readout": [
+    {
+     "p1_given_0": 0.014404296875,
+     "p1_given_1": 0.94647216796875
+    },
+    {
+     "p1_given_0": 0.01123046875,
+     "p1_given_1": 0.95501708984375
+    }
+   ],
+   "readout_within_tolerance": true,
+   "readout_drift": 0.008544921875,
+   "readout_stable": true,
+   "t1": {
+    "us": 24.867791500218985,
+    "us_se": 0.22773492391725567,
+    "points": 6,
+    "chi_square": 275.6356082835073,
+    "freedom": 4,
+    "chi_square_probability": 1.9450614368913587e-58
+   },
+   "t1_single_exponential": false,
+   "t1_beyond_window": false,
+   "ladder_p0": {
+    "0": 0.9993492548968569,
+    "32": 0.9398711524695776,
+    "128": 0.550595431769376,
+    "256": 0.19242532699941428
+   },
+   "ladder_p0_at_longest": 0.19242532699941428,
+   "ladder_clears": false
+  },
+  {
+   "qubit": 5,
+   "readout": [
+    {
+     "p1_given_0": 0.0318603515625,
+     "p1_given_1": 0.96710205078125
+    },
+    {
+     "p1_given_0": 0.03338623046875,
+     "p1_given_1": 0.9635009765625
+    }
+   ],
+   "readout_within_tolerance": true,
+   "readout_drift": 0.00360107421875,
+   "readout_stable": true,
+   "t1": {
+    "us": 20.361712915677863,
+    "us_se": 0.19988559119543658,
+    "points": 5,
+    "chi_square": 36.24049692978538,
+    "freedom": 3,
+    "chi_square_probability": 6.660950098028235e-08
+   },
+   "t1_single_exponential": false,
+   "t1_beyond_window": false,
+   "ladder_p0": {
+    "0": 0.9982003795563118,
+    "32": 0.3888161769517702,
+    "128": 0.7668019108697075,
+    "256": 0.530429945684183
+   },
+   "ladder_p0_at_longest": 0.530429945684183,
+   "ladder_clears": false
+  },
+  {
+   "qubit": 6,
+   "readout": [
+    {
+     "p1_given_0": 0.03118896484375,
+     "p1_given_1": 0.97271728515625
+    },
+    {
+     "p1_given_0": 0.03778076171875,
+     "p1_given_1": 0.95947265625
+    }
+   ],
+   "readout_within_tolerance": true,
+   "readout_drift": 0.01324462890625,
+   "readout_stable": true,
+   "t1": {
+    "us": 16.2301925444443,
+    "us_se": 0.16223024345789802,
+    "points": 5,
+    "chi_square": 70.23476086853798,
+    "freedom": 3,
+    "chi_square_probability": 3.8017897175876245e-15
+   },
+   "t1_single_exponential": false,
+   "t1_beyond_window": false,
+   "ladder_p0": {
+    "0": 0.9927277492056212,
+    "32": 0.6346185344121598,
+    "128": 0.6892586890293838,
+    "256": 0.694237887771481
+   },
+   "ladder_p0_at_longest": 0.694237887771481,
+   "ladder_clears": true,
+   "ladder": {
+    "decay_pulses": 223.56650766888868,
+    "decay_pulses_se": 5.193772748734307,
+    "chi_square_probability": 8.66200587988487e-202
+   }
+  },
+  {
+   "qubit": 7,
+   "readout": [
+    {
+     "p1_given_0": 0.0438232421875,
+     "p1_given_1": 0.9368896484375
+    },
+    {
+     "p1_given_0": 0.03021240234375,
+     "p1_given_1": 0.93505859375
+    }
+   ],
+   "readout_within_tolerance": true,
+   "readout_drift": 0.01361083984375,
+   "readout_stable": true,
+   "t1": {
+    "us": 27.652857525809512,
+    "us_se": 0.27884715757961,
+    "points": 6,
+    "chi_square": 146.6618573473405,
+    "freedom": 4,
+    "chi_square_probability": 1.0567004271958395e-30
+   },
+   "t1_single_exponential": false,
+   "t1_beyond_window": false,
+   "ladder_p0": {
+    "0": 1.0023423973928098,
+    "32": 0.9226329904606715,
+    "128": 0.4629799368571138,
+    "256": 0.13531588417014628
+   },
+   "ladder_p0_at_longest": 0.13531588417014628,
+   "ladder_clears": false
+  },
+  {
+   "qubit": 8,
+   "readout": [
+    {
+     "p1_given_0": 0.0377197265625,
+     "p1_given_1": 0.9808349609375
+    },
+    {
+     "p1_given_0": 0.03546142578125,
+     "p1_given_1": 0.98175048828125
+    }
+   ],
+   "readout_within_tolerance": false,
+   "readout_drift": 0.00225830078125,
+   "readout_stable": true,
+   "t1": {
+    "us": 18.99787751975558,
+    "us_se": 0.17732844043386828,
+    "points": 5,
+    "chi_square": 6.029998528317427,
+    "freedom": 3,
+    "chi_square_probability": 0.11015981800188078
+   },
+   "t1_single_exponential": true,
+   "t1_beyond_window": false,
+   "ladder_p0": {
+    "0": 1.0000969117457035,
+    "32": 0.9440173148985657,
+    "128": 0.8443920403152863,
+    "256": 0.8335379247964854
+   },
+   "ladder_p0_at_longest": 0.8335379247964854,
+   "ladder_clears": true,
+   "ladder": {
+    "decay_pulses": 549.917064966198,
+    "decay_pulses_se": 16.32418556654727,
+    "chi_square_probability": 1.395045189140713e-34
+   }
+  },
+  {
+   "qubit": 9,
+   "readout": [
+    {
+     "p1_given_0": 0.01641845703125,
+     "p1_given_1": 0.92120361328125
+    },
+    {
+     "p1_given_0": 0.02001953125,
+     "p1_given_1": 0.9169921875
+    }
+   ],
+   "readout_within_tolerance": true,
+   "readout_drift": 0.00421142578125,
+   "readout_stable": true,
+   "t1": {
+    "us": 22.05457423428559,
+    "us_se": 0.2336824774987069,
+    "points": 5,
+    "chi_square": 153.10623014569407,
+    "freedom": 3,
+    "chi_square_probability": 5.631840158987913e-33
+   },
+   "t1_single_exponential": false,
+   "t1_beyond_window": false,
+   "ladder_p0": {
+    "0": 0.998949864498645,
+    "32": 0.9160230352303523,
+    "128": 0.6328252032520325,
+    "256": 0.29054878048780486
+   },
+   "ladder_p0_at_longest": 0.29054878048780486,
+   "ladder_clears": false
+  },
+  {
+   "qubit": 10,
+   "readout": [
+    {
+     "p1_given_0": 0.05499267578125,
+     "p1_given_1": 0.97235107421875
+    },
+    {
+     "p1_given_0": 0.04913330078125,
+     "p1_given_1": 0.9749755859375
+    }
+   ],
+   "readout_within_tolerance": true,
+   "readout_drift": 0.005859375,
+   "readout_stable": true,
+   "t1": {
+    "us": 32.20998439965305,
+    "us_se": 0.308351470037132,
+    "points": 6,
+    "chi_square": 69.59352389947945,
+    "freedom": 4,
+    "chi_square_probability": 2.7656807111656877e-14
+   },
+   "t1_single_exponential": false,
+   "t1_beyond_window": false,
+   "ladder_p0": {
+    "0": 0.9967548594324316,
+    "32": 0.8915858140998046,
+    "128": 0.08771813636213122,
+    "256": 0.8396635650187092
+   },
+   "ladder_p0_at_longest": 0.8396635650187092,
+   "ladder_clears": false
+  },
+  {
+   "qubit": 11,
+   "readout": [
+    {
+     "p1_given_0": 0.02191162109375,
+     "p1_given_1": 0.94183349609375
+    },
+    {
+     "p1_given_0": 0.0230712890625,
+     "p1_given_1": 0.93536376953125
+    }
+   ],
+   "readout_within_tolerance": true,
+   "readout_drift": 0.0064697265625,
+   "readout_stable": true,
+   "t1": {
+    "us": 26.40484202949809,
+    "us_se": 0.2499704509242033,
+    "points": 6,
+    "chi_square": 132.7715324089079,
+    "freedom": 4,
+    "chi_square_probability": 9.944804073287296e-28
+   },
+   "t1_single_exponential": false,
+   "t1_beyond_window": false,
+   "ladder_p0": {
+    "0": 0.9944368566574503,
+    "32": 0.01199240481028685,
+    "128": 0.7812385489190179,
+    "256": 0.41720243845564475
+   },
+   "ladder_p0_at_longest": 0.41720243845564475,
+   "ladder_clears": false
+  },
+  {
+   "qubit": 12,
+   "readout": [
+    {
+     "p1_given_0": 0.00592041015625,
+     "p1_given_1": 0.97454833984375
+    },
+    {
+     "p1_given_0": 0.00640869140625,
+     "p1_given_1": 0.97845458984375
+    }
+   ],
+   "readout_within_tolerance": true,
+   "readout_drift": 0.00390625,
+   "readout_stable": true,
+   "t1": {
+    "us": 22.941269695852604,
+    "us_se": 0.20631599542870993,
+    "points": 5,
+    "chi_square": 146.09628487620196,
+    "freedom": 3,
+    "chi_square_probability": 1.8314589856975306e-31
+   },
+   "t1_single_exponential": false,
+   "t1_beyond_window": false,
+   "ladder_p0": {
+    "0": 1.0013209208705498,
+    "32": 0.6483205434645867,
+    "128": 0.7663228079003648,
+    "256": 0.5311988929425084
+   },
+   "ladder_p0_at_longest": 0.5311988929425084,
+   "ladder_clears": true,
+   "ladder": {
+    "decay_pulses": 177.66882611922532,
+    "decay_pulses_se": 4.3786730329499415,
+    "chi_square_probability": 3.278548119024151e-191
+   }
+  },
+  {
+   "qubit": 13,
+   "readout": [
+    {
+     "p1_given_0": 0.0257568359375,
+     "p1_given_1": 0.910888671875
+    },
+    {
+     "p1_given_0": 0.024658203125,
+     "p1_given_1": 0.91802978515625
+    }
+   ],
+   "readout_within_tolerance": true,
+   "readout_drift": 0.00714111328125,
+   "readout_stable": true,
+   "t1": {
+    "us": 23.796053067442486,
+    "us_se": 0.26564568052510223,
+    "points": 5,
+    "chi_square": 5.739717471639719,
+    "freedom": 3,
+    "chi_square_probability": 0.12498351934192758
+   },
+   "t1_single_exponential": true,
+   "t1_beyond_window": false,
+   "ladder_p0": {
+    "0": 0.9988331789011291,
+    "32": 0.9687703764713957,
+    "128": 0.9247057208552112,
+    "256": 0.8236727410000343
+   },
+   "ladder_p0_at_longest": 0.8236727410000343,
+   "ladder_clears": true,
+   "ladder": {
+    "decay_pulses": 658.0026786706659,
+    "decay_pulses_se": 21.9132631154442,
+    "chi_square_probability": 9.357311115966567e-07
+   }
+  },
+  {
+   "qubit": 14,
+   "readout": [
+    {
+     "p1_given_0": 0.03778076171875,
+     "p1_given_1": 0.954345703125
+    },
+    {
+     "p1_given_0": 0.0364990234375,
+     "p1_given_1": 0.95050048828125
+    }
+   ],
+   "readout_within_tolerance": true,
+   "readout_drift": 0.00384521484375,
+   "readout_stable": true,
+   "t1": {
+    "us": 23.64246327536228,
+    "us_se": 0.20845468609490664,
+    "points": 6,
+    "chi_square": 1984.8728199581976,
+    "freedom": 4,
+    "chi_square_probability": 0.0
+   },
+   "t1_single_exponential": false,
+   "t1_beyond_window": false,
+   "ladder_p0": {
+    "0": 0.9996332355294745,
+    "32": 0.028574286476393707,
+    "128": 0.8430581488396905,
+    "256": 0.7128901040277407
+   },
+   "ladder_p0_at_longest": 0.7128901040277407,
+   "ladder_clears": false
+  },
+  {
+   "qubit": 15,
+   "readout": [
+    {
+     "p1_given_0": 0.0440673828125,
+     "p1_given_1": 0.9681396484375
+    },
+    {
+     "p1_given_0": 0.04302978515625,
+     "p1_given_1": 0.97625732421875
+    }
+   ],
+   "readout_within_tolerance": true,
+   "readout_drift": 0.00811767578125,
+   "readout_stable": true,
+   "t1": {
+    "us": 24.708534000075726,
+    "us_se": 0.2162098289245133,
+    "points": 6,
+    "chi_square": 665.7169425440442,
+    "freedom": 4,
+    "chi_square_probability": 9.224972331198297e-143
+   },
+   "t1_single_exponential": false,
+   "t1_beyond_window": false,
+   "ladder_p0": {
+    "0": 0.996286559316464,
+    "32": 0.9635557016102531,
+    "128": 0.8748274728885967,
+    "256": 0.7985869208018403
+   },
+   "ladder_p0_at_longest": 0.7985869208018403,
+   "ladder_clears": true,
+   "ladder": {
+    "decay_pulses": 489.0503627124351,
+    "decay_pulses_se": 14.692236868103851,
+    "chi_square_probability": 0.20479762648658328
+   }
+  },
+  {
+   "qubit": 16,
+   "readout": [
+    {
+     "p1_given_0": 0.03424072265625,
+     "p1_given_1": 0.96917724609375
+    },
+    {
+     "p1_given_0": 0.03045654296875,
+     "p1_given_1": 0.96807861328125
+    }
+   ],
+   "readout_within_tolerance": true,
+   "readout_drift": 0.0037841796875,
+   "readout_stable": true,
+   "t1": {
+    "us": 22.231176706500424,
+    "us_se": 0.2190232114556286,
+    "points": 5,
+    "chi_square": 13.37027437340284,
+    "freedom": 3,
+    "chi_square_probability": 0.0039005977723107683
+   },
+   "t1_single_exponential": false,
+   "t1_beyond_window": false,
+   "ladder_p0": {
+    "0": 0.9997392438070404,
+    "32": 0.9009126466753585,
+    "128": 0.19947848761408082,
+    "256": 0.5591916558018253
+   },
+   "ladder_p0_at_longest": 0.5591916558018253,
+   "ladder_clears": false
+  }
+ ]
+}

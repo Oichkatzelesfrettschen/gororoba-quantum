@@ -60,6 +60,9 @@ def main() -> int:
         page.on("request", lambda r: requests.append(r.url))
         page.on("websocket", lambda w: sockets.append(w.url))
         page.set_content(source.decode(), wait_until="load")
+        # Initialization awaits the payload digest after the load event, so
+        # readiness is read once the page reports either outcome.
+        page.wait_for_function("window.__workbenchReady === true || window.__workbenchIntegrity?.status === 'failed'")
         check(page.evaluate("window.__workbenchReady === true"), "document_ready")
         check(page.locator("#error").is_hidden(), "no_initial_error")
         initial = page.evaluate("EvidenceWorkbench.saveState()")

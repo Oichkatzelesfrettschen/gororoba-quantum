@@ -1,0 +1,12 @@
+twisted cubic 2 3 3 True True
+double plane 2 2 2 True False
+two planes meeting in a point 2 2 3 False True
+line with an embedded point 1 1 2 False False
+X-->N- 4 12 15 False False
+X+->N+ 4 12 15 False False
+Iso->N- 5 23 23 True True
+Iso->N+ 5 23 23 True True
+W8->N- 6 50 50 True True
+W8->N+ 6 50 50 True True
+E8bar->N- 5 11 20 False False
+E8bar->N+ 5 11 20 False False

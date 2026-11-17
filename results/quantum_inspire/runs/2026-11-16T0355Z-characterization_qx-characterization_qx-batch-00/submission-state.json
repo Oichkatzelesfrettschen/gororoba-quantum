@@ -1,0 +1,59 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-11-16T03:53:22+00:00",
+ "approval": "owner 2026-11-16T03:51Z (question tool): QX then Tuna-17; characterization_qx on QX emulator (type 1), 14 jobs, 14336 shots, 0 credits expected",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "50be68a3157a324da02fe951e14ecf72de3245ddfd71b48bad49cc55c4c01b50",
+ "shots": 1024,
+ "jobs": [
+  {
+   "file": "readout-0.cq",
+   "job": 1742686,
+   "sha256": "2d78d57b89ecf2b806fba508734b560ae7042f4b0c1df8cfe1dc7f519285c28c"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1742687,
+   "sha256": "60ecbe81d641021373451a90b7e12fcab073c703403f4316f89bae05c8b85938"
+  }
+ ],
+ "project": 859114,
+ "batch_job": 959014,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-11-16T03:53:23+00:00",
+  "approval": "owner 2026-11-16T03:51Z (question tool): QX then Tuna-17; characterization_qx on QX emulator (type 1), 14 jobs, 14336 shots, 0 credits expected",
+  "backend": "QXsinglenodesimulator",
+  "backend_type_id": 1,
+  "cases_sha256": "50be68a3157a324da02fe951e14ecf72de3245ddfd71b48bad49cc55c4c01b50",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 5,
+  "batch_job": 959014,
+  "project": 859114,
+  "shots": 1024,
+  "jobs": [
+   {
+    "file": "readout-0.cq",
+    "job": 1742686,
+    "sha256": "2d78d57b89ecf2b806fba508734b560ae7042f4b0c1df8cfe1dc7f519285c28c"
+   },
+   {
+    "file": "readout-1.cq",
+    "job": 1742687,
+    "sha256": "60ecbe81d641021373451a90b7e12fcab073c703403f4316f89bae05c8b85938"
+   }
+  ],
+  "submitted_utc": "2026-11-16T03:53:23+00:00"
+ },
+ "confirmed_utc": "2026-11-16T03:53:23+00:00"
+}

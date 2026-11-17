@@ -1,0 +1,105 @@
+{
+ "schema": "qi-pathion-null-phase-scan-cases-v1",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "region": [
+  2,
+  4,
+  8,
+  11,
+  12
+ ],
+ "placement": {
+  "2": 2,
+  "4": 4,
+  "8": 8,
+  "11": 11,
+  "12": 12
+ },
+ "register": [
+  2,
+  4,
+  8,
+  11,
+  12
+ ],
+ "guard_qubits": [
+  12,
+  4,
+  8,
+  2
+ ],
+ "d2_guard_qubit": 11,
+ "templates": {
+  "b0": {
+   "block": "b0",
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 0,
+   "cz": 21,
+   "roles": {
+    "d0": 12,
+    "d1": 4,
+    "d2": 11,
+    "selector": 8,
+    "coin": 2
+   },
+   "ideal_c": [
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869,
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869
+   ]
+  }
+ },
+ "retained_b0": {
+  "cases_sha256": "b7d52dd9f635fd3e8ee507ab0b1d4aa706e3698adedcd659b6750ab164c113ab",
+  "circuit_sha256": "9994e3b74314e0176bdbe77644be3faba9450a65ac79dae5136c7bc011cad56f"
+ },
+ "preregistered": {
+  "estimates": "per data circuit, the raw selector contrast P(s=0 | coin read 1) - P(s=0 | coin read 0) with its binomial standard error, the d2 split and the visibility of the center arm of each batch",
+  "guard": "a data batch is admitted when e01 and e10 of each qubit the contrast reads (d0, d1, the selector and the coin) change by at most 0.02 between the readout batch before it and the one after; its d2 splits enter the fit only when d2's qubit passes the same bound, otherwise the batch is fitted on its three contrasts; the decision needs at least one admitted batch of each deciding kind (z12-10, z12-30 and z8c-10), otherwise it reads unresolved_guard",
+  "control": "the inverse-variance mean of the center arm's contrast over the admitted batches exceeds 3.0 standard errors; otherwise the decision reads offset_absent (within) or offset_reversed (below)",
+  "fit": "for each world (exact gates, a rotation about z before each pulse of q12, a conditional-phase error of the CZ gates of coupler 8-12, a rotation about z on q8 after each CZ of coupler 8-12) one parameter per admitted deciding batch is fitted to its three contrasts and to the d2 split of each outer arm less its center arm's, at the retention that reproduces the batch's center visibility through its own bracket assignment; a noise model whose center reaches no visibility within 0.0083 (3 over the square root of the circuit's 131,072 shots) of the batch's does not fit that batch; the chi-squares are summed at the one noise model and readout flip that make the sum least, among the contraction shares of the predecessor's grid and CZ amplitude and phase damping of 0.019 and 0.031 per CZ qubit at multiples 0 to 3 in steps of 1/16, and among probabilities that the selector reads flipped when d0 reads 0, composed onto each batch's assignment matrix, from 0 to 0.06 in steps of 0.0025, one per series and world, a tie keeping the smaller",
+  "adequacy": "a world is adequate when its sum is at most the upper 0.001 point (the 99.9th percentile) of chi-square with one degree of freedom per fitted value (5 per deciding batch, 3 when its d2 splits are left out), less one per fitted parameter, one for the noise model and one for the readout flip",
+  "readout_flip": "reported beside the label: each world's fitted readout flip, and the worlds whose flip lies at the grid's end, 0.06, where the excess of a larger flip is outside the fit",
+  "labels": "exact_parabola: the exact world, at its fitted readout flip, is adequate, so the deciding arms need no phase on or around q12 at this offset, and a fitted flip above 0 names a selector misread conditioned on d0 as a candidate cause; a phase whose center offset lies near the control's threshold can read it; q12_phase, coupler_phase or q8_phase_at_coupler: that world is adequate, its sum lies at least 40 times the larger of 1 and its sum per degree of freedom below every other error world's, and each deciding kind, summed over its admitted replicates, reads that world at or below the upper 0.001 point of chi-square on its own degrees of freedom and at most 6.63 above every other error world; phase_mixed: the sums prefer one error world and a kind does not; phase_unresolved: an error world is adequate and the least is closer to another; none_adequate: no world is adequate. q12_phase names a single-qubit phase at q12's pulses: a rotation about z after each pulse gives the same laws as one before each pulse",
+  "sign": "reported with a deciding label: the fitted parameter of each admitted deciding batch, and the injected phase of least contrast from a parabola through the pooled z12 arms and centers",
+  "d2_split": "also reported beside the label: the d2 split of every arm of the deciding kinds pooled over the admitted replicates whose d2 qubit passed its guard, beside the values each world predicts",
+  "z8c": "reported beside the label: a weighted parabola through the z8c arms and their centers against the injected q8 phase",
+  "bridge": "reported outside the label: the padded center's contrast less the mean of the two plain arms in each admitted bridge batch, pooled, and whether it lies within 3.0 standard errors of zero",
+  "q4_line": "reported outside the label: a weighted straight line through the origin of the contrast of each q4 arm less its batch center against q4's injected angle (-10, -5, +5, +10 degrees), with its chi-square, slope and the angle at which the pooled center plus the line reads zero; when the bridge reads within its bound and the slope of the new +-10 degree arms lies within 3.0 standard errors of the slope of the predecessor's admitted q4 +-10 degree points, the same line is also reported with those points added",
+  "visibility": "reported outside the label: each arm's visibility over its batch center's, beside the exact circuit's ratio",
+  "line_phase": "outside this analysis: the shot-order fold of docs/evidence/qi-null-rotation-scan-line-phase/line_phase_split.py is run on the retained jobs afterwards and decides nothing",
+  "ledger": "A5-186 changes only on q12_phase, coupler_phase or q8_phase_at_coupler, to the statement of that label; every other label reports the numbers"
+ },
+ "shots": 32768,
+ "batch": "batch-04",
+ "kind": "readout",
+ "replicate": null,
+ "circuits": [
+  {
+   "file": "readout-0.cq",
+   "kind": "readout",
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  },
+  {
+   "file": "readout-1.cq",
+   "kind": "readout",
+   "sha256": "9ab3ef152dab6ab9fb472c9b7583674feb5d7fc4fb006a2b514af4f89c917d36"
+  }
+ ]
+}

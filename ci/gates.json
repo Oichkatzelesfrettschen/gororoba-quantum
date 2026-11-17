@@ -5512,6 +5512,39 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_plane_incidence.py --check",
+      "name": "core-a5-nullity4-qg-plane-incidence",
+      "seconds": 3.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/nullity4-qg-plane-incidence-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_rational_charts.py --check",
+      "name": "core-a5-nullity4-real-polar-rational-charts",
+      "seconds": 7.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/nullity4-real-polar-rational-charts-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_sl3_chart.py --check",
+      "name": "core-a5-nullity4-real-polar-sl3-chart",
+      "seconds": 4.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/nullity4-real-polar-sl3-chart-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --check docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json",
       "name": "core-757",
       "seconds": 1.3,
@@ -5650,6 +5683,48 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-exceptional-fibers/structure/sign-symmetry/npm_map_qi.json -- \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/structure/sign-symmetry/npm_map_qi.py {out}; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
+      "name": "core-a5-e8-sign-map-qi",
+      "seconds": 158.0,
+      "workers": "all",
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/structure/sign-symmetry/npm_map_qi.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-exceptional-fibers/arcs/relation-ideal-orders.json -- \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arcs/relation_ideal_orders.py {out}; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
+      "name": "core-a5-header-relation-ideal-orders",
+      "seconds": 112.0,
+      "workers": "all",
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/arcs/relation-ideal-orders.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-exceptional-fibers/third-prime/quadric-rings-p32057.json -- \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/third-prime/quadric_rings.py {out}; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
+      "name": "core-a5-third-prime-quadric-rings",
+      "seconds": 44.0,
+      "workers": "all",
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/third-prime/quadric-rings-p32057.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-exceptional-fibers/structure/embedded-plane-images.json -- \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/structure/embedded_plane_images.py {out}",
       "name": "core-a5-embedded-plane-images",
       "seconds": 1.0,
@@ -5670,6 +5745,20 @@
       ],
       "replays": [
         "docs/evidence/a5-kernel-attachments/weight-slice-fiber-relations-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-kernel-attachments/weight-slice-quadric-rings-result.json --skip .tools.singular --skip '.calibration*.measurements*' --skip '.cells*.measurements*' -- \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/weight_slice_quadric_rings.py --out {out}; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
+      "name": "core-a5-weight-slice-quadric-rings",
+      "seconds": 745.0,
+      "workers": "all",
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/weight-slice-quadric-rings-result.json"
       ]
     },
     {
@@ -6393,6 +6482,17 @@
       "workers": "all",
       "replays": [
         "results/quantum_inspire/pathion_null_rotation_scan_tuna_17_analysis.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/qi_pathion_null_rotation_scan_phase_refit.py --check results/quantum_inspire",
+      "name": "core-pathion-null-rotation-scan-phase-refit-replay",
+      "seconds": 50.0,
+      "workers": "all",
+      "replays": [
+        "results/quantum_inspire/pathion_null_rotation_scan_tuna_17_phase_refit.json"
       ]
     }
   ],

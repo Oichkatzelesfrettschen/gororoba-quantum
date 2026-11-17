@@ -1,0 +1,12 @@
+relations e8_k2.rel bbe9bb734af739d735ca4ca4938b85fce9ed87c07b7373ec5353c47335be0652
+retained N+ K2 e8_k2.rel bbe9bb734af739d735ca4ca4938b85fce9ed87c07b7373ec5353c47335be0652
+retained N- receipt relations relations-upto-d2.rel e047f996ad609a40ca9d65a64cb7f28755cbaeea3013a9ada7ff71e76e708de6
+J signs [1, 1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, -1, -1, 1]
+G signs [-1, -1, 1, 1, -1, -1, -1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1]
+RESULT direct 0 0
+RESULT transport 0 0
+RESULT dims 5 11 148
+RESULT hilb 1,16,-12,10,-5,1,0
+RESULT control_direct 1 1
+RESULT control_transport 1 1
+POST RESULT direct [['0', '0']] transport [['0', '0']] controls_reject 1 pass 1
