@@ -507,8 +507,38 @@ to the device. The current `analyze` on the four retained run directories (2026-
 `qx_control.pass` and `qx_brackets.pass` true and the whole analysis record equal to the retained one, which is the QX
 prediction above; its twenty stamps are six-digit-fraction Z text, none null, and the executed twin offsets are +1, +1, -3
 and +1 (batch 02 ran coin 1 first, three places early; batch 03 ran its readouts before its twins and kept the twin
-order). `evaluate` needs the 35-batch Tuna-17 layout and one twin batch per template is confounded by construction
+order). `evaluate` needs the 35-batch Tuna-17 layout and the retained 4-batch QX layout, one twin batch per template, is confounded by construction
 (`ConfoundedOrder`: every template keeps one offset), so the QX series yields a control verdict and no twin-decision
 label; the sim:belenos b1-j1 job finished at 300 s of a 300 s limit, which predicted that the same shape
 could be cut off, and b1-j2 was (305 s, 23 of 24 iterations): a result at a limit is a warning for the next job of its shape.
+
+Statements of 2026-11-17 (a verification pass at head 27bab9471; the case stays unapproved):
+
+- The four QX manifests under `results/quantum_inspire/cases/pathion_one_cz_null_bracketed_qx/` are retained records of the
+  earlier plain-pooling rule. The hosted run's receipts bind them by `cases_sha256`, so they keep their bytes and their
+  control text; the executed-order rule with the base time weights governs every later series, the Tuna-17 manifests and
+  `prediction.json` among them.
+- Power at an independent drift of 0.003 on every base and twin contrast (table
+  `executed_reordered_independent_drift_sd_0.003`, 20,000 series per world, a series that the heterogeneity gate leaves
+  unresolved counted as a miss): the dropout world reads b0-like in 16,328 of 20,000 series, 81.64 percent (Wilson 95
+  percent interval 81.10 to 82.17), and the superposition-only world reads its row in 83.83 percent (83.31 to 84.33). The
+  gate withholds about 3.1 percent of these series (3.14 and 3.08 percent). The margin over 80 percent is a Monte Carlo
+  statement; the drift model is an assumption.
+- A gate-silent null (absent world, 100,000 series per row): the false-claim rate is 0.014 percent at a planted departure
+  of 0 (14 of 98,988 silent series), 0.019 percent at 0.0075 per position (10 of 53,781; Wilson 0.010 to 0.034 percent)
+  and 0 of 5,618 at 0.015. At 0.0075 the cost is a rise of `unresolved_block` among the silent series from 2 to 10
+  percent, not false claims.
+- The registered 35-batch layout (16 base, 16 twin and 3 joint batches; requested twin offsets +1, -1, +1, -1 per
+  template) has no batch confounded by construction: at a reorder rate of 0.5, 0 of 1,000 simulated series read
+  `unresolved_order_confounded`. The confound belongs to the retained 4-batch QX layout alone.
+- The base time weights shift the in-order pooled base value by 0.027 standard errors on the modeled timeline, 0.017 on
+  the 12-minute series of 2026-11-16 and 0.112 on the 15.8-hour series of 2026-11-07 (f squared 1.0126); on that long
+  series the plain pool carries up to 2.35 standard errors of drift bias at 0.01 per hour, which the weights remove. A
+  long queue makes the time weights matter, which is the reason for the rule.
+- `evaluate` cannot read the retained 19-batch record that holds the 46.87 chi-square: its layout differs and it holds no
+  bracket readouts, so no twin label exists for that record.
+- Equal start instants: two circuits of one twin batch that start at one instant have no executed order, so the decision
+  reads `unresolved_order`, whatever the spelling of the two stamps; a gap of one microsecond ranks. A tie among circuits
+  that the layout does not rank (a base batch) orders nothing, is counted by the strict `order_gate` and withholds
+  nothing.
 
