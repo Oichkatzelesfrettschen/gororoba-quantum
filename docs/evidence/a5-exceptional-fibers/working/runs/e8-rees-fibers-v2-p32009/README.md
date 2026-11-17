@@ -109,6 +109,13 @@ Singular 4.4.1, banner Dec 6 2025 11:10:58). The checker exempts the lines. The 
 `minAssGTZ` (line 157), whose components give J and therefore feed every later line; the warning is the library's own
 redefinition at load, and no loop temporary (`uk`, `um`, `ub`, `a`, `b`) is among the names.
 
+The second load is the one on line 157: `matrix.lib` (line 1) loads `ring.lib`, and `ring.lib` loads `primdec.lib`. On 2026-11-17 the
+Iso -> N- script ran on a compute host (Singular 4.4.1, banner Dec 6 2025 11:10:58) as retained and with `LIB "primdec.lib";`
+removed from line 157, so that the library loads once and no warning prints. Both runs give the same `FIBER` lines, the same
+`J local dim mult size 5 2 4` line, the same basis digest `bac46ad90d228acf...` of the two `.ssi` files (the digest of
+`bases.sha256`) and, with one added `write` of `string(J)` after line 157 in each, the same J digest
+`31858d4ce8ce890336b8153daa7be6c089798b0936a901625c12fd58514a7e02`; the retained scripts keep their bytes.
+
 ## Provenance of the retained bytes
 
 The runs executed on a cloud VM, and its output directory was copied to the checkout with a sha256 comparison of every

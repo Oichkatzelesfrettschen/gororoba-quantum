@@ -75,8 +75,10 @@ generators (A5-583).
 | File | Content |
 |---|---|
 | `kcompare.py` | `prepare`: regenerates the producer relations, checks their digests, writes `KA-CELL.sing`, `KH-CELL.sing` and `kcmp-CELL.sing`, prints the support and union-rank lines |
+| `kcompare_v2.py` | the parallel successor of `kcompare.py` (`prepare`): the three Singular regenerations and the rank analyses run through `parallel.ordered_map`, the checks, printed lines and file writes follow in cell order, and its lines and files equal those of `kcompare.py` |
 | `kcompare-tail.sing` | the Singular comparison, controls and verdict lines appended to each cut run script |
 | `run_kcompare.sh` | the launcher: one Singular process per cell in turn, tool version and script digest at the top of each log, a timing file, an `EXIT` line, and `kcompare.done` as the completion marker |
+| `qi_reduction_compare_v2.py` | the parallel successor of `qi_reduction_compare.py`: the six Singular regenerations and the nine reductions run through `parallel.ordered_map`, and its `QIRED` lines equal those of `qi-reduction.log` |
 | `qi_reduction_compare.py`, `qi-reduction.log` | the Q(i) against modular comparison of the producer relations, its banner, script digest, verdict lines and `EXIT` line |
 | `KA-CELL.sing` | the producer relations as an ideal in y(1..g) |
 | `KH-CELL.sing` | the header-slice relation file as an ideal (N- and N+ of E8-bar) |
@@ -91,6 +93,18 @@ From this directory, with the producer's Python dependencies and Singular 4.4.1 
 rewrites the `KA`, `KH` and `kcmp` files and `sh run_kcompare.sh Singular 3000 e8-nm e8-np iso-nm` runs the comparison (under a
 minute); the launcher refuses to overwrite a log. The banner line of every retained log of the v2 runs, of their replay and of
 these comparison logs reads `Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Dec  6 2025 11:10:58`.
+
+## Parallel successors
+
+`kcompare.py` and `qi_reduction_compare.py` are bound by digest (`sha256.txt`; `qi-reduction.log` holds the digest of the second), so they keep their bytes and
+`kcompare_v2.py` and `qi_reduction_compare_v2.py` replace them for a replay. Each maps its independent Singular processes and
+reductions through `parallel.ordered_map` (`GOROROBA_WORKERS` caps the workers) and reads the results in cell order. On a compute host,
+Singular 4.4.1, with the other work on that host running, `kcompare_v2.py prepare` took 21.7 s against 39.8 s for `kcompare.py` (three Singular
+processes at once) and `qi_reduction_compare_v2.py` took 56.0 s against 128.5 s (six at once). The standard output of `kcompare_v2.py prepare` has the sha256 of
+`prepare.log` (`9a88b92e...`), the files it rewrites match `sha256.txt`, and the `QIRED` lines of the second script have the sha256
+`f81a5ac3...` of those in `qi-reduction.log`. `tests/test_a5_rees_kcompare_parallel.py` runs both against a fake Singular that serves
+the retained run logs' relations, checks the written files against the retained bytes, and checks that the cell order of the output holds when the first
+process finishes last and that a failing cell stops the output at that cell.
 
 ## Scope
 

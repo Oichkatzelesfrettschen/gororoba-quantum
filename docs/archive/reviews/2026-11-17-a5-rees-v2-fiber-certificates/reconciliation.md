@@ -43,6 +43,10 @@ The Advisor read the reviewer's findings with their justifications at head 4e844
    name, minAssGTZ, is called by the script and yields J; whether the redefinition is a second load of the same library
    is not examined (hypothesis: the library is loaded twice with identical bodies; decider: a run that loads it once
    returns the same J digest).
+   2026-11-17: decided. The second load is line 157's `LIB "primdec.lib"`, since `matrix.lib` on line 1 loads `ring.lib` and
+   `ring.lib` loads `primdec.lib`. The Iso -> N- script run as retained and with that load removed (no warning) gives the same
+   J digest (`31858d4c...` of `string(J)`), the same `FIBER` lines and the same basis digest as the retained log; the README of
+   `e8-rees-fibers-v2-p32009` carries the sentence and the scripts keep their bytes.
 6. Claim 1, unit stripping: accepted for the fiber over the origin (the maximal ideal m), with two reads asked for and
    answered: every row and the README name the fiber over the origin, and line 192 of the script checks that each
    stripped factor is nonzero at the origin, involves s2 alone, and satisfies the identity modulo J.
@@ -70,6 +74,17 @@ termination defect is issue 946); the review record (this file).
 - Truncated logs. `log_verdict` rejects a log without its FIBER lines whether or not an `EXIT 0` follows (Singular exits 0 on
   SIGTERM, measured; `timeout` reports 124). The self-test and the toy test now carry three truncations, 16 mutations in all
   (0de2ef8fb). The launcher `run2.sh` only records the exit status and keeps its bytes.
+
+## Hosted Codex round (head 1f8b865b3)
+
+One thread (P1, `kcompare.py:121`): the cell loops of `kcompare.py` and `qi_reduction_compare.py` wait for each CPU-bound Singular
+process before starting the next, which `AGENTS.md` ("Every CPU-bound loop over independent items runs through parallel.py") rejects.
+Confirmed: the three cells (and the two regenerations per cell of the second script) are independent. Both scripts are bound
+by digest (`sha256.txt` of the directory, and `qi-reduction.log` for the second), so `kcompare_v2.py` and
+`qi_reduction_compare_v2.py` map the Singular runs and the reductions through `parallel.ordered_map` and print in cell order
+(cf112b1f2). Their output equals the retained `prepare.log` and `QIRED` lines byte for byte; wall times on a compute host
+are 39.8 s against 21.7 s and 128.5 s against 56.0 s; a fake-Singular test pins the bytes, the cell order and the stop at
+a failing cell.
 
 ## Statement for the owner's pending decision on A5-409
 
