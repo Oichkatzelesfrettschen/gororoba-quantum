@@ -135,3 +135,121 @@ def test_render_is_reproducible(tmp_path: Path) -> None:
     tree(tmp_path)
     if retained.render(tmp_path) != retained.render(tmp_path) or not retained.render(tmp_path).endswith("\n"):
         raise AssertionError("two renders of one tree differ")
+
+
+SERIES_RUNS = [
+    "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+    "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+    "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-02",
+]
+
+
+def series(root: Path, late: bool = True) -> None:
+    """A three-batch characterization series (readout pair, two T1 batches) and its analysis row for qubit 2."""
+    stamps = ["2026-11-16T12:21:51Z", "2026-11-16T12:25:32Z", "2026-11-16T12:27:40Z"]
+    if not late:
+        stamps = ["2026-10-10T12:21:51Z", "2026-10-10T12:25:32Z", "2026-10-10T12:27:40Z"]
+    kinds = [
+        [{"file": "readout-0.cq", "kind": "readout"}, {"file": "readout-1.cq", "kind": "readout"}],
+        [{"file": "t1-0.cq", "kind": "t1", "wait_cycles": 0}, {"file": "t1-500.cq", "kind": "t1", "wait_cycles": 500}],
+        [{"file": "t1-4000.cq", "kind": "t1", "wait_cycles": 4000}],
+    ]
+    for name, stamp, circuits in zip(SERIES_RUNS, stamps, kinds, strict=True):
+        directory = root / retained.RUNS / name
+        directory.mkdir(parents=True)
+        (directory / "cases.json").write_text(
+            json.dumps({"backend": "tuna_17", "shots": 16384, "circuits": circuits}), encoding="utf-8"
+        )
+        (directory / "results.json").write_text(json.dumps({"jobs": [job(stamp, stamp, 8.0)]}), encoding="utf-8")
+    analysis = {
+        "runs": SERIES_RUNS,
+        "qubits": [
+            {
+                "qubit": 2,
+                "readout": [
+                    {"p1_given_0": 0.011, "p1_given_1": 0.98},
+                    {"p1_given_0": 0.0123456789, "p1_given_1": 0.9712345678},
+                ],
+                "t1": {"us": 24.8260081, "us_se": 0.2, "points": 5, "chi_square": 100.0, "freedom": 4},
+                "t1_single_exponential": False,
+            }
+        ],
+    }
+    (root / retained.CHARACTERIZATION).write_text(json.dumps(analysis), encoding="utf-8")
+
+
+def test_a_newer_series_replaces_the_dashboard_figures_and_keeps_the_baseline(tmp_path: Path) -> None:
+    tree(tmp_path)
+    series(tmp_path)
+    found = retained.summary(tmp_path)
+    first = found["qubits"][0]
+    if first["readout"]["utc"] != "2026-11-16T12:21:51+00:00" or first["readout"]["p1_given_0"] != 0.0123457:
+        raise AssertionError(first["readout"])
+    if first["readout"]["run"] != f"{retained.RUNS}/{SERIES_RUNS[0]}" or first["readout"]["shots"] != 16384:
+        raise AssertionError(first["readout"])
+    if first["baseline_readout"]["p1_given_1"] != 0.84 or first["baseline_implied_t1"]["us"] != 14.1847:
+        raise AssertionError(first)
+    want = {
+        "us": 24.8260,
+        "wait_us": 80.0,
+        "wait_run_utc": "2026-11-16T12:27:40+00:00",
+        "no_wait_run_utc": "2026-11-16T12:25:32+00:00",
+        "fit_points": 5,
+        "single_exponential": False,
+        "chi_square_per_dof": 25.0,
+        "us_se": 0.2,
+        "us_se_scaled": 1.0,
+    }
+    if first["implied_t1"] != want or found["qubits"][1] != {"qubit": 10}:
+        raise AssertionError(first["implied_t1"])
+    if found["sources"]["characterization_analysis"] != retained.CHARACTERIZATION:
+        raise AssertionError(found["sources"])
+
+
+def test_the_scaled_standard_error_never_shrinks_the_binomial_one(tmp_path: Path) -> None:
+    tree(tmp_path)
+    series(tmp_path)
+    path = tmp_path / retained.CHARACTERIZATION
+    analysis = json.loads(path.read_text(encoding="utf-8"))
+    analysis["qubits"][0]["t1"].update({"chi_square": 2.0, "freedom": 4})
+    analysis["qubits"][0]["t1_single_exponential"] = True
+    path.write_text(json.dumps(analysis), encoding="utf-8")
+    implied = retained.summary(tmp_path)["qubits"][0]["implied_t1"]
+    if implied["single_exponential"] is not True or implied["us_se"] != 0.2:
+        raise AssertionError(implied)
+    if implied["us_se_scaled"] < implied["us_se"]:
+        raise AssertionError(implied)
+    if implied["us_se_scaled"] != implied["us_se"]:
+        raise AssertionError(implied)
+
+
+def test_the_scaled_standard_error_grows_with_chi_square_per_dof_above_one(tmp_path: Path) -> None:
+    tree(tmp_path)
+    series(tmp_path)
+    implied = retained.summary(tmp_path)["qubits"][0]["implied_t1"]
+    if implied["chi_square_per_dof"] <= 1.0:
+        raise AssertionError(implied)
+    if implied["us_se_scaled"] < implied["us_se"] or implied["us_se_scaled"] == implied["us_se"]:
+        raise AssertionError(implied)
+
+
+def test_a_null_standard_error_stays_null_when_scaled(tmp_path: Path) -> None:
+    tree(tmp_path)
+    series(tmp_path)
+    path = tmp_path / retained.CHARACTERIZATION
+    analysis = json.loads(path.read_text(encoding="utf-8"))
+    analysis["qubits"][0]["t1"]["us_se"] = None
+    path.write_text(json.dumps(analysis), encoding="utf-8")
+    first = retained.summary(tmp_path)["qubits"][0]
+    if first["implied_t1"]["us_se"] is not None or first["implied_t1"]["us_se_scaled"] is not None:
+        raise AssertionError(first["implied_t1"])
+    if first["implied_t1"]["us"] != 24.8260 or first["readout"]["p1_given_0"] != 0.0123457:
+        raise AssertionError(first)
+
+
+def test_an_older_series_leaves_the_device_context_rows(tmp_path: Path) -> None:
+    tree(tmp_path)
+    series(tmp_path, late=False)
+    first = retained.summary(tmp_path)["qubits"][0]
+    if first["readout"]["p1_given_1"] != 0.84 or "baseline_readout" in first or first["implied_t1"]["us"] != 14.1847:
+        raise AssertionError(first)

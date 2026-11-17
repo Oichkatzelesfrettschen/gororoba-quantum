@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-11-16T12:26:24+00:00",
+ "approval": "owner 2026-11-16T03:51Z (question tool): QX then Tuna-17; QX dry run 2026-11-16T0355Z passed (all 14 jobs noiseless, analysis as predicted); characterization_tuna_17 on Tuna-17 (type 7), 14 jobs, 147456 shots, 115.8 s, 0 credits expected",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "3447866ef90f38d8d173c5618b336a2c5ce7b8251b4fccee2ae0ce9fb5b53b1f",
+ "shots": 8192,
+ "jobs": [
+  {
+   "file": "t1-1000.cq",
+   "job": 1742789,
+   "sha256": "eaab1c5b954a8d5f05552525fa3f8dbd59eac023344634a051c679659bb96a8a"
+  },
+  {
+   "file": "t1-2000.cq",
+   "job": 1742790,
+   "sha256": "4b6966387232fae32102779cb34c86c65aad76daeebb8979eac06bf4728d48f7"
+  },
+  {
+   "file": "t1-4000.cq",
+   "job": 1742791,
+   "sha256": "afea9c5c0143ccf57d196e86d3b6450f3a6412c2ce34d58a3179761afbb83bc7"
+  }
+ ],
+ "project": 859154,
+ "batch_job": 959053,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-11-16T12:26:29+00:00",
+  "approval": "owner 2026-11-16T03:51Z (question tool): QX then Tuna-17; QX dry run 2026-11-16T0355Z passed (all 14 jobs noiseless, analysis as predicted); characterization_tuna_17 on Tuna-17 (type 7), 14 jobs, 147456 shots, 115.8 s, 0 credits expected",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "3447866ef90f38d8d173c5618b336a2c5ce7b8251b4fccee2ae0ce9fb5b53b1f",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 959053,
+  "project": 859154,
+  "shots": 8192,
+  "jobs": [
+   {
+    "file": "t1-1000.cq",
+    "job": 1742789,
+    "sha256": "eaab1c5b954a8d5f05552525fa3f8dbd59eac023344634a051c679659bb96a8a"
+   },
+   {
+    "file": "t1-2000.cq",
+    "job": 1742790,
+    "sha256": "4b6966387232fae32102779cb34c86c65aad76daeebb8979eac06bf4728d48f7"
+   },
+   {
+    "file": "t1-4000.cq",
+    "job": 1742791,
+    "sha256": "afea9c5c0143ccf57d196e86d3b6450f3a6412c2ce34d58a3179761afbb83bc7"
+   }
+  ],
+  "submitted_utc": "2026-11-16T12:26:29+00:00"
+ },
+ "confirmed_utc": "2026-11-16T12:26:29+00:00"
+}
