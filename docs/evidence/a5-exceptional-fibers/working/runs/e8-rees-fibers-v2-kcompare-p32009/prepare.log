@@ -1,0 +1,9 @@
+TIE e8-nm producer_relations_sha256 42b1d8ff03d4c505597b39fe303c52ac45fcdc4d35bbf01d0b8e7e23a97367d0 run_relations_sha256 42b1d8ff03d4c505597b39fe303c52ac45fcdc4d35bbf01d0b8e7e23a97367d0 in_record 1
+SPAN e8-nm header_file_sha256 e047f996ad609a40ca9d65a64cb7f28755cbaeea3013a9ada7ff71e76e708de6 weight_support 207 header_support 217 union_rank 223
+WROTE kcmp-e8-nm.sing source e8-nm-p.v2-u-full.sing prefix_bytes 15420
+TIE e8-np producer_relations_sha256 b9b7372bce35e7ce286aa572f9b1ebf656d1ac04ba0e63349c640efed88658ee run_relations_sha256 b9b7372bce35e7ce286aa572f9b1ebf656d1ac04ba0e63349c640efed88658ee in_record 0
+SPAN e8-np header_file_sha256 bbe9bb734af739d735ca4ca4938b85fce9ed87c07b7373ec5353c47335be0652 weight_support 207 header_support 217 union_rank 224
+WROTE kcmp-e8-np.sing source e8-np-p.v2-u-full.sing prefix_bytes 15381
+TIE iso-nm producer_relations_sha256 4b9f84948f9ffa00f5e735ccc8943b6be0b7afc4a932f8a3c600b92b6e3e99c5 run_relations_sha256 4b9f84948f9ffa00f5e735ccc8943b6be0b7afc4a932f8a3c600b92b6e3e99c5 in_record 0
+WROTE kcmp-iso-nm.sing source iso-nm-p.v2-u-full.sing prefix_bytes 12210
+PREPARE DONE
