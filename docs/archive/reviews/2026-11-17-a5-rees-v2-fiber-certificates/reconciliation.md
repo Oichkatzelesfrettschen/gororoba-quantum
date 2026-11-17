@@ -9,9 +9,8 @@ Reviewers at that head:
   effort high, read-only sandbox, one run (exit 0), 35 commands, all `sed -n` or `cat` of named files. The owner named this
   reviewer for the unit-replacement block (`unit_block.sing`, whose text is the block of lines 179-193 of the retained scripts).
   The raw report stays outside the repository.
-- The Advisor, last, on the same head: no Advisor verdict is recorded in this record. Each finding below carries the verdict
-  of the author of this record against the source; the Advisor column is empty and stays empty until the Advisor's text is
-  attached.
+- The Advisor, last, on the same head (4e844ba0d): its verdict on each finding is in the section "Advisor verdicts" below;
+  the table's last column refers to that section by finding number.
 
 Singular 4.4.1 (banner of Dec 6 2025 11:10:58, the banner of every retained log) ran the experiments below on a compute host,
 the long ones inside a memory-capped scope; the two library-load runs of F5 ran without a scope. The retained programs and logs
@@ -31,6 +30,31 @@ and are not retained. `brief.md` is the reviewer's brief with its environment pa
 | F7. Counterexample attempt to the unit-stripping claim. | attempt | No counterexample | A stripped non-unit changes the fiber on toy rings (zero ideal against (y2)); the guards reject it by construction (line 185 removes the s2 power from the candidate, line 192 rejects c(0) = 0, line 193 rejects a constant). A generator that lies in J sends the loop of line 185 into an endless loop (a toy ring prints the stage marker and no result until the timeout), which is a termination defect outside the retained runs: their logs print nonzero `UNIT terms left` for every generator. The logs bind the script digests, so the scripts keep their bytes; the successor script with a guard is proposed in issue 946. | none recorded |
 | F8. Status words. | review | Each earned | A5-572 and A5-573 carry certified with one execution each and replay open (A5-578); the owner may weigh that. | none recorded |
 | F9. Scope: no sentence promotes the five open gaps. | review | No overreach found | The second prime and root, characteristic 0, the full-run replay, the N+ and Iso producer cells and the header-slice identification stay open (A5-576 to A5-578, A5-583). | none recorded |
+
+## Advisor verdicts
+
+The Advisor read the reviewer's findings with their justifications at head 4e844ba0d and returned these verdicts.
+
+1. A5-409 falsifier met by other scripts: confirmed as measured; the status of the row is the owner's decision.
+2. The checker tests internal consistency, not execution provenance: confirmed; the "self-checking" wording is corrected.
+3. Stale "bound by this run alone" wording: confirmed; the README is corrected and A5-573 gains a dated sentence.
+4. README pivot letter: confirmed; corrected to the stripped g_p.
+5. The 139 "redefining" warnings: undecided at the review; the names are listed in the questions section. One redefined
+   name, minAssGTZ, is called by the script and yields J; whether the redefinition is a second load of the same library
+   is not examined (hypothesis: the library is loaded twice with identical bodies; decider: a run that loads it once
+   returns the same J digest).
+6. Claim 1, unit stripping: accepted for the fiber over the origin (the maximal ideal m), with two reads asked for and
+   answered: every row and the README name the fiber over the origin, and line 192 of the script checks that each
+   stripped factor is nonzero at the origin, involves s2 alone, and satisfies the identity modulo J.
+7. Status words: accepted, conditional on the comparison in the next paragraph.
+8. Scope: accepted, conditional on the same comparison.
+
+Blocking items raised by the Advisor and their resolution: which K the certified rows compare against (resolved: A5-474
+names the weight-slice set over Q(i); the Q(i)-to-modular comparison is row A5-584, ranks 148/148/148 and 68/68/68, drop
+controls unequal); whether the transport check of the A5-570 receipt is the header-to-weight change of basis (resolved:
+it is the t8/t9 sign flip between the N+ and N- header-slice sets; A5-583 stays open); rejection of a log without its
+terminal FIBER line (resolved: the checker rejects it; three truncation mutants added, 16 in total; the script's
+termination defect is issue 946); the review record (this file).
 
 ## Questions answered after the first reading
 
