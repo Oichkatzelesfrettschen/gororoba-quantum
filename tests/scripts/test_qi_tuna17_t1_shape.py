@@ -72,3 +72,24 @@ def test_retained_runs_reproduce_the_committed_rows_of_two_qubits() -> None:
         want = committed["qubits"][qubit]["models"]["single"]["params"]["T_us"]
         if abs(row["models"]["single"]["params"]["T_us"] - want) > 1e-6 * want:
             raise AssertionError((qubit, row["models"]["single"]["params"], want))
+
+
+@pytest.mark.audit
+def test_a_null_standard_error_stays_null_through_the_mechanism_rows() -> None:
+    retained = json.loads(
+        (ROOT / "results/quantum_inspire/characterization_tuna_17_analysis.json").read_text(encoding="utf-8")
+    )
+    for row in retained["qubits"]:
+        if row["qubit"] == 3:
+            row["t1"]["us_se"] = None
+    found = shape.analyze(RUNS, retained, shape.coupling_edges(shape.CATALOGUE), qubits=[3, 8])
+    null_row, kept_row = found["standard_error_rows"]
+    if null_row["qubit"] != 3 or any(
+        null_row[key] is not None for key in ("retained_se_us", "scaled_se_us", "spread_over_scaled_se")
+    ):
+        raise AssertionError(null_row)
+    if kept_row["scaled_se_us"] is None or kept_row["spread_over_scaled_se"] is None:
+        raise AssertionError(kept_row)
+    summary = found["summary"]["standard_error"]
+    if summary["qubits"] != 2 or summary["scaled_se_us"]["minimum"] != kept_row["scaled_se_us"]:
+        raise AssertionError(summary)

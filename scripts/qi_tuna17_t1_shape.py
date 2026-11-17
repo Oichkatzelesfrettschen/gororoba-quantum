@@ -365,6 +365,8 @@ def analyze(
                 continue
             t1 = row["t1"]
             scale = math.sqrt(max(1.0, t1["chi_square"] / t1["freedom"]))
+            se = t1["us_se"]
+            scaled_se = None if se is None else se * scale
             alternatives = {
                 variant: report["single_by_readout"][variant]["params"]["T_us"]
                 for variant in report["single_by_readout"]
@@ -379,18 +381,20 @@ def analyze(
                     "retained_se_us": t1["us_se"],
                     "retained_chi_square_per_dof": t1["chi_square"] / t1["freedom"],
                     "se_scale": scale,
-                    "scaled_se_us": t1["us_se"] * scale,
+                    "scaled_se_us": scaled_se,
                     "refit_T1_us": alternatives,
                     "spread_us": max(values) - min(values),
-                    "spread_over_scaled_se": (max(values) - min(values)) / (t1["us_se"] * scale),
+                    "spread_over_scaled_se": None if scaled_se is None else (max(values) - min(values)) / scaled_se,
                     "refit_over_retained": alternatives["mean"] / t1["us"],
                 }
             )
+        scaled = [row["scaled_se_us"] for row in mechanism if row["scaled_se_us"] is not None]
+        ratios = [row["spread_over_scaled_se"] for row in mechanism if row["spread_over_scaled_se"] is not None]
         summary["standard_error"] = {
             "qubits": len(mechanism),
-            "spread_exceeds_scaled_se": sum(row["spread_over_scaled_se"] > 1.0 for row in mechanism),
+            "spread_exceeds_scaled_se": sum(ratio > 1.0 for ratio in ratios),
             "se_scale": span([row["se_scale"] for row in mechanism]),
-            "scaled_se_us": span([row["scaled_se_us"] for row in mechanism]),
+            "scaled_se_us": span(scaled) if scaled else None,
         }
     return {
         "schema": SCHEMA,
