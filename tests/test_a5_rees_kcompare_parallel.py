@@ -83,6 +83,9 @@ def _restrict(module: Any, only: str | None, monkeypatch: pytest.MonkeyPatch) ->
 @pytest.fixture
 def fake_singular(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[Path]:
     """A Singular on PATH that serves canned answers; the worker pool restarts so its processes inherit the setup."""
+    missing = [tool for tool in ("prlimit", "sha256sum") if shutil.which(tool) is None]
+    if missing:
+        pytest.skip(f"the producer needs prlimit and the fake Singular sha256sum; absent: {', '.join(missing)}")
     binary = tmp_path / "bin"
     answers = tmp_path / "answers"
     binary.mkdir()

@@ -49,8 +49,14 @@ echo "KCMP DONE cell $cell"
 @pytest.fixture
 def launch(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Launch:
     """Run the launcher from a copy of its directory with the fake as Singular; returns (result, directory)."""
-    if not Path("/usr/bin/time").exists():
-        pytest.skip("/usr/bin/time (GNU time) is not installed")
+    missing = [tool for tool in ("timeout", "sha256sum") if shutil.which(tool) is None]
+    if missing:
+        pytest.skip(f"the launcher needs GNU coreutils; absent: {', '.join(missing)}")
+    if (
+        not Path("/usr/bin/time").exists()
+        or subprocess.run(["/usr/bin/time", "-v", "true"], capture_output=True, check=False).returncode
+    ):
+        pytest.skip("/usr/bin/time does not take -v (GNU time is not installed)")
     work = tmp_path / "run"
     work.mkdir()
     shutil.copy(DIRECTORY / "run_kcompare_v2.sh", work / "run_kcompare_v2.sh")
