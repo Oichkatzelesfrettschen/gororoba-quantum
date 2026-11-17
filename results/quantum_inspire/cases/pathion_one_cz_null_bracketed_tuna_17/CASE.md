@@ -124,9 +124,14 @@ the tests.
    circuits): 35 batches. b0 is `pathion_coset_coin_tuna_17/batch-02/b0.cq` byte for byte, as in the predecessor. The
    platform sets the execution order of the jobs of a batch (the retained `queued_at` stamps show reversed twins in 7 of
    the 19 predecessor batches while `created_on` follows the requested order in all 19), which the executed-order fit
-   reads; a base or calibration batch has no position term, and the time-weight rule that covers their level
-   (`docs/design/bracketed-base-contrast-weights.md`) is registered and not yet part of the decision, so the decision
-   pools base contrasts as the v3 analyzer does until it is.
+   reads. A base contrast is a level, so its position inside a batch does not enter and its start time does: each
+   template's four base replicates are read at their executed starts through a weighted line, and the base level is
+   taken at the mean executed start of the template's twin circuits (`docs/design/bracketed-base-contrast-weights.md`);
+   template base replicates that share one start time read `unresolved_base_drift_confounded`. The bracket offset of
+   each of the 32 base and twin batches, placed at the mean start of its two readouts, must stay a line in executed time
+   (residual chi-square at alpha 0.001) or the series reads `unresolved_drift_model`; the line's slope bound sizes a
+   systematic for each calibration batch, reported beside the decision as `unresolved_calibration_drift` when it
+   exceeds that batch's standard error.
 7. Shots and time. b0 base batches run at 65,536 shots per circuit, every other base batch and every twin batch at
    16,384, calibration at 16,384 (the predecessor's shots halved except the calibration). Jobs: 120 (16 base x 3, 16 twin
    x 4, 8 calibration); shots 2,555,904, equal to the predecessor's two-replicate layout at twice the shots
@@ -401,9 +406,10 @@ longer decides. This section supersedes the prediction `unresolved_order` of the
 record of the choice; the case is unapproved, and the rule text of item 6 of the series description was rewritten in
 place for that reason. The registered twin rule (`docs/design/bracketed-executed-order-analysis.md`) is integrated in
 `evaluate` and pinned by tests that feed a reordered series and compare it with the series that kept its order, and that
-fail closed on a missing, null or tied stamp. What the integration leaves open: the base batches pool without the
-time-weight rule, the calibration batches carry no drift term, and the power tables are computed without reordering
-(`bracketed-base-contrast-weights.md`, "What is not covered").
+fail closed on a missing, null or tied stamp. The base time weights, the drift monitor and the
+calibration systematic of `bracketed-base-contrast-weights.md` are integrated with it, so the rule is complete; what
+stays open is the injection and blinding harness and the power tables under reordering (the design notes, "Not done" and
+"What is not covered").
 
 Results already in hand and what they change: the hosted QX run passes its noiseless control (`qx_control.pass`,
 `qx_brackets.pass`), so the batch of five circuits parses and returns ten-bit outcomes in the expected logical-bit ordering, and

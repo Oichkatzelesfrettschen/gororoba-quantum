@@ -3,8 +3,8 @@
 Status: preregistered 2026-11-15 and confirmed by the owner's ruling of 2026-11-16 23:52Z on issue 791 ("Preregistered
 executed-order analysis": the analysis is registered on the order the provider executed, recorded per job, so a reordered
 batch stays usable and the strict gate decides nothing). The estimator, the decision integration (`evaluate` of
-`qi_pathion_one_cz_null_bracketed_cases`) and their tests exist; the power tables under reordering and the base-batch
-integration do not, and no Tuna-17 job has run. The strict reading (`order_gate`) stays in the record beside the decision.
+`qi_pathion_one_cz_null_bracketed_cases`), the base-batch rule of [bracketed-base-contrast-weights.md](bracketed-base-contrast-weights.md)
+and their tests exist; the power tables under reordering do not, and no Tuna-17 job has run. The strict reading (`order_gate`) stays in the record beside the decision.
 
 ## Why
 
@@ -69,13 +69,13 @@ requested +1, -1 and +1; the strict gate's 7 of 19 counts any permutation of a b
 Under the strict gate the 16 twin batches alone all stay intact with probability 0.75^16 = 0.010 at 0.25. They are not the probability that
 the series decides.
 
-## What is not covered, and why the series is not yet decidable
+## What is not covered
 
 - Base and calibration batches: 16 base batches (three circuits) and 3 calibration batches also execute in an order the
   platform sets, and the mirror rounds reverse the base batches. A base contrast is a level, so its position inside the
   batch does not enter and its execution time does; the strict gate no longer decides on them. The rule that covers the time
-  term (`bracketed-base-contrast-weights.md`: executed-time weights, a drift monitor and a calibration systematic) is registered
-  and not yet integrated, so the decision pools base contrasts without it and the series stays unapproved until it is.
+  term (`bracketed-base-contrast-weights.md`: executed-time weights, a drift monitor and a calibration systematic) is part of the
+  decision.
 - Integration (done): `evaluate` in `scripts/qi_pathion_one_cz_null_bracketed_cases.py` maps the stamps to `executed_offset`
   (`twin_offsets`), replaces the twin rows by `adjusted_rows` (`executed_twin_fit`), emits the three labels and keeps the
   label of the pool that ignores the order as `label_if_order_ignored` and the strict result as `order_gate`.
