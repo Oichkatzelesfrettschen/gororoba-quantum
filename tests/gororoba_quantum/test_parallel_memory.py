@@ -27,7 +27,7 @@ def _synthetic_host(tmp_path: Path, available_kib: int, limits: dict[str, tuple[
     root = tmp_path / "fs"
     for path, (limit, current) in limits.items():
         node = root / path
-        node.mkdir(parents=True)
+        node.mkdir(parents=True, exist_ok=True)
         (node / "memory.max").write_text(f"{limit}\n")
         (node / "memory.current").write_text(f"{current}\n")
     return {"proc_cgroup": proc_cgroup, "cgroup_root": root, "meminfo": meminfo}
