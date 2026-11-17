@@ -106,18 +106,27 @@ the tests.
    -g, +g and -g and cancels in the pooled twin contrast (exactly for equal replicate weights, to first order for the
    analyzer's inverse-variance pool) for the order the case requests. Measured: the platform ran the twins of some
    retained batches in the reverse of their listed order, so the cancellation holds only for batches that run in the
-   requested order, and a reordered batch leaves a +g or -g term in its t. The analyzer therefore gates the decision on the
-   executed order (`order_gate` of `qi_pathion_one_cz_null_bracketed_cases.evaluate`, issue 894): the per-job start stamps
-   (`queued_at`, which follows the previous job's `finished_at` in the retained series) must order every batch's circuits
-   as requested with no tie, or the series reads `unresolved_order` and decides nothing, the label the rule would have read
-   staying beside it as `label_if_order_ignored`. A reversed twin pair or a template outside its readouts in any batch
-   therefore costs the whole series its decision. Measured from the retained `queued_at` stamps, 7 of the predecessor
-   series' 19 batches (01, 06, 08, 10, 12, 15 and 16) ran out of the requested order, so that series would have read
-   `unresolved_order` and a wave of this layout needs the platform to keep its order in every one of 35 batches. The three X-only calibration batches of the predecessor follow (3, 3 and 2
+   requested order, and a reordered batch leaves a +g or -g term in its t. The analyzer therefore reads the twin contrasts on the
+   executed order (registered rule, owner decision 2026-11-16 on issue 791, `evaluate` of
+   `qi_pathion_one_cz_null_bracketed_cases`): the per-job start stamps (`queued_at`, which follows the previous job's
+   `finished_at` by 0.03 to 0.19 s in the retained series) give the executed position of the two twins of every twin
+   batch, and `qi_pathion_one_cz_null_executed_order` fits one drift shared by the twin batches beside one contrast per
+   template, so a reordered batch costs precision and no decision (`docs/design/bracketed-executed-order-analysis.md`
+   holds the model, the four labels and the operating characteristics). A stamp that is missing from any batch or
+   tied inside a twin batch reads `unresolved_order`; twin batches that leave every template one offset read
+   `unresolved_order_confounded`; a template whose own drift departs from the shared one by more than three
+   errors of the difference reads `unresolved_drift_heterogeneity`. Each reading carries the label of the pool that
+   ignores the order beside it as `label_if_order_ignored`, and the strict reading of every batch (`order_gate`) stays in
+   the record and decides nothing. Measured from the retained `queued_at` stamps, 7 of the predecessor series' 19
+   batches (01, 06, 08, 10, 12, 15 and 16) ran out of the listed order and 2 of the 8 twin batches of that series had
+   their twins reversed; the case requests the order and the analysis reads the order that ran. The three X-only
+   calibration batches of the predecessor follow (3, 3 and 2
    circuits): 35 batches. b0 is `pathion_coset_coin_tuna_17/batch-02/b0.cq` byte for byte, as in the predecessor. The
    platform sets the execution order of the jobs of a batch (the retained `queued_at` stamps show reversed twins in 7 of
-   the 19 predecessor batches while `created_on` follows the requested order in all 19), so `order_gate` requires the
-   platform to execute each batch in its listed order and the decision reads only a series that did.
+   the 19 predecessor batches while `created_on` follows the requested order in all 19), which the executed-order fit
+   reads; a base or calibration batch has no position term, and the time-weight rule that covers their level
+   (`docs/design/bracketed-base-contrast-weights.md`) is registered and not yet part of the decision, so the decision
+   pools base contrasts as the v3 analyzer does until it is.
 7. Shots and time. b0 base batches run at 65,536 shots per circuit, every other base batch and every twin batch at
    16,384, calibration at 16,384 (the predecessor's shots halved except the calibration). Jobs: 120 (16 base x 3, 16 twin
    x 4, 8 calibration); shots 2,555,904, equal to the predecessor's two-replicate layout at twice the shots
@@ -264,8 +273,9 @@ and 85.3, so the 0.1-point difference of the superposition-only cell is Monte Ca
 layout met the rule only under the common-drift model (82.1 and 86.9 against 72.5 and 77.1 under the independent one).
 The two models bracket the truth: the in-batch pair removes every drift that shifts both twins together, and the stress
 leaves a drift between the two twins of a batch, 10 to 147 s apart in the retained series, unexcluded. Which model
-governs is a hypothesis; the retained twin forward-against-mirror comparison (chi-square 14.77 on 8 degrees of freedom)
-shows no twin drift above the sampling noise. Under the independent model the losses of the dropout world are `intermediate` 0.081, `unresolved_batch` 0.047 and
+governs is a hypothesis; the retained twin forward-against-mirror comparison (chi-square 14.77 on 8 degrees of freedom, p 0.064: the sum of z^2
+over the 8 twin coin arms' raw selector rate, forward against mirror, 32,768 shots per arm) shows no twin drift above the
+sampling noise. Under the independent model the losses of the dropout world are `intermediate` 0.081, `unresolved_batch` 0.047 and
 `unresolved_block` 0.042, and those of the superposition-only world `unresolved` 0.048, `unresolved_batch` 0.047 and
 `unresolved_block` 0.046 (`prediction.json`); the gates and the b0-like band share the loss, and the gate losses fall to
 about 0.03 each under the common-drift model. Hypothesis: the gates read base-contrast drift, which no layout change of the
@@ -303,7 +313,9 @@ single-qubit gate, Rz included, and in under 0.1 percent of runs of any admitted
   drift reads `unresolved_batch`, as it did in the retained series.
 - The FAQ's "job" is ambiguous (Hardware policy); a provider answer settles whether a wave reads as 3 or 15 jobs.
 - The retained b0 base replicates differ: 0.0162 then 0.0393 (se 0.0028 each, 0.0039 for the difference, chi-square
-  34.86 above both 10.83 and 16.27), so the retained series reads `unresolved_batch`. Hypothesis: a drift of the offset itself, which the
+  34.86 above both 10.83 and 16.27; this is the b0 base pair's share of a different statistic, the contrast-pair
+  chi-square of the base and twin pairs, recomputed at 46.87 on 8 degrees of freedom and, without the b0 base pair, at
+  12.01 on 7 degrees of freedom, p 0.10), so the retained series reads `unresolved_batch`. Hypothesis: a drift of the offset itself, which the
   bracket does not correct (the bracket removes the readout offset, and the offset under test is the quantity that
   drifts); the unchanged heterogeneity gate reads it as `unresolved_batch`.
 - A readout-context difference between the two brackets (readout-1 excites the five region qubits only) shifts c for both
@@ -382,6 +394,16 @@ retained batches) and fits the linear drift on the position offset of the twins,
 no decision; the base and calibration batches have no such rule yet (`docs/design/bracketed-executed-order-analysis.md`). The
 cheaper way to learn the rate is one wave (3 batches, 15 circuits, about 15 x 12 s of device time) of the cheapest circuits,
 which measures how this layout's submission pattern reorders without claiming a decision.
+
+Owner ruling 2026-11-16 23:52Z on issue 791, "Preregistered executed-order analysis": way (B). The analysis is registered on the
+order the provider executed, recorded per job (`queued_at`), so a reordered batch stays usable, and the strict order gate no
+longer decides. This section supersedes the prediction `unresolved_order` of the paragraphs above and leaves them as the
+record of the choice; the case is unapproved, and the rule text of item 6 of the series description was rewritten in
+place for that reason. The registered twin rule (`docs/design/bracketed-executed-order-analysis.md`) is integrated in
+`evaluate` and pinned by tests that feed a reordered series and compare it with the series that kept its order, and that
+fail closed on a missing, null or tied stamp. What the integration leaves open: the base batches pool without the
+time-weight rule, the calibration batches carry no drift term, and the power tables are computed without reordering
+(`bracketed-base-contrast-weights.md`, "What is not covered").
 
 Results already in hand and what they change: the hosted QX run passes its noiseless control (`qx_control.pass`,
 `qx_brackets.pass`), so the batch of five circuits parses and returns ten-bit outcomes in the expected logical-bit ordering, and

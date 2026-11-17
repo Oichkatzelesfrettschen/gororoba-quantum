@@ -1,8 +1,10 @@
 # Executed-order analysis of the bracketed twin contrasts
 
-Status: preregistered 2026-11-15 on the owner's ruling (issue 791); the estimator and its tests exist, the integration into the
-decision path and the power tables do not, and no Tuna-17 job has run. The strict gate (`order_gate`) stays the series rule until
-the integration lands and takes its review round.
+Status: preregistered 2026-11-15 and confirmed by the owner's ruling of 2026-11-16 23:52Z on issue 791 ("Preregistered
+executed-order analysis": the analysis is registered on the order the provider executed, recorded per job, so a reordered
+batch stays usable and the strict gate decides nothing). The estimator, the decision integration (`evaluate` of
+`qi_pathion_one_cz_null_bracketed_cases`) and their tests exist; the power tables under reordering and the base-batch
+integration do not, and no Tuna-17 job has run. The strict reading (`order_gate`) stays in the record beside the decision.
 
 ## Why
 
@@ -31,7 +33,7 @@ values reduced by g x and errors multiplied by f_T, so the pooled error carries 
 ## Decision rules (preregistered)
 
 1. The decision reads the adjusted rows when the stamps of every circuit of every twin batch are present and pairwise distinct
-   inside the batch; a missing or tied stamp reads `unresolved_order` (the strict gate's rule for those inputs stays).
+   inside the batch; a missing stamp in any batch, a tied stamp inside a twin batch or an empty stamp mapping reads `unresolved_order`.
 2. A series in which every template has one x in all its twin batches has Sxx = 0 and no separable drift, even if the templates
    differ in direction: it reads `unresolved_order_confounded`.
 3. A template whose own drift (`template_drift`) departs from the shared g by more than 3 times the error of the difference
@@ -70,13 +72,13 @@ the series decides.
 ## What is not covered, and why the series is not yet decidable
 
 - Base and calibration batches: 16 base batches (three circuits) and 3 calibration batches also execute in an order the
-  platform sets, and the mirror rounds reverse the base batches. No rule above says what a reordered base or calibration batch
-  does, and if the strict gate still holds for them the series fails at about 1 - 0.63^19 = 1 - 1.6e-4 at the predecessor's
-  rate. The 0.9998 of the twin batches therefore is not the decision probability, and the series stays unapproved until a
-  preregistered rule (an order covariate for the base contrasts, or evidence that their arms are order-symmetric) covers them.
-- Integration: `evaluate` in `scripts/qi_pathion_one_cz_null_bracketed_cases.py` still applies the strict gate. Removal
-  condition: a change that maps the stamps to `executed_offset`, replaces the twin rows by `adjusted_rows`, adds the three
-  labels and keeps the strict result beside it, reviewed before the series is approved.
+  platform sets, and the mirror rounds reverse the base batches. A base contrast is a level, so its position inside the
+  batch does not enter and its execution time does; the strict gate no longer decides on them. The rule that covers the time
+  term (`bracketed-base-contrast-weights.md`: executed-time weights, a drift monitor and a calibration systematic) is registered
+  and not yet integrated, so the decision pools base contrasts without it and the series stays unapproved until it is.
+- Integration (done): `evaluate` in `scripts/qi_pathion_one_cz_null_bracketed_cases.py` maps the stamps to `executed_offset`
+  (`twin_offsets`), replaces the twin rows by `adjusted_rows` (`executed_twin_fit`), emits the three labels and keeps the
+  label of the pool that ignores the order as `label_if_order_ignored` and the strict result as `order_gate`.
 - Power under reordering: the 82.1 / 85.3 percent power of the case is computed without reordering; the pricing and operating
   characteristic simulators need a reordering world.
 - The common-drift hypothesis: tested by rule 3 on the run itself and by nothing before it.
