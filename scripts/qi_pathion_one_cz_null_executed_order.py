@@ -20,7 +20,9 @@ x_T^2 var(g). A balanced order (x_T = 0) returns the pooled mean and its error. 
 preregistered rule reads: each twin value reduced by g x and each error multiplied by f_T = sqrt(1 + x_T^2 var(g)
 W_T), so the inverse-variance mean of the adjusted rows is t_T with the error above. A series in which every template
 has one x in all its twin batches has Sxx = 0 and no separable drift (the templates may differ in direction): it reads
-`unresolved_order_confounded`.
+`unresolved_order_confounded`. The contrasts of two templates share g, so cov(t_T, t_U) = x_T x_U var(g), zero when
+either template has x_T = 0 (a series that kept its order); the decision pools the templates with that covariance
+(`pool_correlated`).
 
 hypothesis: one drift g, linear in the executed position difference, is common to every template (a device property of
 the selector offset between consecutive jobs). The fit reports each template's own drift beside it, `template_drift`,
@@ -38,17 +40,19 @@ import numpy as np
 from scipy.stats import chi2
 
 Row = tuple[float, float, float]  # (twin contrast, standard error, executed position offset x of the batch)
+OWN_DRIFT_FLOOR = 1e-12  # relative size of own_T = sum w (x - x_T) x below which a template has no own drift
 
 
 class ConfoundedOrder(ValueError):
     """Every template has one offset in all its twin batches, so the drift and the contrasts are not separable."""
 
 
-def executed_offset(stamps: Mapping[str, str], coin0_file: str, coin1_file: str) -> int:
+def executed_offset(stamps: Mapping[str, int], coin0_file: str, coin1_file: str) -> int:
     """Executed position of the coin-1 twin minus that of the coin-0 twin among the circuits of one batch, ordered by
-    `queued_at`; equal stamps anywhere in the batch order nothing."""
+    start instant (`stamps` maps a circuit file to the integer microseconds of its `queued_at`); equal instants
+    anywhere in the batch order nothing."""
     if len(set(stamps.values())) != len(stamps):
-        raise ConfoundedOrder("two circuits of the batch carry one start stamp")
+        raise ConfoundedOrder("two circuits of the batch start at one instant")
     rank = {name: place for place, name in enumerate(sorted(stamps, key=lambda name: stamps[name]))}
     return rank[coin1_file] - rank[coin0_file]
 
@@ -91,22 +95,58 @@ def fit(rows: Mapping[str, Sequence[Row]]) -> dict[str, object]:
         contrast[name] = v_bar - drift * s_bar
         error[name] = math.sqrt(1.0 / total + s_bar * s_bar * var_drift)
         own = sum(wi * (s - s_bar) * s for wi, (_, _, s) in zip(w, batch_rows, strict=True))
+        # A template with one offset in all its batches has own = 0 in exact arithmetic; rounding of s_bar leaves a
+        # remainder of order 1e-16 of sum(w s^2), which this floor reads as no own drift.
+        separable = own > OWN_DRIFT_FLOOR * sum(wi * s * s for wi, (_, _, s) in zip(w, batch_rows, strict=True))
         own_drift[name] = (
-            None
-            if own <= 0.0
-            else sum(wi * (s - s_bar) * (v - v_bar) for wi, (v, _, s) in zip(w, batch_rows, strict=True)) / own
+            sum(wi * (s - s_bar) * (v - v_bar) for wi, (v, _, s) in zip(w, batch_rows, strict=True)) / own
+            if separable
+            else None
         )
         # The shared drift is the own drifts averaged with weights own / Sxx, so cov(own_T, g) = var(g) and
         # var(own_T - g) = 1 / own_T - 1 / Sxx.
-        own_diff_se[name] = None if own <= 0.0 else math.sqrt(max(1.0 / own - var_drift, 0.0))
+        own_diff_se[name] = math.sqrt(max(1.0 / own - var_drift, 0.0)) if separable else None
     return {
         "drift": drift,
         "drift_se": math.sqrt(var_drift),
         "contrast": contrast,
         "error": error,
+        "offset_mean": {name: weighted[name][1] for name in rows},
+        "covariance": {
+            name: {
+                other: error[name] ** 2 if other == name else weighted[name][1] * weighted[other][1] * var_drift
+                for other in rows
+            }
+            for name in rows
+        },
         "template_drift": own_drift,
         "template_drift_difference_se": own_diff_se,
     }
+
+
+def pool_correlated(
+    values: Sequence[float], covariance: Sequence[Sequence[float]]
+) -> tuple[float, float, float, list[float]]:
+    """Generalized least-squares pool of correlated estimates of one quantity: (mean, standard error, chi-square about
+    the mean, weights). With the covariance matrix S, the weights are S^-1 1 / (1' S^-1 1), the mean is w' values, the
+    variance is 1 / (1' S^-1 1) and the chi-square is the quadratic form of the residuals in S^-1 (n - 1 degrees of
+    freedom). A diagonal S gives the inverse-variance pool. The twin contrasts of different templates are correlated
+    through the shared drift g: cov(t_T, t_U) = x_T x_U var(g) (`fit`, "covariance")."""
+    n = len(values)
+    matrix = np.asarray(covariance, dtype=float)
+    if n < 1 or matrix.shape != (n, n) or not np.all(np.isfinite(matrix)) or not all(math.isfinite(v) for v in values):
+        raise ValueError("the estimates and their covariance matrix do not match or are not finite")
+    try:
+        np.linalg.cholesky(matrix)
+    except np.linalg.LinAlgError as error:
+        raise ValueError("the covariance matrix is not positive definite") from error
+    ones = np.ones(n)
+    solved = np.linalg.solve(matrix, ones)
+    information = float(ones @ solved)
+    weights = solved / information
+    mean = float(weights @ np.asarray(values, dtype=float))
+    residual = np.asarray(values, dtype=float) - mean
+    return mean, math.sqrt(1.0 / information), float(residual @ np.linalg.solve(matrix, residual)), list(weights)
 
 
 def adjusted_rows(rows: Mapping[str, Sequence[Row]]) -> dict[str, list[tuple[float, float]]]:

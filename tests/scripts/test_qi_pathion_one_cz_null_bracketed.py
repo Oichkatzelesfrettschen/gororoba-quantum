@@ -2,17 +2,18 @@
 
 Each expectation is computed in the test from plain arithmetic, the retained series' records or the platform's own
 constants, never from the producer's design or layout functions. The audit-marked tests regenerate the committed case
-directories (the second also the stored operating characteristics, 27 simulations of 20,000 series).
+directories (the second also the stored operating characteristics, 60 simulations of 20,000 series).
 """
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import math
 import shutil
 from collections import Counter
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -329,7 +330,7 @@ def test_rule_v2_labels_hand_built_bracketed_rows() -> None:
 
 
 def test_the_preregistered_text_restates_the_estimates_and_carries_rule_v2() -> None:
-    text = bc.preregistered()
+    text = bc.control_preregistered()
     old = oc.preregistered()
     _expect(text["twin_control"] == rule.TWIN_CONTROL != old["twin_control"], "twin control")
     _expect("cancels in t" in text["estimates"] and text["estimates"] != old["estimates"], "estimates")
@@ -338,6 +339,45 @@ def test_the_preregistered_text_restates_the_estimates_and_carries_rule_v2() -> 
         "only the estimates, the twin control and the replicate-matched heterogeneity bound change",
     )
     _expect(str(bc.BATCH_CHI2) in text["heterogeneity"] and "3 degrees of freedom" in text["heterogeneity"], "gate")
+
+
+def test_the_registered_rule_states_the_executed_order_once_and_names_every_label_it_can_read() -> None:
+    text, control = bc.preregistered(), bc.control_preregistered()
+    _expect(set(text) - set(control) == {"executed_order", "base_level", "drift_monitor", "withheld"}, f"{set(text)}")
+    _expect({k for k in control if control[k] != text[k]} == {"estimates"}, "only the estimates restate")
+    _expect("executed" in text["estimates"] and "plain" not in text["estimates"], text["estimates"])
+    for label in bc.WITHHELD_LABELS:
+        _expect(label in text["withheld"] and label in bc.OUTCOMES, f"{label} is not registered")
+    _expect(set(bc.WITHHELD_LABELS) == {k for k in bc.OUTCOMES if k not in rule.OUTCOMES}, "labels outside the table")
+    # The Tuna-17 manifests and the prediction record state the executed-order text; the QX control manifests state the
+    # control text that the hosted run's receipts bind.
+    built = bc.build()
+    for rel, body in built[bc.TUNA_SERIES].items():
+        if rel.endswith("cases.json") and "/" in rel:
+            _expect(json.loads(body)["preregistered"] == text, f"{rel} states another rule")
+    for rel, body in built[bc.QX_SERIES].items():
+        if rel.endswith("cases.json") and "/" in rel:
+            _expect(json.loads(body)["preregistered"] == control, f"{rel} states another rule")
+    _expect(bc.predictions(operating=False)["preregistered"] == text, "the prediction record states another rule")
+    _expect(set(bc.predictions(operating=False)["outcomes"]) == set(bc.OUTCOMES), "the outcomes of the record")
+
+
+# sha256 of the four QX batch manifests: the `cases_sha256` of the hosted run's submission receipts, so the QX case
+# directory keeps the bytes those receipts bind.
+QX_MANIFEST_SHA256 = {
+    "batch-00": "9904dc68030fd23abed32e905320c0b67e1a74df6e79a14645a2a91fc99393ee",
+    "batch-01": "7aec9908027c5f06e7dcb9a288acb27de9bc9f9890b067a94dc8b5d1e43cba37",
+    "batch-02": "5ac4b6c411b4234493911400da264f08f3c5b60f4184b0858ba16264c19d9b7e",
+    "batch-03": "47a25a62683d922f5cc2e6461e057370871225b9d9cbed7ec6cdb74b28a1fef5",
+}
+
+
+def test_the_qx_manifests_keep_the_bytes_that_the_retained_receipts_bind() -> None:
+    built = bc.build()[bc.QX_SERIES]
+    for batch, digest in QX_MANIFEST_SHA256.items():
+        _expect(hashlib.sha256(built[f"{batch}/cases.json"].encode()).hexdigest() == digest, f"{batch} changed")
+        stored = (CASES / bc.QX_SERIES / batch / "cases.json").read_bytes()
+        _expect(hashlib.sha256(stored).hexdigest() == digest, f"the stored {batch} manifest changed")
 
 
 def _survival(dof: int, x: float) -> float:
@@ -517,13 +557,14 @@ def test_each_table_seeds_from_its_own_value_of_the_registered_draw_in_index_ord
     from qrng_seeds import read_record
 
     stored = _stored()["operating_characteristics"]
-    tables = ("stationary", "batch_drift_sd_0.003", "pair_common_drift_sd_0.003")
+    tables = ("stationary", "batch_drift_sd_0.003", "pair_common_drift_sd_0.003", *bc.EXECUTED_TABLES)
     indices = [stored["seed_indices"][t] for t in tables]
     _expect(stored["qrng_draw"] == bc.OC_DRAW and stored["seed_indices"] == bc.OC_SEED_INDICES, "named draw")
     _expect(indices == sorted(set(indices)) and indices[0] >= 920, f"{indices}: increasing, distinct, from 920 up")
+    _expect(indices == list(range(920, 920 + len(tables))), f"{indices}: each value of the run used once")
     values = read_record(bc.OC_DRAW)["values"]
     seeds = [int(values[i]) for i in indices]
-    _expect(len(set(seeds)) == 3, "three distinct seed values")
+    _expect(len(set(seeds)) == len(tables), "distinct seed values")
     world = {rule.NEGATIVE_TWIN_WORLD: rule.NEGATIVE_TWIN_MEAN}
     a = bc.operating_characteristics(indices[0], draws=64, worlds=world)
     _expect(a == bc.operating_characteristics(indices[0], draws=64, worlds=world), "an index fixes the draws")
@@ -555,6 +596,56 @@ def test_the_stored_tables_hold_the_power_of_each_drift_model() -> None:
             share["pair_common_drift_sd_0.003"][world][label] > share["batch_drift_sd_0.003"][world][label],
             f"a drift that cancels in the pair raises the power of {world}",
         )
+
+
+def _executed_table(name: str) -> dict[str, Any]:
+    table: dict[str, Any] = _stored()["operating_characteristics"][name]
+    return {
+        "labels": {w: {k: v / 10000 for k, v in row.items()} for w, row in table["labels"].items()},
+        "gate": {w: v / 10000 for w, v in table["heterogeneity_gate_fired"].items()},
+    }
+
+
+def test_the_stored_executed_order_tables_hold_the_power_and_the_gate_rates() -> None:
+    # Power at the design effect (the dropout world reads b0_like, the superposition-only world its own row) under the
+    # registered rule; the preregistered power rule is 80 percent. The drift the rule corrects is the drift simulated.
+    for name in ("executed_in_order", "executed_reordered_stationary", "executed_reordered_linear_drift"):
+        table = _executed_table(name)
+        _expect(set(table["labels"]) == set(rule.WORLDS), f"{name}: worlds")
+        _expect(
+            table["labels"]["coin_dropout"]["b0_like"] >= 0.88, f"{name}: dropout {table['labels']['coin_dropout']}"
+        )
+        _expect(table["labels"]["superposition_only"]["superposition_only"] >= 0.90, f"{name}: superposition")
+        _expect(table["labels"]["twin_opposite_sign"][rule.NEGATIVE_TWIN] >= 0.94, f"{name}: negative twin")
+        # False alarms of the heterogeneity gate: three errors of the difference on four templates, about one percent.
+        _expect(all(0.005 < gate < 0.02 for gate in table["gate"].values()), f"{name}: gate {table['gate']}")
+    kept, moved = _executed_table("executed_in_order"), _executed_table("executed_reordered_linear_drift")
+    for world, label in (("coin_dropout", "b0_like"), ("superposition_only", "superposition_only")):
+        _expect(abs(kept["labels"][world][label] - moved["labels"][world][label]) < 0.02, f"reordering costs {world}")
+    # Detection of a planted departure of the k4 twin drift from the shared 0.003 per position.
+    small, large = (
+        _executed_table("executed_planted_departure_0.0075"),
+        _executed_table("executed_planted_departure_0.015"),
+    )
+    _expect(set(small["gate"]) == set(bc.GATE_WORLDS) == set(large["gate"]), "gate worlds")
+    for world in bc.GATE_WORLDS:
+        _expect(0.25 < small["gate"][world] < 0.50, f"departure 0.0075 in {world}: {small['gate'][world]}")
+        _expect(large["gate"][world] > 0.90, f"departure 0.015 in {world}: {large['gate'][world]}")
+        _expect(large["labels"][world]["unresolved_drift_heterogeneity"] >= 0.90, f"{world}: {large['labels'][world]}")
+
+
+def test_an_executed_order_table_does_not_depend_on_the_worker_count_and_rereads_its_children() -> None:
+    world = {"coin_dropout": rule.WORLDS["coin_dropout"]}
+    params = bc.EXECUTED_TABLES["executed_reordered_linear_drift"]
+    first = bc.executed_operating_characteristics(925, params, draws=48, worlds=world)
+    _expect(first == bc.executed_operating_characteristics(925, params, draws=48, worlds=world), "a rerun")
+    from qrng_seeds import read_record
+
+    children = np.random.SeedSequence(int(read_record(bc.OC_DRAW)["values"][925])).spawn(48)
+    serial = [bc._executed_series(child, mean=world["coin_dropout"], params=params) for child in children]
+    counts = Counter(label for label, _ in serial)
+    _expect(first["labels"]["coin_dropout"] == {k: round(v / 48, 4) for k, v in sorted(counts.items())}, f"{first}")
+    _expect(first["heterogeneity_gate_fired"]["coin_dropout"] == round(sum(g for _, g in serial) / 48, 4), "gate")
 
 
 def test_the_successor_simulation_reaches_spawned_workers_and_is_serial_equal() -> None:
@@ -770,23 +861,6 @@ def test_analyze_scores_the_collected_tuna_series_and_reports_an_incomplete_one(
     _expect(not partial["complete"] and partial["batches"] == ["batch-00", "batch-01", "batch-02"], f"{partial}")
     sanity = bc.sanity(dirs[:8], tmp_path / "cases")
     _expect(sanity["batches"] == [f"batch-{n:02d}" for n in range(8)] and sanity["drift"], "sanity")
-
-
-@pytest.mark.audit
-def test_analyze_fails_closed_when_a_collected_job_lacks_its_start_stamp(
-    tmp_path: Path, built: dict[str, dict[str, str]], worlds: dict[str, dict[str, list[str]]]
-) -> None:
-    dirs = _runs(tmp_path, bc.TUNA_SERIES, built[bc.TUNA_SERIES], worlds["over_rotation"])
-    results = dirs[1] / "results.json"
-    record = json.loads(results.read_text(encoding="utf-8"))
-    record["jobs"][0]["job"]["queued_at"] = None
-    results.write_text(json.dumps(record), encoding="utf-8")
-    try:
-        scored = bc.analyze(dirs, tmp_path / "cases")
-    except KeyError, TypeError, ValueError:
-        return
-    decision = scored["decision"]
-    _expect(decision["label"] == "unresolved_order" and decision["decided"] is False, f"{decision}")
 
 
 # The executed order of the batches --------------------------------------------------------------------------------
@@ -1113,8 +1187,431 @@ def test_a_reference_series_that_is_not_a_line_reads_drift_model_and_flags_the_c
     _expect(len(steep["calibration_drift"]) == 3 and steep["calibration_drift"][0]["sigma_sys"] > 1e-3, "sigma_sys")
 
 
-def test_the_executed_offset_orders_by_stamp_and_refuses_a_tie() -> None:
-    stamps = {"a": "2026-11-08T01:00:03Z", "b": "2026-11-08T01:00:01Z", "c": "2026-11-08T01:00:02Z"}
+def test_the_executed_offset_orders_by_instant_and_refuses_a_tie() -> None:
+    stamps = {
+        k: bc.stamp_instant(v)
+        for k, v in {"a": "2026-11-08T01:00:03Z", "b": "2026-11-08T01:00:01Z", "c": "2026-11-08T01:00:02Z"}.items()
+    }
     _expect(eo.executed_offset(stamps, "a", "b") == -2, "a ran third and b first")
     with pytest.raises(eo.ConfoundedOrder):
         eo.executed_offset({**stamps, "c": stamps["a"]}, "a", "b")
+
+
+# Stamps that cannot order the series ---------------------------------------------------------------------------------
+
+
+@pytest.fixture(scope="module")
+def small_files(built: dict[str, dict[str, str]]) -> dict[str, str]:
+    """The Tuna-17 series files with every batch manifest at 256 shots: a complete series of a few thousand strings."""
+    files = dict(built[bc.TUNA_SERIES])
+    for rel in files:
+        if rel.startswith("batch-") and rel.endswith("/cases.json"):
+            files[rel] = json.dumps({**json.loads(files[rel]), "shots": 256}, indent=1) + "\n"
+    return files
+
+
+@pytest.fixture(scope="module")
+def small_shots(small_files: dict[str, str], manifest: dict[str, Any]) -> dict[str, list[str]]:
+    return oc.synthetic_series(small_files, manifest)
+
+
+@pytest.fixture(scope="module")
+def plain_record(small_shots: dict[str, list[str]], manifest: dict[str, Any]) -> dict[str, Any]:
+    """The real `evaluate_decision` of the small series, read once: it ranks nothing, so every stamp defect below
+    reaches it unchanged and a replay of this record is its result."""
+    return bc.evaluate_decision(small_shots, manifest, None)
+
+
+@pytest.fixture
+def replay(monkeypatch: pytest.MonkeyPatch, plain_record: dict[str, Any]) -> None:
+    monkeypatch.setattr(bc, "evaluate_decision", lambda shots, manifest, executed=None: copy.deepcopy(plain_record))
+
+
+def _first_twin_batch_stamps() -> tuple[str, dict[str, str]]:
+    return f"batch-{TWIN_BATCHES[0]:02d}", _stamped()
+
+
+def test_a_valid_series_reads_its_executed_order_through_the_real_decision(
+    small_shots: dict[str, list[str]], manifest: dict[str, Any]
+) -> None:
+    record = bc.evaluate(small_shots, manifest, _stamped())
+    _expect(record["executed_order_fit"]["status"] == "fitted", f"{record['executed_order_fit']}")
+    _expect(record["decision"]["label"] not in bc.WITHHELD_LABELS, f"{record['decision']['label']}")
+    # The same instants spelled with another offset and fraction width read one series.
+    shifted = {
+        key: datetime.fromisoformat(value).astimezone(timezone(timedelta(hours=5, minutes=30))).isoformat()
+        for key, value in _stamped().items()
+    }
+    again = bc.evaluate(small_shots, manifest, shifted)
+    _expect(again["decision"] == record["decision"], "an offset other than Z changed the decision")
+    _expect(again["executed_order_fit"]["offsets"] == record["executed_order_fit"]["offsets"], "offsets")
+
+
+@pytest.mark.parametrize(
+    "defect",
+    [
+        "a base circuit stamp is null",
+        "a twin circuit stamp is null",
+        "a calibration circuit stamp is null",
+        "a key is absent",
+        "a stamp is empty text",
+        "a stamp is an integer",
+        "a stamp is not ISO 8601",
+        "a stamp has no UTC offset",
+        "a stamp is a date only",
+        "two twin circuits start at one instant in two spellings",
+    ],
+)
+def test_a_stamp_that_cannot_order_the_series_reads_the_registered_label_through_the_real_decision(
+    small_shots: dict[str, list[str]], manifest: dict[str, Any], replay: None, defect: str
+) -> None:
+    twin, stamps = _first_twin_batch_stamps()
+    coin0 = f"{twin}/{oc.twin_file('b0', 0)}"
+    if defect == "a base circuit stamp is null":
+        stamps["batch-00/b0.cq"] = None  # type: ignore[assignment]
+    elif defect == "a twin circuit stamp is null":
+        stamps[coin0] = None  # type: ignore[assignment]
+    elif defect == "a calibration circuit stamp is null":
+        stamps["batch-32/joint-011.cq"] = None  # type: ignore[assignment]
+    elif defect == "a key is absent":
+        del stamps[coin0]
+    elif defect == "a stamp is empty text":
+        stamps[coin0] = ""
+    elif defect == "a stamp is an integer":
+        stamps[coin0] = 1794794714  # type: ignore[assignment]
+    elif defect == "a stamp is not ISO 8601":
+        stamps[coin0] = "yesterday at noon"
+    elif defect == "a stamp has no UTC offset":
+        stamps[coin0] = "2026-11-08T01:01:05.000000"
+    elif defect == "a stamp is a date only":
+        stamps[coin0] = "2026-11-08"
+    else:
+        stamps[coin0] = "2026-11-08T01:01:07Z"
+        stamps[f"{twin}/{oc.twin_file('b0', 1)}"] = "2026-11-08T01:01:07.000000+00:00"
+    record = bc.evaluate(small_shots, manifest, stamps)
+    decision = record["decision"]
+    _expect(decision["label"] == "unresolved_order" and decision["decided"] is False, f"{defect}: {decision['label']}")
+    _expect(decision["label"] in bc.OUTCOMES and decision["outcome"] == bc.OUTCOMES[decision["label"]][0], "text")
+    _expect(record["executed_order_fit"]["status"] == "unusable", f"{record['executed_order_fit']}")
+    _expect(decision["label_if_order_ignored"] == record["order_ignored_label"], "the plain label stays beside it")
+    _expect(not (record["order_gate"] or {"intact": False})["intact"], "the strict reading read it as intact")
+
+
+@pytest.mark.parametrize("how", ["null", "absent"])
+def test_a_collected_job_without_its_start_stamp_reads_unresolved_order(
+    tmp_path: Path, small_files: dict[str, str], small_shots: dict[str, list[str]], how: str
+) -> None:
+    root = tmp_path / how
+    dirs = _runs(root, bc.TUNA_SERIES, small_files, small_shots)
+    results = dirs[1] / "results.json"
+    record = json.loads(results.read_text(encoding="utf-8"))
+    if how == "null":
+        record["jobs"][0]["job"]["queued_at"] = None
+    else:
+        del record["jobs"][0]["job"]["queued_at"]
+    results.write_text(json.dumps(record), encoding="utf-8")
+    scored = bc.analyze(dirs, root / "cases")
+    decision = scored["decision"]
+    _expect(decision["label"] == "unresolved_order" and decision["decided"] is False, f"{how}: {decision['label']}")
+    _expect(scored["executed_order_fit"]["status"] == "unusable", f"{how}: {scored['executed_order_fit']}")
+
+
+def test_start_stamps_rank_by_instant_and_not_by_text() -> None:
+    # 38 s past the minute with no fraction and with a fraction: the text of the fractionless stamp sorts later ('Z'
+    # above '.') although it is the earlier instant.
+    early, late = "2026-11-08T01:01:38Z", "2026-11-08T01:01:38.500000Z"
+    _expect(early > late, "the premise: text order and time order differ")
+    _expect(bc.stamp_instant(early) < bc.stamp_instant(late), "instant order")
+    _expect(bc.stamp_instant(early) == bc.stamp_instant("2026-11-08T01:01:38.000000+00:00"), "one instant")
+    _expect(bc.stamp_instant("2026-11-08T03:01:38+02:00") == bc.stamp_instant(early), "an offset")
+    _expect(bc.stamp_instant("2026-11-08T01:23:38.076340Z") % 1_000_000 == 76340, "microseconds are kept")
+    stamps = _stamped()
+    twin = f"batch-{TWIN_BATCHES[0]:02d}"
+    stamps[f"{twin}/{oc.twin_file('b0', 1)}"] = early
+    stamps[f"{twin}/{oc.twin_file('b0', 0)}"] = late
+    stamps[f"{twin}/readout-0.cq"] = "2026-11-08T01:01:30Z"
+    stamps[f"{twin}/readout-1.cq"] = "2026-11-08T01:01:39Z"
+    _expect(bc.twin_offsets(stamps)[twin] == -1, "the coin-1 twin ran first at instants")
+
+
+@pytest.mark.parametrize("stamp", [None, "", 7, "noon", "2026-11-08", "2026-11-08T01:01:38", "2026-13-40T99:00:00Z"])
+def test_an_unusable_stamp_is_refused_by_name(stamp: Any) -> None:
+    with pytest.raises(bc.UnusableOrder):
+        bc.stamp_instant(stamp)
+
+
+def test_a_stamp_outside_the_series_layout_is_ignored_and_a_missing_layout_stamp_is_not() -> None:
+    stamps = _stamped()
+    extra = {**stamps, "batch-99/b0.cq": None, "batch-00/other.cq": "not a stamp"}
+    _expect(
+        bc.twin_offsets(extra) == bc.twin_offsets(stamps), "a key that no circuit of the series owns changed a read"
+    )
+    _expect(bc.circuit_seconds(extra) == bc.circuit_seconds(stamps), "seconds")
+    del extra["batch-00/b0.cq"]
+    with pytest.raises(bc.UnusableOrder):
+        bc.circuit_seconds(extra)
+
+
+def test_two_stamps_of_one_instant_in_a_base_batch_order_nothing_and_decide_nothing_wrong() -> None:
+    # Only a twin batch ranks its circuits, so a tie elsewhere is a reading of the strict gate and no unresolved label.
+    stamps = _stamped()
+    stamps["batch-00/b0.cq"] = stamps["batch-00/readout-0.cq"]
+    bc.twin_offsets(stamps)
+    gate = bc.order_gate(stamps)
+    _expect(gate is not None and gate["batches"]["batch-00"]["intact"] is False, "the strict reading counts the tie")
+
+
+# Pairing of batches and contrasts, the reference series and the calibration reads -------------------------------------
+
+
+def test_each_twin_and_base_row_is_paired_with_the_batch_that_the_layout_lists_literally() -> None:
+    # Batches 0..7 are the forward round (b0 base, b0 twin, k4 twin, k4 base, k8 base, k8 twin, k12 twin, k12 base),
+    # batches 8..15 its mirror reversed, 16..23 and 24..31 repeat them. The twin rows of a template are listed in
+    # batch order; each carries a value that follows its own batch's executed offset, so a pairing that left the batch
+    # order would recover no contrast.
+    literal = {
+        "b0": ["batch-01", "batch-14", "batch-17", "batch-30"],
+        "k4": ["batch-02", "batch-13", "batch-18", "batch-29"],
+        "k8": ["batch-05", "batch-10", "batch-21", "batch-26"],
+        "k12": ["batch-06", "batch-09", "batch-22", "batch-25"],
+    }
+    offsets = {
+        "batch-01": 1, "batch-14": -3, "batch-17": 1, "batch-30": -1,
+        "batch-02": 1, "batch-13": -1, "batch-18": 1, "batch-29": -1,
+        "batch-05": -1, "batch-10": 1, "batch-21": -1, "batch-26": 1,
+        "batch-06": 1, "batch-09": -1, "batch-22": 3, "batch-25": -1,
+    }  # fmt: skip
+    truth = {"b0": 0.0164, "k4": 0.001, "k8": -0.002, "k12": 0.0}
+    contrasts = {
+        t: {
+            "base": [(0.0164, 0.004)] * 4,
+            "twin": [(truth[t] + 0.01 * offsets[b], 0.0055) for b in literal[t]],
+        }
+        for t in truth
+    }
+    _expect(bc.twin_batch_ids(contrasts) == literal, f"{bc.twin_batch_ids(contrasts)}")
+    rows, fitted = bc.executed_twin_fit(contrasts, offsets)
+    for template, value in truth.items():
+        _expect(abs(fitted["contrast"][template] - value) < 1e-12, f"{template}: {fitted['contrast'][template]}")
+        _expect(all(abs(v - value) < 1e-12 for v, _ in rows[template]["twin"]), f"{template}: {rows[template]['twin']}")
+    _expect(abs(fitted["drift"] - 0.01) < 1e-12, f"{fitted['drift']}")
+    _expect(
+        bc.base_batch_ids()
+        == {
+            "b0": ["batch-00", "batch-15", "batch-16", "batch-31"],
+            "k4": ["batch-03", "batch-12", "batch-19", "batch-28"],
+            "k8": ["batch-04", "batch-11", "batch-20", "batch-27"],
+            "k12": ["batch-07", "batch-08", "batch-23", "batch-24"],
+        },
+        f"{bc.base_batch_ids()}",
+    )
+
+
+def _bracket_shots(n: int = 1000) -> dict[str, list[str]]:
+    """Readout shots of the 32 base and twin batches: batch b has 10 + b of $n readout-0 shots read 1 (e01) and 20 + 2 b
+    of readout-1 shots read 0 (e10), so its offset is c_b = (10 + b) / 2000."""
+    shots: dict[str, list[str]] = {}
+    for b in range(32):
+        shots[f"batch-{b:02d}/readout-0.cq"] = _shots(n - (10 + b), n)
+        shots[f"batch-{b:02d}/readout-1.cq"] = _shots(20 + 2 * b, n)
+    return shots
+
+
+def test_the_reference_series_places_each_batch_offset_at_the_mean_start_of_its_two_readouts() -> None:
+    manifest = {"templates": {t: {"roles": {"selector": 2}} for t in oc.TEMPLATES}}
+    seconds = {}
+    for b in range(32):
+        seconds[f"batch-{b:02d}/readout-0.cq"] = 100.0 * b
+        seconds[f"batch-{b:02d}/readout-1.cq"] = 100.0 * b + 30.0
+    times, values, ses = bc.bracket_series(_bracket_shots(), manifest, seconds)
+    _expect(times == [100.0 * b + 15.0 for b in range(32)], f"{times}")
+    _expect(all(abs(v - (10 + b) / 2000) < 1e-15 for b, v in enumerate(values)), f"{values}")
+    e01, e10 = 12 / 1000, 24 / 1000  # batch 2
+    _expect(abs(ses[2] - math.sqrt((e01 * (1 - e01) + e10 * (1 - e10)) / 1000 / 4)) < 1e-15, f"{ses[2]}")
+
+
+def test_the_calibration_reads_carry_the_largest_selector_error_and_the_mean_start_of_each_batch() -> None:
+    # Prepared selector value of each X-only circuit: the middle digit of its name.
+    prepared = {
+        "batch-32": {"joint-011.cq": 1, "joint-111.cq": 1, "joint-000.cq": 0},
+        "batch-33": {"joint-010.cq": 1, "joint-110.cq": 1, "joint-001.cq": 0},
+        "batch-34": {"joint-100.cq": 0, "joint-101.cq": 0},
+    }
+    n = 1000
+    rates = [0.01, 0.03, 0.02]
+    shots: dict[str, list[str]] = {}
+    seconds: dict[str, float] = {}
+    for batch, circuits in prepared.items():
+        for k, (name, value) in enumerate(circuits.items()):
+            wrong = round(rates[k] * n)
+            read = _selector_string(1 - value)
+            shots[f"{batch}/{name}"] = [read] * wrong + [_selector_string(value)] * (n - wrong)
+            seconds[f"{batch}/{name}"] = 1000.0 * int(batch[-2:]) + 10.0 * k
+    manifest = {"joint_qubits": {"selector": 2}}
+    got = bc.calibration_readings(shots, manifest, seconds)
+    _expect([r["batch"] for r in got] == ["batch-32", "batch-33", "batch-34"], f"{got}")
+    for reading, batch in zip(got, prepared, strict=True):
+        k = len(prepared[batch])
+        top = max(rates[:k])
+        _expect(abs(reading["se"] - math.sqrt(top * (1 - top) / n)) < 1e-15, f"{batch}: {reading['se']}")
+        _expect(abs(reading["time"] - (1000.0 * int(batch[-2:]) + 10.0 * (k - 1) / 2)) < 1e-12, f"{batch}: {reading}")
+
+
+def test_every_withheld_label_after_the_first_is_listed_beside_it(contrasts_of: Any) -> None:
+    # One series that is base-confounded (the b0 replicates share a start), whose reference series is a step and whose
+    # k4 template drifts on its own: three withholdings, read in the registered order.
+    stamps = _stamped()
+    for batch in bc.base_batch_ids()["b0"]:
+        stamps[f"{batch}/b0.cq"] = "2026-11-08T01:00:00.500000Z"
+    record = contrasts_of(
+        stamps,
+        truth_stamps=_stamped(),
+        drift={"b0": 0.01, "k4": 0.06, "k8": 0.01, "k12": 0.01},
+        monitor_step=0.05,
+    )
+    decision = record["decision"]
+    _expect(decision["label"] == "unresolved_base_drift_confounded", f"{decision['label']}")
+    _expect(
+        decision["also_withheld"] == ["unresolved_drift_model", "unresolved_drift_heterogeneity"],
+        f"{decision['also_withheld']}",
+    )
+    _expect("label_if_nothing_withheld" in decision and decision["decided"] is False, f"{decision}")
+    _expect(set([decision["label"], *decision["also_withheld"]]) <= set(bc.WITHHELD_LABELS), "unregistered label")
+
+
+def _hand_rows(base: dict[str, float], twin: dict[str, float]) -> dict[str, dict[str, list[tuple[float, float]]]]:
+    return {
+        t: {
+            "base": [(base.get(t, 0.0), 0.004 if t != "b0" else 0.002)] * 4,
+            "twin": [(twin.get(t, 0.0), 0.004)] * 4,
+        }
+        for t in oc.TEMPLATES
+    }
+
+
+def _diagonal(rows: dict[str, dict[str, list[tuple[float, float]]]]) -> dict[str, dict[str, float]]:
+    errors = {t: ana.pooled(rows[t]["twin"])[1] for t in oc.TEMPLATES}
+    return {a: {b: errors[a] ** 2 if a == b else 0.0 for b in oc.TEMPLATES} for a in oc.TEMPLATES}
+
+
+@pytest.mark.parametrize(
+    ("base", "twin"),
+    [
+        ({"b0": 0.0164}, {"b0": 0.0166}),
+        ({"b0": 0.0164}, {"b0": 0.0}),
+        ({"b0": 0.0164}, {"b0": -0.0164}),
+        ({"b0": 0.0164, "k4": 0.01, "k8": 0.01, "k12": 0.01}, {"b0": 0.0164, "k4": 0.01, "k8": 0.01, "k12": 0.01}),
+        ({"b0": 0.0164}, {"b0": 0.0164, "k4": 0.02}),
+        ({}, {}),
+        ({"b0": 0.0164, "k4": 0.01}, {"b0": 0.0164, "k4": 0.01}),
+    ],
+)
+def test_a_diagonal_twin_covariance_gives_the_decision_of_rule_v2(
+    base: dict[str, float], twin: dict[str, float]
+) -> None:
+    rows = _hand_rows(base, twin)
+    plain = bc.decide_estimates(rows)
+    got = bc.decide_correlated(rows, _diagonal(rows))
+    _expect(got["label"] == plain["label"] and got["decided"] == plain["decided"], f"{got['label']} {plain['label']}")
+    for key in ("s_b0", "t_b0", "c_six_cz_base", "d_six_cz_twin", "m_six_cz", "r_b0", "r_minus_m"):
+        _expect(
+            all(
+                math.isclose(a, b, rel_tol=1e-9, abs_tol=1e-15)
+                for a, b in zip(got["numbers"][key], plain["numbers"][key], strict=True)
+            ),
+            f"{key}: {got['numbers'][key]} against {plain['numbers'][key]}",
+        )
+    for kind in ("base", "twin"):
+        _expect(
+            math.isclose(
+                got["numbers"]["block_chi2"][kind], plain["numbers"]["block_chi2"][kind], rel_tol=1e-9, abs_tol=1e-12
+            ),
+            f"block {kind}",
+        )
+
+
+def test_a_shared_drift_covariance_widens_the_pooled_error_and_narrows_the_difference_error_by_hand() -> None:
+    # Three 6-CZ twin contrasts of error s with pairwise correlation rho: the equal-weight pool has variance
+    # s^2 (1 + 2 rho) / 3. b0 shares covariance q with each of them, so cov(t0, d) = q.
+    rho = 0.5
+    rows = _hand_rows({"b0": 0.0164}, {"b0": 0.0164})
+    pooled_se = {t: ana.pooled(rows[t]["twin"])[1] for t in oc.TEMPLATES}  # 0.004 / 2 at four replicates
+    q = 0.3 * pooled_se["b0"] ** 2
+    cov = {
+        a: {
+            b: pooled_se[a] ** 2 if a == b else (q if "b0" in (a, b) else rho * pooled_se[a] * pooled_se[b])
+            for b in oc.TEMPLATES
+        }
+        for a in oc.TEMPLATES
+    }
+    s = pooled_se["k4"]
+    got = bc.decide_correlated(rows, cov)["numbers"]
+    _expect(abs(got["d_six_cz_twin"][1] - s * math.sqrt((1 + 2 * rho) / 3)) < 1e-15, f"{got['d_six_cz_twin']}")
+    # r - m = (1 - a) s0 + a t0 - (1 - b) c - b d, a and b the inverse-variance weights of t0 and d in their pairs.
+    base_se = ana.pooled(rows["k4"]["base"])[1]
+    c_se = base_se / math.sqrt(3)
+    d_se = got["d_six_cz_twin"][1]
+    s0_se, t0_se = ana.pooled(rows["b0"]["base"])[1], pooled_se["b0"]
+    a = (1 / t0_se**2) / (1 / s0_se**2 + 1 / t0_se**2)
+    b = (1 / d_se**2) / (1 / c_se**2 + 1 / d_se**2)
+    variance = (1 - a) ** 2 * s0_se**2 + a**2 * t0_se**2 + (1 - b) ** 2 * c_se**2 + b**2 * d_se**2
+    variance -= 2 * a * b * q
+    _expect(abs(got["r_minus_m"][1] - math.sqrt(variance)) < 1e-15, f"{got['r_minus_m']} against {math.sqrt(variance)}")
+    independent = bc.decide_correlated(rows, _diagonal(rows))["numbers"]
+    _expect(got["d_six_cz_twin"][1] > independent["d_six_cz_twin"][1], "a positive correlation widens the pool")
+    _expect(got["r_minus_m"][1] < math.hypot(got["r_b0"][1], got["m_six_cz"][1]), "and narrows the difference")
+
+
+def test_the_covariance_of_the_template_contrasts_is_the_weighted_least_squares_covariance() -> None:
+    rows = {
+        "b0": [(0.0, 0.003, -3.0), (0.0, 0.004, 1.0), (0.0, 0.005, -1.0), (0.0, 0.003, 1.0)],
+        "k4": [(0.0, 0.004, 1.0), (0.0, 0.003, -1.0), (0.0, 0.006, 1.0), (0.0, 0.004, -3.0)],
+        "k8": [(0.0, 0.004, -1.0), (0.0, 0.003, -1.0), (0.0, 0.006, 1.0), (0.0, 0.004, 1.0)],
+    }
+    fitted = eo.fit(rows)
+    # The independent derivation: the weighted least squares of v on one indicator per template and x has the
+    # covariance (X' W X)^-1, whose template block is the covariance of t_T and t_U and whose last entry is var(g).
+    names = list(rows)
+    design, weights = [], []
+    for k, name in enumerate(names):
+        for _, se, x in rows[name]:
+            design.append([1.0 if j == k else 0.0 for j in range(len(names))] + [x])
+            weights.append(1.0 / se**2)
+    x_matrix = np.array(design)
+    covariance = np.linalg.inv(x_matrix.T @ np.diag(weights) @ x_matrix)
+    for i, a in enumerate(names):
+        for j, b in enumerate(names):
+            got = fitted["covariance"][a][b]  # type: ignore[index]
+            _expect(abs(got - covariance[i, j]) < 1e-15, f"{a},{b}: {got} against {covariance[i, j]}")
+    _expect(abs(fitted["drift_se"] ** 2 - covariance[-1, -1]) < 1e-15, "var(g)")  # type: ignore[operator]
+
+
+def test_one_template_that_alone_varies_its_offset_departs_from_nothing() -> None:
+    # Its own drift and the shared drift are one quantity; the two weighted sums differ by rounding of about 1e-18, and
+    # the error of the difference is zero, so a comparison with no floor reads a departure there (measured on 652 of
+    # 1,970 random series that vary one template: own - shared = 1.7e-18 against an error of 0).
+    rnd = np.random.default_rng(20261116)
+    for _ in range(200):
+        offsets = {t: [int(rnd.choice([-1, 1]))] * 4 for t in ("k4", "k8", "k12")}
+        offsets["b0"] = [int(x) for x in rnd.choice([-3, -1, 1, 3], size=4)]
+        if len(set(offsets["b0"])) == 1:
+            continue
+        ses = rnd.uniform(0.003, 0.008, size=4)
+        rows = {
+            t: [(0.01 * s + (0.0164 if t == "b0" else 0.0), float(ses[i]), float(s)) for i, s in enumerate(v)]
+            for t, v in offsets.items()
+        }
+        try:
+            fitted = eo.fit(rows)
+        except eo.ConfoundedOrder:
+            continue
+        _expect(bc.stray_templates(fitted) == [], f"{offsets['b0']}: {bc.stray_templates(fitted)}")
+    # A real departure still reads: b0's own drift 0.06 against 0.01 in the others. The shared drift is their weighted
+    # mean, 0.0275, so every template departs from it by more than three errors of the difference.
+    rows = {
+        "b0": [(0.06 * s, 0.0055, float(s)) for s in (1, -1, 1, -1)],
+        "k4": [(0.01 * s, 0.0055, float(s)) for s in (1, -1, 1, -1)],
+        "k8": [(0.01 * s, 0.0055, float(s)) for s in (1, -1, 1, -1)],
+        "k12": [(0.01 * s, 0.0055, float(s)) for s in (1, -1, 1, -1)],
+    }
+    _expect(bc.stray_templates(eo.fit(rows)) == ["b0", "k4", "k8", "k12"], f"{bc.stray_templates(eo.fit(rows))}")

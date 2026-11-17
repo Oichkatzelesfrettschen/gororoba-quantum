@@ -76,14 +76,14 @@ def test_one_direction_in_every_batch_is_confounded_and_one_mixed_template_is_en
 
 
 def test_executed_offset_reads_the_rank_difference_of_the_stamps_and_refuses_a_tie() -> None:
-    requested = {"r0": "00:00:01", "c0": "00:00:02", "c1": "00:00:03", "r1": "00:00:04", "b": "00:00:05"}
+    requested = {"r0": 1, "c0": 2, "c1": 3, "r1": 4, "b": 5}
     _expect(eo.executed_offset(requested, "c0", "c1") == 1, "the requested order reads +1")
-    _expect(eo.executed_offset({**requested, "c0": "00:00:03", "c1": "00:00:02"}, "c0", "c1") == -1, "swapped twins")
+    _expect(eo.executed_offset({**requested, "c0": 3, "c1": 2}, "c0", "c1") == -1, "swapped twins")
     # the batch 02 of the hosted QX run: coin 1 ran second, coin 0 last of five
-    scrambled = {"r0": "00:00:01", "c1": "00:00:02", "r1": "00:00:03", "b": "00:00:04", "c0": "00:00:05"}
+    scrambled = {"r0": 1, "c1": 2, "r1": 3, "b": 4, "c0": 5}
     _expect(eo.executed_offset(scrambled, "c0", "c1") == -3, "coin 1 three places before coin 0")
     with pytest.raises(eo.ConfoundedOrder):
-        eo.executed_offset({**requested, "c1": "00:00:02"}, "c0", "c1")
+        eo.executed_offset({**requested, "c1": 2}, "c0", "c1")
 
 
 def test_a_position_offset_other_than_one_enters_the_drift_term_in_proportion() -> None:
@@ -254,3 +254,48 @@ def test_the_own_drift_difference_error_matches_the_covariance_of_the_two_linear
         expected = math.sqrt(var_own - 2.0 * cov + var_shared)
         got = solved["template_drift_difference_se"][name]  # type: ignore[index]
         _expect(math.isclose(got, expected, rel_tol=1e-9), f"{name}: {got} against {expected}")
+
+
+def test_a_correlated_pool_follows_the_generalized_least_squares_by_hand() -> None:
+    # S = [[1, 1/2], [1/2, 2]]: S^-1 = [[2, -1/2], [-1/2, 1]] / (7/4), S^-1 1 = [3/2, 1/2] / (7/4), 1' S^-1 1 = 8/7.
+    mean, se, chi, weights = eo.pool_correlated([1.0, 3.0], [[1.0, 0.5], [0.5, 2.0]])
+    _expect(
+        math.isclose(mean, 1.5, rel_tol=1e-12) and math.isclose(se, math.sqrt(7 / 8), rel_tol=1e-12), f"{mean} {se}"
+    )
+    _expect(math.isclose(chi, 2.0, rel_tol=1e-12), f"chi-square {chi}")
+    _expect(all(math.isclose(a, b, rel_tol=1e-12) for a, b in zip(weights, [0.75, 0.25], strict=True)), f"{weights}")
+    # A diagonal matrix is the inverse-variance pool.
+    plain = ana.pooled([(1.0, 0.5), (3.0, 1.0)])
+    diagonal = eo.pool_correlated([1.0, 3.0], [[0.25, 0.0], [0.0, 1.0]])
+    _expect(
+        math.isclose(diagonal[0], plain[0], rel_tol=1e-12) and math.isclose(diagonal[1], plain[1], rel_tol=1e-12), "d"
+    )
+
+
+@pytest.mark.parametrize(
+    "matrix",
+    [[[1.0, 2.0], [2.0, 1.0]], [[1.0, 0.0]], [[1.0, 0.0], [0.0, math.nan]], [[0.0, 0.0], [0.0, 1.0]]],
+)
+def test_a_covariance_that_is_not_positive_definite_or_finite_is_refused(matrix: list[list[float]]) -> None:
+    with pytest.raises(ValueError):
+        eo.pool_correlated([0.0, 1.0], matrix)
+
+
+def test_a_series_that_kept_its_order_has_no_covariance_between_templates() -> None:
+    solved = eo.fit(_rows(BALANCED))
+    for a in CONTRAST:
+        for b in CONTRAST:
+            if a != b:
+                _expect(solved["covariance"][a][b] == 0.0, f"{a},{b}")  # type: ignore[index]
+    _expect(all(math.isclose(solved["covariance"][a][a], solved["error"][a] ** 2) for a in CONTRAST), "variances")  # type: ignore[index]
+
+
+def test_a_template_with_one_offset_has_no_own_drift_and_one_varying_template_has_no_difference() -> None:
+    # k4, k8 and k12 keep one offset in all four batches; only b0 varies. Their own drift is undefined, and b0's own
+    # drift is the shared drift to rounding: the difference and its error are zero.
+    rows = _rows({"b0": [-3, 1, -1, 1], "k4": [1, 1, 1, 1], "k8": [-1, -1, -1, -1], "k12": [3, 3, 3, 3]})
+    solved = eo.fit(rows)
+    for name in ("k4", "k8", "k12"):
+        _expect(solved["template_drift"][name] is None, f"{name}: {solved['template_drift'][name]}")  # type: ignore[index]
+    _expect(abs(solved["template_drift"]["b0"] - solved["drift"]) < 1e-12, "b0's own drift is the shared drift")  # type: ignore[index]
+    _expect(solved["template_drift_difference_se"]["b0"] < 1e-6, f"{solved['template_drift_difference_se']['b0']}")  # type: ignore[index]
