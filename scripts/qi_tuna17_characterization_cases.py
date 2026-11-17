@@ -299,16 +299,20 @@ def anchor(row: dict[str, Any]) -> int | None:
 
 
 def retained_rows(path: Path, nqubits: int) -> dict[int, dict[str, float]]:
-    """Qubit -> retained readout pair of scripts/qi_retained_context.py's document, or {} for another register."""
+    """Qubit -> retained readout pair of scripts/qi_retained_context.py's document, or {} for another register.
+
+    A row that a newer series replaced keeps its earlier pair in baseline_readout, which is the retained row of this
+    case's tolerance verdict (CASE.md, "Predictions and verdicts").
+    """
     if not path.is_file():
         return {}
     document = json.loads(path.read_text(encoding="utf-8"))
     rows = [row for row in document.get("qubits", []) if "readout" in row]
+    pairs = {row["qubit"]: row.get("baseline_readout") or row["readout"] for row in rows}
     if len(document.get("qubits", [])) != nqubits:
         return {}
     return {
-        row["qubit"]: {"p1_given_0": row["readout"]["p1_given_0"], "p1_given_1": row["readout"]["p1_given_1"]}
-        for row in rows
+        qubit: {"p1_given_0": pair["p1_given_0"], "p1_given_1": pair["p1_given_1"]} for qubit, pair in pairs.items()
     }
 
 

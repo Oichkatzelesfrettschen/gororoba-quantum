@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-11-16T03:54:11+00:00",
+ "approval": "owner 2026-11-16T03:51Z (question tool): QX then Tuna-17; characterization_qx on QX emulator (type 1), 14 jobs, 14336 shots, 0 credits expected",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "4b27f8cbd0d8b5e56a4789648468c113342c60c7a31c54851245468e78b1b7dd",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 5,
+ "batch_job": 959016,
+ "project": 859116,
+ "shots": 1024,
+ "jobs": [
+  {
+   "file": "t1-1000.cq",
+   "job": 1742691,
+   "sha256": "de838731f4e44e3e5971f02c48083f9271110f89708c329fbdc0848e82cf3a6c"
+  },
+  {
+   "file": "t1-2000.cq",
+   "job": 1742692,
+   "sha256": "eb12588223f59ba0a651e94ce6d14bd624f687b227c6416fb736e8d6bcc2b951"
+  },
+  {
+   "file": "t1-4000.cq",
+   "job": 1742693,
+   "sha256": "c14ba6085ff70cdef28c5d893f90494714b8496cd633a2bb4ed2eb2fff877f1c"
+  }
+ ],
+ "submitted_utc": "2026-11-16T03:54:11+00:00"
+}

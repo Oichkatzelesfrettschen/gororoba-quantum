@@ -1,0 +1,4629 @@
+{
+ "schema": "qi-tuna17-batch-step-analysis-v1",
+ "runs": [
+  "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+  "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+  "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-02",
+  "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+  "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-04",
+  "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05"
+ ],
+ "nqubits": 17,
+ "delays_cycles": [
+  0,
+  250,
+  500,
+  1000,
+  2000,
+  4000
+ ],
+ "decision_limit_chi_square_per_dof": 3.0,
+ "anchor_groups": [
+  {
+   "prepared": "one",
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff",
+   "jobs": [
+    {
+     "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+     "file": "readout-1.cq",
+     "queued_s": 1794831689.706682,
+     "time_s": 1794831700.847019,
+     "shots": 16384
+    },
+    {
+     "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+     "file": "t1-0.cq",
+     "queued_s": 1794831924.618394,
+     "time_s": 1794831932.307553,
+     "shots": 8192
+    },
+    {
+     "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+     "file": "readout-1.cq",
+     "queued_s": 1794832421.164123,
+     "time_s": 1794832432.845898,
+     "shots": 16384
+    }
+   ]
+  },
+  {
+   "prepared": "zero",
+   "sha256": "a36928ee64d24ae0e45618bfb9192a49f1d6993a9b320bae474cd5ea7a75a74d",
+   "jobs": [
+    {
+     "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+     "file": "readout-0.cq",
+     "queued_s": 1794831700.888078,
+     "time_s": 1794831711.651804,
+     "shots": 16384
+    },
+    {
+     "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+     "file": "x90-0.cq",
+     "queued_s": 1794832187.287728,
+     "time_s": 1794832193.487814,
+     "shots": 8192
+    },
+    {
+     "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+     "file": "readout-0.cq",
+     "queued_s": 1794832409.889529,
+     "time_s": 1794832421.128707,
+     "shots": 16384
+    }
+   ]
+  }
+ ],
+ "summary": {
+  "freedom": {
+   "single": 5,
+   "plateau": 4,
+   "single_step": 4,
+   "single_amplitude": 4,
+   "single_amplitude_step": 3
+  },
+  "two_parameter_step": {
+   "qubits": 17,
+   "at_most_limit": 3,
+   "median": 19.882121513086172,
+   "minimum": 0.91738221917499,
+   "maximum": 166.43727716114245,
+   "step": {
+    "minimum": -0.00041858865367308887,
+    "median": 0.009401293893018286,
+    "maximum": 0.10914031767620036
+   },
+   "step_positive": 16,
+   "large_step_qubits": [
+    2,
+    9,
+    11,
+    12,
+    14,
+    15
+   ]
+  },
+  "three_parameter_step": {
+   "qubits": 17,
+   "at_most_limit": 3,
+   "median": 25.630485348549318,
+   "minimum": 1.216676460187305,
+   "maximum": 220.06095844017213,
+   "step": {
+    "minimum": -0.0002760180185842489,
+    "median": 0.009202298789355278,
+    "maximum": 0.1087436286622214
+   },
+   "amplitude": {
+    "minimum": 0.9879467631023444,
+    "median": 0.9982027246856047,
+    "maximum": 1.0015169326786868
+   },
+   "step_positive": 16,
+   "aicc_gain_over_4": 10
+  },
+  "amplitude_only": {
+   "qubits": 17,
+   "at_most_limit": 2,
+   "median": 35.5091698343214,
+   "minimum": 1.7037827049271994,
+   "maximum": 503.77335193570906
+  },
+  "step_against_plateau": {
+   "step_lower_aicc": 11,
+   "plateau_lower_aicc": 6,
+   "delta_aicc_median": -2.546773149090937
+  },
+  "anchor_comparison": {
+   "two_parameter": {
+    "within_2_se": 7,
+    "step_exceeds_by_3_se": 9,
+    "open_interval": 0,
+    "within_2_se_widened": 12,
+    "step_exceeds_by_3_se_widened": 3,
+    "large_step_qubits": [
+     2,
+     9,
+     11,
+     12,
+     14,
+     15
+    ],
+    "large_step_exceeds_by_3_se": 6,
+    "rows": [
+     {
+      "difference": 0.01001295369793425,
+      "se": 0.0022746808464256065,
+      "z": 4.401915861589299
+     },
+     {
+      "difference": 0.008116392248730866,
+      "se": 0.0031752161871677893,
+      "z": 2.556169964593963
+     },
+     {
+      "difference": 0.059720750349717924,
+      "se": 0.003671380852003951,
+      "z": 16.26656366013363
+     },
+     {
+      "difference": 0.007875936456669987,
+      "se": 0.002162976952593282,
+      "z": 3.6412484410558337
+     },
+     {
+      "difference": 0.004616930858606164,
+      "se": 0.0031896600043021415,
+      "z": 1.4474680224158536
+     },
+     {
+      "difference": 0.0020279985287723393,
+      "se": 0.0034279365531456715,
+      "z": 0.5916091203354774
+     },
+     {
+      "difference": -0.0038340172202284213,
+      "se": 0.003072881410891243,
+      "z": -1.2476944950232955
+     },
+     {
+      "difference": 0.0063848967106647616,
+      "se": 0.0047010355510698635,
+      "z": 1.3581894119502425
+     },
+     {
+      "difference": -0.000731593861147465,
+      "se": 0.003435120717267107,
+      "z": -0.21297471657109682
+     },
+     {
+      "difference": 0.027624449018246146,
+      "se": 0.0033608053691028513,
+      "z": 8.219592027615793
+     },
+     {
+      "difference": 0.007388052688735484,
+      "se": 0.005684233748400556,
+      "z": 1.2997447001215165
+     },
+     {
+      "difference": 0.037405941719074125,
+      "se": 0.003917904496019754,
+      "z": 9.547435818579874
+     },
+     {
+      "difference": 0.029794404412346685,
+      "se": 0.0031099950724987123,
+      "z": 9.580209523743232
+     },
+     {
+      "difference": 0.007131760517793087,
+      "se": 0.0037331092925270543,
+      "z": 1.910407641177144
+     },
+     {
+      "difference": 0.10857501034982978,
+      "se": 0.003784101124940134,
+      "z": 28.69241776712494
+     },
+     {
+      "difference": 0.07336229552040793,
+      "se": 0.0043299498483099046,
+      "z": 16.94298966281173
+     },
+     {
+      "difference": 0.012410046274933534,
+      "se": 0.003725013900795021,
+      "z": 3.331543614450643
+     }
+    ]
+   },
+   "three_parameter": {
+    "within_2_se": 7,
+    "step_exceeds_by_3_se": 9,
+    "open_interval": 0,
+    "within_2_se_widened": 13,
+    "step_exceeds_by_3_se_widened": 3,
+    "large_step_qubits": [
+     2,
+     9,
+     11,
+     12,
+     14,
+     15
+    ],
+    "large_step_exceeds_by_3_se": 6,
+    "rows": [
+     {
+      "difference": 0.009813958594271243,
+      "se": 0.002281991758394934,
+      "z": 4.300610884403022
+     },
+     {
+      "difference": 0.008227925870786204,
+      "se": 0.0031921493453662057,
+      "z": 2.5775504152805513
+     },
+     {
+      "difference": 0.05862016224651561,
+      "se": 0.0037325433528252266,
+      "z": 15.70515241360693
+     },
+     {
+      "difference": 0.0072423708255491305,
+      "se": 0.002158235699067354,
+      "z": 3.355690404286613
+     },
+     {
+      "difference": 0.0038412083052288227,
+      "se": 0.003296753536188331,
+      "z": 1.165148763189008
+     },
+     {
+      "difference": 0.002345369393374969,
+      "se": 0.0034525544335633146,
+      "z": 0.6793142406604603
+     },
+     {
+      "difference": -0.005105407590127955,
+      "se": 0.0030789618815287054,
+      "z": -1.6581587517391152
+     },
+     {
+      "difference": 0.00504166620302373,
+      "se": 0.004990677869181445,
+      "z": 1.010216715079358
+     },
+     {
+      "difference": -0.000589023226058625,
+      "se": 0.0034470542887806307,
+      "z": -0.1708772698984638
+     },
+     {
+      "difference": 0.027342898178545915,
+      "se": 0.0034299455775605586,
+      "z": 7.971816916696589
+     },
+     {
+      "difference": 0.005954117043675525,
+      "se": 0.005908106640584133,
+      "z": 1.0077876730889277
+     },
+     {
+      "difference": 0.03490496448423644,
+      "se": 0.004054578336431856,
+      "z": 8.608777926573199
+     },
+     {
+      "difference": 0.029921688425369942,
+      "se": 0.0031449066104574253,
+      "z": 9.514332898113578
+     },
+     {
+      "difference": 0.007264243988714118,
+      "se": 0.003847078223500946,
+      "z": 1.8882496187206346
+     },
+     {
+      "difference": 0.10817832133585081,
+      "se": 0.0038054175667264598,
+      "z": 28.42745097981697
+     },
+     {
+      "difference": 0.07344824607929626,
+      "se": 0.00437072676266428,
+      "z": 16.804584241391503
+     },
+     {
+      "difference": 0.012621730719834696,
+      "se": 0.0037593297154882386,
+      "z": 3.3574417981572187
+     }
+    ]
+   }
+  },
+  "anchor_prepared0": {
+   "qubits": 17,
+   "shift": {
+    "minimum": -0.0028017401107638673,
+    "median": 0.0008799528439327707,
+    "maximum": 0.005594030513486961
+   },
+   "abs_shift_over_bound": 0,
+   "abs_z_over_2": 2,
+   "abs_z_over_3": 0,
+   "shift_positive": 13,
+   "sign_test_p": 0.049041748046875,
+   "z_mean": 0.4456743508857821,
+   "z_squared_sum": 23.502135462792342,
+   "z_squared_p": 0.13360593417010752,
+   "homogeneity_chi_square_sum": 110.86333261261605,
+   "homogeneity_freedom": 34,
+   "homogeneity_p": 4.4626048227247885e-10,
+   "se": {
+    "minimum": 0.0009587504730722536,
+    "median": 0.0020268762552889215,
+    "maximum": 0.0027942316893694217
+   }
+  },
+  "anchor_prepared1": {
+   "qubits": 17,
+   "shift": {
+    "minimum": -0.014549796280949434,
+    "median": 5.693853825794459e-05,
+    "maximum": 0.005978085195380345
+   },
+   "abs_shift_over_bound": 0,
+   "abs_z_over_2": 3,
+   "abs_z_over_3": 1,
+   "shift_positive": 9,
+   "sign_test_p": 1.0,
+   "z_mean": -0.24448394261254802,
+   "z_squared_sum": 70.95923271705348,
+   "z_squared_p": 1.473561441543699e-08,
+   "homogeneity_chi_square_sum": 161.19216192043643,
+   "homogeneity_freedom": 34,
+   "homogeneity_p": 1.8727329372372293e-18,
+   "se": {
+    "minimum": 0.0015174960780003053,
+    "median": 0.0022893152764354775,
+    "maximum": 0.003501332308450904
+   }
+  }
+ },
+ "qubits": [
+  {
+   "qubit": 0,
+   "models": {
+    "single": {
+     "params": {
+      "T_us": 17.15765747924189
+     },
+     "deviance": 35.906582050427104,
+     "chi_square": 37.89645710303864,
+     "freedom": 5,
+     "chi_square_per_dof": 7.579291420607729,
+     "chi_square_probability": 3.9583296641049364e-07,
+     "aicc": 38.906582050427104,
+     "bic": 37.69834151965516,
+     "interval": {
+      "T_us": [
+       17.015805988596956,
+       17.300739072884
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       16.77006931077092,
+       17.55456984170187
+      ]
+     },
+     "interval_scale": 7.579291420607729
+    },
+    "plateau": {
+     "params": {
+      "T_us": 16.63357986151193,
+      "plateau": 0.009180262554778029
+     },
+     "deviance": 12.378990026998855,
+     "chi_square": 12.444189149364924,
+     "freedom": 4,
+     "chi_square_per_dof": 3.111047287341231,
+     "chi_square_probability": 0.01433645684105884,
+     "aicc": 20.378990026998856,
+     "bic": 15.962508965454965,
+     "interval": {
+      "T_us": [
+       16.45876963611656,
+       16.809813064579437
+      ],
+      "plateau": [
+       0.007159854427278455,
+       0.01126778019658298
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       16.326163084919354,
+       16.945425256157254
+      ],
+      "plateau": [
+       0.005661715940567996,
+       0.012907455427100204
+      ]
+     },
+     "interval_scale": 3.111047287341231
+    },
+    "single_step": {
+     "params": {
+      "T_us": 16.61868208547106,
+      "batch_step": 0.009401293893018286
+     },
+     "deviance": 6.499412436459952,
+     "chi_square": 6.521724085686581,
+     "freedom": 4,
+     "chi_square_per_dof": 1.6304310214216453,
+     "chi_square_probability": 0.1634267264185246,
+     "aicc": 14.499412436459952,
+     "bic": 10.082931374916061,
+     "interval": {
+      "T_us": [
+       16.451140493406914,
+       16.788014816143615
+      ],
+      "batch_step": [
+       0.007552241241878957,
+       0.011301780741231627
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       16.40506118315537,
+       16.835223705003838
+      ],
+      "batch_step": [
+       0.007049429697213578,
+       0.011837000931435072
+      ]
+     },
+     "interval_scale": 1.6304310214216453
+    },
+    "single_amplitude": {
+     "params": {
+      "T_us": 17.222806665625498,
+      "amplitude": 0.9969833343237067
+     },
+     "deviance": 33.242074410320214,
+     "chi_square": 35.05758923353045,
+     "freedom": 4,
+     "chi_square_per_dof": 8.764397308382613,
+     "chi_square_probability": 4.520519957218692e-07,
+     "aicc": 41.242074410320214,
+     "bic": 36.82559334877632,
+     "interval": {
+      "T_us": [
+       17.074387016486508,
+       17.37281357904838
+      ],
+      "amplitude": [
+       0.9950349687852237,
+       0.9988554408428381
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       16.787912030060106,
+       17.671622831620713
+      ],
+      "amplitude": [
+       0.9909933548866156,
+       1.002305553564483
+      ]
+     },
+     "interval_scale": 8.764397308382613
+    },
+    "single_amplitude_step": {
+     "params": {
+      "T_us": 16.665756584706457,
+      "amplitude": 0.9982027246856047,
+      "batch_step": 0.009202298789355278
+     },
+     "deviance": 5.515829545532291,
+     "chi_square": 5.528592443207622,
+     "freedom": 3,
+     "chi_square_per_dof": 1.842864147735874,
+     "chi_square_probability": 0.13693843933557623,
+     "aicc": 23.51582954553229,
+     "bic": 10.891107953216457,
+     "interval": {
+      "T_us": [
+       16.49079534681543,
+       16.843027252443036
+      ],
+      "amplitude": [
+       0.9963146230888911,
+       1.000014624480953
+      ],
+      "batch_step": [
+       0.007344269988087364,
+       0.011111536926645531
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       16.428787215400106,
+       16.90698260825715
+      ],
+      "amplitude": [
+       0.995621005118719,
+       1.0006440206500995
+      ],
+      "batch_step": [
+       0.006692494509482482,
+       0.011806448220316729
+      ]
+     },
+     "interval_scale": 1.842864147735874
+    }
+   },
+   "anchor_prepared0": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-0.cq",
+      "ones": 191,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+      "file": "x90-0.cq",
+      "ones": 82,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-0.cq",
+      "ones": 166,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 2.283010935188756,
+     "freedom": 2,
+     "p": 0.31933790688523056
+    },
+    "shift": {
+     "weight": 0.6791426302502735,
+     "level_first": 0.01165771484375,
+     "level_probe": 0.010009765625,
+     "level_last": 0.0101318359375,
+     "interpolated": 0.010621425429915964,
+     "shift": -0.0006116598049159643,
+     "se": 0.0012881814075641855,
+     "z": -0.4748242765532132
+    }
+   },
+   "anchor_prepared1": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-1.cq",
+      "ones": 15970,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+      "file": "t1-0.cq",
+      "ones": 7974,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-1.cq",
+      "ones": 15966,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 0.4105236782761213,
+     "freedom": 2,
+     "p": 0.8144340377838266
+    },
+    "shift": {
+     "weight": 0.3162033996908995,
+     "level_first": 0.9747314453125,
+     "level_probe": 0.973388671875,
+     "level_last": 0.9744873046875,
+     "interpolated": 0.9746542472168723,
+     "shift": -0.001265575341872327,
+     "se": 0.0019784546404014287,
+     "z": -0.6396787250151672
+    }
+   }
+  },
+  {
+   "qubit": 1,
+   "models": {
+    "single": {
+     "params": {
+      "T_us": 19.7868887572681
+     },
+     "deviance": 29.865437006814325,
+     "chi_square": 30.28300794562736,
+     "freedom": 5,
+     "chi_square_per_dof": 6.0566015891254725,
+     "chi_square_probability": 1.297242238829408e-05,
+     "aicc": 32.865437006814325,
+     "bic": 31.65719647604238,
+     "interval": {
+      "T_us": [
+       19.61653356318925,
+       19.958741768204423
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       19.370306295285648,
+       20.21254299829638
+      ]
+     },
+     "interval_scale": 6.0566015891254725
+    },
+    "plateau": {
+     "params": {
+      "T_us": 19.246781627898535,
+      "plateau": 0.009707624481495113
+     },
+     "deviance": 18.41351465522338,
+     "chi_square": 18.2968868430743,
+     "freedom": 4,
+     "chi_square_per_dof": 4.574221710768575,
+     "chi_square_probability": 0.0010796449031458895,
+     "aicc": 26.41351465522338,
+     "bic": 21.99703359367949,
+     "interval": {
+      "T_us": [
+       19.018454850871528,
+       19.477553036292157
+      ],
+      "plateau": [
+       0.006775398123652618,
+       0.012693566982483384
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       18.761311170808476,
+       19.7434410937346
+      ],
+      "plateau": [
+       0.0035015178775243956,
+       0.016159147448415838
+      ]
+     },
+     "interval_scale": 4.574221710768575
+    },
+    "single_step": {
+     "params": {
+      "T_us": 19.46080778116212,
+      "batch_step": 0.005314652137966998
+     },
+     "deviance": 24.98827689168772,
+     "chi_square": 24.86490217736068,
+     "freedom": 4,
+     "chi_square_per_dof": 6.21622554434017,
+     "chi_square_probability": 5.355627507481727e-05,
+     "aicc": 32.98827689168772,
+     "bic": 28.571795830143827,
+     "interval": {
+      "T_us": [
+       19.24056436810615,
+       19.684272205086074
+      ],
+      "batch_step": [
+       0.0028875716031808315,
+       0.007775831203896944
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       18.91747539236422,
+       20.024175944093656
+      ],
+      "batch_step": [
+       -0.0006733532613368674,
+       0.011514253446948921
+      ]
+     },
+     "interval_scale": 6.21622554434017
+    },
+    "single_amplitude": {
+     "params": {
+      "T_us": 19.78613220814378,
+      "amplitude": 1.0000283382786648
+     },
+     "deviance": 29.865190891860678,
+     "chi_square": 30.283459784982657,
+     "freedom": 4,
+     "chi_square_per_dof": 7.570864946245664,
+     "chi_square_probability": 4.285291179813655e-06,
+     "aicc": 37.86519089186068,
+     "bic": 33.44870983031679,
+     "interval": {
+      "T_us": [
+       19.60931419072985,
+       19.96484537292262
+      ],
+      "amplitude": [
+       0.9981862575196918,
+       1.0017981300915113
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       19.304079563820075,
+       20.28254316920336
+      ],
+      "amplitude": [
+       0.994785077494256,
+       1.0047247227867186
+      ]
+     },
+     "interval_scale": 7.570864946245664
+    },
+    "single_amplitude_step": {
+     "params": {
+      "T_us": 19.438637578952065,
+      "amplitude": 1.0006007193571937,
+      "batch_step": 0.005426185760022336
+     },
+     "deviance": 24.877057101771715,
+     "chi_square": 24.758689646668206,
+     "freedom": 3,
+     "chi_square_per_dof": 8.252896548889401,
+     "chi_square_probability": 1.7342304259828592e-05,
+     "aicc": 42.87705710177171,
+     "bic": 30.252335509455882,
+     "interval": {
+      "T_us": [
+       19.20966732039519,
+       19.671625808501613
+      ],
+      "amplitude": [
+       0.9987746480979112,
+       1.0023526594389642
+      ],
+      "batch_step": [
+       0.0029765319567515813,
+       0.00790870798315934
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       18.791110947424922,
+       20.119384140161518
+      ],
+      "amplitude": [
+       0.9951537544918574,
+       1.0054362930268976
+      ],
+      "batch_step": [
+       -0.0015236708276610042,
+       0.01264648137830224
+      ]
+     },
+     "interval_scale": 8.252896548889401
+    }
+   },
+   "anchor_prepared0": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-0.cq",
+      "ones": 441,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+      "file": "x90-0.cq",
+      "ones": 204,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-0.cq",
+      "ones": 460,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 2.0996292555990577,
+     "freedom": 2,
+     "p": 0.3500026238545372
+    },
+    "shift": {
+     "weight": 0.6791426302502735,
+     "level_first": 0.02691650390625,
+     "level_probe": 0.02490234375,
+     "level_last": 0.028076171875,
+     "interpolated": 0.027704083860763867,
+     "shift": -0.0028017401107638673,
+     "se": 0.0020268762552889215,
+     "z": -1.3822946040504545
+    }
+   },
+   "anchor_prepared1": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-1.cq",
+      "ones": 15936,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+      "file": "t1-0.cq",
+      "ones": 7974,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-1.cq",
+      "ones": 15971,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 1.4863272917188122,
+     "freedom": 2,
+     "p": 0.47560688117616257
+    },
+    "shift": {
+     "weight": 0.3162033996908995,
+     "level_first": 0.97265625,
+     "level_probe": 0.973388671875,
+     "level_last": 0.97479248046875,
+     "interpolated": 0.973331733336742,
+     "shift": 5.693853825794459e-05,
+     "se": 0.002004861271011881,
+     "z": 0.02840023850089484
+    }
+   }
+  },
+  {
+   "qubit": 2,
+   "models": {
+    "single": {
+     "params": {
+      "T_us": 23.90650873003662
+     },
+     "deviance": 970.4405964294544,
+     "chi_square": 1076.710811838573,
+     "freedom": 5,
+     "chi_square_per_dof": 215.3421623677146,
+     "chi_square_probability": 1.4770487186252104e-230,
+     "aicc": 973.4405964294544,
+     "bic": 972.2323558986825,
+     "interval": {
+      "T_us": [
+       23.718497392495163,
+       24.096150748912727
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       21.301866257143445,
+       26.863231047260335
+      ]
+     },
+     "interval_scale": 215.3421623677146
+    },
+    "plateau": {
+     "params": {
+      "T_us": 21.269980709333783,
+      "plateau": 0.03966056458900482
+     },
+     "deviance": 857.5900832853927,
+     "chi_square": 928.6379055886918,
+     "freedom": 4,
+     "chi_square_per_dof": 232.15947639717294,
+     "chi_square_probability": 1.0389429498599272e-199,
+     "aicc": 865.5900832853927,
+     "bic": 861.1736022238488,
+     "interval": {
+      "T_us": [
+       20.97851092847183,
+       21.564234063373654
+      ],
+      "plateau": [
+       0.03567223852870677,
+       0.043703859396625334
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       17.07170378365425,
+       26.070452841019577
+      ],
+      "plateau": [
+       null,
+       0.10663192658665421
+      ]
+     },
+     "interval_scale": 232.15947639717294
+    },
+    "single_step": {
+     "params": {
+      "T_us": 20.143263843112177,
+      "batch_step": 0.058762795254670444
+     },
+     "deviance": 642.5023137655896,
+     "chi_square": 665.7491086445698,
+     "freedom": 4,
+     "chi_square_per_dof": 166.43727716114245,
+     "chi_square_probability": 9.078230660336556e-143,
+     "aicc": 650.5023137655896,
+     "bic": 646.0858327040457,
+     "interval": {
+      "T_us": [
+       19.904083370328173,
+       20.38573465948438
+      ],
+      "batch_step": [
+       0.055304277549013625,
+       0.06224309689440699
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       17.28751971806026,
+       23.555237102265796
+      ],
+      "batch_step": [
+       0.016033274497498026,
+       0.10508286753380133
+      ]
+     },
+     "interval_scale": 166.43727716114245
+    },
+    "single_amplitude": {
+     "params": {
+      "T_us": 24.444340141838126,
+      "amplitude": 0.986228700446594
+     },
+     "deviance": 929.6095316978739,
+     "chi_square": 993.4575114257036,
+     "freedom": 4,
+     "chi_square_per_dof": 248.3643778564259,
+     "chi_square_probability": 9.3418980530883e-214,
+     "aicc": 937.6095316978739,
+     "bic": 933.19305063633,
+     "interval": {
+      "T_us": [
+       24.22626802603159,
+       24.665816157621137
+      ],
+      "amplitude": [
+       0.9836535379827445,
+       0.9886950810872431
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       21.337980148291123,
+       28.410620053567282
+      ],
+      "amplitude": [
+       0.9353789834840732,
+       1.0115067240505464
+      ]
+     },
+     "interval_scale": 248.3643778564259
+    },
+    "single_amplitude_step": {
+     "params": {
+      "T_us": 20.294688559068042,
+      "amplitude": 0.9968920997921897,
+      "batch_step": 0.05766220715146813
+     },
+     "deviance": 639.1590517162358,
+     "chi_square": 660.1828753205164,
+     "freedom": 3,
+     "chi_square_per_dof": 220.06095844017213,
+     "chi_square_probability": 9.026900200793132e-143,
+     "aicc": 657.1590517162358,
+     "bic": 644.53433012392,
+     "interval": {
+      "T_us": [
+       20.037603685885543,
+       20.556665292000986
+      ],
+      "amplitude": [
+       0.9950413093454652,
+       0.9986357594900932
+      ],
+      "batch_step": [
+       0.05413731228367685,
+       0.061205450934625864
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       16.891392063823094,
+       24.861898296396703
+      ],
+      "amplitude": [
+       0.9584194590111642,
+       1.012927479564192
+      ],
+      "batch_step": [
+       0.007259573335735559,
+       0.11183144476521352
+      ]
+     },
+     "interval_scale": 220.06095844017213
+    }
+   },
+   "anchor_prepared0": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-0.cq",
+      "ones": 140,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+      "file": "x90-0.cq",
+      "ones": 72,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-0.cq",
+      "ones": 169,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 3.0771796099232636,
+     "freedom": 2,
+     "p": 0.21468363385726036
+    },
+    "shift": {
+     "weight": 0.6791426302502735,
+     "level_first": 0.008544921875,
+     "level_probe": 0.0087890625,
+     "level_last": 0.01031494140625,
+     "interpolated": 0.00974701759504748,
+     "shift": -0.0009579550950474802,
+     "se": 0.0012009304240712512,
+     "z": -0.7976774306374345
+    }
+   },
+   "anchor_prepared1": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-1.cq",
+      "ones": 16133,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+      "file": "t1-0.cq",
+      "ones": 8087,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-1.cq",
+      "ones": 16129,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 3.10524065417936,
+     "freedom": 2,
+     "p": 0.21169254273456825
+    },
+    "shift": {
+     "weight": 0.3162033996908995,
+     "level_first": 0.98468017578125,
+     "level_probe": 0.9871826171875,
+     "level_last": 0.98443603515625,
+     "interpolated": 0.9846029776856223,
+     "shift": 0.002579639501877673,
+     "se": 0.0015174960780003053,
+     "z": 1.699931577600528
+    }
+   }
+  },
+  {
+   "qubit": 3,
+   "models": {
+    "single": {
+     "params": {
+      "T_us": 12.80102864142322
+     },
+     "deviance": 313.66171178227233,
+     "chi_square": 324.31785649278993,
+     "freedom": 5,
+     "chi_square_per_dof": 64.86357129855799,
+     "chi_square_probability": 5.896013139344432e-68,
+     "aicc": 316.66171178227233,
+     "bic": 315.4534712515004,
+     "interval": {
+      "T_us": [
+       12.691718597012365,
+       12.911334487700726
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       11.948045941136217,
+       13.718626924718944
+      ]
+     },
+     "interval_scale": 64.86357129855799
+    },
+    "plateau": {
+     "params": {
+      "T_us": 12.502759607732274,
+      "plateau": 0.006858896363331269
+     },
+     "deviance": 294.2026003563557,
+     "chi_square": 303.32702046068505,
+     "freedom": 4,
+     "chi_square_per_dof": 75.83175511517126,
+     "chi_square_probability": 2.075437430119667e-64,
+     "aicc": 302.2026003563557,
+     "bic": 297.7861192948118,
+     "interval": {
+      "T_us": [
+       12.373699844408796,
+       12.632385351424588
+      ],
+      "plateau": [
+       0.005187450322078396,
+       0.008597335117532821
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       11.395617722221713,
+       13.654362301019054
+      ],
+      "plateau": [
+       null,
+       0.024131105544846685
+      ]
+     },
+     "interval_scale": 75.83175511517126
+    },
+    "single_step": {
+     "params": {
+      "T_us": 12.453250096204657,
+      "batch_step": 0.008755889300602757
+     },
+     "deviance": 278.05778939851155,
+     "chi_square": 285.14311040179894,
+     "freedom": 4,
+     "chi_square_per_dof": 71.28577760044973,
+     "chi_square_probability": 1.7339185972324457e-60,
+     "aicc": 286.05778939851155,
+     "bic": 281.64130833696765,
+     "interval": {
+      "T_us": [
+       12.330798585585224,
+       12.576666808904772
+      ],
+      "batch_step": [
+       0.007154623471166745,
+       0.010407983558754146
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       11.449158637915373,
+       13.526893668415768
+      ],
+      "batch_step": [
+       -0.003039362511971535,
+       0.024171370088034567
+      ]
+     },
+     "interval_scale": 71.28577760044973
+    },
+    "single_amplitude": {
+     "params": {
+      "T_us": 12.962270618584375,
+      "amplitude": 0.989223598451906
+     },
+     "deviance": 295.223978829331,
+     "chi_square": 303.44566942504736,
+     "freedom": 4,
+     "chi_square_per_dof": 75.86141735626184,
+     "chi_square_probability": 1.9566542118776036e-64,
+     "aicc": 303.223978829331,
+     "bic": 298.8074977677871,
+     "interval": {
+      "T_us": [
+       12.843719277950285,
+       13.082281351158692
+      ],
+      "amplitude": [
+       0.9864980900438339,
+       0.991867719562547
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       11.975277849901497,
+       14.060568919791374
+      ],
+      "amplitude": [
+       0.9627988149766578,
+       1.00951868102311
+      ]
+     },
+     "interval_scale": 75.86141735626184
+    },
+    "single_amplitude_step": {
+     "params": {
+      "T_us": 12.606267628259067,
+      "amplitude": 0.9909604239209517,
+      "batch_step": 0.008122323669481901
+     },
+     "deviance": 264.7128744284791,
+     "chi_square": 270.6505046837739,
+     "freedom": 3,
+     "chi_square_per_dof": 90.21683489459129,
+     "chi_square_probability": 2.2321838420528986e-58,
+     "aicc": 282.7128744284791,
+     "bic": 270.08815283616326,
+     "interval": {
+      "T_us": [
+       12.474074365054166,
+       12.739945392818132
+      ],
+      "amplitude": [
+       0.9882946700271384,
+       0.9935439373534499
+      ],
+      "batch_step": [
+       0.00652791645135011,
+       0.009768657107530858
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       11.406229121078313,
+       13.94287047851455
+      ],
+      "amplitude": [
+       0.9623555215875388,
+       1.012207837601923
+      ],
+      "batch_step": [
+       -0.00475178457282147,
+       0.02566476974829081
+      ]
+     },
+     "interval_scale": 90.21683489459129
+    }
+   },
+   "anchor_prepared0": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-0.cq",
+      "ones": 202,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+      "file": "x90-0.cq",
+      "ones": 115,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-0.cq",
+      "ones": 222,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 1.5491424005385983,
+     "freedom": 2,
+     "p": 0.4609013730168654
+    },
+    "shift": {
+     "weight": 0.6791426302502735,
+     "level_first": 0.0123291015625,
+     "level_probe": 0.0140380859375,
+     "level_last": 0.0135498046875,
+     "interpolated": 0.01315813309356723,
+     "shift": 0.0008799528439327707,
+     "se": 0.0014256161238471756,
+     "z": 0.6172438914047388
+    }
+   },
+   "anchor_prepared1": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-1.cq",
+      "ones": 15752,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+      "file": "t1-0.cq",
+      "ones": 7855,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-1.cq",
+      "ones": 15729,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 1.0204468061445606,
+     "freedom": 2,
+     "p": 0.6003614412389995
+    },
+    "shift": {
+     "weight": 0.3162033996908995,
+     "level_first": 0.96142578125,
+     "level_probe": 0.9588623046875,
+     "level_last": 0.96002197265625,
+     "interpolated": 0.960981892200141,
+     "shift": -0.0021195875126409636,
+     "se": 0.0024427481576571423,
+     "z": -0.8677061145238466
+    }
+   }
+  },
+  {
+   "qubit": 4,
+   "models": {
+    "single": {
+     "params": {
+      "T_us": 24.21811584332375
+     },
+     "deviance": 286.4457719266477,
+     "chi_square": 289.1418744507746,
+     "freedom": 5,
+     "chi_square_per_dof": 57.82837489015492,
+     "chi_square_probability": 2.1608429563811286e-60,
+     "aicc": 289.4457719266477,
+     "bic": 288.23753139587575,
+     "interval": {
+      "T_us": [
+       24.0153148596851,
+       24.422753158920266
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       22.720443570958107,
+       25.822062746054165
+      ]
+     },
+     "interval_scale": 57.82837489015492
+    },
+    "plateau": {
+     "params": {
+      "T_us": 22.502118958480786,
+      "plateau": 0.024612081933473966
+     },
+     "deviance": 236.06413442358817,
+     "chi_square": 232.11433403682344,
+     "freedom": 4,
+     "chi_square_per_dof": 58.02858350920586,
+     "chi_square_probability": 4.628185824540671e-49,
+     "aicc": 244.06413442358817,
+     "bic": 239.64765336204428,
+     "interval": {
+      "T_us": [
+       22.207309936299048,
+       22.801306176430188
+      ],
+      "plateau": [
+       0.021048391636078426,
+       0.02821253386173528
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       20.355567930891105,
+       24.90457258670843
+      ],
+      "plateau": [
+       null,
+       0.05302595110889086
+      ]
+     },
+     "interval_scale": 58.02858350920586
+    },
+    "single_step": {
+     "params": {
+      "T_us": 23.701162063371147,
+      "batch_step": 0.005795850339380957
+     },
+     "deviance": 282.3237940235034,
+     "chi_square": 281.3543242932636,
+     "freedom": 4,
+     "chi_square_per_dof": 70.3385810733159,
+     "chi_square_probability": 1.1375869440707755e-59,
+     "aicc": 290.3237940235034,
+     "bic": 285.9073129619595,
+     "interval": {
+      "T_us": [
+       23.387444789245478,
+       24.02210597833366
+      ],
+      "batch_step": [
+       0.0029395940137369398,
+       0.008657999564211856
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       21.265325989705225,
+       26.654624812001877
+      ],
+      "batch_step": [
+       -0.018318857570314224,
+       0.030181013062696795
+      ]
+     },
+     "interval_scale": 70.3385810733159
+    },
+    "single_amplitude": {
+     "params": {
+      "T_us": 24.335733387454496,
+      "amplitude": 0.996396598306256
+     },
+     "deviance": 284.0873636314493,
+     "chi_square": 285.83238129674,
+     "freedom": 4,
+     "chi_square_per_dof": 71.458095324185,
+     "chi_square_probability": 1.2313930038629581e-60,
+     "aicc": 292.0873636314493,
+     "bic": 287.6708825699054,
+     "interval": {
+      "T_us": [
+       24.117300920400965,
+       24.55677964355213
+      ],
+      "amplitude": [
+       0.9939785600496228,
+       0.9987582148575236
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       22.56628809234142,
+       26.292740692178885
+      ],
+      "amplitude": [
+       0.9742293932135143,
+       1.0145495688594606
+      ]
+     },
+     "interval_scale": 71.458095324185
+    },
+    "single_amplitude_step": {
+     "params": {
+      "T_us": 23.847559045620006,
+      "amplitude": 0.997520229014363,
+      "batch_step": 0.0050201277860036165
+     },
+     "deviance": 281.2601062556857,
+     "chi_square": 280.12698172384455,
+     "freedom": 3,
+     "chi_square_per_dof": 93.37566057461486,
+     "chi_square_probability": 1.9877349147523127e-60,
+     "aicc": 299.2601062556857,
+     "bic": 286.63538466336985,
+     "interval": {
+      "T_us": [
+       23.499641542093563,
+       24.206289408731855
+      ],
+      "amplitude": [
+       0.9950493332045954,
+       0.999925642179383
+      ],
+      "batch_step": [
+       0.002038411479012,
+       0.00799481759184585
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       20.850991022832414,
+       27.909965724739298
+      ],
+      "amplitude": [
+       0.9708930430432456,
+       1.0180534625659812
+      ],
+      "batch_step": [
+       -0.025068147786099167,
+       0.033961421674690705
+      ]
+     },
+     "interval_scale": 93.37566057461486
+    }
+   },
+   "anchor_prepared0": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-0.cq",
+      "ones": 236,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+      "file": "x90-0.cq",
+      "ones": 110,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-0.cq",
+      "ones": 184,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 6.65211243285623,
+     "freedom": 2,
+     "p": 0.03593454404644667
+    },
+    "shift": {
+     "weight": 0.6791426302502735,
+     "level_first": 0.014404296875,
+     "level_probe": 0.013427734375,
+     "level_last": 0.01123046875,
+     "interpolated": 0.012248814894225206,
+     "shift": 0.0011789194807747937,
+     "se": 0.0014138212168160285,
+     "z": 0.8338532954186095
+    }
+   },
+   "anchor_prepared1": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-1.cq",
+      "ones": 15507,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+      "file": "t1-0.cq",
+      "ones": 7732,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-1.cq",
+      "ones": 15647,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 18.928040826110347,
+     "freedom": 2,
+     "p": 7.759400312679533e-05
+    },
+    "shift": {
+     "weight": 0.3162033996908995,
+     "level_first": 0.94647216796875,
+     "level_probe": 0.94384765625,
+     "level_last": 0.95501708984375,
+     "interpolated": 0.9491741013157182,
+     "shift": -0.005326445065718222,
+     "se": 0.0027446792325200313,
+     "z": -1.9406439202834418
+    }
+   }
+  },
+  {
+   "qubit": 5,
+   "models": {
+    "single": {
+     "params": {
+      "T_us": 20.528272357778565
+     },
+     "deviance": 50.33243525369129,
+     "chi_square": 50.597798815177654,
+     "freedom": 5,
+     "chi_square_per_dof": 10.11955976303553,
+     "chi_square_probability": 1.0455152014640481e-09,
+     "aicc": 53.33243525369129,
+     "bic": 52.12419472291934,
+     "interval": {
+      "T_us": [
+       20.34799628476443,
+       20.71016183169853
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       19.9603154706036,
+       21.11255629106958
+      ]
+     },
+     "interval_scale": 10.11955976303553
+    },
+    "plateau": {
+     "params": {
+      "T_us": 19.957294455576825,
+      "plateau": 0.010211299549575073
+     },
+     "deviance": 39.90845687706849,
+     "chi_square": 39.60853504813892,
+     "freedom": 4,
+     "chi_square_per_dof": 9.90213376203473,
+     "chi_square_probability": 5.215168272613913e-08,
+     "aicc": 47.90845687706849,
+     "bic": 43.4919758155246,
+     "interval": {
+      "T_us": [
+       19.71077419091091,
+       20.206713637292808
+      ],
+      "plateau": [
+       0.006994497295373826,
+       0.013477086194311007
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       19.19086077493888,
+       20.752463272255586
+      ],
+      "plateau": [
+       0.00025268429236877647,
+       0.02065358086195055
+      ]
+     },
+     "interval_scale": 9.90213376203473
+    },
+    "single_step": {
+     "params": {
+      "T_us": 20.307992589946902,
+      "batch_step": 0.003433115364938307
+     },
+     "deviance": 48.563990670818576,
+     "chi_square": 48.3873308662572,
+     "freedom": 4,
+     "chi_square_per_dof": 12.0968327165643,
+     "chi_square_probability": 7.836388580783407e-10,
+     "aicc": 56.563990670818576,
+     "bic": 52.147509609274685,
+     "interval": {
+      "T_us": [
+       20.06757886935708,
+       20.552319910241238
+      ],
+      "batch_step": [
+       0.0008468500092127371,
+       0.006047812058854527
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       19.487882879440033,
+       21.175525733121482
+      ],
+      "batch_step": [
+       -0.00544222291850998,
+       0.012650716541016837
+      ]
+     },
+     "interval_scale": 12.0968327165643
+    },
+    "single_amplitude": {
+     "params": {
+      "T_us": 20.49956947194617,
+      "amplitude": 1.001019476857346
+     },
+     "deviance": 50.08817852707171,
+     "chi_square": 50.37876023544577,
+     "freedom": 4,
+     "chi_square_per_dof": 12.594690058861442,
+     "chi_square_probability": 3.009653036329871e-10,
+     "aicc": 58.08817852707171,
+     "bic": 53.67169746552782,
+     "interval": {
+      "T_us": [
+       20.311013284118392,
+       20.690256607487765
+      ],
+      "amplitude": [
+       0.9989391628494847,
+       1.0030304810584767
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       19.839762782561973,
+       21.186236976260982
+      ],
+      "amplitude": [
+       0.9933238445097646,
+       1.0078431211154568
+      ]
+     },
+     "interval_scale": 12.594690058861442
+    },
+    "single_amplitude_step": {
+     "params": {
+      "T_us": 20.246260355234067,
+      "amplitude": 1.0015169326786868,
+      "batch_step": 0.0037504862295409365
+     },
+     "deviance": 48.02976634039845,
+     "chi_square": 47.85124650851054,
+     "freedom": 3,
+     "chi_square_per_dof": 15.950415502836847,
+     "chi_square_probability": 2.290486240057103e-10,
+     "aicc": 66.02976634039845,
+     "bic": 53.40504474808262,
+     "interval": {
+      "T_us": [
+       19.993988347073483,
+       20.503620300545748
+      ],
+      "amplitude": [
+       0.9994317052180418,
+       1.0035293888207537
+      ],
+      "batch_step": [
+       0.0011307862076763797,
+       0.006396480716391827
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       19.266972594979045,
+       21.307060689041194
+      ],
+      "amplitude": [
+       0.9927517900810077,
+       1.0091227751486185
+      ],
+      "batch_step": [
+       -0.006562267016083065,
+       0.014478884815575192
+      ]
+     },
+     "interval_scale": 15.950415502836847
+    }
+   },
+   "anchor_prepared0": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-0.cq",
+      "ones": 522,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+      "file": "x90-0.cq",
+      "ones": 281,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-0.cq",
+      "ones": 547,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 1.177704844455665,
+     "freedom": 2,
+     "p": 0.5549637835510689
+    },
+    "shift": {
+     "weight": 0.6791426302502735,
+     "level_first": 0.0318603515625,
+     "level_probe": 0.0343017578125,
+     "level_last": 0.03338623046875,
+     "interpolated": 0.03289664097633403,
+     "shift": 0.0014051168361659677,
+     "se": 0.0022334384817896138,
+     "z": 0.6291271721261259
+    }
+   },
+   "anchor_prepared1": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-1.cq",
+      "ones": 15845,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+      "file": "t1-0.cq",
+      "ones": 7910,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-1.cq",
+      "ones": 15786,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 3.1912467588124804,
+     "freedom": 2,
+     "p": 0.2027820789216523
+    },
+    "shift": {
+     "weight": 0.3162033996908995,
+     "level_first": 0.96710205078125,
+     "level_probe": 0.965576171875,
+     "level_last": 0.9635009765625,
+     "interpolated": 0.965963378870742,
+     "shift": -0.00038720699574201767,
+     "se": 0.0022893152764354775,
+     "z": -0.16913659718591004
+    }
+   }
+  },
+  {
+   "qubit": 6,
+   "models": {
+    "single": {
+     "params": {
+      "T_us": 15.938761733073845
+     },
+     "deviance": 108.20804940228099,
+     "chi_square": 111.92520945970564,
+     "freedom": 5,
+     "chi_square_per_dof": 22.38504189194113,
+     "chi_square_probability": 1.6052698067248575e-22,
+     "aicc": 111.20804940228099,
+     "bic": 109.99980887150905,
+     "interval": {
+      "T_us": [
+       15.796430855572765,
+       16.082407167031878
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       15.27673526084757,
+       16.630214192223384
+      ]
+     },
+     "interval_scale": 22.38504189194113
+    },
+    "plateau": {
+     "params": {
+      "T_us": 15.690211297020303,
+      "plateau": 0.005689462116615255
+     },
+     "deviance": 102.58837750531953,
+     "chi_square": 105.83420286435025,
+     "freedom": 4,
+     "chi_square_per_dof": 26.45855071608756,
+     "chi_square_probability": 5.624985228436538e-22,
+     "aicc": 110.58837750531953,
+     "bic": 106.17189644377564,
+     "interval": {
+      "T_us": [
+       15.514994979934766,
+       15.866905273589055
+      ],
+      "plateau": [
+       0.003251723105816038,
+       0.008181684975140938
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       14.803745770105815,
+       16.605392615174818
+      ],
+      "plateau": [
+       null,
+       0.019076141374094028
+      ]
+     },
+     "interval_scale": 26.45855071608756
+    },
+    "single_step": {
+     "params": {
+      "T_us": 15.859559211775005,
+      "batch_step": 0.0017600132932585398
+     },
+     "deviance": 107.42722433568973,
+     "chi_square": 110.83709188226075,
+     "freedom": 4,
+     "chi_square_per_dof": 27.709272970565188,
+     "chi_square_probability": 4.824509786264592e-23,
+     "aicc": 115.42722433568973,
+     "bic": 111.01074327414584,
+     "interval": {
+      "T_us": [
+       15.692603345330719,
+       16.028449672453956
+      ],
+      "batch_step": [
+       -0.00022952032708741684,
+       0.0037876936559271077
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       15.001464063448783,
+       16.77141177421834
+      ],
+      "batch_step": [
+       -0.008274564161199737,
+       0.012849004797167624
+      ]
+     },
+     "interval_scale": 27.709272970565188
+    },
+    "single_amplitude": {
+     "params": {
+      "T_us": 16.18416206760661,
+      "amplitude": 0.9878740639284319
+     },
+     "deviance": 77.13368958321594,
+     "chi_square": 77.03713863634927,
+     "freedom": 4,
+     "chi_square_per_dof": 19.259284659087317,
+     "chi_square_probability": 7.385826608749157e-16,
+     "aicc": 85.13368958321594,
+     "bic": 80.71720852167205,
+     "interval": {
+      "T_us": [
+       16.030605710037175,
+       16.339547480216453
+      ],
+      "amplitude": [
+       0.9854729817269088,
+       0.99020646524613
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       15.52339282295396,
+       16.880191469382893
+      ],
+      "amplitude": [
+       0.9768284607051709,
+       0.9975988421710529
+      ]
+     },
+     "interval_scale": 19.259284659087317
+    },
+    "single_amplitude_step": {
+     "params": {
+      "T_us": 16.159803398148792,
+      "amplitude": 0.9879467631023444,
+      "batch_step": 0.0004886229233590054
+     },
+     "deviance": 77.07479099084851,
+     "chi_square": 76.89145604564796,
+     "freedom": 3,
+     "chi_square_per_dof": 25.630485348549318,
+     "chi_square_probability": 1.4244704675213367e-16,
+     "aicc": 95.07479099084851,
+     "bic": 82.45006939853268,
+     "interval": {
+      "T_us": [
+       15.977335937660914,
+       16.34509916694324
+      ],
+      "amplitude": [
+       0.9855289093037632,
+       0.9902937546705005
+      ],
+      "batch_step": [
+       -0.0015103922048812276,
+       0.002525401718915023
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       15.26316064539354,
+       17.129302512191007
+      ],
+      "amplitude": [
+       0.9749782215929993,
+       0.9991023009785786
+      ],
+      "batch_step": [
+       -0.009236959466458108,
+       0.011178935813698002
+      ]
+     },
+     "interval_scale": 25.630485348549318
+    }
+   },
+   "anchor_prepared0": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-0.cq",
+      "ones": 511,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+      "file": "x90-0.cq",
+      "ones": 338,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-0.cq",
+      "ones": 619,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 19.006107814475442,
+     "freedom": 2,
+     "p": 7.462358803476181e-05
+    },
+    "shift": {
+     "weight": 0.6791426302502735,
+     "level_first": 0.03118896484375,
+     "level_probe": 0.041259765625,
+     "level_last": 0.03778076171875,
+     "interpolated": 0.03566573511151304,
+     "shift": 0.005594030513486961,
+     "se": 0.0023255317927452853,
+     "z": 2.405484427664272
+    }
+   },
+   "anchor_prepared1": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-1.cq",
+      "ones": 15937,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+      "file": "t1-0.cq",
+      "ones": 7815,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-1.cq",
+      "ones": 15720,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 68.52674660355393,
+     "freedom": 2,
+     "p": 1.3170614663150006e-15
+    },
+    "shift": {
+     "weight": 0.3162033996908995,
+     "level_first": 0.97271728515625,
+     "level_probe": 0.9539794921875,
+     "level_last": 0.95947265625,
+     "interpolated": 0.9685292884684494,
+     "shift": -0.014549796280949434,
+     "se": 0.00234226816646481,
+     "z": -6.211840509666948
+    }
+   }
+  },
+  {
+   "qubit": 7,
+   "models": {
+    "single": {
+     "params": {
+      "T_us": 27.29397061861312
+     },
+     "deviance": 168.80403170927426,
+     "chi_square": 174.09045892715622,
+     "freedom": 5,
+     "chi_square_per_dof": 34.81809178543124,
+     "chi_square_probability": 9.776437834708785e-36,
+     "aicc": 171.80403170927426,
+     "bic": 170.5957911785023,
+     "interval": {
+      "T_us": [
+       27.048786886982587,
+       27.54151080714212
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       25.880309490821798,
+       28.789721655896685
+      ]
+     },
+     "interval_scale": 34.81809178543124
+    },
+    "plateau": {
+     "params": {
+      "T_us": 26.566296714828848,
+      "plateau": 0.010909496818125398
+     },
+     "deviance": 164.78440180840158,
+     "chi_square": 169.15806210191295,
+     "freedom": 4,
+     "chi_square_per_dof": 42.28951552547824,
+     "chi_square_probability": 1.5854804629867175e-35,
+     "aicc": 172.78440180840158,
+     "bic": 168.3679207468577,
+     "interval": {
+      "T_us": [
+       26.14086065255069,
+       26.99982431422109
+      ],
+      "plateau": [
+       0.005469782453762141,
+       0.01634940312255383
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       23.9298988373671,
+       28.864305611794567
+      ],
+      "plateau": [
+       null,
+       0.04640244007599223
+      ]
+     },
+     "interval_scale": 42.28951552547824
+    },
+    "single_step": {
+     "params": {
+      "T_us": 26.717815500300777,
+      "batch_step": 0.006717465469564356
+     },
+     "deviance": 166.10242722914955,
+     "chi_square": 170.0536372416905,
+     "freedom": 4,
+     "chi_square_per_dof": 42.513409310422624,
+     "chi_square_probability": 1.0184875431389817e-35,
+     "aicc": 174.10242722914955,
+     "bic": 169.68594616760566,
+     "interval": {
+      "T_us": [
+       26.305158442921055,
+       27.141329278374513
+      ],
+      "batch_step": [
+       0.0026368704397795382,
+       0.010781013921525459
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       24.201359559315904,
+       29.70097632109369
+      ],
+      "batch_step": [
+       -0.02034609092569912,
+       0.03300991198585814
+      ]
+     },
+     "interval_scale": 42.513409310422624
+    },
+    "single_amplitude": {
+     "params": {
+      "T_us": 27.465741110026325,
+      "amplitude": 0.9959298290165463
+     },
+     "deviance": 166.8305465718251,
+     "chi_square": 170.8228952205422,
+     "freedom": 4,
+     "chi_square_per_dof": 42.70572380513555,
+     "chi_square_probability": 6.963873800448572e-36,
+     "aicc": 174.8305465718251,
+     "bic": 170.4140655102812,
+     "interval": {
+      "T_us": [
+       27.189552804788274,
+       27.745842984425195
+      ],
+      "amplitude": [
+       0.992965978523075,
+       0.9988384786929804
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       25.72757989475212,
+       29.37146731061589
+      ],
+      "amplitude": [
+       0.975608693757074,
+       1.0138967173113187
+      ]
+     },
+     "interval_scale": 42.70572380513555
+    },
+    "single_amplitude_step": {
+     "params": {
+      "T_us": 26.940205572410505,
+      "amplitude": 0.9973474389976129,
+      "batch_step": 0.005374234961923324
+     },
+     "deviance": 165.36256576900334,
+     "chi_square": 168.81955110511993,
+     "freedom": 3,
+     "chi_square_per_dof": 56.27318370170664,
+     "chi_square_probability": 2.2882409369872296e-36,
+     "aicc": 183.36256576900334,
+     "bic": 170.7378441766875,
+     "interval": {
+      "T_us": [
+       26.448962501510035,
+       27.451610278639503
+      ],
+      "amplitude": [
+       0.9941940578167968,
+       1.0004260233568671
+      ],
+      "batch_step": [
+       0.0009447575331016164,
+       0.009751322948592687
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       23.654686315718738,
+       31.409976441450638
+      ],
+      "amplitude": [
+       0.9718908661661221,
+       1.018602598801966
+      ],
+      "batch_step": [
+       -0.029827456577861233,
+       0.037341637594885374
+      ]
+     },
+     "interval_scale": 56.27318370170664
+    }
+   },
+   "anchor_prepared0": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-0.cq",
+      "ones": 718,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+      "file": "x90-0.cq",
+      "ones": 286,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-0.cq",
+      "ones": 495,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 43.867928880693356,
+     "freedom": 2,
+     "p": 2.979890305466863e-10
+    },
+    "shift": {
+     "weight": 0.6791426302502735,
+     "level_first": 0.0438232421875,
+     "level_probe": 0.034912109375,
+     "level_last": 0.03021240234375,
+     "interpolated": 0.034579540616100406,
+     "shift": 0.0003325687588995943,
+     "se": 0.0023490353317067404,
+     "z": 0.14157673765509501
+    }
+   },
+   "anchor_prepared1": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-1.cq",
+      "ones": 15350,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+      "file": "t1-0.cq",
+      "ones": 7714,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-1.cq",
+      "ones": 15320,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 4.048892007280467,
+     "freedom": 2,
+     "p": 0.1320669875554538
+    },
+    "shift": {
+     "weight": 0.3162033996908995,
+     "level_first": 0.9368896484375,
+     "level_probe": 0.941650390625,
+     "level_last": 0.93505859375,
+     "interpolated": 0.9363106627202926,
+     "shift": 0.005339727904707381,
+     "se": 0.0030390554833593453,
+     "z": 1.7570353466547746
+    }
+   }
+  },
+  {
+   "qubit": 8,
+   "models": {
+    "single": {
+     "params": {
+      "T_us": 18.97454707541554
+     },
+     "deviance": 7.0486393602989175,
+     "chi_square": 7.053711581895016,
+     "freedom": 5,
+     "chi_square_per_dof": 1.4107423163790032,
+     "chi_square_probability": 0.21667626209583124,
+     "aicc": 10.048639360298917,
+     "bic": 8.840398829526972,
+     "interval": {
+      "T_us": [
+       18.810294762344952,
+       19.140249898837396
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       18.77961755958263,
+       19.171522882093633
+      ]
+     },
+     "interval_scale": 1.4107423163790032
+    },
+    "plateau": {
+     "params": {
+      "T_us": 18.974546953237166,
+      "plateau": 0.0
+     },
+     "deviance": 7.04863936029799,
+     "chi_square": 7.053711590082273,
+     "freedom": 4,
+     "chi_square_per_dof": 1.7634278975205682,
+     "chi_square_probability": 0.133076892128195,
+     "aicc": 15.04863936029799,
+     "bic": 10.6321582987541,
+     "interval": {
+      "T_us": [
+       18.809541402937725,
+       19.14024989883704
+      ],
+      "plateau": [
+       null,
+       0.001446184246127636
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       18.74965883758436,
+       19.19490878262871
+      ],
+      "plateau": [
+       null,
+       0.002256737625392945
+      ]
+     },
+     "interval_scale": 1.7634278975205682
+    },
+    "single_step": {
+     "params": {
+      "T_us": 18.997055960611654,
+      "batch_step": -0.00041858865367308887
+     },
+     "deviance": 7.020832706654815,
+     "chi_square": 7.030877953608908,
+     "freedom": 4,
+     "chi_square_per_dof": 1.757719488402227,
+     "chi_square_probability": 0.13426543658252055,
+     "aicc": 15.020832706654815,
+     "bic": 10.604351645110924,
+     "interval": {
+      "T_us": [
+       18.78505276157671,
+       19.211922593085642
+      ],
+      "batch_step": [
+       -0.002907400058122031,
+       0.002106831173550839
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       18.716589402455938,
+       19.282556320453068
+      ],
+      "batch_step": [
+       -0.003710272131838301,
+       0.002937431318598098
+      ]
+     },
+     "interval_scale": 1.757719488402227
+    },
+    "single_amplitude": {
+     "params": {
+      "T_us": 18.95434071600398,
+      "amplitude": 1.0007852128724117
+     },
+     "deviance": 6.795708561583764,
+     "chi_square": 6.815130819708798,
+     "freedom": 4,
+     "chi_square_per_dof": 1.7037827049271994,
+     "chi_square_probability": 0.1459862362329065,
+     "aicc": 14.795708561583764,
+     "bic": 10.379227500039875,
+     "interval": {
+      "T_us": [
+       18.78581906246565,
+       19.124605897059098
+      ],
+      "amplitude": [
+       0.999204252871889,
+       1.0022874402450406
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       18.734713738824787,
+       19.176938347069786
+      ],
+      "amplitude": [
+       0.9987058099591359,
+       1.0027304831738941
+      ]
+     },
+     "interval_scale": 1.7037827049271994
+    },
+    "single_amplitude_step": {
+     "params": {
+      "T_us": 18.969641367781396,
+      "amplitude": 1.000765825341878,
+      "batch_step": -0.0002760180185842489
+     },
+     "deviance": 6.783763897113454,
+     "chi_square": 6.806408993368326,
+     "freedom": 3,
+     "chi_square_per_dof": 2.2688029977894417,
+     "chi_square_probability": 0.07833095183607834,
+     "aicc": 24.783763897113452,
+     "bic": 12.15904230479762,
+     "interval": {
+      "T_us": [
+       18.75138724161517,
+       19.19134381332928
+      ],
+      "amplitude": [
+       0.9991720756671589,
+       1.0022786776684454
+      ],
+      "batch_step": [
+       -0.0027815367958059205,
+       0.0022653464557758564
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       18.64216995353762,
+       19.304940212106583
+      ],
+      "amplitude": [
+       0.9983340971547764,
+       1.0030140331720523
+      ],
+      "batch_step": [
+       -0.004036239185854607,
+       0.003565484379806439
+      ]
+     },
+     "interval_scale": 2.2688029977894417
+    }
+   },
+   "anchor_prepared0": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-0.cq",
+      "ones": 618,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+      "file": "x90-0.cq",
+      "ones": 299,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-0.cq",
+      "ones": 581,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 1.1872799974070474,
+     "freedom": 2,
+     "p": 0.5523132019898493
+    },
+    "shift": {
+     "weight": 0.6791426302502735,
+     "level_first": 0.0377197265625,
+     "level_probe": 0.0364990234375,
+     "level_last": 0.03546142578125,
+     "interpolated": 0.036186018230025624,
+     "shift": 0.0003130052074743761,
+     "se": 0.0023482814207472615,
+     "z": 0.13329118252563305
+    }
+   },
+   "anchor_prepared1": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-1.cq",
+      "ones": 16070,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+      "file": "t1-0.cq",
+      "ones": 8048,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-1.cq",
+      "ones": 16085,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 0.8391547638140684,
+     "freedom": 2,
+     "p": 0.6573245583735723
+    },
+    "shift": {
+     "weight": 0.3162033996908995,
+     "level_first": 0.9808349609375,
+     "level_probe": 0.982421875,
+     "level_last": 0.98175048828125,
+     "interpolated": 0.9811244537961037,
+     "shift": 0.0012974212038963095,
+     "se": 0.00168603953920375,
+     "z": 0.7695081720972157
+    }
+   }
+  },
+  {
+   "qubit": 9,
+   "models": {
+    "single": {
+     "params": {
+      "T_us": 21.963436145524515
+     },
+     "deviance": 210.8765346456101,
+     "chi_square": 216.01797400455564,
+     "freedom": 5,
+     "chi_square_per_dof": 43.20359480091113,
+     "chi_square_probability": 1.0589217504369298e-44,
+     "aicc": 213.8765346456101,
+     "bic": 212.66829411483815,
+     "interval": {
+      "T_us": [
+       21.769584486187533,
+       22.159094428386446
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       20.7214088436289,
+       23.283575933519742
+      ]
+     },
+     "interval_scale": 43.20359480091113
+    },
+    "plateau": {
+     "params": {
+      "T_us": 20.47249616678666,
+      "plateau": 0.02331600806766684
+     },
+     "deviance": 161.59845607033603,
+     "chi_square": 163.40063088848694,
+     "freedom": 4,
+     "chi_square_per_dof": 40.850157722121736,
+     "chi_square_probability": 2.7259067740893327e-34,
+     "aicc": 169.59845607033603,
+     "bic": 165.18197500879214,
+     "interval": {
+      "T_us": [
+       20.200349661267058,
+       20.748010627175873
+      ],
+      "plateau": [
+       0.019841312836550936,
+       0.026844096392749803
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       18.78540445089356,
+       22.298032242030754
+      ],
+      "plateau": [
+       0.0019906823232151345,
+       0.04678675903337654
+      ]
+     },
+     "interval_scale": 40.850157722121736
+    },
+    "single_step": {
+     "params": {
+      "T_us": 19.992607401124257,
+      "batch_step": 0.02792538803284782
+     },
+     "deviance": 108.57184045124134,
+     "chi_square": 108.93376360220137,
+     "freedom": 4,
+     "chi_square_per_dof": 27.23344090055034,
+     "chi_square_probability": 1.2284784401693652e-22,
+     "aicc": 116.57184045124134,
+     "bic": 112.15535938969745,
+     "interval": {
+      "T_us": [
+       19.745148740858856,
+       20.244000742584664
+      ],
+      "batch_step": [
+       0.025030328652993365,
+       0.030849972491222937
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       18.741918851914804,
+       21.350855394763485
+      ],
+      "batch_step": [
+       0.013145954053230194,
+       0.04350337866488921
+      ]
+     },
+     "interval_scale": 27.23344090055034
+    },
+    "single_amplitude": {
+     "params": {
+      "T_us": 22.28150168201565,
+      "amplitude": 0.9895247329360334
+     },
+     "deviance": 200.5083066167014,
+     "chi_square": 204.41607447538493,
+     "freedom": 4,
+     "chi_square_per_dof": 51.10401861884623,
+     "chi_square_probability": 4.220140795173934e-43,
+     "aicc": 208.5083066167014,
+     "bic": 204.0918255551575,
+     "interval": {
+      "T_us": [
+       22.05912073112975,
+       22.50698667206169
+      ],
+      "amplitude": [
+       0.9861574583278767,
+       0.9928386198061014
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       20.75595678423108,
+       23.96615719512218
+      ],
+      "amplitude": [
+       0.9643366237500381,
+       1.0119894023705394
+      ]
+     },
+     "interval_scale": 51.10401861884623
+    },
+    "single_amplitude_step": {
+     "params": {
+      "T_us": 20.04494117865673,
+      "amplitude": 0.9986547131945522,
+      "batch_step": 0.02764383719314759
+     },
+     "deviance": 108.3971415540437,
+     "chi_square": 108.76455504401098,
+     "freedom": 3,
+     "chi_square_per_dof": 36.254851681336994,
+     "chi_square_probability": 2.023951161865562e-23,
+     "aicc": 126.3971415540437,
+     "bic": 113.77241996172786,
+     "interval": {
+      "T_us": [
+       19.76752891501982,
+       20.32872259912194
+      ],
+      "amplitude": [
+       0.9953916412916743,
+       1.001854986827594
+      ],
+      "batch_step": [
+       0.02466696775811428,
+       0.030645789560776588
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       18.461005084244047,
+       21.86232506206856
+      ],
+      "amplitude": [
+       0.9780783403450006,
+       1.0169586937033086
+      ],
+      "batch_step": [
+       0.010081568554024582,
+       0.04609733606422333
+      ]
+     },
+     "interval_scale": 36.254851681336994
+    }
+   },
+   "anchor_prepared0": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-0.cq",
+      "ones": 269,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+      "file": "x90-0.cq",
+      "ones": 157,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-0.cq",
+      "ones": 328,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 6.203721919646975,
+     "freedom": 2,
+     "p": 0.04496544559601282
+    },
+    "shift": {
+     "weight": 0.6791426302502735,
+     "level_first": 0.01641845703125,
+     "level_probe": 0.0191650390625,
+     "level_last": 0.02001953125,
+     "interpolated": 0.018864100047898326,
+     "shift": 0.0003009390146016741,
+     "se": 0.001681650715228848,
+     "z": 0.17895453073364329
+    }
+   },
+   "anchor_prepared1": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-1.cq",
+      "ones": 15093,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+      "file": "t1-0.cq",
+      "ones": 7526,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-1.cq",
+      "ones": 15024,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 1.9661233383643084,
+     "freedom": 2,
+     "p": 0.3741637776814912
+    },
+    "shift": {
+     "weight": 0.3162033996908995,
+     "level_first": 0.92120361328125,
+     "level_probe": 0.918701171875,
+     "level_last": 0.9169921875,
+     "interpolated": 0.9198719461316729,
+     "shift": -0.0011707742566728907,
+     "se": 0.003415115796626568,
+     "z": -0.34282124718270895
+    }
+   }
+  },
+  {
+   "qubit": 10,
+   "models": {
+    "single": {
+     "params": {
+      "T_us": 31.752750700894865
+     },
+     "deviance": 71.61917116281064,
+     "chi_square": 73.40973142955158,
+     "freedom": 5,
+     "chi_square_per_dof": 14.681946285910318,
+     "chi_square_probability": 1.9968839701882673e-14,
+     "aicc": 74.61917116281064,
+     "bic": 73.4109306320387,
+     "interval": {
+      "T_us": [
+       31.46974248697683,
+       32.038412348834555
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       30.68244861473087,
+       32.862014756092584
+      ]
+     },
+     "interval_scale": 14.681946285910318
+    },
+    "plateau": {
+     "params": {
+      "T_us": 29.03780588610766,
+      "plateau": 0.038972406290561645
+     },
+     "deviance": 37.87968713249403,
+     "chi_square": 37.5437386092376,
+     "freedom": 4,
+     "chi_square_per_dof": 9.3859346523094,
+     "chi_square_probability": 1.391645043122442e-07,
+     "aicc": 45.87968713249403,
+     "bic": 41.463206070950136,
+     "interval": {
+      "T_us": [
+       28.535935430603384,
+       29.550955724668224
+      ],
+      "plateau": [
+       0.03241144477721826,
+       0.04548392925396706
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       27.53392859798035,
+       30.64772330956985
+      ],
+      "plateau": [
+       0.018694108168697026,
+       0.058783405412356673
+      ]
+     },
+     "interval_scale": 9.3859346523094
+    },
+    "single_step": {
+     "params": {
+      "T_us": 30.670044917967093,
+      "batch_step": 0.01142843919410818
+     },
+     "deviance": 66.42702263300896,
+     "chi_square": 66.96814931087827,
+     "freedom": 4,
+     "chi_square_per_dof": 16.74203732771957,
+     "chi_square_probability": 9.900787107147807e-14,
+     "aicc": 74.42702263300896,
+     "bic": 70.01054157146507,
+     "interval": {
+      "T_us": [
+       30.146339914072,
+       31.210254671253722
+      ],
+      "batch_step": [
+       0.006451060841741972,
+       0.016351117926946997
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       28.623081555244244,
+       32.99451146682966
+      ],
+      "batch_step": [
+       -0.009333106668536314,
+       0.03126747213536536
+      ]
+     },
+     "interval_scale": 16.74203732771957
+    },
+    "single_amplitude": {
+     "params": {
+      "T_us": 31.913807523141003,
+      "amplitude": 0.9970010046752249
+     },
+     "deviance": 68.96961363040226,
+     "chi_square": 70.44175999156798,
+     "freedom": 4,
+     "chi_square_per_dof": 17.610439997891994,
+     "chi_square_probability": 1.8311552542393847e-14,
+     "aicc": 76.96961363040226,
+     "bic": 72.55313256885837,
+     "interval": {
+      "T_us": [
+       31.611371750534904,
+       32.220004899222786
+      ],
+      "amplitude": [
+       0.9950724326730365,
+       0.9988640739782244
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       30.6688370822463,
+       33.225104002246475
+      ],
+      "amplitude": [
+       0.9884734496885833,
+       1.0043770974360404
+      ]
+     },
+     "interval_scale": 17.610439997891994
+    },
+    "single_amplitude_step": {
+     "params": {
+      "T_us": 30.900310391667343,
+      "amplitude": 0.9980925417366604,
+      "batch_step": 0.00999450354904822
+     },
+     "deviance": 65.40027626822072,
+     "chi_square": 65.89071260193572,
+     "freedom": 3,
+     "chi_square_per_dof": 21.963570867311905,
+     "chi_square_probability": 3.2345432883945804e-14,
+     "aicc": 83.40027626822072,
+     "bic": 70.77555467590489,
+     "interval": {
+      "T_us": [
+       30.321810238119678,
+       31.502859220963654
+      ],
+      "amplitude": [
+       0.9961325689076855,
+       0.9999755001811693
+      ],
+      "batch_step": [
+       0.004746199938930104,
+       0.01515734653143144
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       28.36987246954575,
+       33.96689620685981
+      ],
+      "amplitude": [
+       0.9882308979993885,
+       1.0062647478245716
+      ],
+      "batch_step": [
+       -0.015498795817507644,
+       0.03357521159203644
+      ]
+     },
+     "interval_scale": 21.963570867311905
+    }
+   },
+   "anchor_prepared0": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-0.cq",
+      "ones": 901,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+      "file": "x90-0.cq",
+      "ones": 451,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-0.cq",
+      "ones": 805,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 6.812632037839916,
+     "freedom": 2,
+     "p": 0.03316314802142316
+    },
+    "shift": {
+     "weight": 0.6791426302502735,
+     "level_first": 0.05499267578125,
+     "level_probe": 0.0550537109375,
+     "level_last": 0.04913330078125,
+     "interpolated": 0.051013324432127305,
+     "shift": 0.004040386505372695,
+     "se": 0.0027942316893694217,
+     "z": 1.4459740474436087
+    }
+   },
+   "anchor_prepared1": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-1.cq",
+      "ones": 15931,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+      "file": "t1-0.cq",
+      "ones": 7953,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-1.cq",
+      "ones": 15974,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 4.171673324148283,
+     "freedom": 2,
+     "p": 0.12420316060836474
+    },
+    "shift": {
+     "weight": 0.3162033996908995,
+     "level_first": 0.97235107421875,
+     "level_probe": 0.9708251953125,
+     "level_last": 0.9749755859375,
+     "interpolated": 0.9731809537467473,
+     "shift": -0.0023557584342472904,
+     "se": 0.0020255321132795485,
+     "z": -1.1630318861906717
+    }
+   }
+  },
+  {
+   "qubit": 11,
+   "models": {
+    "single": {
+     "params": {
+      "T_us": 25.309583560207248
+     },
+     "deviance": 182.56478067820115,
+     "chi_square": 191.44035406844063,
+     "freedom": 5,
+     "chi_square_per_dof": 38.28807081368812,
+     "chi_square_probability": 1.922702458575327e-39,
+     "aicc": 185.56478067820115,
+     "bic": 184.3565401474292,
+     "interval": {
+      "T_us": [
+       25.089015502986665,
+       25.532184881139493
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       23.97644648472904,
+       26.720623352360242
+      ]
+     },
+     "interval_scale": 38.28807081368812
+    },
+    "plateau": {
+     "params": {
+      "T_us": 22.206256978516908,
+      "plateau": 0.04623008838976476
+     },
+     "deviance": 67.46773427245964,
+     "chi_square": 68.33521246837623,
+     "freedom": 4,
+     "chi_square_per_dof": 17.083803117094057,
+     "chi_square_probability": 5.0972972546041066e-14,
+     "aicc": 75.46773427245964,
+     "bic": 71.05125321091575,
+     "interval": {
+      "T_us": [
+       21.87717201279294,
+       22.54006263014494
+      ],
+      "plateau": [
+       0.04179493918134796,
+       0.050696131100132845
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       20.874704595411092,
+       23.618680282744208
+      ],
+      "plateau": [
+       0.02809038317018341,
+       0.06489191092683008
+      ]
+     },
+     "interval_scale": 17.083803117094057
+    },
+    "single_step": {
+     "params": {
+      "T_us": 22.031371670209936,
+      "batch_step": 0.04229463129581026
+     },
+     "deviance": 25.614940394767373,
+     "chi_square": 25.929805542664212,
+     "freedom": 4,
+     "chi_square_per_dof": 6.482451385666053,
+     "chi_square_probability": 3.26928050190454e-05,
+     "aicc": 33.61494039476737,
+     "bic": 29.198459333223482,
+     "interval": {
+      "T_us": [
+       21.739368115627194,
+       22.328915965294705
+      ],
+      "batch_step": [
+       0.038871815205387496,
+       0.04572949035242606
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       21.298377898003835,
+       22.80031868064758
+      ],
+      "batch_step": [
+       0.033602498952897845,
+       0.051064443738663416
+      ]
+     },
+     "interval_scale": 6.482451385666053
+    },
+    "single_amplitude": {
+     "params": {
+      "T_us": 26.06450258212029,
+      "amplitude": 0.9803535891907889
+     },
+     "deviance": 137.40993112037933,
+     "chi_square": 142.0366793372856,
+     "freedom": 4,
+     "chi_square_per_dof": 35.5091698343214,
+     "chi_square_probability": 1.034117940939367e-29,
+     "aicc": 145.40993112037933,
+     "bic": 140.99345005883544,
+     "interval": {
+      "T_us": [
+       25.804462259004293,
+       26.32824317273819
+      ],
+      "amplitude": [
+       0.9772189190472167,
+       0.9834353638146274
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       24.566655472771256,
+       27.694024667898717
+      ],
+      "amplitude": [
+       0.9609265349886374,
+       0.997904277374237
+      ]
+     },
+     "interval_scale": 35.5091698343214
+    },
+    "single_amplitude_step": {
+     "params": {
+      "T_us": 22.451687809867373,
+      "amplitude": 0.9918740023196659,
+      "batch_step": 0.03979365406097257
+     },
+     "deviance": 17.489195174900498,
+     "chi_square": 17.538023938896274,
+     "freedom": 3,
+     "chi_square_per_dof": 5.846007979632091,
+     "chi_square_probability": 0.0005476754479691901,
+     "aicc": 35.4891951749005,
+     "bic": 22.864473582584665,
+     "interval": {
+      "T_us": [
+       22.112811073803798,
+       22.800055281091353
+      ],
+      "amplitude": [
+       0.9888962248428564,
+       0.9947859416491907
+      ],
+      "batch_step": [
+       0.0362098474938067,
+       0.043378266273958514
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       21.647595018128985,
+       23.3113819332919
+      ],
+      "amplitude": [
+       0.9845619696428747,
+       0.9988011777934258
+      ],
+      "batch_step": [
+       0.03112632720823621,
+       0.048464924114655465
+      ]
+     },
+     "interval_scale": 5.846007979632091
+    }
+   },
+   "anchor_prepared0": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-0.cq",
+      "ones": 359,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+      "file": "x90-0.cq",
+      "ones": 226,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-0.cq",
+      "ones": 378,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 7.89432416153953,
+     "freedom": 2,
+     "p": 0.019309422673846888
+    },
+    "shift": {
+     "weight": 0.6791426302502735,
+     "level_first": 0.02191162109375,
+     "level_probe": 0.027587890625,
+     "level_last": 0.0230712890625,
+     "interpolated": 0.022699201048263867,
+     "shift": 0.004888689576736133,
+     "se": 0.0018955338388839725,
+     "z": 2.579056873822116
+    }
+   },
+   "anchor_prepared1": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-1.cq",
+      "ones": 15431,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+      "file": "t1-0.cq",
+      "ones": 7630,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-1.cq",
+      "ones": 15325,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 11.594592385505736,
+     "freedom": 2,
+     "p": 0.003035751746399105
+    },
+    "shift": {
+     "weight": 0.3162033996908995,
+     "level_first": 0.94183349609375,
+     "level_probe": 0.931396484375,
+     "level_last": 0.93536376953125,
+     "interpolated": 0.939787746559617,
+     "shift": -0.008391262184617054,
+     "se": 0.0030379546400037152,
+     "z": -2.7621420261254435
+    }
+   }
+  },
+  {
+   "qubit": 12,
+   "models": {
+    "single": {
+     "params": {
+      "T_us": 23.02743880251471
+     },
+     "deviance": 183.5989374612249,
+     "chi_square": 188.60146578977165,
+     "freedom": 5,
+     "chi_square_per_dof": 37.72029315795433,
+     "chi_square_probability": 7.77567491123183e-39,
+     "aicc": 186.5989374612249,
+     "bic": 185.39069693045295,
+     "interval": {
+      "T_us": [
+       22.845709423621525,
+       23.2107737528488
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       21.935986613402225,
+       24.17947679661681
+      ]
+     },
+     "interval_scale": 37.72029315795433
+    },
+    "plateau": {
+     "params": {
+      "T_us": 21.52824539124311,
+      "plateau": 0.02172598906772014
+     },
+     "deviance": 135.28640189079937,
+     "chi_square": 137.0831739927137,
+     "freedom": 4,
+     "chi_square_per_dof": 34.27079349817843,
+     "chi_square_probability": 1.1885339289776608e-28,
+     "aicc": 143.28640189079937,
+     "bic": 138.86992082925548,
+     "interval": {
+      "T_us": [
+       21.260123628575702,
+       21.79944669754769
+      ],
+      "plateau": [
+       0.01844772224680079,
+       0.02505948526716336
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       19.99811096186829,
+       23.164377049267998
+      ],
+      "plateau": [
+       0.00327439999874798,
+       0.04203901723449208
+      ]
+     },
+     "interval_scale": 34.27079349817843
+    },
+    "single_step": {
+     "params": {
+      "T_us": 21.015505805164057,
+      "batch_step": 0.028425194143669792
+     },
+     "deviance": 79.99985605978404,
+     "chi_square": 79.52848605234469,
+     "freedom": 4,
+     "chi_square_per_dof": 19.882121513086172,
+     "chi_square_probability": 2.1922398034041233e-16,
+     "aicc": 87.99985605978404,
+     "bic": 83.58337499824015,
+     "interval": {
+      "T_us": [
+       20.771461048192524,
+       21.263121336597724
+      ],
+      "batch_step": [
+       0.0254832323258642,
+       0.03140028121237849
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       19.95344594328841,
+       22.148749682444663
+      ],
+      "batch_step": [
+       0.015564184605357242,
+       0.04194063876205039
+      ]
+     },
+     "interval_scale": 19.882121513086172
+    },
+    "single_amplitude": {
+     "params": {
+      "T_us": 23.13780624059716,
+      "amplitude": 0.9966105408167855
+     },
+     "deviance": 180.3766055410458,
+     "chi_square": 184.09956368644032,
+     "freedom": 4,
+     "chi_square_per_dof": 46.02489092161008,
+     "chi_square_probability": 9.817548249712299e-39,
+     "aicc": 188.3766055410458,
+     "bic": 183.9601244795019,
+     "interval": {
+      "T_us": [
+       22.944099003537236,
+       23.333813346697955
+      ],
+      "amplitude": [
+       0.9946083206483957,
+       0.9985312404705851
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       21.866066333259,
+       24.515834304976806
+      ],
+      "amplitude": [
+       0.9814573180639747,
+       1.0080389680515172
+      ]
+     },
+     "interval_scale": 46.02489092161008
+    },
+    "single_amplitude_step": {
+     "params": {
+      "T_us": 20.994182449427125,
+      "amplitude": 1.000471740345467,
+      "batch_step": 0.02855247815669305
+     },
+     "deviance": 79.92793740248867,
+     "chi_square": 79.47951845599476,
+     "freedom": 3,
+     "chi_square_per_dof": 26.49317281866492,
+     "chi_square_probability": 3.9689368203232883e-17,
+     "aicc": 97.92793740248867,
+     "bic": 85.30321581017283,
+     "interval": {
+      "T_us": [
+       20.738755957614515,
+       21.254264572746248
+      ],
+      "amplitude": [
+       0.99868299564068,
+       1.002179679434122
+      ],
+      "batch_step": [
+       0.02557275862207074,
+       0.03156316265481596
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       19.725087532837808,
+       22.387500105870195
+      ],
+      "amplitude": [
+       0.9903926135584555,
+       1.0084172555033697
+      ],
+      "batch_step": [
+       0.013541281797961763,
+       0.04437440703205212
+      ]
+     },
+     "interval_scale": 26.49317281866492
+    }
+   },
+   "anchor_prepared0": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-0.cq",
+      "ones": 97,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+      "file": "x90-0.cq",
+      "ones": 40,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-0.cq",
+      "ones": 105,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 2.1656878859188313,
+     "freedom": 2,
+     "p": 0.3386311073660379
+    },
+    "shift": {
+     "weight": 0.6791426302502735,
+     "level_first": 0.00592041015625,
+     "level_probe": 0.0048828125,
+     "level_last": 0.00640869140625,
+     "interpolated": 0.0062520227686768915,
+     "shift": -0.0013692102686768915,
+     "se": 0.0009587504730722536,
+     "z": -1.4281195234139976
+    }
+   },
+   "anchor_prepared1": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-1.cq",
+      "ones": 15967,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+      "file": "t1-0.cq",
+      "ones": 8018,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-1.cq",
+      "ones": 16031,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 7.036100813911717,
+     "freedom": 2,
+     "p": 0.02965719830981964
+    },
+    "shift": {
+     "weight": 0.3162033996908995,
+     "level_first": 0.97454833984375,
+     "level_probe": 0.978759765625,
+     "level_last": 0.97845458984375,
+     "interpolated": 0.9757835093737925,
+     "shift": 0.002976256251207454,
+     "se": 0.0018784230926404695,
+     "z": 1.5844440280085026
+    }
+   }
+  },
+  {
+   "qubit": 13,
+   "models": {
+    "single": {
+     "params": {
+      "T_us": 23.921713209996668
+     },
+     "deviance": 10.705675601582426,
+     "chi_square": 10.832707759645396,
+     "freedom": 5,
+     "chi_square_per_dof": 2.1665415519290794,
+     "chi_square_probability": 0.05479966054438076,
+     "aicc": 13.705675601582426,
+     "bic": 12.49743507081048,
+     "interval": {
+      "T_us": [
+       23.706939781103642,
+       24.13854748609253
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       23.606292840146285,
+       24.24159828899437
+      ]
+     },
+     "interval_scale": 2.1665415519290794
+    },
+    "plateau": {
+     "params": {
+      "T_us": 23.371224018592365,
+      "plateau": 0.008464871764613639
+     },
+     "deviance": 6.217043851025735,
+     "chi_square": 6.228482671467214,
+     "freedom": 4,
+     "chi_square_per_dof": 1.5571206678668035,
+     "chi_square_probability": 0.1827224609545187,
+     "aicc": 14.217043851025736,
+     "bic": 9.800562789481845,
+     "interval": {
+      "T_us": [
+       23.04243488615827,
+       23.705284872455493
+      ],
+      "plateau": [
+       0.004450457364807904,
+       0.012515576465995723
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       22.961735344305392,
+       23.788922186812652
+      ],
+      "plateau": [
+       0.003460859288956853,
+       0.013525356890061164
+      ]
+     },
+     "interval_scale": 1.5571206678668035
+    },
+    "single_step": {
+     "params": {
+      "T_us": 23.25682961737295,
+      "batch_step": 0.008366170145753589
+     },
+     "deviance": 3.670270701934799,
+     "chi_square": 3.66952887669996,
+     "freedom": 4,
+     "chi_square_per_dof": 0.91738221917499,
+     "chi_square_probability": 0.4525732750446979,
+     "aicc": 11.670270701934799,
+     "bic": 7.2537896403909095,
+     "interval": {
+      "T_us": [
+       22.940083811923753,
+       23.58027117881395
+      ],
+      "batch_step": [
+       0.005201656474011115,
+       0.011545032619418886
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       22.940083811923753,
+       23.58027117881395
+      ],
+      "batch_step": [
+       0.005201656474011115,
+       0.011545032619418886
+      ]
+     },
+     "interval_scale": 1.0
+    },
+    "single_amplitude": {
+     "params": {
+      "T_us": 23.991569185709494,
+      "amplitude": 0.9978834616355158
+     },
+     "deviance": 10.263666927321239,
+     "chi_square": 10.369002209931832,
+     "freedom": 4,
+     "chi_square_per_dof": 2.592250552482958,
+     "chi_square_probability": 0.03465009663483357,
+     "aicc": 18.26366692732124,
+     "bic": 13.847185865777348,
+     "interval": {
+      "T_us": [
+       23.751966229750582,
+       24.234462654447942
+      ],
+      "amplitude": [
+       0.9946578681008663,
+       1.0010584474430326
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       23.607381948638295,
+       24.38428729529785
+      ],
+      "amplitude": [
+       0.9926655833440667,
+       1.0029701453563489
+      ]
+     },
+     "interval_scale": 2.592250552482958
+    },
+    "single_amplitude_step": {
+     "params": {
+      "T_us": 23.232017382585422,
+      "amplitude": 1.000464802740956,
+      "batch_step": 0.00849865361667462
+     },
+     "deviance": 3.650323186351515,
+     "chi_square": 3.650029380561915,
+     "freedom": 3,
+     "chi_square_per_dof": 1.216676460187305,
+     "chi_square_probability": 0.3018187348929309,
+     "aicc": 21.650323186351514,
+     "bic": 9.025601594035681,
+     "interval": {
+      "T_us": [
+       22.873109562970487,
+       23.601825415618368
+      ],
+      "amplitude": [
+       0.9971474409002362,
+       1.003720641304783
+      ],
+      "batch_step": [
+       0.00519487345187269,
+       0.011805020529908228
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       22.83672401226728,
+       23.640574310140853
+      ],
+      "amplitude": [
+       0.9968021726287531,
+       1.0040525768189645
+      ],
+      "batch_step": [
+       0.004854509014180537,
+       0.012145931532148851
+      ]
+     },
+     "interval_scale": 1.216676460187305
+    }
+   },
+   "anchor_prepared0": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-0.cq",
+      "ones": 422,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+      "file": "x90-0.cq",
+      "ones": 215,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-0.cq",
+      "ones": 404,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 0.6840518717068731,
+     "freedom": 2,
+     "p": 0.7103297814611634
+    },
+    "shift": {
+     "weight": 0.6791426302502735,
+     "level_first": 0.0257568359375,
+     "level_probe": 0.0262451171875,
+     "level_last": 0.024658203125,
+     "interpolated": 0.025010707559539498,
+     "shift": 0.0012344096279605019,
+     "se": 0.001968882870924463,
+     "z": 0.6269594023035515
+    }
+   },
+   "anchor_prepared1": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-1.cq",
+      "ones": 14924,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+      "file": "t1-0.cq",
+      "ones": 7491,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-1.cq",
+      "ones": 15041,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 5.340261645200992,
+     "freedom": 2,
+     "p": 0.06924316614572548
+    },
+    "shift": {
+     "weight": 0.3162033996908995,
+     "level_first": 0.910888671875,
+     "level_probe": 0.9144287109375,
+     "level_last": 0.91802978515625,
+     "interpolated": 0.9131467161721092,
+     "shift": 0.0012819947653908148,
+     "se": 0.003501332308450904,
+     "z": 0.3661448421495326
+    }
+   }
+  },
+  {
+   "qubit": 14,
+   "models": {
+    "single": {
+     "params": {
+      "T_us": 17.781693930021465
+     },
+     "deviance": 1937.5727730088822,
+     "chi_square": 2325.3225864974856,
+     "freedom": 5,
+     "chi_square_per_dof": 465.06451729949714,
+     "chi_square_probability": 0.0,
+     "aicc": 1940.5727730088822,
+     "bic": 1939.3645324781103,
+     "interval": {
+      "T_us": [
+       17.60746631958545,
+       17.957598710583593
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       14.374929531623843,
+       21.966503657163397
+      ]
+     },
+     "interval_scale": 465.06451729949714
+    },
+    "plateau": {
+     "params": {
+      "T_us": 11.090605455663106,
+      "plateau": 0.1325883462009479
+     },
+     "deviance": 406.21161037301647,
+     "chi_square": 409.77340043609126,
+     "freedom": 4,
+     "chi_square_per_dof": 102.44335010902282,
+     "chi_square_probability": 2.1501312590124172e-87,
+     "aicc": 414.21161037301647,
+     "bic": 409.7951293114726,
+     "interval": {
+      "T_us": [
+       10.902515661467593,
+       11.280903607050421
+      ],
+      "plateau": [
+       0.1287281868055029,
+       0.13646418349507386
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       9.283406923534432,
+       13.12372808487035
+      ],
+      "plateau": [
+       0.0943345375224978,
+       0.17245474825890322
+      ]
+     },
+     "interval_scale": 102.44335010902282
+    },
+    "single_step": {
+     "params": {
+      "T_us": 12.615538209280357,
+      "batch_step": 0.10914031767620036
+     },
+     "deviance": 182.3049789001691,
+     "chi_square": 182.6172114486573,
+     "freedom": 4,
+     "chi_square_per_dof": 45.65430286216432,
+     "chi_square_probability": 2.0437067289448967e-38,
+     "aicc": 190.3049789001691,
+     "bic": 185.8884978386252,
+     "interval": {
+      "T_us": [
+       12.467682659353931,
+       12.765375228817769
+      ],
+      "batch_step": [
+       0.10619536209580234,
+       0.11209891390961098
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       11.653546005102722,
+       13.668098631778935
+      ],
+      "batch_step": [
+       0.08951491650356724,
+       0.12938849520426723
+      ]
+     },
+     "interval_scale": 45.65430286216432
+    },
+    "single_amplitude": {
+     "params": {
+      "T_us": 19.35724158783749,
+      "amplitude": 0.9534773593863686
+     },
+     "deviance": 1782.1467178242249,
+     "chi_square": 2015.0934077428362,
+     "freedom": 4,
+     "chi_square_per_dof": 503.77335193570906,
+     "chi_square_probability": 0.0,
+     "aicc": 1790.1467178242249,
+     "bic": 1785.730236762681,
+     "interval": {
+      "T_us": [
+       19.108169579580622,
+       19.61146448696946
+      ],
+      "amplitude": [
+       0.9491195262624561,
+       0.9577519157435279
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       14.77172736192668,
+       26.554681486726917
+      ],
+      "amplitude": [
+       0.8413200669198403,
+       1.0254170561733496
+      ]
+     },
+     "interval_scale": 503.77335193570906
+    },
+    "single_amplitude_step": {
+     "params": {
+      "T_us": 12.673815377800466,
+      "amplitude": 0.9971364690293014,
+      "batch_step": 0.1087436286622214
+     },
+     "deviance": 181.17544628501088,
+     "chi_square": 181.36518613234898,
+     "freedom": 3,
+     "chi_square_per_dof": 60.455062044116325,
+     "chi_square_probability": 4.4734474495401277e-39,
+     "aicc": 199.17544628501088,
+     "bic": 186.55072469269504,
+     "interval": {
+      "T_us": [
+       12.515023483466885,
+       12.835420494333796
+      ],
+      "amplitude": [
+       0.994355628947494,
+       0.9998334395251336
+      ],
+      "batch_step": [
+       0.10577080600965619,
+       0.1117289139435419
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       11.507130982768764,
+       14.012052209250067
+      ],
+      "amplitude": [
+       0.9733059043036206,
+       1.015920889332068
+      ],
+      "batch_step": [
+       0.08596421310572765,
+       0.13227563722362726
+      ]
+     },
+     "interval_scale": 60.455062044116325
+    }
+   },
+   "anchor_prepared0": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-0.cq",
+      "ones": 619,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+      "file": "x90-0.cq",
+      "ones": 307,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-0.cq",
+      "ones": 598,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 0.39630709007504494,
+     "freedom": 2,
+     "p": 0.8202438990880058
+    },
+    "shift": {
+     "weight": 0.6791426302502735,
+     "level_first": 0.03778076171875,
+     "level_probe": 0.0374755859375,
+     "level_last": 0.0364990234375,
+     "interpolated": 0.03691027861112941,
+     "shift": 0.0005653073263705913,
+     "se": 0.0023677922880169138,
+     "z": 0.23874869819938915
+    }
+   },
+   "anchor_prepared1": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-1.cq",
+      "ones": 15636,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+      "file": "t1-0.cq",
+      "ones": 7821,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-1.cq",
+      "ones": 15573,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 3.4623665335154703,
+     "freedom": 2,
+     "p": 0.1770747592817021
+    },
+    "shift": {
+     "weight": 0.3162033996908995,
+     "level_first": 0.954345703125,
+     "level_probe": 0.9547119140625,
+     "level_last": 0.95050048828125,
+     "interpolated": 0.9531298331188643,
+     "shift": 0.0015820809436356553,
+     "se": 0.0026525801445290535,
+     "z": 0.5964309681268999
+    }
+   }
+  },
+  {
+   "qubit": 15,
+   "models": {
+    "single": {
+     "params": {
+      "T_us": 22.92676973394662
+     },
+     "deviance": 765.0246097164801,
+     "chi_square": 827.8840945292883,
+     "freedom": 5,
+     "chi_square_per_dof": 165.57681890585766,
+     "chi_square_probability": 1.0729981141343309e-176,
+     "aicc": 768.0246097164801,
+     "bic": 766.8163691857081,
+     "interval": {
+      "T_us": [
+       22.720593420175224,
+       23.134742426453805
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       20.405167909213155,
+       25.746596777720224
+      ]
+     },
+     "interval_scale": 165.57681890585766
+    },
+    "plateau": {
+     "params": {
+      "T_us": 18.015501876723988,
+      "plateau": 0.08402373579551173
+     },
+     "deviance": 406.8659805448619,
+     "chi_square": 421.30316673375484,
+     "freedom": 4,
+     "chi_square_per_dof": 105.32579168343871,
+     "chi_square_probability": 6.931085582106465e-90,
+     "aicc": 414.8659805448619,
+     "bic": 410.449499483318,
+     "interval": {
+      "T_us": [
+       17.72564460127371,
+       18.308619950214286
+      ],
+      "plateau": [
+       0.07933672007608453,
+       0.0887332084967546
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       15.187340213344319,
+       21.19276179611662
+      ],
+      "plateau": [
+       0.037170237601767936,
+       0.13321516395992117
+      ]
+     },
+     "interval_scale": 105.32579168343871
+    },
+    "single_step": {
+     "params": {
+      "T_us": 18.256600927323436,
+      "batch_step": 0.07699665982181508
+     },
+     "deviance": 238.9305857856706,
+     "chi_square": 242.56280059585228,
+     "freedom": 4,
+     "chi_square_per_dof": 60.64070014896307,
+     "chi_square_probability": 2.6032597071961805e-51,
+     "aicc": 246.9305857856706,
+     "bic": 242.5141047241267,
+     "interval": {
+      "T_us": [
+       18.02738098755128,
+       18.48932385158935
+      ],
+      "batch_step": [
+       0.0735187253981407,
+       0.08048470606096324
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       16.558489351914,
+       20.168207857511135
+      ],
+      "batch_step": [
+       0.05019676877609879,
+       0.10440809770824792
+      ]
+     },
+     "interval_scale": 60.64070014896307
+    },
+    "single_amplitude": {
+     "params": {
+      "T_us": 23.579204555353602,
+      "amplitude": 0.9840105028489045
+     },
+     "deviance": 727.7499904906072,
+     "chi_square": 760.3294480359132,
+     "freedom": 4,
+     "chi_square_per_dof": 190.0823620089783,
+     "chi_square_probability": 3.003798841972856e-163,
+     "aicc": 735.7499904906072,
+     "bic": 731.3335094290633,
+     "interval": {
+      "T_us": [
+       23.333689130546684,
+       23.828666476885605
+      ],
+      "amplitude": [
+       0.9810448524720331,
+       0.9868818628016923
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       20.494913090342656,
+       27.423568140821118
+      ],
+      "amplitude": [
+       0.9359098320400897,
+       1.0146493132421481
+      ]
+     },
+     "interval_scale": 190.0823620089783
+    },
+    "single_amplitude_step": {
+     "params": {
+      "T_us": 18.24455003563388,
+      "amplitude": 1.0002982797664857,
+      "batch_step": 0.0770826103807034
+     },
+     "deviance": 238.91022764476406,
+     "chi_square": 242.61188486109674,
+     "freedom": 3,
+     "chi_square_per_dof": 80.87062828703225,
+     "chi_square_probability": 2.59223170915779e-52,
+     "aicc": 256.91022764476406,
+     "bic": 244.28550605244823,
+     "interval": {
+      "T_us": [
+       18.00141022131178,
+       18.49256372530808
+      ],
+      "amplitude": [
+       0.998168190810684,
+       1.0023363798427218
+      ],
+      "batch_step": [
+       0.07355257295431836,
+       0.08061968223427016
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       16.212646586508686,
+       20.67916970248374
+      ],
+      "amplitude": [
+       0.977797127947812,
+       1.0154360412912387
+      ],
+      "batch_step": [
+       0.04558160702787308,
+       0.10913759333901464
+      ]
+     },
+     "interval_scale": 80.87062828703225
+    }
+   },
+   "anchor_prepared0": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-0.cq",
+      "ones": 722,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+      "file": "x90-0.cq",
+      "ones": 385,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-0.cq",
+      "ones": 705,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 2.051863635840759,
+     "freedom": 2,
+     "p": 0.3584622881500754
+    },
+    "shift": {
+     "weight": 0.6791426302502735,
+     "level_first": 0.0440673828125,
+     "level_probe": 0.0469970703125,
+     "level_last": 0.04302978515625,
+     "interpolated": 0.04336270601109286,
+     "shift": 0.0036343643014071433,
+     "se": 0.002572400443199808,
+     "z": 1.4128299157367423
+    }
+   },
+   "anchor_prepared1": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-1.cq",
+      "ones": 15862,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+      "file": "t1-0.cq",
+      "ones": 8001,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-1.cq",
+      "ones": 15995,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 25.657166425383657,
+     "freedom": 2,
+     "p": 2.682977929273874e-06
+    },
+    "shift": {
+     "weight": 0.3162033996908995,
+     "level_first": 0.9681396484375,
+     "level_probe": 0.9766845703125,
+     "level_last": 0.97625732421875,
+     "interpolated": 0.9707064851171197,
+     "shift": 0.005978085195380345,
+     "se": 0.0020255321132795485,
+     "z": 2.9513653010917706
+    }
+   }
+  },
+  {
+   "qubit": 16,
+   "models": {
+    "single": {
+     "params": {
+      "T_us": 22.516991382216013
+     },
+     "deviance": 37.86760019614705,
+     "chi_square": 39.2176248638188,
+     "freedom": 5,
+     "chi_square_per_dof": 7.84352497276376,
+     "chi_square_probability": 2.1469491331287656e-07,
+     "aicc": 40.86760019614705,
+     "bic": 39.659359665375106,
+     "interval": {
+      "T_us": [
+       22.32106580122921,
+       22.71465202029662
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       21.97259587949224,
+       23.07499667146692
+      ]
+     },
+     "interval_scale": 7.84352497276376
+    },
+    "plateau": {
+     "params": {
+      "T_us": 21.58061243869057,
+      "plateau": 0.015672730007255303
+     },
+     "deviance": 18.737187564786332,
+     "chi_square": 18.665042174704276,
+     "freedom": 4,
+     "chi_square_per_dof": 4.666260543676069,
+     "chi_square_probability": 0.0009144161543073463,
+     "aicc": 26.737187564786332,
+     "bic": 22.32070650324244,
+     "interval": {
+      "T_us": [
+       21.301159801572393,
+       21.86378818438579
+      ],
+      "plateau": [
+       0.01202357064326403,
+       0.019362535532726467
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       20.981438955650965,
+       22.197167619775446
+      ],
+      "plateau": [
+       0.007839914486367602,
+       0.023694852054315995
+      ]
+     },
+     "interval_scale": 4.666260543676069
+    },
+    "single_step": {
+     "params": {
+      "T_us": 21.618365170336915,
+      "batch_step": 0.013332094802491942
+     },
+     "deviance": 17.42056368134746,
+     "chi_square": 17.26842720656896,
+     "freedom": 4,
+     "chi_square_per_dof": 4.31710680164224,
+     "chi_square_probability": 0.0017140557664135367,
+     "aicc": 25.42056368134746,
+     "bic": 21.00408261980357,
+     "interval": {
+      "T_us": [
+       21.353838767330426,
+       21.8874886687425
+      ],
+      "batch_step": [
+       0.010347866332610032,
+       0.016337730748524643
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       21.073714883516395,
+       22.18287145266949
+      ],
+      "batch_step": [
+       0.007154979832716462,
+       0.019601438196711493
+      ]
+     },
+     "interval_scale": 4.31710680164224
+    },
+    "single_amplitude": {
+     "params": {
+      "T_us": 22.548468581294664,
+      "amplitude": 0.9990408957080267
+     },
+     "deviance": 37.64402654886535,
+     "chi_square": 38.93024872776333,
+     "freedom": 4,
+     "chi_square_per_dof": 9.732562181940832,
+     "chi_square_probability": 7.201422434830289e-08,
+     "aicc": 45.64402654886535,
+     "bic": 41.22754548732146,
+     "interval": {
+      "T_us": [
+       22.341303235428885,
+       22.758035112035227
+      ],
+      "amplitude": [
+       0.9969597548400579,
+       1.001050393729799
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       21.90988303288304,
+       23.210440030291604
+      ],
+      "amplitude": [
+       0.9923125704896556,
+       1.0050725942693033
+      ]
+     },
+     "interval_scale": 9.732562181940832
+    },
+    "single_amplitude_step": {
+     "params": {
+      "T_us": 21.580367676810813,
+      "amplitude": 1.0008062274967986,
+      "batch_step": 0.013543779247393105
+     },
+     "deviance": 17.258284593266065,
+     "chi_square": 17.112294586521735,
+     "freedom": 3,
+     "chi_square_per_dof": 5.704098195507245,
+     "chi_square_probability": 0.0006701353881231923,
+     "aicc": 35.25828459326607,
+     "bic": 22.633563000950232,
+     "interval": {
+      "T_us": [
+       21.301574961724544,
+       21.8652031812839
+      ],
+      "amplitude": [
+       0.9987825125744323,
+       1.0027552664120072
+      ],
+      "batch_step": [
+       0.010515373443639467,
+       0.01659038793873222
+      ]
+     },
+     "interval_scaled": {
+      "T_us": [
+       20.924020351024087,
+       22.2712350370075
+      ],
+      "amplitude": [
+       0.9958486222724121,
+       1.005338026885944
+      ],
+      "batch_step": [
+       0.0063394492485896225,
+       0.020851476904994653
+      ]
+     },
+     "interval_scale": 5.704098195507245
+    }
+   },
+   "anchor_prepared0": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-0.cq",
+      "ones": 561,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+      "file": "x90-0.cq",
+      "ones": 267,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-0.cq",
+      "ones": 499,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 3.754647838910701,
+     "freedom": 2,
+     "p": 0.15299899603784967
+    },
+    "shift": {
+     "weight": 0.6791426302502735,
+     "level_first": 0.03424072265625,
+     "level_probe": 0.0325927734375,
+     "level_last": 0.03045654296875,
+     "interpolated": 0.03167072490994159,
+     "shift": 0.0009220485275584084,
+     "se": 0.002214973957150765,
+     "z": 0.4162796246798706
+    }
+   },
+   "anchor_prepared1": {
+    "levels": [
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "file": "readout-1.cq",
+      "ones": 15879,
+      "shots": 16384
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+      "file": "t1-0.cq",
+      "ones": 7940,
+      "shots": 8192
+     },
+     {
+      "run": "2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "file": "readout-1.cq",
+      "ones": 15861,
+      "shots": 16384
+     }
+    ],
+    "homogeneity": {
+     "chi_square": 0.407258064516129,
+     "freedom": 2,
+     "p": 0.8157649375394738
+    },
+    "shift": {
+     "weight": 0.3162033996908995,
+     "level_first": 0.96917724609375,
+     "level_probe": 0.96923828125,
+     "level_last": 0.96807861328125,
+     "interpolated": 0.9688298546634255,
+     "shift": 0.00040842658657447295,
+     "se": 0.0021781179840883605,
+     "z": 0.18751352753070338
+    }
+   }
+  }
+ ]
+}

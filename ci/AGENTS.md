@@ -33,7 +33,7 @@ per native library, `GOROROBA_PINS_REQUIRED=1`):
 - `contracts` runs that file the same way in parallel with `tests` under a
   5-minute step timeout, so neither pytest step approaches its timeout;
 - `arm` runs the `tests` and `contracts` lanes on `ubuntu-26.04-arm` and
-  `macos-15` (a matrix with fail-fast off, a 10-minute pytest step and a
+  `macos-26` (a matrix with fail-fast off, a 10-minute pytest step and a
   6-minute contract-suites step).
 
 Pull-request CI answers one question: does the change break the repository's
@@ -61,7 +61,7 @@ The job timeouts are 8 minutes for `lint`, 10 for `types` (its mypy step 4), 12 
 .github/actions/pins-venv, under a cache key that hashes the venv's inputs, and
 build it with ci/install_pins.sh on a miss; a push to main saves it where later
 pull requests restore it. Branch protection on main requires `lint`, `types`, `tests`, `contracts` and
-both `arm` legs (`arm (ubuntu-26.04-arm)`, `arm (macos-15)`) green on the
+both `arm` legs (`arm (ubuntu-26.04-arm)`, `arm (macos-26)`) green on the
 head, for administrators too, without requiring the branch to
 be current with main. A pull request that `GITHUB_TOKEN` opened starts no
 `pull_request` workflow, so its author dispatches pr.yml on the branch

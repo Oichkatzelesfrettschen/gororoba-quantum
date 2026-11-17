@@ -3,7 +3,7 @@
 tests/conftest.py marks every node ID below with ``pytest.mark.xfail(strict=True)`` on the platforms it names, so a
 listed test that starts passing there fails the run and its entry comes out. A platform is ``sys.platform`` and
 ``platform.machine()`` joined by a hyphen: ``linux-aarch64`` for the ubuntu-26.04-arm runner (numpy on OpenBLAS),
-``darwin-arm64`` for macos-15 (numpy on Accelerate). The x64 runners and the build host match no entry.
+``darwin-arm64`` for macos-26 (numpy on Accelerate). The x64 runners and the build host match no entry.
 
 Two causes recur. A Linux interface (``/proc``, ``time.CLOCK_BOOTTIME``) is absent on macOS. A retained record or
 a byte-identity check holds the bits of the x64 numeric identity that wrote it, while another identity rounds
