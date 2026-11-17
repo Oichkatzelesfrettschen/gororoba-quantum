@@ -20,6 +20,7 @@ def _require(condition: bool, message: str) -> None:
 
 def _synthetic_host(tmp_path: Path, available_kib: int, limits: dict[str, tuple[str, int]]) -> dict[str, Path]:
     """A /proc/meminfo, /proc/self/cgroup and cgroup tree; limits maps a cgroup path to (memory.max, memory.current)."""
+    tmp_path.mkdir(parents=True, exist_ok=True)
     meminfo = tmp_path / "meminfo"
     meminfo.write_text(f"MemTotal: 99999999 kB\nMemAvailable: {available_kib} kB\n")
     proc_cgroup = tmp_path / "cgroup"
