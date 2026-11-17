@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+from typing import Any
 
 import pytest
 import qi_pathion_one_cz_null_analysis as ana
@@ -111,8 +112,38 @@ def test_the_enumerated_confounded_probability_of_two_templates_matches_its_clos
     )
 
 
+def test_the_pooled_enumeration_of_two_templates_equals_the_serial_one_bit_for_bit(
+    forced_pool: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    for rate in (0.0, 0.1, 0.25, 7 / 19):
+        monkeypatch.setattr(eo, "MASK_BLOCK", 1 << 8)  # one block of all 2^8 patterns runs inline
+        serial = eo.operating_characteristics(rate, templates=2)
+        monkeypatch.setattr(eo, "MASK_BLOCK", 1 << 5)  # eight blocks of 32 patterns run in two spawned workers
+        pooled = eo.operating_characteristics(rate, templates=2)
+        _expect(pooled == serial, f"rate {rate}: {pooled} against {serial}")
+    _expect(
+        forced_pool.maps[-1] == ("function", 8) and set(forced_pool.pools) == {2},
+        str((forced_pool.maps, forced_pool.pools)),
+    )
+
+
 @pytest.mark.audit
-def test_the_enumerated_confounded_probability_matches_its_closed_form() -> None:
+def test_the_pooled_enumeration_of_four_templates_equals_the_serial_one_bit_for_bit(
+    forced_pool: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(eo, "MASK_BLOCK", 1 << 16)  # one block of all 2^16 patterns runs inline
+    serial = eo.operating_characteristics(0.25)
+    monkeypatch.setattr(eo, "MASK_BLOCK", 512)
+    pooled = eo.operating_characteristics(0.25)
+    _expect(pooled == serial, f"{pooled} against {serial}")
+    _expect(
+        forced_pool.maps[-1] == ("function", 128) and set(forced_pool.pools) == {2},
+        str((forced_pool.maps, forced_pool.pools)),
+    )
+
+
+@pytest.mark.audit
+def test_the_enumerated_confounded_probability_matches_its_closed_form(forced_pool: Any) -> None:
     for rate in (0.1, 0.25, 7 / 19):
         per_template = 2 * rate**2 * (1 - rate) ** 2  # a template [+, -, +, -] ends one-directional
         seen = eo.operating_characteristics(rate)["confounded"]
