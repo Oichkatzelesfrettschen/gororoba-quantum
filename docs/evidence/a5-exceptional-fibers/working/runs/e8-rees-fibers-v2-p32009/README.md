@@ -1,6 +1,6 @@
 # Modular Rees fiber certificates of E8-bar and Iso at p = 32009
 
-This directory retains four Singular runs that compute the defining ideal of a fiber cone as the special fiber of a
+This directory retains four Singular runs that compute the defining ideal of a fiber cone as the fiber over the origin (the maximal ideal m) of a
 saturated Rees ideal, on the weight slice of the nullity-8 closures (nine slice coordinates s1 to s9 with torus weights
 1, 0, 3, 2, 2, 1, 4, 4, 3; ledger A5-421) modulo p = 32009 with the root of -1 equal to 10754. The ledger rows
 A5-572 to A5-575 state the results and A5-576 to A5-578 state what remains open. The two E8-bar runs at (32009, 10754) test the prediction that A5-457 recorded on
@@ -32,7 +32,8 @@ generators, all of degree 2. The third cell of that three-run falsifier, E8-bar 
   in `docs/evidence/a5-kernel-attachments/weight-slice-fiber-relations-result.json`; the selected Pfaffians, generator
   weights and Hilbert numerator of both E8-bar runs equal that cell's, and the Iso numerator equals the record's Iso -> N-
   cell over Q(i). The record has no E8bar -> N+ cell modulo 32009, so the 148 N+ relation lines (digest
-  `b9b7372bce35e7ce286aa572f9b1ebf656d1ac04ba0e63349c640efed88658ee`) are bound by this run alone (A5-577).
+  `b9b7372bce35e7ce286aa572f9b1ebf656d1ac04ba0e63349c640efed88658ee`) are bound to no record cell (A5-577); A5-580 regenerates them
+  from the producer code, which supersedes the earlier reading that this run alone binds them.
 - The relation lines of these cells and the header-slice K2 of A5-570 do not match as spans over F_32009: both sides have
   rank 148 in the 21 variables y(1..21), and their supports hold 207 and 217 monomials (measured with this script's
   parsers on the relation files of the A5-570 receipt and of the retained N- degree-2 run, and on the run lines).
@@ -48,7 +49,13 @@ nine-coordinate skew matrix, forms the degree-2 relations K, and then computes t
 1. Unit replacement: each generator G_a is divided by the polynomial c_a(s2) with c_a(0) nonzero that its terms share
    (a unit of the local ring at the origin), leaving g_a with G_a = (c_a(s2) / c_a(0)) g_a modulo J. The script checks the
    identity c_a(0) G_a - c_a g_a in J for every a (`unit_identity_bad 0`) and that every c_a has positive degree.
-2. Pivot: the generator of least weight, G_p, is a nonzerodivisor modulo J (`CERT pivot_nonzerodivisor_mod_J 1`).
+   Line 192 of each script is the unit check: for every a it rejects c_a(0) = 0 at the working prime (a factor with a
+   zero constant term is no unit at the origin), a c_a that involves a variable other than s2, and a failed identity;
+   line 193 prints the count of rejected generators and whether every c_a has positive degree. Because c_a(s2) / c_a(0)
+   is a unit of the local ring at the origin, (G) and (g) agree there, so the run decides the fiber over the origin
+   (the maximal ideal m = (s1, ..., s9)) of the Rees algebra of the stripped generators, which is the fiber cone of (G);
+   the Rees ideals of (G) and (g) away from the origin are not compared.
+2. Pivot: the stripped generator of least weight, g_p, is a nonzerodivisor modulo J (`CERT pivot_nonzerodivisor_mod_J 1`).
 3. Saturation: H = J + the 2 x 2 minors y_a g_b - y_b g_a + (u - g_p) is saturated by u with `satstd` of
    `customstd.lib` under the weighted ordering `wp`, which gives a standard basis Q with H inside Q inside H : u^infinity
    (`CERT satstd_isSB 1`). A basis in which u divides no leading monomial satisfies Q : u = Q; when the count of leading
@@ -58,7 +65,8 @@ nine-coordinate skew matrix, forms the degree-2 relations K, and then computes t
 
 ## What the check decides
 
-`check_rees_fibers.py` runs from this directory's parent `docs/evidence/a5-exceptional-fibers` as
+`check_rees_fibers.py` tests the internal consistency of a log and its ties to tracked bytes; it does not test that
+Singular produced the log (a log edited consistently, with `sha256.txt` regenerated, passes). It runs from this directory's parent `docs/evidence/a5-exceptional-fibers` as
 `python -B working/runs/e8-rees-fibers-v2-p32009/check_rees_fibers.py` and runs no Singular. It verifies, for each log,
 the Singular banner, the digest of the retained script on line 2, the single `EXIT 0`, the absence of failure lines,
 every certificate line, the equality of the generator counts, dimension and multiplicity across the K and FIBER lines,
@@ -114,9 +122,9 @@ The script digests are in line 2 of each log: `4e88035959ed486dc7fe168dafcc97ca4
 
 Each run writes its Rees standard basis (`NAME.hs.ssi`) and, when a colon iteration ran, the saturated basis
 (`NAME.sat.ssi`) as Singular `ssi` files. The four largest are 52 to 60 MB; they are bound by digest here and in
-`bases.sha256` instead of retained, as the normal-form tables of the A5-570 receipt are. The log is self-checking: the
-certificate lines and both inclusions against K are printed from the basis in the run, so the basis files serve only a
-re-verification by reading them back into Singular.
+`bases.sha256` instead of retained, as the normal-form tables of the A5-570 receipt are. The log prints
+the certificate lines and both inclusions against K from the basis in the run; an independent re-verification reads the
+basis files back into Singular, so they are required for it.
 
 | File | Bytes | sha256 |
 |---|---|---|
