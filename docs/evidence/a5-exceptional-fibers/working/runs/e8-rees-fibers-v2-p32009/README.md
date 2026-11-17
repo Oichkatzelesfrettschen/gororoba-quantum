@@ -100,6 +100,15 @@ The two E8-bar full runs (13 h 42 min and 11 h 22 min) are not replayed (A5-578)
 | `replay/` | the logs, time records and basis digests of the second-host replay |
 | `sha256.txt` | sha256 of every retained file |
 
+## Log warnings
+
+Each full log holds 139 `// ** redefining NAME` warnings (108 distinct names, the same list in the four logs). Every name
+is a procedure of `primdec.lib`, which line 157 loads: a script that loads `matrix.lib`, `linalg.lib` and `primdec.lib`
+and nothing else prints the same 139 lines, and one without `primdec.lib` prints none (measured on a compute host,
+Singular 4.4.1, banner Dec 6 2025 11:10:58). The checker exempts the lines. The one name that the script calls is
+`minAssGTZ` (line 157), whose components give J and therefore feed every later line; the warning is the library's own
+redefinition at load, and no loop temporary (`uk`, `um`, `ub`, `a`, `b`) is among the names.
+
 ## Provenance of the retained bytes
 
 The runs executed on a cloud VM, and its output directory was copied to the checkout with a sha256 comparison of every
