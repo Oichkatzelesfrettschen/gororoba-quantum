@@ -87,10 +87,12 @@ the series decides.
 - Integration (done): `evaluate` in `scripts/qi_pathion_one_cz_null_bracketed_cases.py` maps the stamps to `executed_offset`
   (`twin_offsets`), replaces the twin rows by `adjusted_rows` (`executed_twin_fit`), emits the five labels (`WITHHELD_LABELS`) and keeps the
   label of the pool that ignores the order as `order_ignored_label` (repeated as `label_if_order_ignored` in a withheld decision) and the strict result as `order_gate`.
-- Power under reordering (done): `prediction.json` holds five tables of the registered rule, simulated with reordering at 0.5
-  per batch, a linear drift and a planted departure (CASE.md, "Operating characteristics"): 91.6 to 93.3 percent at the design
-  effect, a heterogeneity-gate false-alarm rate of about 1.0 percent and detection of 46 and 94 percent at departures of
-  0.0075 and 0.015 per position. The pricing simulator of the layout choice (`scripts/qi_pathion_one_cz_null_bracketed_pricing.py`)
+- Power under reordering (done): `prediction.json` holds seven tables of the registered rule, simulated with reordering at 0.5
+  per batch, a linear drift, a planted departure and the 0.003 stress of the power rule (CASE.md, "Operating
+  characteristics"): 81.6 and 83.8 percent at the design effect under an independent drift of 0.003 on every contrast, 87.2 and
+  89.2 under a pair-common drift, 91.6 to 93.3 where the drift is the linear one that the fit removes; a heterogeneity-gate
+  false-alarm rate of about 1.0 percent (3.1 percent under the independent drift) and detection of 46 and 94 percent at
+  departures of 0.0075 and 0.015 per position. The pricing simulator of the layout choice (`scripts/qi_pathion_one_cz_null_bracketed_pricing.py`)
   still prices the pool that ignores the order, and its retained cells keep their bytes.
 - The common-drift hypothesis: tested by rule 3 on the run itself and by nothing before it.
 

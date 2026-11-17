@@ -623,6 +623,19 @@ def test_the_stored_executed_order_tables_hold_the_power_and_the_gate_rates() ->
     kept, moved = _executed_table("executed_in_order"), _executed_table("executed_reordered_linear_drift")
     for world, label in (("coin_dropout", "b0_like"), ("superposition_only", "superposition_only")):
         _expect(abs(kept["labels"][world][label] - moved["labels"][world][label]) < 0.02, f"reordering costs {world}")
+    # The stress of the 80 percent power rule: a drift of 0.003 on every contrast, or on the base contrasts alone, under
+    # reordering. The pool that ignores the order reads 82.1 / 85.2 and 86.8 / 90.1 (stored tables above).
+    independent = _executed_table("executed_reordered_independent_drift_sd_0.003")
+    shared = _executed_table("executed_reordered_pair_common_drift_sd_0.003")
+    for table, floor in ((independent, 0.80), (shared, 0.85)):
+        _expect(
+            table["labels"]["coin_dropout"]["b0_like"] >= floor, f"stress dropout {table['labels']['coin_dropout']}"
+        )
+        _expect(table["labels"]["superposition_only"]["superposition_only"] >= floor, "stress superposition-only")
+    _expect(
+        shared["labels"]["coin_dropout"]["b0_like"] > independent["labels"]["coin_dropout"]["b0_like"],
+        "a drift that cancels in the pair raises the power",
+    )
     # Detection of a planted departure of the k4 twin drift from the shared 0.003 per position.
     small, large = (
         _executed_table("executed_planted_departure_0.0075"),

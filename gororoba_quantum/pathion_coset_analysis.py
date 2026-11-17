@@ -500,9 +500,8 @@ def read_series(
 
     A job that did not complete, a batch listed twice or run directories that describe different series raise
     ValueError. Returns the series fields shared by every batch (`ignored` are the per-batch keys left out of that
-    comparison), the shot lists and provider start times keyed "batch/file" (None for a job record without a
-    `queued_at`, which a decision reads as an unusable order), the sha256 of each batch's cases.json, and the
-    (shots, roles, ideal law) of every circuit of kind `data_kind`."""
+    comparison), the shot lists and provider start times keyed "batch/file", the sha256 of each batch's cases.json,
+    and the (shots, roles, ideal law) of every circuit of kind `data_kind`."""
     shared: dict[str, Any] | None = None
     shots: dict[str, list[str]] = {}
     executed: dict[str, str] = {}
@@ -526,7 +525,7 @@ def read_series(
         for row in cases["circuits"]:
             key = f"{cases['batch']}/{row['file']}"
             shots[key] = run["shots"][row["file"]]
-            executed[key] = run["jobs"][row["file"]].get("queued_at")
+            executed[key] = run["jobs"][row["file"]]["queued_at"]
             if row["kind"] == data_kind:
                 arms[key] = (shots[key], cases["templates"][row["template"]]["roles"], row["ideal"])
     if shared is None:

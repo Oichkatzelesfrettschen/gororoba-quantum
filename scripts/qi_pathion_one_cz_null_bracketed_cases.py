@@ -884,8 +884,26 @@ def evaluate(
     return record
 
 
+class _StampedRuns:
+    """`pcs` with a `load_run` whose job records always carry `queued_at`: `pathion_coset_analysis.read_series`
+    (sha256-bound by retained Kaggle submissions) indexes the key, so a job record without it would stop the series
+    with a KeyError. A missing key reads as a null stamp, which `evaluate` turns into `unresolved_order`."""
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(pcs, name)
+
+    @staticmethod
+    def load_run(run_dir: Path, case_batch: Path | None = None) -> dict[str, Any]:
+        run: dict[str, Any] = pcs.load_run(run_dir, case_batch)
+        for job in run["jobs"].values():
+            job.setdefault("queued_at", None)
+        return run
+
+
+_runs = _StampedRuns()
 analyze_series = ana.rebound(
     oc.analyze,
+    pcs=_runs,
     evaluate=evaluate,
     ANALYSIS_SCHEMA=ANALYSIS_SCHEMA,
     batch_rows=batch_rows,
@@ -927,7 +945,7 @@ def analyze(run_dirs: list[Path], case_root: Path | None = pcs.CASES_ROOT) -> di
     needs."""
     record: dict[str, Any] = analyze_series(run_dirs, case_root)
     if record["claim_kind"] == oc.CONTROL_KIND and record["complete"]:
-        data = pca.read_series(run_dirs, case_root, series_of, "data", oc.BATCH_FIELDS, pcs.load_run)
+        data = pca.read_series(run_dirs, case_root, series_of, "data", oc.BATCH_FIELDS, _runs.load_run)
         record["qx_brackets"] = qx_brackets(data["shots"], data["shared"])
     return record
 
@@ -1155,6 +1173,24 @@ EXECUTED_TABLES: dict[str, dict[str, float]] = {
         }
         for departure in PLANTED_DEPARTURES
     },
+    # The stress of the 80 percent power rule (OC_DRIFT_SD on every contrast, or on the base contrasts alone), under
+    # reordering and with no shared linear drift for the fit to remove: the same drift models as the pool that ignores
+    # the order, which a series cannot correct because they are noise per batch.
+    f"executed_reordered_independent_drift_sd_{OC_DRIFT_SD}": {
+        "rate": REORDER_RATE,
+        "twin_drift": 0.0,
+        "base_slope": 0.0,
+        "departure": 0.0,
+        "twin_noise_sd": OC_DRIFT_SD,
+        "base_noise_sd": OC_DRIFT_SD,
+    },
+    f"executed_reordered_pair_common_drift_sd_{OC_DRIFT_SD}": {
+        "rate": REORDER_RATE,
+        "twin_drift": 0.0,
+        "base_slope": 0.0,
+        "departure": 0.0,
+        "base_noise_sd": OC_DRIFT_SD,
+    },
 }
 OC_SEED_INDICES.update({name: 923 + n for n, name in enumerate(EXECUTED_TABLES)})
 # The design's 1,667 to 1,821 s of execution over 120 jobs is 13.9 to 15.2 s per job.
@@ -1219,13 +1255,16 @@ def _executed_series(
         for batch in layout["twin"][template]:
             zeros = rng.binomial(shots, p_read)
             value, se = twin_contrast(int(zeros[1]), shots, int(zeros[0]), shots)
-            twin.append((value + drift * offsets[batch], se))
+            noise = params.get("twin_noise_sd", 0.0)
+            twin.append((value + drift * offsets[batch] + (noise * float(rng.normal()) if noise else 0.0), se))
         se_base = 1.0 / math.sqrt(CONTROL_SHOTS if template == "b0" else BATCH_SHOTS)
+        base_noise = params.get("base_noise_sd", 0.0)
         base = [
             (
                 mean[f"s_{key}"]
                 + se_base * float(rng.normal())
-                + params["base_slope"] * (seconds[f"{batch}/{template}.cq"] - reference_time[template]),
+                + params["base_slope"] * (seconds[f"{batch}/{template}.cq"] - reference_time[template])
+                + (base_noise * float(rng.normal()) if base_noise else 0.0),
                 se_base,
             )
             for batch in layout["base"][template]
@@ -1324,6 +1363,7 @@ def predictions(operating: bool = True) -> dict[str, Any]:
                 "reorder_rate_per_batch": rule.ten_thousandths(REORDER_RATE),
                 "twin_drift_per_position": rule.ten_thousandths(LINEAR_TWIN_DRIFT),
                 "base_drift_per_hour": rule.ten_thousandths(LINEAR_BASE_SLOPE * 3600.0),
+                "contrast_drift_sd": rule.ten_thousandths(OC_DRIFT_SD),
                 "planted_departures_per_position": [rule.ten_thousandths(d) for d in PLANTED_DEPARTURES],
                 "planted_template": PLANTED_TEMPLATE,
                 "gate_worlds": list(GATE_WORLDS),

@@ -224,8 +224,8 @@ predecessor, read raw.
   terminal-assignment context (D and G of the predecessor, reported beside the outcome).
 - The routing seeds are those of the predecessor (values 0, 64 and 128 of
   `docs/evidence/anu_qrng/draw-2026-11-07T163258Z.json`); the three operating-characteristics tables are seeded from
-  values 920 to 927 of `docs/evidence/anu_qrng/draw-2026-11-14T183922Z.json`, one each, in that order (the three tables of the
-  pool that ignores the order, then the five tables of the executed-order rule).
+  values 920 to 929 of `docs/evidence/anu_qrng/draw-2026-11-14T183922Z.json`, one each, in that order (the three tables of the
+  pool that ignores the order, then the seven tables of the executed-order rule).
 - QX twin: per template one batch `[readout-0, coin-0 twin, coin-1 twin, readout-1, base]`, 4 batches of 5 circuits (the
   service ceiling) at 2,048 shots; the QX emulator is no hardware backend and takes no policy field.
 
@@ -255,10 +255,10 @@ interval variance. `prediction.json` (`preregistered`, `outcomes`) holds the tex
 
 ### Operating characteristics
 
-`prediction.json` (`operating_characteristics`) holds eight tables, shares in ten-thousandths, 20,000 simulated series per
+`prediction.json` (`operating_characteristics`) holds ten tables, shares in ten-thousandths, 20,000 simulated series per
 world. Each seeds from its own value of `docs/evidence/anu_qrng/draw-2026-11-14T183922Z.json`, indices in increasing
-order, each used once (`seed_indices`): the three tables of the pool that ignores the order (920 to 922) and the five
-tables of the registered executed-order rule (923 to 927).
+order, each used once (`seed_indices`): the three tables of the pool that ignores the order (920 to 922) and the seven
+tables of the registered executed-order rule (923 to 929).
 
 #### The registered rule: executed order, drift and reordering
 
@@ -277,15 +277,21 @@ three tables and the `absent`, `coin_dropout` and `superposition_only` worlds fo
 | `executed_in_order` (923): no reordering, no drift | 0.916 | 0.933 | 0.965 | 0.0097 to 0.0121 |
 | `executed_reordered_stationary` (924): reordering, no drift | 0.917 | 0.921 | 0.961 | 0.0086 to 0.0114 |
 | `executed_reordered_linear_drift` (925): reordering, linear drift | 0.917 | 0.924 | 0.963 | 0.0091 to 0.0115 |
+| `executed_reordered_independent_drift_sd_0.003` (928): reordering, drift 0.003 on every base and twin contrast (the stress of the power rule) | 0.816 | 0.838 | 0.894 | 0.0303 to 0.0331 |
+| `executed_reordered_pair_common_drift_sd_0.003` (929): reordering, drift 0.003 on the base contrasts (a pair-common drift cancels in the twin contrast) | 0.872 | 0.892 | 0.945 | 0.0095 to 0.0109 |
 
 | planted departure of the k4 twin drift per position (seed value) | gate fired, absent / dropout / superposition-only |
 |---|---|
 | 0.0075 (926) | 0.457 / 0.469 / 0.458 |
 | 0.015 (927) | 0.944 / 0.945 / 0.944 |
 
-The rule meets the power rule of 80 percent at the design effect in every table (91.6 to 93.3 percent), and reordering at
-0.5 per batch costs at most 1.2 points of it. The drift-heterogeneity gate fires on about 1.0 percent of series when no
-template departs (false-alarm rate, three errors of the difference on four correlated templates, 0.27 percent each),
+The rule meets the power rule of 80 percent at the design effect in every table, including the stress that the rule is
+defined on: 81.6 and 83.8 percent under a drift of 0.003 on every contrast (928; the pool that ignores the order reads 82.1 and
+85.2) and 87.2 and 89.2 under the pair-common drift (929; 86.8 and 90.1), 91.6 to 93.3 percent where the drift is the shared
+linear drift that the fit removes; reordering at 0.5 per batch costs at most 1.2 points of it. The independent-drift stress
+is the binding one: the margin over 80 percent is 1.6 points for the dropout world at a Monte Carlo standard error of 0.27. The drift-heterogeneity gate fires on about 1.0 percent of series when no
+template departs (false-alarm rate, three errors of the difference on four correlated templates, 0.27 percent each; 3.1
+percent when every contrast carries an independent drift of 0.003, which the shared-drift model reads as a departure),
 and detects a departure of 0.0075 per position (2.5 times the shared drift) in 46 percent and of 0.015 in 94 percent of
 series. The remaining losses of the dropout world under linear drift are `intermediate` 0.045, `unresolved_block` 0.020
 and `unresolved_drift_heterogeneity` 0.0105 (the false alarms), and `unresolved_batch` stays under 0.005. The tables simulate the drift that the
@@ -390,9 +396,10 @@ single-qubit gate, Rz included, and in under 0.1 percent of runs of any admitted
 
 ## Residual risk
 
-- The registered rule meets the 80 percent power rule in every executed-order table (91.6 to 93.3 percent at the design effect,
-  Operating characteristics) under the drift that it corrects, linear in executed position and time; the stress that
-  governs the hardware is a hypothesis, and a drift of another shape reads `unresolved_drift_model` or
+- The registered rule meets the 80 percent power rule in every executed-order table (Operating characteristics): 81.6 and 83.8
+  percent under an independent drift of 0.003 on every contrast, 87.2 and 89.2 under a pair-common drift, 91.6 to 93.3 where
+  the drift is the linear one that it corrects; the stress that governs the hardware is a hypothesis, the margin over 80
+  percent under the independent drift is 1.6 points, and a drift of another shape reads `unresolved_drift_model` or
   `unresolved_drift_heterogeneity` and decides nothing. The pool that ignores the order meets the rule under both of its
   drift models. The batch bound 16.266 is a case-specific change of the preregistered gate, and a gate tripped by real
   drift reads `unresolved_batch`, as it did in the retained series.
@@ -457,9 +464,10 @@ Five lines, then the comparison with the retained shape and the decision each ou
    and `qi_pathion_one_cz_null_rule_v2.py` define them (definitions in this repository; no external paper defines them).
 3. Falsifier: a label that the preregistered world rows do not predict, or any `unresolved_*` label (batch, block, negative
    twin, order), which decides nothing and leaves A5-186 unchanged.
-4. Predicted outcome and budget: power 91.7 / 92.4 percent (dropout / superposition-only world) under the registered
-   executed-order rule with reordering and linear drift (82.1 / 85.3 under independent drift 0.003 and 86.9 / 90.0 under
-   common-pair drift for the pool that ignores the order), for 120 jobs, 2,555,904 shots, 1,667 to 1,821 s of execution plus 671 s of
+4. Predicted outcome and budget: power 81.6 / 83.8 percent (dropout / superposition-only world) under the registered
+   executed-order rule with reordering and an independent drift of 0.003 on every contrast, 87.2 / 89.2 under common-pair
+   drift and 91.7 / 92.4 under the linear drift that it corrects (82.1 / 85.3 and 86.9 / 90.0 for the pool that ignores the
+   order), for 120 jobs, 2,555,904 shots, 1,667 to 1,821 s of execution plus 671 s of
    pauses (hypothesis: the drift model; the retained forward-against-mirror comparison shows no twin drift above noise).
 5. Next step by outcome: a label confirms or rules out one mechanism and moves A5-186; `unresolved_batch` repeats the
    predecessor's b0 base-replicate heterogeneity and moves the design to drift control; `unresolved_order` is the case below.
