@@ -301,6 +301,10 @@ def self_test() -> list[str]:
         "duplicate relation": text.replace("REL 1,5:-1 2,4:1\n", "REL 1,8:-2 2,5:1\n"),
         "script digest": text.replace(digest, "0" * 64),
         "failure line": text.replace("EXIT 0", "CERT FAIL saturation\nEXIT 0"),
+        # Singular exits 0 on SIGTERM, so a run stopped from outside can end with EXIT 0 and no result lines.
+        "truncated before FIBER, EXIT 0": text[: text.index("FIBER bound")] + "EXIT 0\n",
+        "truncated before FIBER, no EXIT": text[: text.index("FIBER bound")],
+        "terminal FIBER line removed": text.replace("FIBER outside_K 0 K_outside_fiber 0\n", ""),
     }
     for label, mutant in mutants.items():
         if mutant == text:

@@ -56,6 +56,16 @@ TOY = "\n".join(
 )
 
 
+_RESULT_TAIL = (
+    "FIBER bound 0 minimal generators 1 dim 1 mult 2\n"
+    "generator degrees 2\n"
+    "FIBER outside_K 0 K_outside_fiber 0\n"
+    "hilb\n"
+    "1,0,-1,0\n"
+    "STAGE rees_done 3\n"
+)
+
+
 @pytest.fixture
 def _toy_run(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setitem(check_rees_fibers.RUNS, "toy", (2, 0, 1, 1, 2))
@@ -90,6 +100,9 @@ def test_a_complete_log_passes() -> None:
         ("REL 1,1:1\n", "REL 1,1:0\n"),
         (SCRIPT_DIGEST, "0" * 64),
         ("EXIT 0", "CERT FAIL saturation\nEXIT 0"),
+        (_RESULT_TAIL, ""),
+        (_RESULT_TAIL + "EXIT 0\n", ""),
+        ("FIBER outside_K 0 K_outside_fiber 0\n", ""),
     ],
 )
 @pytest.mark.usefixtures("_toy_run")

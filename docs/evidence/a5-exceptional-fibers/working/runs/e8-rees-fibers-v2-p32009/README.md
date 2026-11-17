@@ -63,10 +63,13 @@ nine-coordinate skew matrix, forms the degree-2 relations K, and then computes t
 the Singular banner, the digest of the retained script on line 2, the single `EXIT 0`, the absence of failure lines,
 every certificate line, the equality of the generator counts, dimension and multiplicity across the K and FIBER lines,
 the degree of every generator, the linear independence of the relation lines over F_32009 and the Hilbert arithmetic; then
-the ties to the weight-slice record listed above, the `sha256.txt` table, and the replay below. `--self-test` rejects 13
+the ties to the weight-slice record listed above, the `sha256.txt` table, and the replay below. `--self-test` rejects 16
 mutated copies of the Iso log (a nonzero `outside_K`, an `EXIT 1`, each certificate flag, a lost colon line, a changed
-multiplicity, numerator or generator degree, a dropped or duplicated relation, a wrong script digest and a failure
-line). `tests/test_a5_rees_fibers_check.py` runs the same verdict on a constructed toy log in the default lane and the
+multiplicity, numerator or generator degree, a dropped or duplicated relation, a wrong script digest, a failure
+line, and three truncations: a log cut before its FIBER lines with and without an appended `EXIT 0`, and a log without
+its terminal FIBER line). Singular 4.4.1 exits 0 on SIGTERM (measured), so an `EXIT 0` alone does not show that a run
+finished; `run2.sh` only records the exit status, wrapped in `timeout` (status 124 on its own timeout), and the check
+is the reader that requires the FIBER lines. `tests/test_a5_rees_fibers_check.py` runs the same verdict on a constructed toy log in the default lane and the
 retained logs under `pytest -m audit`.
 
 ## Replay on a second host
@@ -129,6 +132,11 @@ The Iso basis and its saturation are one file (`iso-nm-p.c-u-full.hs.ssi` equals
 colon test needed no iteration. Regenerating the full-run files reruns `run2.sh` (11 to 14 hours on one core).
 
 ## Scope
+
+A generator that lies in J sends the loop of line 185 into an endless loop (measured on a toy ring); the retained logs
+print nonzero `UNIT terms left` for every generator, so no retained run reaches it. The scripts keep their bytes, since
+each log binds its digest; the successor script with a guard is proposed in
+https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/946.
 
 One prime (32009), one root of -1 (10754), the weight-slice cells of E8-bar -> N-, E8-bar -> N+ and Iso -> N-, one
 execution of each full run. The other root (21255) and the second prime (32029) are not run (A5-576); the characteristic-0
