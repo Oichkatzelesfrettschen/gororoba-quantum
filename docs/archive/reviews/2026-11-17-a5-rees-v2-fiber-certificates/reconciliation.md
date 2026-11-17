@@ -114,6 +114,10 @@ Two threads, both confirmed against the source, and one failing hosted lane.
   `nullity8-fiber-import-result.json` that the weight-slice record binds differs from the tracked file, which changed with
   f4b11e4a8 and a919eb929 on main), and that is a defect of main with its own repair.
 
+After the Copilot round the macos-26 leg failed ten tests of `tests/test_a5_rees_kcompare_launcher.py` and
+`tests/test_a5_rees_kcompare_parallel.py`: the launcher calls `/usr/bin/time -v`, `timeout` and `sha256sum` and the producer
+calls `prlimit`, which that runner lacks. The fixtures skip with the absent tool named (4298e604b).
+
 ## Statement for the owner's pending decision on A5-409
 
 The falsifier text of A5-409 is met literally, for incidences it lists (Iso to N-, X- to N-) at root 10754, by two unit-replacement
@@ -126,4 +130,5 @@ route-specific claim and adds the Iso and X- results as an alternative route wit
 A5-409 describes the rows or its script, and it stays with the owner.
 
 Owner ruling of 2026-11-17: A5-409 describes its script. The row keeps the status stalled, its basis records the two
-unit-replacement results as another route, and its falsifier names `nullity16_rees_fibers.py` under the original limits.
+unit-replacement results as another route, and its falsifier names `nullity16_rees_fibers.py` under the original limits. Row A5-585 carries the route-independent fact:
+the unit-replacement scripts complete Iso to N- and X- to N- inside both limits.
