@@ -34,13 +34,23 @@ contrasts; the base and calibration batches take the time rules below (`constrai
 from __future__ import annotations
 
 import math
+import sys
 from collections.abc import Mapping, Sequence
+from pathlib import Path
 
 import numpy as np
 from scipy.stats import chi2
 
+ROOT = Path(__file__).resolve().parents[1]
+sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
+
+import parallel  # noqa: E402
+
 Row = tuple[float, float, float]  # (twin contrast, standard error, executed position offset x of the batch)
 OWN_DRIFT_FLOOR = 1e-12  # relative size of own_T = sum w (x - x_T) x below which a template has no own drift
+# Flip patterns per pooled task of operating_characteristics: 128 tasks for the four-template enumeration, and a
+# worker's result list stays at this many entries.
+MASK_BLOCK = 512
 
 
 class ConfoundedOrder(ValueError):
@@ -165,24 +175,16 @@ def adjusted_rows(rows: Mapping[str, Sequence[Row]]) -> dict[str, list[tuple[flo
     return out
 
 
-def operating_characteristics(
-    rate: float, requested: Sequence[int] = (1, -1, 1, -1), templates: int = 4
-) -> dict[str, float]:
-    """Exact enumeration, with no random draw, of the confounded probability and of the mean and 95th percentile of
-    the error ratio of the first template's contrast against the balanced design, when each twin batch flips its own
-    sign independently with probability `rate` (a model: hypothesis, independent reordering, equal batch errors, a
-    drift linear in the sign). The retained distribution of executed offsets replaces the flip model once measured."""
-    if not (math.isfinite(rate) and 0.0 <= rate <= 1.0) or templates < 1:
-        raise ValueError("the flip rate lies outside [0, 1] or the template count is not positive")
-    if not requested or any(x not in (-1, 1) for x in requested):
-        raise ValueError("the requested pattern is empty or holds an entry other than +1 or -1")
+def _enumerate_masks(block: tuple[int, int, float, tuple[int, ...], int]) -> list[tuple[float, float | None]]:
+    """(probability, error ratio) of each flip pattern in the range [start, stop) of one block; the ratio is None
+    where the fit is confounded. Block = (start, stop, rate, requested, templates)."""
+    start, stop, rate, requested, templates = block
     n = templates * len(requested)
-    ratios: list[tuple[float, float]] = []
-    confounded = 0.0
-    for mask in range(1 << n):
+    names = [f"t{k}" for k in range(templates)]
+    out: list[tuple[float, float | None]] = []
+    for mask in range(start, stop):
         flips = [(mask >> i) & 1 for i in range(n)]
         weight = math.prod(rate if f else 1.0 - rate for f in flips)
-        names = [f"t{k}" for k in range(templates)]
         rows = {
             name: [(0.0, 1.0, float(-s if flips[k * len(requested) + i] else s)) for i, s in enumerate(requested)]
             for k, name in enumerate(names)
@@ -190,9 +192,40 @@ def operating_characteristics(
         try:
             error = fit(rows)["error"]["t0"]  # type: ignore[index]
         except ConfoundedOrder:
-            confounded += weight
-            continue
-        ratios.append((float(error) * math.sqrt(len(requested)), weight))
+            out.append((weight, None))
+        else:
+            out.append((weight, float(error) * math.sqrt(len(requested))))
+    return out
+
+
+def operating_characteristics(
+    rate: float, requested: Sequence[int] = (1, -1, 1, -1), templates: int = 4
+) -> dict[str, float]:
+    """Exact enumeration, with no random draw, of the confounded probability and of the mean and 95th percentile of
+    the error ratio of the first template's contrast against the balanced design, when each twin batch flips its own
+    sign independently with probability `rate` (a model: hypothesis, independent reordering, equal batch errors, a
+    drift linear in the sign). The retained distribution of executed offsets replaces the flip model once measured.
+
+    The patterns run in blocks of MASK_BLOCK through parallel.ordered_map, which returns the blocks in pattern order,
+    so the sums below add in the serial order and the result equals the serial loop bit for bit. A call made inside a
+    pool worker runs its blocks inline (parallel.default_threads)."""
+    if not (math.isfinite(rate) and 0.0 <= rate <= 1.0) or templates < 1:
+        raise ValueError("the flip rate lies outside [0, 1] or the template count is not positive")
+    if not requested or any(x not in (-1, 1) for x in requested):
+        raise ValueError("the requested pattern is empty or holds an entry other than +1 or -1")
+    total = 1 << (templates * len(requested))
+    pattern = tuple(int(x) for x in requested)
+    blocks = [
+        (start, min(start + MASK_BLOCK, total), rate, pattern, templates) for start in range(0, total, MASK_BLOCK)
+    ]
+    ratios: list[tuple[float, float]] = []
+    confounded = 0.0
+    for block in parallel.ordered_map(_enumerate_masks, blocks):
+        for weight, ratio in block:
+            if ratio is None:
+                confounded += weight
+            else:
+                ratios.append((ratio, weight))
     live = sum(w for _, w in ratios)
     mean = sum(r * w for r, w in ratios) / live
     ordered = sorted(ratios)
