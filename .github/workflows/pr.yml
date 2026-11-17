@@ -158,7 +158,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runner: [ubuntu-26.04-arm, macos-15]
+        runner: [ubuntu-26.04-arm, macos-26]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
         # The W8 N = 16 export tables (235 MB, docs/evidence/a5-exceptional-fibers/w8-n16-azure/README.md) and the
@@ -177,7 +177,7 @@ jobs:
       - uses: ./.github/actions/pins-venv
       # ci/pr_checks.sh holds its shared lock with flock, and the scripts under test call GNU timeout and the GNU
       # forms of the coreutils; macOS ships neither, so Homebrew's flock and coreutils supply them. gnubin joins
-      # PATH after pins-venv, because setup-python's macOS installer needs the BSD chmod. The macos-15 runner reads
+      # PATH after pins-venv, because setup-python's macOS installer needs the BSD chmod. The macOS arm64 runner reads
       # the repository about twice as slowly as the Linux runners (its slowest calls took 35.6 s), so its call-budget
       # target (tests/conftest.py) is 30 s, failing a call past 45 s; the x64 and Linux arm64 jobs keep the 10 s
       # target that catches a slowdown.
