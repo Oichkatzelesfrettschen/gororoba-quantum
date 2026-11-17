@@ -1,4 +1,5 @@
 {
+ "fitted_t1_assumption": "an implied_t1 row with fit_points is a single-exponential fit of a series' own delays; single_exponential, chi_square_per_dof and us_se_scaled say whether the fit describes the decay",
  "implied_t1_assumption": "the whole P(1|1) drop between the no-wait and the wait run is T1 decay during the wait, and readout fidelity is unchanged between the two runs",
  "jobs": {
   "QXsinglenodesimulator": [
@@ -81,6 +82,14 @@
     "median_execution_seconds": 0.720792,
     "median_turnaround_seconds": 8.4262,
     "shots": 26624
+   },
+   {
+    "day": "2026-11-16",
+    "jobs": 14,
+    "max_turnaround_seconds": 170.225,
+    "median_execution_seconds": 0.0078065,
+    "median_turnaround_seconds": 6.28134,
+    "shots": 14336
    }
   ],
   "Rydberg": [
@@ -189,12 +198,34 @@
     "median_execution_seconds": 66.4026,
     "median_turnaround_seconds": 76.0434,
     "shots": 4653056
+   },
+   {
+    "day": "2026-11-16",
+    "jobs": 14,
+    "max_turnaround_seconds": 30025.0,
+    "median_execution_seconds": 7.92505,
+    "median_turnaround_seconds": 82.6955,
+    "shots": 147456
    }
   ]
  },
  "profile": "tuna_17",
  "qubits": [
   {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 14.1847,
+    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0165405,
+    "p1_given_1": 0.968933,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
    "coupler_map": {
     "couplers": 2,
     "detuning_hz": 18478.1,
@@ -210,22 +241,41 @@
     ]
    },
    "implied_t1": {
-    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
-    "us": 14.1847,
-    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
-    "wait_us": 2.0
+    "chi_square_per_dof": 4.89669,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 17.087,
+    "us_se": 0.151064,
+    "us_se_scaled": 0.334282,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
    },
    "qubit": 0,
    "readout": {
-    "p1_given_0": 0.0165405,
-    "p1_given_1": 0.968933,
-    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "p1_given_0": 0.0101318,
+    "p1_given_1": 0.974487,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
     "shots": 16384,
-    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "utc": "2026-11-16T12:33:41.128707+00:00",
     "wait_before_readout_us": 0.0
    }
   },
   {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 25.4796,
+    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0261841,
+    "p1_given_1": 0.970398,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
    "coupler_map": {
     "couplers": 2,
     "detuning_hz": 55464.8,
@@ -241,22 +291,41 @@
     ]
    },
    "implied_t1": {
-    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
-    "us": 25.4796,
-    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
-    "wait_us": 2.0
+    "chi_square_per_dof": 5.93879,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 19.6468,
+    "us_se": 0.18514,
+    "us_se_scaled": 0.451178,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
    },
    "qubit": 1,
    "readout": {
-    "p1_given_0": 0.0261841,
-    "p1_given_1": 0.970398,
-    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "p1_given_0": 0.0280762,
+    "p1_given_1": 0.974792,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
     "shots": 16384,
-    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "utc": "2026-11-16T12:33:41.128707+00:00",
     "wait_before_readout_us": 0.0
    }
   },
   {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 17.7789,
+    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0134277,
+    "p1_given_1": 0.972534,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
    "coupler_map": {
     "couplers": 3,
     "detuning_hz": 6247.84,
@@ -272,22 +341,41 @@
     ]
    },
    "implied_t1": {
-    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
-    "us": 17.7789,
-    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
-    "wait_us": 2.0
+    "chi_square_per_dof": 234.446,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 24.8258,
+    "us_se": 0.220884,
+    "us_se_scaled": 3.38209,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
    },
    "qubit": 2,
    "readout": {
-    "p1_given_0": 0.0134277,
-    "p1_given_1": 0.972534,
-    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "p1_given_0": 0.0103149,
+    "p1_given_1": 0.984436,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
     "shots": 16384,
-    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "utc": "2026-11-16T12:33:41.128707+00:00",
     "wait_before_readout_us": 0.0
    }
   },
   {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 9.27136,
+    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0125122,
+    "p1_given_1": 0.957642,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
    "coupler_map": {
     "couplers": 2,
     "detuning_hz": -21614.9,
@@ -303,22 +391,41 @@
     ]
    },
    "implied_t1": {
-    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
-    "us": 9.27136,
-    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
-    "wait_us": 2.0
+    "chi_square_per_dof": 83.3424,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 13.1502,
+    "us_se": 0.117607,
+    "us_se_scaled": 1.07366,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
    },
    "qubit": 3,
    "readout": {
-    "p1_given_0": 0.0125122,
-    "p1_given_1": 0.957642,
-    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "p1_given_0": 0.0135498,
+    "p1_given_1": 0.960022,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
     "shots": 16384,
-    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "utc": "2026-11-16T12:33:41.128707+00:00",
     "wait_before_readout_us": 0.0
    }
   },
   {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 15.599,
+    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0114746,
+    "p1_given_1": 0.951416,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
    "coupler_map": {
     "couplers": 4,
     "detuning_hz": 26688.5,
@@ -334,22 +441,41 @@
     ]
    },
    "implied_t1": {
-    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
-    "us": 15.599,
-    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
-    "wait_us": 2.0
+    "chi_square_per_dof": 68.9089,
+    "fit_points": 6,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 24.8678,
+    "us_se": 0.227735,
+    "us_se_scaled": 1.89046,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
    },
    "qubit": 4,
    "readout": {
-    "p1_given_0": 0.0114746,
-    "p1_given_1": 0.951416,
-    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "p1_given_0": 0.0112305,
+    "p1_given_1": 0.955017,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
     "shots": 16384,
-    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "utc": "2026-11-16T12:33:41.128707+00:00",
     "wait_before_readout_us": 0.0
    }
   },
   {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 15.1261,
+    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0373535,
+    "p1_given_1": 0.963745,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
    "coupler_map": {
     "couplers": 4,
     "detuning_hz": 321522.0,
@@ -365,22 +491,41 @@
     ]
    },
    "implied_t1": {
-    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
-    "us": 15.1261,
-    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
-    "wait_us": 2.0
+    "chi_square_per_dof": 12.0802,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 20.3617,
+    "us_se": 0.199886,
+    "us_se_scaled": 0.694733,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
    },
    "qubit": 5,
    "readout": {
-    "p1_given_0": 0.0373535,
-    "p1_given_1": 0.963745,
-    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "p1_given_0": 0.0333862,
+    "p1_given_1": 0.963501,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
     "shots": 16384,
-    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "utc": "2026-11-16T12:33:41.128707+00:00",
     "wait_before_readout_us": 0.0
    }
   },
   {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 5.49741,
+    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0352173,
+    "p1_given_1": 0.932129,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
    "coupler_map": {
     "couplers": 2,
     "detuning_hz": 323668.0,
@@ -396,22 +541,41 @@
     ]
    },
    "implied_t1": {
-    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
-    "us": 5.49741,
-    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
-    "wait_us": 2.0
+    "chi_square_per_dof": 23.4116,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 16.2302,
+    "us_se": 0.16223,
+    "us_se_scaled": 0.784959,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
    },
    "qubit": 6,
    "readout": {
-    "p1_given_0": 0.0352173,
-    "p1_given_1": 0.932129,
-    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "p1_given_0": 0.0377808,
+    "p1_given_1": 0.959473,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
     "shots": 16384,
-    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "utc": "2026-11-16T12:33:41.128707+00:00",
     "wait_before_readout_us": 0.0
    }
   },
   {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 52.0291,
+    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0349731,
+    "p1_given_1": 0.936035,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
    "coupler_map": {
     "couplers": 3,
     "detuning_hz": -115766.0,
@@ -427,22 +591,41 @@
     ]
    },
    "implied_t1": {
-    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
-    "us": 52.0291,
-    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
-    "wait_us": 2.0
+    "chi_square_per_dof": 36.6655,
+    "fit_points": 6,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 27.6529,
+    "us_se": 0.278847,
+    "us_se_scaled": 1.68848,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
    },
    "qubit": 7,
    "readout": {
-    "p1_given_0": 0.0349731,
-    "p1_given_1": 0.936035,
-    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "p1_given_0": 0.0302124,
+    "p1_given_1": 0.935059,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
     "shots": 16384,
-    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "utc": "2026-11-16T12:33:41.128707+00:00",
     "wait_before_readout_us": 0.0
    }
   },
   {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 18.0558,
+    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0323486,
+    "p1_given_1": 0.945679,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
    "coupler_map": {
     "couplers": 4,
     "detuning_hz": 28630.3,
@@ -458,22 +641,41 @@
     ]
    },
    "implied_t1": {
-    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
-    "us": 18.0558,
-    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
-    "wait_us": 2.0
+    "chi_square_per_dof": 2.01,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": true,
+    "us": 18.9979,
+    "us_se": 0.177328,
+    "us_se_scaled": 0.251406,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
    },
    "qubit": 8,
    "readout": {
-    "p1_given_0": 0.0323486,
-    "p1_given_1": 0.945679,
-    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "p1_given_0": 0.0354614,
+    "p1_given_1": 0.98175,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
     "shots": 16384,
-    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "utc": "2026-11-16T12:33:41.128707+00:00",
     "wait_before_readout_us": 0.0
    }
   },
   {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 5.14269,
+    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0194702,
+    "p1_given_1": 0.92572,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
    "coupler_map": {
     "couplers": 3,
     "detuning_hz": -13435.6,
@@ -489,22 +691,41 @@
     ]
    },
    "implied_t1": {
-    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
-    "us": 5.14269,
-    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
-    "wait_us": 2.0
+    "chi_square_per_dof": 51.0354,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 22.0546,
+    "us_se": 0.233682,
+    "us_se_scaled": 1.66941,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
    },
    "qubit": 9,
    "readout": {
-    "p1_given_0": 0.0194702,
-    "p1_given_1": 0.92572,
-    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "p1_given_0": 0.0200195,
+    "p1_given_1": 0.916992,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
     "shots": 16384,
-    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "utc": "2026-11-16T12:33:41.128707+00:00",
     "wait_before_readout_us": 0.0
    }
   },
   {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 18.7183,
+    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0548706,
+    "p1_given_1": 0.978271,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
    "coupler_map": {
     "couplers": 2,
     "detuning_hz": 39154.5,
@@ -520,22 +741,41 @@
     ]
    },
    "implied_t1": {
-    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
-    "us": 18.7183,
-    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
-    "wait_us": 2.0
+    "chi_square_per_dof": 17.3984,
+    "fit_points": 6,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 32.21,
+    "us_se": 0.308351,
+    "us_se_scaled": 1.28618,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
    },
    "qubit": 10,
    "readout": {
-    "p1_given_0": 0.0548706,
-    "p1_given_1": 0.978271,
-    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "p1_given_0": 0.0491333,
+    "p1_given_1": 0.974976,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
     "shots": 16384,
-    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "utc": "2026-11-16T12:33:41.128707+00:00",
     "wait_before_readout_us": 0.0
    }
   },
   {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 22.3764,
+    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0164185,
+    "p1_given_1": 0.953857,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
    "coupler_map": {
     "couplers": 4,
     "detuning_hz": 7021.29,
@@ -551,22 +791,41 @@
     ]
    },
    "implied_t1": {
-    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
-    "us": 22.3764,
-    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
-    "wait_us": 2.0
+    "chi_square_per_dof": 33.1929,
+    "fit_points": 6,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 26.4048,
+    "us_se": 0.24997,
+    "us_se_scaled": 1.44016,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
    },
    "qubit": 11,
    "readout": {
-    "p1_given_0": 0.0164185,
-    "p1_given_1": 0.953857,
-    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "p1_given_0": 0.0230713,
+    "p1_given_1": 0.935364,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
     "shots": 16384,
-    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "utc": "2026-11-16T12:33:41.128707+00:00",
     "wait_before_readout_us": 0.0
    }
   },
   {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 20.973,
+    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.00518799,
+    "p1_given_1": 0.970764,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
    "coupler_map": {
     "couplers": 4,
     "detuning_hz": -56571.8,
@@ -582,22 +841,41 @@
     ]
    },
    "implied_t1": {
-    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
-    "us": 20.973,
-    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
-    "wait_us": 2.0
+    "chi_square_per_dof": 48.6988,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 22.9413,
+    "us_se": 0.206316,
+    "us_se_scaled": 1.43977,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
    },
    "qubit": 12,
    "readout": {
-    "p1_given_0": 0.00518799,
-    "p1_given_1": 0.970764,
-    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "p1_given_0": 0.00640869,
+    "p1_given_1": 0.978455,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
     "shots": 16384,
-    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "utc": "2026-11-16T12:33:41.128707+00:00",
     "wait_before_readout_us": 0.0
    }
   },
   {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 22.9606,
+    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0287476,
+    "p1_given_1": 0.911316,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
    "coupler_map": {
     "couplers": 2,
     "detuning_hz": -1476.64,
@@ -613,22 +891,41 @@
     ]
    },
    "implied_t1": {
-    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
-    "us": 22.9606,
-    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
-    "wait_us": 2.0
+    "chi_square_per_dof": 1.91324,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": true,
+    "us": 23.7961,
+    "us_se": 0.265646,
+    "us_se_scaled": 0.367441,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
    },
    "qubit": 13,
    "readout": {
-    "p1_given_0": 0.0287476,
-    "p1_given_1": 0.911316,
-    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "p1_given_0": 0.0246582,
+    "p1_given_1": 0.91803,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
     "shots": 16384,
-    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "utc": "2026-11-16T12:33:41.128707+00:00",
     "wait_before_readout_us": 0.0
    }
   },
   {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 13.0612,
+    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0376587,
+    "p1_given_1": 0.974121,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
    "coupler_map": {
     "couplers": 3,
     "detuning_hz": 24573.5,
@@ -644,22 +941,41 @@
     ]
    },
    "implied_t1": {
-    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
-    "us": 13.0612,
-    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
-    "wait_us": 2.0
+    "chi_square_per_dof": 496.218,
+    "fit_points": 6,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 23.6425,
+    "us_se": 0.208455,
+    "us_se_scaled": 4.64353,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
    },
    "qubit": 14,
    "readout": {
-    "p1_given_0": 0.0376587,
-    "p1_given_1": 0.974121,
-    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "p1_given_0": 0.036499,
+    "p1_given_1": 0.9505,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
     "shots": 16384,
-    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "utc": "2026-11-16T12:33:41.128707+00:00",
     "wait_before_readout_us": 0.0
    }
   },
   {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 6.27035,
+    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.055542,
+    "p1_given_1": 0.980408,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
    "coupler_map": {
     "couplers": 2,
     "detuning_hz": -2541.46,
@@ -675,22 +991,41 @@
     ]
    },
    "implied_t1": {
-    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
-    "us": 6.27035,
-    "wait_run_utc": "2026-10-17T04:36:36.925328+00:00",
-    "wait_us": 2.0
+    "chi_square_per_dof": 166.429,
+    "fit_points": 6,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 24.7085,
+    "us_se": 0.21621,
+    "us_se_scaled": 2.78927,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
    },
    "qubit": 15,
    "readout": {
-    "p1_given_0": 0.055542,
-    "p1_given_1": 0.980408,
-    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "p1_given_0": 0.0430298,
+    "p1_given_1": 0.976257,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
     "shots": 16384,
-    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "utc": "2026-11-16T12:33:41.128707+00:00",
     "wait_before_readout_us": 0.0
    }
   },
   {
+   "baseline_implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
+    "us": 16.6033,
+    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
+    "wait_us": 2.0
+   },
+   "baseline_readout": {
+    "p1_given_0": 0.0339966,
+    "p1_given_1": 0.971191,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "wait_before_readout_us": 0.0
+   },
    "coupler_map": {
     "couplers": 2,
     "detuning_hz": -1509.19,
@@ -706,24 +1041,31 @@
     ]
    },
    "implied_t1": {
-    "no_wait_run_utc": "2026-10-16T22:12:11.022400+00:00",
-    "us": 16.6033,
-    "wait_run_utc": "2026-10-17T03:39:15.035441+00:00",
-    "wait_us": 2.0
+    "chi_square_per_dof": 4.45676,
+    "fit_points": 5,
+    "no_wait_run_utc": "2026-11-16T12:25:32.307553+00:00",
+    "single_exponential": false,
+    "us": 22.2312,
+    "us_se": 0.219023,
+    "us_se_scaled": 0.462381,
+    "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
+    "wait_us": 80.0
    },
    "qubit": 16,
    "readout": {
-    "p1_given_0": 0.0339966,
-    "p1_given_1": 0.971191,
-    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "p1_given_0": 0.0304565,
+    "p1_given_1": 0.968079,
+    "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
     "shots": 16384,
-    "utc": "2026-10-17T15:47:53.001474+00:00",
+    "utc": "2026-11-16T12:33:41.128707+00:00",
     "wait_before_readout_us": 0.0
    }
   }
  ],
  "schema": "qi-retained-context-v1",
  "sources": {
+  "characterization_analysis": "results/quantum_inspire/characterization_tuna_17_analysis.json",
+  "characterization_analysis_sha256": "f54809ac302c9df77388cefa6a4a9e3b8f3eb8050c09157b45a6a5d9bfa3e398",
   "coupler_map_runs_utc": [
    "2026-10-16T22:52:57.598151+00:00",
    "2026-10-16T22:58:51.391397+00:00",

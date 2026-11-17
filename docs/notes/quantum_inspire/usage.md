@@ -297,6 +297,41 @@ From the same conditions:
 - A simulation of 14 qubits or fewer runs on Kaggle (root AGENTS.md); a
   Quantum Inspire hardware run answers a question about the device.
 
+### Submit lease
+
+The queue and pause checks of `qi_platform.py submit` read one snapshot of the account, and `SUBMIT_LOCK` is a file
+on one device, so two devices that share the account can both pass the checks before either batch exists on the
+service ([issue 893](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/893)). Until a device other
+than the designated submitting host is to submit, the rule is one submitting host. The successor route
+`scripts/qi_platform_leased.py submit` adds an account-wide lease around the same `_submit`, with no change to the
+bytes of `qi_platform.py` that retained records pin:
+
+- It holds `SUBMIT_LOCK`, reads the backend type, and on a type flagged `is_hardware` takes the lease
+  (`scripts/qi_submit_lease.py`) before `_submit` reads the queue or the account. Emulator batches take no lease.
+- `QI_SUBMIT_LEASE_COMMAND` names the command that reaches the lease holder; the route appends `take HOLDER` or
+  `release NONCE`. `take` answers one JSON object with `nonce` and `lease_seconds`. `QI_SUBMIT_LEASE_HOLDER` names
+  the device, by default its host name in lowercase letters, digits and hyphens. The command and the host that
+  grants the lease are the account owner's configuration and stay outside this repository.
+- No command, no answer, a malformed answer and a lease another device holds each refuse the hardware submission
+  before any write to the service.
+- The lease has a deadline: `lease_seconds` less 150 s (one request with its token refresh and resend), counted on the device's boot-time clock from before the lease
+  was asked for. The route's client checks it immediately before each dispatch of a POST or PATCH, the resend
+  after an expired-token answer included, so a submission that stalls between requests cannot enqueue beside the
+  next holder; a batch it had created stays `planned`, and `reconcile` reads the case as it does after any
+  interrupted submission.
+- The route's end releases the lease when no request creating a batch job was dispatched, or when a read of the
+  created batch job (the list with its id filter, as `reconcile` reads it) shows it `queued`, `reserved`, `running`
+  or `finished`. A creation request with no recorded answer, a batch still `planned` and a failed read leave the
+  lease to expire on the grantor's clock.
+
+Limits. The lease orders only submissions made through this route. `qi_platform.py submit`,
+`qi_platform_submission_deadline.submit`, the MCP tool `qi_submit_case`, the provider's web client and any other
+client of the account enqueue outside it, so the falsifier of issue 893 stays open for those, and no caller in this
+repository uses the route yet. The service accepts no fencing token, so the deadline is a client-side check: a
+process suspended between the check and the send of one request, or a request in flight for longer than the 150 s
+margin, can write after the grantor freed the lease. Whether another device's unfiltered list read shows an enqueued batch as soon
+as this route's id-filtered read does is unmeasured. Evidence class: `tests/scripts/test_qi_platform_leased.py` exercises the route against a
+stand-in lease command and a stand-in service; no provider job tested it.
 
 ## Pause escalation
 

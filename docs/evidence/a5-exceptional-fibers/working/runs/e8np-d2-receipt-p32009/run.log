@@ -1,0 +1,11 @@
+HEAD 315d884fb12e4c32b98e3fbe38e79468498c74c2 dirty=0
+Python 3.14.7
+Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Dec  6 2025 11:10:58
+f437c9ea4f9e8861b8cb30dcadf1d667b2d444473d630dc88c8e82072c4423c6  docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/xm-nm.sing
+ab6dd0ef6281b0d02e84d744ace39f56a8cf95695186324e4d76fb387c628af6  docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/e8-np.sing
+START calibration 2026-11-16T01:58:55Z
+calibration driver rc 0
+CALIBRATION xm-nm relations sha256 596c48a75c5101f4aeca9da7cd89888f5270abf628aa6f1567160f778e583245 want 596c48a75c5101f4aeca9da7cd89888f5270abf628aa6f1567160f778e583245
+CALIBRATION PASS
+START e8-np 2026-11-16T01:59:14Z
+END e8-np rc 0 2026-11-16T04:32:40Z

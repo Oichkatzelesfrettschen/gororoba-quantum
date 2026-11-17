@@ -1,0 +1,18 @@
+HEAD 315d884fb12e4c32b98e3fbe38e79468498c74c2 dirty=0
+driver EXIT 0
+receipt status degree-certified generators 21 relations 148 rank_h_d 83
+membership_check {'checked': 148, 'failures': 0} stage_seconds {'linear_algebra': 9.157, 'membership': 653.427, 'singular_products_std': 8542.882}
+stages {"linear_algebra": {"peak_bytes": 1423622144, "wall_seconds": 9.157}, "membership": {"peak_bytes": 960705331, "singular_ms": 644107, "wall_seconds": 653.427}, "singular_products_std": {"peak_bytes": 5261334937, "products_ms": 15189, "reduce_ms": 35283, "std_ms": 8490422, "wall_seconds": 8542.882}}
+relations relations-upto-d2.rel 50c1047de3ffda330eecfbe8b7a3449abed2196b8858b29149cf239da01e843c
+retained N+ K2 e8_k2.rel bbe9bb734af739d735ca4ca4938b85fce9ed87c07b7373ec5353c47335be0652
+retained N- receipt relations relations-upto-d2.rel e047f996ad609a40ca9d65a64cb7f28755cbaeea3013a9ada7ff71e76e708de6
+J signs [1, 1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, -1, -1, 1]
+G signs [-1, -1, 1, 1, -1, -1, -1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1]
+RESULT direct 0 0
+RESULT transport 0 0
+RESULT dims 5 11 148
+RESULT hilb 1,16,-12,10,-5,1,0
+RESULT control_direct 1 1
+RESULT control_transport 1 1
+POST RESULT direct [['0', '0']] transport [['0', '0']] controls_reject 1 pass 1
+POST_EXIT 0

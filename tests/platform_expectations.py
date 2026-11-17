@@ -7,28 +7,21 @@ listed test that starts passing there fails the run and its entry comes out. A p
 
 Two causes recur. A Linux interface (``/proc``, ``time.CLOCK_BOOTTIME``) is absent on macOS. A retained record or
 a byte-identity check holds the bits of the x64 numeric identity that wrote it, while another identity rounds
-differently: a photonic-template phase pair (alpha, beta) whose negative-real entry carries a signed zero on x64 and
-fused multiply-add residue on arm64 lands on the other branch of np.angle, a gauge-equivalent setting of the same
-unitary; an optimizer or root finder takes another sequence of points. Retained bytes stay immutable, so these wait
-for the cross-identity comparator of docs/design/native-numeric-replay.md (plan step semantic-comparator).
+differently: an optimizer or root finder takes another sequence of points. Retained bytes stay immutable, so these wait
+for the cross-identity comparator of docs/design/native-numeric-replay.md (plan step semantic-comparator). The
+photonic-template phase pairs that land on the other branch of np.angle compare through their unitary
+(qd_teleportation_rehearsal.close_request) and need no entry.
 """
 
 from __future__ import annotations
 
-LINUX_ARM = "linux-aarch64"
-MACOS_ARM = "darwin-arm64"
-ARM = frozenset({LINUX_ARM, MACOS_ARM})
-MACOS = frozenset({MACOS_ARM})
+MACOS = frozenset({"darwin-arm64"})
 
-GAUGE = "the retained request's photonic-template phase pair sits on the other np.angle branch on arm64"
 IDENTITY = "the retained bytes hold the x64 numeric identity; arm64 rounds differently"
 PROC = "reads /proc, a Linux interface macOS lacks"
 BOOTTIME = "the bounded lock times its expiry with time.CLOCK_BOOTTIME, a Linux clock macOS lacks"
 
 EXPECTED: dict[str, tuple[frozenset[str], str]] = {
-    "tests/scripts/test_qd_teleportation_rehearsal.py::test_request_is_byte_stable_and_validates": (ARM, GAUGE),
-    "tests/scripts/test_qd_teleportation_rehearsal.py::"
-    "test_check_rederives_the_noise_model_and_accepts_the_retained_case[job-00]": (ARM, GAUGE),
     "tests/scripts/test_belenos_mode_swap_interleaved.py::"
     "test_retained_requests_rebuild_and_bind_to_the_packed_and_swapped_unitaries": (MACOS, IDENTITY),
     "tests/scripts/test_qi_pathion_one_cz_null.py::test_b0_replay_is_byte_equal_to_the_retained_circuit": (
