@@ -1,4 +1,5 @@
-"""Final design round, exploratory (pseudo-random seed 20261119, not a QRNG value).
+"""Final design round, exploratory. Seed: index 2 of the ANU QRNG draw
+docs/evidence/anu_qrng/draw-2026-11-16T041214Z.json.
 
 Per series: the current rule's label and the model-light least contrasts of weighted parabolas through the pooled
 z12 arms and centers (phi of -30, -10, 0, +10, +30 degrees) and through the pooled z8c arms and centers, each with
@@ -23,6 +24,7 @@ from parallel import ordered_map  # noqa: E402
 
 SERIES = int(sys.argv[1]) if len(sys.argv) > 1 else 300
 CZ = ps.CZ_DAMPING
+SEED = 35685  # index 2 of docs/evidence/anu_qrng/draw-2026-11-16T041214Z.json
 
 
 def S(world, theta, flip=0.0, noise=ps.NO_NOISE, theta_end=None, flip_end=None):
@@ -101,7 +103,7 @@ def curve_points(batches, kinds, index):
 
 def run(item):
     pos, sc = item
-    rng = np.random.default_rng([20261119, pos])
+    rng = np.random.default_rng([SEED, pos])
     m = ps.predecessor_matrix()
     err = 1 / math.sqrt(ps.SCAN_SHOTS)
     base = base_batches(sc, m)

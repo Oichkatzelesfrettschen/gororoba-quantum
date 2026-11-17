@@ -3,9 +3,9 @@
 Records behind rule R6 of [the phase-scan case](../../../../results/quantum_inspire/cases/pathion_null_phase_scan_tuna_17/CASE.md):
 the selector flip of the predecessor (probability f that the selector reads flipped when d0 reads 0) fitted as one
 nuisance parameter per series and world, over f = 0 to 0.06 in steps of 0.0025. Evidence class: numerical
-simulation of the case's forward model with Gaussian sampling noise. `nuisance.py` and `small_phase.py` take indices 0 and 1
-of `docs/evidence/anu_qrng/draw-2026-11-16T041214Z.json` (`docs/evidence/qrng_seeds/allocations.json`); `final_round.py`
-keeps its fixed pseudo-random exploration seed. The case's recorded characteristics come from value 12 of
+simulation of the case's forward model with Gaussian sampling noise. `nuisance.py`, `small_phase.py` and `final_round.py` take indices 0, 1
+and 2 of `docs/evidence/anu_qrng/draw-2026-11-16T041214Z.json` (`docs/evidence/qrng_seeds/allocations.json`). The case's
+recorded characteristics come from value 12 of
 `draw-2026-11-15T084216Z.json` through the generator.
 
 ## Files
@@ -15,7 +15,7 @@ keeps its fixed pseudo-random exploration seed. The case's recorded characterist
 | `nuisance.py` | the decision with the flip as nuisance, reimplemented on `fit_batch()` (`finish()`), beside its flip-0 slice (rule R5); seed 47387 (index 0 of the draw); `--check`, `--time`, `--run SERIES [--only TEXT]` |
 | `nuisance_check.log`, `nuisance_time.log` | the checks (retention cache bit for bit, flip-0 slice equal to the R5 `decide()`, a flip-only truth recovered at its own flip) and the timing |
 | `nuisance_first12.log`, `nuisance_rest.log`, `nuisance_gap.log` | label counts of 200 noisy series per scenario, both rules (two lines of a multiprocessing resource-tracker warning that named the interpreter's install path are removed from the first): 12 flip-plus-damping nulls; the truths, flip-0.05 nulls, flip-only nulls, true phases beside flip 0.0166 and the mixed scenarios (33); true phases beside flips 0.036 and 0.042 and drifting flips (17) |
-| `final_round.py`, `final_round.log` | rule R5 against a model-light least-contrast gate, true phases beside a flip, and drifting truths; 300 noisy series per scenario, seed 20261119 |
+| `final_round.py`, `final_round.log` | rule R5 against a model-light least-contrast gate, true phases beside a flip, and drifting truths; 300 noisy series per scenario, seed 35685 (index 2 of the draw) |
 | `r6_regression.py`, `r6_regression.log` | the R6 generator with the flip fixed at 0 reproduces the value-11 label counts of all 25 scenarios of `prediction_value11.json`; on the full grid its `decide()` reproduces `nuisance.py`'s labels on 20 series of 4 scenarios |
 | `nuisance_flips.json` | per scenario of the part files: the exact world's fitted flip (mean, least, largest over 200 series) and the fitted flip of the leading world by label |
 | `small_phase.py`, `small_phase.log` | how often a small true q12 or coupler phase (0.05 to 0.12 rad, flip 0 or 0.036) reads `exact_parabola` under R6, with each such series' center offset in standard errors; seed 9893 (index 1 of the draw) |
@@ -30,7 +30,7 @@ the copies here call it that way. Run them from the repository root under the pi
 ## Findings
 
 1. Rule R5 reads `none_adequate` beside a readout flip whatever the phase: a true q12 phase of -0.18 rad beside
-   flip 0.0166 read it in 290 of 300 series, beside 0.036 in 300; a coupler phase of -0.25 rad beside either flip
+   flip 0.0166 read it in 287 of 300 series, beside 0.036 in 300; a coupler phase of -0.25 rad beside either flip
    in 300 of 300; a q8 phase of -0.25 rad beside 0.036 in 300 of 300 (`final_round.log`). The predecessor's
    readout points to a flip near 0.036 to 0.042, so under R5 the scan would most likely read `none_adequate`
    whatever its phase.
@@ -65,11 +65,16 @@ the copies here call it that way. Run them from the repository root under the pi
    0.12 rad in 103 to 299; a coupler phase of 0.08 rad in 0 and -0.12 rad in 42 and 29 (`small_phase.log`); nearly
    all the rest read `offset_absent` or `phase_unresolved`.
 
-Reseeding. The probes first took pseudo-random literals (nuisance 20261117, small-phase 20261120), which the seed ledger
-rejects; their logs were regenerated from indices 0 and 1 of the draw. Of the 59 scenarios both runs share, the counts
-of 52 moved by sampling alone (by up to 19 series of 200: q8 phase -0.17 rad, `phase_unresolved` 158 to 177;
+Reseeding. The probes first took pseudo-random literals (nuisance 20261117, small-phase 20261120, final round 20261119),
+which the seed ledger rejects (its scan misses the list literal of the final round); their logs were regenerated from
+indices 0, 1 and 2 of the draw. Of the 59 scenarios both nuisance and small-phase runs share, the counts of 52 moved
+under the new seed and the corrected limits together (by up to 19 series of 200: q8 phase -0.17 rad, `phase_unresolved` 158 to 177;
 flip 0.036 beside CZ phase damping 0.13, `exact_parabola` 26 to 28); the three scenarios that the old logs lacked (true phases beside flips of
-0.036 and 0.042) were added. Moved or not, the findings keep their statements: no null reads a deciding label (0 of 28
+0.036 and 0.042) were added. The final round (21 scenarios of 300 series, rule column) moved in 13 scenarios under the new
+seed, by up to 6 series (q12 -0.18 rad beside flip 0.0166: `none_adequate` 290 to 287, `q12_phase` 7 to 11; null flip 0.025
+beside pulse phase 0.10: `exact_parabola` 2 to 8; q8 -0.25 rad: `q8_phase_at_coupler` 267 to 263, `phase_unresolved` 30 to 33), while
+its expected-value z12 and z8c columns stayed identical; the gate verdicts follow the same counts, and the gate still
+rejects 293 to 297 of 300 true q12 labels. Moved or not, the findings keep their statements: no null reads a deciding label (0 of 28
 nulls, both rules), the fitted flip restores the label of every true phase beside a flip (195 to 200 of 200), a drifting
 flip leaves 92 and 96 of 200, and `exact_parabola` reads 0 of 5,400 small phases. Reseeding also exposed that `finish()`
 took one degree of freedom too few from every adequacy limit (it called `ps.freedom` with its default
