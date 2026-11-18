@@ -1266,11 +1266,17 @@ def _first_twin_batch_stamps() -> tuple[str, dict[str, str]]:
 
 
 def test_a_valid_series_reads_its_executed_order_through_the_real_decision(
-    small_shots: dict[str, list[str]], manifest: dict[str, Any]
+    small_shots: dict[str, list[str]],
+    manifest: dict[str, Any],
+    plain_record: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     record = bc.evaluate(small_shots, manifest, _stamped())
     _expect(record["executed_order_fit"]["status"] == "fitted", f"{record['executed_order_fit']}")
     _expect(record["decision"]["label"] not in bc.WITHHELD_LABELS, f"{record['decision']['label']}")
+    # The plain decision ranks nothing, so it does not depend on the stamps' spelling; the respelled series reads the
+    # module's record of it, and the stamp parsing, offsets and executed-order decision run unchanged.
+    monkeypatch.setattr(bc, "evaluate_decision", lambda shots, manifest, executed=None: copy.deepcopy(plain_record))
     # The same instants spelled with another offset and fraction width read one series.
     shifted = {
         key: datetime.fromisoformat(value).astimezone(timezone(timedelta(hours=5, minutes=30))).isoformat()
