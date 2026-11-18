@@ -148,6 +148,9 @@ def test_worker_cap_is_set_for_the_call_and_restored(monkeypatch: pytest.MonkeyP
     _require(os.environ.get("GOROROBA_WORKERS") == "3", "a present GOROROBA_WORKERS was not restored")
     tighter = parallel_memory.bounded_ordered_map(_cap_seen, [0], GIB, available_bytes=9 * GIB, min_items=99)
     _require(tighter == ["3"], f"the memory cap raised the caller's cap, got {tighter}")
+    for figure in (0, -GIB):
+        with pytest.raises(ValueError, match="positive byte count"):
+            parallel_memory.bounded_ordered_map(_cap_seen, [0], figure, available_bytes=GIB, min_items=99)
     with pytest.raises(ValueError, match="stop"):
         parallel_memory.bounded_ordered_map(_fails, [0], GIB, available_bytes=GIB, min_items=99)
     _require(os.environ.get("GOROROBA_WORKERS") == "3", "a failing call left GOROROBA_WORKERS changed")

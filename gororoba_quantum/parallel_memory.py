@@ -92,7 +92,10 @@ def bounded_ordered_map(
     """parallel.ordered_map with at most as many workers as fit in memory, worker_bytes each.
 
     available_bytes defaults to available_memory(); with no figure the process budget stands.
+    A worker_bytes below one byte raises ValueError.
     """
+    if worker_bytes < 1:
+        raise ValueError(f"worker_bytes must be a positive byte count, got {worker_bytes}")
     fit = memory_workers(worker_bytes, available_memory() if available_bytes is None else available_bytes)
     if fit is None:
         return parallel.ordered_map(function, items, min_items=min_items)
