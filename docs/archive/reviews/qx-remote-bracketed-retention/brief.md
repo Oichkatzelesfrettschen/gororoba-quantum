@@ -1,13 +1,13 @@
 # Brief: review of gororoba-quantum PR 927, the retained hosted QX run of the bracketed one-CZ-null series
 
-Read first: the workspace guide (gororoba-infrastructure `workspace/AGENTS.md`) (workspace guide), then
+Read first: the workspace guide (gororoba-infrastructure `workspace/AGENTS.md`), then
 AGENTS.md and its scripts/AGENTS.md and ci/AGENTS.md. Work read-only: change no file (the launcher captures your final answer); never
 commit, push, stash, submit to any provider or emulator, or start a cloud resource; spawn no subagents.
 Binding host rule: this host runs no computation. Read files with cat, sed, head or git show on a named path, and git diff --stat or git diff on named paths. Run no
 python, no tests, no repository-wide grep. A computation you would have run goes into your report as a fenced block `SCRIPT-n` (python3, reading only
 paths you name) with the output you expect; the orchestrator runs it on a compute host.
 
-Material: a checkout of, branch qx-remote-bracketed-retention, head d79a5cd2b (frozen for this round); the pull request is
+Material: a checkout of branch qx-remote-bracketed-retention, head d79a5cd2b (frozen for this round); the pull request is
 `git diff origin/main...HEAD` (64 files, about 44,750 inserted lines, nearly all retained run data). The head is one merge commit of origin/main (fc9a8daa2) on top of c43857992.
 
 ## Claims under review (each is a claim; justify or falsify it)

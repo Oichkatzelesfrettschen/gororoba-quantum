@@ -15,7 +15,7 @@ Head read by both reviewers: d79a5cd2b. Reviewers: codex (log header: model gpt-
 
 Claims 1, 3 (computed-pending in both reports): codex SCRIPT-1 "4 batches; 5 jobs each; 20 unique jobs; shots/raw/digests/state/approval OK"; codex SCRIPT-2 "digest/gate/pass flags OK; analysis inputs cover all 20 jobs"; agy SCRIPT-1 "replayed exactly ... 20 jobs, 2.847960 s, analysis sha256 & replay exact". One edit to the agy scripts, statistics unchanged: the subprocess interpreter is the pinned one instead of `python3`. Claims 2, 4, 8: justified by both.
 
-Claims 5 and 6 of the brief: justified by both reviewers against the retained receipts and the analysis replay (no finding).
+Claims 5 and 6 of the brief (the merged usage.json and research_state.json): undecided in both reports pending their scripts; settled as F4.
 
 Fixes: bd574081e (F1, F2, F7) and 096c8417a (F6, F7); the Advisor round adds the commit that files this record, which also corrects the F6 sentence and one leftover pull-request number.
 
