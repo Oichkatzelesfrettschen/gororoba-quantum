@@ -75,8 +75,8 @@ which is 0.109 at 7/19, and the series is confounded only when all four do. Thes
 model (hypothesis: independent flips, equal errors, a drift linear in the offset). The predecessor's retained twin batches give the measured
 flip rate: 2 of 8, with executed offsets -2 and +1. The hosted-QX run adds 1 of 4 (offset -3), for 3 of 12; its run directories
 `results/quantum_inspire/runs/2026-11-15T184810Z-pathion_one_cz_null_bracketed_qx-batch-00..03` and
-`results/quantum_inspire/pathion_one_cz_null_bracketed_qx_analysis.json` arrive with the stacked PR 927, so the QX share of that
-count resolves in the tree only after PR 927 lands. The three flipped batches executed at offsets -2, +1 and -3 against
+`results/quantum_inspire/pathion_one_cz_null_bracketed_qx_analysis.json` are retained in the tree, so the QX share of that
+count resolves there. The three flipped batches executed at offsets -2, +1 and -3 against
 requested +1, -1 and +1; the strict gate's 7 of 19 counts any permutation of a batch, readouts included, and overstates the twin-flip rate.
 Under the strict gate the 16 twin batches alone all stay intact with probability 0.75^16 = 0.010 at 0.25. They are not the probability that
 the series decides.
