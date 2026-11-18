@@ -1,0 +1,49 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-11-15T18:54:30+00:00",
+ "approval": "then you submit the jobs: they are approved at that point (owner, 2026-11-15, after the local review, reconciliation and Advisor review)",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "47a25a62683d922f5cc2e6461e057370871225b9d9cbed7ec6cdb74b28a1fef5",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 5,
+ "batch_job": 958994,
+ "project": 859095,
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "readout-0.cq",
+   "job": 1742638,
+   "sha256": "7b3bf3ffb80500d21812f761b6f7042fb1b05a4af21800c7aac7b990f100c10e"
+  },
+  {
+   "file": "k12-coin0.cq",
+   "job": 1742639,
+   "sha256": "6344ffb00485160d88204aacbd0971813161d17fcdd51913f0299f9cb562105c"
+  },
+  {
+   "file": "k12-coin1.cq",
+   "job": 1742640,
+   "sha256": "b7cacfbbd23f14e100217fda60b98e5c735a6ac1e7a6f0bc999ef6e2975fe479"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1742641,
+   "sha256": "fa6aca1516ebe2a2437409372d4e5d77b079ca0706745b1838c5cf256f43565a"
+  },
+  {
+   "file": "k12.cq",
+   "job": 1742642,
+   "sha256": "4c1108ef862fa3f1c3f8415d61a854f65f959fa1eb58a784c7c9dc7510d47f3d"
+  }
+ ],
+ "submitted_utc": "2026-11-15T18:54:30+00:00"
+}
