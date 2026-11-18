@@ -38,6 +38,33 @@ def _record() -> dict[str, Any]:
     return loaded
 
 
+IMPORT_INPUT = wf.IMPORT_RESULT.relative_to(ROOT).as_posix()
+CONSUMED_FIBER_FIELDS = ("generators", "quadrics", "projective_dimension", "degree")
+
+
+def _comparable(record: dict[str, Any]) -> dict[str, Any]:
+    """The record without the Singular build banner and the import record's digest at production time."""
+    base = wf.comparable(record)
+    return {**base, "inputs": {path: digest for path, digest in base["inputs"].items() if path != IMPORT_INPUT}}
+
+
+def _import_record_mismatches(record: dict[str, Any], fibers: dict[str, dict[str, Any]]) -> list[str]:
+    """Cells whose retained fiber differs from the import record in a field the producer consumes."""
+    problems = []
+    for cell in record["cells"]:
+        held = cell["retained_fiber"]
+        found = fibers.get(wf.incidence_name(cell["orbit"], cell["source"]))
+        if held is None or found is None:
+            problems.append(f"{cell['orbit']} {cell['source']}: no retained fiber")
+            continue
+        problems += [
+            f"{cell['orbit']} {cell['source']}: {field} {held[field]} != {found[field]}"
+            for field in CONSUMED_FIBER_FIELDS
+            if held[field] != found[field]
+        ]
+    return problems
+
+
 def _cell(record: dict[str, Any], incidence: str, field: str = "Q(i)") -> dict[str, Any]:
     return next(cell for cell in record["cells"] if cell["incidence"] == incidence and cell["field"] == field)
 
@@ -588,33 +615,62 @@ def test_the_self_test_raises_on_a_failed_record_and_accepts_the_retained_one() 
         wf._self_test(flagged)
 
 
-def test_the_comparison_ignores_the_singular_build_banner_and_nothing_else() -> None:
+def test_the_comparison_ignores_the_singular_build_banner_and_the_import_record_digest_and_nothing_else() -> None:
     record = _record()
     rebuilt = copy.deepcopy(record)
     rebuilt["tools"]["singular"] = "Singular for x86_64-Linux version 4.4.1 (other build)"
-    _same(wf.comparable(rebuilt), wf.comparable(record))
+    rebuilt["inputs"][IMPORT_INPUT] = "1" * 64
+    _same(_comparable(rebuilt), _comparable(record))
+    for path in record["inputs"]:
+        if path != IMPORT_INPUT:
+            changed = copy.deepcopy(record)
+            changed["inputs"][path] = "0" * 64
+            _same(_comparable(changed) != _comparable(record), True)
     for key in ("singular_version", "sympy", "python_flint"):
         changed = copy.deepcopy(record)
         changed["tools"][key] = "0"
-        _same(wf.comparable(changed) != wf.comparable(record), True)
+        _same(_comparable(changed) != _comparable(record), True)
     other = copy.deepcopy(record)
     other["cells"][0]["relations_sha256"] = "0" * 64
-    _same(wf.comparable(other) != wf.comparable(record), True)
+    _same(_comparable(other) != _comparable(record), True)
+
+
+def test_a_changed_fiber_field_of_the_import_record_fails_the_fields_comparison(tmp_path: Path) -> None:
+    record = _record()
+    fibers = wf.retained_fibers()
+    _same(_import_record_mismatches(record, fibers), [])
+    imported = json.loads(wf.IMPORT_RESULT.read_text(encoding="utf-8"))
+    imported["fibers"][0]["generators"] += 1
+    copied = tmp_path / "import.json"
+    copied.write_text(json.dumps(imported), encoding="utf-8")
+    mutated = {}
+    for fiber in json.loads(copied.read_text(encoding="utf-8"))["fibers"]:
+        for incidence in fiber["incidences"]:
+            mutated[str(incidence)] = {field: int(fiber[field]) for field in CONSUMED_FIBER_FIELDS}
+    problems = _import_record_mismatches(record, mutated)
+    _same(problems != [], True)
+    _same(all("generators" in problem for problem in problems), True)
 
 
 @pytest.mark.audit
-def test_the_retained_record_binds_the_current_producer_and_input_digests() -> None:
+def test_the_retained_record_binds_the_producer_and_inputs_by_digest_and_the_import_record_by_consumed_fields() -> None:
+    """The import record's digest in the record is its digest at production time; its consumed fields are compared."""
     record = _record()
     own = Path(wf.__file__).resolve().relative_to(ROOT).as_posix()
     _same(own in record["inputs"], True)
-    _same([path for path, digest in record["inputs"].items() if wf._sha256(ROOT / path) != digest], [])
+    _same(IMPORT_INPUT in record["inputs"], True)
+    _same(
+        [path for path, digest in record["inputs"].items() if path != IMPORT_INPUT and wf._sha256(ROOT / path) != digest],
+        [],
+    )
+    _same(_import_record_mismatches(record, wf.retained_fibers()), [])
 
 
 @pytest.mark.audit
 @pytest.mark.skipif(shutil.which("Singular") is None and not SINGULAR_REQUIRED, reason="Singular is not installed")
 def test_the_retained_record_regenerates_with_the_same_relation_digests() -> None:
     fresh = wf.build_record()
-    _same(wf.comparable(fresh), wf.comparable(_record()))
+    _same(_comparable(fresh), _comparable(_record()))
     _same(fresh["pass"], True)
 
 
