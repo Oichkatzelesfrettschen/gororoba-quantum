@@ -1,8 +1,8 @@
 # Codex review loop, stacked PRs and merging
 
 Hosted review runs in a fixed order, each stage at most once per PR: Codex,
-then Copilot only when the Codex round needed a fix, then the owner
-(AGENTS.md, "Reviews and merges").
+then the owner (AGENTS.md, "Reviews and merges"). No Copilot review is
+requested, assigned or watched on any PR (owner, 2026-11-17).
 
 Codex, the chatgpt-codex-connector app, reviews only on request: an issue
 comment `@Codex review` asks for a review of the current head; the mention
@@ -13,10 +13,7 @@ requests one when the PR is a merge candidate, through
 `scripts/codex_review_request.sh PR`: it refuses a request when the PR's own
 diff (`git patch-id --verbatim` of merge-base..head against current main,
 without context lines) equals the last reviewed head's, so a merge of main
-earns none, and when a round was already requested. Copilot reviews on
-request as well: `gh pr edit PR --add-reviewer @Copilot`, once, after the
-Codex threads are resolved, and only when resolving them pushed a fix: the
-fixed head is then code no hosted reviewer has read. When the Codex app reports exhausted code-review
+earns none, and when a round was already requested. When the Codex app reports exhausted code-review
 quota, the owner decides how the PR proceeds. A round that never completes
 follows [codex-review-stalls.md](codex-review-stalls.md).
 
@@ -76,13 +73,7 @@ follows [codex-review-stalls.md](codex-review-stalls.md).
    that produced no thread ends at once. The push that fixed its findings
    earns no second Codex request: `scripts/codex_review_request.sh PR`
    refuses one and names the owner.
-7. When the Codex round's push fixed at least one finding (a `Fixed in`
-   reply), request the Copilot review of that head with
-   `gh pr edit PR --add-reviewer @Copilot` and work its threads through
-   steps 2 to 5, in one push. A Codex round with no thread, or with only
-   `Refuted:` and `Boundary:` replies, left the reviewed head unchanged and
-   earns no Copilot request.
-8. Report to the owner: the head, the checks, each reviewer's findings and
+7. Report to the owner: the head, the checks, each reviewer's findings and
    their dispositions, and anything left open. The owner decides the merge
    or a further round.
 
@@ -108,8 +99,7 @@ follows [codex-review-stalls.md](codex-review-stalls.md).
 A PR merges after this sequence:
 1. The operator reviews the whole PR diff against origin/main, every commit
    regardless of author, and fixes what that review finds.
-2. Codex reviews the head once, and Copilot reviews the fixed head once when
-   the Codex round needed a fix; every thread of each is fixed, refuted or
+2. Codex reviews the head once; every thread is fixed, refuted or
    bounded and resolved (One round
    above). A merge of main or a regenerated view earns no request:
    `scripts/codex_review_wait.sh PR DEADLINE LOG 600 REVIEWED_HEAD` names
