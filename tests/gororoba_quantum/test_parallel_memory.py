@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import os
 import pickle
+import time
 from pathlib import Path
 
 import pytest
@@ -18,8 +20,13 @@ def _require(condition: bool, message: str) -> None:
         raise AssertionError(message)
 
 
-def _synthetic_host(tmp_path: Path, available_kib: int, limits: dict[str, tuple[str, int]]) -> dict[str, Path]:
-    """A /proc/meminfo, /proc/self/cgroup and cgroup tree; limits maps a cgroup path to (memory.max, memory.current)."""
+def _synthetic_host(
+    tmp_path: Path, available_kib: int, limits: dict[str, tuple[str, int | None]]
+) -> dict[str, Path]:
+    """A /proc/meminfo, /proc/self/cgroup and cgroup tree; limits maps a cgroup path to (memory.max, memory.current).
+
+    A current of None leaves memory.current absent; the empty path is the root node.
+    """
     tmp_path.mkdir(parents=True, exist_ok=True)
     meminfo = tmp_path / "meminfo"
     meminfo.write_text(f"MemTotal: 99999999 kB\nMemAvailable: {available_kib} kB\n")
@@ -30,15 +37,28 @@ def _synthetic_host(tmp_path: Path, available_kib: int, limits: dict[str, tuple[
         node = root / path
         node.mkdir(parents=True, exist_ok=True)
         (node / "memory.max").write_text(f"{limit}\n")
-        (node / "memory.current").write_text(f"{current}\n")
+        if current is not None:
+            (node / "memory.current").write_text(f"{current}\n")
     return {"proc_cgroup": proc_cgroup, "cgroup_root": root, "meminfo": meminfo}
 
 
+def _available(tmp_path: Path, name: str, available_gib: int, limits: dict[str, tuple[str, int | None]]) -> int | None:
+    return parallel.available_memory(**_synthetic_host(tmp_path / name, available_gib * GIB // 1024, limits))
+
+
 def test_available_memory_is_the_tightest_headroom(tmp_path: Path) -> None:
-    host = _synthetic_host(tmp_path, 40 * GIB // 1024, {"a/b": ("max", 0), "a": (str(16 * GIB), 4 * GIB)})
-    _require(parallel.available_memory(**host) == 12 * GIB, "the ancestor limit's headroom did not bind")
-    host = _synthetic_host(tmp_path / "host", 10 * GIB // 1024, {"a": (str(16 * GIB), 0)})
-    _require(parallel.available_memory(**host) == 10 * GIB, "MemAvailable did not bind under a looser limit")
+    both = _available(tmp_path, "both", 40, {"a/b": ("max", 0), "a": (str(16 * GIB), 4 * GIB)})
+    _require(both == 12 * GIB, "the ancestor limit's headroom did not bind")
+    looser = _available(tmp_path, "looser", 10, {"a": (str(16 * GIB), 0)})
+    _require(looser == 10 * GIB, "MemAvailable did not bind under a looser limit")
+    root = _available(tmp_path, "root", 40, {"": (str(8 * GIB), 3 * GIB), "a/b": ("max", 0)})
+    _require(root == 5 * GIB, "the limit on the root node did not bind")
+    over = _available(tmp_path, "over", 40, {"a": (str(4 * GIB), 6 * GIB)})
+    _require(over == 0, "use above the limit did not leave no room")
+    no_current = _available(tmp_path, "no-current", 10, {"a": (str(2 * GIB), None)})
+    _require(no_current == 10 * GIB, "a limit without memory.current contributed a figure")
+    malformed = _available(tmp_path, "malformed", 10, {"a": ("lots", 0), "a/b": (str(4 * GIB), GIB)})
+    _require(malformed == 3 * GIB, "a malformed memory.max hid the readable limit below it")
     missing = tmp_path / "none"
     _require(parallel.available_memory(missing, missing, missing) is None, "an absent source reported a figure")
 
@@ -46,37 +66,69 @@ def test_available_memory_is_the_tightest_headroom(tmp_path: Path) -> None:
 def test_worker_count_fits_the_reported_memory() -> None:
     worker = research_state.SELF_TEST_WORKER_BYTES
     _require(parallel.memory_workers(worker, 16 * GIB) == 16 * GIB // worker, "16 GiB admits the wrong count")
+    _require(parallel.memory_workers(worker, 3 * worker) == 3, "three workers' room admits the wrong count")
     _require(parallel.memory_workers(worker, worker - 1) == 1, "a small limit must still leave one worker")
     _require(parallel.memory_workers(worker, None) is None, "an unknown limit must not cap")
 
 
+def _pid_after_pause(item: int) -> tuple[int, int]:
+    time.sleep(0.05)
+    return item * item, os.getpid()
+
+
+def _record_pool_sizes(monkeypatch: pytest.MonkeyPatch) -> list[tuple[int, int]]:
+    """Wrap parallel._executor; each entry is (the count requested, the worker limit of the pool returned)."""
+    sizes: list[tuple[int, int]] = []
+    real = parallel._executor
+
+    def recording(count: int) -> parallel.ProcessPoolExecutor:
+        pool = real(count)
+        sizes.append((count, pool._max_workers))
+        return pool
+
+    monkeypatch.setattr(parallel, "_executor", recording)
+    return sizes
+
+
 def test_ordered_map_requests_no_more_workers_than_fit(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("GOROROBA_WORKERS", "4")
+    sizes = _record_pool_sizes(monkeypatch)
     parallel._shutdown()
     try:
         seen = parallel.ordered_map(
-            parallel._process_budget, list(range(16)), min_items=1, worker_bytes=GIB, available_bytes=2 * GIB
+            parallel._square, list(range(16)), min_items=1, worker_bytes=GIB, available_bytes=2 * GIB
         )
-        _require(len({pid for _, pid, _, _ in seen}) <= 2, "the pool used more workers than the injected limit fits")
+        monkeypatch.setattr(parallel, "available_memory", lambda: None)
+        uncapped = parallel.ordered_map(parallel._square, list(range(16)), min_items=1, worker_bytes=GIB)
     finally:
         parallel._shutdown()
+    _require(seen == [item * item for item in range(16)], "the capped pool returned the wrong list")
+    _require(uncapped == seen, "the uncapped pool returned the wrong list")
+    _require(sizes[:1] == [(2, 2)], f"two workers' room must build a pool of two, got {sizes}")
+    _require(sizes[1:] == [(4, 4)], f"an unknown limit must leave the process budget, got {sizes}")
 
 
 def test_two_workers_return_the_serial_verdicts(monkeypatch: pytest.MonkeyPatch) -> None:
     items = list(range(24))
-    serial = [parallel._square(item) for item in items]
+    serial = [item * item for item in items]
     monkeypatch.setenv("GOROROBA_WORKERS", "2")
     parallel._shutdown()
     try:
-        pooled = parallel.ordered_map(parallel._square, items, min_items=1, worker_bytes=GIB, available_bytes=8 * GIB)
+        pooled = parallel.ordered_map(_pid_after_pause, items, min_items=1, worker_bytes=GIB, available_bytes=8 * GIB)
     finally:
         parallel._shutdown()
-    _require(pooled == serial, "the pooled list differs from the serial list")
+    _require([value for value, _ in pooled] == serial, "the pooled list differs from the serial list")
+    pids = {pid for _, pid in pooled}
+    _require(os.getpid() not in pids and len(pids) == 2, f"two worker processes must share the chunks, got {pids}")
 
 
 def test_case_verdict_pickles_without_loaded_state_and_cases_are_unique() -> None:
     registry = {"schema": "synthetic"}
-    verdict = pickle.loads(pickle.dumps(research_state.CaseVerdict(registry)))
-    _require(verdict._registry == registry and verdict._loaded is None, "a pickled verdict carried loaded state")
+    verdict = research_state.CaseVerdict(registry)
+    verdict._loaded = ("sentinel",)  # type: ignore[assignment]
+    verdict._specs = ["sentinel"]  # type: ignore[list-item]
+    restored = pickle.loads(pickle.dumps(verdict))
+    _require(restored._registry == registry, "a pickled verdict lost its registry")
+    _require(restored._loaded is None and restored._specs is None, "a pickled verdict carried loaded state")
     names = [name for name, _, _ in research_state._case_specs()]
     _require(len(names) == len(set(names)) and len(names) > 1, "self-test case names repeat")
