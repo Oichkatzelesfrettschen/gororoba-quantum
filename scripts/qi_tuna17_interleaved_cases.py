@@ -28,7 +28,7 @@ own series directory:
 Order. Every order comes from one retained QRNG draw (DRAW), consumed in index order, each value once, by a rejection
 shuffle; schedule() states the indices each component takes. While DRAW is None the batch directories, their circuits
 and schedule.json do not exist: only the indexes and prediction.json are generated and qrng_request.json records the
-draw to take.
+draw to take and stays beside the batches once the draw is set.
 
 Profiles: tuna_17 (17 qubits, 8,192 shots per circuit) and qx (the same texts on 10 qubits at 1,024 shots, with the
 qubit map of CLASS_A, CLASS_B, PAIR and PHASE). Bit order: qubit 0 is the rightmost character of a shot.
@@ -67,6 +67,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
 import qi_tuna17_characterization_cases as base  # noqa: E402
+
+from parallel import ordered_map  # noqa: E402
 
 SCHEMA = "qi-tuna17-interleaved-cases-v1"
 ANALYSIS_SCHEMA = "qi-tuna17-interleaved-analysis-v1"
@@ -1040,8 +1042,8 @@ def files(profile_name: str, values: Sequence[int] | None, retained: dict[str, A
     }
     out["cases.json"] = json.dumps(index, indent=1) + "\n"
     out["prediction.json"] = json.dumps(prediction(profile_name, retained), indent=1) + "\n"
+    out["qrng_request.json"] = json.dumps(qrng_request(), indent=1) + "\n"
     if values is None:
-        out["qrng_request.json"] = json.dumps(qrng_request(), indent=1) + "\n"
         return out
     plan = schedule(profile_name, values)
     out["schedule.json"] = json.dumps({"schema": SCHEMA, "qrng_draw": DRAW, **plan}, indent=1) + "\n"
@@ -1308,22 +1310,16 @@ def tail_verdict(tail_statistic: float, usable: int, nqubits: int) -> str:
     return "not_confirmed"
 
 
-def analyze_interleaved(batches: list[dict[str, Any]]) -> dict[str, Any]:
-    """Per-qubit anchored fits of the interleaved T1 batches, the pooled tail statistic and the executed schedule.
+class QubitFit:
+    """The anchored fits of one qubit over the interleaved batches. An instance holds only its inputs, so it pickles
+    for parallel.ordered_map, whose workers start under the spawn method."""
 
-    Qubit i reads its own delay of each delay circuit (delays_cycles) and the replicates of a delay are the rounds of
-    one multiplier. A qubit whose anchors span too little or whose points number under six reads unusable and adds
-    nothing to the tail statistic, a sum of nonnegative gains, so a dropped qubit moves the confirmatory verdict
-    toward the null; pooled.unusable_qubits counts them. The pooled verdict tail_confirmed reads tail_statistic, the
-    sum over usable qubits of tail_contribution, against TAIL_STATISTIC_THRESHOLD; tail_verdict adds inconclusive for a
-    statistic under the threshold with fewer than MIN_USABLE_QUBITS usable qubits. The per-qubit labels and every
-    count of them are descriptive and decide nothing.
-    jobs lists the round and the executed start (queued_at of results.json) of every job.
-    """
-    nqubits = batches[0]["nqubits"]
-    roles = [interleaved_roles(b) for b in batches]
-    qubits = []
-    for qubit in range(nqubits):
+    def __init__(self, batches: list[dict[str, Any]], roles: list[Any]) -> None:
+        self.batches = batches
+        self.roles = roles
+
+    def __call__(self, qubit: int) -> dict[str, Any]:
+        batches, roles = self.batches, self.roles
         a0s = [b["p1"][r[0]][qubit] for b, r in zip(batches, roles, strict=True)]
         a1s = [b["p1"][r[1]][qubit] for b, r in zip(batches, roles, strict=True)]
         count = batches[0]["shots"]
@@ -1356,8 +1352,7 @@ def analyze_interleaved(batches: list[dict[str, Any]]) -> dict[str, Any]:
         }
         if len(points) < 6 or not usable:
             row["verdict"] = "unusable"
-            qubits.append(row)
-            continue
+            return row
         fits = {shape: fit_shape(points, shape) for shape in ("single", "plateau", "two_rate")}
         raw_fit = fit_shape(raw_points, "single")
         replicate_chi = 0.0
@@ -1377,7 +1372,24 @@ def analyze_interleaved(batches: list[dict[str, Any]]) -> dict[str, Any]:
         row["replicate_probability"] = replicate_probability
         row["verdict"] = classify(fits, raw_fit["probability"], replicate_probability)
         row["tail_contribution"] = tail_contribution(fits, replicate_probability)
-        qubits.append(row)
+        return row
+
+
+def analyze_interleaved(batches: list[dict[str, Any]]) -> dict[str, Any]:
+    """Per-qubit anchored fits of the interleaved T1 batches, the pooled tail statistic and the executed schedule.
+
+    Qubit i reads its own delay of each delay circuit (delays_cycles) and the replicates of a delay are the rounds of
+    one multiplier. A qubit whose anchors span too little or whose points number under six reads unusable and adds
+    nothing to the tail statistic, a sum of nonnegative gains, so a dropped qubit moves the confirmatory verdict
+    toward the null; pooled.unusable_qubits counts them. The pooled verdict tail_confirmed reads tail_statistic, the
+    sum over usable qubits of tail_contribution, against TAIL_STATISTIC_THRESHOLD; tail_verdict adds inconclusive for a
+    statistic under the threshold with fewer than MIN_USABLE_QUBITS usable qubits. The per-qubit labels and every
+    count of them are descriptive and decide nothing.
+    jobs lists the round and the executed start (queued_at of results.json) of every job.
+    """
+    nqubits = batches[0]["nqubits"]
+    roles = [interleaved_roles(b) for b in batches]
+    qubits = ordered_map(QubitFit(batches, roles), list(range(nqubits)), min_items=2)
     verdicts = [row["verdict"] for row in qubits]
     accepted = sum(v in ("single_exponential", "level_shift") for v in verdicts)
     rejected = sum(v in ("tail_plateau", "two_rate") for v in verdicts)
@@ -1571,6 +1583,31 @@ def fit_prediction(
     return decay(shape, theta, t_us), max(0.0, variance)
 
 
+class InterleavedQubitFit:
+    """The interleaved fit of one qubit for staggered_comparison, or None below six anchored points. An instance holds
+    only its inputs, so it pickles for parallel.ordered_map."""
+
+    def __init__(self, interleaved: list[dict[str, Any]], roles: list[Any]) -> None:
+        self.interleaved = interleaved
+        self.roles = roles
+
+    def __call__(self, qubit: int) -> tuple[str, dict[str, Any], list[tuple[float, float, float]]] | None:
+        interleaved, roles = self.interleaved, self.roles
+        a0s = [b["p1"][r[0]][qubit] for b, r in zip(interleaved, roles, strict=True)]
+        a1s = [b["p1"][r[1]][qubit] for b, r in zip(interleaved, roles, strict=True)]
+        tau2 = job_level_variance(a0s, a1s, interleaved[0]["shots"])
+        points: list[tuple[float, float, float]] = []
+        for batch, role, a0, a1 in zip(interleaved, roles, a0s, a1s, strict=True):
+            row = batch["rows"][role[2]]
+            point = anchored_point(batch["p1"][role[2]][qubit], a0, a1, interleaved[0]["shots"], tau2)
+            if point is not None:
+                points.append((row["delays_cycles"][qubit] * CYCLE_SECONDS * 1e6, point[0], point[1]))
+        if len(points) < 6:
+            return None
+        shape, fit = interleaved_fit(points)
+        return shape, fit, points
+
+
 def staggered_comparison(interleaved: list[dict[str, Any]], crosstalk: list[dict[str, Any]]) -> dict[str, Any]:
     """Descriptive: the all-drive crosstalk T1 readings against the interleaved arm's own fit at the same wait.
 
@@ -1592,20 +1629,8 @@ def staggered_comparison(interleaved: list[dict[str, Any]], crosstalk: list[dict
     count = crosstalk[0]["shots"]
     sigmas = flag_sigmas(interleaved, interleaved[0]["nqubits"])
     roles = [interleaved_roles(b) for b in interleaved]
-    fitted: dict[int, tuple[str, dict[str, Any], list[tuple[float, float, float]]]] = {}
-    for qubit in range(interleaved[0]["nqubits"]):
-        a0s = [b["p1"][r[0]][qubit] for b, r in zip(interleaved, roles, strict=True)]
-        a1s = [b["p1"][r[1]][qubit] for b, r in zip(interleaved, roles, strict=True)]
-        tau2 = job_level_variance(a0s, a1s, interleaved[0]["shots"])
-        points: list[tuple[float, float, float]] = []
-        for batch, role, a0, a1 in zip(interleaved, roles, a0s, a1s, strict=True):
-            row = batch["rows"][role[2]]
-            point = anchored_point(batch["p1"][role[2]][qubit], a0, a1, interleaved[0]["shots"], tau2)
-            if point is not None:
-                points.append((row["delays_cycles"][qubit] * CYCLE_SECONDS * 1e6, point[0], point[1]))
-        if len(points) >= 6:
-            shape, fit = interleaved_fit(points)
-            fitted[qubit] = (shape, fit, points)
+    results = ordered_map(InterleavedQubitFit(interleaved, roles), list(range(interleaved[0]["nqubits"])), min_items=2)
+    fitted = {qubit: result for qubit, result in enumerate(results) if result is not None}
     rows: list[dict[str, Any]] = []
     for batch in sorted((b for b in crosstalk if str(b["meta"].get("unit")).startswith("t1-")), key=lambda b: b["run"]):
         name = next(f for f, row in batch["rows"].items() if row["context"] == "all")
@@ -2051,6 +2076,13 @@ def series_guards(series: Path, runs: Path, stamp: str) -> None:
                 raise RuntimeError(f"{copy} differs from {source}: the arm changed after this copy; use a new stamp")
 
 
+def append_trace_row(run: Path, row: dict[str, Any]) -> None:
+    """Append one status read to status-trace.json and keep the rows already on disk."""
+    held = run / "status-trace.json"
+    rows: list[dict[str, Any]] = json.loads(held.read_text(encoding="utf-8"))["rows"] if held.is_file() else []
+    write_trace(run, [*rows, row])
+
+
 def submit_series(
     series: Path,
     runs: Path,
@@ -2073,7 +2105,9 @@ def submit_series(
     and that read is repeated before every attempt, including the retries that follow a pause refusal
     (AdmissionRefused otherwise, before any remote write). The submit command is
     command + [submit, RUN, --backend-type-id N, --approval TEXT]; a refusal that names "wait N more seconds" is
-    retried after that many seconds, at most max_refusals times. While the collection runs, the status is read every
+    retried after that many seconds, at most max_refusals times. The status read that admits a submission is the
+    first row of status-trace.json and is written before the submit command enqueues the batch, because a job can
+    start before the first read that follows the submission. While the collection runs, the status is read every
     TRACE_POLL_SECONDS and appended to status-trace.json after each read; a resumed collection keeps the earlier
     rows. The run directory is STAMP-CASE-ARM-batch-NN. The returned list is the first failed sanity check, or empty.
     """
@@ -2107,6 +2141,7 @@ def submit_series(
                     "attempt": refused + 1,
                 }
                 (run / "admission.json").write_text(json.dumps(admitted, indent=1) + "\n", encoding="utf-8")
+                append_trace_row(run, {"utc": admitted["utc"], "status": label, "queue_own": queue})
                 code, out = run_command(submit)
                 if code == 0:
                     break
@@ -2407,7 +2442,7 @@ def self_test() -> list[str]:
             "admission or trace record missing",
         )
         expect(
-            len(json.loads((run / "status-trace.json").read_text(encoding="utf-8"))["rows"]) == 4,
+            len(json.loads((run / "status-trace.json").read_text(encoding="utf-8"))["rows"]) == 5,
             "the trace lacks its reads",
         )
         expect(bool(result), "a run with no collected results passed sanity")

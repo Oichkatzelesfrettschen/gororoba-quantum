@@ -274,8 +274,8 @@ def test_pending_state_writes_no_batches_then_the_draw_creates_them(
     if manifest["arm"] != "interleaved_t1" or manifest["qrng_draw"] != path or len(manifest["circuits"]) != 3:
         raise AssertionError(manifest)
     drawn_batches = list(ready.glob("*/batch-*"))
-    if len(drawn_batches) != sum(cases.batch_counts("tuna_17").values()) or (ready / "qrng_request.json").exists():
-        raise AssertionError("a drawn case lacks its 65 batches or keeps its request")
+    if len(drawn_batches) != sum(cases.batch_counts("tuna_17").values()) or not (ready / "qrng_request.json").is_file():
+        raise AssertionError("a drawn case lacks its 65 batches or its request")
     if cases.check(tmp_path / "cases2", draw_root=tmp_path, retained=retained):
         raise AssertionError("a drawn case does not regenerate")
     listed = json.loads((ready / "interleaved_t1" / "batch-03" / "cases.json").read_text(encoding="utf-8"))
@@ -283,6 +283,20 @@ def test_pending_state_writes_no_batches_then_the_draw_creates_them(
     (ready / "interleaved_t1" / "batch-03" / changed).write_text("changed\n", encoding="utf-8")
     if f"{changed} differs" not in "".join(cases.check(tmp_path / "cases2", draw_root=tmp_path, retained=retained)):
         raise AssertionError("a changed circuit went unnamed")
+
+
+def test_the_request_stays_generated_when_the_draw_is_set(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    retained = retained_fixture()
+    root = tmp_path / "cases"
+    cases.write(root, draw_root=tmp_path, retained=retained)
+    path = "docs/evidence/anu_qrng/draw-2026-01-01T000000Z.json"
+    (tmp_path / path).parent.mkdir(parents=True)
+    (tmp_path / path).write_text(json.dumps(draw_record(cases.synthetic_values(400))), encoding="utf-8")
+    monkeypatch.setattr(cases, "DRAW", path)
+    cases.write(root, draw_root=tmp_path, retained=retained)
+    problems = cases.check(root, draw_root=tmp_path, retained=retained)
+    if problems or not (cases.case_directory(root, "tuna_17") / "qrng_request.json").is_file():
+        raise AssertionError(problems)
 
 
 @pytest.mark.parametrize(
@@ -365,7 +379,7 @@ def test_idle_backend_submits_once_and_records_admission_and_trace(tmp_path: Pat
     if (
         admitted["status"] != "idle"
         or admitted["queue_own"] != 0
-        or len(trace) != 5
+        or len(trace) != 7
         or {r["status"] for r in trace} != {"idle"}
     ):
         raise AssertionError((admitted, trace))
@@ -400,6 +414,66 @@ def test_status_is_read_again_before_every_retry(tmp_path: Path) -> None:
     admitted = json.loads((runs / "S-case-arm-batch-00" / "admission.json").read_text(encoding="utf-8"))
     if admitted["attempt"] != 2:
         raise AssertionError(admitted)
+
+
+def test_the_admission_read_is_the_first_trace_row_and_precedes_the_enqueue(tmp_path: Path) -> None:
+    series, runs = tmp_path / "case" / "arm", tmp_path / "runs"
+    (series / "batch-00").mkdir(parents=True)
+    (series / "batch-00" / "cases.json").write_text("{}", encoding="utf-8")
+    run = runs / "S-case-arm-batch-00"
+    seen: list[list[dict[str, Any]]] = []
+
+    def run_command(argv: list[str]) -> tuple[int, str]:
+        seen.append(json.loads((run / "status-trace.json").read_text(encoding="utf-8"))["rows"])
+        return 0, ""
+
+    cases.submit_series(
+        series,
+        runs,
+        "S",
+        "approval",
+        7,
+        command=["py", "platform"],
+        read_status=lambda: cases.synthetic_status("idle"),
+        run_command=run_command,
+        launch=lambda argv: cases.FakeProcess(1),
+        sleep=lambda s: None,
+    )
+    admitted = json.loads((run / "admission.json").read_text(encoding="utf-8"))
+    rows = json.loads((run / "status-trace.json").read_text(encoding="utf-8"))["rows"]
+    if len(seen) != 1 or len(seen[0]) != 1 or seen[0][0]["utc"] != admitted["utc"] or rows[0] != seen[0][0]:
+        raise AssertionError((seen, admitted, rows))
+    if seen[0][0]["status"] != "idle" or seen[0][0]["queue_own"] != 0:
+        raise AssertionError(seen[0][0])
+
+
+def test_a_start_between_the_admission_row_and_the_first_later_read_is_observed(tmp_path: Path) -> None:
+    rows: list[dict[str, Any]] = [
+        {"file": "readout-0.cq", "kind": "anchor0", "driven": []},
+        {"file": "t1-0.cq", "kind": "anchor1", "driven": [0, 1, 2, 3, 4]},
+    ]
+    good = {"readout-0.cq": [0.02] * 5, "t1-0.cq": [0.96] * 5}
+    trace = {
+        "schema": "qi-status-trace-v1",
+        "poll_seconds": 15.0,
+        "rows": [
+            {"utc": "2026-01-01T00:01:00+00:00", "status": "idle", "queue_own": 0},
+            {"utc": "2026-01-01T00:02:00+00:00", "status": "idle", "queue_own": 0},
+        ],
+    }
+    for name, start, unobserved in (
+        ("prompt", "2026-01-01T00:01:10+00:00", False),
+        ("early", "2026-01-01T00:00:55+00:00", True),
+    ):
+        run = tmp_path / name
+        write_run(run, rows, good, 200, start)
+        (run / "admission.json").write_text(json.dumps(valid_admission()), encoding="utf-8")
+        (run / "status-trace.json").write_text(json.dumps(trace), encoding="utf-8")
+        found = "".join(cases.sanity(run))
+        if unobserved != ("execution began while the backend status read unobserved" in found) or (
+            not unobserved and found
+        ):
+            raise AssertionError((name, found))
 
 
 def always_idle() -> dict[str, Any]:
@@ -865,6 +939,20 @@ def test_staggered_comparison_reads_all_drive_against_the_interleaved_fit_at_the
     waits = sorted({round(r["crosstalk_wait_us"], 6) for r in planted})
     if len(waits) != 3 or abs(waits[0] - 5.0) > 1e-6 or abs(waits[2] - 80.0) > 1e-6:
         raise AssertionError(waits)
+
+
+def test_per_qubit_fits_return_the_serial_result_in_qubit_order(monkeypatch: pytest.MonkeyPatch) -> None:
+    models = [MODELS[q % 2] for q in range(17)]
+    interleaved = cases.synthetic_interleaved(models)
+    crosstalk = agreeing_crosstalk(models)
+    monkeypatch.setenv("GOROROBA_WORKERS", "1")
+    serial = (cases.analyze_interleaved(interleaved), cases.staggered_comparison(interleaved, crosstalk))
+    monkeypatch.setenv("GOROROBA_WORKERS", "2")
+    pooled = (cases.analyze_interleaved(interleaved), cases.staggered_comparison(interleaved, crosstalk))
+    if serial != pooled:
+        raise AssertionError("the process pool changed an analysis result")
+    if [row["qubit"] for row in pooled[0]["qubits"]] != list(range(17)):
+        raise AssertionError("the qubit rows left qubit order")
 
 
 def test_flat_noiseless_series_reads_as_a_single_exponential() -> None:
