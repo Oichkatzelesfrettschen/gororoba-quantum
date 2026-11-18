@@ -86,6 +86,9 @@ DRAW_LENGTH = 256
 LACK_OF_FIT_PROBABILITY = 0.01
 AICC_GAIN = 4.0
 MIN_READOUT_SPAN = base.MIN_READOUT_SPAN
+# Per-qubit label counts are descriptive. The pooled tail verdict reads the AICc gain summed over qubits against this
+# threshold, which lies far above the null spread of the sum and below its value on a retained-size tail.
+TAIL_STATISTIC_THRESHOLD = 200.0
 POOLED_QUBITS = 12
 SANITY_WRONG_QUBITS = base.SANITY_WRONG_QUBITS
 # Level and window of the phase verdict, in radians: the refit of the q12 term, its half-width and the null bound.
@@ -866,6 +869,18 @@ def classify(fits: dict[str, dict[str, Any]], raw_probability: float, replicate_
     return "unresolved"
 
 
+def tail_contribution(fits: dict[str, dict[str, Any]], replicate_probability: float) -> float:
+    """AICc gain of the lower-AICc tail fit over the single exponential, zero unless the replicates and that fit hold.
+
+    The tail fit counts only where its own lack-of-fit probability and the replicate probability both reach
+    LACK_OF_FIT_PROBABILITY, so a gain bought by a misfit or by scattering rounds adds nothing; a negative gain adds 0.
+    """
+    tail = min((fits["plateau"], fits["two_rate"]), key=lambda fit: fit["aicc"])
+    if replicate_probability < LACK_OF_FIT_PROBABILITY or tail["probability"] < LACK_OF_FIT_PROBABILITY:
+        return 0.0
+    return max(0.0, fits["single"]["aicc"] - tail["aicc"])
+
+
 def anchored_point(p: float, a0: float, a1: float, count: int, tau2: float) -> tuple[float, float] | None:
     """Population (p - a0) / (a1 - a0) of one batch and its variance; None when the anchors lie too close."""
     span = a1 - a0
@@ -907,7 +922,11 @@ def read_batches(runs: list[Path]) -> list[dict[str, Any]]:
 
 
 def analyze_interleaved(batches: list[dict[str, Any]]) -> dict[str, Any]:
-    """Per-qubit anchored fits of the interleaved T1 batches, the pooled verdict counts and the level-shift scale."""
+    """Per-qubit anchored fits of the interleaved T1 batches, the pooled tail statistic and the level-shift scale.
+
+    The pooled verdict tail_confirmed reads tail_statistic, the sum over usable qubits of tail_contribution, against
+    TAIL_STATISTIC_THRESHOLD. The per-qubit labels and their counts are descriptive and decide nothing.
+    """
     nqubits = batches[0]["nqubits"]
     qubits = []
     for qubit in range(nqubits):
@@ -963,15 +982,19 @@ def analyze_interleaved(batches: list[dict[str, Any]]) -> dict[str, Any]:
         row["unanchored_single_probability"] = raw_fit["probability"]
         row["replicate_probability"] = replicate_probability
         row["verdict"] = classify(fits, raw_fit["probability"], replicate_probability)
+        row["tail_contribution"] = tail_contribution(fits, replicate_probability)
         qubits.append(row)
     verdicts = [row["verdict"] for row in qubits]
     accepted = sum(v in ("single_exponential", "level_shift") for v in verdicts)
     rejected = sum(v in ("tail_plateau", "two_rate") for v in verdicts)
+    tail_statistic = sum(row.get("tail_contribution", 0.0) for row in qubits)
     pooled = {
         "single_exponential_accepted": accepted,
         "single_exponential_rejected": rejected,
         "level_shift_explains_misfit": accepted >= POOLED_QUBITS,
-        "tail_confirmed": rejected >= POOLED_QUBITS,
+        "tail_statistic": tail_statistic,
+        "tail_statistic_threshold": TAIL_STATISTIC_THRESHOLD,
+        "tail_confirmed": tail_statistic >= TAIL_STATISTIC_THRESHOLD,
     }
     return {"qubits": qubits, "pooled": pooled}
 

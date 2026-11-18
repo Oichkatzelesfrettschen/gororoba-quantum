@@ -554,6 +554,47 @@ def test_a_consistent_third_round_leaves_the_tail_label() -> None:
         raise AssertionError(row)
 
 
+def test_tail_statistic_pools_the_gain_of_the_gated_qubits() -> None:
+    def fits(single: float, plateau: tuple[float, float], two_rate: tuple[float, float]) -> dict[str, dict[str, Any]]:
+        return {
+            "single": {"aicc": single, "probability": 0.0},
+            "plateau": {"aicc": plateau[0], "probability": plateau[1]},
+            "two_rate": {"aicc": two_rate[0], "probability": two_rate[1]},
+        }
+
+    # Hand values: 300 - min(100, 90) = 210; 50 - min(60, 70) is negative so 0; a lower-AICc fit that lacks fit and a
+    # replicate probability under the bound add 0 each.
+    first = cases.tail_contribution(fits(300.0, (100.0, 0.5), (90.0, 0.4)), 0.5)
+    second = cases.tail_contribution(fits(50.0, (60.0, 0.5), (70.0, 0.5)), 0.5)
+    misfit = cases.tail_contribution(fits(300.0, (100.0, 0.5), (90.0, 0.001)), 0.5)
+    scatter = cases.tail_contribution(fits(300.0, (100.0, 0.5), (90.0, 0.4)), 0.005)
+    if (first, second, misfit, scatter) != (210.0, 0.0, 0.0, 0.0):
+        raise AssertionError((first, second, misfit, scatter))
+
+
+def test_pooled_tail_verdict_reads_the_summed_gain_not_the_label_count() -> None:
+    plateau = {"shape": "plateau", "theta": [20.0, 0.03], "e01": 0.03, "e11": 0.96}
+    flat = {"shape": "single", "theta": [22.0], "e01": 0.03, "e11": 0.96}
+    pooled = cases.analyze_interleaved(cases.synthetic_interleaved([plateau, flat]))
+    rows = pooled["qubits"]
+    gain = rows[0]["fits"]["single"]["aicc"] - rows[0]["fits"]["plateau"]["aicc"]
+    if (
+        [r["verdict"] for r in rows] != ["tail_plateau", "single_exponential"]
+        or rows[1]["tail_contribution"] != 0.0
+        or abs(pooled["pooled"]["tail_statistic"] - gain) > 1e-9
+        or not pooled["pooled"]["tail_confirmed"]
+        or pooled["pooled"]["single_exponential_rejected"] != 1
+    ):
+        raise AssertionError(pooled)
+    only_flat = cases.analyze_interleaved(cases.synthetic_interleaved([flat, flat]))["pooled"]
+    if only_flat["tail_statistic"] != 0.0 or only_flat["tail_confirmed"]:
+        raise AssertionError(only_flat)
+    scattering = cases.synthetic_interleaved([plateau, plateau])
+    scattered = cases.analyze_interleaved(with_third_round(scattering, uniform(0.01)))["pooled"]
+    if scattered["tail_statistic"] != 0.0 or scattered["tail_confirmed"]:
+        raise AssertionError(scattered)
+
+
 def test_flat_noiseless_series_reads_as_a_single_exponential() -> None:
     flat = {"shape": "single", "theta": [1.0e6], "e01": 0.0, "e11": 1.0}
     pooled = cases.analyze_interleaved(cases.synthetic_interleaved([flat] * 3))
