@@ -392,15 +392,15 @@ single-qubit gate, Rz included, and in under 0.1 percent of runs of any admitted
   `core-pathion-one-cz-null-bracketed-qx-analysis-replay`): `qx_control.pass` and `qx_brackets.pass` are true. The
   hosted emulator accepts all five circuits, returns ten-bit outcomes in the expected logical-bit ordering and passes the
   control and bracket checks; this control neither requires nor establishes the requested circuit execution order. The
-  written case of 2026-11-15 (not tracked) stated the estimate the approval rested on, 4 batches, 20 jobs, 40,960 shots,
+  written case of 2026-11-15, retained at `results/quantum_inspire/runs/2026-11-15T184810Z-pathion_one_cz_null_bracketed_qx-batch-00/written-case-at-approval.md` (sha256 24f001feb8082f6d84e63534df093a68fbf33785622d7ce5c8eec1f79e6e6e67; batches 01 to 03 are the same series), stated the estimate the approval rested on, 4 batches, 20 jobs, 40,960 shots,
   under 120 s and 0 credits; the series executed in 2.85 s of execution time and charged 0. Measured from the retained
   `queued_at` stamps, batches 02 and 03 of this emulator run executed out of the requested order (batch 02: readout-0,
   k8-coin1, readout-1, k8, k8-coin0; batch 03: both twins before readout-0), so the platform reorders a batch of five
-  circuits on the emulator as well, 2 of 4 batches. The authorization field of each receipt carries the owner's sentence
+  circuits on the emulator as well, 2 of 4 batches. The approval field of each receipt carries the owner's sentence
   followed by a session-written parenthetical. The hosted sampling randomness is the provider's and no receipt records a
-  sampling seed; the circuit-generation seeds are the QRNG-bound ones of the case manifests. The series driver's default sanity
-  check refused the bracketed run directory after batch 0, so the run resumed under the same stamp with
-  `SANITY_COMMAND` naming `qi_pathion_one_cz_null_bracketed_cases.py --sanity`.
+  sampling seed; the circuit-generation seeds are the QRNG-bound ones of the case manifests. Before commit d96c12ca6 the series driver's default sanity
+  check was the predecessor's, which refused the bracketed run directory after batch 0, so the run resumed under the same stamp with
+  `SANITY_COMMAND` naming `qi_pathion_one_cz_null_bracketed_cases.py --sanity`; the driver now selects the bracketed check for a bracketed series.
 - Ry (type 5): not built for the decision (predecessor CASE.md, owner decision 2026-11-07: 1,024 shots per job and an
   undocumented noise model). The one Ry check that adds information is the bracket arithmetic on a backend with nonzero
   readout error: a single `[readout-0, coin-0 twin, coin-1 twin, readout-1]` batch of b0 on a 5-qubit translation
@@ -455,7 +455,7 @@ SANITY="$PYTHON scripts/qi_pathion_one_cz_null_bracketed_cases.py --sanity"
 "$QI_PYTHON" scripts/qi_toolchain_check.py --check
 
 # QX twin: four batches, then the control analysis.
-SANITY_COMMAND="true" sh scripts/qi_pathion_one_cz_null_submit.sh 1 "$CASES/pathion_one_cz_null_bracketed_qx" "$RUNS" "$STAMP" "QUOTE"
+sh scripts/qi_pathion_one_cz_null_submit.sh 1 "$CASES/pathion_one_cz_null_bracketed_qx" "$RUNS" "$STAMP" "QUOTE"
 "$PYTHON" scripts/qi_pathion_one_cz_null_bracketed_cases.py --analyze "$RUNS/$STAMP"-pathion_one_cz_null_bracketed_qx-batch-* \
 	--out results/quantum_inspire/pathion_one_cz_null_bracketed_qx_analysis.json
 
