@@ -47,6 +47,8 @@
   "lack_of_fit_probability": 0.01,
   "aicc_gain": 4.0,
   "tail_statistic_threshold": 200.0,
+  "min_usable_qubits": 10,
+  "tail_verdict_rule": "tail_confirmed when tail_statistic >= 200; below it inconclusive when fewer than min_usable_qubits qubits are usable, not_confirmed otherwise",
   "descriptive_count_mark": 12,
   "phase_target_rad": -0.15,
   "phase_half_width_rad": 0.05,

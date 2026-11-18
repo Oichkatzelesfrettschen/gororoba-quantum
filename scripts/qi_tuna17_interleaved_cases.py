@@ -110,12 +110,15 @@ PAIR_PULSES = 128
 # A flag marks |z| above this: the two-sided normal quantile of a Bonferroni level of 0.05 over 102 contrasts. The arm
 # forms 96 class contrasts and 2 pair contrasts, so the bound is conservative.
 FLAG_Z = 3.49
-# Job-level standard deviation of a population in the retained anchors, pooled over 17 qubits. The arm holds one anchor
-# pair per context, too few for job_level_variance(), so the contrast takes a fixed value. The registered flag uses
-# twice the retained value: the two-sided FLAG_Z test at a standard error built on 0.0034 flags a family of 98
-# independent contrasts more than 5 percent of the time once the true value reaches 0.0068 (family_false_flag_rate()).
+# Job-level standard deviation of a population in the retained anchors, pooled over 17 qubits (descriptive reading of
+# the flag, and the floor of a per-qubit flag sigma: a qubit whose anchors show no excess scatter in 18 pairs still
+# carries a job-level term, and a zero estimate would make its flag anti-conservative).
 RETAINED_JOB_LEVEL_SIGMA = 0.0034
-FLAG_JOB_LEVEL_SIGMA = 2 * RETAINED_JOB_LEVEL_SIGMA
+FLAG_SIGMA_FLOOR = RETAINED_JOB_LEVEL_SIGMA
+# Largest per-qubit job-level standard deviation of the retained anchors (qubit 6, 0.01021 from three prepared-0 and
+# three prepared-1 jobs): the flag sigma of every qubit when the analysis holds no interleaved arm. With the interleaved
+# arm the flag sigma of a qubit is max(sqrt(job_level_variance) of its 18 anchor pairs, FLAG_SIGMA_FLOOR).
+FLAG_SIGMA_ALONE = 0.0102
 FAMILY_CONTRASTS = 98
 VERDICT_WORDS = "drive-and-readout context dependence"
 PHASE = {"tuna_17": (12,), "qx": (9,)}
@@ -150,6 +153,8 @@ MIN_READOUT_SPAN = base.MIN_READOUT_SPAN
 # Per-qubit label counts are descriptive. The pooled tail verdict reads the AICc gain summed over qubits against this
 # threshold, which lies far above the null spread of the sum and below its value on a retained-size tail.
 TAIL_STATISTIC_THRESHOLD = 200.0
+# Below this many usable qubits (all of a chip with fewer) a tail statistic under the threshold reads inconclusive.
+MIN_USABLE_QUBITS = 15
 DESCRIPTIVE_COUNT_MARK = 12
 SANITY_WRONG_QUBITS = base.SANITY_WRONG_QUBITS
 # Level and window of the phase verdict, in radians: the refit of the q12 term, its half-width and the null bound.
@@ -915,6 +920,11 @@ def prediction(profile_name: str, retained: dict[str, Any] | None = None) -> dic
             "lack_of_fit_probability": LACK_OF_FIT_PROBABILITY,
             "aicc_gain": AICC_GAIN,
             "tail_statistic_threshold": TAIL_STATISTIC_THRESHOLD,
+            "min_usable_qubits": min(MIN_USABLE_QUBITS, PROFILES[profile_name]["nqubits"]),
+            "tail_verdict_rule": (
+                f"tail_confirmed when tail_statistic >= {TAIL_STATISTIC_THRESHOLD:g}; below it inconclusive when "
+                f"fewer than min_usable_qubits qubits are usable, not_confirmed otherwise"
+            ),
             "descriptive_count_mark": DESCRIPTIVE_COUNT_MARK,
             "phase_target_rad": PHASE_TARGET,
             "phase_half_width_rad": PHASE_HALF_WIDTH,
@@ -958,26 +968,31 @@ def prediction(profile_name: str, retained: dict[str, Any] | None = None) -> dic
         "flag_z": FLAG_Z,
         "class_contrasts": len(CLASS_A[profile_name] + CLASS_B[profile_name]) * 6,
         "pair_contrasts": len(PAIR),
-        "job_level_sigma": FLAG_JOB_LEVEL_SIGMA,
+        "flag_sigma_floor": FLAG_SIGMA_FLOOR,
+        "flag_sigma_without_interleaved_arm": FLAG_SIGMA_ALONE,
         "retained_job_level_sigma": RETAINED_JOB_LEVEL_SIGMA,
         "flag_rule": (
-            f"a contrast is flagged above {FLAG_Z} standard errors of the difference, the job-level deviation "
-            f"set to {FLAG_JOB_LEVEL_SIGMA} (twice the retained {RETAINED_JOB_LEVEL_SIGMA}); the reading at "
-            f"{RETAINED_JOB_LEVEL_SIGMA} is descriptive"
+            f"a contrast is flagged above {FLAG_Z} standard errors of the difference. With the interleaved arm each "
+            f"qubit's job-level deviation is max(sqrt(job_level_variance) of its interleaved anchor pairs, "
+            f"{FLAG_SIGMA_FLOOR}); the floor is the retained pooled value and keeps a zero estimate from making the "
+            f"flag anti-conservative. Without the interleaved arm every qubit uses {FLAG_SIGMA_ALONE}, the largest "
+            f"retained per-qubit value. The q1/q2 pair contrast uses the larger of its two qubits' sigmas. The "
+            f"analysis records each qubit's sigma and its source; the reading at {RETAINED_JOB_LEVEL_SIGMA} is "
+            f"descriptive"
         ),
         "family_false_flag_rate_at_true_sigma": {
-            "true_sigma": FLAG_JOB_LEVEL_SIGMA,
+            "true_sigma": FLAG_SIGMA_ALONE,
             "contrasts": FAMILY_CONTRASTS,
-            "registered_rule": {
-                f"p={p}": rounded(
-                    family_false_flag_rate(p, crosstalk_shots, FLAG_JOB_LEVEL_SIGMA, FLAG_JOB_LEVEL_SIGMA)
-                )
+            "note": (
+                "computed for independent contrasts; the contrasts of one condition batch share one all-qubit job, so "
+                "these are not exact familywise rates"
+            ),
+            "flag_sigma_without_interleaved_arm": {
+                f"p={p}": rounded(family_false_flag_rate(p, crosstalk_shots, FLAG_SIGMA_ALONE, FLAG_SIGMA_ALONE))
                 for p in (0.5, 0.05, 0.0)
             },
-            "rule_with_retained_sigma": {
-                f"p={p}": rounded(
-                    family_false_flag_rate(p, crosstalk_shots, FLAG_JOB_LEVEL_SIGMA, RETAINED_JOB_LEVEL_SIGMA)
-                )
+            "flag_sigma_at_floor": {
+                f"p={p}": rounded(family_false_flag_rate(p, crosstalk_shots, FLAG_SIGMA_ALONE, FLAG_SIGMA_FLOOR))
                 for p in (0.5, 0.05, 0.0)
             },
         },
@@ -1283,6 +1298,16 @@ def interleaved_roles(batch: dict[str, Any]) -> tuple[str, str, str]:
     return by_kind["anchor0"], by_kind["anchor1"], by_kind["t1"]
 
 
+def tail_verdict(tail_statistic: float, usable: int, nqubits: int) -> str:
+    """tail_confirmed at or above the threshold; below it inconclusive when fewer than MIN_USABLE_QUBITS qubits (all of
+    a smaller chip) are usable, since dropped qubits only lower the sum; not_confirmed otherwise."""
+    if tail_statistic >= TAIL_STATISTIC_THRESHOLD:
+        return "tail_confirmed"
+    if usable < min(MIN_USABLE_QUBITS, nqubits):
+        return "inconclusive"
+    return "not_confirmed"
+
+
 def analyze_interleaved(batches: list[dict[str, Any]]) -> dict[str, Any]:
     """Per-qubit anchored fits of the interleaved T1 batches, the pooled tail statistic and the executed schedule.
 
@@ -1290,7 +1315,8 @@ def analyze_interleaved(batches: list[dict[str, Any]]) -> dict[str, Any]:
     one multiplier. A qubit whose anchors span too little or whose points number under six reads unusable and adds
     nothing to the tail statistic, a sum of nonnegative gains, so a dropped qubit moves the confirmatory verdict
     toward the null; pooled.unusable_qubits counts them. The pooled verdict tail_confirmed reads tail_statistic, the
-    sum over usable qubits of tail_contribution, against TAIL_STATISTIC_THRESHOLD. The per-qubit labels and every
+    sum over usable qubits of tail_contribution, against TAIL_STATISTIC_THRESHOLD; tail_verdict adds inconclusive for a
+    statistic under the threshold with fewer than MIN_USABLE_QUBITS usable qubits. The per-qubit labels and every
     count of them are descriptive and decide nothing.
     jobs lists the round and the executed start (queued_at of results.json) of every job.
     """
@@ -1356,14 +1382,18 @@ def analyze_interleaved(batches: list[dict[str, Any]]) -> dict[str, Any]:
     accepted = sum(v in ("single_exponential", "level_shift") for v in verdicts)
     rejected = sum(v in ("tail_plateau", "two_rate") for v in verdicts)
     tail_statistic = sum(row.get("tail_contribution", 0.0) for row in qubits)
+    usable_count = nqubits - verdicts.count("unusable")
     pooled = {
         "descriptive_single_exponential_accepted": accepted,
         "descriptive_single_exponential_rejected": rejected,
         "descriptive_label_count_reaches_mark": accepted >= DESCRIPTIVE_COUNT_MARK,
         "unusable_qubits": verdicts.count("unusable"),
+        "usable_qubits": usable_count,
+        "min_usable_qubits": min(MIN_USABLE_QUBITS, nqubits),
         "tail_statistic": tail_statistic,
         "tail_statistic_threshold": TAIL_STATISTIC_THRESHOLD,
         "tail_confirmed": tail_statistic >= TAIL_STATISTIC_THRESHOLD,
+        "tail_verdict": tail_verdict(tail_statistic, usable_count, nqubits),
     }
     jobs = [
         {
@@ -1380,9 +1410,9 @@ def analyze_interleaved(batches: list[dict[str, Any]]) -> dict[str, Any]:
     return {"qubits": qubits, "pooled": pooled, "jobs": jobs}
 
 
-def contrast_z(p_half: float, p_all: float, count: int, sigma: float = FLAG_JOB_LEVEL_SIGMA) -> float:
+def contrast_z(p_half: float, p_all: float, count: int, sigma: float) -> float:
     """Difference of two readings of one qubit in standard errors of the difference: binomial variance and the job-level
-    variance sigma squared on each job; the registered flag reads sigma = FLAG_JOB_LEVEL_SIGMA."""
+    variance sigma squared on each job; the registered flag reads the qubit's flag_sigmas() value."""
     variance = base.binomial_variance(p_half, count) + base.binomial_variance(p_all, count) + 2 * sigma**2
     return (p_half - p_all) / math.sqrt(variance)
 
@@ -1398,18 +1428,41 @@ def family_false_flag_rate(
     return 1 - (1 - single) ** contrasts
 
 
-def analyze_crosstalk(batches: list[dict[str, Any]]) -> dict[str, Any]:
+def flag_sigmas(interleaved: list[dict[str, Any]] | None, nqubits: int) -> list[dict[str, Any]]:
+    """Per-qubit flag sigma and its source: max(sqrt(job_level_variance) of the qubit's interleaved anchor pairs,
+    FLAG_SIGMA_FLOOR) when the interleaved arm is held, FLAG_SIGMA_ALONE for every qubit otherwise."""
+    if not interleaved:
+        return [
+            {"qubit": q, "sigma": FLAG_SIGMA_ALONE, "source": "retained_largest", "interleaved_estimate": None}
+            for q in range(nqubits)
+        ]
+    roles = [interleaved_roles(b) for b in interleaved]
+    out = []
+    for qubit in range(nqubits):
+        zero = [b["p1"][r[0]][qubit] for b, r in zip(interleaved, roles, strict=True)]
+        one = [b["p1"][r[1]][qubit] for b, r in zip(interleaved, roles, strict=True)]
+        estimate = math.sqrt(job_level_variance(zero, one, interleaved[0]["shots"]))
+        sigma = max(estimate, FLAG_SIGMA_FLOOR)
+        source = "interleaved_anchors" if estimate >= FLAG_SIGMA_FLOOR else "retained_pooled_floor"
+        out.append({"qubit": qubit, "sigma": sigma, "source": source, "interleaved_estimate": estimate})
+    return out
+
+
+def analyze_crosstalk(batches: list[dict[str, Any]], interleaved: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     """Half-drive against same-batch all-drive readings per class qubit and condition, and the q1/q2 pair.
 
     A half-drive batch holds the class A, class B' and all-qubit circuit of one condition; each class qubit contrasts
-    its own class circuit with the all-qubit circuit by contrast_z, flagged above FLAG_Z. Populations and ladder values
-    P(0) normalize by the context anchors (readout-0 and the class prepared in 1), all-drive readings by their qubit's
-    class anchors, so the readout context of the all-drive circuit is not separated from the drive (reported
-    residual). The reading is drive-and-readout context dependence: the all-drive circuit changes the drive and the
-    readout context together, and the contrast names no mechanism. A contrast without usable context anchors keeps its
-    z and flag and lacks the normalized values; pooled.unusable_normalizations counts those rows.
+    its own class circuit with the all-qubit circuit by contrast_z, flagged above FLAG_Z; the sigma of a contrast is the
+    qubit's flag_sigmas() entry (the larger of the two for the pair) and each row records it with its source.
+    Populations and ladder values P(0) normalize by the context anchors (readout-0 and the class prepared in 1),
+    all-drive readings by their qubit's class anchors, so the readout context of the all-drive circuit is not separated
+    from the drive (reported residual). The reading is drive-and-readout context dependence: the all-drive circuit
+    changes the drive and the readout context together, and the contrast names no mechanism. A contrast without usable
+    context anchors keeps its z and flag and lacks the normalized values; pooled.unusable_normalizations counts those
+    rows.
     """
     count = batches[0]["shots"]
+    sigmas = flag_sigmas(interleaved, batches[0]["nqubits"])
     anchors = next(b for b in batches if b["meta"].get("unit") == "anchors")
     zero = next(anchors["p1"][f] for f, row in anchors["rows"].items() if row["kind"] == "anchor0")
     prepared = {row["context"]: anchors["p1"][f] for f, row in anchors["rows"].items() if row["kind"] == "xt_prep1"}
@@ -1423,6 +1476,7 @@ def analyze_crosstalk(batches: list[dict[str, Any]]) -> dict[str, Any]:
         by_context = {row["context"]: name for name, row in batch["rows"].items()}
         if unit == "pair":
             all_name = by_context["all"]
+            pair_sigma = max(sigmas[q]["sigma"] for q in PAIR)
             for qubit in PAIR:
                 alone = batch["p1"][by_context[f"q{qubit}"]][qubit]
                 every = batch["p1"][all_name][qubit]
@@ -1431,8 +1485,11 @@ def analyze_crosstalk(batches: list[dict[str, Any]]) -> dict[str, Any]:
                         "qubit": qubit,
                         "alone": alone,
                         "all_driven": every,
-                        "z": contrast_z(alone, every, count),
-                        "flagged": abs(contrast_z(alone, every, count)) > FLAG_Z,
+                        "flag_sigma": pair_sigma,
+                        "sigma_source": "larger of the pair's qubits: "
+                        + ", ".join(f"q{q} {sigmas[q]['source']}" for q in PAIR),
+                        "z": contrast_z(alone, every, count, pair_sigma),
+                        "flagged": abs(contrast_z(alone, every, count, pair_sigma)) > FLAG_Z,
                         "z_at_retained_sigma": contrast_z(alone, every, count, RETAINED_JOB_LEVEL_SIGMA),
                     }
                 )
@@ -1450,12 +1507,14 @@ def analyze_crosstalk(batches: list[dict[str, Any]]) -> dict[str, Any]:
                 a0, a1 = zero[qubit], prepared[context][qubit]
                 half = batch["p1"][by_context[context]][qubit]
                 every = batch["p1"][by_context["all"]][qubit]
-                z = contrast_z(half, every, count)
+                z = contrast_z(half, every, count, sigmas[qubit]["sigma"])
                 span = a1 - a0
                 row = {
                     "unit": unit,
                     "context": context,
                     "qubit": qubit,
+                    "flag_sigma": sigmas[qubit]["sigma"],
+                    "sigma_source": sigmas[qubit]["source"],
                     "z": z,
                     "flagged": abs(z) > FLAG_Z,
                     "z_at_retained_sigma": contrast_z(half, every, count, RETAINED_JOB_LEVEL_SIGMA),
@@ -1478,20 +1537,51 @@ def analyze_crosstalk(batches: list[dict[str, Any]]) -> dict[str, Any]:
             "flag_z": FLAG_Z,
             "flagged": flagged,
             "descriptive_flagged_at_retained_sigma": descriptive,
+            "flag_sigma_by_qubit": sigmas,
             "unusable_normalizations": sum("half_value" not in r for r in rows),
             "reading": VERDICT_WORDS if flagged else f"no {VERDICT_WORDS} at the flag",
         },
     }
 
 
+def interleaved_fit(points: list[tuple[float, float, float]]) -> tuple[str, dict[str, Any]]:
+    """The lower-AICc tail fit that classify() would accept (lack of fit probability and an AICc gain of AICC_GAIN over
+    the single exponential), else the single exponential."""
+    fits = {shape: fit_shape(points, shape) for shape in ("single", "plateau", "two_rate")}
+    accepted = {
+        name: fit
+        for name, fit in fits.items()
+        if name != "single"
+        and fit["probability"] >= LACK_OF_FIT_PROBABILITY
+        and fits["single"]["aicc"] - fit["aicc"] >= AICC_GAIN
+    }
+    shape = min(accepted, key=lambda name: accepted[name]["aicc"]) if accepted else "single"
+    return shape, fits[shape]
+
+
+def fit_prediction(
+    shape: str, fit: dict[str, Any], points: list[tuple[float, float, float]], t_us: float
+) -> tuple[float, float]:
+    """Fitted population at t_us and its variance: the gradient of decay() at the fitted parameters through the
+    covariance of the weighted fit (the inverse information of the points)."""
+    theta = fit["params"]
+    cov = covariance([(decay_gradient(shape, theta, t), variance) for t, _, variance in points])
+    gradient = decay_gradient(shape, theta, t_us)
+    variance = sum(gradient[i] * cov[i][j] * gradient[j] for i in range(len(gradient)) for j in range(len(gradient)))
+    return decay(shape, theta, t_us), max(0.0, variance)
+
+
 def staggered_comparison(interleaved: list[dict[str, Any]], crosstalk: list[dict[str, Any]]) -> dict[str, Any]:
-    """Descriptive: the all-drive crosstalk T1 readings against the interleaved points at the nearest per-qubit delay.
+    """Descriptive: the all-drive crosstalk T1 readings against the interleaved arm's own fit at the same wait.
 
     The all-drive circuit excites every qubit together; the interleaved circuit staggers the X of each qubit so that
     every X-to-barrier wait ends at one barrier. Per qubit and crosstalk wait (5, 20 and 80 us), the all-drive
-    population normalized by the qubit's class anchors is compared with the inverse-variance mean of the anchored
-    interleaved points at the multiplier whose delay lies nearest; the difference is in standard errors. A qubit outside
-    both classes has no class anchor and is omitted. No verdict reads this.
+    population normalized by the qubit's class anchors is compared with the qubit's interleaved fit (interleaved_fit())
+    evaluated at that wait, not with a raw point at the nearest delay, which differs in delay and so measures decay.
+    The difference is in standard errors of the difference: the all-drive point's variance (its qubit's flag sigma for
+    the job level) plus the fit's prediction variance; within_fitted_range marks a wait inside the qubit's delay span.
+    A qubit outside both classes has no class anchor and is omitted, as is a qubit with fewer than six points. No
+    verdict reads this.
     """
     anchors = next(b for b in crosstalk if b["meta"].get("unit") == "anchors")
     zero = next(anchors["p1"][f] for f, row in anchors["rows"].items() if row["kind"] == "anchor0")
@@ -1500,44 +1590,49 @@ def staggered_comparison(interleaved: list[dict[str, Any]], crosstalk: list[dict
         q: row["context"] for row in anchors["rows"].values() if row["kind"] == "xt_prep1" for q in row["driven"]
     }
     count = crosstalk[0]["shots"]
+    sigmas = flag_sigmas(interleaved, interleaved[0]["nqubits"])
     roles = [interleaved_roles(b) for b in interleaved]
-    per_qubit: dict[int, dict[float, list[tuple[float, float]]]] = {}
-    cycles_of: dict[int, dict[float, int]] = {}
+    fitted: dict[int, tuple[str, dict[str, Any], list[tuple[float, float, float]]]] = {}
     for qubit in range(interleaved[0]["nqubits"]):
         a0s = [b["p1"][r[0]][qubit] for b, r in zip(interleaved, roles, strict=True)]
         a1s = [b["p1"][r[1]][qubit] for b, r in zip(interleaved, roles, strict=True)]
         tau2 = job_level_variance(a0s, a1s, interleaved[0]["shots"])
+        points: list[tuple[float, float, float]] = []
         for batch, role, a0, a1 in zip(interleaved, roles, a0s, a1s, strict=True):
             row = batch["rows"][role[2]]
             point = anchored_point(batch["p1"][role[2]][qubit], a0, a1, interleaved[0]["shots"], tau2)
             if point is not None:
-                per_qubit.setdefault(qubit, {}).setdefault(row["multiplier"], []).append(point)
-                cycles_of.setdefault(qubit, {})[row["multiplier"]] = row["delays_cycles"][qubit]
+                points.append((row["delays_cycles"][qubit] * CYCLE_SECONDS * 1e6, point[0], point[1]))
+        if len(points) >= 6:
+            shape, fit = interleaved_fit(points)
+            fitted[qubit] = (shape, fit, points)
     rows: list[dict[str, Any]] = []
     for batch in sorted((b for b in crosstalk if str(b["meta"].get("unit")).startswith("t1-")), key=lambda b: b["run"]):
         name = next(f for f, row in batch["rows"].items() if row["context"] == "all")
         cycles = batch["rows"][name]["wait_cycles"]
+        t_us = cycles * CYCLE_SECONDS * 1e6
         for qubit, context in sorted(context_of.items()):
-            if qubit not in per_qubit:
+            if qubit not in fitted:
                 continue
             point = anchored_point(
-                batch["p1"][name][qubit], zero[qubit], prepared[context][qubit], count, FLAG_JOB_LEVEL_SIGMA**2
+                batch["p1"][name][qubit], zero[qubit], prepared[context][qubit], count, sigmas[qubit]["sigma"] ** 2
             )
             if point is None:
                 continue
-            multiplier = min(cycles_of[qubit], key=lambda m: abs(cycles_of[qubit][m] - cycles))
-            weights = [1.0 / v for _, v in per_qubit[qubit][multiplier]]
-            mean = sum(w * x for w, (x, _) in zip(weights, per_qubit[qubit][multiplier], strict=True)) / sum(weights)
-            difference = point[0] - mean
+            shape, fit, points = fitted[qubit]
+            value, fit_variance = fit_prediction(shape, fit, points, t_us)
+            difference = point[0] - value
             rows.append(
                 {
                     "qubit": qubit,
-                    "crosstalk_wait_us": cycles * CYCLE_SECONDS * 1e6,
-                    "interleaved_delay_us": cycles_of[qubit][multiplier] * CYCLE_SECONDS * 1e6,
+                    "crosstalk_wait_us": t_us,
                     "all_drive_value": point[0],
-                    "interleaved_value": mean,
+                    "interleaved_fit_shape": shape,
+                    "interleaved_fit_value": value,
+                    "interleaved_fit_se": math.sqrt(fit_variance),
+                    "within_fitted_range": min(p[0] for p in points) <= t_us <= max(p[0] for p in points),
                     "difference": difference,
-                    "difference_in_se": difference / math.sqrt(point[1] + 1.0 / sum(weights)),
+                    "difference_in_se": difference / math.sqrt(point[1] + fit_variance),
                 }
             )
     return {
@@ -1684,7 +1779,7 @@ def analyze(runs: list[Path], prediction_path: Path | None = None) -> dict[str, 
     if grouped["interleaved_t1"]:
         out["interleaved_t1"] = analyze_interleaved(grouped["interleaved_t1"])
     if grouped["crosstalk"]:
-        out["crosstalk"] = analyze_crosstalk(grouped["crosstalk"])
+        out["crosstalk"] = analyze_crosstalk(grouped["crosstalk"], grouped["interleaved_t1"] or None)
     if grouped["interleaved_t1"] and grouped["crosstalk"]:
         out["simultaneous_versus_staggered"] = staggered_comparison(grouped["interleaved_t1"], grouped["crosstalk"])
     if grouped["q12_phase"]:
@@ -2381,14 +2476,36 @@ def self_test() -> list[str]:
         len(CLASS_A["tuna_17"]) == 8 and len(CLASS_B["tuna_17"]) == 8, "the tuna_17 classes are not eight qubits each"
     )
     expect(abs(NormalDist().inv_cdf(1 - 0.05 / 204) - FLAG_Z) < 0.005, "FLAG_Z is not the Bonferroni quantile")
-    se = math.sqrt(2 * 0.25 / 8192 + 2 * FLAG_JOB_LEVEL_SIGMA**2)
-    expect(abs(contrast_z(0.5 + 3.6 * se, 0.5, 8192)) > FLAG_Z > abs(contrast_z(0.5 + 3.3 * se, 0.5, 8192)), "flag")
+    se = math.sqrt(2 * 0.25 / 8192 + 2 * FLAG_SIGMA_ALONE**2)
+    expect(
+        abs(contrast_z(0.5 + 3.6 * se, 0.5, 8192, FLAG_SIGMA_ALONE))
+        > FLAG_Z
+        > abs(contrast_z(0.5 + 3.3 * se, 0.5, 8192, FLAG_SIGMA_ALONE)),
+        "flag",
+    )
+    exact = synthetic_interleaved([{"shape": "single", "theta": [22.0], "e01": 0.03, "e11": 0.96}] * 17)
+    floors = flag_sigmas(exact, 17)
+    expect(
+        all(s["sigma"] == FLAG_SIGMA_FLOOR and s["source"] == "retained_pooled_floor" for s in floors)
+        and all(s["sigma"] == FLAG_SIGMA_ALONE for s in flag_sigmas(None, 17)),
+        "the flag sigma floor or the constant without the interleaved arm",
+    )
+    expect(
+        [
+            tail_verdict(250.0, 17, 17),
+            tail_verdict(100.0, 14, 17),
+            tail_verdict(100.0, 15, 17),
+            tail_verdict(250.0, 3, 17),
+        ]
+        == ["tail_confirmed", "inconclusive", "not_confirmed", "tail_confirmed"],
+        "the tail verdict outcomes",
+    )
     quiet = analyze_crosstalk(synthetic_crosstalk())
     expect(
         quiet["pooled"]["flagged"] == 0 and quiet["pooled"]["contrasts_formed"] == 98,
         f"an unshifted crosstalk series read {quiet['pooled']}",
     )
-    loud = analyze_crosstalk(synthetic_crosstalk(shift_qubit=5, shift=0.05))
+    loud = analyze_crosstalk(synthetic_crosstalk(shift_qubit=5, shift=0.08))
     flagged = [r for r in loud["rows"] if r["flagged"]]
     expect(
         len(flagged) == 6 and all(r["qubit"] == 5 for r in flagged), f"a shifted class reading flagged {len(flagged)}"

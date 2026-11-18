@@ -825,29 +825,46 @@ def test_interleaved_analysis_counts_unusable_qubits() -> None:
         raise AssertionError(pooled)
 
 
-def test_staggered_comparison_reads_all_drive_against_the_nearest_interleaved_delay() -> None:
-    models = [MODELS[0]] * 17
+def agreeing_crosstalk(models: list[dict[str, Any]], offset: float = 0.0) -> list[dict[str, Any]]:
+    """Crosstalk batches whose all-drive T1 readings follow each qubit's model at the batch's wait, plus offset in
+    population units."""
+    batches = cases.synthetic_crosstalk()
+    for batch in batches:
+        if not str(batch["meta"].get("unit")).startswith("t1-"):
+            continue
+        name = next(f for f, row in batch["rows"].items() if row["context"] == "all")
+        t_us = batch["rows"][name]["wait_cycles"] * cases.CYCLE_SECONDS * 1e6
+        for qubit, model in enumerate(models):
+            span = model["e11"] - model["e01"]
+            p = model["e01"] + span * (cases.decay(model["shape"], model["theta"], t_us) + offset)
+            batch["p1"][name][qubit] = round(p * 8192) / 8192
+    return batches
+
+
+def test_staggered_comparison_reads_all_drive_against_the_interleaved_fit_at_the_same_wait() -> None:
+    models = [MODELS[q % 2] for q in range(17)]
     interleaved = cases.synthetic_interleaved(models)
-    document = cases.staggered_comparison(interleaved, cases.synthetic_crosstalk())
-    rows = document["rows"]
-    if len(rows) != 16 * 3 or {r["qubit"] for r in rows} & {2} or document["pooled"]["rows"] != 48:
-        raise AssertionError(document["pooled"])
-    first = next(r for r in rows if r["qubit"] == 0 and abs(r["crosstalk_wait_us"] - 20.0) < 1e-9)
-    expected = cases.decay("single", [22.0], first["interleaved_delay_us"])
-    if abs(first["interleaved_value"] - expected) > 0.003 or abs(first["all_drive_value"] - 0.5) > 0.003:
-        raise AssertionError(first)
-    if abs(first["interleaved_delay_us"] - 831 * 0.02) > 0.05:
-        raise AssertionError(first)
-    shifted = cases.synthetic_crosstalk()
-    for batch in shifted:
-        if str(batch["meta"].get("unit")).startswith("t1-"):
-            name = next(f for f, row in batch["rows"].items() if row["context"] == "all")
-            batch["p1"][name][5] += 0.1
-    moved = cases.staggered_comparison(interleaved, shifted)["rows"]
-    for before, after in zip(rows, moved, strict=True):
-        step = after["difference_in_se"] - before["difference_in_se"]
-        if (before["qubit"] == 5) != (abs(step) > 1.0) or (before["qubit"] == 5 and step < 3.0):
-            raise AssertionError((before, after))
+    rows = cases.staggered_comparison(interleaved, agreeing_crosstalk(models))["rows"]
+    if len(rows) != 16 * 3 or {r["qubit"] for r in rows} & {2}:
+        raise AssertionError(len(rows))
+    for row in rows:
+        shape = "plateau" if row["qubit"] % 2 else "single"
+        if (
+            abs(row["difference"]) > 0.01
+            or row["interleaved_fit_shape"] != shape
+            or not row["interleaved_fit_se"] > 0.0
+            or abs(row["all_drive_value"] - row["interleaved_fit_value"]) > 0.01
+        ):
+            raise AssertionError(row)
+    # The contexts differ by 0.05 in population: the difference reads 0.05 at every wait, not the decay between the
+    # wait and the nearest delay.
+    planted = cases.staggered_comparison(interleaved, agreeing_crosstalk(models, 0.05))["rows"]
+    for row in planted:
+        if abs(row["difference"] - 0.05) > 0.01:
+            raise AssertionError(row)
+    waits = sorted({round(r["crosstalk_wait_us"], 6) for r in planted})
+    if len(waits) != 3 or abs(waits[0] - 5.0) > 1e-6 or abs(waits[2] - 80.0) > 1e-6:
+        raise AssertionError(waits)
 
 
 def test_flat_noiseless_series_reads_as_a_single_exponential() -> None:
@@ -1038,43 +1055,86 @@ def test_flag_is_the_bonferroni_quantile_and_fires_only_above_it() -> None:
 
     if abs(NormalDist().inv_cdf(1 - 0.05 / 204) - cases.FLAG_Z) > 0.005:
         raise AssertionError(cases.FLAG_Z)
-    se = math.sqrt(2 * 0.25 / 8192 + 2 * cases.FLAG_JOB_LEVEL_SIGMA**2)
-    above, below = cases.contrast_z(0.5 + 3.6 * se, 0.5, 8192), cases.contrast_z(0.5 + 3.3 * se, 0.5, 8192)
+    sigma = cases.FLAG_SIGMA_ALONE
+    se = math.sqrt(2 * 0.25 / 8192 + 2 * sigma**2)
+    above, below = (
+        cases.contrast_z(0.5 + 3.6 * se, 0.5, 8192, sigma),
+        cases.contrast_z(0.5 + 3.3 * se, 0.5, 8192, sigma),
+    )
     if not abs(above) > cases.FLAG_Z > abs(below) or abs(above - 3.6) > 0.05:
         raise AssertionError((above, below))
 
 
-def test_flag_sigma_is_twice_the_retained_value_and_keeps_the_family_rate_below_five_percent() -> None:
-    if (
-        abs(cases.FLAG_JOB_LEVEL_SIGMA - 2 * cases.RETAINED_JOB_LEVEL_SIGMA) > 1e-12
-        or cases.FLAG_JOB_LEVEL_SIGMA != 0.0068
-    ):
-        raise AssertionError((cases.FLAG_JOB_LEVEL_SIGMA, cases.RETAINED_JOB_LEVEL_SIGMA))
-    for p, old in ((0.5, 0.618), (0.05, 0.988), (0.0, 0.9997)):
-        rate = cases.family_false_flag_rate(p, 8192, 0.0068, 0.0034)
-        kept = cases.family_false_flag_rate(p, 8192, 0.0068, 0.0068)
-        if abs(rate - old) > 0.001 or kept >= 0.05:
-            raise AssertionError((p, rate, kept))
+def test_flag_sigmas_are_the_floor_and_the_largest_retained_value_with_independent_family_rates() -> None:
+    if cases.FLAG_SIGMA_ALONE != 0.0102 or cases.FLAG_SIGMA_FLOOR != cases.RETAINED_JOB_LEVEL_SIGMA != 0.0034:
+        raise AssertionError((cases.FLAG_SIGMA_ALONE, cases.FLAG_SIGMA_FLOOR))
+    for p in (0.5, 0.05, 0.0):
+        kept = cases.family_false_flag_rate(p, 8192, 0.0102, 0.0102)
+        floor = cases.family_false_flag_rate(p, 8192, 0.0102, 0.0034)
+        if kept >= 0.05 or floor <= 0.5:
+            raise AssertionError((p, kept, floor))
     for name in cases.PROFILES:
         document = cases.prediction(name, retained_fixture())["crosstalk"]
-        shots = cases.PROFILES[name]["arm_shots"]["crosstalk"]
         rates = document["family_false_flag_rate_at_true_sigma"]
         if (
-            document["job_level_sigma"] != 0.0068
+            document["flag_sigma_without_interleaved_arm"] != 0.0102
+            or document["flag_sigma_floor"] != 0.0034
             or document["retained_job_level_sigma"] != 0.0034
             or document["verdict_words"] != "drive-and-readout context dependence"
-            or max(rates["registered_rule"].values()) >= 0.05
-            or abs(
-                rates["rule_with_retained_sigma"]["p=0.5"] - cases.family_false_flag_rate(0.5, shots, 0.0068, 0.0034)
-            )
-            > 1e-3
-            or "0.0034" not in document["flag_rule"]
+            or max(rates["flag_sigma_without_interleaved_arm"].values()) >= 0.05
+            or min(rates["flag_sigma_at_floor"].values()) <= 0.2
+            or "independent contrasts" not in rates["note"]
+            or "not exact familywise" not in rates["note"]
+            or "max(sqrt(job_level_variance)" not in document["flag_rule"]
+            or "larger of its two qubits" not in document["flag_rule"]
         ):
             raise AssertionError((name, document))
 
 
+def scattered_anchors(batches: list[dict[str, Any]], qubit: int, amount: float) -> None:
+    """Move the prepared-1 anchor of qubit by +amount and -amount on alternate batches: the span scatters while the
+    prepared-0 anchor stays."""
+    for number, batch in enumerate(batches):
+        roles = cases.interleaved_roles(batch)
+        batch["p1"][roles[1]][qubit] += amount if number % 2 else -amount
+
+
+def test_flag_sigma_per_qubit_reads_the_interleaved_anchors_above_the_floor_and_the_constant_without_them() -> None:
+    exact = cases.synthetic_interleaved([MODELS[0]] * 17)
+    floors = cases.analyze_crosstalk(cases.synthetic_crosstalk(), exact)["pooled"]["flag_sigma_by_qubit"]
+    if any(s["sigma"] != 0.0034 or s["source"] != "retained_pooled_floor" for s in floors):
+        raise AssertionError(floors[:2])
+    scattered = cases.synthetic_interleaved([MODELS[0]] * 17)
+    scattered_anchors(scattered, 1, 0.03)
+    scattered_anchors(scattered, 5, 0.03)
+    document = cases.analyze_crosstalk(cases.synthetic_crosstalk(shift_qubit=5, shift=0.08), scattered)
+    by_qubit = {s["qubit"]: s for s in document["pooled"]["flag_sigma_by_qubit"]}
+    if (
+        not by_qubit[5]["sigma"] > 0.015
+        or by_qubit[5]["source"] != "interleaved_anchors"
+        or by_qubit[0]["sigma"] != 0.0034
+    ):
+        raise AssertionError((by_qubit[5], by_qubit[0]))
+    for pair in (p for p in document["pair"] if "flag_sigma" in p):
+        if pair["flag_sigma"] != max(by_qubit[1]["sigma"], by_qubit[2]["sigma"]) or by_qubit[1]["sigma"] < 0.015:
+            raise AssertionError(pair)
+    shifted = [r for r in document["rows"] if r["qubit"] == 5]
+    if any(r["flag_sigma"] != by_qubit[5]["sigma"] or r["sigma_source"] != "interleaved_anchors" for r in shifted):
+        raise AssertionError(shifted[0])
+    # A reading that the floor flags and the measured sigma of qubit 5 does not.
+    tight = cases.analyze_crosstalk(cases.synthetic_crosstalk(shift_qubit=5, shift=0.05), exact)
+    loose = cases.analyze_crosstalk(cases.synthetic_crosstalk(shift_qubit=5, shift=0.05), scattered)
+    if tight["pooled"]["flagged"] < 6 or loose["pooled"]["flagged"] >= tight["pooled"]["flagged"]:
+        raise AssertionError((tight["pooled"]["flagged"], loose["pooled"]["flagged"]))
+    alone = cases.analyze_crosstalk(cases.synthetic_crosstalk())
+    if any(r["flag_sigma"] != 0.0102 or r["sigma_source"] != "retained_largest" for r in alone["rows"]):
+        raise AssertionError(alone["rows"][0])
+    if any(p["flag_sigma"] != 0.0102 for p in alone["pair"] if "flag_sigma" in p):
+        raise AssertionError(alone["pair"])
+
+
 def test_crosstalk_analysis_records_the_reading_at_the_retained_sigma_and_the_unusable_rows() -> None:
-    loud = cases.analyze_crosstalk(cases.synthetic_crosstalk(shift_qubit=5, shift=0.05))
+    loud = cases.analyze_crosstalk(cases.synthetic_crosstalk(shift_qubit=5, shift=0.08))
     for row in loud["rows"]:
         if abs(row["z_at_retained_sigma"]) < abs(row["z"]) - 1e-12:
             raise AssertionError(row)
@@ -1098,7 +1158,7 @@ def test_crosstalk_analysis_flags_a_shifted_class_reading_and_forms_98_contrasts
         raise AssertionError(quiet["pooled"])
     if len(quiet["rows"]) != 96 or {p["qubit"] for p in quiet["pair"]} != {1, 2}:
         raise AssertionError(quiet)
-    loud = cases.analyze_crosstalk(cases.synthetic_crosstalk(shift_qubit=5, shift=0.05))
+    loud = cases.analyze_crosstalk(cases.synthetic_crosstalk(shift_qubit=5, shift=0.08))
     flagged = [r for r in loud["rows"] if r["flagged"]]
     if len(flagged) != 6 or any(r["qubit"] != 5 or r["context"] != "A" for r in flagged):
         raise AssertionError(flagged)
@@ -1107,6 +1167,41 @@ def test_crosstalk_analysis_flags_a_shifted_class_reading_and_forms_98_contrasts
     small = cases.analyze_crosstalk(cases.synthetic_crosstalk(shift_qubit=5, shift=0.01))
     if small["pooled"]["flagged"] != 0:
         raise AssertionError(small["pooled"])
+
+
+def unusable_models(flat_count: int, unusable_count: int) -> list[dict[str, Any]]:
+    unusable = {"shape": "single", "theta": [22.0], "e01": 0.5, "e11": 0.5}
+    return [MODELS[0]] * flat_count + [unusable] * unusable_count
+
+
+def test_pooled_tail_verdict_reads_confirmed_inconclusive_and_not_confirmed() -> None:
+    if cases.MIN_USABLE_QUBITS != 15:
+        raise AssertionError(cases.MIN_USABLE_QUBITS)
+    pooled = {}
+    for label, models in (
+        ("not_confirmed", unusable_models(15, 2)),
+        ("inconclusive", unusable_models(14, 3)),
+        ("tail_confirmed", [MODELS[1]] * 14 + unusable_models(0, 3)),
+    ):
+        pooled[label] = cases.analyze_interleaved(cases.synthetic_interleaved(models))["pooled"]
+        if pooled[label]["tail_verdict"] != label:
+            raise AssertionError((label, pooled[label]))
+    if (
+        pooled["not_confirmed"]["usable_qubits"] != 15
+        or pooled["inconclusive"]["usable_qubits"] != 14
+        or pooled["inconclusive"]["tail_confirmed"]
+        or pooled["tail_confirmed"]["usable_qubits"] != 14
+        or not pooled["tail_confirmed"]["tail_confirmed"]
+    ):
+        raise AssertionError(pooled)
+    # A chip of fewer than 15 qubits needs all of them usable.
+    if (
+        cases.tail_verdict(199.9, 17, 17),
+        cases.tail_verdict(200.0, 0, 17),
+        cases.tail_verdict(0.0, 10, 10),
+        cases.tail_verdict(0.0, 9, 10),
+    ) != ("not_confirmed", "tail_confirmed", "not_confirmed", "inconclusive"):
+        raise AssertionError("tail_verdict boundaries")
 
 
 def test_local_twin_check_names_a_circuit_off_its_law() -> None:

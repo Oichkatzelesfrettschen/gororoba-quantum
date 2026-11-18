@@ -47,6 +47,8 @@
   "lack_of_fit_probability": 0.01,
   "aicc_gain": 4.0,
   "tail_statistic_threshold": 200.0,
+  "min_usable_qubits": 15,
+  "tail_verdict_rule": "tail_confirmed when tail_statistic >= 200; below it inconclusive when fewer than min_usable_qubits qubits are usable, not_confirmed otherwise",
   "descriptive_count_mark": 12,
   "phase_target_rad": -0.15,
   "phase_half_width_rad": 0.05,
@@ -387,21 +389,23 @@
   "flag_z": 3.49,
   "class_contrasts": 96,
   "pair_contrasts": 2,
-  "job_level_sigma": 0.0068,
+  "flag_sigma_floor": 0.0034,
+  "flag_sigma_without_interleaved_arm": 0.0102,
   "retained_job_level_sigma": 0.0034,
-  "flag_rule": "a contrast is flagged above 3.49 standard errors of the difference, the job-level deviation set to 0.0068 (twice the retained 0.0034); the reading at 0.0034 is descriptive",
+  "flag_rule": "a contrast is flagged above 3.49 standard errors of the difference. With the interleaved arm each qubit's job-level deviation is max(sqrt(job_level_variance) of its interleaved anchor pairs, 0.0034); the floor is the retained pooled value and keeps a zero estimate from making the flag anti-conservative. Without the interleaved arm every qubit uses 0.0102, the largest retained per-qubit value. The q1/q2 pair contrast uses the larger of its two qubits' sigmas. The analysis records each qubit's sigma and its source; the reading at 0.0034 is descriptive",
   "family_false_flag_rate_at_true_sigma": {
-   "true_sigma": 0.0068,
+   "true_sigma": 0.0102,
    "contrasts": 98,
-   "registered_rule": {
+   "note": "computed for independent contrasts; the contrasts of one condition batch share one all-qubit job, so these are not exact familywise rates",
+   "flag_sigma_without_interleaved_arm": {
     "p=0.5": 0.04624,
     "p=0.05": 0.04624,
     "p=0.0": 0.04624
    },
-   "rule_with_retained_sigma": {
-    "p=0.5": 0.6178,
-    "p=0.05": 0.9876,
-    "p=0.0": 0.9997
+   "flag_sigma_at_floor": {
+    "p=0.5": 0.9941,
+    "p=0.05": 1.0,
+    "p=0.0": 1.0
    }
   },
   "verdict_words": "drive-and-readout context dependence"

@@ -88,7 +88,7 @@ at `--sanity` and the layout returns to the owner; no fallback layout runs autom
 Written before any data of this case; `--analyze` applies it. `--self-test` exercises the design ranks, the order, the admission and submit guards, the circuit timing and
 gate sequences, the record validators on one valid and one empty record, the estimator's classes on exact synthetic series, the phase fit and the crosstalk flag and
 analysis. Only the test file (`tests/scripts/test_qi_tuna17_interleaved_cases.py`) exercises the replicate gate, the tail-statistic threshold of 200, each field of
-the two records, the detuning aggregate, the unusable counts and the simultaneous-versus-staggered comparison.
+the two records, the detuning aggregate, the unusable counts and the simultaneous-versus-staggered comparison. `--self-test` also checks the flag sigma floor and the three tail-verdict outcomes.
 
 1. Population. Each delay job of batch b gives x = (p - a0) / (a1 - a0) from the batch's own prepared-0 and prepared-1 jobs, for qubit i at its own delay d(i, m).
    A level shift common to the three jobs cancels; the zero-delay population is 1 by construction.
@@ -102,7 +102,8 @@ the two records, the detuning aggregate, the unusable counts and the simultaneou
    the replicate probability is also at least 0.01, and `unresolved` otherwise; a rejected single exponential gives `tail_plateau` or `two_rate` when that fit
    reaches 0.01 and an AICc gain of 4, the replicates hold and the choice between the two follows the AICc; otherwise `unresolved`. The labels and every count
    of them decide nothing.
-6. Registered statistic. The tail is confirmed when `tail_statistic` >= 200, where `tail_statistic` is the sum over usable qubits of the AICc gain of the
+6. Registered statistic. The pooled verdict (`pooled.tail_verdict`) is `tail_confirmed` when `tail_statistic` >= 200, `inconclusive` when it is below 200 and fewer than 15 of the 17
+   qubits are usable (`MIN_USABLE_QUBITS`; a chip with fewer qubits needs all of them), and `not_confirmed` otherwise, so too many dropped qubits cannot read as a failed tail. `tail_statistic` is the sum over usable qubits of the AICc gain of the
    lower-AICc tail fit over the single exponential, counted only where that fit's own lack-of-fit probability and the replicate probability both reach 0.01.
    A qubit that reads `unusable` (anchors too close or too few points) adds nothing to `tail_statistic`, a sum of nonnegative gains, so a dropped qubit moves the verdict
    toward the null; `pooled.unusable_qubits` records the count, and the crosstalk and phase arms record `unusable_normalizations` and `unusable_scans`.
@@ -121,10 +122,13 @@ without anchors has rank 18 of 19 columns, so the anchors, and not the delay row
   contrasts (16 qubits x 6 conditions; qubit 2 sits in neither class) and 2 pair contrasts (q1 and q2 alone against all 17), 98 in all. A contrast is flagged when
   the readings differ by more than 3.49 standard errors of the difference, the two-sided normal quantile of a Bonferroni level of 0.05 over 102 contrasts, which
   holds the familywise level below 0.05 for the 98 formed. The variance of a reading is its binomial variance plus the job-level variance. The arm holds one anchor
-  pair per context, too few to estimate it, so the registered flag uses sigma 0.0068, twice the retained anchors' 0.0034 (`job_level_sigma` and
-  `retained_job_level_sigma` in `prediction.json`). At a true job-level sigma of 0.0068 the registered rule flags a family of 98 null contrasts with probability
-  0.046 at populations near 0.5, 0.05 and 0, and the rule at 0.0034 would flag it with probability 0.618, 0.988 and 0.9997
-  (`crosstalk.family_false_flag_rate_at_true_sigma`; independent contrasts). The analysis keeps the reading at 0.0034 as the descriptive field
+  pair per context, too few to estimate it, so the flag sigma comes from the interleaved arm when the analysis holds it: per qubit, max(the square root of
+  `job_level_variance` over the qubit's 18 prepared-0 and 18 prepared-1 interleaved anchor jobs, 0.0034). The floor, the retained pooled value, keeps a zero estimate (7 of
+  17 retained qubits read 0 from three pairs) from making the flag anti-conservative. Without the interleaved arm every qubit uses 0.0102, the largest retained per-qubit value
+  (q6). The q1/q2 pair contrast uses the larger of its two qubits' sigmas. Each row records its sigma and source (`flag_sigma`, `sigma_source`; `pooled.flag_sigma_by_qubit`). At a
+  true job-level sigma of 0.0102 the rule with 0.0102 flags a family of 98 null contrasts with probability 0.046 at populations near 0.5, 0.05 and 0, and the floor 0.0034
+  alone would flag it with probability 0.994 near 0.5 and 1.0 near 0.05 and 0 (`crosstalk.family_false_flag_rate_at_true_sigma`); these figures are computed for independent contrasts, and the contrasts of one
+  condition batch share one all-17 job, so they are not exact familywise rates. The analysis keeps the reading at 0.0034 as the descriptive field
   `z_at_retained_sigma` and counts the flags it would give (`descriptive_flagged_at_retained_sigma`); the verdict reads the registered flag only. Verdict words:
   "drive-and-readout context dependence"; the arm names no neighbor mechanism.
 - Normalization. Half-drive populations and ladder values P(0) normalize by the anchors of their own class context (readout-0 and the class prepared in 1); the
@@ -134,8 +138,9 @@ without anchors has rank 18 of 19 columns, so the anchors, and not the delay row
 - Prediction. The pair contrast of q2 flags (the retained 0.046 against 0.893 is far beyond 3.49 standard errors). Falsifier: q2 alone reads within 3.49 standard
   errors of its all-17 reading, which puts the retained q2 failure on another cause. No class contrast carries a prediction; the flagged count is descriptive.
 - Descriptive comparison, no decision. `simultaneous_versus_staggered` of the analysis sets the all-drive T1 readings at 5, 20 and 80 us, normalized by each
-  qubit's class anchors, beside the interleaved points of the same qubit at the multiplier whose delay lies nearest, and records the difference in standard errors
-  of the difference per qubit and wait. A systematic sign points at neighbor-state relaxation or assignment under staggered excitation; the registered
+  qubit's class anchors, beside the qubit's own interleaved fit (the lower-AICc accepted model, the single exponential when none is accepted) evaluated at that wait, and records the
+  difference in standard errors of the difference per qubit and wait with the fit's prediction error. A raw interleaved point at the nearest delay would differ in delay as well
+  as in context and so measure decay. A systematic sign points at neighbor-state relaxation or assignment under staggered excitation; the registered
   statistic does not read it.
 - Follow-up. A single-drive follow-up of the flagged qubits is a second stage with its own admission and is not generated here. It holds about 18 jobs when six of
   eight flagged qubits persist and about 33 when all 11 retained ladder failures persist (clears on 3, 6, 8, 12, 13 and 15).
@@ -189,7 +194,7 @@ the live service.
   failures and the q1/q2 reading depend on which qubits are driven together; and a static z rotation of about -0.15 rad on q12 exists between two X90 pulses.
 - Quantity: `tail_statistic` (the sum of gated AICc gains, registered threshold 200) from the anchored population of each qubit at six own delays in three rounds;
   per class qubit and condition the half-drive minus all-drive reading in standard errors; the fringe offset of q12 in radians with its standard error.
-- Falsifier: `tail_statistic` below 200; no pair or class contrast above 3.49; a q12 offset within 0.05 rad of zero.
+- Falsifier: `tail_statistic` below 200 with at least 15 usable qubits (fewer reads inconclusive); no pair or class contrast above 3.49; a q12 offset within 0.05 rad of zero.
 - Predicted outcome: `tail_statistic` at or above 200; the q2 pair contrast flagged; q12 at -0.15 rad (window -0.20 to -0.10) with a standard error of 0.0088 rad.
 - Simulated figures (compute-host pass of the layout review, 1,000 joint series per tail cell and 10,000 per null; the analyzer's own tau estimate from the simulated
   anchors, constrained plateau, two-rate fit and replicate gate over all rounds): the null 99.9th percentile of the statistic is 23.5; the worst-cell power of

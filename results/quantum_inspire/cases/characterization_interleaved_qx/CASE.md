@@ -13,7 +13,7 @@ and the analysis run end to end, and that every circuit returns its noiseless ou
 (`interleaved_t1`, `crosstalk` and `q12_phase`) and no single-qubit arm. The 10-qubit register changes the qubit map (`cases.json`): crosstalk
 class A = {0, 4, 5, 6, 9} and class B' = {1, 3, 7, 8} in the place of the Tuna-17 classes, the q1/q2 pair unchanged, and the phase scan on q9 in the place of q12.
 The delay of qubit i is the multiplier times its retained plateau T, as in the Tuna-17 case; the longest is 15,940 cycles (q7 at 12 T).
-Shots are 1,024 per circuit in every arm, inside the emulator's 2,048. The flag rule of the crosstalk arm is the Tuna-17 case's (3.49 standard errors, job-level sigma 0.0068,
+Shots are 1,024 per circuit in every arm, inside the emulator's 2,048. The flag rule of the crosstalk arm is the Tuna-17 case's (3.49 standard errors, per-qubit job-level sigma max(interleaved-anchor estimate, 0.0034), 0.0102 for every qubit without the interleaved arm,
 verdict words "drive-and-readout context dependence"; `prediction.json` of the Tuna-17 case states it with its family rates), run by the same code.
 
 ## Why a simulation cannot replace the run
@@ -46,9 +46,9 @@ ladder 0, and each Ramsey circuit a population of (1 + cos(angle)) / 2 on q9 wit
 1,024 shots, `expected_phase_se_rad`). Falsifier: an anchor off its outcome on more than three qubits, a fringe offset of 0.05 rad or more, or an analysis verdict other than
 the single exponential on every qubit (the emulator has no decay, so `--analyze` reads the flat series as unfitted or single). A failure keeps the
 Tuna-17 series from admission. The analysis records its unusable counts per arm (`unusable_qubits`, `unusable_normalizations`, `unusable_scans`); a dropped qubit
-adds nothing to the tail statistic, so it moves that verdict toward the null.
+adds nothing to the tail statistic, so it moves that verdict toward the null. The pooled tail verdict reads `tail_confirmed` when `tail_statistic` >= 200, `inconclusive` when it is below 200 and fewer than 15 qubits (all of this 10-qubit chip) are usable, and `not_confirmed` otherwise.
 
-`--self-test` exercises the design, order, guards, circuit timing and gate sequences and the estimator; the replicate gate, the tail threshold, each record field, the detuning
+`--self-test` exercises the design, order, guards, circuit timing and gate sequences, the estimator, the flag sigma floor and the three tail-verdict outcomes; the replicate gate, the tail threshold, each record field, the detuning
 aggregate and the staggered comparison are exercised by the test file only.
 
 ## Pre-flight
