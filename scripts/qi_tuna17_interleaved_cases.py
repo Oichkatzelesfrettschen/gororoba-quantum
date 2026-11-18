@@ -1,4 +1,4 @@
-"""Tuna-17 follow-up case: interleaved T1 rounds, a single-qubit arm and a q12 Ramsey phase scan, with a QX twin.
+"""Tuna-17 follow-up case: interleaved T1 rounds, a drive-context crosstalk arm and a q12 Ramsey phase scan, with a QX twin.
 
 The retained characterization series (scripts/qi_tuna17_characterization_cases.py) found a non-exponential
 T1 on 15 of 17 qubits, a positive step on the batch that held the three longest delays, and ladder verdicts that
@@ -13,8 +13,12 @@ own series directory:
   and the three circuits of a batch rotate through the three slots across rounds. A level shift common to the three
   jobs of a batch cancels in the population (p - a0) / (a1 - a0), and the replicates of a multiplier in the other
   rounds separate a tail from a job-level scatter.
-- single_qubit: for each qubit of SINGLE, one qubit driven and the other sixteen idle: the prepared-1 circuit, T1 at
-  SINGLE_T1_CYCLES with both anchors in the batch, and the X90 ladder at SINGLE_LADDER_TURNS.
+- crosstalk: the drive-context arm of 24 jobs in eight provider batches. The coupler graph splits into classes A =
+  CLASS_A and B' = CLASS_B (class B without qubit 2). Six conditions (T1 at 5, 20 and 80 us, the X90 ladder at 32, 128
+  and 256 pulses) each run one batch of {A driven, B' driven, all qubits driven}; one batch of context anchors holds
+  {readout-0, A prepared in 1, B' prepared in 1}; one batch holds {q1 alone, q2 alone, all qubits} at the 128-pulse
+  ladder, the direct test of the q1/q2 pair. A qubit and condition is flagged when its half-drive reading differs from
+  its same-batch all-drive reading by more than FLAG_Z standard errors of the difference.
 - q12_phase: a Ramsey circuit X90, Rz(angle), X90 on one qubit, angles on the pi/36 grid in steps of pi/4, on PHASE
   qubits (q12 at two idle waits, the other two without a wait); the fringe offset is the static z rotation between two
   pulses.
@@ -25,7 +29,7 @@ do not exist: only the circuit library, the indexes and prediction.json are gene
 draw to take.
 
 Profiles: tuna_17 (17 qubits, 8,192 shots per circuit) and qx (the same texts on 10 qubits at 1,024 shots, with the
-qubit map of SINGLE and PHASE). Bit order: qubit 0 is the rightmost character of a shot.
+qubit map of CLASS_A, CLASS_B, PAIR and PHASE). Bit order: qubit 0 is the rightmost character of a shot.
 
     --write ROOT        write ROOT/characterization_interleaved_{tuna_17,qx}/
     --check ROOT        regenerate and compare every file except CASE.md; prints a skip while DRAW is None
@@ -54,6 +58,7 @@ import subprocess
 import sys
 import time
 from collections.abc import Callable, Sequence
+from statistics import NormalDist
 from pathlib import Path
 from typing import Any
 
@@ -63,7 +68,7 @@ import qi_tuna17_characterization_cases as base  # noqa: E402
 
 SCHEMA = "qi-tuna17-interleaved-cases-v1"
 ANALYSIS_SCHEMA = "qi-tuna17-interleaved-analysis-v1"
-ARMS = ("interleaved_t1", "single_qubit", "q12_phase")
+ARMS = ("interleaved_t1", "crosstalk", "q12_phase")
 CYCLE_SECONDS = base.CYCLE_SECONDS
 BATCH_LIMIT = base.BATCH_LIMIT
 # Retained plateau-model decay time T of each qubit in microseconds (characterization_tuna_17_t1_shape_analysis.json,
@@ -92,10 +97,20 @@ CYCLES_PER_US = 50
 # Multipliers of each qubit's plateau T, 0.5 T to 12 T; the longest delay (q10 at 12 T) is 17,423 cycles.
 T1_MULTIPLIERS = (0.5, 1, 2, 4, 8, 12)
 ROUNDS = 3
-# Arm qubits by profile; the qx entries stand in position for the tuna_17 qubits that the 10-qubit emulator lacks.
-SINGLE = {"tuna_17": (5, 7, 14, 0, 4, 10, 11, 16), "qx": (5, 7, 9, 0, 4, 6, 3, 1)}
-SINGLE_T1_CYCLES = (250, 1000, 4000)
-SINGLE_LADDER_TURNS = (8, 32, 64)
+# Coupler-graph classes of the crosstalk arm by profile: class A and class B without qubit 2 (B'). The qx entries stand
+# in position for the tuna_17 qubits that the 10-qubit emulator lacks and keep qubits 1 and 2 of the pair.
+CLASS_A = {"tuna_17": (0, 4, 5, 6, 10, 11, 12, 16), "qx": (0, 4, 5, 6, 9)}
+CLASS_B = {"tuna_17": (1, 3, 7, 8, 9, 13, 14, 15), "qx": (1, 3, 7, 8)}
+CROSSTALK_T1_CYCLES = (250, 1000, 4000)
+CROSSTALK_LADDER_PULSES = (32, 128, 256)
+PAIR = (1, 2)
+PAIR_PULSES = 128
+# A flag marks |z| above this: the two-sided normal quantile of a Bonferroni level of 0.05 over 102 contrasts. The arm
+# forms 96 class contrasts and 2 pair contrasts, so the bound is conservative.
+FLAG_Z = 3.49
+# Job-level standard deviation of a population (retained anchors, pooled over 17 qubits); the arm holds one anchor pair per
+# context, too few for job_level_variance().
+JOB_LEVEL_SIGMA = 0.0034
 PHASE = {"tuna_17": (12, 8, 4), "qx": (9, 8, 4)}
 PHASE_WAIT_CYCLES = 25
 PHASE_STEPS = tuple(range(0, 72, 9))
@@ -256,32 +271,42 @@ def library(profile_name: str) -> dict[str, dict[str, Any]]:
             }
             if kind == "t1":
                 found[name]["delays_cycles"] = delays
-    for qubit in SINGLE[profile_name]:
-        found[f"single-q{qubit}-prep1.cq"] = {
-            "text": base.circuit(nqubits, [f"X q[{qubit}]"]),
-            "kind": "single_prep1",
-            "qubit": qubit,
-            "driven": [qubit],
-            "expected_p1": 1.0,
-        }
-        for cycles in SINGLE_T1_CYCLES:
-            found[f"single-q{qubit}-t1-{cycles}.cq"] = {
-                "text": base.circuit(nqubits, [f"X q[{qubit}]", f"wait({cycles}) q[{qubit}]"]),
-                "kind": "single_t1",
-                "qubit": qubit,
+    for context, driven in contexts(profile_name).items():
+        for cycles in CROSSTALK_T1_CYCLES:
+            found[f"xt-t1-{cycles}-{context}.cq"] = {
+                "text": driven_t1_text(nqubits, driven, cycles),
+                "kind": "xt_t1",
+                "context": context,
                 "wait_cycles": cycles,
-                "driven": [qubit],
+                "driven": list(driven),
                 "expected_p1": 1.0,
             }
-        for turns in SINGLE_LADDER_TURNS:
-            found[f"single-q{qubit}-x90-{turns}.cq"] = {
-                "text": base.circuit(nqubits, [f"X90 q[{qubit}]"] * (4 * turns)),
-                "kind": "single_x90",
-                "qubit": qubit,
-                "pulses": 4 * turns,
-                "driven": [qubit],
+        for pulses in CROSSTALK_LADDER_PULSES:
+            found[f"xt-x90-{pulses}-{context}.cq"] = {
+                "text": driven_x90_text(nqubits, driven, pulses),
+                "kind": "xt_x90",
+                "context": context,
+                "pulses": pulses,
+                "driven": list(driven),
                 "expected_p1": 0.0,
             }
+        if context != "all":
+            found[f"xt-prep1-{context}.cq"] = {
+                "text": base.circuit(nqubits, [f"X q[{q}]" for q in driven]),
+                "kind": "xt_prep1",
+                "context": context,
+                "driven": list(driven),
+                "expected_p1": 1.0,
+            }
+    for qubit in PAIR:
+        found[f"xt-x90-{PAIR_PULSES}-q{qubit}.cq"] = {
+            "text": driven_x90_text(nqubits, (qubit,), PAIR_PULSES),
+            "kind": "xt_x90",
+            "context": f"q{qubit}",
+            "pulses": PAIR_PULSES,
+            "driven": [qubit],
+            "expected_p1": 0.0,
+        }
     for qubit, wait in ((PHASE[profile_name][0], PHASE_WAIT_CYCLES), *((q, 0) for q in PHASE[profile_name])):
         for step in PHASE_STEPS:
             angle = step * math.pi / 36
@@ -300,18 +325,49 @@ def library(profile_name: str) -> dict[str, dict[str, Any]]:
     return found
 
 
+def contexts(profile_name: str) -> dict[str, tuple[int, ...]]:
+    """Driven qubits of each crosstalk context: class A, class B' and all qubits."""
+    return {
+        "A": CLASS_A[profile_name],
+        "B": CLASS_B[profile_name],
+        "all": tuple(range(PROFILES[profile_name]["nqubits"])),
+    }
+
+
+def driven_t1_text(nqubits: int, driven: Sequence[int], cycles: int) -> str:
+    """X on the driven qubits, then each waits; the all-qubit text is the retained T1 circuit byte for byte."""
+    return base.circuit(nqubits, [f"X q[{q}]" for q in driven] + [f"wait({cycles}) q[{q}]" for q in driven])
+
+
+def driven_x90_text(nqubits: int, driven: Sequence[int], pulses: int) -> str:
+    """The driven qubits take pulses X90 each in pulse-major order, as the retained ladder circuit does."""
+    return base.circuit(nqubits, [f"X90 q[{q}]" for _ in range(pulses) for q in driven])
+
+
+def crosstalk_units() -> list[tuple[str, list[str]]]:
+    """The eight provider batches of the crosstalk arm as (unit, circuit names)."""
+    units: list[tuple[str, list[str]]] = [
+        (f"t1-{cycles}", [f"xt-t1-{cycles}-{c}.cq" for c in ("A", "B", "all")]) for cycles in CROSSTALK_T1_CYCLES
+    ]
+    units += [
+        (f"x90-{pulses}", [f"xt-x90-{pulses}-{c}.cq" for c in ("A", "B", "all")]) for pulses in CROSSTALK_LADDER_PULSES
+    ]
+    units.append(("anchors", ["readout-0.cq", "xt-prep1-A.cq", "xt-prep1-B.cq"]))
+    units.append(
+        ("pair", [f"xt-x90-{PAIR_PULSES}-q{PAIR[0]}.cq", f"xt-x90-{PAIR_PULSES}-q{PAIR[1]}.cq", f"xt-x90-{PAIR_PULSES}-all.cq"])
+    )
+    return units
+
+
 def usage(profile_name: str) -> dict[str, list[str]]:
     """Arm -> circuit names with their multiplicity in the series, in no particular order."""
     names = library(profile_name)
     interleaved: list[str] = []
     for multiplier in T1_MULTIPLIERS:
         interleaved += list(interleaved_circuits(multiplier)) * ROUNDS
-    single: list[str] = []
-    for qubit in SINGLE[profile_name]:
-        single += [f"single-q{qubit}-t1-{c}.cq" for c in SINGLE_T1_CYCLES] + [f"single-q{qubit}-prep1.cq"] * 3
-        single += ["readout-0.cq"] * 3 + [f"single-q{qubit}-x90-{t}.cq" for t in SINGLE_LADDER_TURNS]
+    crosstalk = [name for _, names in crosstalk_units() for name in names]
     phase = [name for name, row in names.items() if row["kind"] == "ramsey"]
-    return {"interleaved_t1": interleaved, "single_qubit": single, "q12_phase": phase}
+    return {"interleaved_t1": interleaved, "crosstalk": crosstalk, "q12_phase": phase}
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -384,15 +440,11 @@ def schedule(profile_name: str, values: Sequence[int]) -> dict[str, Any]:
                 }
             )
     start = stream.position
-    for qubit in stream.shuffle(SINGLE[profile_name]):
-        units: list[tuple[str, list[str]]] = [
-            (f"t1-{c}", ["readout-0.cq", f"single-q{qubit}-prep1.cq", f"single-q{qubit}-t1-{c}.cq"])
-            for c in SINGLE_T1_CYCLES
-        ]
-        units.append(("x90", [f"single-q{qubit}-x90-{t}.cq" for t in SINGLE_LADDER_TURNS]))
-        for unit, names in (units[i] for i in stream.shuffle(range(len(units)))):
-            arms["single_qubit"].append({"circuits": stream.shuffle(names), "qubit": qubit, "unit": unit})
-    mark("single_qubit", start)
+    units = crosstalk_units()
+    for index in stream.shuffle(range(len(units))):
+        unit, names = units[index]
+        arms["crosstalk"].append({"circuits": stream.shuffle(names), "unit": unit})
+    mark("crosstalk", start)
     start = stream.position
     ramsey = [name for name, row in library(profile_name).items() if row["kind"] == "ramsey"]
     order = stream.shuffle(ramsey)
@@ -416,11 +468,10 @@ def draw_values(root: Path = ROOT) -> list[int] | None:
 
 def qrng_values_needed(profile_name: str) -> int:
     """Values the order consumes when no value is rejected."""
-    singles = len(SINGLE[profile_name])
-    units = len(SINGLE_T1_CYCLES) + 1
     blocks = len(T1_MULTIPLIERS)
     needed = (blocks - 1) + ROUNDS * (blocks // 2) + blocks * (BATCH_LIMIT - 1)
-    needed += singles - 1 + singles * ((units - 1) + units * 2)
+    units = len(crosstalk_units())
+    needed += (units - 1) + units * (BATCH_LIMIT - 1)
     return needed + len(usage(profile_name)["q12_phase"]) - 1
 
 
@@ -695,7 +746,7 @@ def batch_counts(profile_name: str) -> dict[str, int]:
     use = usage(profile_name)
     return {
         "interleaved_t1": ROUNDS * len(T1_MULTIPLIERS),
-        "single_qubit": len(SINGLE[profile_name]) * (len(SINGLE_T1_CYCLES) + 1),
+        "crosstalk": len(crosstalk_units()),
         "q12_phase": -(-len(use["q12_phase"]) // BATCH_LIMIT),
     }
 
@@ -770,30 +821,16 @@ def prediction(profile_name: str, retained: dict[str, Any] | None = None) -> dic
         ),
         "design_qubit": middle["qubit"],
     }
-    single = {row["qubit"]: row for row in qubits}
-    out["single_qubit"] = {
-        "qubits": [
-            {
-                "qubit": q,
-                "retained_population": {str(c): rounded(single[q]["population"][str(c)]) for c in SINGLE_T1_CYCLES},
-                "retained_t1_us": rounded(single[q]["single_us"]),
-                "retained_t1_widened_us": [
-                    rounded(v) if v is not None else None for v in single[q]["single_interval_us"]
-                ],
-                "retained_ladder_p0": {k: rounded(v) for k, v in single[q]["ladder_p0"].items() if k != "0"},
-                "predicted_ladder": ladder_prediction(single[q]["ladder_p0"]),
-            }
-            for q in SINGLE["tuna_17"]
-        ],
-        "ladder_rule": "fails when the retained corrected P(0) falls to 0.25 or below at any of 32, 128, 256 pulses",
+    out["crosstalk"] = {
+        "classes": {"A": list(CLASS_A[profile_name]), "B_prime": list(CLASS_B[profile_name])},
+        "conditions": [f"t1-{c}" for c in CROSSTALK_T1_CYCLES] + [f"x90-{p}" for p in CROSSTALK_LADDER_PULSES],
+        "flag_z": FLAG_Z,
+        "class_contrasts": len(CLASS_A[profile_name] + CLASS_B[profile_name]) * 6,
+        "pair_contrasts": len(PAIR),
+        "job_level_sigma": JOB_LEVEL_SIGMA,
+        "verdict_words": "drive-context dependence",
     }
     return out
-
-
-def ladder_prediction(p0: dict[str, float]) -> str:
-    """Predicted single-qubit ladder verdict: a retained P(0) of 0.25 or below needs a coherent rotation, which
-    dephasing by neighbors does not make (it drives P(0) toward 0.5), so that qubit is predicted to keep failing."""
-    return "fails" if min(p0[k] for k in ("32", "128", "256")) <= 0.25 else "clears"
 
 
 def batch_directory(arm: str, index: int) -> str:
@@ -814,9 +851,11 @@ def files(profile_name: str, values: Sequence[int] | None, retained: dict[str, A
         "t1_multipliers": list(T1_MULTIPLIERS),
         "t1_delay_cycles": {str(m): t1_delays(profile["nqubits"], m) for m in T1_MULTIPLIERS},
         "rounds": ROUNDS,
-        "single_qubits": list(SINGLE[profile_name]),
-        "single_t1_wait_cycles": list(SINGLE_T1_CYCLES),
-        "single_ladder_pulses": [4 * t for t in SINGLE_LADDER_TURNS],
+        "crosstalk_classes": {"A": list(CLASS_A[profile_name]), "B_prime": list(CLASS_B[profile_name])},
+        "crosstalk_t1_wait_cycles": list(CROSSTALK_T1_CYCLES),
+        "crosstalk_ladder_pulses": list(CROSSTALK_LADDER_PULSES),
+        "pair_qubits": list(PAIR),
+        "pair_pulses": PAIR_PULSES,
         "phase_qubits": list(PHASE[profile_name]),
         "phase_wait_cycles": PHASE_WAIT_CYCLES,
         "phase_steps_pi_over_36": list(PHASE_STEPS),
@@ -1178,53 +1217,82 @@ def analyze_interleaved(batches: list[dict[str, Any]]) -> dict[str, Any]:
     return {"qubits": qubits, "pooled": pooled, "jobs": jobs}
 
 
-def analyze_single(batches: list[dict[str, Any]]) -> dict[str, Any]:
-    """Per-qubit single-drive populations at SINGLE_T1_CYCLES and the ladder verdict."""
-    by_qubit: dict[int, list[dict[str, Any]]] = {}
-    for batch in batches:
-        by_qubit.setdefault(batch["meta"]["qubit"], []).append(batch)
-    rows = []
-    for qubit, group in sorted(by_qubit.items()):
-        a0s, a1s, populations = [], [], {}
-        for batch in group:
-            if "readout-0.cq" in batch["p1"]:
-                a0s.append(batch["p1"]["readout-0.cq"][qubit])
-                a1s.append(batch["p1"][f"single-q{qubit}-prep1.cq"][qubit])
-        count = group[0]["shots"]
-        tau2 = job_level_variance(a0s, a1s, count)
-        for batch in group:
-            for name, row in batch["rows"].items():
-                if row["kind"] != "single_t1" or "readout-0.cq" not in batch["rows"]:
-                    continue
-                a0, a1 = batch["p1"]["readout-0.cq"][qubit], batch["p1"][f"single-q{qubit}-prep1.cq"][qubit]
-                point = anchored_point(batch["p1"][name][qubit], a0, a1, count, tau2)
-                if point is not None:
-                    populations[row["wait_cycles"]] = point
-        mean0, mean1 = sum(a0s) / len(a0s), sum(a1s) / len(a1s)
-        ladder = {}
-        for batch in group:
-            for name, row in batch["rows"].items():
-                if row["kind"] == "single_x90" and mean1 - mean0 > MIN_READOUT_SPAN:
-                    ladder[row["pulses"]] = 1.0 - (batch["p1"][name][qubit] - mean0) / (mean1 - mean0)
-        entry: dict[str, Any] = {
-            "qubit": qubit,
-            "population": {str(c): v[0] for c, v in sorted(populations.items())},
-            "ladder_p0": {str(p): v for p, v in sorted(ladder.items())},
-        }
-        if len(ladder) == len(SINGLE_LADDER_TURNS):
-            entry["ladder_clears"] = all(v >= base.LADDER_MIN_P0 for v in ladder.values())
+def contrast_z(p_half: float, p_all: float, count: int) -> float:
+    """Difference of two readings of one qubit in standard errors of the difference: binomial variance and the job-level
+    variance on each job."""
+    variance = base.binomial_variance(p_half, count) + base.binomial_variance(p_all, count) + 2 * JOB_LEVEL_SIGMA**2
+    return (p_half - p_all) / math.sqrt(variance)
 
-        rows.append(entry)
-    pooled = {
-        "ladder_clears": sum(bool(r.get("ladder_clears")) for r in rows),
-        "ladder_fails": sum(r.get("ladder_clears") is False for r in rows),
-        "t1_differs": sum(bool(r.get("t1_differs")) for r in rows),
+
+def analyze_crosstalk(batches: list[dict[str, Any]]) -> dict[str, Any]:
+    """Half-drive against same-batch all-drive readings per class qubit and condition, and the q1/q2 pair.
+
+    A half-drive batch holds the class A, class B' and all-qubit circuit of one condition; each class qubit contrasts its
+    own class circuit with the all-qubit circuit by contrast_z, flagged above FLAG_Z. Populations and ladder values
+    P(0) normalize by the context anchors (readout-0 and the class prepared in 1), all-drive readings by their qubit's
+    class anchors, so the readout context of the all-drive circuit is not separated from the drive (reported
+    residual). The reading is drive-context dependence and names no mechanism.
+    """
+    count = batches[0]["shots"]
+    anchors = next(b for b in batches if b["meta"].get("unit") == "anchors")
+    zero = next(anchors["p1"][f] for f, row in anchors["rows"].items() if row["kind"] == "anchor0")
+    prepared = {row["context"]: anchors["p1"][f] for f, row in anchors["rows"].items() if row["kind"] == "xt_prep1"}
+    classes = {row["context"]: row["driven"] for row in anchors["rows"].values() if row["kind"] == "xt_prep1"}
+    rows: list[dict[str, Any]] = []
+    pair: list[dict[str, Any]] = []
+    for batch in batches:
+        unit = batch["meta"].get("unit")
+        if unit == "anchors":
+            continue
+        by_context = {row["context"]: name for name, row in batch["rows"].items()}
+        if unit == "pair":
+            all_name = by_context["all"]
+            for qubit in PAIR:
+                alone = batch["p1"][by_context[f"q{qubit}"]][qubit]
+                every = batch["p1"][all_name][qubit]
+                pair.append(
+                    {
+                        "qubit": qubit,
+                        "alone": alone,
+                        "all_driven": every,
+                        "z": contrast_z(alone, every, count),
+                        "flagged": abs(contrast_z(alone, every, count)) > FLAG_Z,
+                    }
+                )
+            other = PAIR[1]
+            pair.append(
+                {
+                    "qubit": other,
+                    "reading_with_only_partner_driven": batch["p1"][by_context[f"q{PAIR[0]}"]][other],
+                }
+            )
+            continue
+        ladder = unit.startswith("x90")
+        for context in ("A", "B"):
+            for qubit in classes[context]:
+                a0, a1 = zero[qubit], prepared[context][qubit]
+                half = batch["p1"][by_context[context]][qubit]
+                every = batch["p1"][by_context["all"]][qubit]
+                z = contrast_z(half, every, count)
+                span = a1 - a0
+                row = {"unit": unit, "context": context, "qubit": qubit, "z": z, "flagged": abs(z) > FLAG_Z}
+                if span > MIN_READOUT_SPAN:
+                    sign = -1.0 if ladder else 1.0
+                    row["half_value"] = (1.0 if ladder else 0.0) + sign * (half - a0) / span
+                    row["all_value"] = (1.0 if ladder else 0.0) + sign * (every - a0) / span
+                rows.append(row)
+    flagged = sum(r["flagged"] for r in rows) + sum(bool(p.get("flagged")) for p in pair)
+    contrasts = len(rows) + sum("z" in p for p in pair)
+    return {
+        "rows": rows,
+        "pair": pair,
+        "pooled": {
+            "contrasts_formed": contrasts,
+            "flag_z": FLAG_Z,
+            "flagged": flagged,
+            "reading": "drive-context dependence" if flagged else "no drive-context dependence at the flag",
+        },
     }
-    pooled["crosstalk_ladder_supported"] = pooled["ladder_clears"] >= 4
-    pooled["own_pulse_ladder_supported"] = pooled["ladder_fails"] >= 6
-    pooled["neighbor_t1_supported"] = pooled["t1_differs"] >= 5
-    pooled["t1_independent_of_neighbors"] = bool(rows) and len(rows) - pooled["t1_differs"] >= 6
-    return {"qubits": rows, "pooled": pooled}
 
 
 def fringe_fit(points: list[tuple[float, float, int]]) -> dict[str, float] | None:
@@ -1306,8 +1374,8 @@ def analyze(runs: list[Path], prediction_path: Path | None = None) -> dict[str, 
     grouped = {arm: [b for b in batches if b["arm"] == arm] for arm in ARMS}
     if grouped["interleaved_t1"]:
         out["interleaved_t1"] = analyze_interleaved(grouped["interleaved_t1"])
-    if grouped["single_qubit"]:
-        out["single_qubit"] = analyze_single(grouped["single_qubit"])
+    if grouped["crosstalk"]:
+        out["crosstalk"] = analyze_crosstalk(grouped["crosstalk"])
     if grouped["q12_phase"]:
         out["q12_phase"] = analyze_phase(grouped["q12_phase"])
     if prediction_path is not None:
@@ -1455,7 +1523,7 @@ def sanity(run: Path) -> list[str]:
     if problems:
         return problems
     for row in cases["circuits"]:
-        if row["kind"] not in ("anchor0", "anchor1", "single_prep1"):
+        if row["kind"] not in ("anchor0", "anchor1", "xt_prep1"):
             continue
         driven = set(row["driven"])
         wrong = [
@@ -1680,6 +1748,49 @@ def synthetic_interleaved(
     return out
 
 
+def synthetic_crosstalk(
+    shift_qubit: int | None = None, shift: float = 0.0, count: int = 8192
+) -> list[dict[str, Any]]:
+    """Crosstalk batches in the order schedule() gives synthetic_values with fixed readings: anchors 0.03 and 0.96, a
+    driven qubit of a T1 circuit 0.495, of a ladder circuit 0.05, an idle qubit 0.03; shift is added to shift_qubit in
+    the class circuits (contexts A and B) of the T1 and ladder kinds."""
+    rows_by_name = library("tuna_17")
+    out = []
+    for number, batch in enumerate(schedule("tuna_17", synthetic_values(2000))["arms"]["crosstalk"]):
+        rows = {}
+        p1: dict[str, list[float]] = {}
+        for name in batch["circuits"]:
+            source = rows_by_name[name]
+            rows[name] = {k: source[k] for k in ("kind", "context", "driven", "pulses", "wait_cycles") if k in source}
+            values = []
+            for qubit in range(PROFILES["tuna_17"]["nqubits"]):
+                driven = qubit in source["driven"]
+                if source["kind"] == "xt_prep1":
+                    p = 0.96 if driven else 0.03
+                elif source["kind"] == "xt_t1":
+                    p = 0.495 if driven else 0.03
+                elif source["kind"] == "xt_x90":
+                    p = 0.05 if driven else 0.03
+                else:
+                    p = 0.03
+                if qubit == shift_qubit and source.get("context") in ("A", "B") and source["kind"] != "xt_prep1":
+                    p += shift
+                values.append(round(p * count) / count)
+            p1[name] = values
+        out.append(
+            {
+                "run": f"batch-{number:02d}",
+                "arm": "crosstalk",
+                "meta": {"unit": batch["unit"]},
+                "shots": count,
+                "nqubits": PROFILES["tuna_17"]["nqubits"],
+                "rows": rows,
+                "p1": p1,
+            }
+        )
+    return out
+
+
 def synthetic_status(label: str, queue: int = 0, instance: str | None = None) -> dict[str, Any]:
     """An account-section document of backend type 7 with the given readings."""
     return {
@@ -1729,7 +1840,8 @@ def self_test() -> list[str]:
     grid = [r["angle"] / (math.pi / 36) for r in rows.values() if r["kind"] == "ramsey"]
     expect(all(abs(g - round(g)) < 1e-9 for g in grid), "a Ramsey angle leaves the pi/36 grid")
     expect(
-        all(q < PROFILES["qx"]["nqubits"] for q in (*SINGLE["qx"], *PHASE["qx"])), "a qx arm qubit exceeds the emulator"
+        all(q < PROFILES["qx"]["nqubits"] for q in (*CLASS_A["qx"], *CLASS_B["qx"], *PAIR, *PHASE["qx"])),
+        "a qx arm qubit exceeds the emulator",
     )
     # Order: one draw, deterministic, within the batch limit, blocked rounds, anchors in every batch.
     values = synthetic_values(2000)
@@ -1880,6 +1992,27 @@ def self_test() -> list[str]:
     )
     flat = fringe_fit([(a, 0.5, 8192) for a in angles])
     expect(flat is None or phase_verdict(flat) == "no_fringe", "a flat fringe carried a phase")
+    # Crosstalk: classes are disjoint and omit qubit 2, the flag bound is the Bonferroni quantile, the flag fires on a
+    # contrast just above it and not just below, and the analysis flags a shifted class reading and nothing else.
+    for profile_name in PROFILES:
+        a, b = set(CLASS_A[profile_name]), set(CLASS_B[profile_name])
+        expect(not a & b and PAIR[1] not in a | b, f"{profile_name}: class sets overlap or hold qubit {PAIR[1]}")
+    expect(
+        len(CLASS_A["tuna_17"]) == 8 and len(CLASS_B["tuna_17"]) == 8, "the tuna_17 classes are not eight qubits each"
+    )
+    expect(abs(NormalDist().inv_cdf(1 - 0.05 / 204) - FLAG_Z) < 0.005, "FLAG_Z is not the Bonferroni quantile")
+    se = math.sqrt(2 * 0.25 / 8192 + 2 * JOB_LEVEL_SIGMA**2)
+    expect(abs(contrast_z(0.5 + 3.6 * se, 0.5, 8192)) > FLAG_Z > abs(contrast_z(0.5 + 3.3 * se, 0.5, 8192)), "flag")
+    quiet = analyze_crosstalk(synthetic_crosstalk())
+    expect(
+        quiet["pooled"]["flagged"] == 0 and quiet["pooled"]["contrasts_formed"] == 98,
+        f"an unshifted crosstalk series read {quiet['pooled']}",
+    )
+    loud = analyze_crosstalk(synthetic_crosstalk(shift_qubit=5, shift=0.05))
+    flagged = [r for r in loud["rows"] if r["flagged"]]
+    expect(
+        len(flagged) == 6 and all(r["qubit"] == 5 for r in flagged), f"a shifted class reading flagged {len(flagged)}"
+    )
     return problems
 
 

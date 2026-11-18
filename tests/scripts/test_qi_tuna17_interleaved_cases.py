@@ -690,31 +690,72 @@ def test_a_fringe_the_cosine_rejects_reads_poor_fit() -> None:
         raise AssertionError(bad)
 
 
-def test_single_and_phase_arms_read_exact_series() -> None:
-    rows = {
-        "readout-0.cq": {"kind": "anchor0"},
-        "single-q3-prep1.cq": {"kind": "single_prep1", "qubit": 3},
-        "single-q3-t1-250.cq": {"kind": "single_t1", "qubit": 3, "wait_cycles": 250},
-        "single-q3-x90-8.cq": {"kind": "single_x90", "qubit": 3, "pulses": 32},
-        "single-q3-x90-32.cq": {"kind": "single_x90", "qubit": 3, "pulses": 128},
-        "single-q3-x90-64.cq": {"kind": "single_x90", "qubit": 3, "pulses": 256},
-    }
-
-    def vec(value: float) -> list[float]:
-        return [0.0, 0.0, 0.0, value]
-
-    p1 = {"readout-0.cq": vec(0.03), "single-q3-prep1.cq": vec(0.96), "single-q3-t1-250.cq": vec(0.03 + 0.93 * 0.8)}
-    p1.update({"single-q3-x90-8.cq": vec(0.1), "single-q3-x90-32.cq": vec(0.9), "single-q3-x90-64.cq": vec(0.3)})
-    batch = {"meta": {"qubit": 3}, "shots": 8192, "rows": rows, "p1": p1}
-    found = cases.analyze_single([batch])["qubits"][0]
-    if abs(found["population"]["250"] - 0.8) > 1e-9 or found["ladder_clears"] is not False:
-        raise AssertionError(found)
+def test_phase_arm_reads_an_exact_series() -> None:
     angles = {s: s * math.pi / 36 for s in cases.PHASE_STEPS}
     ramsey_rows = {f"r{s}": {"kind": "ramsey", "qubit": 12, "wait_cycles": 0, "angle": a} for s, a in angles.items()}
     ramsey_p1 = {f"r{s}": [0.5 + 0.46 * math.cos(a + 0.15)] * 13 for s, a in angles.items()}
     scans = cases.analyze_phase([{"shots": 8192, "rows": ramsey_rows, "p1": ramsey_p1}])["scans"]
     if scans[0]["verdict"] != "supports_target_opposite_sign" or abs(scans[0]["phase"] - 0.15) > 0.005:
         raise AssertionError(scans)
+
+
+def test_crosstalk_classes_circuits_and_batches() -> None:
+    from qi_tuna17_characterization_cases import circuits  # noqa: PLC0415
+
+    retained = circuits(17)
+    rows = cases.library("tuna_17")
+    a, b = set(cases.CLASS_A["tuna_17"]), set(cases.CLASS_B["tuna_17"])
+    if (a, b) != ({0, 4, 5, 6, 10, 11, 12, 16}, {1, 3, 7, 8, 9, 13, 14, 15}) or 2 in a | b or a & b:
+        raise AssertionError((a, b))
+    for cycles in (250, 1000, 4000):
+        if rows[f"xt-t1-{cycles}-all.cq"]["text"] != retained[f"t1-{cycles}.cq"][0]:
+            raise AssertionError(cycles)
+    for turns in (8, 32, 64):
+        if rows[f"xt-x90-{4 * turns}-all.cq"]["text"] != retained[f"x90-{turns}.cq"][0]:
+            raise AssertionError(turns)
+    for name, row in rows.items():
+        if row["kind"] in ("xt_t1", "xt_x90", "xt_prep1") and row["context"] in ("A", "B"):
+            others = set(range(17)) - set(row["driven"])
+            if any(f"q[{q}]" in row["text"] for q in others):
+                raise AssertionError(f"{name} touches an undriven qubit")
+    if rows["xt-x90-128-q1.cq"]["text"].count("X90 q[1]") != 128 or "q[2]" in rows["xt-x90-128-q1.cq"]["text"]:
+        raise AssertionError("the q1 circuit drives another qubit")
+    units = cases.crosstalk_units()
+    if len(units) != 8 or any(len(names) != 3 for _, names in units) or len(cases.usage("tuna_17")["crosstalk"]) != 24:
+        raise AssertionError(units)
+    anchors = dict(units)["anchors"]
+    if anchors != ["readout-0.cq", "xt-prep1-A.cq", "xt-prep1-B.cq"]:
+        raise AssertionError(anchors)
+    if any(q >= cases.PROFILES["qx"]["nqubits"] for q in (*cases.CLASS_A["qx"], *cases.CLASS_B["qx"], *cases.PAIR)):
+        raise AssertionError("a qx class exceeds the emulator")
+
+
+def test_flag_is_the_bonferroni_quantile_and_fires_only_above_it() -> None:
+    from statistics import NormalDist  # noqa: PLC0415
+
+    if abs(NormalDist().inv_cdf(1 - 0.05 / 204) - cases.FLAG_Z) > 0.005:
+        raise AssertionError(cases.FLAG_Z)
+    se = math.sqrt(2 * 0.25 / 8192 + 2 * cases.JOB_LEVEL_SIGMA**2)
+    above, below = cases.contrast_z(0.5 + 3.6 * se, 0.5, 8192), cases.contrast_z(0.5 + 3.3 * se, 0.5, 8192)
+    if not abs(above) > cases.FLAG_Z > abs(below) or abs(above - 3.6) > 0.05:
+        raise AssertionError((above, below))
+
+
+def test_crosstalk_analysis_flags_a_shifted_class_reading_and_forms_98_contrasts() -> None:
+    quiet = cases.analyze_crosstalk(cases.synthetic_crosstalk())
+    if quiet["pooled"]["flagged"] != 0 or quiet["pooled"]["contrasts_formed"] != 98:
+        raise AssertionError(quiet["pooled"])
+    if len(quiet["rows"]) != 96 or {p["qubit"] for p in quiet["pair"]} != {1, 2}:
+        raise AssertionError(quiet)
+    loud = cases.analyze_crosstalk(cases.synthetic_crosstalk(shift_qubit=5, shift=0.05))
+    flagged = [r for r in loud["rows"] if r["flagged"]]
+    if len(flagged) != 6 or any(r["qubit"] != 5 or r["context"] != "A" for r in flagged):
+        raise AssertionError(flagged)
+    if loud["pooled"]["reading"] != "drive-context dependence" or "neighbor" in json.dumps(loud):
+        raise AssertionError(loud["pooled"])
+    small = cases.analyze_crosstalk(cases.synthetic_crosstalk(shift_qubit=5, shift=0.01))
+    if small["pooled"]["flagged"] != 0:
+        raise AssertionError(small["pooled"])
 
 
 def test_local_twin_check_names_a_circuit_off_its_law() -> None:
