@@ -630,6 +630,18 @@ def test_phase_fit_recovers_a_given_rotation_and_names_the_verdicts() -> None:
         raise AssertionError(flat)
 
 
+def test_a_fringe_the_cosine_rejects_reads_poor_fit() -> None:
+    angles = [s * math.pi / 36 for s in cases.PHASE_STEPS]
+    exact = [(a, round((0.5 + 0.46 * math.cos(a - 0.15)) * 8192) / 8192, 8192) for a in angles]
+    kinked = [(a, p + (0.06 if i in (2, 5) else 0.0), n) for i, (a, p, n) in enumerate(exact)]
+    good = cases.fringe_fit(exact)
+    bad = cases.fringe_fit(kinked)
+    if good is None or bad is None or cases.phase_verdict(good) != "supports_target":
+        raise AssertionError((good, bad))
+    if abs(bad["phase"] + 0.15) > 0.05 or bad["phase_se"] > 0.02 or cases.phase_verdict(bad) != "poor_fit":
+        raise AssertionError(bad)
+
+
 def test_single_and_phase_arms_read_exact_series() -> None:
     rows = {
         "readout-0.cq": {"kind": "anchor0"},

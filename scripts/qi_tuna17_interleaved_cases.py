@@ -1088,9 +1088,16 @@ def wrap(angle: float) -> float:
 
 
 def phase_verdict(fit: dict[str, float]) -> str:
-    """Class of one fringe against the refit's q12 term: supports_target, null or other (no fringe reads no_fringe)."""
+    """Class of one fringe against the refit's q12 term: supports_target, null or other.
+
+    A fringe below MIN_FRINGE_AMPLITUDE reads no_fringe; a cosine fit whose chi-square probability lies below
+    LACK_OF_FIT_PROBABILITY reads poor_fit before any phase label, since its phase and standard error describe a
+    model the points reject.
+    """
     if fit["amplitude"] < MIN_FRINGE_AMPLITUDE:
         return "no_fringe"
+    if base.chi_square_probability(fit["chi_square"], int(fit["dof"])) < LACK_OF_FIT_PROBABILITY:
+        return "poor_fit"
     if abs(fit["phase"] - PHASE_TARGET) <= PHASE_HALF_WIDTH and fit["phase_se"] <= 0.02:
         return "supports_target"
     if abs(fit["phase"] + PHASE_TARGET) <= PHASE_HALF_WIDTH and fit["phase_se"] <= 0.02:
