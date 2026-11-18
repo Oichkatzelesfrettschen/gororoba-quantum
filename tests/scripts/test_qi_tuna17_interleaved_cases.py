@@ -510,6 +510,27 @@ def test_estimator_recovers_its_class_under_batch_levels(model: int, shifted: bo
         raise AssertionError(rows[0])
 
 
+def with_third_round(batches: list[dict[str, Any]], delay: str, offset: float) -> list[dict[str, Any]]:
+    """The batches plus a copy of the first round whose delay circuit named delay reads offset higher on every qubit."""
+    first = [b for b in batches if "t1-0.cq" in b["rows"]][: len(cases.T1_ROUND_CYCLES)]
+    extra = []
+    for number, batch in enumerate(first):
+        copy = {**batch, "run": f"batch-extra-{number:02d}", "p1": {k: list(v) for k, v in batch["p1"].items()}}
+        if delay in copy["p1"]:
+            copy["p1"][delay] = [p + offset for p in copy["p1"][delay]]
+        extra.append(copy)
+    return batches + extra
+
+
+def test_replicate_statistic_reads_every_round_of_a_delay() -> None:
+    model = {"shape": "single", "theta": [22.0], "e01": 0.03, "e11": 0.96}
+    clean = cases.synthetic_interleaved([model])
+    good = cases.analyze_interleaved(with_third_round(clean, "t1-1000.cq", 0.0))["qubits"][0]
+    bad = cases.analyze_interleaved(with_third_round(clean, "t1-1000.cq", 0.15))["qubits"][0]
+    if good["replicate_probability"] < 0.5 or bad["replicate_probability"] >= cases.LACK_OF_FIT_PROBABILITY:
+        raise AssertionError((good["replicate_probability"], bad["replicate_probability"]))
+
+
 def test_flat_noiseless_series_reads_as_a_single_exponential() -> None:
     flat = {"shape": "single", "theta": [1.0e6], "e01": 0.0, "e11": 1.0}
     pooled = cases.analyze_interleaved(cases.synthetic_interleaved([flat] * 3))

@@ -947,10 +947,12 @@ def analyze_interleaved(batches: list[dict[str, Any]]) -> dict[str, Any]:
         raw_fit = fit_shape(raw_points, "single")
         replicate_chi = 0.0
         replicate_dof = 0
-        for pair in by_delay.values():
-            if len(pair) >= 2:
-                replicate_chi += (pair[0][0] - pair[1][0]) ** 2 / (pair[0][1] + pair[1][1])
-                replicate_dof += 1
+        for group in by_delay.values():
+            if len(group) >= 2:
+                weights = [1.0 / variance for _, variance in group]
+                centre = sum(w * x for w, (x, _) in zip(weights, group, strict=True)) / sum(weights)
+                replicate_chi += sum(w * (x - centre) ** 2 for w, (x, _) in zip(weights, group, strict=True))
+                replicate_dof += len(group) - 1
         replicate_probability = base.chi_square_probability(replicate_chi, replicate_dof)
         row["fits"] = {
             shape: {k: v for k, v in fit.items() if k != "k"} | {"params": [float(p) for p in fit["params"]]}
