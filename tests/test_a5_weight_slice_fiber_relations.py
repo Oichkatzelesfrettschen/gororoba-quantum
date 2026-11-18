@@ -659,10 +659,8 @@ def test_the_retained_record_binds_the_producer_and_inputs_by_digest_and_the_imp
     own = Path(wf.__file__).resolve().relative_to(ROOT).as_posix()
     _same(own in record["inputs"], True)
     _same(IMPORT_INPUT in record["inputs"], True)
-    _same(
-        [path for path, digest in record["inputs"].items() if path != IMPORT_INPUT and wf._sha256(ROOT / path) != digest],
-        [],
-    )
+    pinned = {path: digest for path, digest in record["inputs"].items() if path != IMPORT_INPUT}
+    _same([path for path, digest in pinned.items() if wf._sha256(ROOT / path) != digest], [])
     _same(_import_record_mismatches(record, wf.retained_fibers()), [])
 
 
