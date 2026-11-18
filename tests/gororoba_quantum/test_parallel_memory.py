@@ -120,9 +120,7 @@ def test_two_workers_return_the_serial_verdicts(monkeypatch: pytest.MonkeyPatch)
     serial = [item * item for item in items]
     parallel._shutdown()
     try:
-        pooled = parallel_memory.bounded_ordered_map(
-            _pid_after_pause, items, GIB, available_bytes=2 * GIB, min_items=1
-        )
+        pooled = parallel_memory.bounded_ordered_map(_pid_after_pause, items, GIB, available_bytes=2 * GIB, min_items=1)
     finally:
         parallel._shutdown()
     _require([value for value, _ in pooled] == serial, "the pooled list differs from the serial list")
