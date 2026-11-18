@@ -852,6 +852,8 @@ def classify(fits: dict[str, dict[str, Any]], raw_probability: float, replicate_
         if replicate_probability < LACK_OF_FIT_PROBABILITY:
             return "unresolved"
         return "level_shift" if raw_probability < LACK_OF_FIT_PROBABILITY else "single_exponential"
+    if replicate_probability < LACK_OF_FIT_PROBABILITY:
+        return "unresolved"
     accepted = {
         name: fit
         for name, fit in (("tail_plateau", plateau), ("two_rate", two_rate))
