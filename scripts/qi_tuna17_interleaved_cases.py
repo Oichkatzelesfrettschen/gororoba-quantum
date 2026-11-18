@@ -5,12 +5,14 @@ T1 on 15 of 17 qubits, a positive step on the batch that held the three longest 
 opposed the prediction on eight qubits while all 17 qubits were driven together. This case adds three arms, each its
 own series directory:
 
-- interleaved_t1: ROUNDS rounds, each a seeded random order of the delays of T1_ROUND_CYCLES (the six retained delays
-  and five more at 1, 2.5, 7.5, 120, 160 and 240 us). The provider holds a hardware batch to three circuits, so a round
-  is eleven provider batches, and every provider batch holds the zero-delay circuit (t1-0, X on every qubit: the
-  prepared-1 anchor and the delay 0 point), the prepared-0 circuit (readout-0) and one delay circuit, in a seeded random
-  order. A level shift common to the three jobs of a batch cancels in the population (p - a0) / (a1 - a0), and the
-  replicate of each delay in the other round separates a tail from a job-level scatter.
+- interleaved_t1: ROUNDS rounds of the multipliers T1_MULTIPLIERS (0.5 to 12 times each qubit's retained plateau
+  T; qubit i waits d(i, m) cycles). The provider holds a hardware batch to three circuits, so a round is six provider
+  batches of the prepared-0 anchor, the prepared-1 anchor and one delay circuit, and all three give every qubit a wait
+  chain of the batch's longest delay D(m) (delay_text, anchor_text), so the anchors carry the delay circuit's timing.
+  The six batches of a round follow a seeded permutation shifted by two per round with seeded swaps inside each pair,
+  and the three circuits of a batch rotate through the three slots across rounds. A level shift common to the three
+  jobs of a batch cancels in the population (p - a0) / (a1 - a0), and the replicates of a multiplier in the other
+  rounds separate a tail from a job-level scatter.
 - single_qubit: for each qubit of SINGLE, one qubit driven and the other sixteen idle: the prepared-1 circuit, T1 at
   SINGLE_T1_CYCLES with both anchors in the batch, and the X90 ladder at SINGLE_LADDER_TURNS.
 - q12_phase: a Ramsey circuit X90, Rz(angle), X90 on one qubit, angles on the pi/36 grid in steps of pi/4, on PHASE
@@ -46,6 +48,7 @@ import hashlib
 import json
 import math
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -63,11 +66,32 @@ ANALYSIS_SCHEMA = "qi-tuna17-interleaved-analysis-v1"
 ARMS = ("interleaved_t1", "single_qubit", "q12_phase")
 CYCLE_SECONDS = base.CYCLE_SECONDS
 BATCH_LIMIT = base.BATCH_LIMIT
-# Delays in 20 ns cycles: 1, 2.5, 5, 7.5, 10, 20, 40, 80, 120, 160 and 240 us. The first four and 10 us resolve the fast
-# scale the retained residuals suggest; 80 to 240 us bound the slow tail; 5, 10, 20, 40 and 80 us repeat the retained
-# set.
-T1_ROUND_CYCLES = (50, 125, 250, 375, 500, 1000, 2000, 4000, 6000, 8000, 12000)
-ROUNDS = 2
+# Retained plateau-model decay time T of each qubit in microseconds (characterization_tuna_17_t1_shape_analysis.json,
+# models.plateau.params.T_us, six decimals). The delay of qubit i at multiplier m is m * T_i in 20 ns cycles, rounded
+# half up; the qx profile uses the first nqubits entries.
+PLATEAU_T_US = (
+    16.63358,
+    19.246782,
+    21.269981,
+    12.50276,
+    22.502119,
+    19.957294,
+    15.690211,
+    26.566297,
+    18.974547,
+    20.472496,
+    29.037806,
+    22.206257,
+    21.528245,
+    23.371224,
+    11.090605,
+    18.015502,
+    21.580612,
+)
+CYCLES_PER_US = 50
+# Multipliers of each qubit's plateau T, 0.5 T to 12 T; the longest delay (q10 at 12 T) is 17,423 cycles.
+T1_MULTIPLIERS = (0.5, 1, 2, 4, 8, 12)
+ROUNDS = 3
 # Arm qubits by profile; the qx entries stand in position for the tuna_17 qubits that the 10-qubit emulator lacks.
 SINGLE = {"tuna_17": (5, 7, 14, 0, 4, 10, 11, 16), "qx": (5, 7, 9, 0, 4, 6, 3, 1)}
 SINGLE_T1_CYCLES = (250, 1000, 4000)
@@ -89,7 +113,7 @@ MIN_READOUT_SPAN = base.MIN_READOUT_SPAN
 # Per-qubit label counts are descriptive. The pooled tail verdict reads the AICc gain summed over qubits against this
 # threshold, which lies far above the null spread of the sum and below its value on a retained-size tail.
 TAIL_STATISTIC_THRESHOLD = 200.0
-POOLED_QUBITS = 12
+DESCRIPTIVE_COUNT_MARK = 12
 SANITY_WRONG_QUBITS = base.SANITY_WRONG_QUBITS
 # Level and window of the phase verdict, in radians: the refit of the q12 term, its half-width and the null bound.
 PHASE_TARGET = -0.15
@@ -121,10 +145,91 @@ def rounded(value: float) -> float:
 # ---------------------------------------------------------------------------------------------------------------------
 
 
-def all_t1_text(nqubits: int, cycles: int) -> str:
-    every = range(nqubits)
-    lines = [f"X q[{q}]" for q in every] + ([f"wait({cycles}) q[{q}]" for q in every] if cycles else [])
+def t1_delays(nqubits: int, multiplier: float) -> list[int]:
+    """Qubit i's delay in cycles: the multiplier times its retained plateau T, rounded half up to a whole cycle."""
+    return [math.floor(multiplier * PLATEAU_T_US[q] * CYCLES_PER_US + 0.5) for q in range(nqubits)]
+
+
+def delay_text(nqubits: int, delays: Sequence[int]) -> str:
+    """Every qubit waits the longest delay in total: wait(longest - d) before its X, wait(d) after, so the X-to-barrier
+    wait of qubit i is its own d(i) whichever way the scheduler places a chain, and the shared barrier follows."""
+    longest = max(delays)
+    lines: list[str] = []
+    for qubit in range(nqubits):
+        if longest - delays[qubit]:
+            lines.append(f"wait({longest - delays[qubit]}) q[{qubit}]")
+        lines.append(f"X q[{qubit}]")
+        if delays[qubit]:
+            lines.append(f"wait({delays[qubit]}) q[{qubit}]")
     return base.circuit(nqubits, lines)
+
+
+def anchor_text(nqubits: int, chain: int, *, prepared: bool) -> str:
+    """An anchor carries the batch's chain of wait(chain) on every qubit, then X on every qubit when prepared in 1."""
+    lines = [f"wait({chain}) q[{q}]" for q in range(nqubits)]
+    return base.circuit(nqubits, lines + ([f"X q[{q}]" for q in range(nqubits)] if prepared else []))
+
+
+def interleaved_circuits(multiplier: float) -> tuple[str, str, str]:
+    """The three circuit names of the batch of one multiplier."""
+    return f"readout-0-m{multiplier}.cq", f"t1-0-m{multiplier}.cq", f"t1-m{multiplier}.cq"
+
+
+def chain_profile(text: str, nqubits: int) -> dict[int, tuple[int, int | None]]:
+    """Per qubit: the sum of its waits and the wait after its last X (None without an X)."""
+    total = dict.fromkeys(range(nqubits), 0)
+    after: dict[int, int | None] = dict.fromkeys(range(nqubits))
+    for line in text.splitlines():
+        if match := re.fullmatch(r"wait\((\d+)\) q\[(\d+)\]", line):
+            total[int(match[2])] += int(match[1])
+            if after[int(match[2])] is not None:
+                after[int(match[2])] += int(match[1])  # type: ignore[operator]
+        elif match := re.fullmatch(r"X q\[(\d+)\]", line):
+            after[int(match[1])] = 0
+    return {q: (total[q], after[q]) for q in range(nqubits)}
+
+
+def timing_problems(profile_name: str, rows: dict[str, dict[str, Any]] | None = None) -> list[str]:
+    """Every T1 circuit gives each qubit a chain of exactly its batch's longest delay and, for a delay circuit, an
+    X-to-barrier wait equal to the qubit's own delay."""
+    rows = library(profile_name) if rows is None else rows
+    nqubits = PROFILES[profile_name]["nqubits"]
+    found = []
+    for name, row in rows.items():
+        if "multiplier" not in row:
+            continue
+        delays = t1_delays(nqubits, row["multiplier"])
+        for qubit, (total, after) in chain_profile(row["text"], nqubits).items():
+            if total != max(delays):
+                found.append(f"{name}: qubit {qubit} waits {total} cycles in total, the chain is {max(delays)}")
+            want = {"anchor0": None, "anchor1": 0, "t1": delays[qubit]}[row["kind"]]
+            if after != want:
+                found.append(f"{name}: qubit {qubit} waits {after} cycles after its X, want {want}")
+    return found
+
+
+def order_problems(batches: list[dict[str, Any]]) -> list[str]:
+    """Blocked order of the T1 batches: every round holds each multiplier once, the six multipliers form three
+    unchanged pairs whose block position differs in every round, and each circuit of a multiplier's batch takes each of
+    the three slots once across the rounds."""
+    found = []
+    rounds = sorted({b["round"] for b in batches})
+    sequences = {r: [b["multiplier"] for b in batches if b["round"] == r] for r in rounds}
+    for r, sequence in sequences.items():
+        if sorted(sequence) != sorted(T1_MULTIPLIERS):
+            found.append(f"round {r} lacks a multiplier")
+    pairs = {r: {frozenset(s[k : k + 2]) for k in range(0, len(s), 2)} for r, s in sequences.items()}
+    if len({frozenset(p) for p in pairs.values()}) != 1:
+        found.append("the pairs of consecutive multipliers change between rounds")
+    for multiplier in T1_MULTIPLIERS:
+        blocks = sorted(sequences[r].index(multiplier) // 2 for r in rounds)
+        if blocks != list(range(len(T1_MULTIPLIERS) // 2)):
+            found.append(f"multiplier {multiplier} occupies the block positions {blocks}")
+        for name in interleaved_circuits(multiplier):
+            slots = sorted(b["circuits"].index(name) for b in batches if b["multiplier"] == multiplier)
+            if slots != list(range(BATCH_LIMIT)):
+                found.append(f"{name} occupies the slots {slots}")
+    return found
 
 
 def library(profile_name: str) -> dict[str, dict[str, Any]]:
@@ -133,15 +238,24 @@ def library(profile_name: str) -> dict[str, dict[str, Any]]:
     found: dict[str, dict[str, Any]] = {
         "readout-0.cq": {"text": base.circuit(nqubits, []), "kind": "anchor0", "driven": [], "expected_p1": 0.0}
     }
-    for cycles in (0, *T1_ROUND_CYCLES):
-        name = f"t1-{cycles}.cq"
-        found[name] = {
-            "text": all_t1_text(nqubits, cycles),
-            "kind": "anchor1" if cycles == 0 else "t1",
-            "wait_cycles": cycles,
-            "driven": list(range(nqubits)),
-            "expected_p1": 1.0,
-        }
+    for multiplier in T1_MULTIPLIERS:
+        delays = t1_delays(nqubits, multiplier)
+        chain = max(delays)
+        for name, kind, text, expected in (
+            (f"readout-0-m{multiplier}.cq", "anchor0", anchor_text(nqubits, chain, prepared=False), 0.0),
+            (f"t1-0-m{multiplier}.cq", "anchor1", anchor_text(nqubits, chain, prepared=True), 1.0),
+            (f"t1-m{multiplier}.cq", "t1", delay_text(nqubits, delays), 1.0),
+        ):
+            found[name] = {
+                "text": text,
+                "kind": kind,
+                "multiplier": multiplier,
+                "wait_cycles": chain,
+                "driven": [] if kind == "anchor0" else list(range(nqubits)),
+                "expected_p1": expected,
+            }
+            if kind == "t1":
+                found[name]["delays_cycles"] = delays
     for qubit in SINGLE[profile_name]:
         found[f"single-q{qubit}-prep1.cq"] = {
             "text": base.circuit(nqubits, [f"X q[{qubit}]"]),
@@ -190,8 +304,8 @@ def usage(profile_name: str) -> dict[str, list[str]]:
     """Arm -> circuit names with their multiplicity in the series, in no particular order."""
     names = library(profile_name)
     interleaved: list[str] = []
-    for cycles in T1_ROUND_CYCLES:
-        interleaved += [f"t1-{cycles}.cq"] * ROUNDS + ["readout-0.cq", "t1-0.cq"] * ROUNDS
+    for multiplier in T1_MULTIPLIERS:
+        interleaved += list(interleaved_circuits(multiplier)) * ROUNDS
     single: list[str] = []
     for qubit in SINGLE[profile_name]:
         single += [f"single-q{qubit}-t1-{c}.cq" for c in SINGLE_T1_CYCLES] + [f"single-q{qubit}-prep1.cq"] * 3
@@ -244,13 +358,31 @@ def schedule(profile_name: str, values: Sequence[int]) -> dict[str, Any]:
         consumed[name] = [start, stream.position - 1]
 
     arms: dict[str, list[dict[str, Any]]] = {arm: [] for arm in ARMS}
+    start = stream.position
+    permutation = stream.shuffle(T1_MULTIPLIERS)
+    blocks: list[list[Any]] = []
     for round_index in range(ROUNDS):
-        start = stream.position
-        order = stream.shuffle(T1_ROUND_CYCLES)
-        for cycles in order:
-            names = stream.shuffle(["readout-0.cq", "t1-0.cq", f"t1-{cycles}.cq"])
-            arms["interleaved_t1"].append({"circuits": names, "round": round_index, "wait_cycles": cycles})
-        mark(f"interleaved_t1 round {round_index}", start)
+        shifted = [permutation[(k + 2 * round_index) % len(permutation)] for k in range(len(permutation))]
+        for first in range(0, len(shifted), 2):
+            if stream.below(2):
+                shifted[first], shifted[first + 1] = shifted[first + 1], shifted[first]
+        blocks.append(shifted)
+    mark("interleaved_t1 blocks", start)
+    start = stream.position
+    slots = {m: stream.shuffle(interleaved_circuits(m)) for m in T1_MULTIPLIERS}
+    mark("interleaved_t1 slots", start)
+    for round_index, sequence in enumerate(blocks):
+        for multiplier in sequence:
+            order = slots[multiplier]
+            turn = round_index % len(order)
+            arms["interleaved_t1"].append(
+                {
+                    "circuits": order[turn:] + order[:turn],
+                    "round": round_index,
+                    "multiplier": multiplier,
+                    "chain_cycles": max(t1_delays(PROFILES[profile_name]["nqubits"], multiplier)),
+                }
+            )
     start = stream.position
     for qubit in stream.shuffle(SINGLE[profile_name]):
         units: list[tuple[str, list[str]]] = [
@@ -286,7 +418,8 @@ def qrng_values_needed(profile_name: str) -> int:
     """Values the order consumes when no value is rejected."""
     singles = len(SINGLE[profile_name])
     units = len(SINGLE_T1_CYCLES) + 1
-    needed = ROUNDS * (len(T1_ROUND_CYCLES) - 1 + len(T1_ROUND_CYCLES) * 2)
+    blocks = len(T1_MULTIPLIERS)
+    needed = (blocks - 1) + ROUNDS * (blocks // 2) + blocks * (BATCH_LIMIT - 1)
     needed += singles - 1 + singles * ((units - 1) + units * 2)
     return needed + len(usage(profile_name)["q12_phase"]) - 1
 
@@ -401,11 +534,17 @@ def job_level_variance(zero: Sequence[float], one: Sequence[float], count: int) 
 
 
 def expected_errors(
-    e01: float, e11: float, truth: dict[str, Any], tau2: float, count: int, rounds: int = ROUNDS
+    e01: float,
+    e11: float,
+    truth: dict[str, Any],
+    tau2: float,
+    count: int,
+    delays: Sequence[int],
+    rounds: int = ROUNDS,
 ) -> dict[str, Any]:
     """Standard errors the design gives T1 and the plateau of one qubit when the retained plateau model is true.
 
-    Rows are the nonzero delays of T1_ROUND_CYCLES, rounds times; the variance of a population holds the binomial
+    Rows are the qubit's own delays (one per multiplier), rounds times; the variance of a population holds the binomial
     terms of the delay job and of the two anchor jobs of its batch and the job-level scatter tau2 on each of the three
     (the shared level that anchoring cancels is not credited, so the figures lean conservative). The free batch levels
     of design_summary() widen the plateau error further; that figure is reported there.
@@ -415,7 +554,7 @@ def expected_errors(
     found: dict[str, Any] = {}
     for shape, theta in shapes.items():
         rows = []
-        for cycles in T1_ROUND_CYCLES:
+        for cycles in delays:
             t_us = cycles * CYCLE_SECONDS * 1e6
             x = decay(shape, theta, t_us)
             p = e01 + span * x
@@ -467,10 +606,12 @@ def design_matrices(
     return with_anchors, without, probabilities
 
 
-def design_summary(e01: float, e11: float, theta: Sequence[float], tau2: float, count: int) -> dict[str, Any]:
+def design_summary(
+    e01: float, e11: float, theta: Sequence[float], tau2: float, count: int, qubit_delays: Sequence[int]
+) -> dict[str, Any]:
     """Identifiability of the plateau from batch levels: ranks with and without anchors and the plateau error with
-    every batch level free, for the delays of every round in series order of the first round."""
-    delays = [c for _ in range(ROUNDS) for c in T1_ROUND_CYCLES]
+    every batch level free, for the qubit's delays (one per multiplier) repeated over the rounds."""
+    delays = [c for _ in range(ROUNDS) for c in qubit_delays]
     with_anchors, without, probabilities = design_matrices(e01, e11, theta, len(delays), delays)
     rows = [(row, base.binomial_variance(p, count) + tau2) for row, p in zip(with_anchors, probabilities, strict=True)]
     cov = covariance(rows)
@@ -553,7 +694,7 @@ def job_seconds(profile: dict[str, Any], row: dict[str, Any]) -> float:
 def batch_counts(profile_name: str) -> dict[str, int]:
     use = usage(profile_name)
     return {
-        "interleaved_t1": ROUNDS * len(T1_ROUND_CYCLES),
+        "interleaved_t1": ROUNDS * len(T1_MULTIPLIERS),
         "single_qubit": len(SINGLE[profile_name]) * (len(SINGLE_T1_CYCLES) + 1),
         "q12_phase": -(-len(use["q12_phase"]) // BATCH_LIMIT),
     }
@@ -600,7 +741,8 @@ def prediction(profile_name: str, retained: dict[str, Any] | None = None) -> dic
         "thresholds": {
             "lack_of_fit_probability": LACK_OF_FIT_PROBABILITY,
             "aicc_gain": AICC_GAIN,
-            "pooled_qubits": POOLED_QUBITS,
+            "tail_statistic_threshold": TAIL_STATISTIC_THRESHOLD,
+            "descriptive_count_mark": DESCRIPTIVE_COUNT_MARK,
             "phase_target_rad": PHASE_TARGET,
             "phase_half_width_rad": PHASE_HALF_WIDTH,
             "phase_null_rad": PHASE_NULL,
@@ -614,14 +756,18 @@ def prediction(profile_name: str, retained: dict[str, Any] | None = None) -> dic
     qubits = retained["qubits"]
     interleaved = []
     for row in qubits:
-        errors = expected_errors(row["e01"], row["e11"], row, tau2, count)
-        interleaved.append({"qubit": row["qubit"], **errors})
+        delays = [t1_delays(len(PLATEAU_T_US), m)[row["qubit"]] for m in T1_MULTIPLIERS]
+        errors = expected_errors(row["e01"], row["e11"], row, tau2, count, delays)
+        interleaved.append({"qubit": row["qubit"], "delay_cycles": delays, **errors})
     middle = sorted(qubits, key=lambda r: r["plateau_us"])[len(qubits) // 2]
+    middle_delays = [t1_delays(len(PLATEAU_T_US), m)[middle["qubit"]] for m in T1_MULTIPLIERS]
     out["interleaved_t1"] = {
         "job_level_sigma": rounded(math.sqrt(tau2)),
         "job_level_basis": "excess variance of the retained series' three prepared-0 and three prepared-1 anchor jobs",
         "expected_errors": interleaved,
-        "design": design_summary(middle["e01"], middle["e11"], (middle["plateau_us"], middle["plateau"]), tau2, count),
+        "design": design_summary(
+            middle["e01"], middle["e11"], (middle["plateau_us"], middle["plateau"]), tau2, count, middle_delays
+        ),
         "design_qubit": middle["qubit"],
     }
     single = {row["qubit"]: row for row in qubits}
@@ -665,7 +811,8 @@ def files(profile_name: str, values: Sequence[int] | None, retained: dict[str, A
         "backend": profile["backend"],
         "shots": profile["shots"],
         "cycle_seconds": CYCLE_SECONDS,
-        "t1_round_wait_cycles": list(T1_ROUND_CYCLES),
+        "t1_multipliers": list(T1_MULTIPLIERS),
+        "t1_delay_cycles": {str(m): t1_delays(profile["nqubits"], m) for m in T1_MULTIPLIERS},
         "rounds": ROUNDS,
         "single_qubits": list(SINGLE[profile_name]),
         "single_t1_wait_cycles": list(SINGLE_T1_CYCLES),
@@ -896,8 +1043,18 @@ def anchored_point(p: float, a0: float, a1: float, count: int, tau2: float) -> t
     return x, variance
 
 
+def job_starts(run: Path) -> dict[str, str]:
+    """File -> executed start (queued_at of results.json, which the retained notes read as the execution start); empty
+    while the run holds no results."""
+    path = run / "results.json"
+    if not path.is_file():
+        return {}
+    return {entry["file"]: entry["job"]["queued_at"] for entry in json.loads(path.read_text(encoding="utf-8"))["jobs"]}
+
+
 def read_batches(runs: list[Path]) -> list[dict[str, Any]]:
-    """Run directories through qi_records: manifest rows, shot count and the P1 of every qubit by circuit file."""
+    """Run directories through qi_records: manifest rows, shot count, executed starts and the P1 of every qubit by
+    circuit file."""
     found = []
     for run in runs:
         try:
@@ -914,6 +1071,7 @@ def read_batches(runs: list[Path]) -> list[dict[str, Any]]:
                 "meta": cases.get("meta", {}),
                 "shots": cases["shots"],
                 "nqubits": nqubits,
+                "started": job_starts(run),
                 "rows": {row["file"]: row for row in cases["circuits"]},
                 "p1": {name: base.p1(shots, nqubits) for name, shots in raw.items()},
             }
@@ -921,34 +1079,43 @@ def read_batches(runs: list[Path]) -> list[dict[str, Any]]:
     return found
 
 
-def analyze_interleaved(batches: list[dict[str, Any]]) -> dict[str, Any]:
-    """Per-qubit anchored fits of the interleaved T1 batches, the pooled tail statistic and the level-shift scale.
+def interleaved_roles(batch: dict[str, Any]) -> tuple[str, str, str]:
+    """File names of a batch's prepared-0 anchor, prepared-1 anchor and delay circuit, found by their kinds."""
+    by_kind = {row["kind"]: name for name, row in batch["rows"].items()}
+    return by_kind["anchor0"], by_kind["anchor1"], by_kind["t1"]
 
-    The pooled verdict tail_confirmed reads tail_statistic, the sum over usable qubits of tail_contribution, against
-    TAIL_STATISTIC_THRESHOLD. The per-qubit labels and their counts are descriptive and decide nothing.
+
+def analyze_interleaved(batches: list[dict[str, Any]]) -> dict[str, Any]:
+    """Per-qubit anchored fits of the interleaved T1 batches, the pooled tail statistic and the executed schedule.
+
+    Qubit i reads its own delay of each delay circuit (delays_cycles) and the replicates of a delay are the rounds of
+    one multiplier. The pooled verdict tail_confirmed reads tail_statistic, the sum over usable qubits of
+    tail_contribution, against TAIL_STATISTIC_THRESHOLD. The per-qubit labels and every count of them are descriptive
+    and decide nothing. jobs lists the round and the executed start (queued_at of results.json) of every job.
     """
     nqubits = batches[0]["nqubits"]
+    roles = [interleaved_roles(b) for b in batches]
     qubits = []
     for qubit in range(nqubits):
-        a0s = [b["p1"]["readout-0.cq"][qubit] for b in batches]
-        a1s = [b["p1"]["t1-0.cq"][qubit] for b in batches]
+        a0s = [b["p1"][r[0]][qubit] for b, r in zip(batches, roles, strict=True)]
+        a1s = [b["p1"][r[1]][qubit] for b, r in zip(batches, roles, strict=True)]
         count = batches[0]["shots"]
         tau2 = job_level_variance(a0s, a1s, count)
         points: list[tuple[float, float, float]] = []
         raw_points: list[tuple[float, float, float]] = []
-        by_delay: dict[int, list[tuple[float, float]]] = {}
+        by_delay: dict[Any, list[tuple[float, float]]] = {}
         mean0, mean1 = sum(a0s) / len(a0s), sum(a1s) / len(a1s)
         usable = mean1 - mean0 > MIN_READOUT_SPAN
-        for batch, a0, a1 in zip(batches, a0s, a1s, strict=True):
-            delay = next(f for f, row in batch["rows"].items() if row["kind"] == "t1")
-            cycles = batch["rows"][delay]["wait_cycles"]
+        for batch, role, a0, a1 in zip(batches, roles, a0s, a1s, strict=True):
+            delay = role[2]
+            cycles = batch["rows"][delay]["delays_cycles"][qubit]
             p = batch["p1"][delay][qubit]
             point = anchored_point(p, a0, a1, count, tau2)
             if point is None or not usable:
                 continue
             t_us = cycles * CYCLE_SECONDS * 1e6
             points.append((t_us, point[0], point[1]))
-            by_delay.setdefault(cycles, []).append(point)
+            by_delay.setdefault(batch["rows"][delay]["multiplier"], []).append(point)
             x_raw = (p - mean0) / (mean1 - mean0)
             raw_var = (
                 base.binomial_variance(p, count)
@@ -989,18 +1156,30 @@ def analyze_interleaved(batches: list[dict[str, Any]]) -> dict[str, Any]:
     rejected = sum(v in ("tail_plateau", "two_rate") for v in verdicts)
     tail_statistic = sum(row.get("tail_contribution", 0.0) for row in qubits)
     pooled = {
-        "single_exponential_accepted": accepted,
-        "single_exponential_rejected": rejected,
-        "level_shift_explains_misfit": accepted >= POOLED_QUBITS,
+        "descriptive_single_exponential_accepted": accepted,
+        "descriptive_single_exponential_rejected": rejected,
+        "descriptive_label_count_reaches_mark": accepted >= DESCRIPTIVE_COUNT_MARK,
         "tail_statistic": tail_statistic,
         "tail_statistic_threshold": TAIL_STATISTIC_THRESHOLD,
         "tail_confirmed": tail_statistic >= TAIL_STATISTIC_THRESHOLD,
     }
-    return {"qubits": qubits, "pooled": pooled}
+    jobs = [
+        {
+            "run": batch["run"],
+            "round": batch["meta"].get("round"),
+            "multiplier": batch["meta"].get("multiplier"),
+            "file": name,
+            "kind": batch["rows"][name]["kind"],
+            "started_utc": batch.get("started", {}).get(name),
+        }
+        for batch in batches
+        for name in sorted(batch["rows"])
+    ]
+    return {"qubits": qubits, "pooled": pooled, "jobs": jobs}
 
 
-def analyze_single(batches: list[dict[str, Any]], interleaved: dict[str, Any] | None) -> dict[str, Any]:
-    """Per-qubit single-drive populations at SINGLE_T1_CYCLES, the ladder verdict and the arm A comparison."""
+def analyze_single(batches: list[dict[str, Any]]) -> dict[str, Any]:
+    """Per-qubit single-drive populations at SINGLE_T1_CYCLES and the ladder verdict."""
     by_qubit: dict[int, list[dict[str, Any]]] = {}
     for batch in batches:
         by_qubit.setdefault(batch["meta"]["qubit"], []).append(batch)
@@ -1034,15 +1213,7 @@ def analyze_single(batches: list[dict[str, Any]], interleaved: dict[str, Any] | 
         }
         if len(ladder) == len(SINGLE_LADDER_TURNS):
             entry["ladder_clears"] = all(v >= base.LADDER_MIN_P0 for v in ladder.values())
-        if interleaved is not None:
-            reference = interleaved["populations"].get(qubit, {})
-            diffs = {}
-            for cycles, (x, variance) in populations.items():
-                if cycles in reference:
-                    xa, va = reference[cycles]
-                    diffs[str(cycles)] = (x - xa) / math.sqrt(variance + va)
-            entry["z_against_interleaved"] = diffs
-            entry["t1_differs"] = any(abs(z) > 3 for z in diffs.values())
+
         rows.append(entry)
     pooled = {
         "ladder_clears": sum(bool(r.get("ladder_clears")) for r in rows),
@@ -1133,12 +1304,10 @@ def analyze(runs: list[Path], prediction_path: Path | None = None) -> dict[str, 
     batches = read_batches(runs)
     out: dict[str, Any] = {"schema": ANALYSIS_SCHEMA, "runs": [b["run"] for b in batches]}
     grouped = {arm: [b for b in batches if b["arm"] == arm] for arm in ARMS}
-    interleaved = None
     if grouped["interleaved_t1"]:
         out["interleaved_t1"] = analyze_interleaved(grouped["interleaved_t1"])
-        interleaved = {"populations": interleaved_populations(grouped["interleaved_t1"])}
     if grouped["single_qubit"]:
-        out["single_qubit"] = analyze_single(grouped["single_qubit"], interleaved)
+        out["single_qubit"] = analyze_single(grouped["single_qubit"])
     if grouped["q12_phase"]:
         out["q12_phase"] = analyze_phase(grouped["q12_phase"])
     if prediction_path is not None:
@@ -1146,25 +1315,6 @@ def analyze(runs: list[Path], prediction_path: Path | None = None) -> dict[str, 
     return out
 
 
-def interleaved_populations(batches: list[dict[str, Any]]) -> dict[int, dict[int, tuple[float, float]]]:
-    """Qubit -> delay cycles -> mean anchored population and its variance, over the rounds of arm A."""
-    found: dict[int, dict[int, tuple[float, float]]] = {}
-    count = batches[0]["shots"]
-    for qubit in range(batches[0]["nqubits"]):
-        a0s = [b["p1"]["readout-0.cq"][qubit] for b in batches]
-        a1s = [b["p1"]["t1-0.cq"][qubit] for b in batches]
-        tau2 = job_level_variance(a0s, a1s, count)
-        gathered: dict[int, list[tuple[float, float]]] = {}
-        for batch, a0, a1 in zip(batches, a0s, a1s, strict=True):
-            delay = next(f for f, row in batch["rows"].items() if row["kind"] == "t1")
-            point = anchored_point(batch["p1"][delay][qubit], a0, a1, count, tau2)
-            if point is not None:
-                gathered.setdefault(batch["rows"][delay]["wait_cycles"], []).append(point)
-        found[qubit] = {
-            cycles: (sum(p[0] for p in pts) / len(pts), sum(p[1] for p in pts) / len(pts) ** 2)
-            for cycles, pts in gathered.items()
-        }
-    return found
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -1490,31 +1640,37 @@ def synthetic_interleaved(
     qubit_models: list[dict[str, Any]], shifts: Sequence[float] | None = None, count: int = 8192
 ) -> list[dict[str, Any]]:
     """Arm A batches whose P1 follow each qubit's model exactly (quantized to the shot count), in the order that
-    schedule() gives synthetic_values; shifts[b] is added to every circuit of batch b."""
+    schedule() gives synthetic_values; shifts[b] is added to every circuit of batch b. Qubit i reads its own delay of
+    the circuit."""
     plan = schedule("tuna_17", synthetic_values(2000))["arms"]["interleaved_t1"]
+    rows_by_name = library("tuna_17")
     out = []
     for number, batch in enumerate(plan):
         shift = shifts[number] if shifts is not None else 0.0
         rows = {}
         p1: dict[str, list[float]] = {}
         for name in batch["circuits"]:
-            kind = "anchor0" if name == "readout-0.cq" else "anchor1" if name == "t1-0.cq" else "t1"
-            cycles = int(name[3:-3]) if name.startswith("t1-") else 0
-            rows[name] = {"kind": kind, "wait_cycles": cycles}
+            source = rows_by_name[name]
+            rows[name] = {
+                key: source[key] for key in ("kind", "wait_cycles", "multiplier", "delays_cycles") if key in source
+            }
             values = []
-            for model in qubit_models:
+            for index, model in enumerate(qubit_models):
                 span = model["e11"] - model["e01"]
-                x = {"anchor0": None, "anchor1": 1.0}.get(
-                    kind, decay(model["shape"], model["theta"], cycles * CYCLE_SECONDS * 1e6)
-                )
-                p = model["e01"] if x is None else model["e01"] + span * x
+                if source["kind"] == "anchor0":
+                    p = model["e01"]
+                elif source["kind"] == "anchor1":
+                    p = model["e11"]
+                else:
+                    t_us = source["delays_cycles"][index] * CYCLE_SECONDS * 1e6
+                    p = model["e01"] + span * decay(model["shape"], model["theta"], t_us)
                 values.append(round((p + shift) * count) / count)
             p1[name] = values
         out.append(
             {
                 "run": f"batch-{number:02d}",
                 "arm": "interleaved_t1",
-                "meta": {},
+                "meta": {k: v for k, v in batch.items() if k != "circuits"},
                 "shots": count,
                 "nqubits": len(qubit_models),
                 "rows": rows,
@@ -1560,26 +1716,22 @@ def self_test() -> list[str]:
         if not condition:
             problems.append(message)
 
-    # Circuits: the retained delays reuse the retained generator's bytes, every text measures once, angles sit on the
-    # grid.
-    retained = base.circuits(17)
+    # Circuits: every text measures once, each qubit's waits sum to its batch chain, the X-to-barrier wait is the
+    # qubit's own delay, and angles sit on the grid.
     rows = library("tuna_17")
-    expect(rows["readout-0.cq"]["text"] == retained["readout-0.cq"][0], "readout-0 differs from the retained circuit")
-    for cycles in base.T1_CYCLES:
-        expect(
-            rows[f"t1-{cycles}.cq"]["text"] == retained[f"t1-{cycles}.cq"][0],
-            f"t1-{cycles} differs from the retained circuit",
-        )
     expect(
         all(r["text"].count("measure") == 1 and "qubit[17] q" in r["text"] for r in rows.values()),
         "a circuit measures twice",
     )
+    expect(max(t1_delays(17, 12)) == 17423, "the longest delay moved")
+    for profile_name in PROFILES:
+        problems += timing_problems(profile_name)
     grid = [r["angle"] / (math.pi / 36) for r in rows.values() if r["kind"] == "ramsey"]
     expect(all(abs(g - round(g)) < 1e-9 for g in grid), "a Ramsey angle leaves the pi/36 grid")
     expect(
         all(q < PROFILES["qx"]["nqubits"] for q in (*SINGLE["qx"], *PHASE["qx"])), "a qx arm qubit exceeds the emulator"
     )
-    # Order: one draw, deterministic, within the batch limit, each round a full delay set, anchors in every batch.
+    # Order: one draw, deterministic, within the batch limit, blocked rounds, anchors in every batch.
     values = synthetic_values(2000)
     for profile_name in PROFILES:
         plan = schedule(profile_name, values)
@@ -1595,16 +1747,7 @@ def self_test() -> list[str]:
                 f"{arm}: scheduled circuits differ from the usage",
             )
             expect(len(batches) == batch_counts(profile_name)[arm], f"{arm}: batch count differs from batch_counts")
-        interleaved = plan["arms"]["interleaved_t1"]
-        for round_index in range(ROUNDS):
-            members = [b for b in interleaved if b["round"] == round_index]
-            expect(
-                sorted(b["wait_cycles"] for b in members) == sorted(T1_ROUND_CYCLES),
-                f"round {round_index} lacks a delay",
-            )
-        expect(
-            all({"readout-0.cq", "t1-0.cq"} <= set(b["circuits"]) for b in interleaved), "a T1 batch lacks an anchor"
-        )
+        problems += order_problems(plan["arms"]["interleaved_t1"])
         expect(plan["consumed"]["q12_phase"][1] < len(values), "the order consumed more values than the draw holds")
     expect(Stream([65535, 3]).below(3) == 0, "Stream.below keeps a value that biases the modulus")
     expect(qrng_values_needed("tuna_17") <= DRAW_LENGTH, "the request asks for fewer values than the order needs")
@@ -1707,7 +1850,8 @@ def self_test() -> list[str]:
         found = {r["file"]: r["status"] for r in execution_start_statuses(run)}
         expect(found == {"a": "idle", "b": "calibrating", "c": "unobserved"}, f"execution-start statuses {found}")
     # Design: anchors make the batch levels estimable; without them the delay rows cannot separate level from plateau.
-    summary = design_summary(0.027, 0.959, (21.5, 0.02), 0.0045**2, 8192)
+    delays = [t1_delays(17, m)[9] for m in T1_MULTIPLIERS]
+    summary = design_summary(0.027, 0.959, (PLATEAU_T_US[9], 0.02), 0.0045**2, 8192, delays)
     expect(summary["rank_with_anchors"] == summary["columns_with_anchors"], f"anchored design rank {summary}")
     expect(summary["rank_without_anchors"] < summary["columns_without_anchors"], f"unanchored design rank {summary}")
     expect(0 < summary["se_plateau_with_free_batch_levels"] < 0.01, f"plateau error with free levels {summary}")
@@ -1717,7 +1861,7 @@ def self_test() -> list[str]:
         {"shape": "plateau", "theta": [20.0, 0.03], "e01": 0.03, "e11": 0.96},
         {"shape": "two_rate", "theta": [4.0, 60.0, 0.4], "e01": 0.03, "e11": 0.96},
     ]
-    shifts = [0.012 * math.sin(b) for b in range(ROUNDS * len(T1_ROUND_CYCLES))]
+    shifts = [0.012 * math.sin(b) for b in range(ROUNDS * len(T1_MULTIPLIERS))]
     classes = [row["verdict"] for row in analyze_interleaved(synthetic_interleaved(models[:1], shifts))["qubits"]]
     expect(classes == ["level_shift"], f"a single exponential under batch shifts read {classes}")
     classes = [row["verdict"] for row in analyze_interleaved(synthetic_interleaved(models[:1]))["qubits"]]
@@ -1819,3 +1963,4 @@ def main(argv: list[str]) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main(sys.argv[1:]))
+

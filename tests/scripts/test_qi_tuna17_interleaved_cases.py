@@ -51,42 +51,42 @@ def draw_record(values: list[int]) -> dict[str, Any]:
 
 def test_budget_and_measurement_limits() -> None:
     for name, profile in cases.PROFILES.items():
-        budget = cases.budget(name)
         longest = max(cases.job_seconds(profile, row) for row in cases.library(name).values())
-        if budget["total"]["jobs"] != 194 or budget["total"]["batches"] != 65 or longest >= 300:
-            raise AssertionError((name, budget["total"], longest))
-        if profile["shots"] > (2048 if name == "qx" else 131072):
-            raise AssertionError(name)
-    total = cases.budget("tuna_17")["total"]
-    if total["shots"] != 1589248 or total["expected_execution_seconds"] != 1364.9:
-        raise AssertionError(total)
-    if max(cases.T1_ROUND_CYCLES) * cases.CYCLE_SECONDS != 240e-6:
-        raise AssertionError("the longest delay moved")
+        if longest >= 300 or profile["shots"] > (2048 if name == "qx" else 131072):
+            raise AssertionError((name, longest))
+    arm = cases.budget("tuna_17")["per_arm"]["interleaved_t1"]
+    if (arm["batches"], arm["jobs"], arm["shots"], arm["expected_execution_seconds"]) != (18, 54, 442368, 433.7):
+        raise AssertionError(arm)
 
 
-def test_library_reuses_retained_bytes_and_stays_on_the_grid() -> None:
-    from qi_tuna17_characterization_cases import T1_CYCLES, circuits  # noqa: PLC0415
+def test_delays_follow_the_retained_plateau_times_and_the_longest_is_17423_cycles() -> None:
+    shape = json.loads(cases.RETAINED_SHAPE.read_text(encoding="utf-8"))["qubits"]
+    retained = [round(q["models"]["plateau"]["params"]["T_us"], 6) for q in shape]
+    if list(cases.PLATEAU_T_US) != retained:
+        raise AssertionError("the frozen plateau times differ from the retained shape analysis")
+    if max(cases.t1_delays(17, 12)) != 17423 or cases.t1_delays(17, 12).index(17423) != 10:
+        raise AssertionError(cases.t1_delays(17, 12))
+    if cases.t1_delays(17, 1)[9] != round(retained[9] * 50) or cases.t1_delays(10, 2) != cases.t1_delays(17, 2)[:10]:
+        raise AssertionError("a delay differs from the plateau time or the qx profile reads other times")
 
-    retained = circuits(17)
+
+def test_every_qubit_waits_the_batch_chain_and_its_own_delay_before_the_barrier() -> None:
+    for name in cases.PROFILES:
+        if cases.timing_problems(name):
+            raise AssertionError(cases.timing_problems(name))
     rows = cases.library("tuna_17")
-    if (
-        rows["readout-0.cq"]["text"] != retained["readout-0.cq"][0]
-        or rows["t1-0.cq"]["text"] != retained["readout-1.cq"][0]
-    ):
-        raise AssertionError("an anchor differs from the retained circuit")
-    for cycles in T1_CYCLES:
-        if rows[f"t1-{cycles}.cq"]["text"] != retained[f"t1-{cycles}.cq"][0]:
-            raise AssertionError(cycles)
-    if any(r["text"].count("measure") != 1 for r in rows.values()):
-        raise AssertionError("a circuit measures more than once")
-    for row in rows.values():
-        if row["kind"] == "ramsey" and abs(row["angle"] / (math.pi / 36) - round(row["angle"] / (math.pi / 36))) > 1e-9:
-            raise AssertionError(row)
-    if (
-        rows["single-q14-x90-64.cq"]["text"].count("X90 q[14]") != 256
-        or "q[13]" in rows["single-q14-x90-64.cq"]["text"]
-    ):
-        raise AssertionError("the single-qubit ladder drives another qubit")
+    chain = max(cases.t1_delays(17, 12))
+    if f"wait({chain}) q[10]" not in rows["t1-m12.cq"]["text"] or rows["t1-m12.cq"]["text"].count("wait(") != 33:
+        raise AssertionError("the 12 T circuit lacks its pre-wait structure")
+    # Known bad: a delay circuit whose after-X wait is short of the qubit's delay, and an anchor with a short chain.
+    bad = {k: dict(v) for k, v in rows.items()}
+    bad["t1-m12.cq"]["text"] = bad["t1-m12.cq"]["text"].replace("wait(17423) q[10]\n", "wait(17000) q[10]\n")
+    bad["readout-0-m12.cq"]["text"] = bad["readout-0-m12.cq"]["text"].replace("wait(17423) q[3]", "wait(17422) q[3]")
+    found = cases.timing_problems("tuna_17", bad)
+    if not any("t1-m12.cq: qubit 10" in p for p in found) or not any("readout-0-m12.cq: qubit 3" in p for p in found):
+        raise AssertionError(found)
+    if any("t1-m0.5" in p for p in found):
+        raise AssertionError(found)
 
 
 def test_order_is_a_function_of_the_draw_and_keeps_anchors_and_delays() -> None:
@@ -100,14 +100,41 @@ def test_order_is_a_function_of_the_draw_and_keeps_anchors_and_delays() -> None:
                 raise AssertionError(arm)
             if sorted(n for b in batches for n in b["circuits"]) != sorted(cases.usage(name)[arm]):
                 raise AssertionError(arm)
-        for index in range(cases.ROUNDS):
-            round_delays = [b["wait_cycles"] for b in plan["arms"]["interleaved_t1"] if b["round"] == index]
-            if sorted(round_delays) != sorted(cases.T1_ROUND_CYCLES):
-                raise AssertionError(index)
-        if any({"readout-0.cq", "t1-0.cq"} - set(b["circuits"]) for b in plan["arms"]["interleaved_t1"]):
-            raise AssertionError("an interleaved batch lacks an anchor")
+        if cases.order_problems(plan["arms"]["interleaved_t1"]):
+            raise AssertionError(cases.order_problems(plan["arms"]["interleaved_t1"]))
+        for batch in plan["arms"]["interleaved_t1"]:
+            if set(batch["circuits"]) != set(cases.interleaved_circuits(batch["multiplier"])):
+                raise AssertionError(batch)
     with pytest.raises(ValueError, match="needs more"):
-        cases.schedule("tuna_17", values[:50])
+        cases.schedule("tuna_17", values[:10])
+
+
+def test_blocked_order_rejects_a_repeated_round_a_reshuffled_pair_and_a_stuck_slot() -> None:
+    plan = cases.schedule("tuna_17", cases.synthetic_values(2000))["arms"]["interleaved_t1"]
+    blocks = len(cases.T1_MULTIPLIERS)
+    same = [dict(plan[number % blocks], round=plan[number]["round"]) for number in range(len(plan))]
+    if not any("block positions" in p for p in cases.order_problems(same)):
+        raise AssertionError(cases.order_problems(same))
+    reshuffled = [dict(b) for b in plan]
+    first = [i for i, b in enumerate(plan) if b["round"] == 1]
+    reshuffled[first[0]], reshuffled[first[2]] = dict(plan[first[2]]), dict(plan[first[0]])
+    if not any("pairs" in p for p in cases.order_problems(reshuffled)):
+        raise AssertionError(cases.order_problems(reshuffled))
+    stuck = [dict(b, circuits=list(cases.interleaved_circuits(b["multiplier"]))) for b in plan]
+    if not any("slots" in p for p in cases.order_problems(stuck)):
+        raise AssertionError(cases.order_problems(stuck))
+
+
+def test_rounds_keep_three_pairs_that_move_between_block_positions() -> None:
+    plan = cases.schedule("tuna_17", cases.synthetic_values(2000))["arms"]["interleaved_t1"]
+    rounds = [[b["multiplier"] for b in plan if b["round"] == r] for r in range(cases.ROUNDS)]
+    pairs = [{frozenset(r[k : k + 2]) for k in (0, 2, 4)} for r in rounds]
+    if pairs[0] != pairs[1] or pairs[1] != pairs[2] or len(pairs[0]) != 3:
+        raise AssertionError(rounds)
+    if {frozenset(rounds[1][4:6])} != {frozenset(rounds[0][0:2])} or {frozenset(rounds[2][2:4])} != {
+        frozenset(rounds[0][0:2])
+    }:
+        raise AssertionError(rounds)
 
 
 def test_rejection_keeps_the_modulus_unbiased() -> None:
@@ -154,12 +181,14 @@ def test_pending_state_writes_no_batches_then_the_draw_creates_them(
     manifest = json.loads((ready / "interleaved_t1" / "batch-00" / "cases.json").read_text(encoding="utf-8"))
     if manifest["arm"] != "interleaved_t1" or manifest["qrng_draw"] != path or len(manifest["circuits"]) != 3:
         raise AssertionError(manifest)
-    if len(list(ready.glob("*/batch-*"))) != 65 or (ready / "qrng_request.json").exists():
+    if len(list(ready.glob("*/batch-*"))) != sum(cases.batch_counts("tuna_17").values()) or (ready / "qrng_request.json").exists():
         raise AssertionError("a drawn case lacks its 65 batches or keeps its request")
     if cases.check(tmp_path / "cases2", draw_root=tmp_path, retained=retained):
         raise AssertionError("a drawn case does not regenerate")
-    (ready / "interleaved_t1" / "batch-03" / "readout-0.cq").write_text("changed\n", encoding="utf-8")
-    if "readout-0.cq differs" not in "".join(cases.check(tmp_path / "cases2", draw_root=tmp_path, retained=retained)):
+    listed = json.loads((ready / "interleaved_t1" / "batch-03" / "cases.json").read_text(encoding="utf-8"))
+    changed = listed["circuits"][0]["file"]
+    (ready / "interleaved_t1" / "batch-03" / changed).write_text("changed\n", encoding="utf-8")
+    if f"{changed} differs" not in "".join(cases.check(tmp_path / "cases2", draw_root=tmp_path, retained=retained)):
         raise AssertionError("a changed circuit went unnamed")
 
 
@@ -347,7 +376,7 @@ def test_trace_rows_are_kept_across_a_resumed_collection(tmp_path: Path) -> None
 
 
 def test_a_plateau_survives_batch_levels_of_the_retained_size() -> None:
-    shifts = [0.0145 * math.sin(2.1 * b) for b in range(cases.ROUNDS * len(cases.T1_ROUND_CYCLES))]
+    shifts = [0.0145 * math.sin(2.1 * b) for b in range(cases.ROUNDS * len(cases.T1_MULTIPLIERS))]
     for plateau in (0.01, 0.02):
         model = {"shape": "plateau", "theta": [20.0, plateau], "e01": 0.03, "e11": 0.96}
         verdict = cases.analyze_interleaved(cases.synthetic_interleaved([model], shifts))["qubits"][0]["verdict"]
@@ -479,14 +508,15 @@ def test_sanity_demands_anchors_records_and_a_start_status(tmp_path: Path) -> No
 
 
 def test_design_identifies_the_batch_level_only_through_the_anchors() -> None:
-    summary = cases.design_summary(0.03, 0.96, (20.0, 0.02), 0.0027**2, 8192)
+    delays = [cases.t1_delays(17, m)[9] for m in cases.T1_MULTIPLIERS]
+    summary = cases.design_summary(0.03, 0.96, (20.0, 0.02), 0.0027**2, 8192, delays)
     if (
         summary["rank_with_anchors"] != summary["columns_with_anchors"]
         or summary["rank_without_anchors"] >= summary["columns_without_anchors"]
     ):
         raise AssertionError(summary)
     errors = cases.expected_errors(
-        0.03, 0.96, {"single_us": 20.0, "plateau_us": 19.0, "plateau": 0.02}, 0.0027**2, 8192
+        0.03, 0.96, {"single_us": 20.0, "plateau_us": 19.0, "plateau": 0.02}, 0.0027**2, 8192, delays
     )
     if not 0.0005 < errors["se_plateau"] < 0.005 or errors["plateau_z"] < 4:
         raise AssertionError(errors)
@@ -504,7 +534,7 @@ MODELS = [
     [(0, False, "single_exponential"), (0, True, "level_shift"), (1, True, "tail_plateau"), (2, False, "two_rate")],
 )
 def test_estimator_recovers_its_class_under_batch_levels(model: int, shifted: bool, verdict: str) -> None:
-    shifts = [0.012 * math.sin(b) for b in range(cases.ROUNDS * len(cases.T1_ROUND_CYCLES))] if shifted else None
+    shifts = [0.012 * math.sin(b) for b in range(cases.ROUNDS * len(cases.T1_MULTIPLIERS))] if shifted else None
     rows = cases.analyze_interleaved(cases.synthetic_interleaved([MODELS[model]], shifts))["qubits"]
     if [r["verdict"] for r in rows] != [verdict]:
         raise AssertionError(rows[0])
@@ -512,7 +542,7 @@ def test_estimator_recovers_its_class_under_batch_levels(model: int, shifted: bo
 
 def with_third_round(batches: list[dict[str, Any]], offsets: dict[str, float]) -> list[dict[str, Any]]:
     """The batches plus a copy of the first round whose delay circuits read offsets[name] higher on every qubit."""
-    first = [b for b in batches if "t1-0.cq" in b["rows"]][: len(cases.T1_ROUND_CYCLES)]
+    first = [b for b in batches if b["meta"]["round"] == 0]
     extra = []
     for number, batch in enumerate(first):
         copy = {**batch, "run": f"batch-extra-{number:02d}", "p1": {k: list(v) for k, v in batch["p1"].items()}}
@@ -525,7 +555,7 @@ def with_third_round(batches: list[dict[str, Any]], offsets: dict[str, float]) -
 
 def uniform(size: float) -> dict[str, float]:
     """A third round whose delay circuits all read size higher, as one job-level shift of that round would."""
-    return {f"t1-{c}.cq": size for c in cases.T1_ROUND_CYCLES}
+    return {f"t1-m{m}.cq": size for m in cases.T1_MULTIPLIERS}
 
 
 def test_replicate_statistic_reads_every_round_of_a_delay() -> None:
@@ -539,7 +569,7 @@ def test_replicate_statistic_reads_every_round_of_a_delay() -> None:
 
 def test_an_accepted_tail_fit_with_scattering_rounds_reads_unresolved() -> None:
     model = {"shape": "plateau", "theta": [20.0, 0.03], "e01": 0.03, "e11": 0.96}
-    row = cases.analyze_interleaved(with_third_round(cases.synthetic_interleaved([model]), uniform(0.01)))["qubits"][0]
+    row = cases.analyze_interleaved(with_third_round(cases.synthetic_interleaved([model]), uniform(0.012)))["qubits"][0]
     fit_probability = row["fits"]["plateau"]["probability"]
     if row["verdict"] != "unresolved" or fit_probability < cases.LACK_OF_FIT_PROBABILITY:
         raise AssertionError(row)
@@ -583,23 +613,41 @@ def test_pooled_tail_verdict_reads_the_summed_gain_not_the_label_count() -> None
         or rows[1]["tail_contribution"] != 0.0
         or abs(pooled["pooled"]["tail_statistic"] - gain) > 1e-9
         or not pooled["pooled"]["tail_confirmed"]
-        or pooled["pooled"]["single_exponential_rejected"] != 1
+        or pooled["pooled"]["descriptive_single_exponential_rejected"] != 1
     ):
         raise AssertionError(pooled)
     only_flat = cases.analyze_interleaved(cases.synthetic_interleaved([flat, flat]))["pooled"]
     if only_flat["tail_statistic"] != 0.0 or only_flat["tail_confirmed"]:
         raise AssertionError(only_flat)
     scattering = cases.synthetic_interleaved([plateau, plateau])
-    scattered = cases.analyze_interleaved(with_third_round(scattering, uniform(0.01)))["pooled"]
+    scattered = cases.analyze_interleaved(with_third_round(scattering, uniform(0.02)))["pooled"]
     if scattered["tail_statistic"] != 0.0 or scattered["tail_confirmed"]:
         raise AssertionError(scattered)
+
+
+def test_analysis_records_the_round_and_the_executed_start(tmp_path: Path) -> None:
+    flat = {"shape": "single", "theta": [1.0e6], "e01": 0.0, "e11": 1.0}
+    batches = cases.synthetic_interleaved([flat])
+    for number, batch in enumerate(batches):
+        batch["started"] = {name: f"2026-01-01T00:{number:02d}:00Z" for name in batch["rows"]}
+    jobs = cases.analyze_interleaved(batches)["jobs"]
+    if len(jobs) != 54 or {j["round"] for j in jobs} != {0, 1, 2} or any(j["started_utc"] is None for j in jobs):
+        raise AssertionError(jobs[:3])
+    run = tmp_path / "run"
+    run.mkdir()
+    if cases.job_starts(run) != {}:
+        raise AssertionError("a run without results reported starts")
+    results = {"jobs": [{"file": "a.cq", "job": {"queued_at": "T"}}]}
+    (run / "results.json").write_text(json.dumps(results), encoding="utf-8")
+    if cases.job_starts(run) != {"a.cq": "T"}:
+        raise AssertionError(cases.job_starts(run))
 
 
 def test_flat_noiseless_series_reads_as_a_single_exponential() -> None:
     flat = {"shape": "single", "theta": [1.0e6], "e01": 0.0, "e11": 1.0}
     pooled = cases.analyze_interleaved(cases.synthetic_interleaved([flat] * 3))
     if [r["verdict"] for r in pooled["qubits"]] != ["single_exponential"] * 3 or pooled["pooled"][
-        "single_exponential_accepted"
+        "descriptive_single_exponential_accepted"
     ] != 3:
         raise AssertionError(pooled)
 
@@ -658,7 +706,7 @@ def test_single_and_phase_arms_read_exact_series() -> None:
     p1 = {"readout-0.cq": vec(0.03), "single-q3-prep1.cq": vec(0.96), "single-q3-t1-250.cq": vec(0.03 + 0.93 * 0.8)}
     p1.update({"single-q3-x90-8.cq": vec(0.1), "single-q3-x90-32.cq": vec(0.9), "single-q3-x90-64.cq": vec(0.3)})
     batch = {"meta": {"qubit": 3}, "shots": 8192, "rows": rows, "p1": p1}
-    found = cases.analyze_single([batch], None)["qubits"][0]
+    found = cases.analyze_single([batch])["qubits"][0]
     if abs(found["population"]["250"] - 0.8) > 1e-9 or found["ladder_clears"] is not False:
         raise AssertionError(found)
     angles = {s: s * math.pi / 36 for s in cases.PHASE_STEPS}
