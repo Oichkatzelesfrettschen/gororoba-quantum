@@ -67,7 +67,7 @@ x = +1, -1, +1, -1, equal batch errors), each batch flipping its sign independen
 | 0.05 | 0 | 1.007 | 1.035 |
 | 0.10 | 0 | 1.013 | 1.038 |
 | 0.20 | 1e-5 | 1.026 | 1.155 |
-| 0.25 (measured: 2 of 8 predecessor twin batches flipped; 3 of 12 with PR 927's hosted-QX batches) | 2.4e-5 | 1.032 | 1.168 |
+| 0.25 (measured: 2 of 8 predecessor twin batches flipped; 3 of 12 with the hosted-QX batches) | 2.4e-5 | 1.032 | 1.168 |
 | 7/19 (the predecessor's) | 1.4e-4 | 1.043 | 1.183 |
 
 `P(confounded)` equals (2 r^2 (1 - r)^2)^4 (a test pins it): a template ends one-directional with probability 2 r^2 (1 - r)^2,

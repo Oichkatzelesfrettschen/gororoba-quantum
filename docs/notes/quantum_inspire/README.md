@@ -96,8 +96,8 @@ backend, batch and job identities, case and circuit digests and shot counts, but
 to the installed versions is an inference. The toolchain record (`docs/evidence/quantum_inspire/toolchain-token-recovery.json`, `scripts/qi_toolchain_check.py`)
 binds only Python, libqasm, OpenSquirrel and a digest of the OpenSquirrel exporter, and `qi_stack.DISTRIBUTIONS` lists
 qxelarator, libqasm and OpenSquirrel, so a move of quantuminspire, qiskit-quantuminspire or qi-compute-api-client
-changes no record byte and regenerates nothing; nine of the ten gates tagged `"requires": ["qi"]` run qxelarator, the tenth (core-368, `scripts/qi_toolchain_check.py`) runs libqasm
-and OpenSquirrel without qxelarator, and none imports the SDK. A move of the lock to the installed versions is therefore a documentation and lock change; a reinstall
+changes no record byte and regenerates nothing; the ten gates tagged `"requires": ["qi"]` run under the qxelarator, libqasm and OpenSquirrel stack (the tenth,
+`scripts/qi_toolchain_check.py`, compiles with libqasm and OpenSquirrel and imports qxelarator only in the stack probe), and none imports the SDK. A move of the lock to the installed versions is therefore a documentation and lock change; a reinstall
 of the lock restores the documented pin. Until one of the two lands, an SDK-dependent record names this drift.
 
 | Package | Version | Role |
