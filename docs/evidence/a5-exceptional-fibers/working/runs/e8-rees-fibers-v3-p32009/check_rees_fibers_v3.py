@@ -1,13 +1,13 @@
 """Verdict of the zero-generator guard run of the Iso -> N- Rees fiber at p = 32009, and of its toy run.
 
-No Singular runs. The check reads the retained logs of this directory. `iso-nm-p.v3-u-full.sing` is the v2 Iso script with
-three changes in four textual edits (a guard that prints `CERT FAIL unit_zero_generator` and quits on a zero generator, the loop
-condition `uc!=0`, and a count line of generators with c(0) = 0); the check rebuilds it from the retained v2 script and
-compares bytes. The Iso log must hold one `UNIT k c(0)=...` line per generator, the count line `UNIT
-zero_constant_term_count 0`, and the results lines that the v2 verdict decides (the v2 verdict runs on the log with line
-2 renamed to the v2 script). The log must also equal the retained v2 Iso log beyond the script digest, the script name,
-the Singular timers and the count line. The toy script (generators 0 and s1^2) must end with the failure marker and no
-result line, and its control with the v2 loop must end with the timeout status 124 and no marker.
+No Singular runs. The check reads the retained logs of this directory. `iso-nm-p.v3-u-full.sing` is the v2 Iso script
+with three changes in four textual edits (a guard that prints `CERT FAIL unit_zero_generator` and quits on a zero
+generator, the loop condition `uc!=0`, and a count line of generators with c(0) = 0); the check rebuilds it from the
+retained v2 script and compares bytes. The Iso log must hold one `UNIT k c(0)=...` line per generator, the count line
+`UNIT zero_constant_term_count 0`, and the results lines that the v2 verdict decides (the v2 verdict runs on the log
+with line 2 renamed to the v2 script). The log must also equal the retained v2 Iso log beyond the script digest, the
+script name, the Singular timers and the count line. The toy script (generators 0 and s1^2) must end with the failure
+marker and no result line, and its control with the v2 loop must end with the timeout status 124 and no marker.
 Run from docs/evidence/a5-exceptional-fibers:
 
     python -B working/runs/e8-rees-fibers-v3-p32009/check_rees_fibers_v3.py [--self-test]
@@ -146,7 +146,8 @@ def control_problems(text: str, sing_sha256: str) -> list[str]:
     problems = _banner_problems(lines, CONTROL, sing_sha256)
     if MARKER in lines:
         problems.append("the control log holds the failure marker")
-    if [line for line in lines if line.startswith("EXIT ")] != ["EXIT 124"] or [x for x in lines if x][-1] != "EXIT 124":
+    ends = [line for line in lines if line]
+    if [line for line in lines if line.startswith("EXIT ")] != ["EXIT 124"] or ends[-1] != "EXIT 124":
         problems.append("the control log does not end with exactly one EXIT 124")
     return problems
 

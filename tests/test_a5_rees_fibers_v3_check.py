@@ -1,8 +1,8 @@
 """The verdict of the zero-generator guard run of the Iso -> N- Rees fiber at p = 32009.
 
 No Singular runs. The tests read the retained logs of e8-rees-fibers-v3-p32009 and feed each known-bad variant to the
-verdict of `check_rees_fibers_v3.py`: the Iso log without its per-generator lines, a nonzero count of zero constant terms,
-the failure marker, and the toy log of a generator that is 0 modulo J.
+verdict of `check_rees_fibers_v3.py`: the Iso log without its per-generator lines, a nonzero count of zero constant
+terms, the failure marker, and the toy log of a generator that is 0 modulo J.
 """
 
 import hashlib
