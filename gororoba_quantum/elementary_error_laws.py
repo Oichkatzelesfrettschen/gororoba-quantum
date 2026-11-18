@@ -105,7 +105,10 @@ def error_laws(
 
 
 def damping_kraus(amplitude: float, phase: float) -> list[np.ndarray]:
-    """Kraus operators of amplitude damping `amplitude` followed by phase damping `phase` on one qubit."""
+    """Kraus operators of amplitude damping `amplitude` followed by phase damping `phase` on one qubit.
+
+    The one definition of this channel: gate_noise_histogram_fit imports it for the pulse and CZ damping of its fits.
+    """
     a0 = np.array([[1, 0], [0, math.sqrt(1 - amplitude)]], dtype=complex)
     a1 = np.array([[0, math.sqrt(amplitude)], [0, 0]], dtype=complex)
     p0 = np.array([[1, 0], [0, math.sqrt(1 - phase)]], dtype=complex)
