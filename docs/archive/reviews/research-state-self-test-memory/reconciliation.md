@@ -38,3 +38,9 @@ D1, D2, D3, D5: fixed by these commits. D4: residual risk in the PR body.
 | D4 | Scoped to residual risk. |
 | D5 | Partly fixed at e926a6bb3: the malformed and absent files sat where a walk that stops early still passed. Fixed in 22eb8b5e7 and shown by M8. |
 | Host dependence | The pool tests read the host's CPU count through `workers()` and raced two workers; 22eb8b5e7 sets the budget directly, and the 20-run check on two CPUs measures the race. |
+
+## Successor module
+
+The hosted `arm (ubuntu-26.04-arm)` check on 8b8943a61 failed: `gororoba_quantum/parallel.py` is bound by sha256 in more than twenty retained records (`tests/scripts/test_ascella_predecessor_simulator.py`, `scripts/qi_matched_zero_divisor.py` producer dependency sources), so the edited file broke their binding. 147d9a3d7 and e3576c2e7 restore `parallel.py` to main's bytes and move the bound into `gororoba_quantum/parallel_memory.py`: `available_memory`, `memory_workers` and `bounded_ordered_map`, which caps the process budget through `GOROROBA_WORKERS` for the one call and restores the variable afterwards. `scripts/research_state.py`, whose digest no tracked file binds, calls it. The subject of 147d9a3d7 carries stray single quotes and stays in history.
+
+On e3576c2e7 (compute host): the memory tests and the two predecessor tests, 29 passed; every mutation M1 to M8 above, and M9 (the cap left set after the call), fails at least one test; `ci/pr_checks.sh lint` and `types` clean; `research_state.py --self-test` at the default worker count in a 16 GiB scope: 74 mutations rejected, 79 s, memory.peak 13.2 GB.
