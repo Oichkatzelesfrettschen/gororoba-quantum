@@ -44,3 +44,11 @@ D1, D2, D3, D5: fixed by these commits. D4: residual risk in the PR body.
 The hosted `arm (ubuntu-26.04-arm)` check on 8b8943a61 failed: `gororoba_quantum/parallel.py` is bound by sha256 in more than twenty retained records (`tests/scripts/test_ascella_predecessor_simulator.py`, `scripts/qi_matched_zero_divisor.py` producer dependency sources), so the edited file broke their binding. 147d9a3d7 and e3576c2e7 restore `parallel.py` to main's bytes and move the bound into `gororoba_quantum/parallel_memory.py`: `available_memory`, `memory_workers` and `bounded_ordered_map`, which caps the process budget through `GOROROBA_WORKERS` for the one call and restores the variable afterwards. `scripts/research_state.py`, whose digest no tracked file binds, calls it. The subject of 147d9a3d7 carries stray single quotes and stays in history.
 
 On e3576c2e7 (compute host): the memory tests and the two predecessor tests, 29 passed; every mutation M1 to M8 above, and M9 (the cap left set after the call), fails at least one test; `ci/pr_checks.sh lint` and `types` clean; `research_state.py --self-test` at the default worker count in a 16 GiB scope: 74 mutations rejected, 79 s, memory.peak 13.2 GB.
+
+## Advisor verdicts on the successor module (read c63521654)
+
+| # | Verdict |
+|---|---|
+| Mechanism | Sound: the cap only lowers the budget, the variable returns in a finally block, an unknown figure leaves the call unchanged. Codex read 6f9e6703d only, before the redesign. |
+| C2 | Superseded: the positive-size test moved out with the code, so a zero worker size divided by zero. 14bb4f54a rejects a size below one byte (M10). |
+| Mutation table | Re-run by the orchestrator on 14bb4f54a: M1 to M10 each fail at least one test (M6 as a bounded map with no cap context, M9 as a cap that is not restored, M10 as a removed size guard); 20 of 20 runs pass under `taskset -c 0,1`; slowest test 0.83 s; `ci/pr_checks.sh lint` and `types` clean. |
