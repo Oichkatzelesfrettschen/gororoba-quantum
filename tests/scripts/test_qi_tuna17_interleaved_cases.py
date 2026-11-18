@@ -55,7 +55,9 @@ def test_budget_and_measurement_limits() -> None:
         if longest >= 300 or profile["shots"] > (2048 if name == "qx" else 131072):
             raise AssertionError((name, longest))
     budget = cases.budget("tuna_17")
-    arms = {a: (r["batches"], r["jobs"], r["shots"], r["expected_execution_seconds"]) for a, r in budget["per_arm"].items()}
+    arms = {
+        a: (r["batches"], r["jobs"], r["shots"], r["expected_execution_seconds"]) for a, r in budget["per_arm"].items()
+    }
     if arms != {
         "interleaved_t1": (18, 54, 442368, 433.7),
         "crosstalk": (8, 24, 196608, 169.2),
@@ -223,7 +225,8 @@ def test_pending_state_writes_no_batches_then_the_draw_creates_them(
     manifest = json.loads((ready / "interleaved_t1" / "batch-00" / "cases.json").read_text(encoding="utf-8"))
     if manifest["arm"] != "interleaved_t1" or manifest["qrng_draw"] != path or len(manifest["circuits"]) != 3:
         raise AssertionError(manifest)
-    if len(list(ready.glob("*/batch-*"))) != sum(cases.batch_counts("tuna_17").values()) or (ready / "qrng_request.json").exists():
+    drawn_batches = list(ready.glob("*/batch-*"))
+    if len(drawn_batches) != sum(cases.batch_counts("tuna_17").values()) or (ready / "qrng_request.json").exists():
         raise AssertionError("a drawn case lacks its 65 batches or keeps its request")
     if cases.check(tmp_path / "cases2", draw_root=tmp_path, retained=retained):
         raise AssertionError("a drawn case does not regenerate")

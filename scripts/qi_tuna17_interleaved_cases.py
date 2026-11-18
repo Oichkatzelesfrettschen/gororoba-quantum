@@ -1,4 +1,6 @@
-"""Tuna-17 follow-up case: interleaved T1 rounds, a drive-context crosstalk arm and a q12 Ramsey phase scan, with a QX twin.
+"""Tuna-17 follow-up case: interleaved T1 rounds, a drive-context crosstalk arm and a q12 Ramsey phase scan.
+
+The case has a QX twin.
 
 The retained characterization series (scripts/qi_tuna17_characterization_cases.py) found a non-exponential
 T1 on 15 of 17 qubits, a positive step on the batch that held the three longest delays, and ladder verdicts that
@@ -19,9 +21,9 @@ own series directory:
   {readout-0, A prepared in 1, B' prepared in 1}; one batch holds {q1 alone, q2 alone, all qubits} at the 128-pulse
   ladder, the direct test of the q1/q2 pair. A qubit and condition is flagged when its half-drive reading differs from
   its same-batch all-drive reading by more than FLAG_Z standard errors of the difference.
-- q12_phase: a Ramsey circuit X90, Rz(angle), X90 on the target qubit of PHASE, six angles k pi/3 in two triads that sum to
-  zero in sine and cosine, at two waits, four provider batches of one triad each (waits interleaved 0, 25, 0, 25); the fringe offset is the static z rotation between two
-  pulses.
+- q12_phase: a Ramsey circuit X90, Rz(angle), X90 on the target qubit of PHASE, six angles k pi/3 in two triads that sum
+  to zero in sine and cosine, at two waits, four provider batches of one triad each (waits interleaved 0, 25, 0, 25);
+  the fringe offset is the static z rotation between two pulses.
 
 Order. Every order comes from one retained QRNG draw (DRAW), consumed in index order, each value once, by a rejection
 shuffle; schedule() states the indices each component takes. While DRAW is None the batch directories, their circuits
@@ -58,8 +60,8 @@ import subprocess
 import sys
 import time
 from collections.abc import Callable, Sequence
-from statistics import NormalDist
 from pathlib import Path
+from statistics import NormalDist
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -108,8 +110,8 @@ PAIR_PULSES = 128
 # A flag marks |z| above this: the two-sided normal quantile of a Bonferroni level of 0.05 over 102 contrasts. The arm
 # forms 96 class contrasts and 2 pair contrasts, so the bound is conservative.
 FLAG_Z = 3.49
-# Job-level standard deviation of a population (retained anchors, pooled over 17 qubits); the arm holds one anchor pair per
-# context, too few for job_level_variance().
+# Job-level standard deviation of a population (retained anchors, pooled over 17 qubits); the arm holds one anchor
+# pair per context, too few for job_level_variance().
 JOB_LEVEL_SIGMA = 0.0034
 PHASE = {"tuna_17": (12,), "qx": (9,)}
 PHASE_WAITS = (0, 25)
@@ -370,7 +372,14 @@ def crosstalk_units() -> list[tuple[str, list[str]]]:
     ]
     units.append(("anchors", ["readout-0.cq", "xt-prep1-A.cq", "xt-prep1-B.cq"]))
     units.append(
-        ("pair", [f"xt-x90-{PAIR_PULSES}-q{PAIR[0]}.cq", f"xt-x90-{PAIR_PULSES}-q{PAIR[1]}.cq", f"xt-x90-{PAIR_PULSES}-all.cq"])
+        (
+            "pair",
+            [
+                f"xt-x90-{PAIR_PULSES}-q{PAIR[0]}.cq",
+                f"xt-x90-{PAIR_PULSES}-q{PAIR[1]}.cq",
+                f"xt-x90-{PAIR_PULSES}-all.cq",
+            ],
+        )
     )
     return units
 
@@ -462,11 +471,11 @@ def schedule(profile_name: str, values: Sequence[int]) -> dict[str, Any]:
         arms["crosstalk"].append({"circuits": stream.shuffle(names), "unit": unit})
     mark("crosstalk", start)
     start = stream.position
-    first = {wait: stream.below(len(PHASE_TRIADS)) for wait in PHASE_WAITS}
+    leading = {wait: stream.below(len(PHASE_TRIADS)) for wait in PHASE_WAITS}
     qubit = PHASE[profile_name][0]
     for position in range(len(PHASE_WAITS) * len(PHASE_TRIADS)):
         wait = PHASE_WAITS[position % len(PHASE_WAITS)]
-        triad = (first[wait] + position // len(PHASE_WAITS)) % len(PHASE_TRIADS)
+        triad = (leading[wait] + position // len(PHASE_WAITS)) % len(PHASE_TRIADS)
         names = [f"ramsey-q{qubit}-w{wait}-s{step:02d}.cq" for step in PHASE_TRIADS[triad]]
         arms["q12_phase"].append({"circuits": stream.shuffle(names), "wait_cycles": wait, "triad": triad})
     mark("q12_phase", start)
@@ -763,7 +772,6 @@ def job_seconds(profile: dict[str, Any], row: dict[str, Any], arm: str | None = 
 
 
 def batch_counts(profile_name: str) -> dict[str, int]:
-    use = usage(profile_name)
     return {
         "interleaved_t1": ROUNDS * len(T1_MULTIPLIERS),
         "crosstalk": len(crosstalk_units()),
@@ -869,8 +877,8 @@ def files(profile_name: str, values: Sequence[int] | None, retained: dict[str, A
     """Relative path -> text of every generated file of one profile's case directory.
 
     A circuit is written only inside a batch directory beside the manifest that lists it, which exists once the draw
-    does; before that the directory holds no .cq file, so no circuit lacks a batch manifest (qi_toolchain_check.case_files
-    rejects one).
+    does; before that the directory holds no .cq file, so no circuit lacks a batch manifest
+    (qi_toolchain_check.case_files rejects one).
     """
     profile = PROFILES[profile_name]
     rows = library(profile_name)
@@ -1261,8 +1269,8 @@ def contrast_z(p_half: float, p_all: float, count: int) -> float:
 def analyze_crosstalk(batches: list[dict[str, Any]]) -> dict[str, Any]:
     """Half-drive against same-batch all-drive readings per class qubit and condition, and the q1/q2 pair.
 
-    A half-drive batch holds the class A, class B' and all-qubit circuit of one condition; each class qubit contrasts its
-    own class circuit with the all-qubit circuit by contrast_z, flagged above FLAG_Z. Populations and ladder values
+    A half-drive batch holds the class A, class B' and all-qubit circuit of one condition; each class qubit contrasts
+    its own class circuit with the all-qubit circuit by contrast_z, flagged above FLAG_Z. Populations and ladder values
     P(0) normalize by the context anchors (readout-0 and the class prepared in 1), all-drive readings by their qubit's
     class anchors, so the readout context of the all-drive circuit is not separated from the drive (reported
     residual). The reading is drive-context dependence and names no mechanism.
@@ -1435,8 +1443,6 @@ def analyze(runs: list[Path], prediction_path: Path | None = None) -> dict[str, 
     if prediction_path is not None:
         out["prediction"] = prediction_path.name
     return out
-
-
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -1802,9 +1808,7 @@ def synthetic_interleaved(
     return out
 
 
-def synthetic_crosstalk(
-    shift_qubit: int | None = None, shift: float = 0.0, count: int = 8192
-) -> list[dict[str, Any]]:
+def synthetic_crosstalk(shift_qubit: int | None = None, shift: float = 0.0, count: int = 8192) -> list[dict[str, Any]]:
     """Crosstalk batches in the order schedule() gives synthetic_values with fixed readings: anchors 0.03 and 0.96, a
     driven qubit of a T1 circuit 0.495, of a ladder circuit 0.05, an idle qubit 0.03; shift is added to shift_qubit in
     the class circuits (contexts A and B) of the T1 and ladder kinds."""
@@ -2152,4 +2156,3 @@ def main(argv: list[str]) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main(sys.argv[1:]))
-
