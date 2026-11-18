@@ -124,8 +124,7 @@ def test_two_workers_return_the_serial_verdicts(monkeypatch: pytest.MonkeyPatch)
 def test_case_verdict_pickles_without_loaded_state_and_cases_are_unique() -> None:
     registry = {"schema": "synthetic"}
     verdict = research_state.CaseVerdict(registry)
-    verdict._loaded = ("sentinel",)
-    verdict._specs = ["sentinel"]
+    vars(verdict).update(_loaded=("sentinel",), _specs=["sentinel"])
     restored = pickle.loads(pickle.dumps(verdict))
     _require(restored._registry == registry, "a pickled verdict lost its registry")
     _require(restored._loaded is None and restored._specs is None, "a pickled verdict carried loaded state")
