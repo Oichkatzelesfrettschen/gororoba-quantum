@@ -1,0 +1,50 @@
+{
+ "schema": "qi-pathion-one-cz-null-bracketed-series-v1",
+ "backend": "QXsinglenodesimulator",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "kind": "control",
+   "files": [
+    "readout-0.cq",
+    "b0-coin0.cq",
+    "b0-coin1.cq",
+    "readout-1.cq",
+    "b0.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "kind": "control",
+   "files": [
+    "readout-0.cq",
+    "k4-coin0.cq",
+    "k4-coin1.cq",
+    "readout-1.cq",
+    "k4.cq"
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "kind": "control",
+   "files": [
+    "readout-0.cq",
+    "k8-coin0.cq",
+    "k8-coin1.cq",
+    "readout-1.cq",
+    "k8.cq"
+   ]
+  },
+  {
+   "batch": "batch-03",
+   "kind": "control",
+   "files": [
+    "readout-0.cq",
+    "k12-coin0.cq",
+    "k12-coin1.cq",
+    "readout-1.cq",
+    "k12.cq"
+   ]
+  }
+ ]
+}

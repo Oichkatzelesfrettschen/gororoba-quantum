@@ -69,28 +69,54 @@ They grant no permission: no plan, case or batch size is derived from them
 on hardware, and where the FAQ is silent they remain the ceiling the service
 enforces.
 
-The FAQ does not say whether a "job" is a batch or a circuit, so the runner
-satisfies both readings at once. On every backend type the catalogue flags
-`is_hardware`, `qi_platform.py submit`
+The FAQ does not say whether a "job" is a batch or a circuit. A case manifest selects how the runner reads it through
+its `hardware_policy` field, a row of `HARDWARE_POLICIES` in `scripts/qi_platform_wave.py` (one table, read by
+`qi_platform_wave.py submit` and by the retention checker; an unknown name is refused before any service read):
 
-- holds a batch to `HARDWARE_BATCH_CIRCUITS` (3) circuits;
-- enqueues a batch only while the account has no batch queued on that type
-  (`HARDWARE_QUEUED_BATCHES`, 1);
-- refuses while any account job on a hardware type is unfinished or finished
-  less than `HARDWARE_PAUSE_SECONDS` ago ([pause escalation](#pause-escalation)),
-  whichever session submitted it.
+| `hardware_policy` | circuits per batch | queued batches | pause after a wave | reading of "job" |
+|---|---|---|---|---|
+| absent, or `legacy` | 3 | 1 | the ladder step `QI_HARDWARE_PAUSE_SECONDS` selects (30 s by default) | both at once: at most three circuits of the account wait, in one batch |
+| `wave-v1` | 5 | 3 | 60 s | a batch job (owner ruling 2026-11-14): a wave of 15 circuits in 3 batches |
 
-At most three circuits of the account therefore wait for a hardware
-backend, in one batch, and nothing else of the account is queued or running
-on hardware meanwhile. The constants are fixed in the source, and
-submission routes that bypass `submit` (`QIProvider` `backend.run`, which
-batches up to the API's 5; the `qi` CLI; the web editor) carry no FAQ guard
-and stay unused for runs.
+Both numbers are capped by the live backend record (`max_jobs_per_batch_job`, `batchjobs_per_queue_limit`). The pinned
+`scripts/qi_platform.py` (its sha256 binds retained receipts, proposals and projector-geometry records) and its
+deadline successor keep the legacy limits as `HARDWARE_BATCH_CIRCUITS` (3) and `HARDWARE_QUEUED_BATCHES` (1), so the
+case generators, proposals and gates that predate the field keep reading them; a case that needs a wave policy submits
+through `scripts/qi_platform_wave.py`, which calls the functions `qi_platform` exports. Owner ruling 2026-11-14 on the
+pause: no more than 3 batches queued at a time, and 60 s between runs of those three before queuing the next. A wave is
+three batches submitted back to back (fewer for the last wave), the wave finishes, and a pause of the row's
+`pause_seconds` precedes the next wave: 60 s under `wave-v1`, a step of the ladder 30, 60, 90, 120. A higher ladder step
+(`QI_HARDWARE_PAUSE_SECONDS`) raises the pause and never lowers it. On every backend type the catalogue flags
+`is_hardware`, `qi_platform_wave.py submit`
+
+- holds a batch to the policy's circuits;
+- refuses while the account has as many batches in flight on that type as the policy queues (the service's own queue
+  count and the batches the runner reads from `/batch_jobs` must both be below it);
+- refuses while any account job on another hardware type is unfinished, and, under `legacy`, while any account job on
+  any hardware type is unfinished;
+- refuses while any finished account job on a hardware type is younger than the row's pause (`wave-v1` 60 s, `legacy`
+  `HARDWARE_PAUSE_SECONDS`, [pause escalation](#pause-escalation)), whichever session submitted it.
+
+A wave's batches are submitted one after another in series order (the order requested; the service owns the execution order, and its terms allow priority without regard to the queue, so an estimator that needs an order reads the retained `queued_at` times), and every
+batch of the wave must have finished, with the pause passed, before the next wave: under `wave-v1` the unfinished
+batches of the same backend type are the earlier batches of the wave and set no pause, and every finished batch keeps its
+pause. The pause clock is account-wide, so the Ry emulator, which the API flags `is_hardware`, shares it with Tuna-17
+([ry-emulator.md](ry-emulator.md)): a finished Ry job delays the next Tuna-17 batch by the rest of its pause, an
+unfinished Ry job refuses a Tuna-17 batch and the reverse, and the three queued batches are counted per backend type, so
+Ry batches do not count toward Tuna-17's three. Residual risk of `wave-v1`: if the provider reads "job" as a circuit, a
+wave of 15 circuits queues five times the stated 3, and the FAQ's abuse clause removes the account; the provider has not
+been asked. Evidence that the service accepts the numbers: `max_jobs_per_batch_job` and `batchjobs_per_queue_limit` are 5
+on every backend type in the catalogue; two retained Tuna-17 batches of 5 circuits were accepted and completed
+(`results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17`, `.../2026-10-16T221133Z-zero_divisor_tuna_17`); the SDK
+checks the batch size and nothing about the queue (`qi_jobs.py`); the service answers HTTP 429 "Backend type Tuna-17
+allows a maximum of 5 batch jobs in the queue at the same time" (compute-api-client issue 5), a limit of 5, not 3.
+Submission routes that bypass `submit` (`QIProvider` `backend.run`, which batches up to the API's 5; the `qi` CLI; the web
+editor) carry no FAQ guard and stay unused for runs.
 
 | Backend | Quantum Inspire's classification | FAQ queue rule | Rule the runner applies | Procedure |
 |---|---|---|---|---|
-| Tuna-17 (type 7); Tuna-5 and Tuna-9 when online | hardware ([KB hardware backends](site/kbase_hardware-backends.md)) | at most 3 jobs queued | the hardware rules above | [Run on Tuna-17](#run-on-tuna-17) |
-| Ry emulator (type 5) | emulator ([KB emulator backends](site/kbase_emulator-backends.md)); the API flags it `is_hardware` | none | the hardware rules above, a choice stricter than the FAQ, since the runner keys on the flag | [ry-emulator.md](ry-emulator.md#do-a-ry-emulator-run) |
+| Tuna-17 (type 7); Tuna-5 and Tuna-9 when online | hardware ([KB hardware backends](site/kbase_hardware-backends.md)) | at most 3 jobs queued | the manifest's hardware policy above | [Run on Tuna-17](#run-on-tuna-17) |
+| Ry emulator (type 5) | emulator ([KB emulator backends](site/kbase_emulator-backends.md)); the API flags it `is_hardware` | none | the manifest's hardware policy above, a choice stricter than the FAQ, since the runner keys on the flag | [ry-emulator.md](ry-emulator.md#do-a-ry-emulator-run) |
 | QX emulator (type 1) | emulator | none | the service's own ceilings: 5 circuits per batch, 5 queued batches; terms item 9 asks for syntax checking first | [qx-runs.md](qx-runs.md#do-a-qx-dry-run-remote-emulator) |
 
 [Rules this repository adds](#rules-this-repository-adds) holds the one observation
@@ -115,7 +141,7 @@ calibration"). Every step below is a repository command; the approval steps
 follow root AGENTS.md "Hardware services".
 
 1. Generate the cases with the experiment's generator, which emits
-   `batch-NN/` directories of at most 3 circuits each, and run its `--check`
+   `batch-NN/` directories of at most the policy's circuits each (3, or 5 under a manifest's `wave-v1`), and run its `--check`
    and `"$QI_PYTHON" scripts/qi_toolchain_check.py` (libqasm analysis and
    compilation with the Tuna-17 compiler configuration).
 2. Run the QX dry run of the same cases ([qx-runs.md](qx-runs.md#do-a-qx-dry-run-remote-emulator))
@@ -124,19 +150,25 @@ follow root AGENTS.md "Hardware services".
    couplers used (the excluded qubits of [experiments.md](experiments.md)
    named), the batch list, shots per circuit (at most 131072; execution
    about 2.6 s per job plus 0.53 ms per shot against the 300 s limit) and
-   the series duration including one pause per batch. Wait for the owner's
+   the series duration including one pause per batch (one pause per wave under `wave-v1`). Wait for the owner's
    approval and quote it verbatim.
 4. Read the device and the account: MCP `qi_backend` for type 7,
    `qi_hardware_status` and `qi_jobs` (or `qi_platform.py snapshot --out DIR`
    with DIR outside `docs/`). Proceed only while Tuna-17 is online and none
    of the account's hardware batches is queued or running.
-5. For each batch in order: copy it to
+5. A manifest without a hardware policy runs batch by batch: copy each batch to
    `results/quantum_inspire/runs/<UTC stamp>-<case>-batch-NN/`, then
    `"$QI_PYTHON" scripts/qi_platform.py submit RUN_DIR --backend-type-id 7 --approval "QUOTE"`,
    `"$QI_PYTHON" scripts/qi_platform.py collect RUN_DIR --poll 15 --timeout 3600`
    and the generator's `--sanity RUN_DIR`. The next batch goes in only after
    that collection, its sanity checks and the pause; `submit` refuses an
    early one before any remote write and names the seconds left.
+   A series whose manifest names `wave-v1` (batches of 4 or 5 circuits)
+   refuses in `qi_platform.py submit` and runs through
+   `"$QI_PYTHON" scripts/qi_platform_wave.py series SERIES_DIR RUNS_DIR STAMP --backend-type-id 7 --approval "QUOTE" --sanity-command "GENERATOR --sanity"`,
+   which submits a wave's batches back to back, collects and checks them, and holds the next wave for the 60 s pause
+   ("Queue rules" states the limits). It checks every run directory before the first submit and resumes nothing: after
+   a stop, `qi_platform_wave.py collect` and `qi_platform.py reconcile` recover the batches already submitted.
 6. Stop the series at the first platform failure, raise
    `QI_HARDWARE_PAUSE_SECONDS` one step of the ladder, and never resubmit a
    directory that holds `submission.json` or `submission-state.json`
@@ -233,10 +265,11 @@ From the same conditions:
   raw-string `qi_submit` refuses execution and names this replacement.
 - Before creating any remote resource, the runner reads the current user's
   queue with `user_only=true`. It refuses a batch that would exceed the API's
-  `batchjobs_per_queue_limit`. On hardware it also refuses a batch of more
-  than three circuits and any batch while one of the account's batches is
-  still queued, so at most three jobs are queued whether the FAQ's "jobs"
-  means batches or circuits. The receipt records that scoped queue and the
+  `batchjobs_per_queue_limit`. On hardware under the default
+  `legacy` policy it also refuses a batch of more than three circuits and any
+  batch while one of the account's batches is still queued, so at most three
+  jobs are queued whether the FAQ's "jobs" means batches or circuits; a
+  manifest's `wave-v1` policy reads "jobs" as batches ([Queue rules](#queue-rules-the-faq-governs)). The receipt records that scoped queue and the
   applied limit. One observation fits a user-scoped queue count in batch jobs,
   on the QX emulator: a three-job batch whose enqueue was confirmed at 15:23:31 UTC on 2026-10-17
   ([batch-00](../../../results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-00/))
@@ -260,9 +293,12 @@ From the same conditions:
   the rule and held five queued circuits. Between hardware batches a series
   collects the previous batch, passes its sanity checks and pauses before
   submitting the next. `submit` enforces the pause account-wide: it refuses a
-  hardware batch while any account job on a hardware backend type is
-  unfinished or finished less than `HARDWARE_PAUSE_SECONDS` ago, so
-  concurrent sessions sharing the account alternate. The pause is 30 s by
+  hardware batch while a finished account job on a hardware backend type is
+  less than `HARDWARE_PAUSE_SECONDS` old and, under `legacy`, while any such job is
+  unfinished. For a manifest that names `hardware_policy`, `qi_platform_wave.py submit`
+  applies the same rule with the row's pause and, under `wave-v1`, admits the unfinished batches of the
+  batch's own backend type up to the policy's queued count, so concurrent sessions
+  on this host sharing the account alternate. The pause is 30 s by
   default and follows the escalation below; the provider sets none.
 - The case directory acquires an exclusive `submission-state.json` before
   the client creates any remote resource. It checkpoints the batch and job
@@ -279,6 +315,10 @@ From the same conditions:
   `state: enqueued` and publishes the final receipt. A recovered `submitted_utc`
   records the local confirmation time when no earlier confirmation was
   retained; the job timestamps remain the execution chronology.
+  Under a wave policy (`qi_platform_wave.py`) the batch is re-read from the account immediately before the enqueue
+  PATCH, with its own planned row left out; a refusal there (a rival client filled the queue after the admission
+  snapshot) leaves the batch created and un-enqueued, `submission-state.json` at phase `enqueue-refused`, and no
+  receipt. The re-read narrows the window to one read and one PATCH; another host can still enqueue inside it.
 - Every run keeps its circuits, cases.json digests, submission.json,
   raw shots and results.json under results/quantum_inspire/runs/.
   New receipts use `qi-submission-v2` and carry `cases_sha256`, the SHA-256 of

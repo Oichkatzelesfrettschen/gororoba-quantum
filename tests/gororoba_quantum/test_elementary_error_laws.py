@@ -121,3 +121,65 @@ def test_cz_damping_acts_on_both_qubits_of_the_gate() -> None:
     operations = [X90, ("X90", None, (1,)), ("CZ", None, (0, 1))]
     law = channel_laws(operations, (0, 1), (0, 1), {}, [(("none", None, None), ZERO)], cz_kraus=damping_kraus(1.0, 0))
     np.testing.assert_allclose(law[0], [1.0, 0.0, 0.0, 0.0], atol=1e-12)
+
+
+def _closed_form(amplitude: float, phase: float) -> list[np.ndarray]:
+    """P_j A_i for A = amplitude damping and P = phase damping, written out entry by entry; P_1 A_1 is zero."""
+    root_a, root_p = math.sqrt(amplitude), math.sqrt(phase)
+    keep = math.sqrt((1 - amplitude) * (1 - phase))
+    return [
+        np.array([[1, 0], [0, keep]], dtype=complex),
+        np.array([[0, root_a], [0, 0]], dtype=complex),
+        np.array([[0, 0], [0, math.sqrt(1 - amplitude) * root_p]], dtype=complex),
+    ]
+
+
+def _matches_law(ops: list[np.ndarray], amplitude: float, phase: float) -> bool:
+    """Operators equal the closed form, sum K^dagger K is the identity, and the matrix units map as the law states."""
+    want = _closed_form(amplitude, phase)
+    if len(ops) != len(want) or any(not np.allclose(k, w, rtol=0, atol=1e-15) for k, w in zip(ops, want, strict=True)):
+        return False
+    if not np.allclose(sum(k.conj().T @ k for k in ops), np.eye(2), rtol=0, atol=1e-15):
+        return False
+    keep = math.sqrt((1 - amplitude) * (1 - phase))
+    images = {
+        (0, 0): np.array([[1, 0], [0, 0]], dtype=complex),
+        (1, 1): np.array([[amplitude, 0], [0, 1 - amplitude]], dtype=complex),
+        (0, 1): np.array([[0, keep], [0, 0]], dtype=complex),
+        (1, 0): np.array([[0, 0], [keep, 0]], dtype=complex),
+    }
+    for (row, col), image in images.items():
+        unit = np.zeros((2, 2), dtype=complex)
+        unit[row, col] = 1
+        if not np.allclose(sum(k @ unit @ k.conj().T for k in ops), image, rtol=0, atol=1e-15):
+            return False
+    return True
+
+
+GRID = [(a, p) for a in (0.0, 0.05, 0.3, 0.9) for p in (0.0, 0.1, 0.5, 0.97)]
+
+
+def test_damping_kraus_is_amplitude_then_phase_damping_in_closed_form() -> None:
+    for amplitude, phase in GRID:
+        ops = damping_kraus(amplitude, phase)
+        want = _closed_form(amplitude, phase)
+        kept = [w for w in want if np.any(w)]
+        check(len(ops) == len(kept), f"operator count at {amplitude}, {phase}")
+        for k, w in zip(ops, kept, strict=True):
+            np.testing.assert_allclose(k, w, rtol=0, atol=1e-15)
+        completeness = sum(k.conj().T @ k for k in ops)
+        np.testing.assert_allclose(completeness, np.eye(2), rtol=0, atol=1e-15)
+    check(_matches_law(damping_kraus(0.3, 0.5), 0.3, 0.5), "the shared law fails its own closed form")
+
+
+def test_the_closed_form_check_rejects_a_swapped_order_and_a_wrong_off_diagonal() -> None:
+    amplitude, phase = 0.3, 0.5
+    a0 = np.array([[1, 0], [0, math.sqrt(1 - amplitude)]], dtype=complex)
+    a1 = np.array([[0, math.sqrt(amplitude)], [0, 0]], dtype=complex)
+    p0 = np.array([[1, 0], [0, math.sqrt(1 - phase)]], dtype=complex)
+    p1 = np.array([[0, 0], [0, math.sqrt(phase)]], dtype=complex)
+    swapped = [a @ p for a in (a0, a1) for p in (p0, p1) if np.any(a @ p)]
+    check(not _matches_law(swapped, amplitude, phase), "a swapped composition order passed")
+    wrong = [k.copy() for k in damping_kraus(amplitude, phase)]
+    wrong[0][1, 1] = (1 - amplitude) * (1 - phase)
+    check(not _matches_law(wrong, amplitude, phase), "a wrong off-diagonal factor passed")

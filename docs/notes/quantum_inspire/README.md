@@ -89,6 +89,17 @@ premerge, a shell that has not exported `QI_PYTHON`)
 it replays the record and prints one line naming the replay.
 Exporting `GOROROBA_QI_REQUIRED=1` beside `QI_PYTHON` makes a replay a failure.
 
+The probe checks only qxelarator, libqasm and OpenSquirrel. The build host's `QI_ENV` read on 2026-11-15 holds
+quantuminspire 4.2.0, qiskit-quantuminspire 0.18.6 and qi-compute-api-client 0.64.0, while the lock pins quantuminspire
+4.1.0 and qiskit-quantuminspire 0.18.5 (and qi-compute-api-client 0.63.0). The retained QX receipts of 2026-11-15 record
+backend, batch and job identities, case and circuit digests and shot counts, but no SDK version, so attributing those calls
+to the installed versions is an inference. The toolchain record (`docs/evidence/quantum_inspire/toolchain-token-recovery.json`, `scripts/qi_toolchain_check.py`)
+binds only Python, libqasm, OpenSquirrel and a digest of the OpenSquirrel exporter, and `qi_stack.DISTRIBUTIONS` lists
+qxelarator, libqasm and OpenSquirrel, so a move of quantuminspire, qiskit-quantuminspire or qi-compute-api-client
+changes no record byte and regenerates nothing; the ten gates tagged `"requires": ["qi"]` run under the qxelarator, libqasm and OpenSquirrel stack (the tenth,
+`scripts/qi_toolchain_check.py`, compiles with libqasm and OpenSquirrel and imports qxelarator only in the stack probe), and none imports the SDK. A move of the lock to the installed versions is therefore a documentation and lock change; a reinstall
+of the lock restores the documented pin. Until one of the two lands, an SDK-dependent record names this drift.
+
 | Package | Version | Role |
 |---|---|---|
 | quantuminspire | 4.1.0 | `qi` CLI, `quantuminspire.api.Api`, OAuth device login |

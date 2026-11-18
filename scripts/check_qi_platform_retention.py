@@ -25,6 +25,7 @@ from typing import Any
 from unittest.mock import Mock, patch
 
 import qi_platform as platform
+import qi_platform_wave as wave
 
 # submit() takes the account submit lock; the fixtures lock a private file.
 platform.SUBMIT_LOCK = Path(tempfile.mkdtemp(prefix="qi-submit-lock-")) / "submit.lock"
@@ -220,13 +221,22 @@ class PreflightClient:
         raise AssertionError("a preflight check created a remote resource")
 
 
-def batch_limit(backend: dict[str, Any]) -> int:
-    """The circuits one batch may hold on a catalogue backend type. The FAQ limits a hardware backend to three queued
-    jobs, and the runner applies that limit to every type the API flags is_hardware: the Tuna processors, and the Ry
-    emulator as a choice stricter than the FAQ. The QX emulator keeps the service's max_jobs_per_batch_job
-    (docs/notes/quantum_inspire/usage.md, "Queue rules: the FAQ governs")."""
-    service = int(backend["max_jobs_per_batch_job"])
-    return min(service, platform.HARDWARE_BATCH_CIRCUITS) if backend["is_hardware"] else service
+def batch_limit(backend: dict[str, Any], cases: dict[str, Any]) -> int:
+    """The circuits one batch of the manifest `cases` may hold on a catalogue backend type. The FAQ limits a hardware
+    backend to three queued jobs, and the runner applies the manifest's hardware policy
+    (qi_platform_wave.hardware_limits;
+    a manifest without `hardware_policy` takes the legacy three circuits) to every type the API flags is_hardware: the
+    Tuna processors, and the Ry emulator as a choice stricter than the FAQ. The QX emulator keeps the service's
+    max_jobs_per_batch_job (docs/notes/quantum_inspire/usage.md, "Queue rules: the FAQ governs")."""
+    if backend["is_hardware"]:
+        return wave.hardware_limits(cases, backend).batch_circuits
+    return int(backend["max_jobs_per_batch_job"])
+
+
+def submit_route(cases: dict[str, Any]) -> Any:
+    """The submit function of the manifest `cases`: qi_platform.submit for a manifest without `hardware_policy`, whose
+    legacy limits that module keeps, and qi_platform_wave.submit for a manifest that names a policy."""
+    return platform.submit if "hardware_policy" not in cases else wave.submit
 
 
 class GeneratedCaseChecks(unittest.TestCase):
@@ -240,7 +250,7 @@ class GeneratedCaseChecks(unittest.TestCase):
         for manifest in manifests:
             with self.subTest(case=manifest.parent.relative_to(CASES).as_posix()):
                 cases = json.loads(manifest.read_text(encoding="utf-8"))
-                self.assertLessEqual(len(cases["circuits"]), batch_limit(PreflightClient(cases).backend))
+                self.assertLessEqual(len(cases["circuits"]), batch_limit(PreflightClient(cases).backend, cases))
                 with tempfile.TemporaryDirectory() as scratch:
                     case_dir = Path(scratch) / manifest.parent.name
                     case_dir.mkdir()
@@ -248,7 +258,7 @@ class GeneratedCaseChecks(unittest.TestCase):
                         (case_dir / name).write_bytes((manifest.parent / name).read_bytes())
                     with patch.object(platform, "Client", return_value=PreflightClient(cases)):
                         with self.assertRaises(PreflightReached):
-                            platform.submit(case_dir, cases["backend_type_id"], "preflight fixture")
+                            submit_route(cases)(case_dir, cases["backend_type_id"], "preflight fixture")
                     self.assertFalse((case_dir / "submission-state.json").exists())
 
     def test_an_oversized_batch_is_refused_by_its_backend_rule(self) -> None:
@@ -262,11 +272,17 @@ class GeneratedCaseChecks(unittest.TestCase):
         ]
         backend_type_ids = sorted({cases["backend_type_id"] for _, cases in manifests})
         self.assertEqual(backend_type_ids, [1, 4, 5, 6, 7])
-        for backend_type_id in backend_type_ids:
-            path, base = next((path, cases) for path, cases in manifests if cases["backend_type_id"] == backend_type_id)
+        # One manifest per backend type and hardware policy: a wave-v1 manifest has its own, larger limit.
+        selected: dict[tuple[int, str | None], tuple[Path, dict[str, Any]]] = {}
+        for path, cases in manifests:
+            selected.setdefault((cases["backend_type_id"], cases.get("hardware_policy")), (path, cases))
+        self.assertIn((7, "wave-v1"), selected)
+        for (backend_type_id, _policy), (path, base) in sorted(selected.items(), key=lambda item: str(item[0])):
             backend = PreflightClient(base).backend
-            limit = batch_limit(backend)
-            message = "a hardware batch may hold" if backend["is_hardware"] else "max_jobs_per_batch_job"
+            limit = batch_limit(backend, base)
+            # The service's own ceiling refuses first when the policy's batch size already equals it.
+            capped = backend["is_hardware"] and limit < int(backend["max_jobs_per_batch_job"])
+            message = "a hardware batch may hold" if capped else "max_jobs_per_batch_job"
             source = (path.parent / base["circuits"][0]["file"]).read_bytes()
             with self.subTest(backend=base["backend"], circuits=limit + 1), tempfile.TemporaryDirectory() as scratch:
                 case_dir = Path(scratch) / "oversized"
@@ -279,7 +295,35 @@ class GeneratedCaseChecks(unittest.TestCase):
                 (case_dir / "cases.json").write_text(json.dumps(cases), encoding="utf-8")
                 with patch.object(platform, "Client", return_value=PreflightClient(cases)):
                     with self.assertRaisesRegex(SystemExit, message):
-                        platform.submit(case_dir, backend_type_id, "preflight fixture")
+                        submit_route(cases)(case_dir, backend_type_id, "preflight fixture")
+                self.assertFalse((case_dir / "submission-state.json").exists())
+
+    def test_a_four_circuit_wave_batch_is_admitted_only_under_its_policy(self) -> None:
+        # The retained bracketed successor case holds four-circuit twin batches that select wave-v1.
+        path = CASES / "pathion_one_cz_null_bracketed_tuna_17/batch-01/cases.json"
+        base = json.loads(path.read_text(encoding="utf-8"))
+        self.assertEqual((len(base["circuits"]), base["hardware_policy"]), (4, "wave-v1"))
+        legacy = {k: v for k, v in base.items() if k != "hardware_policy"}
+        self.assertEqual(batch_limit(PreflightClient(base).backend, base), 5)
+        self.assertEqual(batch_limit(PreflightClient(legacy).backend, legacy), 3)
+        for cases, outcome in (
+            (base, "reached"),
+            (legacy, "4 circuits exceed the 3"),
+            ({**base, "hardware_policy": "wave-v2"}, "hardware_policy"),
+        ):
+            with self.subTest(outcome=outcome), tempfile.TemporaryDirectory() as scratch:
+                case_dir = Path(scratch) / "wave"
+                case_dir.mkdir()
+                (case_dir / "cases.json").write_text(json.dumps(cases), encoding="utf-8")
+                for row in cases["circuits"]:
+                    (case_dir / row["file"]).write_bytes((path.parent / row["file"]).read_bytes())
+                with patch.object(platform, "Client", return_value=PreflightClient(cases)):
+                    if outcome == "reached":
+                        with self.assertRaises(PreflightReached):
+                            submit_route(cases)(case_dir, 7, "preflight fixture")
+                    else:
+                        with self.assertRaisesRegex(SystemExit, outcome):
+                            submit_route(cases)(case_dir, 7, "preflight fixture")
                 self.assertFalse((case_dir / "submission-state.json").exists())
 
     def test_a_manifest_naming_another_backend_is_refused(self) -> None:

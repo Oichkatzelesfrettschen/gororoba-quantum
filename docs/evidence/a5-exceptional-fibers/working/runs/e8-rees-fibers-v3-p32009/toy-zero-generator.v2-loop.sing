@@ -1,0 +1,8 @@
+LIB "matrix.lib";
+ring rloc=32009,(s1,s2),dp; option(redSB);
+ideal Gr=0,s1^2; int uk; int um; matrix ucf; poly uc;
+"STAGE rees_start",rtimer;
+for(uk=1;uk<=ncols(Gr);uk++){ ucf=coef(Gr[uk],s1); uc=0; for(um=1;um<=ncols(ucf);um++){ uc=gcd(uc,ucf[2,um]); }
+  while(subst(uc,s2,0)==0){ uc=uc/s2; } Gr[uk]=(Gr[uk]/uc)*subst(uc,s2,0); }
+"UNIT generators stripped",ncols(Gr);
+quit;

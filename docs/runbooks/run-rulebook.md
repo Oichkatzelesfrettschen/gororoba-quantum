@@ -764,6 +764,11 @@ the closest entry and say what changed.
   GF(32009) runs in 24 min at 240 MB on one core (span module standard basis 495 s, block reductions 23 min) and
   returns 32 generators in 11 blocks, the table of `s2 = 3567`. A 15-minute limit stops it inside the reductions,
   and the block table prints only at the end, so a run that is cut returns no count.
+- Outcome (2026-11-16): the unit-replaced saturation finishes (ledger A5-572 to A5-575). E8-bar at N- modulo 32009 ends
+  after 13 h 41 min and E8-bar at N+ after 11 h 22 min with FIBER 148 minimal generators of degree 2, dimension 5,
+  multiplicity 11, `outside_K 0` and `K_outside_fiber 0`, equal Hilbert numerators and the prediction of A5-457 intact;
+  Iso at N- ends after 14.4 s with FIBER 68, 5, 23. The scripts, logs, check and second-VM replay are in
+  `docs/evidence/a5-exceptional-fibers/working/runs/e8-rees-fibers-v2-p32009/`; the N- run at 32029 is not run (A5-576).
 
 ### Singular locus of the degree-11 component of the E8-bar fiber cone (plane and line, or a divisor)
 

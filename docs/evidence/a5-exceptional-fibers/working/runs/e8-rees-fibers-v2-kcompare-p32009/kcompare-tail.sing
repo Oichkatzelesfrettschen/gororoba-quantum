@@ -1,0 +1,24 @@
+"KCMP START cell @CELL@";
+< "KA-@CELL@.sing";
+ideal sKB=std(KQ); ideal sKA=std(KA);
+int ab=size(reduce(KA,sKB)); int ba=size(reduce(KQ,sKA));
+"KCMP script_K",size(minbase(KQ)),"dim",dim(sKB),"mult",mult(sKB);
+"KCMP producer_K",size(minbase(KA)),"dim",dim(sKA),"mult",mult(sKA);
+"KCMP producer_mod_script",ab,"script_mod_producer",ba;
+ideal CD; int ci; for(ci=2;ci<=ncols(KA);ci++){CD[ci-1]=KA[ci];}
+ideal sCD=std(CD); int cdb=size(reduce(KQ,sCD)); int cdd=size(reduce(CD,sKB));
+"KCMP control_drop_first script_mod_dropped",cdb,"dropped_mod_script",cdd;
+poly pf; int pa; int pb; int found=0;
+for(pa=1;pa<=nvars(basering);pa++){ for(pb=pa;pb<=nvars(basering);pb++){ if(found==0){ if(reduce(y(pa)*y(pb),sKB)!=0){ found=1; pf=y(pa)*y(pb); } } } }
+ideal CP=KA,pf; int cpb=size(reduce(CP,sKB)); ideal sCP=std(CP); int cpa=size(reduce(sCP,sKB));
+"KCMP control_added_monomial",found,"added_mod_script",cpb,"script_mod_added",size(reduce(KQ,sCP));
+int eq=(ab==0 and ba==0 and size(minbase(KA))==size(minbase(KQ)));
+int c1=(cdb>0 and cdd==0); int c2=(found==1 and cpb>0);
+"KCMP RESULT cell @CELL@ equal",eq,"control_drop_unequal",c1,"control_added_unequal",c2;
+//SPAN
+< "KH-@CELL@.sing";
+ideal sKH=std(KH);
+"SPAN header",size(minbase(KH)),"dim",dim(sKH),"mult",mult(sKH);
+"SPAN header_mod_weight",size(reduce(KH,sKB)),"weight_mod_header",size(reduce(KQ,sKH));
+ideal KU=KA,KH; "SPAN union_minimal_generators",size(minbase(KU));
+"SPAN RESULT cell @CELL@ span_equal",(size(reduce(KH,sKB))==0 and size(reduce(KQ,sKH))==0);
