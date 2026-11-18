@@ -11,6 +11,7 @@ import pytest
 import research_state
 
 import parallel
+import parallel_memory
 
 GIB = 2**30
 
@@ -41,7 +42,7 @@ def _synthetic_host(tmp_path: Path, available_kib: int, limits: dict[str, tuple[
 
 
 def _available(tmp_path: Path, name: str, available_gib: int, limits: dict[str, tuple[str, int | None]]) -> int | None:
-    return parallel.available_memory(**_synthetic_host(tmp_path / name, available_gib * GIB // 1024, limits))
+    return parallel_memory.available_memory(**_synthetic_host(tmp_path / name, available_gib * GIB // 1024, limits))
 
 
 def test_available_memory_is_the_tightest_headroom(tmp_path: Path) -> None:
@@ -58,15 +59,15 @@ def test_available_memory_is_the_tightest_headroom(tmp_path: Path) -> None:
     malformed = _available(tmp_path, "malformed", 10, {"a/b": ("lots", 0), "a": (str(4 * GIB), GIB)})
     _require(malformed == 3 * GIB, "a malformed leaf memory.max hid the ancestor limit")
     missing = tmp_path / "none"
-    _require(parallel.available_memory(missing, missing, missing) is None, "an absent source reported a figure")
+    _require(parallel_memory.available_memory(missing, missing, missing) is None, "an absent source reported a figure")
 
 
 def test_worker_count_fits_the_reported_memory() -> None:
     worker = research_state.SELF_TEST_WORKER_BYTES
-    _require(parallel.memory_workers(worker, 16 * GIB) == 16 * GIB // worker, "16 GiB admits the wrong count")
-    _require(parallel.memory_workers(worker, 3 * worker) == 3, "three workers' room admits the wrong count")
-    _require(parallel.memory_workers(worker, worker - 1) == 1, "a small limit must still leave one worker")
-    _require(parallel.memory_workers(worker, None) is None, "an unknown limit must not cap")
+    _require(parallel_memory.memory_workers(worker, 16 * GIB) == 16 * GIB // worker, "16 GiB admits the wrong count")
+    _require(parallel_memory.memory_workers(worker, 3 * worker) == 3, "three workers' room admits the wrong count")
+    _require(parallel_memory.memory_workers(worker, worker - 1) == 1, "a small limit must still leave one worker")
+    _require(parallel_memory.memory_workers(worker, None) is None, "an unknown limit must not cap")
 
 
 def _pid_after_pause(item: int) -> tuple[int, int]:
@@ -89,16 +90,22 @@ def _record_pool_sizes(monkeypatch: pytest.MonkeyPatch) -> list[tuple[int, int]]
     return sizes
 
 
-def test_ordered_map_requests_no_more_workers_than_fit(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(parallel, "workers", lambda: 4)
+def _four_cpus(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Four CPUs and no inherited cap; the memory cap travels through GOROROBA_WORKERS, which workers() reads."""
+    monkeypatch.delenv("GOROROBA_WORKERS", raising=False)
+    monkeypatch.setattr(parallel, "available_cpus", lambda: 4)
+
+
+def test_bounded_map_requests_no_more_workers_than_fit(monkeypatch: pytest.MonkeyPatch) -> None:
+    _four_cpus(monkeypatch)
     sizes = _record_pool_sizes(monkeypatch)
     parallel._shutdown()
     try:
-        seen = parallel.ordered_map(
-            parallel._square, list(range(16)), min_items=1, worker_bytes=GIB, available_bytes=2 * GIB
+        seen = parallel_memory.bounded_ordered_map(
+            parallel._square, list(range(16)), GIB, available_bytes=2 * GIB, min_items=1
         )
-        monkeypatch.setattr(parallel, "available_memory", lambda: None)
-        uncapped = parallel.ordered_map(parallel._square, list(range(16)), min_items=1, worker_bytes=GIB)
+        monkeypatch.setattr(parallel_memory, "available_memory", lambda: None)
+        uncapped = parallel_memory.bounded_ordered_map(parallel._square, list(range(16)), GIB, min_items=1)
     finally:
         parallel._shutdown()
     _require(seen == [item * item for item in range(16)], "the capped pool returned the wrong list")
@@ -108,17 +115,44 @@ def test_ordered_map_requests_no_more_workers_than_fit(monkeypatch: pytest.Monke
 
 
 def test_two_workers_return_the_serial_verdicts(monkeypatch: pytest.MonkeyPatch) -> None:
+    _four_cpus(monkeypatch)
     items = list(range(24))
     serial = [item * item for item in items]
-    monkeypatch.setattr(parallel, "workers", lambda: 2)
     parallel._shutdown()
     try:
-        pooled = parallel.ordered_map(_pid_after_pause, items, min_items=1, worker_bytes=GIB, available_bytes=8 * GIB)
+        pooled = parallel_memory.bounded_ordered_map(
+            _pid_after_pause, items, GIB, available_bytes=2 * GIB, min_items=1
+        )
     finally:
         parallel._shutdown()
     _require([value for value, _ in pooled] == serial, "the pooled list differs from the serial list")
     pids = {pid for _, pid in pooled}
     _require(os.getpid() not in pids and len(pids) == 2, f"two worker processes must share the chunks, got {pids}")
+
+
+def _cap_seen(item: int) -> str | None:
+    return os.environ.get("GOROROBA_WORKERS")
+
+
+def _fails(item: int) -> int:
+    raise ValueError("stop")
+
+
+def test_worker_cap_is_set_for_the_call_and_restored(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(parallel, "available_cpus", lambda: 4)
+    monkeypatch.delenv("GOROROBA_WORKERS", raising=False)
+    during = parallel_memory.bounded_ordered_map(_cap_seen, [0, 1], GIB, available_bytes=2 * GIB, min_items=99)
+    _require(during == ["2", "2"], f"the call did not run under the memory cap, got {during}")
+    _require("GOROROBA_WORKERS" not in os.environ, "an absent GOROROBA_WORKERS did not stay absent")
+    monkeypatch.setenv("GOROROBA_WORKERS", "3")
+    during = parallel_memory.bounded_ordered_map(_cap_seen, [0], GIB, available_bytes=2 * GIB, min_items=99)
+    _require(during == ["2"], f"a looser caller cap displaced the memory cap, got {during}")
+    _require(os.environ.get("GOROROBA_WORKERS") == "3", "a present GOROROBA_WORKERS was not restored")
+    tighter = parallel_memory.bounded_ordered_map(_cap_seen, [0], GIB, available_bytes=9 * GIB, min_items=99)
+    _require(tighter == ["3"], f"the memory cap raised the caller's cap, got {tighter}")
+    with pytest.raises(ValueError, match="stop"):
+        parallel_memory.bounded_ordered_map(_fails, [0], GIB, available_bytes=GIB, min_items=99)
+    _require(os.environ.get("GOROROBA_WORKERS") == "3", "a failing call left GOROROBA_WORKERS changed")
 
 
 def test_case_verdict_pickles_without_loaded_state_and_cases_are_unique() -> None:

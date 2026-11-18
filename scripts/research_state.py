@@ -90,7 +90,7 @@ import qd_platform  # noqa: E402
 import qi_platform  # noqa: E402
 
 import math_sources  # noqa: E402
-import parallel  # noqa: E402
+import parallel_memory  # noqa: E402
 import qi_records  # noqa: E402
 
 REGISTRY = ROOT / "docs/state/research_state.json"
@@ -1480,7 +1480,7 @@ class CaseVerdict:
     each pool worker loads its own Context once, so every process validates against the
     repository facts of its own Context. The pool starts workers under the spawn method on
     every platform (parallel.py), so no Context is shared copy-on-write and the memory bound
-    is the worker count that parallel.ordered_map derives from SELF_TEST_WORKER_BYTES.
+    is the worker count that parallel_memory.bounded_ordered_map derives from SELF_TEST_WORKER_BYTES.
     """
 
     def __init__(self, registry: dict[str, Any], context: Context | None = None) -> None:
@@ -1589,8 +1589,8 @@ def self_test(registry: dict[str, Any], context: Context) -> int:
     if not isinstance(qi, QuantumInspireRuns):
         raise ValueError("the quantum_inspire provider is not the run-directory adapter")
     specs = _case_specs()
-    verdicts = parallel.ordered_map(
-        CaseVerdict(registry, context), list(range(len(specs))), min_items=2, worker_bytes=SELF_TEST_WORKER_BYTES
+    verdicts = parallel_memory.bounded_ordered_map(
+        CaseVerdict(registry, context), list(range(len(specs))), SELF_TEST_WORKER_BYTES, min_items=2
     )
     for (name, expected, _), verdict in zip(specs, verdicts, strict=True):
         if expected is None:

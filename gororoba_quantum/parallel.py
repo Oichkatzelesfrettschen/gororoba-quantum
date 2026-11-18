@@ -11,11 +11,7 @@ deserialization per worker. Results come back in input order, so a parallel
 run returns exactly what the serial loop returns.
 
 GOROROBA_WORKERS caps the worker count; 1 runs serially in-process. The
-default is the CPU count available to this process. A caller whose workers
-each hold a known amount of memory passes worker_bytes, and the count is
-further bounded by the memory headroom of the process (available_memory:
-MemAvailable and the room under every cgroup memory limit), so a capped scope
-is not filled by one resident copy per CPU.
+default is the CPU count available to this process.
 
 Each worker's BLAS and OpenMP libraries start with one thread: the pool is
 the parallelism. OpenBLAS and OpenMP read OPENBLAS_NUM_THREADS and
@@ -77,7 +73,6 @@ _worker_cache: dict[str, Callable[[Any], Any]] = {}
 
 PROC_SELF_CGROUP = Path("/proc/self/cgroup")
 CGROUP_ROOT = Path("/sys/fs/cgroup")
-PROC_MEMINFO = Path("/proc/meminfo")
 
 
 def workers() -> int:
@@ -159,47 +154,6 @@ def cgroup_cpu_quota(proc_cgroup: Path = PROC_SELF_CGROUP, cgroup_root: Path = C
     return min(quotas) if quotas else None
 
 
-def available_memory(
-    proc_cgroup: Path = PROC_SELF_CGROUP, cgroup_root: Path = CGROUP_ROOT, meminfo: Path = PROC_MEMINFO
-) -> int | None:
-    """Bytes this process can still allocate: the smallest of MemAvailable and the room under each cgroup limit.
-
-    A cgroup v2 line "0::/path" places memory.max ("max" for none) and memory.current under
-    cgroup_root/path and in every ancestor up to the root; the room at a node is its limit minus
-    its current use, and a limit on an ancestor binds the descendant. An unreadable or
-    malformed file contributes nothing, and None means no source reported a figure.
-    """
-    room: list[int] = []
-    try:
-        for line in meminfo.read_text().splitlines():
-            if line.startswith("MemAvailable:"):
-                room.append(int(line.split()[1]) * 1024)
-    except (OSError, ValueError, IndexError):
-        pass
-    try:
-        lines = proc_cgroup.read_text().splitlines()
-    except OSError:
-        lines = []
-    for line in lines:
-        fields = line.split(":", 2)
-        if len(fields) == 3 and fields[0] == "0" and fields[1] == "":
-            for node in _cgroup_ancestors(cgroup_root, fields[2]):
-                try:
-                    limit_text = (node / "memory.max").read_text().strip()
-                    if limit_text != "max":
-                        room.append(max(0, int(limit_text) - int((node / "memory.current").read_text())))
-                except (OSError, ValueError):
-                    continue
-    return min(room) if room else None
-
-
-def memory_workers(worker_bytes: int, available: int | None) -> int | None:
-    """Workers of worker_bytes each that fit in available bytes, at least one; None when available is unknown."""
-    if available is None:
-        return None
-    return max(1, available // worker_bytes)
-
-
 def _cgroup_ancestors(mount: Path, path: str) -> list[Path]:
     """The cgroup directory named by path under mount, then each ancestor up to mount."""
     parts = [part for part in path.strip("/").split("/") if part]
@@ -274,25 +228,13 @@ def _run_chunk(key: str, payload: bytes, chunk: list[Any]) -> list[Any]:
     return [function(item) for item in chunk]
 
 
-def ordered_map(
-    function: Callable[[Any], Any],
-    items: Sequence[Any],
-    min_items: int = MIN_PARALLEL_ITEMS,
-    worker_bytes: int = 0,
-    available_bytes: int | None = None,
-) -> list[Any]:
+def ordered_map(function: Callable[[Any], Any], items: Sequence[Any], min_items: int = MIN_PARALLEL_ITEMS) -> list[Any]:
     """[function(item) for item in items], spread over the process pool.
 
     function and every item must pickle; function must be a module-level
-    callable or an instance of a module-level class. A positive worker_bytes
-    bounds the worker count by the memory headroom, available_bytes when the
-    caller supplies one and available_memory() otherwise.
+    callable or an instance of a module-level class.
     """
     count = min(workers(), len(items))
-    if worker_bytes > 0:
-        fit = memory_workers(worker_bytes, available_memory() if available_bytes is None else available_bytes)
-        if fit is not None:
-            count = min(count, fit)
     if count <= 1 or len(items) < min_items:
         return [function(item) for item in items]
     payload = pickle.dumps(function)
