@@ -145,6 +145,40 @@ def test_rounds_keep_three_pairs_that_move_between_block_positions() -> None:
         raise AssertionError(rounds)
 
 
+def listed_circuits(directory: Path) -> set[str]:
+    """Circuit paths that a batch manifest of the directory lists, relative to it."""
+    found = set()
+    for manifest in directory.rglob("cases.json"):
+        for row in json.loads(manifest.read_text(encoding="utf-8")).get("circuits", []):
+            found.add((manifest.parent / row["file"]).relative_to(directory).as_posix())
+    return found
+
+
+def test_every_written_circuit_sits_beside_a_manifest_that_lists_it(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    retained = retained_fixture()
+    cases.write(tmp_path / "pending", draw_root=tmp_path, retained=retained)
+    pending = cases.case_directory(tmp_path / "pending", "tuna_17")
+    if list(pending.rglob("*.cq")):
+        raise AssertionError("a pending case wrote a circuit that no batch manifest lists")
+    path = "docs/evidence/anu_qrng/draw-2026-01-01T000000Z.json"
+    (tmp_path / path).parent.mkdir(parents=True)
+    (tmp_path / path).write_text(json.dumps(draw_record(cases.synthetic_values(400))), encoding="utf-8")
+    monkeypatch.setattr(cases, "DRAW", path)
+    cases.write(tmp_path / "drawn", draw_root=tmp_path, retained=retained)
+    for profile_name in cases.PROFILES:
+        drawn = cases.case_directory(tmp_path / "drawn", profile_name)
+        written = {p.relative_to(drawn).as_posix() for p in drawn.rglob("*.cq")}
+        if not written or written != listed_circuits(drawn):
+            raise AssertionError(sorted(written ^ listed_circuits(drawn))[:3])
+    stray = pending / "stray.cq"
+    stray.write_text("stray\n", encoding="utf-8")
+    unlisted = {p.relative_to(pending).as_posix() for p in pending.rglob("*.cq")} - listed_circuits(pending)
+    if unlisted != {"stray.cq"}:
+        raise AssertionError(unlisted)
+
+
 def test_rejection_keeps_the_modulus_unbiased() -> None:
     stream = cases.Stream([65535, 65534, 7])
     if stream.below(3) != 2 or stream.position != 2:

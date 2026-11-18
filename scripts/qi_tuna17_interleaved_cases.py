@@ -24,8 +24,8 @@ own series directory:
   pulses.
 
 Order. Every order comes from one retained QRNG draw (DRAW), consumed in index order, each value once, by a rejection
-shuffle; schedule() states the indices each component takes. While DRAW is None the batch directories and schedule.json
-do not exist: only the circuit library, the indexes and prediction.json are generated and qrng_request.json records the
+shuffle; schedule() states the indices each component takes. While DRAW is None the batch directories, their circuits
+and schedule.json do not exist: only the indexes and prediction.json are generated and qrng_request.json records the
 draw to take.
 
 Profiles: tuna_17 (17 qubits, 8,192 shots per circuit) and qx (the same texts on 10 qubits at 1,024 shots, with the
@@ -866,10 +866,15 @@ def batch_directory(arm: str, index: int) -> str:
 
 
 def files(profile_name: str, values: Sequence[int] | None, retained: dict[str, Any] | None = None) -> dict[str, str]:
-    """Relative path -> text of every generated file of one profile's case directory."""
+    """Relative path -> text of every generated file of one profile's case directory.
+
+    A circuit is written only inside a batch directory beside the manifest that lists it, which exists once the draw
+    does; before that the directory holds no .cq file, so no circuit lacks a batch manifest (qi_toolchain_check.case_files
+    rejects one).
+    """
     profile = PROFILES[profile_name]
     rows = library(profile_name)
-    out: dict[str, str] = {f"circuits/{name}": row["text"] for name, row in rows.items()}
+    out: dict[str, str] = {}
     index: dict[str, Any] = {
         "schema": SCHEMA,
         "profile": profile_name,
