@@ -1,0 +1,300 @@
+Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Dec  6 2025 11:10:58
+dab50bb8edcae66e4703e1597563eee9f63af22207513ce9d08e988ac51ef398  iso-nm-p.v2-u-full.sing
+detB -1024*s2^6+2000*s2^5+3072*s2^4-4000*s2^3-3072*s2^2+2000*s2+1024
+WEIGHTS [1, 0, 3, 2, 2, 1, 4, 4, 3]
+J dim mult size 5 2 4
+// ** redefining sat1 (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining sat2 (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minSat (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining quotMin (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining factor (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining idealsEqual (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining idealsEqual (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining specialIdealsEqual (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining stdIdealsEqual (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining primaryTest (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining primaryTest (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining gcdTest (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining gcdTest (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining splitPrimary (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining splitCharp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining zero_decomp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining zero_decomp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining extF (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining zeroSp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining zeroSepClos (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining insepDecomp_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining clearSB (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining clearSBNeu (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining teilt (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining independSet (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining maxIndependSet (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining prepareQuotientring (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining cleanPrimary (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssPrimesoldE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssPrimesold (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssPrimesold_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining primT (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssPrimesE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssPrimes (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssPrimes_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining union (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining equidim (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining equidim (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining equidimMax (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining equidimMax (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining islp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining algeDecoE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining algeDeco (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining algeDeco_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining prepare_absprimdec (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining decompE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining decomp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining decomp_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining powerCoeffs (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining sep (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining sep (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining zeroRad (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining zeroRad (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining algeRad (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining radicalEHV (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining radicalEHV (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining Ann (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining Ann (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining int_ass_primary_e (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining AnnExt_R (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining analyze (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining simplifyIdeal (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining ini_mod (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining min_ass_prim_charsets_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining min_ass_prim_charsets0_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining min_ass_prim_charsets1_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining prim_dec_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining pseudo_prim_dec_charsets_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining pseudo_prim_dec_special_charsets_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining pseudo_prim_dec_i_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining extraction (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minsat (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minsat_ppd (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minquot (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining special_ideals_equal (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining convList (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining reconvList (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining primdecGTZE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining primdecGTZE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining primdecGTZ (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining primdecGTZ (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining primdecGTZ_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining absPrimdecGTZE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining absPrimdecGTZE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining absPrimdecGTZ (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining absPrimdecGTZ (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining absPrimdecGTZ_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining primdecSYE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining primdecSYE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining primdecSY (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining primdecSY (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining primdecSY_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssGTZE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssGTZE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssGTZ (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssGTZ (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssGTZ_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssCharE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssCharE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssChar (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssChar (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssChar_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssChar_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining equiRadical (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining equiRadical (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining radical (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining radical (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining radicalKL (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining radicalSL (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining radicalReduction (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining radicalSLIteration (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining newMaxIndependSetDp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining newMaxIndependSetDp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining prepareAss (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining prepareAss (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining equidimMaxEHV (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining equidimMaxEHV (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining testPrimaryE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining testPrimaryE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining testPrimary (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining testPrimary (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining testPrimary_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining zerodec (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining zerodec (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining newDecompStepE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining newDecompStep (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining newDecompStep_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining newReduction (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssSL (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAssSLIteration (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining newMaxIndependSetLp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining newZero_decomp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining check_variables (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining prep_decomp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAss (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining minAss (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining primdec (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+// ** redefining primdec (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) iso-nm-p.v2-u-full.sing:160
+COMPONENT 1 dim 5 mult 2 through origin 1
+J local dim mult size 5 2 4
+F nonzero 84 max weight 8
+STAGE pf_done 0
+trunc size 1193
+STAGE std_mPF_done size 108 1
+STAGE selected 12 1
+STAGE selected 15 1
+STAGE selected 18 1
+STAGE selected 27 1
+STAGE selected 30 1
+STAGE selected 33 1
+STAGE selected 49 1
+STAGE selected 51 1
+STAGE selected 52 1
+STAGE selected 54 1
+STAGE selected 55 1
+STAGE selected 84 1
+STAGE selected 109 1
+STAGE selected 123 1
+STAGE selected 124 1
+STAGE selected 125 1
+STAGE selected 126 1
+STAGE nakayama_done 1
+NAKAYAMA generators 17
+selected 12,15,18,27,30,33,49,51,52,54,55,84,109,123,124,125,126
+generator weights 5,4,5,6,5,6,3,4,4,5,5,3,6,3,3,4,5
+STAGE products_done 1
+products 153 max weight 12
+trunc2 size 4985
+STAGE std_Q_done size 307 4
+nonzero normal forms 153 monomials 2273
+STAGE syz_done 5
+RELATIONS 68 of 153
+REL 1,7:-2 1,12:-10501 2,2:1
+REL 1,8:10754 1,9:1 2,3:1
+REL 1,5:-1 2,4:1
+REL 1,8:-2 2,5:1
+REL 1,10:-2 2,6:1
+REL 1,14:2 1,15:10501 2,8:10754 2,9:1
+REL 1,16:1 2,10:10754 2,11:1
+REL 1,10:10754 1,11:1 3,3:1
+REL 1,6:-1 3,4:1
+REL 1,10:-2 3,5:1
+REL 1,13:-1 3,6:1
+REL 1,14:-1 2,8:-5377 3,7:1
+REL 2,10:-1 3,8:1
+REL 1,16:1 2,10:10754 3,9:1
+REL 2,13:16004 3,10:1
+REL 1,17:1 2,13:5377 3,11:1
+REL 1,15:-1 2,8:16004 3,12:1
+REL 2,16:-5377 3,14:10754 3,15:1
+REL 2,17:-1 3,16:1
+REL 1,10:2 4,8:10754 4,9:1
+REL 1,13:1 4,10:10754 4,11:1
+REL 1,8:-10754 4,7:10754 4,12:1
+REL 2,10:-10754 4,14:10754 4,15:1
+REL 2,13:-1 4,16:1
+REL 3,13:-1 4,17:1
+REL 4,8:-2 5,5:1
+REL 4,10:-2 5,6:1
+REL 2,10:2 5,8:10754 5,9:1
+REL 2,13:1 5,10:10754 5,11:1
+REL 2,8:-10754 5,7:10754 5,12:1
+REL 4,13:-1 6,6:1
+REL 4,14:-1 5,8:-5377 6,7:1
+REL 5,10:-1 6,8:1
+REL 2,13:1 5,10:10754 6,9:1
+REL 5,13:16004 6,10:1
+REL 3,13:1 5,13:5377 6,11:1
+REL 2,10:-10754 4,14:10754 5,8:16004 6,12:1
+REL 5,16:-5377 6,14:10754 6,15:1
+REL 5,17:-1 6,16:1
+REL 3,14:1 5,14:5377 5,15:-16004 7,10:10754 7,11:1
+REL 5,14:-10754 7,10:-10501 8,8:1
+REL 5,15:-10754 7,10:2 8,9:1
+REL 6,14:-10754 7,13:10754 8,10:1
+REL 5,16:-16004 6,14:-1 7,13:1 8,11:1
+REL 2,14:1 7,8:-10501 7,9:1 8,12:1
+REL 2,16:-1 5,14:-10754 5,15:-2 7,10:10501 9,9:1
+REL 5,16:-16004 6,14:-1 7,13:1 9,10:1
+REL 2,17:-1 5,16:-10754 6,14:10754 7,13:-10754 9,11:1
+REL 2,15:1 7,8:1 9,12:1
+REL 5,17:1 8,13:10754 9,13:1
+REL 7,16:1 8,15:-1 9,14:1
+REL 8,13:16004 10,10:1
+REL 5,17:-16004 8,13:5377 10,11:1
+REL 5,14:-5377 5,15:16004 7,10:10754 10,12:1
+REL 8,16:-5377 10,14:10754 10,15:1
+REL 8,17:-1 10,16:1
+REL 3,17:-1 5,17:-10754 8,13:-16004 11,11:1
+REL 2,16:5377 3,14:-10754 7,10:1 11,12:1
+REL 6,17:1 10,13:10754 11,13:1
+REL 7,17:1 8,16:-5377 10,14:10754 11,14:1
+REL 7,17:-10754 8,16:16004 9,16:-5377 10,14:1 11,15:1
+REL 9,17:-1 11,16:1
+REL 5,16:-5377 7,13:10754 12,13:1
+REL 8,14:-1 8,15:-10501 9,15:1 12,16:1
+REL 7,17:10754 8,16:16004 9,16:5377 12,17:1
+REL 8,17:-10754 13,14:10754 13,15:1
+REL 10,17:-2 13,16:1
+REL 14,17:-2 15,17:-10501 16,16:1
+EMBED
+GEN 1 pf 12 w 5
+GEN 2 pf 15 w 4
+GEN 3 pf 18 w 5
+GEN 4 pf 27 w 6
+GEN 5 pf 30 w 5
+GEN 6 pf 33 w 6
+GEN 7 pf 49 w 3
+GEN 8 pf 51 w 4
+GEN 9 pf 52 w 4
+GEN 10 pf 54 w 5
+GEN 11 pf 55 w 5
+GEN 12 pf 84 w 3
+GEN 13 pf 109 w 6
+GEN 14 pf 123 w 3
+GEN 15 pf 124 w 3
+GEN 16 pf 125 w 4
+GEN 17 pf 126 w 5
+STAGE rees_start 5
+UNIT degrees removed 9,9,9,9,10,9,9,10,9,9,9,9,9,9,9,9,9
+UNIT terms left 1,1,2,3,1,3,3,2,4,4,4,3,3,3,3,1,1
+UNIT 1 c(0)=-10754 c=s2^9-253*s2^8-6*s2^7+11513*s2^6+12*s2^5-1012*s2^4-10*s2^3+506*s2^2+3*s2-10754
+UNIT 2 c(0)=-10754 c=s2^9-253*s2^8-6*s2^7+11513*s2^6+12*s2^5-1012*s2^4-10*s2^3+506*s2^2+3*s2-10754
+UNIT 3 c(0)=-10754 c=s2^9-253*s2^8-6*s2^7+11513*s2^6+12*s2^5-1012*s2^4-10*s2^3+506*s2^2+3*s2-10754
+UNIT 4 c(0)=-10754 c=s2^9-253*s2^8-6*s2^7+11513*s2^6+12*s2^5-1012*s2^4-10*s2^3+506*s2^2+3*s2-10754
+UNIT 5 c(0)=-1 c=s2^10-11007*s2^9-9*s2^8+12019*s2^7+22*s2^6-2024*s2^5-22*s2^4+12019*s2^3+9*s2^2-11007*s2-1
+UNIT 6 c(0)=-10754 c=s2^9-253*s2^8-6*s2^7+11513*s2^6+12*s2^5-1012*s2^4-10*s2^3+506*s2^2+3*s2-10754
+UNIT 7 c(0)=-10754 c=s2^9-253*s2^8-6*s2^7+11513*s2^6+12*s2^5-1012*s2^4-10*s2^3+506*s2^2+3*s2-10754
+UNIT 8 c(0)=-1 c=s2^10-11007*s2^9-9*s2^8+12019*s2^7+22*s2^6-2024*s2^5-22*s2^4+12019*s2^3+9*s2^2-11007*s2-1
+UNIT 9 c(0)=-10754 c=s2^9-253*s2^8-6*s2^7+11513*s2^6+12*s2^5-1012*s2^4-10*s2^3+506*s2^2+3*s2-10754
+UNIT 10 c(0)=-10754 c=s2^9-253*s2^8-6*s2^7+11513*s2^6+12*s2^5-1012*s2^4-10*s2^3+506*s2^2+3*s2-10754
+UNIT 11 c(0)=-10754 c=s2^9-253*s2^8-6*s2^7+11513*s2^6+12*s2^5-1012*s2^4-10*s2^3+506*s2^2+3*s2-10754
+UNIT 12 c(0)=-10754 c=s2^9-253*s2^8-6*s2^7+11513*s2^6+12*s2^5-1012*s2^4-10*s2^3+506*s2^2+3*s2-10754
+UNIT 13 c(0)=-10754 c=s2^9-253*s2^8-6*s2^7+11513*s2^6+12*s2^5-1012*s2^4-10*s2^3+506*s2^2+3*s2-10754
+UNIT 14 c(0)=-10754 c=s2^9-253*s2^8-6*s2^7+11513*s2^6+12*s2^5-1012*s2^4-10*s2^3+506*s2^2+3*s2-10754
+UNIT 15 c(0)=-10754 c=s2^9-253*s2^8-6*s2^7+11513*s2^6+12*s2^5-1012*s2^4-10*s2^3+506*s2^2+3*s2-10754
+UNIT 16 c(0)=-10754 c=s2^9-253*s2^8-6*s2^7+11513*s2^6+12*s2^5-1012*s2^4-10*s2^3+506*s2^2+3*s2-10754
+UNIT 17 c(0)=-10754 c=s2^9-253*s2^8-6*s2^7+11513*s2^6+12*s2^5-1012*s2^4-10*s2^3+506*s2^2+3*s2-10754
+CERT unit_identity_bad 0 all_positive_degree 1
+pivot generator 7 weight 3
+K quadrics 68 dim 5 mult 23
+SOURCE sha256 452ea270018c239212a9142f86beb6b6ea757b8a999f88e28496c31a912bdcb5
+CERT pivot_nonzerodivisor_mod_J 1
+STAGE rees_std_done size 398 8
+STAGE basis_saved 8
+CERT satstd_isSB 1 leading_u_bad 3
+CERT colon_equal_after_iterations 0 14
+FIBER bound 0 minimal generators 68 dim 5 mult 23
+generator degrees 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
+FIBER outside_K 0 K_outside_fiber 0
+hilb
+1,0,-68,452,-1485,2948,-3630,2376,231,-2200,2376,-1420,517,-108,10,0
+STAGE rees_done 14
+EXIT 0

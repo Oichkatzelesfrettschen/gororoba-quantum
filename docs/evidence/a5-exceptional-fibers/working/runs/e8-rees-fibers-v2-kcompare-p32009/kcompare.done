@@ -1,0 +1,12 @@
+CELL e8-nm EXIT 0
+KCMP RESULT cell e8-nm equal 1 control_drop_unequal 1 control_added_unequal 1
+SPAN RESULT cell e8-nm span_equal 0
+KCMP DONE cell e8-nm
+CELL e8-np EXIT 0
+KCMP RESULT cell e8-np equal 1 control_drop_unequal 1 control_added_unequal 1
+SPAN RESULT cell e8-np span_equal 0
+KCMP DONE cell e8-np
+CELL iso-nm EXIT 0
+KCMP RESULT cell iso-nm equal 1 control_drop_unequal 1 control_added_unequal 1
+KCMP DONE cell iso-nm
+KCOMPARE ALL DONE
