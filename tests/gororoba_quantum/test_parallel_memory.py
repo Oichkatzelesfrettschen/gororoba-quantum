@@ -81,7 +81,8 @@ def _record_pool_sizes(monkeypatch: pytest.MonkeyPatch) -> list[tuple[int, int]]
 
     def recording(count: int) -> parallel.ProcessPoolExecutor:
         pool = real(count)
-        sizes.append((count, pool._max_workers  # type: ignore[attr-defined]))
+        limit: int = pool._max_workers  # type: ignore[attr-defined]
+        sizes.append((count, limit))
         return pool
 
     monkeypatch.setattr(parallel, "_executor", recording)
