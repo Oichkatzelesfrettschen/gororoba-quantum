@@ -19,7 +19,7 @@ Three arms, each its own series directory, on the same 17-qubit register as the 
   below the fit on 14 of 17 and an 80 us point above it on 16 of 17, and a positive step on the batch that held the three longest delays.
   Here qubit i waits d(i, m) cycles for six multipliers m of 0.5, 1, 2, 4, 8 and 12 times its retained plateau T (the generator's
   `PLATEAU_T_US`, rounded half up to a 20 ns cycle), in three rounds, and every provider batch carries both anchors.
-- `crosstalk`: drive-context dependence. The coupler graph splits into class A = {0, 4, 5, 6, 10, 11, 12, 16} and class B' = {1, 3, 7, 8, 9, 13,
+- `crosstalk`: drive-and-readout context dependence. The coupler graph splits into class A = {0, 4, 5, 6, 10, 11, 12, 16} and class B' = {1, 3, 7, 8, 9, 13,
   14, 15} (class B without qubit 2). Six conditions (T1 at 5, 20 and 80 us; the X90 ladder at 32, 128 and 256 pulses) each run one batch of
   {A driven, B' driven, all 17 driven}. One batch of context anchors holds {readout-0, A prepared in 1, B' prepared in 1}. One batch holds
   {q1 alone, q2 alone, all 17} at the 128-pulse ladder, the direct test of the q1/q2 pair (retained: q2 reads 0.046 alone and 0.893 with q1
@@ -55,7 +55,9 @@ separately.
   D(m): `wait(D - d)`, `X`, `wait(d)`, then the common `barrier` and `measure`; a wait of 0 cycles is omitted. The X-to-barrier wait of qubit i is d(i, m)
   whether the scheduler places a chain early or late, so the circuit does not depend on the scheduler direction. Both anchors of the batch carry the
   same D(m): readout-0 is `wait(D)` on every qubit; t1-0 is `wait(D)` on every qubit, then X on every qubit. `--self-test` and the tests assert, for
-  every circuit, that each qubit's summed wait equals D(m) and that its X-to-barrier wait equals d(i, m), and reject a circuit that breaks either.
+  every circuit, that each qubit's summed wait before the barrier equals D(m) and that its X-to-barrier wait equals d(i, m), that no wait or gate follows the barrier
+  (the barrier closes each qubit's timing), and that each crosstalk, context-anchor, readout and Ramsey circuit runs its stated gate sequence (the driven qubits' X and
+  wait or X90 pulses, the Ramsey target's X90, wait, Rz and X90, and nothing on the other qubits); a circuit that breaks any of these is rejected.
 - The longest delay is 17,423 cycles (348.5 us, qubit 10 at 12 T, plateau T 29.04 us), 4.4 times the longest retained wait of 4,000 cycles (80 us). A
   job of that batch waits about 2.9 s per 8,192 shots and lasts about 9.8 s, inside the 300 s limit.
 - Order. A seeded permutation pi of the six multipliers sets round 1 (pi0 to pi5); round 2 is the cyclic shift by two and round 3 the shift by four; the
@@ -83,7 +85,10 @@ at `--sanity` and the layout returns to the owner; no fallback layout runs autom
 
 ## Estimator and decision rule
 
-Written before any data of this case; `--analyze` applies it and `--self-test` recovers its classes from exact synthetic series.
+Written before any data of this case; `--analyze` applies it. `--self-test` exercises the design ranks, the order, the admission and submit guards, the circuit timing and
+gate sequences, the record validators on one valid and one empty record, the estimator's classes on exact synthetic series, the phase fit and the crosstalk flag and
+analysis. Only the test file (`tests/scripts/test_qi_tuna17_interleaved_cases.py`) exercises the replicate gate, the tail-statistic threshold of 200, each field of
+the two records, the detuning aggregate, the unusable counts and the simultaneous-versus-staggered comparison.
 
 1. Population. Each delay job of batch b gives x = (p - a0) / (a1 - a0) from the batch's own prepared-0 and prepared-1 jobs, for qubit i at its own delay d(i, m).
    A level shift common to the three jobs cancels; the zero-delay population is 1 by construction.
@@ -99,6 +104,8 @@ Written before any data of this case; `--analyze` applies it and `--self-test` r
    of them decide nothing.
 6. Registered statistic. The tail is confirmed when `tail_statistic` >= 200, where `tail_statistic` is the sum over usable qubits of the AICc gain of the
    lower-AICc tail fit over the single exponential, counted only where that fit's own lack-of-fit probability and the replicate probability both reach 0.01.
+   A qubit that reads `unusable` (anchors too close or too few points) adds nothing to `tail_statistic`, a sum of nonnegative gains, so a dropped qubit moves the verdict
+   toward the null; `pooled.unusable_qubits` records the count, and the crosstalk and phase arms record `unusable_normalizations` and `unusable_scans`.
    Descriptive fields (`descriptive_single_exponential_accepted`, `descriptive_single_exponential_rejected` and `descriptive_label_count_reaches_mark`) carry the
    label counts.
 
@@ -113,14 +120,23 @@ without anchors has rank 18 of 19 columns, so the anchors, and not the delay row
 - Contrasts. A class qubit and condition contrasts its own class circuit (A or B' driven) with the all-17 circuit of the same batch. The arm forms 96 class
   contrasts (16 qubits x 6 conditions; qubit 2 sits in neither class) and 2 pair contrasts (q1 and q2 alone against all 17), 98 in all. A contrast is flagged when
   the readings differ by more than 3.49 standard errors of the difference, the two-sided normal quantile of a Bonferroni level of 0.05 over 102 contrasts, which
-  holds the familywise level below 0.05 for the 98 formed. The variance of a reading is its binomial variance plus the job-level variance (sigma 0.0034 from the
-  retained anchors; the arm holds one anchor pair per context, too few to estimate it). Verdict words: "drive-context dependence"; the arm names no neighbor
-  mechanism.
+  holds the familywise level below 0.05 for the 98 formed. The variance of a reading is its binomial variance plus the job-level variance. The arm holds one anchor
+  pair per context, too few to estimate it, so the registered flag uses sigma 0.0068, twice the retained anchors' 0.0034 (`job_level_sigma` and
+  `retained_job_level_sigma` in `prediction.json`). At a true job-level sigma of 0.0068 the registered rule flags a family of 98 null contrasts with probability
+  0.046 at populations near 0.5, 0.05 and 0, and the rule at 0.0034 would flag it with probability 0.618, 0.988 and 0.9997
+  (`crosstalk.family_false_flag_rate_at_true_sigma`; independent contrasts). The analysis keeps the reading at 0.0034 as the descriptive field
+  `z_at_retained_sigma` and counts the flags it would give (`descriptive_flagged_at_retained_sigma`); the verdict reads the registered flag only. Verdict words:
+  "drive-and-readout context dependence"; the arm names no neighbor mechanism.
 - Normalization. Half-drive populations and ladder values P(0) normalize by the anchors of their own class context (readout-0 and the class prepared in 1); the
   all-drive reading of a qubit normalizes by the same anchors, so the readout context of the all-drive circuit (the retained q13 reads 0.090 with its neighbors
-  excited against 0.044 otherwise) is not separated from the drive. The flag reads the raw difference and is unaffected.
+  excited against 0.044 otherwise) is not separated from the drive; the verdict words name both. The flag reads the raw difference and is unaffected. A class
+  qubit whose context anchors span too little keeps its z and flag and loses the normalized values; `pooled.unusable_normalizations` counts those rows.
 - Prediction. The pair contrast of q2 flags (the retained 0.046 against 0.893 is far beyond 3.49 standard errors). Falsifier: q2 alone reads within 3.49 standard
   errors of its all-17 reading, which puts the retained q2 failure on another cause. No class contrast carries a prediction; the flagged count is descriptive.
+- Descriptive comparison, no decision. `simultaneous_versus_staggered` of the analysis sets the all-drive T1 readings at 5, 20 and 80 us, normalized by each
+  qubit's class anchors, beside the interleaved points of the same qubit at the multiplier whose delay lies nearest, and records the difference in standard errors
+  of the difference per qubit and wait. A systematic sign points at neighbor-state relaxation or assignment under staggered excitation; the registered
+  statistic does not read it.
 - Follow-up. A single-drive follow-up of the flagged qubits is a second stage with its own admission and is not generated here. It holds about 18 jobs when six of
   eight flagged qubits persist and about 33 when all 11 retained ladder failures persist (clears on 3, 6, 8, 12, 13 and 15).
 
@@ -129,7 +145,9 @@ without anchors has rank 18 of 19 columns, so the anchors, and not the delay row
 - Prediction: the q12 fringe offset with no wait lies in [-0.20, -0.10] rad (the refit's -0.1507 and the window of its stability), with a standard error of 0.0088 rad
   at six angles and 4,096 shots (cosine amplitude 0.45, binomial errors; `expected_phase_se_rad`). Verdict `supports_target` needs the window, a standard error at
   most 0.02 and a cosine fit whose chi-square probability reaches 0.01 (a fit below it reads `poor_fit` before any phase label).
-- Detuning: the difference of the two q12 offsets (25 cycles against none) divided by 0.5 us is zero within 0.05 rad over the wait.
+- Detuning: the difference of the two q12 offsets (25 cycles against none) divided by 0.5 us is zero within 0.05 rad over the wait. `q12_phase.detuning` of the
+  analysis carries, per qubit, the wrapped difference, its propagated standard error from the two fits, the detuning in rad per us and the registered verdict
+  "zero within 0.05 rad" (the difference plus twice its error lies inside 0.05 rad), or "unresolved" when either fringe reads `no_fringe` or `poor_fit`.
 - Falsifier of the pulse-located term: a q12 offset at no wait within 0.05 rad of zero (`null`). That refutes a static z rotation between two `X90` pulses as the
   cause of the refit's gain. It leaves the CZ-located term open: the refit fits a z rotation after each pulse and after each CZ to the same chi-square (42,848.82
   for both), and this arm contains no CZ. An offset of +0.15 rad reads `supports_target_opposite_sign` and flags a sign convention difference, not a null.
@@ -141,11 +159,13 @@ without anchors has rank 18 of 19 columns, so the anchors, and not the delay row
 
 ## Admission
 
-Each condition holds immediately before each batch is submitted; `--submit` enforces them, and none holds today, since nothing has run.
+Each condition holds immediately before each batch is submitted; `--submit` enforces them, and none holds today, since nothing has run. The wording separates two cases:
+the initial admission of a batch, which refuses before a run directory or a remote write exists, and a retry after a pause refusal, which reads again and refuses
+with the run directory and its earlier admission record already in place.
 
 - The compute API reads, before every submit attempt (a retry after a pause refusal reads again), the Tuna-17 backend type and every instance of it as exactly
   `idle` and the account's queue on the type at 0 (`status_label` and `admission` in the generator, over `qi_status.account`). Any other reading, a missing reading, an
-  error document or a type without instances refuses before a run directory or a remote write exists; the retained series submitted batch 00 while its status
+  error document or a type without instances refuses the initial admission before a run directory or a remote write exists; the retained series submitted batch 00 while its status
   read `calibrating` and executed 8 h 20 min later.
 - No other series of the account is in flight, as in the retained case. The pause and the one-batch-queued rule are account-wide.
 - The QX dry run of the twin is collected and its analysis reads the noiseless expectation (`--local` and the twin's own analysis).
@@ -155,7 +175,9 @@ Each condition holds immediately before each batch is submitted; `--submit` enfo
 ## Provenance fields
 
 Every run directory (named STAMP-CASE-ARM-batch-NN) holds `admission.json` (the status label, queue and attempt number read immediately before its submit) and
-`status-trace.json` (the status read once at submission and every 15 s while the collection waits, and once after). `--sanity` also requires
+`status-trace.json` (the status read once at submission and every 15 s while the collection waits, and once after). `--sanity` validates every field of both
+records (schema, the series' backend type, status `idle`, own queue 0, a positive attempt number and a UTC stamp for `admission.json`; schema, the poll interval and each
+row's UTC stamp, status text and own-queue reading for `status-trace.json`), also requires
 `backend_status_at_submit` of `submission.json` to read `idle`, and takes each job's start from `queued_at` in `results.json` (the retained notes read it as the
 execution start), assigns it the last trace read at or before it, and stops the series when that read is not `idle` or `executing` or lies more than 45 s earlier. The
 analysis lists the round and that start for every T1 job. The status reader of `--submit` calls `qi_status.account` through the Quantum Inspire interpreter and has not run against
