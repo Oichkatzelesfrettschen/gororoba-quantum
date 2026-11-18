@@ -26,7 +26,7 @@ from typing import Any
 import numpy as np
 from scipy.optimize import least_squares, minimize_scalar
 
-from elementary_error_laws import rotation
+from elementary_error_laws import damping_kraus, rotation
 from parallel import ordered_map
 
 Observation = dict[str, Any]
@@ -74,15 +74,6 @@ class Experiment:
 # Forward model --------------------------------------------------------------------------------------------------------
 
 
-def kraus(amplitude: float, phase: float) -> list[np.ndarray]:
-    """Amplitude damping followed by phase damping, as the Kraus operators that are not zero."""
-    a0 = np.array([[1, 0], [0, math.sqrt(1 - amplitude)]], dtype=complex)
-    a1 = np.array([[0, math.sqrt(amplitude)], [0, 0]], dtype=complex)
-    p0 = np.array([[1, 0], [0, math.sqrt(1 - phase)]], dtype=complex)
-    p1 = np.array([[0, 0], [0, math.sqrt(phase)]], dtype=complex)
-    return [p @ a for p in (p0, p1) for a in (a0, a1) if np.any(p @ a)]
-
-
 def channel(rho: np.ndarray, ops: list[np.ndarray], axis: int, qubits: int) -> np.ndarray:
     """rho -> sum_k K rho K^dagger on one qubit axis of the (2,) * 2 * qubits density tensor."""
     out: np.ndarray | None = None
@@ -118,8 +109,8 @@ def law(experiment: Experiment, arm: str, values: dict[str, float]) -> np.ndarra
     pa, pp, cd = values.get("pa", 0.0), values.get("pp", 0.0), values.get("cd", 0.0)
     ca, cp, delta = values.get("ca", 0.0), values.get("cp", 0.0), values.get("delta", 0.0)
     offsets, after_pulse, after_cz = per_qubit(values, "x"), per_qubit(values, "z"), per_qubit(values, "c")
-    pulse_ops = kraus(pa, pp) if (pa or pp) else None
-    cz_ops = kraus(ca, cp) if (ca or cp) else None
+    pulse_ops = damping_kraus(pa, pp) if (pa or pp) else None
+    cz_ops = damping_kraus(ca, cp) if (ca or cp) else None
     rho = np.zeros((2,) * (2 * n), dtype=complex)
     rho.flat[0] = 1.0
     for gate, angle, qubits in experiment.ops:
