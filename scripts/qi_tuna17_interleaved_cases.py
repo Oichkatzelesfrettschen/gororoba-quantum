@@ -40,7 +40,7 @@ qubit map of CLASS_A, CLASS_B, PAIR and PHASE). Bit order: qubit 0 is the rightm
     --sanity RUN_DIR    after a collection: shots, fixed outcomes, admission and execution-start status
     --analyze OUT RUN_DIR...   per-arm rows and verdicts
     --submit ARM_DIR RUNS_DIR STAMP APPROVAL   submit one series, refusing unless the backend reads idle
-    --self-test         design, order, admission, estimator and phase-fit invariants
+    --self-test         design, order, circuit-timing, admission-record, estimator and phase-fit invariants
 
 Usage: "$PYTHON" scripts/qi_tuna17_interleaved_cases.py (--write ROOT | --check ROOT | --request | --local |
        --sanity RUN_DIR | --analyze OUT RUN_DIR... | --submit ARM_DIR RUNS_DIR STAMP APPROVAL | --self-test)
@@ -110,9 +110,14 @@ PAIR_PULSES = 128
 # A flag marks |z| above this: the two-sided normal quantile of a Bonferroni level of 0.05 over 102 contrasts. The arm
 # forms 96 class contrasts and 2 pair contrasts, so the bound is conservative.
 FLAG_Z = 3.49
-# Job-level standard deviation of a population (retained anchors, pooled over 17 qubits); the arm holds one anchor
-# pair per context, too few for job_level_variance().
-JOB_LEVEL_SIGMA = 0.0034
+# Job-level standard deviation of a population in the retained anchors, pooled over 17 qubits. The arm holds one anchor
+# pair per context, too few for job_level_variance(), so the contrast takes a fixed value. The registered flag uses
+# twice the retained value: the two-sided FLAG_Z test at a standard error built on 0.0034 flags a family of 98
+# independent contrasts more than 5 percent of the time once the true value reaches 0.0068 (family_false_flag_rate()).
+RETAINED_JOB_LEVEL_SIGMA = 0.0034
+FLAG_JOB_LEVEL_SIGMA = 2 * RETAINED_JOB_LEVEL_SIGMA
+FAMILY_CONTRASTS = 98
+VERDICT_WORDS = "drive-and-readout context dependence"
 PHASE = {"tuna_17": (12,), "qx": (9,)}
 PHASE_WAITS = (0, 25)
 # Angles k pi / 3 on the processor's pi/36 grid (steps of 12) in two triads: the sines and cosines of each triad sum to
@@ -151,6 +156,7 @@ SANITY_WRONG_QUBITS = base.SANITY_WRONG_QUBITS
 PHASE_TARGET = -0.15
 PHASE_HALF_WIDTH = 0.05
 PHASE_NULL = 0.05
+PHASE_ZERO_VERDICT = f"zero within {PHASE_NULL} rad"
 # A fringe whose cosine amplitude lies below this carries no phase.
 MIN_FRINGE_AMPLITUDE = 0.25
 # Backend statuses that admit an execution start, and the longest gap between status reads that still covers a start.
@@ -207,11 +213,20 @@ def interleaved_circuits(multiplier: float) -> tuple[str, str, str]:
     return f"readout-0-m{multiplier}.cq", f"t1-0-m{multiplier}.cq", f"t1-m{multiplier}.cq"
 
 
+OPERATION = re.compile(r"(?P<gate>X90|X|Rz|wait)(?:\((?P<arg>[^)]*)\))? q\[(?P<qubit>\d+)\]")
+
+
 def chain_profile(text: str, nqubits: int) -> dict[int, tuple[int, int | None]]:
-    """Per qubit: the sum of its waits and the wait after its last X (None without an X)."""
+    """Per qubit: the sum of its waits and the wait after its last X (None without an X), up to the first barrier.
+
+    The barrier closes every qubit's timing: the measurement follows it, so a wait or an X placed after it adds no
+    delay before the readout, and post_barrier_operations() names such a line.
+    """
     total = dict.fromkeys(range(nqubits), 0)
     after: dict[int, int | None] = dict.fromkeys(range(nqubits))
     for line in text.splitlines():
+        if line.startswith("barrier"):
+            break
         if match := re.fullmatch(r"wait\((\d+)\) q\[(\d+)\]", line):
             total[int(match[2])] += int(match[1])
             if after[int(match[2])] is not None:
@@ -221,13 +236,92 @@ def chain_profile(text: str, nqubits: int) -> dict[int, tuple[int, int | None]]:
     return {q: (total[q], after[q]) for q in range(nqubits)}
 
 
-def timing_problems(profile_name: str, rows: dict[str, dict[str, Any]] | None = None) -> list[str]:
-    """Every T1 circuit gives each qubit a chain of exactly its batch's longest delay and, for a delay circuit, an
-    X-to-barrier wait equal to the qubit's own delay."""
+def post_barrier_operations(text: str) -> list[str]:
+    """The wait, X, X90 and Rz lines that follow the first barrier; the measurement is the only operation there."""
+    lines = text.splitlines()
+    start = next((i for i, line in enumerate(lines) if line.startswith("barrier")), len(lines))
+    return [line for line in lines[start:] if OPERATION.fullmatch(line)]
+
+
+def operations(text: str, nqubits: int) -> dict[int, list[tuple[str, str | None]]]:
+    """Per qubit: the (gate, argument) sequence before the first barrier."""
+    found: dict[int, list[tuple[str, str | None]]] = {q: [] for q in range(nqubits)}
+    for line in text.splitlines():
+        if line.startswith("barrier"):
+            break
+        if match := OPERATION.fullmatch(line):
+            found[int(match["qubit"])].append((match["gate"], match["arg"]))
+    return found
+
+
+def expected_operations(row: dict[str, Any], nqubits: int) -> dict[int, list[tuple[str, str | None]]] | None:
+    """The gate sequence each qubit runs before the barrier, by circuit kind; None for a kind that timing_problems
+    reads through its chain instead.
+
+    Crosstalk T1 circuits: every driven qubit takes X then wait(wait_cycles) and every other qubit nothing. Ladder
+    circuits: every driven qubit takes pulses X90 gates. Context anchors: every driven qubit takes one X. The
+    retained readout-0 circuit: no gate. Ramsey circuits: the target qubit takes X90, wait(wait_cycles) when that is
+    nonzero, Rz(angle) and X90, and every other qubit nothing, so the scan angle and the wait are the only variables.
+    """
+    want: dict[int, list[tuple[str, str | None]]] = {q: [] for q in range(nqubits)}
+    kind = row["kind"]
+    if kind == "anchor0" and "multiplier" not in row:
+        return want
+    if kind == "xt_t1":
+        for q in row["driven"]:
+            want[q] = [("X", None), ("wait", str(row["wait_cycles"]))]
+    elif kind == "xt_x90":
+        for q in row["driven"]:
+            want[q] = [("X90", None)] * row["pulses"]
+    elif kind == "xt_prep1":
+        for q in row["driven"]:
+            want[q] = [("X", None)]
+    elif kind == "ramsey":
+        wait = [("wait", str(row["wait_cycles"]))] if row["wait_cycles"] else []
+        want[row["qubit"]] = [("X90", None), *wait, ("Rz", repr(row["angle"])), ("X90", None)]
+    else:
+        return None
+    return want
+
+
+def same_operations(got: list[tuple[str, str | None]], want: list[tuple[str, str | None]]) -> bool:
+    if len(got) != len(want):
+        return False
+    for (gate, arg), (want_gate, want_arg) in zip(got, want, strict=True):
+        if gate != want_gate or (gate == "Rz" and abs(float(arg or "nan") - float(want_arg or "nan")) > 1e-12):
+            return False
+        if gate != "Rz" and arg != want_arg:
+            return False
+    return True
+
+
+def operation_problems(profile_name: str, rows: dict[str, dict[str, Any]] | None = None) -> list[str]:
+    """Every crosstalk, anchor, readout and Ramsey circuit runs the gate sequence expected_operations() states."""
     rows = library(profile_name) if rows is None else rows
     nqubits = PROFILES[profile_name]["nqubits"]
     found = []
     for name, row in rows.items():
+        want = expected_operations(row, nqubits)
+        if want is None:
+            continue
+        got = operations(row["text"], nqubits)
+        found += [
+            f"{name}: qubit {q} runs {got[q]}, want {want[q]}"
+            for q in range(nqubits)
+            if not same_operations(got[q], want[q])
+        ]
+    return found
+
+
+def timing_problems(profile_name: str, rows: dict[str, dict[str, Any]] | None = None) -> list[str]:
+    """Every T1 circuit gives each qubit a chain of exactly its batch's longest delay and, for a delay circuit, an
+    X-to-barrier wait equal to the qubit's own delay; no circuit holds a wait or gate after its barrier; the
+    crosstalk, anchor and Ramsey circuits run the gate sequences of operation_problems()."""
+    rows = library(profile_name) if rows is None else rows
+    nqubits = PROFILES[profile_name]["nqubits"]
+    found = operation_problems(profile_name, rows)
+    for name, row in rows.items():
+        found += [f"{name}: {line!r} follows the barrier" for line in post_barrier_operations(row["text"])]
         if "multiplier" not in row:
             continue
         delays = t1_delays(nqubits, row["multiplier"])
@@ -829,7 +923,7 @@ def prediction(profile_name: str, retained: dict[str, Any] | None = None) -> dic
         },
     }
     out["q12_phase"] = {
-        "target_qubit": PHASE["tuna_17"][0],
+        "target_qubit": PHASE[profile_name][0],
         "waits_cycles": list(PHASE_WAITS),
         "angles_pi_over_3": [s // 12 for s in PHASE_STEPS],
         "triads_pi_over_3": [[s // 12 for s in t] for t in PHASE_TRIADS],
@@ -857,14 +951,37 @@ def prediction(profile_name: str, retained: dict[str, Any] | None = None) -> dic
         ),
         "design_qubit": middle["qubit"],
     }
+    crosstalk_shots = PROFILES[profile_name]["arm_shots"]["crosstalk"]
     out["crosstalk"] = {
         "classes": {"A": list(CLASS_A[profile_name]), "B_prime": list(CLASS_B[profile_name])},
         "conditions": [f"t1-{c}" for c in CROSSTALK_T1_CYCLES] + [f"x90-{p}" for p in CROSSTALK_LADDER_PULSES],
         "flag_z": FLAG_Z,
         "class_contrasts": len(CLASS_A[profile_name] + CLASS_B[profile_name]) * 6,
         "pair_contrasts": len(PAIR),
-        "job_level_sigma": JOB_LEVEL_SIGMA,
-        "verdict_words": "drive-context dependence",
+        "job_level_sigma": FLAG_JOB_LEVEL_SIGMA,
+        "retained_job_level_sigma": RETAINED_JOB_LEVEL_SIGMA,
+        "flag_rule": (
+            f"a contrast is flagged above {FLAG_Z} standard errors of the difference, the job-level deviation "
+            f"set to {FLAG_JOB_LEVEL_SIGMA} (twice the retained {RETAINED_JOB_LEVEL_SIGMA}); the reading at "
+            f"{RETAINED_JOB_LEVEL_SIGMA} is descriptive"
+        ),
+        "family_false_flag_rate_at_true_sigma": {
+            "true_sigma": FLAG_JOB_LEVEL_SIGMA,
+            "contrasts": FAMILY_CONTRASTS,
+            "registered_rule": {
+                f"p={p}": rounded(
+                    family_false_flag_rate(p, crosstalk_shots, FLAG_JOB_LEVEL_SIGMA, FLAG_JOB_LEVEL_SIGMA)
+                )
+                for p in (0.5, 0.05, 0.0)
+            },
+            "rule_with_retained_sigma": {
+                f"p={p}": rounded(
+                    family_false_flag_rate(p, crosstalk_shots, FLAG_JOB_LEVEL_SIGMA, RETAINED_JOB_LEVEL_SIGMA)
+                )
+                for p in (0.5, 0.05, 0.0)
+            },
+        },
+        "verdict_words": VERDICT_WORDS,
     }
     return out
 
@@ -1170,9 +1287,12 @@ def analyze_interleaved(batches: list[dict[str, Any]]) -> dict[str, Any]:
     """Per-qubit anchored fits of the interleaved T1 batches, the pooled tail statistic and the executed schedule.
 
     Qubit i reads its own delay of each delay circuit (delays_cycles) and the replicates of a delay are the rounds of
-    one multiplier. The pooled verdict tail_confirmed reads tail_statistic, the sum over usable qubits of
-    tail_contribution, against TAIL_STATISTIC_THRESHOLD. The per-qubit labels and every count of them are descriptive
-    and decide nothing. jobs lists the round and the executed start (queued_at of results.json) of every job.
+    one multiplier. A qubit whose anchors span too little or whose points number under six reads unusable and adds
+    nothing to the tail statistic, a sum of nonnegative gains, so a dropped qubit moves the confirmatory verdict
+    toward the null; pooled.unusable_qubits counts them. The pooled verdict tail_confirmed reads tail_statistic, the
+    sum over usable qubits of tail_contribution, against TAIL_STATISTIC_THRESHOLD. The per-qubit labels and every
+    count of them are descriptive and decide nothing.
+    jobs lists the round and the executed start (queued_at of results.json) of every job.
     """
     nqubits = batches[0]["nqubits"]
     roles = [interleaved_roles(b) for b in batches]
@@ -1240,6 +1360,7 @@ def analyze_interleaved(batches: list[dict[str, Any]]) -> dict[str, Any]:
         "descriptive_single_exponential_accepted": accepted,
         "descriptive_single_exponential_rejected": rejected,
         "descriptive_label_count_reaches_mark": accepted >= DESCRIPTIVE_COUNT_MARK,
+        "unusable_qubits": verdicts.count("unusable"),
         "tail_statistic": tail_statistic,
         "tail_statistic_threshold": TAIL_STATISTIC_THRESHOLD,
         "tail_confirmed": tail_statistic >= TAIL_STATISTIC_THRESHOLD,
@@ -1259,11 +1380,22 @@ def analyze_interleaved(batches: list[dict[str, Any]]) -> dict[str, Any]:
     return {"qubits": qubits, "pooled": pooled, "jobs": jobs}
 
 
-def contrast_z(p_half: float, p_all: float, count: int) -> float:
+def contrast_z(p_half: float, p_all: float, count: int, sigma: float = FLAG_JOB_LEVEL_SIGMA) -> float:
     """Difference of two readings of one qubit in standard errors of the difference: binomial variance and the job-level
-    variance on each job."""
-    variance = base.binomial_variance(p_half, count) + base.binomial_variance(p_all, count) + 2 * JOB_LEVEL_SIGMA**2
+    variance sigma squared on each job; the registered flag reads sigma = FLAG_JOB_LEVEL_SIGMA."""
+    variance = base.binomial_variance(p_half, count) + base.binomial_variance(p_all, count) + 2 * sigma**2
     return (p_half - p_all) / math.sqrt(variance)
+
+
+def family_false_flag_rate(
+    p: float, count: int, true_sigma: float, flag_sigma: float, contrasts: int = FAMILY_CONTRASTS
+) -> float:
+    """Probability that at least one of contrasts independent null contrasts exceeds FLAG_Z when the flag's standard
+    error uses flag_sigma and the true job-level deviation is true_sigma, for readings near population p."""
+    binomial = 2 * p * (1 - p) / count
+    scale = FLAG_Z * math.sqrt(binomial + 2 * flag_sigma**2) / math.sqrt(binomial + 2 * true_sigma**2)
+    single = 2 * (1 - NormalDist().cdf(scale))
+    return 1 - (1 - single) ** contrasts
 
 
 def analyze_crosstalk(batches: list[dict[str, Any]]) -> dict[str, Any]:
@@ -1273,7 +1405,9 @@ def analyze_crosstalk(batches: list[dict[str, Any]]) -> dict[str, Any]:
     its own class circuit with the all-qubit circuit by contrast_z, flagged above FLAG_Z. Populations and ladder values
     P(0) normalize by the context anchors (readout-0 and the class prepared in 1), all-drive readings by their qubit's
     class anchors, so the readout context of the all-drive circuit is not separated from the drive (reported
-    residual). The reading is drive-context dependence and names no mechanism.
+    residual). The reading is drive-and-readout context dependence: the all-drive circuit changes the drive and the
+    readout context together, and the contrast names no mechanism. A contrast without usable context anchors keeps its
+    z and flag and lacks the normalized values; pooled.unusable_normalizations counts those rows.
     """
     count = batches[0]["shots"]
     anchors = next(b for b in batches if b["meta"].get("unit") == "anchors")
@@ -1299,6 +1433,7 @@ def analyze_crosstalk(batches: list[dict[str, Any]]) -> dict[str, Any]:
                         "all_driven": every,
                         "z": contrast_z(alone, every, count),
                         "flagged": abs(contrast_z(alone, every, count)) > FLAG_Z,
+                        "z_at_retained_sigma": contrast_z(alone, every, count, RETAINED_JOB_LEVEL_SIGMA),
                     }
                 )
             other = PAIR[1]
@@ -1317,7 +1452,14 @@ def analyze_crosstalk(batches: list[dict[str, Any]]) -> dict[str, Any]:
                 every = batch["p1"][by_context["all"]][qubit]
                 z = contrast_z(half, every, count)
                 span = a1 - a0
-                row = {"unit": unit, "context": context, "qubit": qubit, "z": z, "flagged": abs(z) > FLAG_Z}
+                row = {
+                    "unit": unit,
+                    "context": context,
+                    "qubit": qubit,
+                    "z": z,
+                    "flagged": abs(z) > FLAG_Z,
+                    "z_at_retained_sigma": contrast_z(half, every, count, RETAINED_JOB_LEVEL_SIGMA),
+                }
                 if span > MIN_READOUT_SPAN:
                     sign = -1.0 if ladder else 1.0
                     row["half_value"] = (1.0 if ladder else 0.0) + sign * (half - a0) / span
@@ -1325,6 +1467,9 @@ def analyze_crosstalk(batches: list[dict[str, Any]]) -> dict[str, Any]:
                 rows.append(row)
     flagged = sum(r["flagged"] for r in rows) + sum(bool(p.get("flagged")) for p in pair)
     contrasts = len(rows) + sum("z" in p for p in pair)
+    descriptive = sum(abs(r["z_at_retained_sigma"]) > FLAG_Z for r in rows) + sum(
+        abs(p["z_at_retained_sigma"]) > FLAG_Z for p in pair if "z_at_retained_sigma" in p
+    )
     return {
         "rows": rows,
         "pair": pair,
@@ -1332,7 +1477,75 @@ def analyze_crosstalk(batches: list[dict[str, Any]]) -> dict[str, Any]:
             "contrasts_formed": contrasts,
             "flag_z": FLAG_Z,
             "flagged": flagged,
-            "reading": "drive-context dependence" if flagged else "no drive-context dependence at the flag",
+            "descriptive_flagged_at_retained_sigma": descriptive,
+            "unusable_normalizations": sum("half_value" not in r for r in rows),
+            "reading": VERDICT_WORDS if flagged else f"no {VERDICT_WORDS} at the flag",
+        },
+    }
+
+
+def staggered_comparison(interleaved: list[dict[str, Any]], crosstalk: list[dict[str, Any]]) -> dict[str, Any]:
+    """Descriptive: the all-drive crosstalk T1 readings against the interleaved points at the nearest per-qubit delay.
+
+    The all-drive circuit excites every qubit together; the interleaved circuit staggers the X of each qubit so that
+    every X-to-barrier wait ends at one barrier. Per qubit and crosstalk wait (5, 20 and 80 us), the all-drive
+    population normalized by the qubit's class anchors is compared with the inverse-variance mean of the anchored
+    interleaved points at the multiplier whose delay lies nearest; the difference is in standard errors. A qubit outside
+    both classes has no class anchor and is omitted. No verdict reads this.
+    """
+    anchors = next(b for b in crosstalk if b["meta"].get("unit") == "anchors")
+    zero = next(anchors["p1"][f] for f, row in anchors["rows"].items() if row["kind"] == "anchor0")
+    prepared = {row["context"]: anchors["p1"][f] for f, row in anchors["rows"].items() if row["kind"] == "xt_prep1"}
+    context_of = {
+        q: row["context"] for row in anchors["rows"].values() if row["kind"] == "xt_prep1" for q in row["driven"]
+    }
+    count = crosstalk[0]["shots"]
+    roles = [interleaved_roles(b) for b in interleaved]
+    per_qubit: dict[int, dict[float, list[tuple[float, float]]]] = {}
+    cycles_of: dict[int, dict[float, int]] = {}
+    for qubit in range(interleaved[0]["nqubits"]):
+        a0s = [b["p1"][r[0]][qubit] for b, r in zip(interleaved, roles, strict=True)]
+        a1s = [b["p1"][r[1]][qubit] for b, r in zip(interleaved, roles, strict=True)]
+        tau2 = job_level_variance(a0s, a1s, interleaved[0]["shots"])
+        for batch, role, a0, a1 in zip(interleaved, roles, a0s, a1s, strict=True):
+            row = batch["rows"][role[2]]
+            point = anchored_point(batch["p1"][role[2]][qubit], a0, a1, interleaved[0]["shots"], tau2)
+            if point is not None:
+                per_qubit.setdefault(qubit, {}).setdefault(row["multiplier"], []).append(point)
+                cycles_of.setdefault(qubit, {})[row["multiplier"]] = row["delays_cycles"][qubit]
+    rows: list[dict[str, Any]] = []
+    for batch in sorted((b for b in crosstalk if str(b["meta"].get("unit")).startswith("t1-")), key=lambda b: b["run"]):
+        name = next(f for f, row in batch["rows"].items() if row["context"] == "all")
+        cycles = batch["rows"][name]["wait_cycles"]
+        for qubit, context in sorted(context_of.items()):
+            if qubit not in per_qubit:
+                continue
+            point = anchored_point(
+                batch["p1"][name][qubit], zero[qubit], prepared[context][qubit], count, FLAG_JOB_LEVEL_SIGMA**2
+            )
+            if point is None:
+                continue
+            multiplier = min(cycles_of[qubit], key=lambda m: abs(cycles_of[qubit][m] - cycles))
+            weights = [1.0 / v for _, v in per_qubit[qubit][multiplier]]
+            mean = sum(w * x for w, (x, _) in zip(weights, per_qubit[qubit][multiplier], strict=True)) / sum(weights)
+            difference = point[0] - mean
+            rows.append(
+                {
+                    "qubit": qubit,
+                    "crosstalk_wait_us": cycles * CYCLE_SECONDS * 1e6,
+                    "interleaved_delay_us": cycles_of[qubit][multiplier] * CYCLE_SECONDS * 1e6,
+                    "all_drive_value": point[0],
+                    "interleaved_value": mean,
+                    "difference": difference,
+                    "difference_in_se": difference / math.sqrt(point[1] + 1.0 / sum(weights)),
+                }
+            )
+    return {
+        "rows": rows,
+        "pooled": {
+            "rows": len(rows),
+            "mean_difference": sum(r["difference"] for r in rows) / len(rows) if rows else None,
+            "mean_difference_in_se": sum(r["difference_in_se"] for r in rows) / len(rows) if rows else None,
         },
     }
 
@@ -1426,7 +1639,41 @@ def analyze_phase(batches: list[dict[str, Any]]) -> dict[str, Any]:
         else:
             entry["verdict"] = "no_fringe"
         rows.append(entry)
-    return {"scans": rows}
+    return {
+        "scans": rows,
+        "detuning": phase_detuning(rows),
+        "unusable_scans": sum(r["verdict"] == "no_fringe" for r in rows),
+    }
+
+
+def phase_detuning(scans: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Per qubit the static z rotation that accrues over the wait: the fringe offset at the long wait minus the
+    offset at the zero wait, wrapped to (-pi, pi], its standard error from the two fits, the detuning in rad per
+    microsecond and the registered verdict 'zero within 0.05 rad' when the difference and twice its error lie inside
+    PHASE_NULL.
+    A qubit whose either fringe reads no_fringe or poor_fit is unresolved."""
+    short, long = min(PHASE_WAITS), max(PHASE_WAITS)
+    found = []
+    for qubit in sorted({s["qubit"] for s in scans}):
+        by_wait = {s["wait_cycles"]: s for s in scans if s["qubit"] == qubit}
+        entry: dict[str, Any] = {"qubit": qubit, "wait_cycles": [short, long]}
+        pair = [by_wait.get(short), by_wait.get(long)]
+        first, second = pair
+        if first is None or second is None or {first["verdict"], second["verdict"]} & {"no_fringe", "poor_fit"}:
+            entry["verdict"] = "unresolved"
+        else:
+            difference = wrap(second["phase"] - first["phase"])
+            error = math.hypot(first["phase_se"], second["phase_se"])
+            entry |= {
+                "phase_difference": difference,
+                "phase_difference_se": error,
+                "detuning_rad_per_us": difference / ((long - short) * CYCLE_SECONDS * 1e6),
+                "verdict": PHASE_ZERO_VERDICT
+                if abs(difference) + 2 * error <= PHASE_NULL
+                else f"not {PHASE_ZERO_VERDICT}",
+            }
+        found.append(entry)
+    return found
 
 
 def analyze(runs: list[Path], prediction_path: Path | None = None) -> dict[str, Any]:
@@ -1438,6 +1685,8 @@ def analyze(runs: list[Path], prediction_path: Path | None = None) -> dict[str, 
         out["interleaved_t1"] = analyze_interleaved(grouped["interleaved_t1"])
     if grouped["crosstalk"]:
         out["crosstalk"] = analyze_crosstalk(grouped["crosstalk"])
+    if grouped["interleaved_t1"] and grouped["crosstalk"]:
+        out["simultaneous_versus_staggered"] = staggered_comparison(grouped["interleaved_t1"], grouped["crosstalk"])
     if grouped["q12_phase"]:
         out["q12_phase"] = analyze_phase(grouped["q12_phase"])
     if prediction_path is not None:
@@ -1566,10 +1815,73 @@ def execution_start_statuses(run: Path) -> list[dict[str, Any]]:
     return out
 
 
+def utc_stamp(value: Any) -> bool:
+    """True for an ISO 8601 text with a zero UTC offset, the form clock().isoformat() writes for utc_now()."""
+    if not isinstance(value, str):
+        return False
+    try:
+        stamp = datetime.datetime.fromisoformat(value)
+    except ValueError:
+        return False
+    return stamp.utcoffset() == datetime.timedelta(0)
+
+
+def whole_number(value: Any) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
+def admission_record_problems(document: Any, backend_type_id: int) -> list[str]:
+    """Fields of admission.json that submit_series writes: schema, the series' backend type, status idle, own queue 0,
+    a positive attempt number and a UTC stamp."""
+    if not isinstance(document, dict):
+        return ["the record is not an object"]
+    found = []
+    if document.get("schema") != "qi-admission-v1":
+        found.append(f"schema is {document.get('schema')!r}, want 'qi-admission-v1'")
+    if not whole_number(document.get("backend_type_id")) or document["backend_type_id"] != backend_type_id:
+        found.append(f"backend_type_id is {document.get('backend_type_id')!r}, want {backend_type_id}")
+    if document.get("status") != "idle":
+        found.append(f"status is {document.get('status')!r}, want 'idle'")
+    if not whole_number(document.get("queue_own")) or document["queue_own"] != 0:
+        found.append(f"queue_own is {document.get('queue_own')!r}, want 0")
+    if not whole_number(document.get("attempt")) or document["attempt"] < 1:
+        found.append(f"attempt is {document.get('attempt')!r}, want a positive integer")
+    if not utc_stamp(document.get("utc")):
+        found.append(f"utc is {document.get('utc')!r}, want an ISO 8601 UTC stamp")
+    return found
+
+
+def trace_record_problems(document: Any) -> list[str]:
+    """Fields of status-trace.json that write_trace and trace_row write: schema, a poll interval that keeps the trace
+    gaps within MAX_TRACE_GAP_SECONDS, and at least one row of a UTC stamp, a status text and an own-queue reading."""
+    if not isinstance(document, dict):
+        return ["the record is not an object"]
+    found = []
+    if document.get("schema") != "qi-status-trace-v1":
+        found.append(f"schema is {document.get('schema')!r}, want 'qi-status-trace-v1'")
+    poll = document.get("poll_seconds")
+    if isinstance(poll, bool) or not isinstance(poll, (int, float)) or not 0 < poll <= MAX_TRACE_GAP_SECONDS:
+        found.append(f"poll_seconds is {poll!r}, want a number in (0, {MAX_TRACE_GAP_SECONDS}]")
+    rows = document.get("rows")
+    if not isinstance(rows, list) or not rows:
+        return [*found, "rows is not a non-empty list"]
+    for number, row in enumerate(rows):
+        if not isinstance(row, dict):
+            found.append(f"row {number} is not an object")
+            continue
+        if not utc_stamp(row.get("utc")):
+            found.append(f"row {number}: utc is {row.get('utc')!r}, want an ISO 8601 UTC stamp")
+        if not isinstance(row.get("status"), str) or not row["status"]:
+            found.append(f"row {number}: status is {row.get('status')!r}, want a non-empty text")
+        if "queue_own" not in row or not (row["queue_own"] is None or whole_number(row["queue_own"])):
+            found.append(f"row {number}: queue_own is {row.get('queue_own')!r}, want a whole number or null")
+    return found
+
+
 def sanity(run: Path) -> list[str]:
     """Jobs complete with all shots, anchor circuits read their fixed outcome on all but SANITY_WRONG_QUBITS qubits,
-    the run holds its admission record and status trace, and no job started while the backend read outside
-    START_STATUSES."""
+    the run holds its admission record and status trace with every field valid (admission_record_problems,
+    trace_record_problems), and no job started while the backend read outside START_STATUSES."""
     try:
         acquisition, cases, raw = base.read_run(run)
     except ValueError as error:
@@ -1596,11 +1908,21 @@ def sanity(run: Path) -> list[str]:
         problems.append(
             f"{run.name}: submission.json records backend status {receipt.get('backend_status_at_submit')!r} at submit"
         )
-    for name in ("admission.json", "status-trace.json"):
+    for name, validate in (
+        ("admission.json", lambda document: admission_record_problems(document, cases["backend_type_id"])),
+        ("status-trace.json", trace_record_problems),
+    ):
         if not (run / name).is_file():
             problems.append(
                 f"{run.name}: {name} is missing, so the backend status at submission and start is unrecorded"
             )
+            continue
+        try:
+            document = json.loads((run / name).read_text(encoding="utf-8"))
+        except ValueError as error:
+            problems.append(f"{run.name}: {name} is not JSON: {error}")
+            continue
+        problems += [f"{run.name}: {name}: {found}" for found in validate(document)]
     if problems:
         return problems
     for start in execution_start_statuses(run):
@@ -2059,7 +2381,7 @@ def self_test() -> list[str]:
         len(CLASS_A["tuna_17"]) == 8 and len(CLASS_B["tuna_17"]) == 8, "the tuna_17 classes are not eight qubits each"
     )
     expect(abs(NormalDist().inv_cdf(1 - 0.05 / 204) - FLAG_Z) < 0.005, "FLAG_Z is not the Bonferroni quantile")
-    se = math.sqrt(2 * 0.25 / 8192 + 2 * JOB_LEVEL_SIGMA**2)
+    se = math.sqrt(2 * 0.25 / 8192 + 2 * FLAG_JOB_LEVEL_SIGMA**2)
     expect(abs(contrast_z(0.5 + 3.6 * se, 0.5, 8192)) > FLAG_Z > abs(contrast_z(0.5 + 3.3 * se, 0.5, 8192)), "flag")
     quiet = analyze_crosstalk(synthetic_crosstalk())
     expect(
@@ -2073,6 +2395,25 @@ def self_test() -> list[str]:
     )
     expect(not triad_problems(PHASE_TRIADS), "a phase triad has a nonzero quadrature sum")
     expect(bool(triad_problems(((0, 12, 24), (36, 48, 60)))), "a non-triad split passed the quadrature check")
+    stamp = "2026-01-01T00:00:00+00:00"
+    good_admission = {
+        "schema": "qi-admission-v1",
+        "utc": stamp,
+        "backend_type_id": 7,
+        "status": "idle",
+        "queue_own": 0,
+        "attempt": 1,
+    }
+    expect(not admission_record_problems(good_admission, 7), "a valid admission record failed")
+    expect(bool(admission_record_problems({}, 7)), "an empty admission record passed")
+    good_trace = {
+        "schema": "qi-status-trace-v1",
+        "poll_seconds": 15.0,
+        "rows": [{"utc": stamp, "status": "idle", "queue_own": 0}],
+    }
+    expect(not trace_record_problems(good_trace), "a valid status trace failed")
+    expect(bool(trace_record_problems({"rows": [{}]})), "an empty status trace passed")
+    expect(bool(post_barrier_operations("barrier q\nwait(5) q[0]\nb = measure q\n")), "a post-barrier wait passed")
     return problems
 
 

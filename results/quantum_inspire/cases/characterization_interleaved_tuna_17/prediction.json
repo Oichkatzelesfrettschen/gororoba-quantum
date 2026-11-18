@@ -387,7 +387,23 @@
   "flag_z": 3.49,
   "class_contrasts": 96,
   "pair_contrasts": 2,
-  "job_level_sigma": 0.0034,
-  "verdict_words": "drive-context dependence"
+  "job_level_sigma": 0.0068,
+  "retained_job_level_sigma": 0.0034,
+  "flag_rule": "a contrast is flagged above 3.49 standard errors of the difference, the job-level deviation set to 0.0068 (twice the retained 0.0034); the reading at 0.0034 is descriptive",
+  "family_false_flag_rate_at_true_sigma": {
+   "true_sigma": 0.0068,
+   "contrasts": 98,
+   "registered_rule": {
+    "p=0.5": 0.04624,
+    "p=0.05": 0.04624,
+    "p=0.0": 0.04624
+   },
+   "rule_with_retained_sigma": {
+    "p=0.5": 0.6178,
+    "p=0.05": 0.9876,
+    "p=0.0": 0.9997
+   }
+  },
+  "verdict_words": "drive-and-readout context dependence"
  }
 }

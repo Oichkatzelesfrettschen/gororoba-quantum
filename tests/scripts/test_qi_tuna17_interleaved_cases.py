@@ -99,6 +99,54 @@ def test_every_qubit_waits_the_batch_chain_and_its_own_delay_before_the_barrier(
         raise AssertionError(found)
 
 
+def test_a_wait_or_x_after_the_barrier_is_a_timing_problem() -> None:
+    rows = cases.library("tuna_17")
+    for line, qubit in (("wait(17423) q[10]\n", 10), ("X q[3]\n", 3)):
+        bad = {k: dict(v) for k, v in rows.items()}
+        text = bad["t1-m12.cq"]["text"]
+        if text.count(line) != 1:
+            raise AssertionError(line)
+        bad["t1-m12.cq"]["text"] = text.replace(line, "").replace("barrier q\n", f"barrier q\n{line}")
+        found = cases.timing_problems("tuna_17", bad)
+        if not any("t1-m12.cq" in p and "follows the barrier" in p for p in found):
+            raise AssertionError((line, found))
+        if not any(f"t1-m12.cq: qubit {qubit}" in p for p in found):
+            raise AssertionError((line, found))
+
+
+def test_crosstalk_anchor_and_ramsey_circuits_run_their_stated_gate_sequences() -> None:
+    rows = cases.library("tuna_17")
+    # Known bad: each circuit changed in one gate against the sequence of its kind.
+    variants = {
+        "xt-t1-250-A.cq": ("barrier q\n", "wait(250) q[1]\nbarrier q\n", 1),
+        "xt-t1-1000-B.cq": ("wait(1000) q[3]", "wait(999) q[3]", 1),
+        "xt-x90-128-A.cq": ("X90 q[0]\n", "", 1),
+        "xt-prep1-A.cq": ("X q[4]\n", "X q[4]\nX q[4]\n", 1),
+        "ramsey-q12-w25-s12.cq": ("wait(25) q[12]", "wait(24) q[12]", 1),
+        "ramsey-q12-w0-s00.cq": ("barrier q\n", "wait(5) q[12]\nbarrier q\n", 1),
+        "ramsey-q12-w0-s24.cq": ("Rz(", "Rz(0.5+", 1),
+        "readout-0.cq": ("barrier q\n", "X q[0]\nbarrier q\n", 1),
+    }
+    for name, (old, new, count) in variants.items():
+        text = rows[name]["text"]
+        if old not in text:
+            raise AssertionError((name, old))
+        if name.startswith("ramsey") and old == "Rz(":
+            line = next(x for x in text.splitlines() if x.startswith("Rz("))
+            bad_text = text.replace(line, "Rz(0.5) q[12]")
+        else:
+            bad_text = text.replace(old, new, count)
+        bad = {k: dict(v) for k, v in rows.items()}
+        bad[name]["text"] = bad_text
+        found = cases.operation_problems("tuna_17", bad)
+        if not found or any(not p.startswith(f"{name}: ") for p in found):
+            raise AssertionError((name, found))
+        if not set(found) <= set(cases.timing_problems("tuna_17", bad)):
+            raise AssertionError((name, "timing_problems omits the gate-sequence problems"))
+    if cases.operation_problems("tuna_17") or cases.operation_problems("qx"):
+        raise AssertionError("the generated circuits break their gate sequences")
+
+
 def test_order_is_a_function_of_the_draw_and_keeps_anchors_and_delays() -> None:
     values = cases.synthetic_values(2000)
     for name in cases.PROFILES:
@@ -524,6 +572,85 @@ def write_run(run: Path, rows: list[dict[str, Any]], p1: dict[str, list[float]],
     (run / "results.json").write_text(json.dumps({"schema": "qi-collection-v1", "jobs": collected}), encoding="utf-8")
 
 
+def valid_admission() -> dict[str, Any]:
+    return {
+        "schema": "qi-admission-v1",
+        "utc": "2026-01-01T00:00:30+00:00",
+        "backend_type_id": 7,
+        "status": "idle",
+        "queue_own": 0,
+        "attempt": 1,
+    }
+
+
+def valid_trace() -> dict[str, Any]:
+    return {
+        "schema": "qi-status-trace-v1",
+        "poll_seconds": 15.0,
+        "rows": [{"utc": "2026-01-01T00:01:00+00:00", "status": "idle", "queue_own": 0}],
+    }
+
+
+ADMISSION_FAULTS = [
+    ("schema", "qi-admission-v0"),
+    ("backend_type_id", 1),
+    ("backend_type_id", True),
+    ("status", "executing"),
+    ("queue_own", 2),
+    ("queue_own", None),
+    ("attempt", 0),
+    ("attempt", True),
+    ("utc", "not a time"),
+    ("utc", "2026-01-01T00:00:30"),
+    ("utc", "2026-01-01T00:00:30+02:00"),
+]
+TRACE_FAULTS = [
+    ("schema", "qi-status-trace-v0"),
+    ("poll_seconds", 0),
+    ("poll_seconds", "15"),
+    ("poll_seconds", 600.0),
+    ("rows", []),
+    ("rows", [{"utc": "2026-01-01T00:01:00+00:00", "status": "idle"}]),
+    ("rows", [{"status": "idle", "queue_own": 0}]),
+    ("rows", [{"utc": "2026-01-01T00:01:00", "status": "idle", "queue_own": 0}]),
+    ("rows", [{"utc": "2026-01-01T00:01:00+00:00", "status": "", "queue_own": 0}]),
+    ("rows", [{"utc": "2026-01-01T00:01:00+00:00", "status": "idle", "queue_own": "0"}]),
+]
+
+
+def test_sanity_names_each_field_of_the_admission_record_and_the_trace(tmp_path: Path) -> None:
+    rows: list[dict[str, Any]] = [
+        {"file": "readout-0.cq", "kind": "anchor0", "driven": []},
+        {"file": "t1-0.cq", "kind": "anchor1", "driven": [0, 1, 2, 3, 4]},
+    ]
+    good = {"readout-0.cq": [0.02] * 5, "t1-0.cq": [0.96] * 5}
+    run = tmp_path / "run"
+    write_run(run, rows, good, 200, "2026-01-01T00:01:10+00:00")
+    (run / "admission.json").write_text(json.dumps(valid_admission()), encoding="utf-8")
+    (run / "status-trace.json").write_text(json.dumps(valid_trace()), encoding="utf-8")
+    if cases.sanity(run):
+        raise AssertionError(cases.sanity(run))
+    for key, value in ADMISSION_FAULTS:
+        (run / "admission.json").write_text(json.dumps({**valid_admission(), key: value}), encoding="utf-8")
+        found = "".join(cases.sanity(run))
+        if f"admission.json: {key} is" not in found and f"admission.json: {key}:" not in found:
+            raise AssertionError((key, value, found))
+    document = valid_admission()
+    del document["attempt"]
+    (run / "admission.json").write_text(json.dumps(document), encoding="utf-8")
+    if "admission.json: attempt" not in "".join(cases.sanity(run)):
+        raise AssertionError(cases.sanity(run))
+    (run / "admission.json").write_text(json.dumps(valid_admission()), encoding="utf-8")
+    for key, value in TRACE_FAULTS:
+        (run / "status-trace.json").write_text(json.dumps({**valid_trace(), key: value}), encoding="utf-8")
+        found = "".join(cases.sanity(run))
+        if "status-trace.json: " not in found or not (key in found or (key == "rows" and "row" in found)):
+            raise AssertionError((key, value, found))
+    (run / "status-trace.json").write_text("[]", encoding="utf-8")
+    if "status-trace.json: the record is not an object" not in "".join(cases.sanity(run)):
+        raise AssertionError(cases.sanity(run))
+
+
 def test_sanity_demands_anchors_records_and_a_start_status(tmp_path: Path) -> None:
     rows: list[dict[str, Any]] = [
         {"file": "readout-0.cq", "kind": "anchor0", "driven": []},
@@ -538,10 +665,13 @@ def test_sanity_demands_anchors_records_and_a_start_status(tmp_path: Path) -> No
     ):
         raise AssertionError(cases.sanity(run))
     (run / "admission.json").write_text("{}", encoding="utf-8")
-    trace = {"rows": [{"utc": "2026-01-01T00:01:00+00:00", "status": "idle"}]}
-    (run / "status-trace.json").write_text(json.dumps(trace), encoding="utf-8")
+    (run / "status-trace.json").write_text(json.dumps(valid_trace()), encoding="utf-8")
+    if "admission.json: schema" not in "".join(cases.sanity(run)):
+        raise AssertionError(cases.sanity(run))
+    (run / "admission.json").write_text(json.dumps(valid_admission()), encoding="utf-8")
     if cases.sanity(run):
         raise AssertionError(cases.sanity(run))
+    trace = valid_trace()
     trace["rows"][0]["status"] = "calibrating"
     (run / "status-trace.json").write_text(json.dumps(trace), encoding="utf-8")
     if "began while the backend status read calibrating" not in "".join(cases.sanity(run)):
@@ -688,6 +818,38 @@ def test_analysis_records_the_round_and_the_executed_start(tmp_path: Path) -> No
         raise AssertionError(cases.job_starts(run))
 
 
+def test_interleaved_analysis_counts_unusable_qubits() -> None:
+    models = [MODELS[0], {"shape": "single", "theta": [22.0], "e01": 0.5, "e11": 0.5}]
+    pooled = cases.analyze_interleaved(cases.synthetic_interleaved(models))["pooled"]
+    if pooled["unusable_qubits"] != 1:
+        raise AssertionError(pooled)
+
+
+def test_staggered_comparison_reads_all_drive_against_the_nearest_interleaved_delay() -> None:
+    models = [MODELS[0]] * 17
+    interleaved = cases.synthetic_interleaved(models)
+    document = cases.staggered_comparison(interleaved, cases.synthetic_crosstalk())
+    rows = document["rows"]
+    if len(rows) != 16 * 3 or {r["qubit"] for r in rows} & {2} or document["pooled"]["rows"] != 48:
+        raise AssertionError(document["pooled"])
+    first = next(r for r in rows if r["qubit"] == 0 and abs(r["crosstalk_wait_us"] - 20.0) < 1e-9)
+    expected = cases.decay("single", [22.0], first["interleaved_delay_us"])
+    if abs(first["interleaved_value"] - expected) > 0.003 or abs(first["all_drive_value"] - 0.5) > 0.003:
+        raise AssertionError(first)
+    if abs(first["interleaved_delay_us"] - 831 * 0.02) > 0.05:
+        raise AssertionError(first)
+    shifted = cases.synthetic_crosstalk()
+    for batch in shifted:
+        if str(batch["meta"].get("unit")).startswith("t1-"):
+            name = next(f for f, row in batch["rows"].items() if row["context"] == "all")
+            batch["p1"][name][5] += 0.1
+    moved = cases.staggered_comparison(interleaved, shifted)["rows"]
+    for before, after in zip(rows, moved, strict=True):
+        step = after["difference_in_se"] - before["difference_in_se"]
+        if (before["qubit"] == 5) != (abs(step) > 1.0) or (before["qubit"] == 5 and step < 3.0):
+            raise AssertionError((before, after))
+
+
 def test_flat_noiseless_series_reads_as_a_single_exponential() -> None:
     flat = {"shape": "single", "theta": [1.0e6], "e01": 0.0, "e11": 1.0}
     pooled = cases.analyze_interleaved(cases.synthetic_interleaved([flat] * 3))
@@ -786,6 +948,51 @@ def test_phase_arm_has_four_triad_batches_with_interleaved_waits_and_a_usable_st
         raise AssertionError(grid)
 
 
+def test_qx_prediction_targets_a_qubit_inside_its_profile() -> None:
+    for name, profile in cases.PROFILES.items():
+        document = cases.prediction(name)["q12_phase"]
+        ramsey = {r["qubit"] for r in cases.library(name).values() if r["kind"] == "ramsey"}
+        if document["target_qubit"] != cases.PHASE[name][0] or not 0 <= document["target_qubit"] < profile["nqubits"]:
+            raise AssertionError((name, document))
+        if ramsey != {document["target_qubit"]}:
+            raise AssertionError((name, ramsey, document))
+
+
+def ramsey_batches(offsets: dict[int, tuple[float, float]], amplitude: float = 0.46) -> list[dict[str, Any]]:
+    """One batch of exact fringes per qubit: offsets[qubit] = (offset at wait 0, offset at wait 25), in radians."""
+    rows: dict[str, dict[str, Any]] = {}
+    p1: dict[str, list[float]] = {}
+    for qubit, pair in offsets.items():
+        for wait, offset in zip(cases.PHASE_WAITS, pair, strict=True):
+            for step in cases.PHASE_STEPS:
+                angle = step * math.pi / 36
+                name = f"r{qubit}-{wait}-{step}"
+                rows[name] = {"kind": "ramsey", "qubit": qubit, "wait_cycles": wait, "angle": angle}
+                p1[name] = [0.5] * 20
+                p1[name][qubit] = 0.5 + amplitude * math.cos(angle + offset)
+    return [{"shots": 8192, "rows": rows, "p1": p1}]
+
+
+def test_phase_analysis_reports_the_wrapped_offset_difference_its_error_and_the_detuning() -> None:
+    document = cases.analyze_phase(
+        ramsey_batches({12: (0.02, 0.12), 3: (0.02, 0.03), 5: (3.1, -3.1), 7: (0.0, 0.0)}) + ramsey_batches({}, 0.0)
+    )
+    by_qubit = {row["qubit"]: row for row in document["detuning"]}
+    twelve = by_qubit[12]
+    if abs(twelve["phase_difference"] - 0.10) > 0.005 or abs(twelve["detuning_rad_per_us"] - 0.20) > 0.01:
+        raise AssertionError(twelve)
+    if not 0.003 < twelve["phase_difference_se"] < 0.02 or twelve["verdict"] != "not zero within 0.05 rad":
+        raise AssertionError(twelve)
+    if by_qubit[3]["verdict"] != "zero within 0.05 rad" or abs(by_qubit[3]["phase_difference"] - 0.01) > 0.005:
+        raise AssertionError(by_qubit[3])
+    wrapped = by_qubit[5]["phase_difference"]
+    if abs(wrapped - (2 * math.pi - 6.2)) > 0.005 or abs(by_qubit[5]["detuning_rad_per_us"] - wrapped / 0.5) > 1e-9:
+        raise AssertionError(by_qubit[5])
+    flat = cases.analyze_phase(ramsey_batches({7: (0.0, 0.0)}, 0.0))
+    if flat["detuning"][0]["verdict"] != "unresolved" or flat["unusable_scans"] != 2:
+        raise AssertionError(flat)
+
+
 def test_phase_arm_reads_an_exact_series() -> None:
     angles = {s: s * math.pi / 36 for s in cases.PHASE_STEPS}
     ramsey_rows = {f"r{s}": {"kind": "ramsey", "qubit": 12, "wait_cycles": 0, "angle": a} for s, a in angles.items()}
@@ -831,10 +1038,58 @@ def test_flag_is_the_bonferroni_quantile_and_fires_only_above_it() -> None:
 
     if abs(NormalDist().inv_cdf(1 - 0.05 / 204) - cases.FLAG_Z) > 0.005:
         raise AssertionError(cases.FLAG_Z)
-    se = math.sqrt(2 * 0.25 / 8192 + 2 * cases.JOB_LEVEL_SIGMA**2)
+    se = math.sqrt(2 * 0.25 / 8192 + 2 * cases.FLAG_JOB_LEVEL_SIGMA**2)
     above, below = cases.contrast_z(0.5 + 3.6 * se, 0.5, 8192), cases.contrast_z(0.5 + 3.3 * se, 0.5, 8192)
     if not abs(above) > cases.FLAG_Z > abs(below) or abs(above - 3.6) > 0.05:
         raise AssertionError((above, below))
+
+
+def test_flag_sigma_is_twice_the_retained_value_and_keeps_the_family_rate_below_five_percent() -> None:
+    if (
+        abs(cases.FLAG_JOB_LEVEL_SIGMA - 2 * cases.RETAINED_JOB_LEVEL_SIGMA) > 1e-12
+        or cases.FLAG_JOB_LEVEL_SIGMA != 0.0068
+    ):
+        raise AssertionError((cases.FLAG_JOB_LEVEL_SIGMA, cases.RETAINED_JOB_LEVEL_SIGMA))
+    for p, old in ((0.5, 0.618), (0.05, 0.988), (0.0, 0.9997)):
+        rate = cases.family_false_flag_rate(p, 8192, 0.0068, 0.0034)
+        kept = cases.family_false_flag_rate(p, 8192, 0.0068, 0.0068)
+        if abs(rate - old) > 0.001 or kept >= 0.05:
+            raise AssertionError((p, rate, kept))
+    for name in cases.PROFILES:
+        document = cases.prediction(name, retained_fixture())["crosstalk"]
+        shots = cases.PROFILES[name]["arm_shots"]["crosstalk"]
+        rates = document["family_false_flag_rate_at_true_sigma"]
+        if (
+            document["job_level_sigma"] != 0.0068
+            or document["retained_job_level_sigma"] != 0.0034
+            or document["verdict_words"] != "drive-and-readout context dependence"
+            or max(rates["registered_rule"].values()) >= 0.05
+            or abs(
+                rates["rule_with_retained_sigma"]["p=0.5"] - cases.family_false_flag_rate(0.5, shots, 0.0068, 0.0034)
+            )
+            > 1e-3
+            or "0.0034" not in document["flag_rule"]
+        ):
+            raise AssertionError((name, document))
+
+
+def test_crosstalk_analysis_records_the_reading_at_the_retained_sigma_and_the_unusable_rows() -> None:
+    loud = cases.analyze_crosstalk(cases.synthetic_crosstalk(shift_qubit=5, shift=0.05))
+    for row in loud["rows"]:
+        if abs(row["z_at_retained_sigma"]) < abs(row["z"]) - 1e-12:
+            raise AssertionError(row)
+    if loud["pooled"]["descriptive_flagged_at_retained_sigma"] < loud["pooled"]["flagged"]:
+        raise AssertionError(loud["pooled"])
+    if loud["pooled"]["unusable_normalizations"] != 0:
+        raise AssertionError(loud["pooled"])
+    batches = cases.synthetic_crosstalk()
+    anchors = next(b for b in batches if b["meta"]["unit"] == "anchors")
+    for name, row in anchors["rows"].items():
+        if row["kind"] == "xt_prep1":
+            anchors["p1"][name][5] = 0.03
+    pooled = cases.analyze_crosstalk(batches)["pooled"]
+    if pooled["unusable_normalizations"] != 6 or pooled["flagged"] != 0:
+        raise AssertionError(pooled)
 
 
 def test_crosstalk_analysis_flags_a_shifted_class_reading_and_forms_98_contrasts() -> None:
@@ -847,7 +1102,7 @@ def test_crosstalk_analysis_flags_a_shifted_class_reading_and_forms_98_contrasts
     flagged = [r for r in loud["rows"] if r["flagged"]]
     if len(flagged) != 6 or any(r["qubit"] != 5 or r["context"] != "A" for r in flagged):
         raise AssertionError(flagged)
-    if loud["pooled"]["reading"] != "drive-context dependence" or "neighbor" in json.dumps(loud):
+    if loud["pooled"]["reading"] != "drive-and-readout context dependence" or "neighbor" in json.dumps(loud):
         raise AssertionError(loud["pooled"])
     small = cases.analyze_crosstalk(cases.synthetic_crosstalk(shift_qubit=5, shift=0.01))
     if small["pooled"]["flagged"] != 0:

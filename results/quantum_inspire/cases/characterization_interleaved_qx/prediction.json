@@ -54,7 +54,7 @@
   "min_fringe_amplitude": 0.25
  },
  "q12_phase": {
-  "target_qubit": 12,
+  "target_qubit": 9,
   "waits_cycles": [
    0,
    25
