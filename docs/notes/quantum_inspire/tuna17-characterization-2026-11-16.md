@@ -582,7 +582,10 @@ each: 10.2 s for `x90-64` and 6.0 s for `x90-0` at 8,192 shots.
   is proposed in
   [issue 941](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/941).
   It is also the control that removes the neighbor-state candidate of the T1
-  shape.
+  shape. The written follow-up case, with interleaved T1 rounds and a q12 phase
+  scan beside the drive-context crosstalk arm (the single-qubit arm stays the
+  separate follow-up of issue 941), is
+  [characterization_interleaved_tuna_17](../../../results/quantum_inspire/cases/characterization_interleaved_tuna_17/CASE.md).
 - The T1 shape stays open as a mechanism: the registered explanations do not
   restore the single exponential, a batch step is refuted as the sufficient
   explanation, excluded as a level shift on the 6 qubits with a step of 0.02 or

@@ -1,0 +1,413 @@
+{
+ "schema": "qi-tuna17-interleaved-prediction-v1",
+ "profile": "tuna_17",
+ "budget": {
+  "per_arm": {
+   "interleaved_t1": {
+    "batches": 18,
+    "jobs": 54,
+    "shots": 442368,
+    "expected_execution_seconds": 433.7
+   },
+   "crosstalk": {
+    "batches": 8,
+    "jobs": 24,
+    "shots": 196608,
+    "expected_execution_seconds": 169.2
+   },
+   "q12_phase": {
+    "batches": 4,
+    "jobs": 12,
+    "shots": 49152,
+    "expected_execution_seconds": 57.3
+   }
+  },
+  "total": {
+   "batches": 30,
+   "jobs": 90,
+   "shots": 688128,
+   "expected_execution_seconds": 660.2
+  },
+  "seconds_model": "2.6 s per job plus 0.53 ms per shot plus the circuit's wait per shot",
+  "credits_expected": 0,
+  "retained_characterization": {
+   "batches": 6,
+   "jobs": 14,
+   "shots": 147456,
+   "expected_execution_seconds": 115.8
+  }
+ },
+ "noiseless_outcome": {
+  "readout-0": "all 0",
+  "t1": "all driven qubits 1",
+  "x90": "all 0",
+  "ramsey": "driven qubit P1 = (1 + cos angle) / 2, phase offset 0"
+ },
+ "thresholds": {
+  "lack_of_fit_probability": 0.01,
+  "aicc_gain": 4.0,
+  "tail_statistic_threshold": 200.0,
+  "min_usable_qubits": 15,
+  "tail_verdict_rule": "tail_confirmed when tail_statistic >= 200; below it inconclusive when fewer than min_usable_qubits qubits are usable, not_confirmed otherwise",
+  "descriptive_count_mark": 12,
+  "phase_target_rad": -0.15,
+  "phase_half_width_rad": 0.05,
+  "phase_null_rad": 0.05,
+  "min_fringe_amplitude": 0.25
+ },
+ "q12_phase": {
+  "target_qubit": 12,
+  "waits_cycles": [
+   0,
+   25
+  ],
+  "angles_pi_over_3": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "triads_pi_over_3": [
+   [
+    0,
+    2,
+    4
+   ],
+   [
+    1,
+    3,
+    5
+   ]
+  ],
+  "shots": 4096,
+  "expected_phase_se_rad": 0.008805
+ },
+ "interleaved_t1": {
+  "job_level_sigma": 0.00343,
+  "job_level_basis": "excess variance of the retained series' three prepared-0 and three prepared-1 anchor jobs",
+  "expected_errors": [
+   {
+    "qubit": 0,
+    "delay_cycles": [
+     416,
+     832,
+     1663,
+     3327,
+     6653,
+     9980
+    ],
+    "se_single_us": 0.1228,
+    "se_plateau_us": 0.1421,
+    "se_plateau": 0.001883,
+    "plateau_z": 4.875
+   },
+   {
+    "qubit": 1,
+    "delay_cycles": [
+     481,
+     962,
+     1925,
+     3849,
+     7699,
+     11548
+    ],
+    "se_single_us": 0.1468,
+    "se_plateau_us": 0.1717,
+    "se_plateau": 0.002042,
+    "plateau_z": 4.754
+   },
+   {
+    "qubit": 2,
+    "delay_cycles": [
+     532,
+     1063,
+     2127,
+     4254,
+     8508,
+     12762
+    ],
+    "se_single_us": 0.1669,
+    "se_plateau_us": 0.1872,
+    "se_plateau": 0.001934,
+    "plateau_z": 20.51
+   },
+   {
+    "qubit": 3,
+    "delay_cycles": [
+     313,
+     625,
+     1250,
+     2501,
+     5001,
+     7502
+    ],
+    "se_single_us": 0.09364,
+    "se_plateau_us": 0.1088,
+    "se_plateau": 0.001924,
+    "plateau_z": 3.565
+   },
+   {
+    "qubit": 4,
+    "delay_cycles": [
+     563,
+     1125,
+     2250,
+     4500,
+     9001,
+     13501
+    ],
+    "se_single_us": 0.1782,
+    "se_plateau_us": 0.2034,
+    "se_plateau": 0.001991,
+    "plateau_z": 12.36
+   },
+   {
+    "qubit": 5,
+    "delay_cycles": [
+     499,
+     998,
+     1996,
+     3991,
+     7983,
+     11974
+    ],
+    "se_single_us": 0.1555,
+    "se_plateau_us": 0.1822,
+    "se_plateau": 0.002109,
+    "plateau_z": 4.842
+   },
+   {
+    "qubit": 6,
+    "delay_cycles": [
+     392,
+     785,
+     1569,
+     3138,
+     6276,
+     9414
+    ],
+    "se_single_us": 0.1212,
+    "se_plateau_us": 0.1428,
+    "se_plateau": 0.002114,
+    "plateau_z": 2.691
+   },
+   {
+    "qubit": 7,
+    "delay_cycles": [
+     664,
+     1328,
+     2657,
+     5313,
+     10627,
+     15940
+    ],
+    "se_single_us": 0.2162,
+    "se_plateau_us": 0.2543,
+    "se_plateau": 0.00222,
+    "plateau_z": 4.915
+   },
+   {
+    "qubit": 8,
+    "delay_cycles": [
+     474,
+     949,
+     1897,
+     3795,
+     7590,
+     11385
+    ],
+    "se_single_us": 0.1426,
+    "se_plateau_us": 0.169,
+    "se_plateau": 0.002086,
+    "plateau_z": 0.0
+   },
+   {
+    "qubit": 9,
+    "delay_cycles": [
+     512,
+     1024,
+     2047,
+     4094,
+     8189,
+     12283
+    ],
+    "se_single_us": 0.1698,
+    "se_plateau_us": 0.1945,
+    "se_plateau": 0.002108,
+    "plateau_z": 11.06
+   },
+   {
+    "qubit": 10,
+    "delay_cycles": [
+     726,
+     1452,
+     2904,
+     5808,
+     11615,
+     17423
+    ],
+    "se_single_us": 0.245,
+    "se_plateau_us": 0.2842,
+    "se_plateau": 0.002314,
+    "plateau_z": 16.84
+   },
+   {
+    "qubit": 11,
+    "delay_cycles": [
+     555,
+     1110,
+     2221,
+     4441,
+     8883,
+     13324
+    ],
+    "se_single_us": 0.1917,
+    "se_plateau_us": 0.2151,
+    "se_plateau": 0.002158,
+    "plateau_z": 21.42
+   },
+   {
+    "qubit": 12,
+    "delay_cycles": [
+     538,
+     1076,
+     2153,
+     4306,
+     8611,
+     12917
+    ],
+    "se_single_us": 0.1621,
+    "se_plateau_us": 0.1848,
+    "se_plateau": 0.001871,
+    "plateau_z": 11.62
+   },
+   {
+    "qubit": 13,
+    "delay_cycles": [
+     584,
+     1169,
+     2337,
+     4674,
+     9348,
+     14023
+    ],
+    "se_single_us": 0.1899,
+    "se_plateau_us": 0.2225,
+    "se_plateau": 0.002151,
+    "plateau_z": 3.935
+   },
+   {
+    "qubit": 14,
+    "delay_cycles": [
+     277,
+     555,
+     1109,
+     2218,
+     4436,
+     6654
+    ],
+    "se_single_us": 0.1322,
+    "se_plateau_us": 0.1225,
+    "se_plateau": 0.0024,
+    "plateau_z": 55.25
+   },
+   {
+    "qubit": 15,
+    "delay_cycles": [
+     450,
+     901,
+     1802,
+     3603,
+     7206,
+     10809
+    ],
+    "se_single_us": 0.1715,
+    "se_plateau_us": 0.184,
+    "se_plateau": 0.002325,
+    "plateau_z": 36.14
+   },
+   {
+    "qubit": 16,
+    "delay_cycles": [
+     540,
+     1079,
+     2158,
+     4316,
+     8632,
+     12948
+    ],
+    "se_single_us": 0.1694,
+    "se_plateau_us": 0.1975,
+    "se_plateau": 0.002111,
+    "plateau_z": 7.423
+   }
+  ],
+  "design": {
+   "batches": 18,
+   "columns_with_anchors": 21,
+   "rank_with_anchors": 21,
+   "columns_without_anchors": 19,
+   "rank_without_anchors": 18,
+   "se_plateau_with_free_batch_levels": 0.002033,
+   "se_T_us_with_free_batch_levels": 0.1906
+  },
+  "design_qubit": 9
+ },
+ "crosstalk": {
+  "classes": {
+   "A": [
+    0,
+    4,
+    5,
+    6,
+    10,
+    11,
+    12,
+    16
+   ],
+   "B_prime": [
+    1,
+    3,
+    7,
+    8,
+    9,
+    13,
+    14,
+    15
+   ]
+  },
+  "conditions": [
+   "t1-250",
+   "t1-1000",
+   "t1-4000",
+   "x90-32",
+   "x90-128",
+   "x90-256"
+  ],
+  "flag_z": 3.49,
+  "class_contrasts": 96,
+  "pair_contrasts": 2,
+  "flag_sigma_floor": 0.0034,
+  "flag_sigma_without_interleaved_arm": 0.0102,
+  "retained_job_level_sigma": 0.0034,
+  "flag_rule": "a contrast is flagged above 3.49 standard errors of the difference. With the interleaved arm each qubit's job-level deviation is max(sqrt(job_level_variance) of its interleaved anchor pairs, 0.0034); the floor is the retained pooled value and keeps a zero estimate from making the flag anti-conservative. Without the interleaved arm every qubit uses 0.0102, the largest retained per-qubit value. The q1/q2 pair contrast uses the larger of its two qubits' sigmas. The analysis records each qubit's sigma and its source; the reading at 0.0034 is descriptive",
+  "family_false_flag_rate_at_true_sigma": {
+   "true_sigma": 0.0102,
+   "contrasts": 98,
+   "note": "computed for independent contrasts; the contrasts of one condition batch share one all-qubit job, so these are not exact familywise rates",
+   "flag_sigma_without_interleaved_arm": {
+    "p=0.5": 0.04624,
+    "p=0.05": 0.04624,
+    "p=0.0": 0.04624
+   },
+   "flag_sigma_at_floor": {
+    "p=0.5": 0.9941,
+    "p=0.05": 1.0,
+    "p=0.0": 1.0
+   }
+  },
+  "verdict_words": "drive-and-readout context dependence"
+ }
+}

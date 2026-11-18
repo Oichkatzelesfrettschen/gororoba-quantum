@@ -1,0 +1,87 @@
+{
+ "schema": "qi-tuna17-interleaved-prediction-v1",
+ "profile": "qx",
+ "budget": {
+  "per_arm": {
+   "interleaved_t1": {
+    "batches": 18,
+    "jobs": 54,
+    "shots": 55296,
+    "expected_execution_seconds": 176.4
+   },
+   "crosstalk": {
+    "batches": 8,
+    "jobs": 24,
+    "shots": 24576,
+    "expected_execution_seconds": 75.7
+   },
+   "q12_phase": {
+    "batches": 4,
+    "jobs": 12,
+    "shots": 12288,
+    "expected_execution_seconds": 37.7
+   }
+  },
+  "total": {
+   "batches": 30,
+   "jobs": 90,
+   "shots": 92160,
+   "expected_execution_seconds": 289.8
+  },
+  "seconds_model": "2.6 s per job plus 0.53 ms per shot plus the circuit's wait per shot",
+  "credits_expected": 0,
+  "retained_characterization": {
+   "batches": 6,
+   "jobs": 14,
+   "shots": 147456,
+   "expected_execution_seconds": 115.8
+  }
+ },
+ "noiseless_outcome": {
+  "readout-0": "all 0",
+  "t1": "all driven qubits 1",
+  "x90": "all 0",
+  "ramsey": "driven qubit P1 = (1 + cos angle) / 2, phase offset 0"
+ },
+ "thresholds": {
+  "lack_of_fit_probability": 0.01,
+  "aicc_gain": 4.0,
+  "tail_statistic_threshold": 200.0,
+  "min_usable_qubits": 10,
+  "tail_verdict_rule": "tail_confirmed when tail_statistic >= 200; below it inconclusive when fewer than min_usable_qubits qubits are usable, not_confirmed otherwise",
+  "descriptive_count_mark": 12,
+  "phase_target_rad": -0.15,
+  "phase_half_width_rad": 0.05,
+  "phase_null_rad": 0.05,
+  "min_fringe_amplitude": 0.25
+ },
+ "q12_phase": {
+  "target_qubit": 9,
+  "waits_cycles": [
+   0,
+   25
+  ],
+  "angles_pi_over_3": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "triads_pi_over_3": [
+   [
+    0,
+    2,
+    4
+   ],
+   [
+    1,
+    3,
+    5
+   ]
+  ],
+  "shots": 1024,
+  "expected_phase_se_rad": 0.01762
+ }
+}
