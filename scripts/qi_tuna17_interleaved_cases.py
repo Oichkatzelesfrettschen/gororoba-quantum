@@ -19,8 +19,8 @@ own series directory:
   {readout-0, A prepared in 1, B' prepared in 1}; one batch holds {q1 alone, q2 alone, all qubits} at the 128-pulse
   ladder, the direct test of the q1/q2 pair. A qubit and condition is flagged when its half-drive reading differs from
   its same-batch all-drive reading by more than FLAG_Z standard errors of the difference.
-- q12_phase: a Ramsey circuit X90, Rz(angle), X90 on one qubit, angles on the pi/36 grid in steps of pi/4, on PHASE
-  qubits (q12 at two idle waits, the other two without a wait); the fringe offset is the static z rotation between two
+- q12_phase: a Ramsey circuit X90, Rz(angle), X90 on the target qubit of PHASE, six angles k pi/3 in two triads that sum to
+  zero in sine and cosine, at two waits, four provider batches of one triad each (waits interleaved 0, 25, 0, 25); the fringe offset is the static z rotation between two
   pulses.
 
 Order. Every order comes from one retained QRNG draw (DRAW), consumed in index order, each value once, by a rejection
@@ -111,12 +111,27 @@ FLAG_Z = 3.49
 # Job-level standard deviation of a population (retained anchors, pooled over 17 qubits); the arm holds one anchor pair per
 # context, too few for job_level_variance().
 JOB_LEVEL_SIGMA = 0.0034
-PHASE = {"tuna_17": (12, 8, 4), "qx": (9, 8, 4)}
-PHASE_WAIT_CYCLES = 25
-PHASE_STEPS = tuple(range(0, 72, 9))
+PHASE = {"tuna_17": (12,), "qx": (9,)}
+PHASE_WAITS = (0, 25)
+# Angles k pi / 3 on the processor's pi/36 grid (steps of 12) in two triads: the sines and cosines of each triad sum to
+# zero, so a level shared by the three jobs of a batch is orthogonal to both quadratures of the fringe.
+PHASE_STEPS = (0, 12, 24, 36, 48, 60)
+PHASE_TRIADS = ((0, 24, 48), (12, 36, 60))
 PROFILES: dict[str, dict[str, Any]] = {
-    "tuna_17": {"backend": "tuna_17", "backend_type_id": 7, "nqubits": 17, "shots": 8192},
-    "qx": {"backend": "QXsinglenodesimulator", "backend_type_id": 1, "nqubits": 10, "shots": 1024},
+    "tuna_17": {
+        "backend": "tuna_17",
+        "backend_type_id": 7,
+        "nqubits": 17,
+        "shots": 8192,
+        "arm_shots": {"interleaved_t1": 8192, "crosstalk": 8192, "q12_phase": 4096},
+    },
+    "qx": {
+        "backend": "QXsinglenodesimulator",
+        "backend_type_id": 1,
+        "nqubits": 10,
+        "shots": 1024,
+        "arm_shots": {"interleaved_t1": 1024, "crosstalk": 1024, "q12_phase": 1024},
+    },
 }
 # The retained QRNG draw of this case: None until the draw named by qrng_request() is retained, then its canonical path.
 DRAW: str | None = None
@@ -307,21 +322,22 @@ def library(profile_name: str) -> dict[str, dict[str, Any]]:
             "driven": [qubit],
             "expected_p1": 0.0,
         }
-    for qubit, wait in ((PHASE[profile_name][0], PHASE_WAIT_CYCLES), *((q, 0) for q in PHASE[profile_name])):
-        for step in PHASE_STEPS:
-            angle = step * math.pi / 36
-            lines = [f"X90 q[{qubit}]"] + ([f"wait({wait}) q[{qubit}]"] if wait else [])
-            lines += [f"Rz({angle!r}) q[{qubit}]", f"X90 q[{qubit}]"]
-            found[f"ramsey-q{qubit}-w{wait}-s{step:02d}.cq"] = {
-                "text": base.circuit(nqubits, lines),
-                "kind": "ramsey",
-                "qubit": qubit,
-                "wait_cycles": wait,
-                "step": step,
-                "angle": angle,
-                "driven": [qubit],
-                "expected_p1": (1 + math.cos(angle)) / 2,
-            }
+    for qubit in PHASE[profile_name]:
+        for wait in PHASE_WAITS:
+            for step in PHASE_STEPS:
+                angle = step * math.pi / 36
+                lines = [f"X90 q[{qubit}]"] + ([f"wait({wait}) q[{qubit}]"] if wait else [])
+                lines += [f"Rz({angle!r}) q[{qubit}]", f"X90 q[{qubit}]"]
+                found[f"ramsey-q{qubit}-w{wait}-s{step:02d}.cq"] = {
+                    "text": base.circuit(nqubits, lines),
+                    "kind": "ramsey",
+                    "qubit": qubit,
+                    "wait_cycles": wait,
+                    "step": step,
+                    "angle": angle,
+                    "driven": [qubit],
+                    "expected_p1": (1 + math.cos(angle)) / 2,
+                }
     return found
 
 
@@ -446,10 +462,13 @@ def schedule(profile_name: str, values: Sequence[int]) -> dict[str, Any]:
         arms["crosstalk"].append({"circuits": stream.shuffle(names), "unit": unit})
     mark("crosstalk", start)
     start = stream.position
-    ramsey = [name for name, row in library(profile_name).items() if row["kind"] == "ramsey"]
-    order = stream.shuffle(ramsey)
-    for first in range(0, len(order), BATCH_LIMIT):
-        arms["q12_phase"].append({"circuits": order[first : first + BATCH_LIMIT]})
+    first = {wait: stream.below(len(PHASE_TRIADS)) for wait in PHASE_WAITS}
+    qubit = PHASE[profile_name][0]
+    for position in range(len(PHASE_WAITS) * len(PHASE_TRIADS)):
+        wait = PHASE_WAITS[position % len(PHASE_WAITS)]
+        triad = (first[wait] + position // len(PHASE_WAITS)) % len(PHASE_TRIADS)
+        names = [f"ramsey-q{qubit}-w{wait}-s{step:02d}.cq" for step in PHASE_TRIADS[triad]]
+        arms["q12_phase"].append({"circuits": stream.shuffle(names), "wait_cycles": wait, "triad": triad})
     mark("q12_phase", start)
     return {"consumed": consumed, "arms": arms}
 
@@ -472,7 +491,7 @@ def qrng_values_needed(profile_name: str) -> int:
     needed = (blocks - 1) + ROUNDS * (blocks // 2) + blocks * (BATCH_LIMIT - 1)
     units = len(crosstalk_units())
     needed += (units - 1) + units * (BATCH_LIMIT - 1)
-    return needed + len(usage(profile_name)["q12_phase"]) - 1
+    return needed + len(PHASE_WAITS) + len(PHASE_WAITS) * len(PHASE_TRIADS) * (BATCH_LIMIT - 1)
 
 
 def qrng_request() -> dict[str, Any]:
@@ -737,9 +756,10 @@ def retained_inputs(
 # ---------------------------------------------------------------------------------------------------------------------
 
 
-def job_seconds(profile: dict[str, Any], row: dict[str, Any]) -> float:
+def job_seconds(profile: dict[str, Any], row: dict[str, Any], arm: str | None = None) -> float:
+    shots = profile["shots"] if arm is None else profile["arm_shots"][arm]
     wait = row.get("wait_cycles", 0) * CYCLE_SECONDS
-    return float(JOB_SECONDS + profile["shots"] * (SHOT_SECONDS + wait))
+    return float(JOB_SECONDS + shots * (SHOT_SECONDS + wait))
 
 
 def batch_counts(profile_name: str) -> dict[str, int]:
@@ -747,7 +767,7 @@ def batch_counts(profile_name: str) -> dict[str, int]:
     return {
         "interleaved_t1": ROUNDS * len(T1_MULTIPLIERS),
         "crosstalk": len(crosstalk_units()),
-        "q12_phase": -(-len(use["q12_phase"]) // BATCH_LIMIT),
+        "q12_phase": len(PHASE_WAITS) * len(PHASE_TRIADS),
     }
 
 
@@ -756,11 +776,11 @@ def budget(profile_name: str) -> dict[str, Any]:
     rows = library(profile_name)
     per_arm: dict[str, Any] = {}
     for arm, names in usage(profile_name).items():
-        seconds = sum(job_seconds(profile, rows[name]) for name in names)
+        seconds = sum(job_seconds(profile, rows[name], arm) for name in names)
         per_arm[arm] = {
             "batches": batch_counts(profile_name)[arm],
             "jobs": len(names),
-            "shots": len(names) * profile["shots"],
+            "shots": len(names) * profile["arm_shots"][arm],
             "expected_execution_seconds": round(seconds, 1),
         }
     total = {
@@ -800,10 +820,18 @@ def prediction(profile_name: str, retained: dict[str, Any] | None = None) -> dic
             "min_fringe_amplitude": MIN_FRINGE_AMPLITUDE,
         },
     }
+    out["q12_phase"] = {
+        "target_qubit": PHASE["tuna_17"][0],
+        "waits_cycles": list(PHASE_WAITS),
+        "angles_pi_over_3": [s // 12 for s in PHASE_STEPS],
+        "triads_pi_over_3": [[s // 12 for s in t] for t in PHASE_TRIADS],
+        "shots": PROFILES[profile_name]["arm_shots"]["q12_phase"],
+        "expected_phase_se_rad": rounded(phase_expected_se(PROFILES[profile_name]["arm_shots"]["q12_phase"])),
+    }
     if retained is None:
         return out
     tau2 = retained["tau2"]
-    count = PROFILES[profile_name]["shots"]
+    count = PROFILES[profile_name]["arm_shots"]["interleaved_t1"]
     qubits = retained["qubits"]
     interleaved = []
     for row in qubits:
@@ -846,7 +874,7 @@ def files(profile_name: str, values: Sequence[int] | None, retained: dict[str, A
         "schema": SCHEMA,
         "profile": profile_name,
         "backend": profile["backend"],
-        "shots": profile["shots"],
+        "shots": profile["arm_shots"],
         "cycle_seconds": CYCLE_SECONDS,
         "t1_multipliers": list(T1_MULTIPLIERS),
         "t1_delay_cycles": {str(m): t1_delays(profile["nqubits"], m) for m in T1_MULTIPLIERS},
@@ -857,7 +885,8 @@ def files(profile_name: str, values: Sequence[int] | None, retained: dict[str, A
         "pair_qubits": list(PAIR),
         "pair_pulses": PAIR_PULSES,
         "phase_qubits": list(PHASE[profile_name]),
-        "phase_wait_cycles": PHASE_WAIT_CYCLES,
+        "phase_wait_cycles": list(PHASE_WAITS),
+        "phase_triads_pi_over_36": [list(t) for t in PHASE_TRIADS],
         "phase_steps_pi_over_36": list(PHASE_STEPS),
         "batch_limit": BATCH_LIMIT,
         "batches": batch_counts(profile_name),
@@ -889,7 +918,7 @@ def files(profile_name: str, values: Sequence[int] | None, retained: dict[str, A
                 "backend": profile["backend"],
                 "backend_type_id": profile["backend_type_id"],
                 "nqubits": profile["nqubits"],
-                "shots": profile["shots"],
+                "shots": profile["arm_shots"][arm],
                 "bit_order": "qubit 0 at the rightmost character",
                 "qrng_draw": DRAW,
                 "circuits": circuit_rows,
@@ -1320,6 +1349,26 @@ def fringe_fit(points: list[tuple[float, float, int]]) -> dict[str, float] | Non
         "chi_square": chi_square,
         "dof": len(points) - 3,
     }
+
+
+def triad_problems(triads: Sequence[Sequence[int]]) -> list[str]:
+    """Each triad of pi/36 steps has sines and cosines that sum to zero, so a level shared by its three jobs does not
+    move either fringe quadrature."""
+    found = []
+    for triad in triads:
+        angles = [s * math.pi / 36 for s in triad]
+        if abs(sum(math.cos(a) for a in angles)) > 1e-9 or abs(sum(math.sin(a) for a in angles)) > 1e-9:
+            found.append(f"triad {tuple(triad)} has a nonzero quadrature sum")
+    return found
+
+
+def phase_expected_se(shots: int, amplitude: float = 0.45) -> float:
+    """Standard error of the fitted phase for exact points of a fringe of the given cosine amplitude at PHASE_STEPS."""
+    angles = [s * math.pi / 36 for s in PHASE_STEPS]
+    fit = fringe_fit([(a, 0.5 + amplitude * math.cos(a + PHASE_TARGET), shots) for a in angles])
+    if fit is None:
+        raise ValueError("no fringe")
+    return fit["phase_se"]
 
 
 def wrap(angle: float) -> float:
@@ -2013,6 +2062,8 @@ def self_test() -> list[str]:
     expect(
         len(flagged) == 6 and all(r["qubit"] == 5 for r in flagged), f"a shifted class reading flagged {len(flagged)}"
     )
+    expect(not triad_problems(PHASE_TRIADS), "a phase triad has a nonzero quadrature sum")
+    expect(bool(triad_problems(((0, 12, 24), (36, 48, 60)))), "a non-triad split passed the quadrature check")
     return problems
 
 

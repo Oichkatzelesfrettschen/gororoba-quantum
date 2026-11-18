@@ -54,9 +54,17 @@ def test_budget_and_measurement_limits() -> None:
         longest = max(cases.job_seconds(profile, row) for row in cases.library(name).values())
         if longest >= 300 or profile["shots"] > (2048 if name == "qx" else 131072):
             raise AssertionError((name, longest))
-    arm = cases.budget("tuna_17")["per_arm"]["interleaved_t1"]
-    if (arm["batches"], arm["jobs"], arm["shots"], arm["expected_execution_seconds"]) != (18, 54, 442368, 433.7):
-        raise AssertionError(arm)
+    budget = cases.budget("tuna_17")
+    arms = {a: (r["batches"], r["jobs"], r["shots"], r["expected_execution_seconds"]) for a, r in budget["per_arm"].items()}
+    if arms != {
+        "interleaved_t1": (18, 54, 442368, 433.7),
+        "crosstalk": (8, 24, 196608, 169.2),
+        "q12_phase": (4, 12, 49152, 57.3),
+    }:
+        raise AssertionError(arms)
+    total = budget["total"]
+    if (total["batches"], total["jobs"], total["shots"]) != (30, 90, 688128):
+        raise AssertionError(total)
 
 
 def test_delays_follow_the_retained_plateau_times_and_the_longest_is_17423_cycles() -> None:
@@ -688,6 +696,57 @@ def test_a_fringe_the_cosine_rejects_reads_poor_fit() -> None:
         raise AssertionError((good, bad))
     if abs(bad["phase"] + 0.15) > 0.05 or bad["phase_se"] > 0.02 or cases.phase_verdict(bad) != "poor_fit":
         raise AssertionError(bad)
+
+
+def test_phase_triads_sum_to_zero_and_a_batch_level_leaves_the_phase_alone() -> None:
+    if cases.triad_problems(cases.PHASE_TRIADS) or sorted(s for t in cases.PHASE_TRIADS for s in t) != sorted(
+        cases.PHASE_STEPS
+    ):
+        raise AssertionError(cases.triad_problems(cases.PHASE_TRIADS))
+    if not cases.triad_problems(((0, 12, 24), (36, 48, 60))):
+        raise AssertionError("a split that is not a pair of triads passed")
+
+    def fitted(triads: tuple[tuple[int, ...], ...]) -> float:
+        points = []
+        for number, triad in enumerate(triads):
+            for step in triad:
+                a = step * math.pi / 36
+                p = 0.5 + 0.45 * math.cos(a + cases.PHASE_TARGET) + (0.03 if number else 0.0)
+                points.append((a, p, 4096))
+        fit = cases.fringe_fit(sorted(points))
+        if fit is None:
+            raise AssertionError("no fit")
+        return fit["phase"]
+
+    good = fitted(cases.PHASE_TRIADS)
+    bad = fitted(((0, 12, 24), (36, 48, 60)))
+    # The fit weights points by binomial variance, so the triads cut a batch level of 0.03 to about a third of the
+    # bias a contiguous split leaves, and not to zero.
+    if abs(bad - cases.PHASE_TARGET) < 0.02 or abs(good - cases.PHASE_TARGET) > 0.4 * abs(bad - cases.PHASE_TARGET):
+        raise AssertionError((good, bad))
+
+
+def test_phase_arm_has_four_triad_batches_with_interleaved_waits_and_a_usable_standard_error() -> None:
+    plan = cases.schedule("tuna_17", cases.synthetic_values(2000))["arms"]["q12_phase"]
+    if [b["wait_cycles"] for b in plan] != [0, 25, 0, 25] or len(cases.usage("tuna_17")["q12_phase"]) != 12:
+        raise AssertionError(plan)
+    rows = cases.library("tuna_17")
+    for batch in plan:
+        steps = sorted(rows[name]["step"] for name in batch["circuits"])
+        if tuple(steps) != cases.PHASE_TRIADS[batch["triad"]] or {rows[n]["qubit"] for n in batch["circuits"]} != {12}:
+            raise AssertionError(batch)
+    for wait in cases.PHASE_WAITS:
+        used = sorted(b["triad"] for b in plan if b["wait_cycles"] == wait)
+        if used != [0, 1]:
+            raise AssertionError((wait, used))
+    se = cases.phase_expected_se(cases.PROFILES["tuna_17"]["arm_shots"]["q12_phase"])
+    if not 0.003 < se < 0.02:
+        raise AssertionError(se)
+    if cases.PROFILES["tuna_17"]["arm_shots"] != {"interleaved_t1": 8192, "crosstalk": 8192, "q12_phase": 4096}:
+        raise AssertionError(cases.PROFILES["tuna_17"]["arm_shots"])
+    grid = [r["angle"] / (math.pi / 36) for r in rows.values() if r["kind"] == "ramsey"]
+    if len(grid) != 12 or any(abs(g - round(g)) > 1e-9 or round(g) % 12 for g in grid):
+        raise AssertionError(grid)
 
 
 def test_phase_arm_reads_an_exact_series() -> None:
