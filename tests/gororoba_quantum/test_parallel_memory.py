@@ -20,9 +20,7 @@ def _require(condition: bool, message: str) -> None:
         raise AssertionError(message)
 
 
-def _synthetic_host(
-    tmp_path: Path, available_kib: int, limits: dict[str, tuple[str, int | None]]
-) -> dict[str, Path]:
+def _synthetic_host(tmp_path: Path, available_kib: int, limits: dict[str, tuple[str, int | None]]) -> dict[str, Path]:
     """A /proc/meminfo, /proc/self/cgroup and cgroup tree; limits maps a cgroup path to (memory.max, memory.current).
 
     A current of None leaves memory.current absent; the empty path is the root node.
@@ -83,7 +81,7 @@ def _record_pool_sizes(monkeypatch: pytest.MonkeyPatch) -> list[tuple[int, int]]
 
     def recording(count: int) -> parallel.ProcessPoolExecutor:
         pool = real(count)
-        sizes.append((count, pool._max_workers))
+        sizes.append((count, getattr(pool, "_max_workers")))
         return pool
 
     monkeypatch.setattr(parallel, "_executor", recording)
@@ -125,8 +123,8 @@ def test_two_workers_return_the_serial_verdicts(monkeypatch: pytest.MonkeyPatch)
 def test_case_verdict_pickles_without_loaded_state_and_cases_are_unique() -> None:
     registry = {"schema": "synthetic"}
     verdict = research_state.CaseVerdict(registry)
-    verdict._loaded = ("sentinel",)  # type: ignore[assignment]
-    verdict._specs = ["sentinel"]  # type: ignore[list-item]
+    verdict._loaded = ("sentinel",)
+    verdict._specs = ["sentinel"]
     restored = pickle.loads(pickle.dumps(verdict))
     _require(restored._registry == registry, "a pickled verdict lost its registry")
     _require(restored._loaded is None and restored._specs is None, "a pickled verdict carried loaded state")
