@@ -74,8 +74,8 @@ CELL_SETS = [
 
 
 def _restrict(module: Any, only: str | None, monkeypatch: pytest.MonkeyPatch) -> None:
-    """Limit the module to one cell, and to that cell's orbit where the module precomputes orbit pieces, and drop the start
-    delay of the fake; or leave every cell and the delay."""
+    """Limit the module to one cell and that cell's orbit, and drop the start delay of the fake; or leave every cell,
+    every orbit and the delay."""
     if only is not None:
         monkeypatch.setattr(module, "CELLS", [cell for cell in module.CELLS if cell[0] == only])
         if hasattr(module, "ORBITS"):
