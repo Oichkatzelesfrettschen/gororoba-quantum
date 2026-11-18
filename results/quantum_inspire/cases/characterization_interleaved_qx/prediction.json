@@ -4,29 +4,29 @@
  "budget": {
   "per_arm": {
    "interleaved_t1": {
-    "batches": 22,
-    "jobs": 66,
-    "shots": 67584,
-    "expected_execution_seconds": 208.8
+    "batches": 18,
+    "jobs": 54,
+    "shots": 55296,
+    "expected_execution_seconds": 176.4
    },
-   "single_qubit": {
-    "batches": 32,
-    "jobs": 96,
-    "shots": 98304,
-    "expected_execution_seconds": 302.6
+   "crosstalk": {
+    "batches": 8,
+    "jobs": 24,
+    "shots": 24576,
+    "expected_execution_seconds": 75.7
    },
    "q12_phase": {
-    "batches": 11,
-    "jobs": 32,
-    "shots": 32768,
-    "expected_execution_seconds": 100.6
+    "batches": 4,
+    "jobs": 12,
+    "shots": 12288,
+    "expected_execution_seconds": 37.7
    }
   },
   "total": {
-   "batches": 65,
-   "jobs": 194,
-   "shots": 198656,
-   "expected_execution_seconds": 612.0
+   "batches": 30,
+   "jobs": 90,
+   "shots": 92160,
+   "expected_execution_seconds": 289.8
   },
   "seconds_model": "2.6 s per job plus 0.53 ms per shot plus the circuit's wait per shot",
   "credits_expected": 0,
@@ -46,10 +46,40 @@
  "thresholds": {
   "lack_of_fit_probability": 0.01,
   "aicc_gain": 4.0,
-  "pooled_qubits": 12,
+  "tail_statistic_threshold": 200.0,
+  "descriptive_count_mark": 12,
   "phase_target_rad": -0.15,
   "phase_half_width_rad": 0.05,
   "phase_null_rad": 0.05,
   "min_fringe_amplitude": 0.25
+ },
+ "q12_phase": {
+  "target_qubit": 12,
+  "waits_cycles": [
+   0,
+   25
+  ],
+  "angles_pi_over_3": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "triads_pi_over_3": [
+   [
+    0,
+    2,
+    4
+   ],
+   [
+    1,
+    3,
+    5
+   ]
+  ],
+  "shots": 1024,
+  "expected_phase_se_rad": 0.01762
  }
 }

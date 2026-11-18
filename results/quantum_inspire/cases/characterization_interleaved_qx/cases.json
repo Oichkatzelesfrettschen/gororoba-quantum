@@ -2,63 +2,157 @@
  "schema": "qi-tuna17-interleaved-cases-v1",
  "profile": "qx",
  "backend": "QXsinglenodesimulator",
- "shots": 1024,
+ "shots": {
+  "interleaved_t1": 1024,
+  "crosstalk": 1024,
+  "q12_phase": 1024
+ },
  "cycle_seconds": 2e-08,
- "t1_round_wait_cycles": [
-  50,
-  125,
-  250,
-  375,
-  500,
-  1000,
-  2000,
-  4000,
-  6000,
-  8000,
-  12000
- ],
- "rounds": 2,
- "single_qubits": [
-  5,
-  7,
-  9,
-  0,
+ "t1_multipliers": [
+  0.5,
+  1,
+  2,
   4,
-  6,
-  3,
-  1
+  8,
+  12
  ],
- "single_t1_wait_cycles": [
+ "t1_delay_cycles": {
+  "0.5": [
+   416,
+   481,
+   532,
+   313,
+   563,
+   499,
+   392,
+   664,
+   474,
+   512
+  ],
+  "1": [
+   832,
+   962,
+   1063,
+   625,
+   1125,
+   998,
+   785,
+   1328,
+   949,
+   1024
+  ],
+  "2": [
+   1663,
+   1925,
+   2127,
+   1250,
+   2250,
+   1996,
+   1569,
+   2657,
+   1897,
+   2047
+  ],
+  "4": [
+   3327,
+   3849,
+   4254,
+   2501,
+   4500,
+   3991,
+   3138,
+   5313,
+   3795,
+   4094
+  ],
+  "8": [
+   6653,
+   7699,
+   8508,
+   5001,
+   9001,
+   7983,
+   6276,
+   10627,
+   7590,
+   8189
+  ],
+  "12": [
+   9980,
+   11548,
+   12762,
+   7502,
+   13501,
+   11974,
+   9414,
+   15940,
+   11385,
+   12283
+  ]
+ },
+ "rounds": 3,
+ "crosstalk_classes": {
+  "A": [
+   0,
+   4,
+   5,
+   6,
+   9
+  ],
+  "B_prime": [
+   1,
+   3,
+   7,
+   8
+  ]
+ },
+ "crosstalk_t1_wait_cycles": [
   250,
   1000,
   4000
  ],
- "single_ladder_pulses": [
+ "crosstalk_ladder_pulses": [
   32,
   128,
   256
  ],
- "phase_qubits": [
-  9,
-  8,
-  4
+ "pair_qubits": [
+  1,
+  2
  ],
- "phase_wait_cycles": 25,
+ "pair_pulses": 128,
+ "phase_qubits": [
+  9
+ ],
+ "phase_wait_cycles": [
+  0,
+  25
+ ],
+ "phase_triads_pi_over_36": [
+  [
+   0,
+   24,
+   48
+  ],
+  [
+   12,
+   36,
+   60
+  ]
+ ],
  "phase_steps_pi_over_36": [
   0,
-  9,
-  18,
-  27,
+  12,
+  24,
   36,
-  45,
-  54,
-  63
+  48,
+  60
  ],
  "batch_limit": 3,
  "batches": {
-  "interleaved_t1": 22,
-  "single_qubit": 32,
-  "q12_phase": 11
+  "interleaved_t1": 18,
+  "crosstalk": 8,
+  "q12_phase": 4
  },
  "qrng_draw": null,
  "schedule": "pending: DRAW is None, see qrng_request.json"
