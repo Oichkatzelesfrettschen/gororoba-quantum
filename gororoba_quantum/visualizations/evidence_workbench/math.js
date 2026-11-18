@@ -95,5 +95,116 @@
         const w=Math.sin(yaw)*v[0]+Math.cos(yaw)*v[1];
         return [u,Math.cos(pitch)*v[2]-Math.sin(pitch)*w,Math.sin(pitch)*v[2]+Math.cos(pitch)*w];
     }
-    return {requireValue,finite,interval,simultaneous,blochRegion,completions,constrainedXY,covarianceCell,fraction,normFactor,safeCSV,rotate};
+    // Undo only the renderer's three HTML escapes. JSON spelling, including
+    // 1.0, -0.0, exponents, escaped backslashes and the final newline, is retained.
+    const PAYLOAD_LIMITS = Object.freeze({bytes:64*1024*1024,depth:128,nodes:1000000});
+    function payloadText(transport) {
+        requireValue(typeof transport==='string' && transport.length<=PAYLOAD_LIMITS.bytes,
+            'Embedded payload exceeds the text budget');
+        const decoded=transport.replace(/\\(?:["\\/bfnrt]|u[0-9a-fA-F]{4})/g,
+            token=>({'\\u003c':'<','\\u003e':'>','\\u0026':'&'}[token]??token));
+        const bytes=new TextEncoder().encode(decoded);
+        requireValue(bytes.length<=PAYLOAD_LIMITS.bytes,'Embedded payload exceeds the byte budget');
+        return {text:decoded,bytes};
+    }
+    function sha256Portable(bytes) {
+        requireValue(bytes instanceof Uint8Array && bytes.length<=PAYLOAD_LIMITS.bytes,'Invalid digest input');
+        const k=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+            0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+            0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+            0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+            0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+            0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+            0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+            0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+        const hash=new Uint32Array([0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19]);
+        const padded=new Uint8Array(Math.ceil((bytes.length+9)/64)*64);
+        padded.set(bytes);padded[bytes.length]=128;
+        const data=new DataView(padded.buffer),bits=bytes.length*8;
+        data.setUint32(padded.length-8,Math.floor(bits/0x100000000));
+        data.setUint32(padded.length-4,bits>>>0);
+        const w=new Uint32Array(64),rotr=(x,n)=>(x>>>n)|(x<<(32-n));
+        for(let offset=0;offset<padded.length;offset+=64){
+            for(let i=0;i<16;i++)w[i]=data.getUint32(offset+4*i);
+            for(let i=16;i<64;i++){
+                const x=w[i-15],y=w[i-2];
+                w[i]=(w[i-16]+(rotr(x,7)^rotr(x,18)^(x>>>3))+w[i-7]+(rotr(y,17)^rotr(y,19)^(y>>>10)))>>>0;
+            }
+            let [a,b,c,d,e,f,g,h]=hash;
+            for(let i=0;i<64;i++){
+                const t1=(h+(rotr(e,6)^rotr(e,11)^rotr(e,25))+((e&f)^(~e&g))+k[i]+w[i])>>>0;
+                const t2=((rotr(a,2)^rotr(a,13)^rotr(a,22))+((a&b)^(a&c)^(b&c)))>>>0;
+                h=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0;
+            }
+            [a,b,c,d,e,f,g,h].forEach((v,i)=>{hash[i]=(hash[i]+v)>>>0;});
+        }
+        return Array.from(hash,v=>v.toString(16).padStart(8,'0')).join('');
+    }
+    function parseFrozenJSON(text) {
+        // Bounded parser rejects duplicate names before freezing each container.
+        // Scientific schema and acquisition validation remain the builder's job.
+        requireValue(typeof text==='string' && text.length<=PAYLOAD_LIMITS.bytes,'JSON exceeds text budget');
+        let pos=0,nodes=0;
+        const ws=()=>{while(pos<text.length && /[ \t\n\r]/.test(text[pos]))pos++;};
+        function string(){
+            const start=pos;requireValue(text[pos++]==='"','Expected JSON string');
+            while(pos<text.length){
+                const ch=text[pos++];
+                if(ch==='"')return JSON.parse(text.slice(start,pos));
+                requireValue(ch.charCodeAt(0)>=32,'Control character in JSON string');
+                if(ch==='\\'){
+                    const esc=text[pos++];
+                    requireValue(typeof esc==='string' && '"\\/bfnrtu'.includes(esc),'Invalid JSON escape');
+                    if(esc==='u'){
+                        requireValue(/^[0-9a-fA-F]{4}$/.test(text.slice(pos,pos+4)),'Invalid Unicode escape');pos+=4;
+                    }
+                }
+            }
+            throw new Error('Unterminated JSON string');
+        }
+        function value(depth){
+            requireValue(++nodes<=PAYLOAD_LIMITS.nodes,'JSON exceeds node budget');ws();
+            const ch=text[pos];
+            if(ch==='{'||ch==='['){
+                requireValue(depth<PAYLOAD_LIMITS.depth,'JSON exceeds nesting budget');
+                const object=ch==='{',out=object?{}:[],end=object?'}':']',keys=new Set();pos++;ws();
+                if(text[pos]===end){pos++;return Object.freeze(out);}
+                for(;;){
+                    if(object){
+                        ws();const key=string();requireValue(!keys.has(key),'Duplicate JSON key: '+key);keys.add(key);
+                        ws();requireValue(text[pos++]===':','Expected JSON colon');
+                        Object.defineProperty(out,key,{value:value(depth+1),enumerable:true,writable:false,configurable:false});
+                    }else out.push(value(depth+1));
+                    ws();const next=text[pos++];if(next===end)return Object.freeze(out);
+                    requireValue(next===',','Expected JSON separator');
+                }
+            }
+            if(ch==='"')return string();
+            for(const [token,result]of [['true',true],['false',false],['null',null]]){
+                if(text.startsWith(token,pos)){pos+=token.length;return result;}
+            }
+            const number=/-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?/y;
+            number.lastIndex=pos;const found=number.exec(text);
+            requireValue(found!==null,'Invalid JSON value');pos=number.lastIndex;
+            const result=Number(found[0]);requireValue(Number.isFinite(result),'Non-finite JSON number');return result;
+        }
+        const result=value(0);ws();requireValue(pos===text.length,'Trailing JSON content');return result;
+    }
+    async function verifyPayload(transport,identity) {
+        requireValue(typeof identity==='string' && /^[0-9a-f]{64}$/.test(identity),'Invalid payload SHA-256');
+        const recovered=payloadText(transport);
+        let actual,engine;
+        if(globalThis.crypto?.subtle){
+            const digest=await globalThis.crypto.subtle.digest('SHA-256',recovered.bytes);
+            actual=Array.from(new Uint8Array(digest),v=>v.toString(16).padStart(2,'0')).join('');engine='WebCrypto SHA-256';
+        }else{actual=sha256Portable(recovered.bytes);engine='portable SHA-256';}
+        requireValue(actual===identity,'Embedded payload SHA-256 mismatch; visualization withheld');
+        const data=parseFrozenJSON(recovered.text);
+        requireValue(data && data.schema==='gororoba-evidence-workbench-v1'
+            && Array.isArray(data.sources) && Array.isArray(data.acquisitions) && Array.isArray(data.optical)
+            && (data.ramsey===null || (data.ramsey && Array.isArray(data.ramsey.rows))),
+            'Invalid workbench envelope');
+        return Object.freeze({data,text:recovered.text,identity:actual,engine,bytes:recovered.bytes.length});
+    }
+    return {PAYLOAD_LIMITS,payloadText,sha256Portable,parseFrozenJSON,verifyPayload,requireValue,finite,interval,simultaneous,blochRegion,completions,constrainedXY,covarianceCell,fraction,normFactor,safeCSV,rotate};
 });

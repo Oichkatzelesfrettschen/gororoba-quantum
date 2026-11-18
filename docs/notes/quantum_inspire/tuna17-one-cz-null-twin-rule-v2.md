@@ -113,5 +113,6 @@ arithmetic; the Tuna-17 decision runs through the v3 analyzer.
 `sh ci/pr_checks.sh tests tests/scripts/test_qi_pathion_one_cz_null_models.py
 tests/scripts/test_qi_pathion_one_cz_null_rule_v2.py tests/scripts/test_qi_pathion_one_cz_null_analysis.py` covers the
 rule, the policy and the per-template coverage; `-m audit` replays the stored rule-v2 table and the case directory's
-operating characteristics. The change to `oc.operating_characteristics` and `oc._series_label` (a successor rule and
-world list as optional arguments) leaves `prediction.json` byte-identical.
+operating characteristics. The successor simulation `simulated_shares` of `qi_pathion_one_cz_null_rule_v2.py` (the world list as an optional
+argument, its own module-level v2 decision) leaves `qi_pathion_one_cz_null_cases.py` at its pinned bytes and
+regenerates the stored rule-v2 record byte-equal.

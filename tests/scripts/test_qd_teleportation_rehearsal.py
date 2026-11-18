@@ -131,8 +131,8 @@ def test_request_is_byte_stable_and_validates() -> None:
         raise AssertionError("two builds differ")
     if first["circuit.json"] != (CASE / "circuit.json").read_bytes():
         raise AssertionError("circuit.json differs from the retained bytes")
-    rehearsal.close(json.loads(first["cases.json"]), load("cases.json"), "cases.json")
     manifest, circuit = load("cases.json"), load("circuit.json")
+    rehearsal.close_request(json.loads(first["cases.json"]), manifest, circuit, "cases.json")
     rehearsal.validate(manifest, circuit)
     if manifest["circuit"]["sha256"] != rehearsal.sha256_bytes((CASE / "circuit.json").read_bytes()):
         raise AssertionError("cases.json names another circuit.json")
@@ -143,6 +143,115 @@ def test_request_is_byte_stable_and_validates() -> None:
     expected = ["herald photon", "perturbed unitary", "shifted source", "unregistered compilation seed"]
     if sorted(rehearsal.rejections(manifest, circuit)) != expected:
         raise AssertionError("a mutated request validates")
+
+
+def shifted_blocks(manifest: dict[str, Any], blocks: tuple[int, ...], *, with_alpha: bool = True) -> dict[str, Any]:
+    """The manifest with the (alpha, beta) pair of each elimination block moved to the other branch of np.angle.
+
+    A block of photonic_template is PS(m, beta), PS(m + 1, -beta), BS, PS(m, alpha), PS(m + 1, -alpha) after the
+    eight diagonal phases. Adding pi to beta and to alpha multiplies the two modes by -1 before and after the beam
+    splitter, which commutes with it, so the unitary is unchanged; adding pi to beta alone is not a gauge."""
+    shifted = copy.deepcopy(manifest)
+    for setting in shifted["settings"]:
+        values = setting["circuit_params"]
+        for block in blocks:
+            start = rehearsal.LOGICAL + 5 * block
+            moves = [(start, math.pi), (start + 1, -math.pi)]
+            if with_alpha:
+                moves += [(start + 3, math.pi), (start + 4, -math.pi)]
+            for index, delta in moves:
+                values[f"x{index}"] += delta
+    return shifted
+
+
+def test_the_comparator_accepts_the_np_angle_gauge_and_refuses_a_changed_unitary() -> None:
+    manifest, circuit = load("cases.json"), load("circuit.json")
+    gauge = shifted_blocks(manifest, (2, 3))
+    moved = max(
+        abs(a - b)
+        for old, new in zip(manifest["settings"], gauge["settings"], strict=True)
+        for a, b in zip(old["circuit_params"].values(), new["circuit_params"].values(), strict=True)
+    )
+    if moved < math.pi - 1e-9:
+        raise AssertionError(f"the fixture moves no parameter by pi ({moved})")
+    rehearsal.close_request(gauge, manifest, circuit, "cases.json")
+    half = shifted_blocks(manifest, (2, 3), with_alpha=False)
+    with pytest.raises(ValueError, match=r"settings\[0\]\.circuit_params: the realized unitaries differ"):
+        rehearsal.close_request(half, manifest, circuit, "cases.json")
+
+
+def theta_pi_blocks(setting: dict[str, Any]) -> list[int]:
+    """The elimination blocks of a setting whose beam-splitter angle is pi."""
+    values = setting["circuit_params"]
+    blocks = (len(values) - rehearsal.LOGICAL) // 5
+    return [b for b in range(blocks) if abs(values[f"x{rehearsal.LOGICAL + 5 * b + 2}"] - math.pi) < 1e-12]
+
+
+def shifted_pair(manifest: dict[str, Any], blocks: list[int], alpha: float, beta: float) -> dict[str, Any]:
+    """The manifest with alpha and beta of the given blocks of settings[0] moved by the given amounts."""
+    shifted = copy.deepcopy(manifest)
+    values = shifted["settings"][0]["circuit_params"]
+    for block in blocks:
+        start = rehearsal.LOGICAL + 5 * block
+        for index, delta in ((start, beta), (start + 1, -beta), (start + 3, alpha), (start + 4, -alpha)):
+            values[f"x{index}"] += delta
+    return shifted
+
+
+def test_the_comparator_accepts_a_common_phase_shift_of_a_theta_pi_block_and_refuses_an_unequal_one() -> None:
+    """A beam splitter at theta = pi realizes only alpha - beta, so a common shift of both leaves the unitary alone.
+
+    A block of photonic_template applies PS(m, beta), PS(m + 1, -beta), BS.Rx(theta), PS(m, alpha), PS(m + 1, -alpha),
+    which is D(alpha) BS D(beta) with D(x) = diag(e^{ix}, e^{-ix}) and BS = [[cos(theta/2), i sin(theta/2)], [i
+    sin(theta/2), cos(theta/2)]]. The entries are U00 = cos(theta/2) e^{i(alpha+beta)}, U11 = cos(theta/2)
+    e^{-i(alpha+beta)}, U01 = i sin(theta/2) e^{i(alpha-beta)} and U10 = i sin(theta/2) e^{-i(alpha-beta)}. At
+    theta = pi the diagonal vanishes and alpha + beta drops out, so alpha + d and beta + d for any d give the same
+    block, and the np.angle of a zero entry may land on any such pair. Blocks 0, 1 and 6 of settings[0] of the
+    retained job-00 request sit at theta = pi. Shifting alpha alone moves alpha - beta and the unitary. The same
+    common shift on a block with cos(theta/2) != 0 moves alpha + beta and the unitary, so the acceptance rests on
+    theta = pi."""
+    manifest, circuit = load("cases.json"), load("circuit.json")
+    pi_blocks = theta_pi_blocks(manifest["settings"][0])
+    if pi_blocks[:3] != [0, 1, 6]:
+        raise AssertionError(f"the retained setting has theta = pi blocks {pi_blocks}")
+    shift = 0.37
+    common = shifted_pair(manifest, pi_blocks, shift, shift)
+    old, new = manifest["settings"][0]["circuit_params"], common["settings"][0]["circuit_params"]
+    moved = max(abs(old[name] - new[name]) for name in old)
+    if not shift - 1e-9 < moved < shift + 1e-9:
+        raise AssertionError(f"the fixture moves a parameter by {moved}, not by {shift}")
+    rehearsal.close_request(common, manifest, circuit, "cases.json")
+    if 2 in pi_blocks:
+        raise AssertionError("block 2 is a theta = pi block")
+    for mutant in (
+        shifted_pair(manifest, pi_blocks, shift, 0.0),
+        shifted_pair(manifest, pi_blocks, shift, -shift),
+        shifted_pair(manifest, [2], shift, shift),
+    ):
+        with pytest.raises(ValueError, match=r"settings\[0\]\.circuit_params: the realized unitaries differ"):
+            rehearsal.close_request(mutant, manifest, circuit, "cases.json")
+
+
+@pytest.mark.parametrize("amount", [1e-11, 1e-6, 1e-3])
+def test_the_comparator_refuses_a_parameter_that_moves_the_unitary(amount: float) -> None:
+    manifest, circuit = load("cases.json"), load("circuit.json")
+    mutant = copy.deepcopy(manifest)
+    mutant["settings"][1]["circuit_params"]["x30"] += amount
+    with pytest.raises(ValueError, match=r"settings\[1\]\.circuit_params: the realized unitaries differ"):
+        rehearsal.close_request(mutant, manifest, circuit, "cases.json")
+
+
+def test_the_comparator_keeps_every_other_field_exact() -> None:
+    manifest, circuit = load("cases.json"), load("circuit.json")
+    for edit_field, match in (
+        (lambda m: m["settings"][0].__setitem__("compilation_seed", 0), "compilation_seed"),
+        (lambda m: m["settings"][2]["column"][0].__setitem__(0, 0.5), "column"),
+        (lambda m: m["settings"][0]["circuit_params"].pop("x0"), "names differ"),
+    ):
+        mutant = copy.deepcopy(manifest)
+        edit_field(mutant)
+        with pytest.raises(ValueError, match=match):
+            rehearsal.close_request(mutant, manifest, circuit, "cases.json")
 
 
 SPLIT_DRAW = "docs/evidence/anu_qrng/draw-2026-10-30T205347Z.json"

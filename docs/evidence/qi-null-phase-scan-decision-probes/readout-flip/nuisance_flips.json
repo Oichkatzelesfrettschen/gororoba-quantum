@@ -1,0 +1,1426 @@
+[
+  {
+    "name": "null: flip 0.0166, CZ phase damping 0.10",
+    "position": 0,
+    "series": 200,
+    "exact_world_flip": [
+      0.01729,
+      0.0125,
+      0.0225
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.01519,
+        0.01,
+        0.02
+      ],
+      "exact_parabola": [
+        0.01635,
+        0.0125,
+        0.02
+      ],
+      "none_adequate": [
+        0.01625,
+        0.015,
+        0.0175
+      ]
+    }
+  },
+  {
+    "name": "null: flip 0.0166, CZ phase damping 0.13",
+    "position": 1,
+    "series": 200,
+    "exact_world_flip": [
+      0.01737,
+      0.01,
+      0.025
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.01321,
+        0.005,
+        0.0225
+      ],
+      "exact_parabola": [
+        0.01611,
+        0.0125,
+        0.0225
+      ],
+      "none_adequate": [
+        0.0125,
+        0.0125,
+        0.0125
+      ]
+    }
+  },
+  {
+    "name": "null: flip 0.0166, CZ phase damping 0.16",
+    "position": 2,
+    "series": 200,
+    "exact_world_flip": [
+      0.01947,
+      0.0075,
+      0.03
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.01205,
+        0.0,
+        0.025
+      ],
+      "exact_parabola": [
+        0.01577,
+        0.0075,
+        0.0225
+      ],
+      "none_adequate": [
+        0.0075,
+        0.0075,
+        0.0075
+      ]
+    }
+  },
+  {
+    "name": "null: flip 0.0166, pulse phase damping 0.10",
+    "position": 3,
+    "series": 200,
+    "exact_world_flip": [
+      0.0162,
+      0.01,
+      0.025
+    ],
+    "lead_flip_by_label": {
+      "exact_parabola": [
+        0.01477,
+        0.005,
+        0.0225
+      ]
+    }
+  },
+  {
+    "name": "null: flip 0.025, CZ phase damping 0.10",
+    "position": 4,
+    "series": 200,
+    "exact_world_flip": [
+      0.02573,
+      0.02,
+      0.0325
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.02381,
+        0.015,
+        0.03
+      ],
+      "exact_parabola": [
+        0.02427,
+        0.02,
+        0.0275
+      ],
+      "none_adequate": [
+        0.0225,
+        0.0225,
+        0.0225
+      ]
+    }
+  },
+  {
+    "name": "null: flip 0.025, CZ phase damping 0.13",
+    "position": 5,
+    "series": 200,
+    "exact_world_flip": [
+      0.02606,
+      0.02,
+      0.0325
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.02224,
+        0.0125,
+        0.03
+      ],
+      "exact_parabola": [
+        0.02309,
+        0.0175,
+        0.0275
+      ]
+    }
+  },
+  {
+    "name": "null: flip 0.025, CZ phase damping 0.16",
+    "position": 6,
+    "series": 200,
+    "exact_world_flip": [
+      0.02629,
+      0.015,
+      0.035
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.01872,
+        0.0075,
+        0.03
+      ],
+      "exact_parabola": [
+        0.02115,
+        0.015,
+        0.03
+      ],
+      "none_adequate": [
+        0.02125,
+        0.0175,
+        0.025
+      ]
+    }
+  },
+  {
+    "name": "null: flip 0.025, pulse phase damping 0.10",
+    "position": 7,
+    "series": 200,
+    "exact_world_flip": [
+      0.02484,
+      0.015,
+      0.0325
+    ],
+    "lead_flip_by_label": {
+      "exact_parabola": [
+        0.02322,
+        0.015,
+        0.03
+      ],
+      "none_adequate": [
+        0.0225,
+        0.0225,
+        0.0225
+      ],
+      "phase_unresolved": [
+        0.0175,
+        0.0175,
+        0.0175
+      ]
+    }
+  },
+  {
+    "name": "null: flip 0.036, CZ phase damping 0.10",
+    "position": 8,
+    "series": 200,
+    "exact_world_flip": [
+      0.03684,
+      0.03,
+      0.0425
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.03461,
+        0.0275,
+        0.04
+      ],
+      "exact_parabola": [
+        0.03542,
+        0.0325,
+        0.0375
+      ],
+      "none_adequate": [
+        0.03375,
+        0.03,
+        0.0375
+      ]
+    }
+  },
+  {
+    "name": "null: flip 0.036, CZ phase damping 0.13",
+    "position": 9,
+    "series": 200,
+    "exact_world_flip": [
+      0.03746,
+      0.0275,
+      0.0475
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.03324,
+        0.025,
+        0.0425
+      ],
+      "exact_parabola": [
+        0.035,
+        0.03,
+        0.04
+      ],
+      "none_adequate": [
+        0.03375,
+        0.03,
+        0.0375
+      ]
+    }
+  },
+  {
+    "name": "null: flip 0.036, CZ phase damping 0.16",
+    "position": 10,
+    "series": 200,
+    "exact_world_flip": [
+      0.03751,
+      0.0275,
+      0.05
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.02929,
+        0.02,
+        0.04
+      ],
+      "exact_parabola": [
+        0.03355,
+        0.0275,
+        0.0425
+      ],
+      "none_adequate": [
+        0.0325,
+        0.0325,
+        0.0325
+      ]
+    }
+  },
+  {
+    "name": "null: flip 0.036, pulse phase damping 0.10",
+    "position": 11,
+    "series": 200,
+    "exact_world_flip": [
+      0.03565,
+      0.0275,
+      0.0425
+    ],
+    "lead_flip_by_label": {
+      "exact_parabola": [
+        0.03391,
+        0.025,
+        0.0425
+      ],
+      "phase_unresolved": [
+        0.0375,
+        0.0375,
+        0.0375
+      ]
+    }
+  },
+  {
+    "name": "null: flip 0.05, CZ phase damping 0.10",
+    "position": 12,
+    "series": 200,
+    "exact_world_flip": [
+      0.05072,
+      0.045,
+      0.055
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.04863,
+        0.0425,
+        0.055
+      ],
+      "exact_parabola": [
+        0.04974,
+        0.0425,
+        0.0525
+      ]
+    }
+  },
+  {
+    "name": "null: flip 0.05, CZ phase damping 0.13",
+    "position": 13,
+    "series": 200,
+    "exact_world_flip": [
+      0.05118,
+      0.045,
+      0.06
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.04683,
+        0.04,
+        0.0575
+      ],
+      "exact_parabola": [
+        0.04857,
+        0.0425,
+        0.055
+      ]
+    }
+  },
+  {
+    "name": "null: flip 0.05, CZ phase damping 0.16",
+    "position": 14,
+    "series": 200,
+    "exact_world_flip": [
+      0.05167,
+      0.0425,
+      0.06
+    ],
+    "lead_flip_by_label": {
+      "exact_parabola": [
+        0.04599,
+        0.0325,
+        0.055
+      ],
+      "phase_unresolved": [
+        0.04417,
+        0.035,
+        0.06
+      ],
+      "none_adequate": [
+        0.0425,
+        0.0425,
+        0.0425
+      ]
+    }
+  },
+  {
+    "name": "null: flip 0.05, pulse phase damping 0.10",
+    "position": 15,
+    "series": 200,
+    "exact_world_flip": [
+      0.0496,
+      0.0425,
+      0.0575
+    ],
+    "lead_flip_by_label": {
+      "exact_parabola": [
+        0.04774,
+        0.0375,
+        0.055
+      ],
+      "phase_unresolved": [
+        0.04875,
+        0.0475,
+        0.05
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: exact gates",
+    "position": 16,
+    "series": 200,
+    "exact_world_flip": null,
+    "lead_flip_by_label": {}
+  },
+  {
+    "name": "TRUTHS: q12 phase -0.18 rad",
+    "position": 17,
+    "series": 200,
+    "exact_world_flip": [
+      0.02949,
+      0.0275,
+      0.0325
+    ],
+    "lead_flip_by_label": {
+      "q12_phase": [
+        0.00066,
+        0.0,
+        0.005
+      ],
+      "phase_mixed": [
+        0.0025,
+        0.0025,
+        0.0025
+      ],
+      "none_adequate": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: q12 phase +0.18 rad",
+    "position": 18,
+    "series": 200,
+    "exact_world_flip": [
+      0.03068,
+      0.0275,
+      0.035
+    ],
+    "lead_flip_by_label": {
+      "q12_phase": [
+        0.00069,
+        0.0,
+        0.0075
+      ],
+      "phase_mixed": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: q12 phase -0.15 rad",
+    "position": 19,
+    "series": 200,
+    "exact_world_flip": [
+      0.02034,
+      0.0175,
+      0.025
+    ],
+    "lead_flip_by_label": {
+      "q12_phase": [
+        0.00049,
+        0.0,
+        0.005
+      ],
+      "phase_mixed": [
+        0.00125,
+        0.0,
+        0.0025
+      ],
+      "none_adequate": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: coupler 8-12 phase -0.25 rad",
+    "position": 20,
+    "series": 200,
+    "exact_world_flip": [
+      0.03318,
+      0.0275,
+      0.0375
+    ],
+    "lead_flip_by_label": {
+      "coupler_phase": [
+        0.00063,
+        0.0,
+        0.005
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: coupler 8-12 phase +0.25 rad",
+    "position": 21,
+    "series": 200,
+    "exact_world_flip": [
+      0.04099,
+      0.0375,
+      0.045
+    ],
+    "lead_flip_by_label": {
+      "coupler_phase": [
+        0.0006,
+        0.0,
+        0.005
+      ],
+      "phase_mixed": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "none_adequate": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: exact gates, selector flip 0.0166 when q12 reads 0",
+    "position": 22,
+    "series": 200,
+    "exact_world_flip": [
+      0.01629,
+      0.0125,
+      0.02
+    ],
+    "lead_flip_by_label": {
+      "exact_parabola": [
+        0.01585,
+        0.0125,
+        0.02
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: exact gates, selector flip 0.036 when q12 reads 0",
+    "position": 23,
+    "series": 200,
+    "exact_world_flip": [
+      0.03583,
+      0.0325,
+      0.04
+    ],
+    "lead_flip_by_label": {
+      "exact_parabola": [
+        0.03541,
+        0.0325,
+        0.04
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: q12 phase -0.18 rad, selector flip 0.036",
+    "position": 24,
+    "series": 200,
+    "exact_world_flip": [
+      0.06,
+      0.06,
+      0.06
+    ],
+    "lead_flip_by_label": {
+      "q12_phase": [
+        0.03554,
+        0.03,
+        0.04
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: coupler 8-12 phase -0.25 rad, selector flip 0.036",
+    "position": 25,
+    "series": 200,
+    "exact_world_flip": [
+      0.06,
+      0.06,
+      0.06
+    ],
+    "lead_flip_by_label": {
+      "coupler_phase": [
+        0.03567,
+        0.03,
+        0.04
+      ],
+      "phase_mixed": [
+        0.0375,
+        0.0375,
+        0.0375
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: q8 phase at coupler 8-12 -0.25 rad, selector flip 0.042",
+    "position": 26,
+    "series": 200,
+    "exact_world_flip": [
+      0.05748,
+      0.0525,
+      0.06
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.04191,
+        0.0375,
+        0.045
+      ],
+      "q8_phase_at_coupler": [
+        0.0419,
+        0.0375,
+        0.0475
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: q8 phase at coupler 8-12 -0.25 rad",
+    "position": 27,
+    "series": 200,
+    "exact_world_flip": [
+      0.01673,
+      0.0125,
+      0.02
+    ],
+    "lead_flip_by_label": {
+      "q8_phase_at_coupler": [
+        0.00073,
+        0.0,
+        0.005
+      ],
+      "phase_unresolved": [
+        0.00066,
+        0.0,
+        0.0025
+      ],
+      "phase_mixed": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: q8 phase at coupler 8-12 -0.17 rad",
+    "position": 28,
+    "series": 200,
+    "exact_world_flip": [
+      0.0057,
+      0.0025,
+      0.01
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.00051,
+        0.0,
+        0.005
+      ],
+      "q8_phase_at_coupler": [
+        0.00042,
+        0.0,
+        0.0025
+      ],
+      "none_adequate": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: q8 phase at coupler 8-12 +0.10 rad",
+    "position": 29,
+    "series": 200,
+    "exact_world_flip": [
+      0.0058,
+      0.0025,
+      0.01
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.00044,
+        0.0,
+        0.005
+      ],
+      "q8_phase_at_coupler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "none_adequate": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: q12 phase -0.15 rad with CZ damping",
+    "position": 30,
+    "series": 200,
+    "exact_world_flip": [
+      0.02097,
+      0.02,
+      0.025
+    ],
+    "lead_flip_by_label": {
+      "q12_phase": [
+        0.00078,
+        0.0,
+        0.005
+      ],
+      "phase_mixed": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "none_adequate": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: coupler 8-12 phase -0.25 rad with CZ damping",
+    "position": 31,
+    "series": 200,
+    "exact_world_flip": [
+      0.03367,
+      0.03,
+      0.04
+    ],
+    "lead_flip_by_label": {
+      "coupler_phase": [
+        0.00062,
+        0.0,
+        0.005
+      ],
+      "none_adequate": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: exact gates with CZ damping",
+    "position": 32,
+    "series": 200,
+    "exact_world_flip": null,
+    "lead_flip_by_label": {}
+  },
+  {
+    "name": "TRUTHS: q12 phase -0.15 rad with CZ damping x1.25",
+    "position": 33,
+    "series": 200,
+    "exact_world_flip": [
+      0.02292,
+      0.0175,
+      0.025
+    ],
+    "lead_flip_by_label": {
+      "q12_phase": [
+        0.00093,
+        0.0,
+        0.0075
+      ],
+      "phase_mixed": [
+        0.00125,
+        0.0,
+        0.0025
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: coupler 8-12 phase -0.25 rad with CZ damping x1.25",
+    "position": 34,
+    "series": 200,
+    "exact_world_flip": [
+      0.03446,
+      0.0275,
+      0.04
+    ],
+    "lead_flip_by_label": {
+      "coupler_phase": [
+        0.00075,
+        0.0,
+        0.01
+      ],
+      "phase_mixed": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "none_adequate": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: q12 phase -0.15 rad with CZ damping x3",
+    "position": 35,
+    "series": 200,
+    "exact_world_flip": [
+      0.02399,
+      0.01,
+      0.04
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.00313,
+        0.0,
+        0.015
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: exact gates, selector flip 0.0166, CZ phase damping 0.10",
+    "position": 36,
+    "series": 200,
+    "exact_world_flip": [
+      0.01754,
+      0.0125,
+      0.0225
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.0156,
+        0.01,
+        0.02
+      ],
+      "exact_parabola": [
+        0.0161,
+        0.0125,
+        0.02
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: exact gates, selector flip 0.025, CZ phase damping 0.13",
+    "position": 37,
+    "series": 200,
+    "exact_world_flip": [
+      0.02628,
+      0.0175,
+      0.035
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.02204,
+        0.0125,
+        0.03
+      ],
+      "exact_parabola": [
+        0.02529,
+        0.02,
+        0.03
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: q8 phase at coupler 8-12 -0.25 rad, pulse phase damping 0.10",
+    "position": 38,
+    "series": 200,
+    "exact_world_flip": [
+      0.02291,
+      0.015,
+      0.0325
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.00142,
+        0.0,
+        0.0125
+      ],
+      "none_adequate": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: q8 phase at coupler 8-12 -0.25 rad, CZ phase damping 0.12",
+    "position": 39,
+    "series": 200,
+    "exact_world_flip": [
+      0.04161,
+      0.0325,
+      0.0475
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.00184,
+        0.0,
+        0.015
+      ],
+      "none_adequate": [
+        0.00389,
+        0.0,
+        0.0125
+      ],
+      "q8_phase_at_coupler": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: exact gates, selector flip 0.036, CZ phase damping 0.16",
+    "position": 40,
+    "series": 200,
+    "exact_world_flip": [
+      0.03737,
+      0.0275,
+      0.0475
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.02938,
+        0.015,
+        0.0425
+      ],
+      "exact_parabola": [
+        0.03408,
+        0.025,
+        0.04
+      ],
+      "none_adequate": [
+        0.0375,
+        0.0375,
+        0.0375
+      ]
+    }
+  },
+  {
+    "name": "TRUTHS: exact gates, selector flip 0.025, pulse phase damping 0.10",
+    "position": 41,
+    "series": 200,
+    "exact_world_flip": [
+      0.02434,
+      0.0175,
+      0.03
+    ],
+    "lead_flip_by_label": {
+      "exact_parabola": [
+        0.0227,
+        0.0125,
+        0.03
+      ],
+      "phase_unresolved": [
+        0.0225,
+        0.02,
+        0.025
+      ]
+    }
+  },
+  {
+    "name": "true: q12 phase -0.18 rad, flip 0.0166",
+    "position": 42,
+    "series": 200,
+    "exact_world_flip": [
+      0.04516,
+      0.0425,
+      0.0475
+    ],
+    "lead_flip_by_label": {
+      "q12_phase": [
+        0.01626,
+        0.01,
+        0.02
+      ],
+      "phase_mixed": [
+        0.0175,
+        0.0175,
+        0.0175
+      ]
+    }
+  },
+  {
+    "name": "true: coupler 8-12 phase -0.25 rad, flip 0.0166",
+    "position": 43,
+    "series": 200,
+    "exact_world_flip": [
+      0.0488,
+      0.045,
+      0.0525
+    ],
+    "lead_flip_by_label": {
+      "coupler_phase": [
+        0.01627,
+        0.0125,
+        0.02
+      ],
+      "none_adequate": [
+        0.0175,
+        0.0175,
+        0.0175
+      ]
+    }
+  },
+  {
+    "name": "flip only: flip 0.025, no gate noise",
+    "position": 44,
+    "series": 200,
+    "exact_world_flip": [
+      0.02486,
+      0.02,
+      0.0275
+    ],
+    "lead_flip_by_label": {
+      "exact_parabola": [
+        0.02451,
+        0.02,
+        0.0275
+      ]
+    }
+  },
+  {
+    "name": "flip only: flip 0.05, no gate noise",
+    "position": 45,
+    "series": 200,
+    "exact_world_flip": [
+      0.04985,
+      0.0475,
+      0.0525
+    ],
+    "lead_flip_by_label": {
+      "exact_parabola": [
+        0.0495,
+        0.0475,
+        0.0525
+      ],
+      "phase_unresolved": [
+        0.05,
+        0.05,
+        0.05
+      ]
+    }
+  },
+  {
+    "name": "MIXED: z12 from q12 phase -0.18, z8c from coupler phase -0.25",
+    "position": 46,
+    "series": 200,
+    "exact_world_flip": [
+      0.02985,
+      0.0275,
+      0.0325
+    ],
+    "lead_flip_by_label": {
+      "none_adequate": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "name": "MIXED: z12 from coupler phase -0.25, z8c from q12 phase -0.18",
+    "position": 47,
+    "series": 200,
+    "exact_world_flip": [
+      0.03266,
+      0.0275,
+      0.0375
+    ],
+    "lead_flip_by_label": {
+      "none_adequate": [
+        0.00391,
+        0.0,
+        0.0125
+      ],
+      "phase_unresolved": [
+        0.00429,
+        0.0,
+        0.0075
+      ],
+      "phase_mixed": [
+        0.00125,
+        0.0,
+        0.0025
+      ]
+    }
+  },
+  {
+    "name": "gap: q12 phase -0.18 rad, flip 0.036",
+    "position": 48,
+    "series": 200,
+    "exact_world_flip": [
+      0.06,
+      0.06,
+      0.06
+    ],
+    "lead_flip_by_label": {
+      "q12_phase": [
+        0.03577,
+        0.03,
+        0.0425
+      ],
+      "phase_mixed": [
+        0.03875,
+        0.0375,
+        0.04
+      ]
+    }
+  },
+  {
+    "name": "gap: q12 phase +0.18 rad, flip 0.036",
+    "position": 49,
+    "series": 200,
+    "exact_world_flip": [
+      0.06,
+      0.06,
+      0.06
+    ],
+    "lead_flip_by_label": {
+      "q12_phase": [
+        0.03569,
+        0.0275,
+        0.0425
+      ],
+      "phase_unresolved": [
+        0.03875,
+        0.0375,
+        0.04
+      ],
+      "phase_mixed": [
+        0.0375,
+        0.035,
+        0.04
+      ]
+    }
+  },
+  {
+    "name": "gap: coupler phase -0.25 rad, flip 0.036",
+    "position": 50,
+    "series": 200,
+    "exact_world_flip": [
+      0.06,
+      0.06,
+      0.06
+    ],
+    "lead_flip_by_label": {
+      "coupler_phase": [
+        0.03591,
+        0.03,
+        0.04
+      ]
+    }
+  },
+  {
+    "name": "gap: q8 phase -0.25 rad, flip 0.036",
+    "position": 51,
+    "series": 200,
+    "exact_world_flip": [
+      0.05186,
+      0.0475,
+      0.055
+    ],
+    "lead_flip_by_label": {
+      "q8_phase_at_coupler": [
+        0.03562,
+        0.03,
+        0.04
+      ],
+      "phase_unresolved": [
+        0.03519,
+        0.0325,
+        0.0375
+      ],
+      "none_adequate": [
+        0.035,
+        0.035,
+        0.035
+      ]
+    }
+  },
+  {
+    "name": "gap: q12 phase -0.18 rad, flip 0.042",
+    "position": 52,
+    "series": 200,
+    "exact_world_flip": [
+      0.06,
+      0.06,
+      0.06
+    ],
+    "lead_flip_by_label": {
+      "q12_phase": [
+        0.04196,
+        0.0375,
+        0.045
+      ]
+    }
+  },
+  {
+    "name": "gap: q12 phase +0.18 rad, flip 0.042",
+    "position": 53,
+    "series": 200,
+    "exact_world_flip": [
+      0.06,
+      0.06,
+      0.06
+    ],
+    "lead_flip_by_label": {
+      "q12_phase": [
+        0.04174,
+        0.035,
+        0.0475
+      ],
+      "phase_mixed": [
+        0.0425,
+        0.0425,
+        0.0425
+      ]
+    }
+  },
+  {
+    "name": "gap: coupler phase -0.25 rad, flip 0.042",
+    "position": 54,
+    "series": 200,
+    "exact_world_flip": [
+      0.06,
+      0.06,
+      0.06
+    ],
+    "lead_flip_by_label": {
+      "coupler_phase": [
+        0.04167,
+        0.0375,
+        0.0475
+      ]
+    }
+  },
+  {
+    "name": "gap: q8 phase -0.25 rad, flip 0.042",
+    "position": 55,
+    "series": 200,
+    "exact_world_flip": [
+      0.05766,
+      0.0525,
+      0.06
+    ],
+    "lead_flip_by_label": {
+      "q8_phase_at_coupler": [
+        0.04151,
+        0.0375,
+        0.05
+      ],
+      "phase_unresolved": [
+        0.04167,
+        0.04,
+        0.0425
+      ],
+      "phase_mixed": [
+        0.04125,
+        0.04,
+        0.0425
+      ],
+      "none_adequate": [
+        0.04,
+        0.04,
+        0.04
+      ]
+    }
+  },
+  {
+    "name": "gap: drift null flip 0 to 0.036",
+    "position": 56,
+    "series": 200,
+    "exact_world_flip": [
+      0.01794,
+      0.0125,
+      0.0225
+    ],
+    "lead_flip_by_label": {
+      "none_adequate": [
+        0.01639,
+        0.0125,
+        0.02
+      ],
+      "exact_parabola": [
+        0.01542,
+        0.015,
+        0.0175
+      ],
+      "phase_unresolved": [
+        0.015,
+        0.0125,
+        0.0175
+      ]
+    }
+  },
+  {
+    "name": "gap: drift null flip 0 to 0.05",
+    "position": 57,
+    "series": 200,
+    "exact_world_flip": [
+      0.02495,
+      0.0225,
+      0.0275
+    ],
+    "lead_flip_by_label": {
+      "none_adequate": [
+        0.02245,
+        0.0175,
+        0.025
+      ]
+    }
+  },
+  {
+    "name": "gap: drift null flip 0.0166 to 0.036, CZ phase damping 0.13",
+    "position": 58,
+    "series": 200,
+    "exact_world_flip": [
+      0.02745,
+      0.02,
+      0.0325
+    ],
+    "lead_flip_by_label": {
+      "phase_unresolved": [
+        0.02319,
+        0.015,
+        0.03
+      ],
+      "exact_parabola": [
+        0.02375,
+        0.02,
+        0.0275
+      ],
+      "none_adequate": [
+        0.0225,
+        0.02,
+        0.025
+      ]
+    }
+  },
+  {
+    "name": "gap: drift null flip 0.036 to 0.0166, pulse phase damping 0.10",
+    "position": 59,
+    "series": 200,
+    "exact_world_flip": [
+      0.0257,
+      0.015,
+      0.035
+    ],
+    "lead_flip_by_label": {
+      "exact_parabola": [
+        0.02368,
+        0.0125,
+        0.0325
+      ],
+      "phase_unresolved": [
+        0.022,
+        0.0175,
+        0.0275
+      ],
+      "none_adequate": [
+        0.02125,
+        0.02,
+        0.0225
+      ]
+    }
+  },
+  {
+    "name": "gap: drift q12 phase -0.18 rad, flip 0 to 0.036",
+    "position": 60,
+    "series": 200,
+    "exact_world_flip": [
+      0.04645,
+      0.0425,
+      0.05
+    ],
+    "lead_flip_by_label": {
+      "none_adequate": [
+        0.01724,
+        0.0125,
+        0.0225
+      ],
+      "q12_phase": [
+        0.01707,
+        0.0125,
+        0.0225
+      ],
+      "phase_mixed": [
+        0.01663,
+        0.0125,
+        0.0225
+      ]
+    }
+  },
+  {
+    "name": "gap: drift coupler phase -0.25 rad, flip 0 to 0.036",
+    "position": 61,
+    "series": 200,
+    "exact_world_flip": [
+      0.05037,
+      0.0475,
+      0.055
+    ],
+    "lead_flip_by_label": {
+      "coupler_phase": [
+        0.01781,
+        0.015,
+        0.0225
+      ],
+      "none_adequate": [
+        0.01788,
+        0.0125,
+        0.0225
+      ],
+      "phase_mixed": [
+        0.01788,
+        0.015,
+        0.02
+      ]
+    }
+  }
+]

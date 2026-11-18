@@ -201,7 +201,7 @@ or digest binds is corrected in place in the change that refreshes its ledger or
 the private gororoba-documents-private repository.
 
 Shared history. Branch, pull request, merge commit (merge_method=merge). Retarget a stacked PR to main
-before deleting its base. Codex is the only hosted reviewer: one @codex review per head, a second only
+before deleting its base. Codex is the only hosted reviewer: one @Codex review per head, a second only
 when the operator review changed code; reply Fixed in <commit>, Refuted: <source line> or Boundary:
 <limit, issue>, then scripts/resolve_answered_threads.sh. The four pr.yml checks admit a merge; no
 local gate run precedes a push. Procedure: docs/runbooks/codex-review-loop.md.

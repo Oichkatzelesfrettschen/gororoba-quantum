@@ -21,15 +21,21 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
-from functools import cache
+from functools import cache, partial
 from pathlib import Path
 from typing import Any
+
+import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
 import qi_pathion_one_cz_null_analysis as ana  # noqa: E402
 import qi_pathion_one_cz_null_cases as oc  # noqa: E402
+
+import parallel  # noqa: E402
+from qrng_seeds import read_record  # noqa: E402
 
 RULE = "qi-pathion-one-cz-null-rule-v2"
 RECORD = "results/quantum_inspire/pathion_one_cz_null_tuna_17_rule_v2.json"
@@ -82,16 +88,71 @@ def decide_estimates(
     return decision
 
 
+def _series_label(
+    draw: tuple[np.ndarray, np.ndarray],
+    mean: dict[str, float],
+    se_base: dict[str, float],
+    se_twin: float,
+    b0_like_z: float,
+) -> str:
+    """The v2 label of one simulated series from its noise and drift draws, shape (templates, 2, REPLICATES). The rows
+    are those of the predecessor's simulation, so the draws of a shared world give the same estimates."""
+    noise, drift = draw
+    rows: dict[str, dict[str, list[tuple[float, float]]]] = {}
+    for j, name in enumerate(oc.TEMPLATES):
+        key = "b0" if name == "b0" else "k"
+        rows[name] = {
+            "base": [
+                (mean[f"s_{key}"] + se_base[name] * noise[j, 0, r] + drift[j, 0, r], se_base[name])
+                for r in range(oc.REPLICATES)
+            ],
+            "twin": [
+                (mean[f"t_{key}"] + se_twin * noise[j, 1, r] + drift[j, 1, r], se_twin) for r in range(oc.REPLICATES)
+            ],
+        }
+    return str(decide_estimates(rows, b0_like_z)["label"])
+
+
+def simulated_shares(
+    draws: int = oc.OC_DRAWS,
+    drift_sd: float = 0.0,
+    b0_like_z: float | None = None,
+    worlds: dict[str, dict[str, float]] | None = None,
+) -> dict[str, dict[str, float]]:
+    """Frequency of each v2 label per world (WORLDS when None) from `draws` simulated series, seeded from QRNG value
+    oc.OC_SEED_INDEX of oc.OC_DRAW as oc.operating_characteristics is.
+
+    Worlds draw in dict order from one generator, so the worlds of oc.WORLDS_SIZED listed first reproduce the
+    predecessor's draws. The labels come from parallel.ordered_map in series order; `_series_label` is a module-level
+    function, so spawned workers unpickle it and its v2 decision by reference."""
+    band = oc.B0_LIKE_Z if b0_like_z is None else b0_like_z
+    seed = int(read_record(oc.OC_DRAW)["values"][oc.OC_SEED_INDEX])
+    rng = np.random.default_rng(seed)
+    se_base = {t: 1.0 / math.sqrt(oc.CONTROL_SHOTS if t == "b0" else oc.BATCH_SHOTS) for t in oc.TEMPLATES}
+    se_twin = math.sqrt(0.5 / oc.BATCH_SHOTS)
+    out: dict[str, dict[str, float]] = {}
+    for world, mean in (WORLDS if worlds is None else worlds).items():
+        noise = rng.normal(size=(draws, len(oc.TEMPLATES), 2, oc.REPLICATES))
+        drift = rng.normal(scale=drift_sd, size=(draws, len(oc.TEMPLATES), 2, oc.REPLICATES))
+        labels = parallel.ordered_map(
+            partial(_series_label, mean=mean, se_base=se_base, se_twin=se_twin, b0_like_z=band),
+            list(zip(noise, drift, strict=True)),
+        )
+        counts: dict[str, int] = {}
+        for label in labels:
+            counts[label] = counts.get(label, 0) + 1
+        out[world] = {label: round(n / draws, 4) for label, n in sorted(counts.items())}
+    return out
+
+
 def operating_characteristics() -> dict[str, Any]:
     """Shares of each v2 label per world, stationary and under the preregistered batch drift."""
     return {
         "qrng_draw": oc.OC_DRAW,
         "seed_index": oc.OC_SEED_INDEX,
         "draws_per_world": oc.OC_DRAWS,
-        "stationary": oc.operating_characteristics(worlds=WORLDS, decide=decide_estimates),
-        f"batch_drift_sd_{oc.OC_DRIFT_SD}": oc.operating_characteristics(
-            drift_sd=oc.OC_DRIFT_SD, worlds=WORLDS, decide=decide_estimates
-        ),
+        "stationary": simulated_shares(),
+        f"batch_drift_sd_{oc.OC_DRIFT_SD}": simulated_shares(drift_sd=oc.OC_DRIFT_SD),
     }
 
 

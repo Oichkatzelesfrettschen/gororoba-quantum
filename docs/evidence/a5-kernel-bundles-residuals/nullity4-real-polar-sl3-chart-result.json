@@ -1,0 +1,122 @@
+{
+ "boxes": {
+  "coarse": {
+   "200": {
+    "contraction_bits": 11,
+    "d2_positive": true,
+    "interior": true,
+    "pairing_bound_bits": 4
+   },
+   "400": {
+    "contraction_bits": 11,
+    "d2_positive": true,
+    "interior": true,
+    "pairing_bound_bits": 4
+   }
+  },
+  "fine": {
+   "1500": {
+    "contraction_bits": 101,
+    "d2_positive": true,
+    "inside_the_coarse_box": true,
+    "interior": true,
+    "pairing_bound_bits": 4
+   }
+  }
+ },
+ "chart": {
+  "equivariant": true,
+  "hermitian": true,
+  "incidence_is_a_row_combination": true,
+  "point_in_the_basis": true
+ },
+ "degree": {
+  "degrees_of_the_factors_whose_ball_holds_zero": [
+   88
+  ],
+  "eliminant_degree": 140,
+  "factor_degrees": [
+   [
+    2,
+    1
+   ],
+   [
+    2,
+    1
+   ],
+   [
+    2,
+    1
+   ],
+   [
+    4,
+    1
+   ],
+   [
+    6,
+    1
+   ],
+   [
+    36,
+    1
+   ],
+   [
+    88,
+    1
+   ]
+  ],
+  "quotient_dimension": 164,
+  "tools": {
+   "msolve": "0.9.4",
+   "singular": "4.4.1"
+  },
+  "vanishing_bits": 253
+ },
+ "equations": {
+  "degrees": [
+   8,
+   8,
+   16
+  ],
+  "denominators": [
+   "32*d2**2",
+   "32*d2**2",
+   "1024*d2**4"
+  ],
+  "imaginary_parts_zero": [
+   true,
+   true,
+   true
+  ],
+  "terms": [
+   40,
+   42,
+   126
+  ],
+  "values_at_2_3_5": [
+   "7109568",
+   "1666304",
+   "6466059776000"
+  ]
+ },
+ "field": "Q(i)(d2, x21, y31); arb balls at the listed precisions; factorization over Q",
+ "inputs": {
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4-real-polar-sl3-chart-eliminant.json": "1e6a344d7cfb981aee7d637e67926848e8b6dce3c05ba684b7f9ae7eac630892",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py": "745edad5ec0fe70aa3167564c25f17983054504b4706d4db82c57cd73fa16d72",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_fiber_four.py": "d0d1aced9ccca0305b566ddc838c97165b5e5fb7de8b3e2566bd8fd89067a96f",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_line.py": "5bddd6ed337595f2da2d33f9d98c4893778c6d1fc229e51b9488d026afbd32ad",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_rational_charts.py": "47c593ec0d206741e90fff6d110857f298f8566cda6f0f9b47b23dd270cc47e6",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_sl3_chart.py": "16bcf9fcbe1c18a22058f91de3cde9db8c7e35a7dcae481cf99d9d558bb65f0c"
+ },
+ "midpoint": {
+  "grid_bits": 40,
+  "numerators": [
+   1452753013313,
+   -184301525366,
+   775217672282
+  ],
+  "radius_bits": 30
+ },
+ "pass": true,
+ "schema": "a5-kernel-bundles-residuals-nullity4-real-polar-sl3-chart-v1"
+}

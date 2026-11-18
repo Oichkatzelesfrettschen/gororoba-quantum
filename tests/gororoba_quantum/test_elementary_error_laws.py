@@ -7,7 +7,7 @@ import math
 import numpy as np
 import pytest
 
-from elementary_error_laws import error_laws, rotation
+from elementary_error_laws import channel_laws, damping_kraus, error_laws, rotation
 
 X90 = ("X90", None, (0,))
 ZERO = np.zeros(1)
@@ -97,3 +97,27 @@ def test_malformed_inputs_are_refused() -> None:
 
 def test_rotation_follows_the_cqasm_convention() -> None:
     np.testing.assert_allclose(rotation("z", 0.6), np.diag([np.exp(-0.3j), np.exp(0.3j)]), atol=1e-12)
+
+
+def test_the_density_matrix_without_channels_equals_the_state_vector() -> None:
+    operations = [X90, ("X90", None, (1,)), ("CZ", None, (0, 1)), ("Rz", 0.4, (1,)), ("X90", None, (1,))]
+    values = np.array([-0.3, 0.0, 0.25])
+    for item in [("pulse", "zb", 1), ("cz", (0, 1), None), ("czz", 0, (0, 1))]:
+        pure = error_laws(operations, (0, 1), (1, 0), {0: 1.9}, [(item, values)])
+        mixed = channel_laws(operations, (0, 1), (1, 0), {0: 1.9}, [(item, values)])
+        np.testing.assert_allclose(mixed, pure, atol=1e-12)
+
+
+def test_amplitude_damping_after_a_pulse_moves_its_excitation() -> None:
+    law = channel_laws([X90], (0,), (0,), {}, [(("none", None, None), ZERO)], pulse_kraus=damping_kraus(0.2, 0.0))
+    np.testing.assert_allclose(law[0], [0.6, 0.4], atol=1e-12)
+    pure_dephasing = channel_laws(
+        [X90, X90], (0,), (0,), {}, [(("none", None, None), ZERO)], pulse_kraus=damping_kraus(0.0, 1.0)
+    )
+    np.testing.assert_allclose(pure_dephasing[0], [0.5, 0.5], atol=1e-12)
+
+
+def test_cz_damping_acts_on_both_qubits_of_the_gate() -> None:
+    operations = [X90, ("X90", None, (1,)), ("CZ", None, (0, 1))]
+    law = channel_laws(operations, (0, 1), (0, 1), {}, [(("none", None, None), ZERO)], cz_kraus=damping_kraus(1.0, 0))
+    np.testing.assert_allclose(law[0], [1.0, 0.0, 0.0, 0.0], atol=1e-12)

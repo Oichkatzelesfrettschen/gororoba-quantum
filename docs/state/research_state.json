@@ -3432,6 +3432,13 @@
       "question": "Admit the successor acquisition pair's one-job sim:belenos rehearsal (b1-j1) of the diagnostic request and read its duration and billing."
     },
     {
+      "id": "qd-bdsc-diagnostic-acquisition-pair-sim-belenos-b1-j2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-15T180000Z-sim_belenos-bdsc_diagnostic-b1-j2",
+      "family": "bdsc_diagnostic",
+      "question": "Does the 24-iteration b1-j2 request of the successor tree finish inside sim:belenos's 300 s job limit, and what does a job that reaches the limit return?"
+    },
+    {
       "id": "qi-pathion-one-cz-null-bracketed-qx-2026-11-15t184810-batch-00",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-15T184810Z-pathion_one_cz_null_bracketed_qx-batch-00",
@@ -3633,6 +3640,90 @@
       "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-20",
       "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
       "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-characterization-qx-2026-11-16t0355-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0355Z-characterization_qx-characterization_qx-batch-00",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (QX twin, 10 qubits)",
+      "question": "On the QX emulator, does the twin of the Tuna-17 characterization series return the noiseless outcome of every circuit, as the control the Tuna-17 series requires?"
+    },
+    {
+      "id": "qi-characterization-qx-2026-11-16t0355-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0355Z-characterization_qx-characterization_qx-batch-01",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (QX twin, 10 qubits)",
+      "question": "On the QX emulator, does the twin of the Tuna-17 characterization series return the noiseless outcome of every circuit, as the control the Tuna-17 series requires?"
+    },
+    {
+      "id": "qi-characterization-qx-2026-11-16t0355-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0355Z-characterization_qx-characterization_qx-batch-02",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (QX twin, 10 qubits)",
+      "question": "On the QX emulator, does the twin of the Tuna-17 characterization series return the noiseless outcome of every circuit, as the control the Tuna-17 series requires?"
+    },
+    {
+      "id": "qi-characterization-qx-2026-11-16t0355-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0355Z-characterization_qx-characterization_qx-batch-03",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (QX twin, 10 qubits)",
+      "question": "On the QX emulator, does the twin of the Tuna-17 characterization series return the noiseless outcome of every circuit, as the control the Tuna-17 series requires?"
+    },
+    {
+      "id": "qi-characterization-qx-2026-11-16t0355-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0355Z-characterization_qx-characterization_qx-batch-04",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (QX twin, 10 qubits)",
+      "question": "On the QX emulator, does the twin of the Tuna-17 characterization series return the noiseless outcome of every circuit, as the control the Tuna-17 series requires?"
+    },
+    {
+      "id": "qi-characterization-qx-2026-11-16t0355-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0355Z-characterization_qx-characterization_qx-batch-05",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (QX twin, 10 qubits)",
+      "question": "On the QX emulator, does the twin of the Tuna-17 characterization series return the noiseless outcome of every circuit, as the control the Tuna-17 series requires?"
+    },
+    {
+      "id": "qi-characterization-tuna-17-2026-11-16t0401-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-00",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (17 qubits)",
+      "question": "On Tuna-17, do the per-qubit readout pair, the single-exponential T1 and the X90 repetition ladder of 2026-10-16 and 2026-10-17 still describe each of the 17 qubits, with an opening and a closing readout pair?"
+    },
+    {
+      "id": "qi-characterization-tuna-17-2026-11-16t0401-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-01",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (17 qubits)",
+      "question": "On Tuna-17, do the per-qubit readout pair, the single-exponential T1 and the X90 repetition ladder of 2026-10-16 and 2026-10-17 still describe each of the 17 qubits, with an opening and a closing readout pair?"
+    },
+    {
+      "id": "qi-characterization-tuna-17-2026-11-16t0401-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-02",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (17 qubits)",
+      "question": "On Tuna-17, do the per-qubit readout pair, the single-exponential T1 and the X90 repetition ladder of 2026-10-16 and 2026-10-17 still describe each of the 17 qubits, with an opening and a closing readout pair?"
+    },
+    {
+      "id": "qi-characterization-tuna-17-2026-11-16t0401-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-03",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (17 qubits)",
+      "question": "On Tuna-17, do the per-qubit readout pair, the single-exponential T1 and the X90 repetition ladder of 2026-10-16 and 2026-10-17 still describe each of the 17 qubits, with an opening and a closing readout pair?"
+    },
+    {
+      "id": "qi-characterization-tuna-17-2026-11-16t0401-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-04",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (17 qubits)",
+      "question": "On Tuna-17, do the per-qubit readout pair, the single-exponential T1 and the X90 repetition ladder of 2026-10-16 and 2026-10-17 still describe each of the 17 qubits, with an opening and a closing readout pair?"
+    },
+    {
+      "id": "qi-characterization-tuna-17-2026-11-16t0401-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
+      "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (17 qubits)",
+      "question": "On Tuna-17, do the per-qubit readout pair, the single-exponential T1 and the X90 repetition ladder of 2026-10-16 and 2026-10-17 still describe each of the 17 qubits, with an opening and a closing readout pair?"
     }
   ],
   "claims": [
@@ -6966,7 +7057,7 @@
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
-      "boundary": "The source interpreter reads raw node tags directly; it does not translate before evaluating or invoke the target evaluator. The certificate checks positional parameter names and the executable body against the target quotation. CPython parsing, generic ast.iter_fields serialization, file reading and SHA-256 binding remain externally checked by sources-411. Both calculi use mathematical integer primitives and the existing _dimension and _index helper contracts. Function names, annotations and the leading docstring remain metadata; the view rejects unsupported parameter forms and decorators. Exceptions omit class, message and traceback, and fuel is not a Python resource bound. Module execution, arbitrary Python objects, helper rebinding and the CPython C implementation are outside this theorem.",
+      "boundary": "The source interpreter reads raw node tags directly; it does not translate before evaluating or invoke the target evaluator. The certificate checks positional parameter names and the executable body against the target quotation. CPython parsing, generic ast.iter_fields serialization, file reading and SHA-256 binding remain externally checked by ci/check_quantum_sources.sh of gororoba-math, which runs the generator cd_sign_source_ast.py with --check on demand. Both calculi use mathematical integer primitives and the existing _dimension and _index helper contracts. Function names, annotations and the leading docstring remain metadata; the view rejects unsupported parameter forms and decorators. Exceptions omit class, message and traceback, and fuel is not a Python resource bound. Module execution, arbitrary Python objects, helper rebinding and the CPython C implementation are outside this theorem.",
       "evidence": [
         {
           "path": "gororoba-math:rocq/quantum/CdSignAstTranslation.v",

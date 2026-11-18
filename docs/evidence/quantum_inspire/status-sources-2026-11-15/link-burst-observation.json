@@ -1,0 +1,31 @@
+{
+ "schema": "qi-link-burst-observation-v1",
+ "observed_utc": "2026-11-15T16:22:00Z..16:22:05Z",
+ "script_seconds": 4.9,
+ "link_requests_in_order": [
+  "status definition: redirected",
+  "status panel 1 query: redirected",
+  "status panel 2 query: redirected",
+  "tuna-17 definition: redirected",
+  "tuna-17 panel 2 query: redirects to '' (HTTP 428)",
+  "tuna-17 panel 3 query: redirects to '' (HTTP 428)",
+  "tuna-17 panel 4 query: redirects to '' (HTTP 428)",
+  "tuna-17 panel 5 query: redirects to '' (HTTP 428)",
+  "tuna-17 panel 6 query: redirects to '' (HTTP 428)",
+  "tuna-17 panel 7 query: redirects to '' (HTTP 428)",
+  "tuna-17 panel 8 query: redirects to '' (HTTP 428)",
+  "tuna-17 panel 9 query: redirects to '' (HTTP 428)",
+  "tuna-17 panel 10 query: redirects to '' (HTTP 428)",
+  "tuna-17 panel 11 query: redirects to '' (HTTP 428)",
+  "tuna-17 panel 12 query: redirects to '' (HTTP 428)",
+  "tuna-17 panel 13 query: redirects to '' (HTTP 428)",
+  "tuna-17 panel 18 query: redirects to '' (HTTP 428)",
+  "tuna-17 panel 19 query: redirects to '' (HTTP 428)",
+  "tuna-17 panel 20 query: redirects to '' (HTTP 428)",
+  "tuna-17 panel 21 query: redirects to '' (HTTP 428)",
+  "tuna-9 definition: redirects to '' (HTTP 428)",
+  "tuna-5 definition: redirects to '' (HTTP 428)",
+  "ry_emulator definition: redirects to '' (HTTP 428)"
+ ],
+ "follow_up": "one curl of the tuna-17 link 7 s later answered 301"
+}

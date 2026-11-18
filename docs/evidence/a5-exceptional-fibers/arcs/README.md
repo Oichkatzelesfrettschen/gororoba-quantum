@@ -69,7 +69,10 @@ therefore dominant onto V(J), and its polynomial arcs lie on V(J) exactly.
 at order nu is the limit. Every t_i has valuation at least 1, so the jet of G_j of degree n fixes the coefficients
 through s^n exactly. `gen_family.py` writes one Singular script per family, computes F symbolically in the five
 parameters u in a global monomial ordering (`dp`), and counts the generators of P2, P1 and K2 that do not vanish on F
-identically. The two certified families are
+identically. Its reduction loops run to `ncols`, since Singular's `size` counts only the nonzero generators and a loop
+bounded by it stops early once a leading generator reduces to zero. The retained scripts that predate that bound
+report the same counts as their `ncols` rewrites on all 24 of them (2026-11-15); a count from a `size` loop could only
+exceed the true count, so a reported 0 was sound either way. The two certified families are
 
     P2:  x(s) = Phi(w = W s, rho = R s, sigma = S s, e = E, zeta = Z s),                       nu = 2
     P1:  x(s) = Phi(w = W s^2, rho = (R+S)s/2, sigma = (R-S)s/2, e = -1 + E1 s^2, zeta = Z s),  nu = 5
@@ -251,13 +254,45 @@ Modules: `arc_targets.py` (targets, input digests), `arclib.py` and `laurent.py`
 [test_a5_arc_certificates.py](../../../../tests/test_a5_arc_certificates.py) runs the P2 certificate on three grid
 points, three mutations that must fail, and the retained records.
 
+## The relation ideal in every degree (A5-559)
+
+[relation_ideal_orders.py](relation_ideal_orders.py) turns three families into order functions on the local ring of
+the slice germ. A family of `gen_family.py` is a generic arc over F_p(W, R, S, Z, E)[[s]], since Phi(0, 0, 0, e, 0) is
+the origin and m, m^2 + 1 and e are units there; the s-adic valuation is additive, so a form F of the relation ideal L
+(F(G) in m I^d) vanishes on the limit vector V, and L lies in the prime Q = ker(y -> V). Q equals a prime of K2 when
+that prime's generators vanish on V and the Jacobian of V has the prime's dimension as rank at one point (forms with
+independent differentials are algebraically independent over the perfect field F_p). The families and their primes:
+
+| Family | Parameters | nu | Limit prime | Jacobian rank |
+|---|---|---|---|---|
+| scroll (`P2_FAMILY`) | w = W s, rho = R s, sigma = S s, zeta = Z s, e = E | 2 | P2 (4, 4) | 4 |
+| top (`P1_FAMILY`) | w = W s^2, rho, sigma = (R +- S) s / 2, zeta = Z s, e = -1 + E1 s^2 | 5 | P1 (5, 11) | 5 |
+| embedded | w = W s, rho = R s^2, sigma = S s^2, zeta = Z s^2, e = -1 + E1 s | 4 | A = K2 : rad(K2) (4, 2) | 4 |
+
+On the embedded family the minimum order of the slice coordinates is 2 and each of the five nilpotent linear forms
+y4, y6, y7, y12, y14 vanishes on V with a nonzero next coefficient, order nu + 1 < nu + 2. The embedded run also
+computes the primary decomposition of K2 (three components with primes P1, P2 and A, intersecting to K2) and the
+Hilbert numerators of K2, rad(K2) and A, which satisfy the identity of A5-547. Every run evaluates J on its arc
+modulo the truncation (zero), and two controls must fail: A on the scroll limits (5 generators nonzero) and J on
+the arc with t9 + s^2 (2 generators nonzero). The record
+[relation-ideal-orders.json](relation-ideal-orders.json) holds all 16 runs at the four targets, 112 s in all, with
+their scripts and logs under [relation-ideal-orders/](relation-ideal-orders/).
+
+Deduction, as in A5-457 on the weight slice: L lies in P1 and P2, hence in R = rad(K2) = K2 + N; R / K2 is torsion
+free over S / A, because Ann(R / K2) = A and of the three associated primes of K2 only A contains A; its rank is one
+by the Hilbert identity. A nonzero class of L / K2 and the class of y4 are dependent over S / A with both
+coefficients nonzero, giving c outside A with c y4 in L, and the embedded order function puts every such c in A.
+Hence L = K2 in every degree, given K2 inside L, so h_d = HF(k[y]/K2, d) for every d at the four targets (A5-009).
+
+    "$PYTHON" docs/evidence/a5-exceptional-fibers/arcs/relation_ideal_orders.py OUT.json
+
 ## Limits
 
 - Everything holds over F_32009 and F_32029. A characteristic-0 statement needs a specialization argument across
   primes that the package does not make.
 - The two certified families are dense in the two components by rank and irreducibility. The 15 unclassified
   near-e = -1 families and arcs with several terms per parameter are unexplored and not needed.
-- K2 inside L rests on the degree-2 receipts and the sign-isomorphism row cited under the reduced-fiber statement, not on this package.
+- K2 inside L rests on the degree-2 receipts (N+ at 32009 by the direct receipt of A5-570, with the sign-isomorphism row cited under the reduced-fiber statement as a cross-check), not on this package; A5-559 takes it as its one premise.
 - The arc bound (861) is superseded at degree 5: r_18 = 952 on N- at both primes (`../n18-laptop/`) reaches the K2
   count, and the sign isomorphism carries it to N+.
 - The fibers over the other points of V(J + G) are untested beyond the 120 survey arcs.

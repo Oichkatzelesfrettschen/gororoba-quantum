@@ -1,0 +1,17 @@
+done TRUTHS: q12 phase -0.18 rad, selector flip 0.036 200 series 1010.74s current {'none_adequate': 200} nuisance {'q12_phase': 200}
+done TRUTHS: q8 phase at coupler 8-12 -0.25 rad, selector flip 0.042 200 series 1076.37s current {'none_adequate': 200} nuisance {'phase_unresolved': 17, 'q8_phase_at_coupler': 183}
+done TRUTHS: coupler 8-12 phase -0.25 rad, selector flip 0.036 200 series 992.56s current {'none_adequate': 200} nuisance {'coupler_phase': 199, 'phase_mixed': 1}
+done gap: q12 phase -0.18 rad, flip 0.036 200 series 938.83s current {'none_adequate': 200} nuisance {'phase_mixed': 2, 'q12_phase': 198}
+done gap: coupler phase -0.25 rad, flip 0.036 200 series 952.04s current {'none_adequate': 200} nuisance {'coupler_phase': 200}
+done gap: q12 phase -0.18 rad, flip 0.042 200 series 945.52s current {'none_adequate': 200} nuisance {'q12_phase': 200}
+done gap: coupler phase -0.25 rad, flip 0.042 200 series 832.74s current {'none_adequate': 200} nuisance {'coupler_phase': 200}
+done gap: q12 phase +0.18 rad, flip 0.036 200 series 816.46s current {'none_adequate': 200} nuisance {'phase_mixed': 3, 'phase_unresolved': 2, 'q12_phase': 195}
+done gap: drift null flip 0 to 0.036 200 series 848.75s current {'none_adequate': 200} nuisance {'exact_parabola': 6, 'none_adequate': 192, 'phase_unresolved': 2}
+done gap: q8 phase -0.25 rad, flip 0.036 200 series 797.94s current {'none_adequate': 200} nuisance {'none_adequate': 1, 'phase_unresolved': 13, 'q8_phase_at_coupler': 186}
+done gap: drift q12 phase -0.18 rad, flip 0 to 0.036 200 series 786.17s current {'none_adequate': 200} nuisance {'none_adequate': 85, 'phase_mixed': 23, 'q12_phase': 92}
+done gap: q12 phase +0.18 rad, flip 0.042 200 series 768.88s current {'none_adequate': 200} nuisance {'phase_mixed': 2, 'q12_phase': 198}
+done gap: q8 phase -0.25 rad, flip 0.042 200 series 748.26s current {'none_adequate': 200} nuisance {'none_adequate': 1, 'phase_mixed': 2, 'phase_unresolved': 15, 'q8_phase_at_coupler': 182}
+done gap: drift null flip 0.0166 to 0.036, CZ phase damping 0.13 200 series 1370.99s current {'none_adequate': 176, 'phase_unresolved': 24} nuisance {'exact_parabola': 10, 'none_adequate': 5, 'phase_unresolved': 185}
+done gap: drift null flip 0 to 0.05 200 series 747.43s current {'none_adequate': 200} nuisance {'none_adequate': 200}
+done gap: drift coupler phase -0.25 rad, flip 0 to 0.036 200 series 720.43s current {'none_adequate': 200} nuisance {'coupler_phase': 96, 'none_adequate': 91, 'phase_mixed': 13}
+done gap: drift null flip 0.036 to 0.0166, pulse phase damping 0.10 200 series 950.51s current {'exact_parabola': 1, 'none_adequate': 169, 'phase_unresolved': 30} nuisance {'exact_parabola': 193, 'none_adequate': 2, 'phase_unresolved': 5}

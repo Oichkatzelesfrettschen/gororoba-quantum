@@ -24,7 +24,11 @@ Order. Four rounds of eight batches (`batch_order`): a forward round (the predec
 mirror reversed, the forward round again and its mirror, then the three X-only calibration batches of `oc`: 35 batches,
 which `waves` groups three to a wave (12 waves). A mirror round runs the coin-1 twin before the coin-0 twin, so a linear
 drift per circuit position enters the forward and mirror replicates of t with opposite signs and cancels in the pooled
-contrast to first order.
+contrast to first order. The platform sets the execution order, so the decision does not assume the requested order: it
+fits the drift on the position offsets that the per-job start stamps give (`evaluate`, `twin_offsets`,
+qi_pathion_one_cz_null_executed_order.py), `order_gate` records which batches kept their order, the base levels are
+read at their executed times (`base_level_rows`) and a line in executed time must describe the bracket offsets
+(`bracket_series`).
 
 Usage: "$PYTHON" scripts/qi_pathion_one_cz_null_bracketed_cases.py
        (--write DIR | --check DIR | --operating-characteristics | --sanity RUN_DIR... | --analyze RUN_DIR... --out FILE
@@ -36,9 +40,11 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import statistics
 import sys
-from collections.abc import Callable
-from functools import partial
+from collections.abc import Callable, Mapping
+from datetime import UTC, datetime, timedelta
+from functools import cache, partial
 from pathlib import Path
 from typing import Any
 
@@ -50,6 +56,7 @@ import qi_pathion_coset_block_series as pcs  # noqa: E402
 import qi_pathion_coset_coin_cases as cc  # noqa: E402
 import qi_pathion_one_cz_null_analysis as ana  # noqa: E402
 import qi_pathion_one_cz_null_cases as oc  # noqa: E402
+import qi_pathion_one_cz_null_executed_order as eo  # noqa: E402
 import qi_pathion_one_cz_null_rule_v2 as rule  # noqa: E402
 import qi_platform_wave  # noqa: E402
 
@@ -157,8 +164,11 @@ def waves(rows: list[dict[str, Any]] | None = None) -> list[list[str]]:
     return [names[i : i + POLICY.queued_batches] for i in range(0, len(names), POLICY.queued_batches)]
 
 
-def preregistered() -> dict[str, str]:
-    """The predecessor's preregistered rule with the estimates restated for the bracketed twin and twin rule v2."""
+def control_preregistered() -> dict[str, str]:
+    """The rule text of the QX control manifests: the predecessor's preregistered rule with the estimates restated for
+    the bracketed twin and twin rule v2, and the plain pool of the batch contrasts. The hosted QX run's receipts bind
+    the sha256 of these manifests, so the text keeps its bytes; the control decides no twin series and reads no
+    stamp."""
     text = oc.preregistered()
     text["estimates"] = (
         "per template and batch kind, the contrast of each batch, pooled over the replicate batches by inverse "
@@ -178,10 +188,60 @@ def preregistered() -> dict[str, str]:
     return text
 
 
+def preregistered() -> dict[str, str]:
+    """The preregistered rule of the Tuna-17 series: the control text with the estimates restated on the executed
+    order, and the executed-order, base-level, drift-monitor and withheld-label rules (owner ruling 2026-11-16, issue
+    791). Every label `evaluate` can read is one of rule.OUTCOMES and WITHHELD_LABELS."""
+    text = control_preregistered()
+    text["estimates"] = (
+        "per template and batch kind, the contrast of each batch, read on the order and the times the provider "
+        "executed it (the instant of each job's queued_at, in integer microseconds) and pooled by inverse variance: "
+        "base, the raw arm contrast P(s=0 | coin read 1) - P(s=0 | coin read 0); twin, t = (P1 - c) - (P0 - c) = "
+        "P1 - P0 over the two coin twins of one batch, P the raw P(s=0) of a twin and c = (e10 - e01) / 2 the offset "
+        "of the batch's own readout-0 and readout-1, which cancels in t; the variance of t sums the arm variances of "
+        "P1 and P0, a deterministic arm taking the Agresti-Coull interval variance; the twin and base rows enter the "
+        "pool as the executed_order and base_level rules correct them"
+    )
+    text["executed_order"] = (
+        "v_b = t_T + g x_b + e_b over the twin batches b by weighted least squares, one drift g shared by every twin "
+        "batch, one contrast t_T per template and x_b the executed place of the coin-1 twin minus that of the coin-0 "
+        "twin among the circuits of batch b; each twin row is reduced by g x_b and its error multiplied by "
+        "sqrt(1 + x_T^2 var(g) W_T); the template contrasts pool with the covariance x_T x_U var(g) that the shared "
+        "drift gives them"
+    )
+    text["base_level"] = (
+        "the base level of a template is read at the mean executed time of its twin circuits through a weighted line "
+        "over its four base replicates at their executed times; each base row is reduced by the slope times its time "
+        "offset and its error multiplied by sqrt(1 + (t_w - tau)^2 / S_tt)"
+    )
+    text["drift_monitor"] = (
+        "the bracket offset c of each of the 32 base and twin batches, placed at the mean executed time of its two "
+        "readouts, fits a line in time within the alpha 0.001 chi-square quantile of n - 2 degrees of freedom; the "
+        "slope bound g_up |t - tau| of each X-only calibration batch is reported beside the decision"
+    )
+    text["withheld"] = (
+        "the decision is withheld, the first of these in order, as unresolved_order (a start stamp is missing, null, "
+        "not an ISO 8601 instant with an offset, or two circuits of a twin batch start at one instant), "
+        "unresolved_order_confounded (every template keeps one position offset), unresolved_base_drift_confounded (a "
+        "template's base replicates share one start time), unresolved_drift_model (the monitor refuses the line) and "
+        "unresolved_drift_heterogeneity (a template's own drift departs from the shared drift by more than 3 errors of "
+        "the difference); the label of the pool that ignores the order stays beside the reading"
+    )
+    return text
+
+
 series = ana.rebound(
     oc.series,
     batch_rows=batch_rows,
     preregistered=preregistered,
+    row_shots=row_shots,
+    SCHEMA=SCHEMA,
+    QX_SERIES=QX_SERIES,
+)
+control_series = ana.rebound(
+    oc.series,
+    batch_rows=batch_rows,
+    preregistered=control_preregistered,
     row_shots=row_shots,
     SCHEMA=SCHEMA,
     QX_SERIES=QX_SERIES,
@@ -195,7 +255,9 @@ def series_files(
     A Tuna-17 batch manifest names the `wave-v1` hardware policy (qi_platform_wave.hardware_policy), and the series
     index
     lists the submission waves."""
-    files: dict[str, str] = series(plan, backend, series_name, nqubits, place)
+    files: dict[str, str] = (series if series_name == TUNA_SERIES else control_series)(
+        plan, backend, series_name, nqubits, place
+    )
     index = json.loads(files["cases.json"])
     index["schema"] = SERIES_SCHEMA
     if series_name == TUNA_SERIES:
@@ -227,6 +289,7 @@ sanity = ana.rebound(oc.sanity, series_of=series_of)
 # Estimator ------------------------------------------------------------------------------------------------------
 
 
+@cache
 def retained_selector_rates() -> tuple[float, float]:
     """(e01, e10) of the selector: the means of the retained references of the one-CZ series (RATES_RECORD)."""
     references = json.loads((ROOT / RATES_RECORD).read_text(encoding="utf-8"))["drift_covariate"]["references"][
@@ -321,16 +384,16 @@ evaluate_decision = ana.rebound(
 )
 
 
-def order_gate(executed: dict[str, str] | None) -> dict[str, Any] | None:
+def order_gate(executed: Mapping[str, object] | None) -> dict[str, Any] | None:
     """Whether every batch ran its circuits in the requested order, read from the provider's per-job start stamps.
 
-    `executed` maps "batch/file" to the job's `queued_at`, which in the retained Tuna-17 series follows the previous
-    job's `finished_at` by 0.03 to 0.19 s and so orders the executions (measured on the 19 retained batches of the
-    predecessor series; provider behavior, not a documented guarantee). The queue fixes the order requested, not the
-    order executed (the provider's terms allow priority without regard to the queue): 7 of those 19 batches ran out
-    of the requested order. The mirror of the rounds cancels a linear drift only when each batch keeps its requested
-    order, so a batch whose stamps order its circuits otherwise, tie two of them or lack one is not intact, and the
-    series is intact only when every expected batch is (issue 894). None when no stamps are read.
+    The record is a reading beside the decision: the decision reads the executed order through `executed_twin_fit`
+    and no reordered batch withholds it. `executed` maps "batch/file" to the job's `queued_at`, which in the retained
+    Tuna-17 series follows the previous job's `finished_at` by 0.03 to 0.19 s and so orders the executions (measured on
+    the 19 retained batches of the predecessor series; provider behavior, not a documented guarantee). The queue fixes
+    the order requested, not the order executed (the provider's terms allow priority without regard to the queue): 7 of
+    those 19 batches ran out of the requested order. A batch whose stamps order its circuits otherwise, tie two of them
+    at one instant, or lack, null or malform one is not intact (issue 894). None when no stamps are read.
     """
     if not executed:
         return None
@@ -338,14 +401,18 @@ def order_gate(executed: dict[str, str] | None) -> dict[str, Any] | None:
     rows = list(batch_rows(TUNA_SERIES))
     for row in rows:
         requested = [circuit["file"] for circuit in row["circuits"]]
-        found = {name: executed.get(f"{row['batch']}/{name}") for name in requested}
-        missing = [name for name, stamp in found.items() if not stamp]
+        instants: dict[str, int] = {}
+        missing: list[str] = []
+        for name in requested:
+            try:
+                instants[name] = stamp_instant(executed.get(f"{row['batch']}/{name}"))
+            except UnusableOrder:
+                missing.append(name)
         if missing:
             batches[row["batch"]] = {"requested": requested, "executed": [], "intact": False, "missing_stamps": missing}
             continue
-        stamps = {name: str(stamp) for name, stamp in found.items()}
-        ran = sorted(requested, key=lambda name: stamps[name])
-        tied = len(set(stamps.values())) < len(requested)
+        ran = sorted(requested, key=lambda name: instants[name])
+        tied = len(set(instants.values())) < len(requested)
         batches[row["batch"]] = {"requested": requested, "executed": ran, "intact": ran == requested and not tied}
     return {
         "batches": batches,
@@ -353,33 +420,490 @@ def order_gate(executed: dict[str, str] | None) -> dict[str, Any] | None:
     }
 
 
+class UnusableOrder(ValueError):
+    """The start stamps of a series cannot order its circuits: none were read, one is missing, null or not an ISO 8601
+    instant with an offset, or two circuits of a twin batch start at one instant. The executed-order rule decides
+    nothing then (`unresolved_order`)."""
+
+
+EPOCH = datetime(1970, 1, 1, tzinfo=UTC)
+
+
+def stamp_instant(stamp: object) -> int:
+    """Integer microseconds since the epoch of a start stamp: ISO 8601 text with an explicit UTC offset (the provider's
+    stamps read `2026-11-08T01:23:38.076340Z`). A stamp ranks by its instant, so `...:38Z` and `...:38.000000Z` are
+    one instant and an offset other than Z orders correctly; digits of a fraction beyond six truncate, which can only
+    tie two stamps. A missing, null, non-text, malformed or offset-free stamp is UnusableOrder."""
+    if not isinstance(stamp, str):
+        raise UnusableOrder(f"a start stamp is {stamp!r}, not ISO 8601 text")
+    try:
+        when = datetime.fromisoformat(stamp)
+    except ValueError as error:
+        raise UnusableOrder(f"start stamp {stamp!r} is not ISO 8601") from error
+    if when.utcoffset() is None:
+        raise UnusableOrder(f"start stamp {stamp!r} carries no UTC offset")
+    return (when - EPOCH) // timedelta(microseconds=1)
+
+
+def series_instants(executed: Mapping[str, object] | None) -> dict[str, int]:
+    """The instant of every circuit of the Tuna-17 series layout ("batch/file" keys). Every circuit needs a usable
+    stamp (UnusableOrder otherwise); a key outside the layout is ignored, since nothing reads it."""
+    if not executed:
+        raise UnusableOrder("no start stamps were read")
+    instants: dict[str, int] = {}
+    absent: list[str] = []
+    for row in batch_rows(TUNA_SERIES):
+        for circuit in row["circuits"]:
+            key = f"{row['batch']}/{circuit['file']}"
+            try:
+                instants[key] = stamp_instant(executed.get(key))
+            except UnusableOrder as error:
+                absent.append(f"{key}: {error}")
+    if absent:
+        raise UnusableOrder(f"{len(absent)} circuits lack a usable start stamp, first {absent[0]}")
+    return instants
+
+
+# A template whose own drift departs from the shared drift by more than this many errors of the difference reads
+# `unresolved_drift_heterogeneity` (rule 3 of docs/design/bracketed-executed-order-analysis.md).
+DRIFT_HETEROGENEITY_SE = 3.0
+# Floor of the own-drift departure, per executed position. When one template alone varies its offset, its own drift and
+# the shared drift are one quantity, the error of their difference is zero and the two sums differ by rounding (about
+# 2e-18 measured at drifts of 1e-2): a departure below the floor is that rounding.
+DRIFT_DEPARTURE_FLOOR = 1e-12
+
+
+def twin_layout() -> dict[str, tuple[str, str, str]]:
+    """Per twin batch of the Tuna-17 series, (template, coin-0 twin file, coin-1 twin file)."""
+    return {
+        row["batch"]: (row["template"], oc.twin_file(row["template"], 0), oc.twin_file(row["template"], 1))
+        for row in batch_rows(TUNA_SERIES)
+        if row["kind"] == "twin"
+    }
+
+
+def twin_offsets(executed: Mapping[str, object] | None) -> dict[str, int]:
+    """Executed position offset x of every twin batch: the executed place of its coin-1 twin minus that of its coin-0
+    twin among the circuits of the batch, ordered by start instant.
+
+    Every circuit of every batch of the series needs a usable stamp (`series_instants`), and no two circuits of a twin
+    batch may start at one instant; otherwise UnusableOrder."""
+    instants = series_instants(executed)
+    rows = {row["batch"]: row for row in batch_rows(TUNA_SERIES)}
+    offsets: dict[str, int] = {}
+    for batch, (_, coin0, coin1) in twin_layout().items():
+        stamps = {c["file"]: instants[f"{batch}/{c['file']}"] for c in rows[batch]["circuits"]}
+        try:
+            offsets[batch] = eo.executed_offset(stamps, coin0, coin1)
+        except eo.ConfoundedOrder as error:
+            raise UnusableOrder(f"{batch}: {error}") from error
+    return offsets
+
+
+def twin_batch_ids(contrasts: dict[str, dict[str, list[Any]]]) -> dict[str, list[str]]:
+    """The twin batches of each template in the order `batch_estimates` lists their contrasts (sorted by batch)."""
+    ids: dict[str, list[str]] = {template: [] for template in contrasts}
+    for batch, (template, _, _) in sorted(twin_layout().items()):
+        ids[template].append(batch)
+    for template, listed in ids.items():
+        if len(listed) != len(contrasts[template]["twin"]):
+            raise ValueError(f"{template} holds {len(contrasts[template]['twin'])} twin contrasts, not {len(listed)}")
+    return ids
+
+
+def executed_twin_fit(
+    contrasts: dict[str, dict[str, list[Any]]], offsets: dict[str, int]
+) -> tuple[dict[str, dict[str, list[tuple[float, float]]]], dict[str, Any]]:
+    """The rows rule v2 pools under the executed-order rule, and the fit beside them.
+
+    `contrasts` is the record's `batch_contrasts` (per template the (value, se) of every base and twin batch).
+    Each twin value is reduced by the shared drift times its batch's executed offset and its error is inflated by the
+    drift's uncertainty (`qi_pathion_one_cz_null_executed_order.adjusted_rows`); a batch run in the requested order has
+    the offset the layout requests, so a series that kept its order is pooled to the same value as the plain pool.
+    ConfoundedOrder when no template varies its offset (no separable drift)."""
+    ids = twin_batch_ids(contrasts)
+    fit_rows = {
+        template: [
+            (float(v), float(se), float(offsets[batch]))
+            for (v, se), batch in zip(c["twin"], ids[template], strict=True)
+        ]
+        for template, c in contrasts.items()
+    }
+    adjusted = eo.adjusted_rows(fit_rows)
+    rows = {
+        template: {"base": [(float(v), float(se)) for v, se in c["base"]], "twin": adjusted[template]}
+        for template, c in contrasts.items()
+    }
+    fitted = eo.fit(fit_rows)
+    fitted["offsets"] = {batch: offsets[batch] for template in ids for batch in ids[template]}
+    return rows, fitted
+
+
+# The labels the executed-order rule withholds a decision under, in the order they are read, and the text of each.
+WITHHELD_LABELS = (
+    "unresolved_order",
+    "unresolved_order_confounded",
+    "unresolved_base_drift_confounded",
+    "unresolved_drift_model",
+    "unresolved_drift_heterogeneity",
+)
+OUTCOMES: dict[str, tuple[str, str]] = {
+    **rule.OUTCOMES,
+    "unresolved_order": (
+        "unresolved: the start stamps cannot order the circuits (one is missing, null, not an ISO 8601 instant with an "
+        "offset, or two circuits of a twin batch start at one instant)",
+        "unchanged; the numbers are reported",
+    ),
+    "unresolved_order_confounded": (
+        "unresolved: every template keeps one executed position offset in all its twin batches, so the drift and the "
+        "contrasts are not separable",
+        "unchanged; the numbers are reported",
+    ),
+    "unresolved_base_drift_confounded": (
+        "unresolved: the base replicates of a template share one start time, so the drift and the base level are not "
+        "separable",
+        "unchanged; the numbers are reported",
+    ),
+    "unresolved_drift_model": (
+        "unresolved: the bracket offsets are not a line in executed time",
+        "unchanged; the numbers are reported",
+    ),
+    "unresolved_drift_heterogeneity": (
+        "unresolved: a template's own drift departs from the drift shared by the twin batches",
+        "unchanged; the numbers are reported",
+    ),
+}
+
+
+def unresolved(record: dict[str, Any], label: str, why: str) -> None:
+    """Replace the decision by an undecided `label`; the label of the plain pool and of the fit stay beside it."""
+    outcome, effect = OUTCOMES[label]
+    decision = record["decision"]
+    record["decision"] = {
+        **decision,
+        "label": label,
+        "outcome": outcome,
+        "a5_186": effect,
+        "decided": False,
+        "label_if_order_ignored": record["order_ignored_label"],
+        "why": why,
+    }
+
+
+# One-sided 95 percent normal quantile: the upper bound of the monitor slope that sizes the calibration systematic.
+SLOPE_BOUND_Z = statistics.NormalDist().inv_cdf(0.95)
+
+
+def circuit_seconds(executed: Mapping[str, object]) -> dict[str, float]:
+    """Executed start of every circuit of the series layout, in seconds after the series' first start ("batch/file"
+    keys); UnusableOrder when a stamp is missing or unusable (`series_instants`)."""
+    instants = series_instants(executed)
+    origin = min(instants.values())
+    return {key: (value - origin) / 1e6 for key, value in instants.items()}
+
+
+def twin_reference_times(seconds: dict[str, float]) -> dict[str, float]:
+    """Per template, the mean executed time of its twin circuits: the time at which the base level is estimated."""
+    listed: dict[str, list[float]] = {template: [] for template in oc.TEMPLATES}
+    for batch, (template, coin0, coin1) in twin_layout().items():
+        listed[template] += [seconds[f"{batch}/{coin0}"], seconds[f"{batch}/{coin1}"]]
+    return {template: sum(times) / len(times) for template, times in listed.items()}
+
+
+def base_batch_ids() -> dict[str, list[str]]:
+    """The base batches of each template in the order `batch_estimates` lists their contrasts (sorted by batch)."""
+    ids: dict[str, list[str]] = {template: [] for template in oc.TEMPLATES}
+    for row in sorted(batch_rows(TUNA_SERIES), key=lambda r: r["batch"]):
+        if row["kind"] == "base":
+            ids[row["template"]].append(row["batch"])
+    return ids
+
+
+def bracket_series(
+    shots: dict[str, list[str]], manifest: dict[str, Any], seconds: dict[str, float]
+) -> tuple[list[float], ...]:
+    """(times, offsets, errors) of the bracket offset c of every base and twin batch: each batch's own readouts give
+    one reading of the selector offset, placed at the mean executed start of its two readout circuits."""
+    times: list[float] = []
+    values: list[float] = []
+    ses: list[float] = []
+    for row in sorted(batch_rows(TUNA_SERIES), key=lambda r: r["batch"]):
+        if row["kind"] not in ("base", "twin"):
+            continue
+        batch = row["batch"]
+        qubit = manifest["templates"][row["template"]]["roles"]["selector"]
+        zero, one = shots[f"{batch}/readout-0.cq"], shots[f"{batch}/readout-1.cq"]
+        c, variance = bracket_offset(
+            sum(pca.bit(s, qubit) for s in zero), len(zero), sum(1 for s in one if pca.bit(s, qubit) == 0), len(one)
+        )
+        times.append((seconds[f"{batch}/readout-0.cq"] + seconds[f"{batch}/readout-1.cq"]) / 2)
+        values.append(c)
+        ses.append(math.sqrt(variance))
+    return times, values, ses
+
+
+def calibration_readings(
+    shots: dict[str, list[str]], manifest: dict[str, Any], seconds: dict[str, float]
+) -> list[dict[str, Any]]:
+    """Per X-only calibration batch, its mean executed start and the largest finite-count standard error of the
+    selector's misassignment rate over its circuits."""
+    qubit = manifest["joint_qubits"]["selector"]
+    out: list[dict[str, Any]] = []
+    for row in batch_rows(TUNA_SERIES):
+        if row["kind"] != "joint":
+            continue
+        errors = []
+        for circuit in row["circuits"]:
+            prepared = int(circuit["file"].removeprefix("joint-").removesuffix(".cq")[1])
+            listed = shots[f"{row['batch']}/{circuit['file']}"]
+            rate = sum(1 for s in listed if pca.bit(s, qubit) != prepared) / len(listed)
+            errors.append(math.sqrt(ana.arm_variance(rate, len(listed))))
+        started = [seconds[f"{row['batch']}/{c['file']}"] for c in row["circuits"]]
+        out.append({"batch": row["batch"], "time": sum(started) / len(started), "se": max(errors)})
+    return out
+
+
+def base_level_rows(
+    contrasts: dict[str, dict[str, list[Any]]], seconds: dict[str, float]
+) -> tuple[dict[str, list[tuple[float, float]]], dict[str, Any]]:
+    """Per template, the base rows rule v2 pools under the executed-time weights and the level fit beside them: the
+    base level at the mean executed time of the template's twin circuits, from a weighted line through the replicates
+    at their executed times (`qi_pathion_one_cz_null_executed_order.level_rows`). ConfoundedOrder when the replicates
+    of a template share one start time."""
+    ids = base_batch_ids()
+    reference = twin_reference_times(seconds)
+    rows: dict[str, list[tuple[float, float]]] = {}
+    fits: dict[str, Any] = {}
+    for template, c in contrasts.items():
+        if len(ids[template]) != len(c["base"]):
+            raise ValueError(f"{template} holds {len(c['base'])} base contrasts, not {len(ids[template])}")
+        times = [seconds[f"{batch}/{template}.cq"] for batch in ids[template]]
+        adjusted, fit = eo.level_rows(
+            [v for v, _ in c["base"]], [se for _, se in c["base"]], times, reference[template]
+        )
+        rows[template] = adjusted
+        fits[template] = {**fit, "reference_time": reference[template], "times": times}
+    return rows, fits
+
+
+def decide_correlated(
+    rows: dict[str, dict[str, list[tuple[float, float]]]],
+    covariance: dict[str, dict[str, float]],
+    b0_like_z: float | None = None,
+) -> dict[str, Any]:
+    """The rule-v2 decision of corrected per-batch rows when the twin contrasts of different templates are correlated.
+
+    `covariance` is the matrix of the template twin contrasts that `qi_pathion_one_cz_null_executed_order.fit`
+    returns. The ladder is that of `rule.decide_estimates` with three statistics read through the covariance: the
+    pooled 6-CZ twin contrast d and its chi-square over the three blocks (generalized least squares,
+    `eo.pool_correlated`), and the error of r - m, where t0 and d share the drift g. A diagonal covariance gives the
+    decision of `rule.decide_estimates` (a test pins it)."""
+    band = oc.B0_LIKE_Z if b0_like_z is None else b0_like_z
+    z = oc.Z_RESOLVE
+    low = list(oc.LOW_NAMES)
+    base = {t: ana.pooled(rows[t]["base"]) for t in oc.TEMPLATES}
+    twin = {t: ana.pooled(rows[t]["twin"]) for t in oc.TEMPLATES}
+    batch_q = {f"{t}/{kind}": ana.heterogeneity(rows[t][kind]) for t in oc.TEMPLATES for kind in ("base", "twin")}
+    mean, error, twin_q, weights = eo.pool_correlated(
+        [twin[t][0] for t in low], [[covariance[t][u] for u in low] for t in low]
+    )
+    d = (mean, error)
+    block_q = {"base": ana.heterogeneity([base[t] for t in low]), "twin": twin_q}
+    s0, t0 = base["b0"], twin["b0"]
+    c = ana.pooled([base[t] for t in low])
+    m, r = ana.pooled([c, d]), ana.pooled([s0, t0])
+    share_t0 = (1.0 / t0[1] ** 2) / (1.0 / s0[1] ** 2 + 1.0 / t0[1] ** 2)
+    share_d = (1.0 / d[1] ** 2) / (1.0 / c[1] ** 2 + 1.0 / d[1] ** 2)
+    shared = sum(w * covariance["b0"][t] for w, t in zip(weights, low, strict=True))
+    diff = r[0] - m[0]
+    diff_se = math.sqrt(r[1] ** 2 + m[1] ** 2 - 2.0 * share_t0 * share_d * shared)
+    numbers = {
+        "s_b0": s0,
+        "t_b0": t0,
+        "c_six_cz_base": c,
+        "d_six_cz_twin": d,
+        "m_six_cz": m,
+        "r_b0": r,
+        "r_minus_m": (diff, diff_se),
+        "batch_chi2": batch_q,
+        "block_chi2": block_q,
+    }
+    if any(q > BATCH_CHI2 for q in batch_q.values()):
+        label = "unresolved_batch"
+    elif any(q > oc.BLOCK_CHI2 for q in block_q.values()):
+        label = "unresolved_block"
+    elif s0[0] < z * s0[1]:
+        label = "offset_absent"
+    elif t0[0] < z * t0[1]:
+        gap = (s0[0] - t0[0]) / math.hypot(s0[1], t0[1])
+        label = "superposition_only" if gap >= z else "unresolved"
+        if label == "superposition_only" and t0[0] < -z * t0[1]:
+            label = rule.NEGATIVE_TWIN
+    elif abs(c[0] - d[0]) > z * math.hypot(c[1], d[1]):
+        label = "unresolved_context"
+    elif abs(m[0]) <= z * m[1] and diff >= z * diff_se:
+        label = "zero"
+    elif m[0] >= z * m[1] and abs(diff) <= band * diff_se:
+        label = "b0_like"
+    elif m[0] >= z * m[1]:
+        label = "intermediate"
+    else:
+        label = "unresolved"
+    outcome, effect = OUTCOMES[label]
+    return {"label": label, "outcome": outcome, "a5_186": effect, "decided": label in oc.DECIDING, "numbers": numbers}
+
+
+def stray_templates(fitted: dict[str, Any]) -> list[str]:
+    """The templates whose own twin drift departs from the shared drift by more than DRIFT_HETEROGENEITY_SE errors of
+    the difference."""
+    return [
+        template
+        for template in oc.TEMPLATES
+        if fitted["template_drift"][template] is not None
+        and abs(fitted["template_drift"][template] - fitted["drift"])
+        > DRIFT_HETEROGENEITY_SE * fitted["template_drift_difference_se"][template] + DRIFT_DEPARTURE_FLOOR
+    ]
+
+
+def decide_executed(
+    record: dict[str, Any],
+    contrasts: dict[str, dict[str, list[Any]]],
+    offsets: dict[str, int],
+    seconds: dict[str, float],
+    reference: tuple[list[float], ...],
+    calibration: Callable[[], list[dict[str, Any]]],
+) -> None:
+    """The executed-order decision of the batch contrasts, written into `record` (which already holds the plain
+    pool's `decision` and `order_ignored_label`): the twin fit, the base levels, the drift monitor, the calibration
+    systematics and the decision of `decide_correlated` on the corrected rows, withheld under the first of
+    WITHHELD_LABELS that applies. `seconds` holds the executed start of every circuit, `reference` the bracket offset
+    series (times, values, errors) and `calibration` reads the X-only calibration batches once the monitor fits."""
+    try:
+        rows, fitted = executed_twin_fit(contrasts, offsets)
+    except eo.ConfoundedOrder as error:
+        record["executed_order_fit"] = {"status": "confounded", "reason": str(error)}
+        unresolved(record, "unresolved_order_confounded", str(error))
+        return
+    stray = stray_templates(fitted)
+    record["executed_order_fit"] = {"status": "fitted", **fitted, "stray_templates": stray}
+    withheld: list[tuple[str, str]] = []
+    try:
+        base_rows, levels = base_level_rows(contrasts, seconds)
+        for template in oc.TEMPLATES:
+            rows[template]["base"] = base_rows[template]
+        record["base_level_fit"] = {"status": "fitted", "templates": levels}
+    except eo.ConfoundedOrder as error:
+        record["base_level_fit"] = {"status": "confounded", "reason": str(error)}
+        withheld.append(("unresolved_base_drift_confounded", str(error)))
+    try:
+        monitor = eo.drift_monitor(*reference)
+    except eo.ConfoundedOrder as error:
+        record["drift_monitor"] = {"status": "unusable", "reason": str(error)}
+        withheld.append(("unresolved_drift_model", str(error)))
+    else:
+        record["drift_monitor"] = {"status": "fitted", **monitor}
+        if not monitor["adequate"]:
+            withheld.append(("unresolved_drift_model", "the bracket offsets are not a line in executed time"))
+        bound = abs(float(monitor["slope"])) + SLOPE_BOUND_Z * float(monitor["slope_se"])
+        tau = sum(twin_reference_times(seconds).values()) / len(oc.TEMPLATES)
+        record["calibration_drift"] = [
+            {
+                **reading,
+                "sigma_sys": bound * abs(reading["time"] - tau),
+                "unresolved_calibration_drift": bound * abs(reading["time"] - tau) > reading["se"],
+            }
+            for reading in calibration()
+        ]
+    record["decision"] = decide_correlated(rows, fitted["covariance"])
+    if stray:
+        withheld.append(("unresolved_drift_heterogeneity", f"own drift departs from the shared drift: {stray}"))
+    if withheld:
+        common = record["decision"]["label"]
+        unresolved(record, *withheld[0])
+        record["decision"]["label_if_nothing_withheld"] = common
+        record["decision"]["also_withheld"] = [label for label, _ in withheld[1:]]
+
+
 def evaluate(
     shots: dict[str, list[str]], manifest: dict[str, Any], executed: dict[str, str] | None = None
 ) -> dict[str, Any]:
-    """The rule-v2 decision of a complete Tuna-17 series, with the per-batch bracket offsets beside it.
+    """The rule-v2 decision of a complete Tuna-17 series on its executed order, with the per-batch bracket offsets
+    beside it.
 
-    A series with a batch out of its requested order reads `unresolved_order` and decides nothing; the label the rule
-    would have read stays beside it as `label_if_order_ignored`."""
-    record: dict[str, Any] = evaluate_decision(shots, manifest, executed)
-    record["twin_brackets"] = batch_brackets(shots, manifest)
-    gate = order_gate(executed)
-    record["order_gate"] = gate
-    if gate is not None and not gate["intact"]:
-        outcome, effect = oc.OUTCOMES["unresolved"]
-        decision = record["decision"]
-        record["decision"] = {
-            **decision,
-            "label": "unresolved_order",
-            "outcome": outcome,
-            "a5_186": effect,
-            "decided": False,
-            "label_if_order_ignored": decision["label"],
+    Registered rule (owner ruling 2026-11-16, issue 791): the series is read on the order and the times the provider
+    executed, recorded per job as `queued_at` and ranked by instant (`stamp_instant`).
+    - Twin contrasts: each is corrected for one drift shared by the twin batches (their executed position offsets), and
+      the templates pool with the covariance that the shared drift gives them (`decide_correlated`).
+    - Base contrasts: each template's replicates are read at their executed times through a weighted line, and the
+      level is taken at the mean executed time of the template's twin circuits.
+    - Rule v2 pools the corrected rows. A reference series (the bracket offset of every base and twin batch) must
+      keep its residual under the alpha 0.001 chi-square of the line.
+    - Calibration batches carry the systematic g_up |t - tau| of that line's slope bound, reported beside the decision.
+    Labels, in the order they are withheld (WITHHELD_LABELS): `unresolved_order` (a stamp is missing, null or not an ISO
+    8601 instant with an offset, or two circuits of a twin batch start at one instant), `unresolved_order_confounded`
+    (every template keeps one position offset), `unresolved_base_drift_confounded` (a template's base replicates share
+    one start time), `unresolved_drift_model` (the reference series is not a line), `unresolved_drift_heterogeneity`
+    (a template's own drift departs from the shared one). The label of the pool that ignores the order stays beside
+    every withheld reading as `label_if_order_ignored`, and the strict reading of `order_gate` stays as a record that
+    decides nothing."""
+    try:
+        instants: dict[str, int] | None = series_instants(executed)
+        reason = ""
+    except UnusableOrder as error:
+        instants, reason = None, str(error)
+    # The plain pool reads a canonical, fixed-width rendering of the instants, or no stamps when one is unusable.
+    plain_stamps = (
+        None
+        if instants is None
+        else {
+            key: (EPOCH + timedelta(microseconds=us)).strftime("%Y-%m-%dT%H:%M:%S.%fZ") for key, us in instants.items()
         }
+    )
+    record: dict[str, Any] = evaluate_decision(shots, manifest, plain_stamps)
+    record["twin_brackets"] = batch_brackets(shots, manifest)
+    record["order_gate"] = order_gate(executed)
+    record["order_ignored_label"] = record["decision"]["label"]
+    try:
+        if instants is None:
+            raise UnusableOrder(reason)
+        offsets = twin_offsets(executed)
+    except UnusableOrder as error:
+        record["executed_order_fit"] = {"status": "unusable", "reason": str(error)}
+        unresolved(record, "unresolved_order", str(error))
+        return record
+    contrasts = {t: {k: [tuple(x) for x in v] for k, v in c.items()} for t, c in record["batch_contrasts"].items()}
+    seconds = circuit_seconds(executed or {})
+    decide_executed(
+        record,
+        contrasts,
+        offsets,
+        seconds,
+        bracket_series(shots, manifest, seconds),
+        lambda: calibration_readings(shots, manifest, seconds),
+    )
     return record
 
 
+class _StampedRuns:
+    """`pcs` with a `load_run` whose job records always carry `queued_at`: `pathion_coset_analysis.read_series`
+    (sha256-bound by retained Kaggle submissions) indexes the key, so a job record without it would stop the series
+    with a KeyError. A missing key reads as a null stamp, which `evaluate` turns into `unresolved_order`."""
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(pcs, name)
+
+    @staticmethod
+    def load_run(run_dir: Path, case_batch: Path | None = None) -> dict[str, Any]:
+        run: dict[str, Any] = pcs.load_run(run_dir, case_batch)
+        for job in run["jobs"].values():
+            job.setdefault("queued_at", None)
+        return run
+
+
+_runs = _StampedRuns()
 analyze_series = ana.rebound(
     oc.analyze,
+    pcs=_runs,
     evaluate=evaluate,
     ANALYSIS_SCHEMA=ANALYSIS_SCHEMA,
     batch_rows=batch_rows,
@@ -421,7 +945,7 @@ def analyze(run_dirs: list[Path], case_root: Path | None = pcs.CASES_ROOT) -> di
     needs."""
     record: dict[str, Any] = analyze_series(run_dirs, case_root)
     if record["claim_kind"] == oc.CONTROL_KIND and record["complete"]:
-        data = pca.read_series(run_dirs, case_root, series_of, "data", oc.BATCH_FIELDS, pcs.load_run)
+        data = pca.read_series(run_dirs, case_root, series_of, "data", oc.BATCH_FIELDS, _runs.load_run)
         record["qx_brackets"] = qx_brackets(data["shots"], data["shared"])
     return record
 
@@ -612,6 +1136,179 @@ def operating_characteristics(
     return out
 
 
+# Operating characteristics of the executed-order rule -----------------------------------------------------------------
+
+# The model of the executed-order tables (hypotheses: each is a stated assumption of the simulation, not a measurement
+# of Tuna-17 except where marked). A batch runs its circuits in a uniformly random permutation with probability
+# REORDER_RATE and in its requested order otherwise, so a twin batch reverses its twins with probability REORDER_RATE
+# / 2 (measured: 3 of 12 twin batches of the predecessor series and the hosted QX run reversed theirs, 2 of 8 and 1 of
+# 4, which is 0.25; the strict gate counted 7 of the predecessor's 19 batches out of order, 0.37, so 0.5 is the
+# cautious side of both). Circuits start JOB_SECONDS apart (the design's execution seconds per job) and a wave waits
+# POLICY.pause_seconds + 1 s before the next. The shared twin drift is LINEAR_TWIN_DRIFT per executed position, the
+# base level and the bracket offset drift linearly in time at LINEAR_BASE_SLOPE per second (the largest plausible 0.01
+# per hour of docs/design/bracketed-base-contrast-weights.md), and a planted departure adds to the k4 twin drift per
+# position.
+REORDER_RATE = 0.5
+LINEAR_TWIN_DRIFT = 0.003
+LINEAR_BASE_SLOPE = 0.01 / 3600.0
+PLANTED_DEPARTURES = (0.0075, 0.015)
+PLANTED_TEMPLATE = "k4"
+# World subset of the heterogeneity-gate tables: the gate reads the twin drifts, which a world's contrasts do not move.
+GATE_WORLDS = ("absent", "coin_dropout", "superposition_only")
+EXECUTED_TABLES: dict[str, dict[str, float]] = {
+    "executed_in_order": {"rate": 0.0, "twin_drift": 0.0, "base_slope": 0.0, "departure": 0.0},
+    "executed_reordered_stationary": {"rate": REORDER_RATE, "twin_drift": 0.0, "base_slope": 0.0, "departure": 0.0},
+    "executed_reordered_linear_drift": {
+        "rate": REORDER_RATE,
+        "twin_drift": LINEAR_TWIN_DRIFT,
+        "base_slope": LINEAR_BASE_SLOPE,
+        "departure": 0.0,
+    },
+    **{
+        f"executed_planted_departure_{departure}": {
+            "rate": REORDER_RATE,
+            "twin_drift": LINEAR_TWIN_DRIFT,
+            "base_slope": LINEAR_BASE_SLOPE,
+            "departure": departure,
+        }
+        for departure in PLANTED_DEPARTURES
+    },
+    # The stress of the 80 percent power rule (OC_DRIFT_SD on every contrast, or on the base contrasts alone), under
+    # reordering and with no shared linear drift for the fit to remove: the same drift models as the pool that ignores
+    # the order, which a series cannot correct because they are noise per batch.
+    f"executed_reordered_independent_drift_sd_{OC_DRIFT_SD}": {
+        "rate": REORDER_RATE,
+        "twin_drift": 0.0,
+        "base_slope": 0.0,
+        "departure": 0.0,
+        "twin_noise_sd": OC_DRIFT_SD,
+        "base_noise_sd": OC_DRIFT_SD,
+    },
+    f"executed_reordered_pair_common_drift_sd_{OC_DRIFT_SD}": {
+        "rate": REORDER_RATE,
+        "twin_drift": 0.0,
+        "base_slope": 0.0,
+        "departure": 0.0,
+        "base_noise_sd": OC_DRIFT_SD,
+    },
+}
+OC_SEED_INDICES.update({name: 923 + n for n, name in enumerate(EXECUTED_TABLES)})
+# The design's 1,667 to 1,821 s of execution over 120 jobs is 13.9 to 15.2 s per job.
+JOB_SECONDS = 14.0
+WAVE_GAP_SECONDS = float(POLICY.pause_seconds or 0) + 1.0
+
+
+@cache
+def _simulation_layout() -> dict[str, Any]:
+    """The series layout the simulation reads: per batch its circuits, its first start under the requested order, and
+    the base and twin batch ids of each template."""
+    rows = batch_rows(TUNA_SERIES)
+    starts: list[float] = []
+    clock = 0.0
+    for n, row in enumerate(rows):
+        if n and n % POLICY.queued_batches == 0:
+            clock += WAVE_GAP_SECONDS
+        starts.append(clock)
+        clock += JOB_SECONDS * len(row["circuits"])
+    twin_ids = twin_layout()
+    return {
+        "rows": rows,
+        "starts": starts,
+        "twin": {
+            template: [b for b, (t, _, _) in sorted(twin_ids.items()) if t == template] for template in oc.TEMPLATES
+        },
+        "base": base_batch_ids(),
+    }
+
+
+def _executed_series(
+    seed: np.random.SeedSequence, *, mean: dict[str, float], params: dict[str, float]
+) -> tuple[str, bool]:
+    """(decision label, whether the drift-heterogeneity gate fired) of one simulated series read on its executed order.
+
+    The series is drawn from `seed`: the permutation of each batch, the binomial selector zero counts of every twin
+    circuit, the Gaussian base noise and the bracket offsets, with the drifts of `params` added to the twin contrasts
+    (per executed position), the base levels and the bracket offsets (per second about the template's twin reference
+    time and the series' first start); the decision is `decide_executed` on those contrasts."""
+    rng = np.random.default_rng(seed)
+    layout = _simulation_layout()
+    e01, e10 = retained_selector_rates()
+    seconds: dict[str, float] = {}
+    offsets: dict[str, int] = {}
+    for row, start in zip(layout["rows"], layout["starts"], strict=True):
+        circuits = [c["file"] for c in row["circuits"]]
+        place = rng.permutation(len(circuits)) if rng.random() < params["rate"] else np.arange(len(circuits))
+        for name, position in zip(circuits, place, strict=True):
+            seconds[f"{row['batch']}/{name}"] = start + JOB_SECONDS * float(position)
+        if row["kind"] == "twin":
+            offsets[row["batch"]] = int(place[circuits.index(oc.twin_file(row["template"], 1))]) - int(
+                place[circuits.index(oc.twin_file(row["template"], 0))]
+            )
+    reference_time = twin_reference_times(seconds)
+    contrasts: dict[str, dict[str, list[tuple[float, float]]]] = {}
+    for template in oc.TEMPLATES:
+        key = "b0" if template == "b0" else "k"
+        shots = BATCH_SHOTS
+        p_read = 0.5 + (e10 - e01) / 2 + np.array([-0.5, 0.5]) * mean[f"t_{key}"]
+        drift = params["twin_drift"] + (params["departure"] if template == PLANTED_TEMPLATE else 0.0)
+        twin = []
+        for batch in layout["twin"][template]:
+            zeros = rng.binomial(shots, p_read)
+            value, se = twin_contrast(int(zeros[1]), shots, int(zeros[0]), shots)
+            noise = params.get("twin_noise_sd", 0.0)
+            twin.append((value + drift * offsets[batch] + (noise * float(rng.normal()) if noise else 0.0), se))
+        se_base = 1.0 / math.sqrt(CONTROL_SHOTS if template == "b0" else BATCH_SHOTS)
+        base_noise = params.get("base_noise_sd", 0.0)
+        base = [
+            (
+                mean[f"s_{key}"]
+                + se_base * float(rng.normal())
+                + params["base_slope"] * (seconds[f"{batch}/{template}.cq"] - reference_time[template])
+                + (base_noise * float(rng.normal()) if base_noise else 0.0),
+                se_base,
+            )
+            for batch in layout["base"][template]
+        ]
+        contrasts[template] = {"base": base, "twin": twin}
+    offset_se = math.sqrt((ana.arm_variance(e10, BATCH_SHOTS) + ana.arm_variance(e01, BATCH_SHOTS)) / 4)
+    times, values = [], []
+    for row in layout["rows"]:
+        if row["kind"] in ("base", "twin"):
+            mid = (seconds[f"{row['batch']}/readout-0.cq"] + seconds[f"{row['batch']}/readout-1.cq"]) / 2
+            times.append(mid)
+            values.append((e10 - e01) / 2 + params["base_slope"] * mid + offset_se * float(rng.normal()))
+    record: dict[str, Any] = {"decision": {}, "order_ignored_label": ""}
+    decide_executed(record, contrasts, offsets, seconds, (times, values, [offset_se] * len(times)), list)
+    fit = record["executed_order_fit"]
+    return str(record["decision"]["label"]), bool(fit.get("stray_templates"))
+
+
+def executed_operating_characteristics(
+    seed_index: int,
+    params: dict[str, float],
+    draws: int = OC_DRAWS,
+    worlds: dict[str, dict[str, float]] | None = None,
+) -> dict[str, dict[str, Any]]:
+    """Share of each decision label per world and of series whose drift-heterogeneity gate fired, from `draws`
+    simulated series of the executed-order rule per world (`_executed_series`), seeded from QRNG value `seed_index` of
+    OC_DRAW. Each series owns a child of one SeedSequence, in world order and series order, so the table does not depend
+    on the worker count."""
+    worlds = rule.WORLDS if worlds is None else worlds
+    children = np.random.SeedSequence(int(read_record(OC_DRAW)["values"][seed_index])).spawn(draws * len(worlds))
+    labels: dict[str, dict[str, float]] = {}
+    fired: dict[str, float] = {}
+    for k, (world, mean) in enumerate(worlds.items()):
+        results = parallel.ordered_map(
+            partial(_executed_series, mean=mean, params=params), children[k * draws : (k + 1) * draws]
+        )
+        counts: dict[str, int] = {}
+        for label, _ in results:
+            counts[label] = counts.get(label, 0) + 1
+        labels[world] = {label: round(n / draws, 4) for label, n in sorted(counts.items())}
+        fired[world] = round(sum(1 for _, gate in results if gate) / draws, 4)
+    return {"labels": labels, "heterogeneity_gate_fired": fired}
+
+
 # Predictions ----------------------------------------------------------------------------------------------------
 
 
@@ -630,7 +1327,7 @@ def predictions(operating: bool = True) -> dict[str, Any]:
         "outside_admitted_set": list(oc.OUTSIDE_ADMITTED),
         "design": design(),
         "preregistered": preregistered(),
-        "outcomes": {label: {"outcome": v[0], "a5_186": v[1]} for label, v in rule.OUTCOMES.items()},
+        "outcomes": {label: {"outcome": v[0], "a5_186": v[1]} for label, v in OUTCOMES.items()},
     }
     if operating:
         tables = {
@@ -642,16 +1339,44 @@ def predictions(operating: bool = True) -> dict[str, Any]:
                 OC_SEED_INDICES[PAIR_DRIFT_TABLE], drift_sd=OC_DRIFT_SD, drift_model="pair"
             ),
         }
+        executed = {}
+        for name, params in EXECUTED_TABLES.items():
+            gate_only = name.startswith("executed_planted")
+            table = executed_operating_characteristics(
+                OC_SEED_INDICES[name], params, worlds={w: rule.WORLDS[w] for w in GATE_WORLDS} if gate_only else None
+            )
+            executed[name] = {
+                "labels": {
+                    w: {label: rule.ten_thousandths(share) for label, share in row.items()}
+                    for w, row in table["labels"].items()
+                },
+                "heterogeneity_gate_fired": {
+                    w: rule.ten_thousandths(share) for w, share in table["heterogeneity_gate_fired"].items()
+                },
+            }
         record["operating_characteristics"] = {
             "qrng_draw": OC_DRAW,
             "seed_indices": dict(OC_SEED_INDICES),
             "draws_per_world": OC_DRAWS,
+            "executed_order_model": {
+                "unit": "rates and drifts in ten-thousandths: 5000 is 0.5; a drift per executed position or per hour",
+                "reorder_rate_per_batch": rule.ten_thousandths(REORDER_RATE),
+                "twin_drift_per_position": rule.ten_thousandths(LINEAR_TWIN_DRIFT),
+                "base_drift_per_hour": rule.ten_thousandths(LINEAR_BASE_SLOPE * 3600.0),
+                "contrast_drift_sd": rule.ten_thousandths(OC_DRIFT_SD),
+                "planted_departures_per_position": [rule.ten_thousandths(d) for d in PLANTED_DEPARTURES],
+                "planted_template": PLANTED_TEMPLATE,
+                "gate_worlds": list(GATE_WORLDS),
+                "job_seconds": round(JOB_SECONDS),
+                "wave_gap_seconds": round(WAVE_GAP_SECONDS),
+            },
             **{
                 key: {
                     w: {label: rule.ten_thousandths(share) for label, share in row.items()} for w, row in table.items()
                 }
                 for key, table in tables.items()
             },
+            **executed,
         }
     return record
 

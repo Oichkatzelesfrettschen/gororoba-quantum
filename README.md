@@ -173,7 +173,8 @@ cd gororoba_quantum
 "$PYTHON" annihilator_strata.py --max-dimension 256
 "$PYTHON" factoring.py
 "$PYTHON" target_flip.py
-"$PYTHON" target_flip_certificate.py --check
+# TargetFlipN21.v is rendered and checked by gororoba-math ci/check_quantum_sources.sh
+# (docs/runbooks/rocq-replay-route.md)
 "$PYTHON" modular_arithmetic.py
 "$PYTHON" order_finding.py
 "$PYTHON" compile_evidence.py --seeds 20261010 \

@@ -585,8 +585,8 @@ conditional on `A5-421` and the slice premise of `A5-423`, the complex point set
 both components of its quadric scheme after a complex-linear change of generators
 ([arc record](../a5-char0-transfer/README.md#both-components-of-the-e8-bar-quadric-scheme-lie-in-the-fiber-over-qi-ledger-a5-425),
 `A5-425`). Every incidence of `A5-418` is thereby decided as a set of points under those conditions; open on the
-header slices is the scheme structure of the `E8bar` fiber above degree 7 (`A5-009`), which `A5-449` shows is not
-reduced. On the weight slice the three fiber cones are `S / K` as schemes without the slice premise (`A5-457`,
+header slices, the scheme structure of the `E8bar` fiber is `S / K2` in every degree at 32009 and 32029 (`A5-559`,
+which settles `A5-009`), and `A5-449` shows it is not reduced. On the weight slice the three fiber cones are `S / K` as schemes without the slice premise (`A5-457`,
 `A5-475`), and `A5-507` describes the `E8bar` fiber.
 
 Evidence: [`nullity8-fiber-import-result.json`](nullity8-fiber-import-result.json),
@@ -934,7 +934,10 @@ torsion-free module `R / K`, so it is zero or of rank 1, and `L = K` in every de
 above degree 7 (`A5-009`) is that one condition. A sufficient test needs no standard basis of the Rees ideal: a
 family of arcs in the slice germ whose limit points are dense in `V(A)` and along which one of the five nilpotent
 linear forms has order strictly between `nu` and `nu + e` (`nu` the order of the generators, `e` the order of the
-slice coordinates). The retained arc families fill the two prime components; `A5-457` runs the test on `V(A)` with an order function.
+slice coordinates). The retained arc families fill the two prime components; `A5-457` runs the test on `V(A)` with an order function,
+and on the header slices at 32009 and 32029 the family w = W s, rho = R s^2, sigma = S s^2, zeta = Z s^2,
+e = -1 + E1 s of the arc package runs it
+([`relation_ideal_orders.py`](../a5-exceptional-fibers/arcs/relation_ideal_orders.py), `A5-559`).
 
 **Computed (`A5-474`):** [`weight_slice_relation_membership.py`](weight_slice_relation_membership.py) certifies that
 every degree-2 relation `q` of the ten weight-slice cells satisfies `q(G)` in `J + m I^2`
@@ -1302,6 +1305,40 @@ fiber with the fiber of the Zariski closure of the graph, which each fiber row c
 continuous semialgebraic path; `A5-418` survives under the conditions its row states. A producer of the five rows that evaluates a right annihilator, a step that takes positivity from
 `z^T z` or from an independent conjugate variable, or a retained point at which `conjugate(z)^T z` differs from
 the squared Euclidean norm falsifies the audit (`A5-452`).
+
+## Over Q(i) the quadric rings of the weight slice are Cohen-Macaulay exactly when they are reduced
+
+Ledger row A5-548 states that a quadric ring of the fiber track is Cohen-Macaulay exactly when its quadric ideal is
+radical. The [run case](weight-slice-quadric-rings-case.md), written before the run, records the eight predictions and
+the falsifier; [`weight_slice_quadric_rings.py`](weight_slice_quadric_rings.py) decides both properties for the
+quadric ideal K of each cell over Q(i), and the record is
+[`weight-slice-quadric-rings-result.json`](weight-slice-quadric-rings-result.json) (Singular 4.4.1, 43 minutes on the
+Windows workstation; [run output](weight-slice-quadric-rings-run.txt), [memory sampler](weight-slice-quadric-rings-memory.txt)).
+
+The Cohen-Macaulay test is the length of the Artinian linear section: forms that lower the dimension to 0 are a system of
+parameters, whose quotient has length at least the degree, with equality exactly when the ring is Cohen-Macaulay.
+Reducedness is the equality of K with the intersection of its minimal primes from `minAssGTZ`; the Seidenberg chart
+certificate of the program decides none of the twelve rings, so the radical probe decides all of them. Four calibration
+ideals with known answers run first and reproduce.
+
+| Cell | Dimension, degree | Section length | Cohen-Macaulay | Reduced | Radical beyond K | Prediction |
+|---|---|---|---|---|---|---|
+| X- -> N-, X+ -> N+ | 4, 12 | 15 | no | no | three linear forms | holds |
+| Iso -> N-, Iso -> N+ | 5, 23 | 23 | yes | yes | none | holds |
+| W8 -> N-, W8 -> N+ | 6, 50 | 50 | yes | yes | none | holds |
+| E8-bar -> N-, E8-bar -> N+ | 5, 11 | 20 | no | no | five linear forms | holds |
+
+All eight cells are decided, none reached the Singular time limit, and no cell is reduced without being
+Cohen-Macaulay or the reverse, so A5-548 holds over Q(i) on the weight slice (rows A5-565 to A5-569). The rows for Iso,
+W8 and E8-bar agree with the reducedness already proved in A5-446, A5-447 and A5-451. The run tests the equivalence and
+leaves the rank-one nilradical clause of A5-548 and E8-bar -> VB, which is not a weight-slice cell, untested over Q(i).
+Its falsifier is a cell that is reduced and not Cohen-Macaulay or the reverse.
+
+The gate `core-a5-weight-slice-quadric-rings` of [ci/gates.json](../../../ci/gates.json) recomputes the record under
+Singular and compares it through `ci/replay_check.py`, skipping the Singular banner and the timing and load fields;
+`tests/test_a5_weight_slice_quadric_rings.py` re-derives every verdict from the stored numbers without Singular and
+rejects 27 mutations. The [review record](../../archive/reviews/pr936/README.md) holds the reviewers, the heads
+they read and the disposition of each finding.
 
 ## Investigated questions
 

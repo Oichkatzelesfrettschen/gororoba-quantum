@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+from typing import Any
 
 import pytest
 import qi_pathion_one_cz_null_analysis as ana
@@ -76,14 +77,14 @@ def test_one_direction_in_every_batch_is_confounded_and_one_mixed_template_is_en
 
 
 def test_executed_offset_reads_the_rank_difference_of_the_stamps_and_refuses_a_tie() -> None:
-    requested = {"r0": "00:00:01", "c0": "00:00:02", "c1": "00:00:03", "r1": "00:00:04", "b": "00:00:05"}
+    requested = {"r0": 1, "c0": 2, "c1": 3, "r1": 4, "b": 5}
     _expect(eo.executed_offset(requested, "c0", "c1") == 1, "the requested order reads +1")
-    _expect(eo.executed_offset({**requested, "c0": "00:00:03", "c1": "00:00:02"}, "c0", "c1") == -1, "swapped twins")
+    _expect(eo.executed_offset({**requested, "c0": 3, "c1": 2}, "c0", "c1") == -1, "swapped twins")
     # the batch 02 of the hosted QX run: coin 1 ran second, coin 0 last of five
-    scrambled = {"r0": "00:00:01", "c1": "00:00:02", "r1": "00:00:03", "b": "00:00:04", "c0": "00:00:05"}
+    scrambled = {"r0": 1, "c1": 2, "r1": 3, "b": 4, "c0": 5}
     _expect(eo.executed_offset(scrambled, "c0", "c1") == -3, "coin 1 three places before coin 0")
     with pytest.raises(eo.ConfoundedOrder):
-        eo.executed_offset({**requested, "c1": "00:00:02"}, "c0", "c1")
+        eo.executed_offset({**requested, "c1": 2}, "c0", "c1")
 
 
 def test_a_position_offset_other_than_one_enters_the_drift_term_in_proportion() -> None:
@@ -101,7 +102,48 @@ def test_templates_that_are_each_one_directional_in_opposite_directions_are_conf
         eo.fit(rows)
 
 
-def test_the_enumerated_confounded_probability_matches_its_closed_form() -> None:
+def test_the_enumerated_confounded_probability_of_two_templates_matches_its_closed_form() -> None:
+    for rate in (0.1, 0.25, 7 / 19):
+        per_template = 2 * rate**2 * (1 - rate) ** 2  # a template [+, -, +, -] ends one-directional
+        seen = eo.operating_characteristics(rate, templates=2)["confounded"]
+        _expect(math.isclose(seen, per_template**2, rel_tol=1e-9), f"rate {rate}: {seen} against {per_template**2}")
+    _expect(
+        eo.operating_characteristics(0.0, templates=2)["mean_error_ratio"] == 1.0, "a balanced design pays no error"
+    )
+
+
+def test_the_pooled_enumeration_of_two_templates_equals_the_serial_one_bit_for_bit(
+    forced_pool: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    for rate in (0.0, 0.1, 0.25, 7 / 19):
+        monkeypatch.setattr(eo, "MASK_BLOCK", 1 << 8)  # one block of all 2^8 patterns runs inline
+        serial = eo.operating_characteristics(rate, templates=2)
+        monkeypatch.setattr(eo, "MASK_BLOCK", 1 << 5)  # eight blocks of 32 patterns run in two spawned workers
+        pooled = eo.operating_characteristics(rate, templates=2)
+        _expect(pooled == serial, f"rate {rate}: {pooled} against {serial}")
+    _expect(
+        forced_pool.maps[-1] == ("function", 8) and set(forced_pool.pools) == {2},
+        str((forced_pool.maps, forced_pool.pools)),
+    )
+
+
+@pytest.mark.audit
+def test_the_pooled_enumeration_of_four_templates_equals_the_serial_one_bit_for_bit(
+    forced_pool: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(eo, "MASK_BLOCK", 1 << 16)  # one block of all 2^16 patterns runs inline
+    serial = eo.operating_characteristics(0.25)
+    monkeypatch.setattr(eo, "MASK_BLOCK", 512)
+    pooled = eo.operating_characteristics(0.25)
+    _expect(pooled == serial, f"{pooled} against {serial}")
+    _expect(
+        forced_pool.maps[-1] == ("function", 128) and set(forced_pool.pools) == {2},
+        str((forced_pool.maps, forced_pool.pools)),
+    )
+
+
+@pytest.mark.audit
+def test_the_enumerated_confounded_probability_matches_its_closed_form(forced_pool: Any) -> None:
     for rate in (0.1, 0.25, 7 / 19):
         per_template = 2 * rate**2 * (1 - rate) ** 2  # a template [+, -, +, -] ends one-directional
         seen = eo.operating_characteristics(rate)["confounded"]
@@ -243,3 +285,83 @@ def test_the_own_drift_difference_error_matches_the_covariance_of_the_two_linear
         expected = math.sqrt(var_own - 2.0 * cov + var_shared)
         got = solved["template_drift_difference_se"][name]  # type: ignore[index]
         _expect(math.isclose(got, expected, rel_tol=1e-9), f"{name}: {got} against {expected}")
+
+
+def test_a_correlated_pool_follows_the_generalized_least_squares_by_hand() -> None:
+    # S = [[1, 1/2], [1/2, 2]]: S^-1 = [[2, -1/2], [-1/2, 1]] / (7/4), S^-1 1 = [3/2, 1/2] / (7/4), 1' S^-1 1 = 8/7.
+    mean, se, chi, weights = eo.pool_correlated([1.0, 3.0], [[1.0, 0.5], [0.5, 2.0]])
+    _expect(
+        math.isclose(mean, 1.5, rel_tol=1e-12) and math.isclose(se, math.sqrt(7 / 8), rel_tol=1e-12), f"{mean} {se}"
+    )
+    _expect(math.isclose(chi, 2.0, rel_tol=1e-12), f"chi-square {chi}")
+    _expect(all(math.isclose(a, b, rel_tol=1e-12) for a, b in zip(weights, [0.75, 0.25], strict=True)), f"{weights}")
+    # A diagonal matrix is the inverse-variance pool.
+    plain = ana.pooled([(1.0, 0.5), (3.0, 1.0)])
+    diagonal = eo.pool_correlated([1.0, 3.0], [[0.25, 0.0], [0.0, 1.0]])
+    _expect(
+        math.isclose(diagonal[0], plain[0], rel_tol=1e-12) and math.isclose(diagonal[1], plain[1], rel_tol=1e-12), "d"
+    )
+
+
+@pytest.mark.parametrize(
+    "matrix",
+    [[[1.0, 2.0], [2.0, 1.0]], [[1.0, 0.0]], [[1.0, 0.0], [0.0, math.nan]], [[0.0, 0.0], [0.0, 1.0]]],
+)
+def test_a_covariance_that_is_not_positive_definite_or_finite_is_refused(matrix: list[list[float]]) -> None:
+    with pytest.raises(ValueError):
+        eo.pool_correlated([0.0, 1.0], matrix)
+
+
+def test_a_series_that_kept_its_order_has_no_covariance_between_templates() -> None:
+    solved = eo.fit(_rows(BALANCED))
+    for a in CONTRAST:
+        for b in CONTRAST:
+            if a != b:
+                _expect(solved["covariance"][a][b] == 0.0, f"{a},{b}")  # type: ignore[index]
+    _expect(all(math.isclose(solved["covariance"][a][a], solved["error"][a] ** 2) for a in CONTRAST), "variances")  # type: ignore[index]
+
+
+def test_a_template_with_one_offset_has_no_own_drift_and_one_varying_template_has_no_difference() -> None:
+    # k4, k8 and k12 keep one offset in all four batches; only b0 varies. Their own drift is undefined, and b0's own
+    # drift is the shared drift to rounding: the difference and its error are zero.
+    rows = _rows({"b0": [-3, 1, -1, 1], "k4": [1, 1, 1, 1], "k8": [-1, -1, -1, -1], "k12": [3, 3, 3, 3]})
+    solved = eo.fit(rows)
+    for name in ("k4", "k8", "k12"):
+        _expect(solved["template_drift"][name] is None, f"{name}: {solved['template_drift'][name]}")  # type: ignore[index]
+    _expect(abs(solved["template_drift"]["b0"] - solved["drift"]) < 1e-12, "b0's own drift is the shared drift")  # type: ignore[index]
+    _expect(solved["template_drift_difference_se"]["b0"] < 1e-6, f"{solved['template_drift_difference_se']['b0']}")  # type: ignore[index]
+
+
+def test_the_shared_drift_covariance_of_a_three_batch_fixture_follows_the_hand_arithmetic() -> None:
+    # Template A holds two batches at x = 3 and 1 and template B one batch at x = 2, every error 1 (weight 1), values
+    # A: 0.30 and 0.10, B: 0.35.
+    #   x_A = (3 + 1) / 2 = 2, v_A = 0.20, W_A = 2; x_B = 2, v_B = 0.35, W_B = 1.
+    #   Sxx = (3 - 2)^2 + (1 - 2)^2 = 2 (B has one offset and adds nothing); Sxy = (3 - 2)(0.30 - 0.20) +
+    #   (1 - 2)(0.10 - 0.20) = 0.2; g = Sxy / Sxx = 0.1 and var(g) = 1 / Sxx = 0.5.
+    #   t_A = 0.20 - 0.1 x 2 = 0 and t_B = 0.35 - 0.1 x 2 = 0.15.
+    #   var(t_A) = 1 / 2 + 2^2 x 0.5 = 2.5, var(t_B) = 1 / 1 + 2^2 x 0.5 = 3 and cov(t_A, t_B) = x_A x_B var(g) = 2.
+    # The pool of (t_A, t_B) with S = [[2.5, 2], [2, 3]]: det S = 3.5, S^-1 1 = (1, 0.5) / 3.5, 1' S^-1 1 = 3 / 7, so
+    # the weights are (2/3, 1/3), the mean is 0.15 / 3 = 0.05 and the variance is 7 / 3; the residuals (-0.05, 0.10)
+    # give the chi-square (3 x 0.0025 + 2 x 2 x 0.005 + 2.5 x 0.01) / 3.5 = 0.015.
+    # The independent pool of the same contrasts reads variance 1 / (1 / 2.5 + 1 / 3), about 1.364, below the 7/3 here.
+    rows = {"A": [(0.30, 1.0, 3.0), (0.10, 1.0, 1.0)], "B": [(0.35, 1.0, 2.0)]}
+    solved = eo.fit(rows)
+    close = lambda got, want: _expect(abs(got - want) < 1e-12, f"{got} against {want}")  # noqa: E731
+    close(solved["drift"], 0.1)
+    close(solved["drift_se"] ** 2, 0.5)  # type: ignore[operator]
+    close(solved["contrast"]["A"], 0.0)  # type: ignore[index]
+    close(solved["contrast"]["B"], 0.15)  # type: ignore[index]
+    close(solved["error"]["A"] ** 2, 2.5)  # type: ignore[index]
+    close(solved["error"]["B"] ** 2, 3.0)  # type: ignore[index]
+    cov = solved["covariance"]
+    close(cov["A"]["B"], 2.0)  # type: ignore[index]
+    close(cov["B"]["A"], 2.0)  # type: ignore[index]
+    mean, se, chi2_value, weights = eo.pool_correlated(
+        [solved["contrast"]["A"], solved["contrast"]["B"]],  # type: ignore[index]
+        [[cov["A"]["A"], cov["A"]["B"]], [cov["B"]["A"], cov["B"]["B"]]],  # type: ignore[index]
+    )
+    close(mean, 0.05)
+    close(se**2, 7.0 / 3.0)
+    close(chi2_value, 0.015)
+    close(weights[0], 2.0 / 3.0)
+    close(weights[1], 1.0 / 3.0)

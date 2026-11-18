@@ -1,9 +1,11 @@
 # Base and calibration batches of the bracketed series: executed-time weights, a drift monitor and validation
 
-Status: preregistered 2026-11-15 on the owner's ruling (issue 791, task 881-B). The estimator, the monitor and their tests exist in
-`scripts/qi_pathion_one_cz_null_executed_order.py` (`constrained_weights`, `level_at`, `drift_monitor`); the integration into
-`evaluate`, the injection harness and the power tables do not, and no Tuna-17 job has run. The twin batches take the position-offset
-fit of [bracketed-executed-order-analysis.md](bracketed-executed-order-analysis.md); this note covers the 16 base batches and the 3
+Status: preregistered 2026-11-15 on the owner's ruling (issue 791, task 881-B) and integrated 2026-11-17 into the decision after the
+owner's ruling of 2026-11-16 23:52Z (executed-order analysis): `evaluate` of `qi_pathion_one_cz_null_bracketed_cases` applies the
+weights, the monitor and the labels below, with the estimator in `scripts/qi_pathion_one_cz_null_executed_order.py`
+(`constrained_weights`, `level_at`, `level_rows`, `drift_monitor`). The injection harness does not exist, the power tables under reordering are
+in the case's `prediction.json`, and no Tuna-17 job has run. The twin batches take the position-offset fit of
+[bracketed-executed-order-analysis.md](bracketed-executed-order-analysis.md); this note covers the 16 base batches and the 3
 calibration batches, where position inside a batch does not enter and execution time does.
 
 ## Why a rule is needed
@@ -48,25 +50,55 @@ spends degrees of freedom, so the unchanged threshold is conservative). `tests/s
 pins the moment conditions, the exact recovery under a linear and (with k = 2) a quadratic drift where the plain mean is biased, the
 closed-form variance and the rank condition; dropping the drift columns fails four of them.
 
+## Integration in the decision
+
+Times are the `queued_at` stamps in seconds after the series' first start. The reference time tau_T of a template is the mean start of
+its twin circuits (eight circuits, four twin batches). `level_rows` returns the rows that rule v2 pools: each base value is reduced by
+the weighted slope times (t - tau_T) and each error is multiplied by f = sqrt(1 + (t_w - tau_T)^2 / S_tt), so the inverse-variance mean
+of the rows is mu_hat and their pooled error is that of `level_at`; the batch heterogeneity gates read these rows, as the twin gates
+read theirs. A template whose replicates share one start time reads `unresolved_base_drift_confounded`. The monitor series holds the
+bracket offset of each of the 32 base and twin batches at the mean start of its readout-0 and readout-1 circuits (the calibration
+batches hold no readouts). A calibration batch is placed at the mean start of its circuits, tau is the mean of the four tau_T, g_up is
+|slope| + 1.645 slope_se (the one-sided 95 percent bound), and its standard error is the largest finite-count error of its circuits'
+selector misassignment rate. The labels are withheld in the order `unresolved_order`, `unresolved_order_confounded`,
+`unresolved_base_drift_confounded`, `unresolved_drift_model`, `unresolved_drift_heterogeneity`; the first one reads and the others
+are recorded as `also_withheld`, with the label that no withholding would have given as `label_if_nothing_withheld`. A series whose
+weighted base time is the reference pools to the plain value (f = 1), and the cost 1 + (t_w - tau)^2 / S_tt is the price of any other
+execution times. The predecessor's retained layout (two base batches per template) put the weighted base time 0.15 to 0.31 h from tau, so
+there the weights would change the pooled base value by the drift accumulated in between. The bracketed layout's mirror rounds
+place the four base replicates symmetrically: on the requested layout (jobs 14 s apart, waves 61 s apart) the weighted base time
+is +15, +15, 0 and -15 s from tau for b0, k4, k8 and k12, f^2 is 1.000, 1.001, 1.000 and 1.001, and for a series that keeps its
+order the pooled base value moves by at most 0.00011 (one standard deviation, no drift; 0.03 plain standard errors, se 0.00195 for
+b0 and 0.00391 for the others) or by 0.00004 at the largest plausible drift of 0.01 per hour (0.02 standard errors). The weights
+matter after a reordering, where the shift is the drift accumulated between the weighted base time and tau.
+
 ## Calibration batches
 
 The 3 X-only calibration batches (3, 3 and 2 circuits) are single measurements, so no drift fit exists for them. Each carries a
-systematic term sigma_sys = g_up |t_cal - tau|, with g_up the 95 percent upper bound of |slope| from the monitor below, added in
-quadrature to its standard error; a calibration estimate whose sigma_sys exceeds its standard error reads
+systematic term sigma_sys = g_up |t_cal - tau|, with g_up the 95 percent upper bound of |slope| from the monitor below, recorded
+beside its standard error (no quadrature sum is formed); a calibration reading whose sigma_sys exceeds its standard error reads
 `unresolved_calibration_drift` and is reported beside the decision, not inside it.
 
 ## Monitor (preregistered pass or fail of the drift model)
 
-Every batch carries readout-0 and readout-1 circuits, so the bracket offset c_b of each of the 35 batches at its executed time is a
-free series of the selector offset. `drift_monitor` fits a line by weighted least squares and tests the residual chi-square with
+Every base and twin batch carries readout-0 and readout-1 circuits, so the bracket offset c_b of each of the 32 base and twin
+batches at its executed time is a free series of the selector offset (the 3 X-only calibration batches hold no readouts). `drift_monitor` fits a line by weighted least squares and tests the residual chi-square with
 n - 2 degrees of freedom at alpha 0.001 (`MONITOR_ALPHA`); a residual above the threshold means a step, burst or curve (the Quantum
 Inspire processors show error bursts and days-to-weeks excursions, arXiv 2602.18388v2), so the linear model is refused and the
 decision reads `unresolved_drift_model`; the slope bounds g_up for the calibration batches and is reported beside the decision. Its
 comparison with the drift that the twin and base fits imply stays a scope cut: the twin fit counts executed rank, `level_at` returns no
 slope, and no covariance-aware statistic in common units is preregistered. Spectral and structure-function thresholds
-at n = 35 follow arXiv 1907.13608v3 and need their own simulation before preregistration. hypothesis: the bracket offset drifts with
+at n = 32 follow arXiv 1907.13608v3 and need their own simulation before preregistration. hypothesis: the bracket offset drifts with
 the selector offset the contrasts read; falsifier: a series whose slope disagrees with the contrast-implied slope, once that comparison
 is defined.
+
+The bracket offset c = (e10 - e01) / 2 is placed at the mean start of its two readouts, although e01 comes from readout-0 and e10 from
+readout-1, a gap D apart (3 jobs, 42 s, in a twin batch; 2 jobs, 28 s, in a base batch). For linear assignment-error drifts with
+slopes u (e01) and v (e10) per second, c at that midpoint carries the extra term (u + v) D / 4. At u = v = 0.01 per hour (2.8e-6 per
+second) it is 5.8e-5 in a twin batch and 3.9e-5 in a base batch, 6.3 and 4.2 percent of the per-batch offset standard error 0.000925
+(9.7 percent at a gap of 65 s); a common-mode drift (u = v) leaves c with no slope of its own, (v - u) / 2, and makes this term
+largest, and a drift of opposite sign (u = -v) removes it. The term is a fixed offset per batch kind (the two gaps differ), so it
+adds a step of at most 1.9e-5 between base and twin batches and no slope.
 
 ## Validation before the real series
 
@@ -96,11 +128,8 @@ is parked.
 
 ## Not done (scope cut, removal condition)
 
-- Integration: `evaluate` still applies the strict gate. Removal: a reviewed change that reads executed times, applies
-  `level_at` per template, runs the monitor, adds the labels `unresolved_base_drift_confounded`, `unresolved_drift_model` and
-  `unresolved_calibration_drift`, and keeps the strict result beside them.
 - The injection and blinding harness and its acceptance run (a remote host under the build-host ruling).
-- Power under reordering for the base contrasts and of the sign-flip layer; spectral monitor thresholds at n = 35.
+- Power under reordering for the base contrasts and of the sign-flip layer; spectral monitor thresholds at n = 32.
 - The slope comparison between the monitor and the twin and base fits (units, covariance and statistic).
 - The QRNG draw and indices of the injection and blinding harness: its commit takes them from a draw file under the seed rule of
   `AGENTS.md` and cites each index in order.

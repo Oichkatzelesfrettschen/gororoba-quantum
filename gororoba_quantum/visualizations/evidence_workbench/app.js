@@ -1,8 +1,17 @@
 /* Offline evidence UI: input validation belongs to the source-bound builder. */
-(function () {
+(async function () {
     'use strict';
     const $ = id => document.getElementById(id), M = window.EvidenceMath;
-    const D = JSON.parse($('payload').textContent), identity = $('payloadIdentity').textContent;
+    window.__workbenchReady=false;
+    window.__workbenchIntegrity={status:'verifying'};
+    const locked=Array.from(document.querySelectorAll('button,input,select')).map(e=>[e,e.disabled]);
+    locked.forEach(([e])=>{e.disabled=true;});
+    $('status').textContent='Verifying embedded payload bytes before rendering.';
+    const verified=await M.verifyPayload($('payload').textContent,$('payloadIdentity').textContent);
+    const D=verified.data,identity=verified.identity;
+    window.__workbenchIntegrity=Object.freeze({status:'verified',sha256:identity,engine:verified.engine,bytes:verified.bytes});
+    locked.forEach(([e,disabled])=>{e.disabled=disabled;});
+    $('status').textContent='Embedded payload SHA-256 verified. This is an identity check, not authentication.';
     const NS = 'http://www.w3.org/2000/svg', svg = $('plot');
     const state = {view:'ramsey',index:0,acquisition:0,pub:0,member:'',cohort:0,predictor:'',condition:'all',qubit:'all',delay:'all',geometry:'xy',extent:'detail',uncertainty:true,mle:false,yaw:-30,pitch:25,event:'event_zero',metric:'covariance',sector:'',probe:'',norm:'probability',opticalMode:'scatter',color:'condition',theme:'light',exact:true,preparation:false,replay:false,memberFilter:''};
     const views=['ramsey','dependence','blocks','members','rank','optical','provenance'];
@@ -211,7 +220,7 @@
     for(const [id,target]of [['toControls','controls'],['backToPlot','plot'],['toInspector','inspector']])$(id).addEventListener('click',()=>{$(target).scrollIntoView({block:'start'});$(target).focus({preventScroll:true});});
     $('exportSVG').addEventListener('click',()=>download(new Blob([exported().text],{type:'image/svg+xml'}),'evidence-'+state.view+'.svg'));$('exportPNG').addEventListener('click',exportPNG);
     $('exportCSV').addEventListener('click',()=>{const contextRows=[['Evidence view',context.title],['Scope',context.scope],['Bundle SHA-256',identity],[]];const rows=[...contextRows,csvHeaders,...csvRows];download(new Blob([rows.map(r=>r.map(M.safeCSV).join(',')).join('\r\n')+'\r\n'],{type:'text/csv;charset=utf-8'}),'evidence-'+state.view+'.csv');});
-    $('exportData').addEventListener('click',()=>download(new Blob([JSON.stringify(D,null,2)],{type:'application/json'}),'evidence-workbench-data.json'));
+    $('exportData').addEventListener('click',()=>download(new Blob([verified.text],{type:'application/json'}),'evidence-workbench-data.json'));
     $('saveView').addEventListener('click',()=>download(new Blob([JSON.stringify(saveState(),null,2)],{type:'application/json'}),'evidence-workbench-view.json'));
     $('restoreView').addEventListener('change',async()=>{try{const f=$('restoreView').files[0];if(!f)return;M.requireValue(f.size<=65536,'Saved view exceeds budget');restore(JSON.parse(await f.text()));}catch(err){error(err);}finally{$('restoreView').value='';}});
     const rows=D.ramsey?.rows||[];options('condition',[['all','All conditions'],...[...new Set(rows.map(p=>p.condition))].map(v=>[v,v])],'all');options('qubit',[['all','All physical qubits'],...[...new Set(rows.map(p=>p.qubit))].map(v=>[v,'Q'+v])],'all');options('delay',[['all','All acquired delays'],...[...new Set(rows.map(p=>p.t))].sort((a,b)=>a-b).map(v=>[v,v+' us'])],'all');
@@ -220,4 +229,12 @@
     $('summary').textContent=`${rows.length} Ramsey pairs / ${D.acquisitions.reduce((s,a)=>s+Object.keys(a.payload.members).length,0)} acquisition members / ${D.optical.length} optical cohorts`;
     window.EvidenceWorkbench={data:D,state,math:M,render,restore,saveState,exported,ramseyRows};
     syncControls();render();
-})();
+})().catch(err=>{
+    window.__workbenchReady=false;
+    window.__workbenchIntegrity=Object.freeze({status:'failed',message:String(err)});
+    delete window.EvidenceWorkbench;
+    document.querySelectorAll('button,input,select').forEach(e=>{e.disabled=true;});
+    const plot=document.getElementById('plot');if(plot)plot.replaceChildren();
+    const status=document.getElementById('status');if(status)status.textContent='Visualization withheld: payload initialization failed.';
+    const box=document.getElementById('error');if(box){box.hidden=false;box.textContent=String(err);}
+});

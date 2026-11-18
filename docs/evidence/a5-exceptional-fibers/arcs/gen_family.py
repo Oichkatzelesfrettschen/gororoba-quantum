@@ -138,9 +138,9 @@ ideal K2={k2};
 setring Q;
 map g1=Y,{gens};
 ideal P2F=g1(P2); ideal P1F=g1(P1); ideal K2F=g1(K2); int jj;
-for (jj=1;jj<=size(P2F);jj++) {{ P2F[jj]=reduce(P2F[jj],rel); }}
-for (jj=1;jj<=size(P1F);jj++) {{ P1F[jj]=reduce(P1F[jj],rel); }}
-for (jj=1;jj<=size(K2F);jj++) {{ K2F[jj]=reduce(K2F[jj],rel); }}
+for (jj=1;jj<=ncols(P2F);jj++) {{ P2F[jj]=reduce(P2F[jj],rel); }}
+for (jj=1;jj<=ncols(P1F);jj++) {{ P1F[jj]=reduce(P1F[jj],rel); }}
+for (jj=1;jj<=ncols(K2F);jj++) {{ K2F[jj]=reduce(K2F[jj],rel); }}
 "P2NONVAN", size(P2F);
 "P1NONVAN", size(P1F);
 "K2NONVAN", size(K2F);
