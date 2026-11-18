@@ -53,10 +53,10 @@ def test_available_memory_is_the_tightest_headroom(tmp_path: Path) -> None:
     _require(root == 5 * GIB, "the limit on the root node did not bind")
     over = _available(tmp_path, "over", 40, {"a": (str(4 * GIB), 6 * GIB)})
     _require(over == 0, "use above the limit did not leave no room")
-    no_current = _available(tmp_path, "no-current", 10, {"a": (str(2 * GIB), None)})
-    _require(no_current == 10 * GIB, "a limit without memory.current contributed a figure")
-    malformed = _available(tmp_path, "malformed", 10, {"a": ("lots", 0), "a/b": (str(4 * GIB), GIB)})
-    _require(malformed == 3 * GIB, "a malformed memory.max hid the readable limit below it")
+    no_current = _available(tmp_path, "no-current", 10, {"a/b": (str(2 * GIB), None), "a": (str(4 * GIB), GIB)})
+    _require(no_current == 3 * GIB, "a leaf without memory.current hid the ancestor limit")
+    malformed = _available(tmp_path, "malformed", 10, {"a/b": ("lots", 0), "a": (str(4 * GIB), GIB)})
+    _require(malformed == 3 * GIB, "a malformed leaf memory.max hid the ancestor limit")
     missing = tmp_path / "none"
     _require(parallel.available_memory(missing, missing, missing) is None, "an absent source reported a figure")
 
@@ -90,7 +90,7 @@ def _record_pool_sizes(monkeypatch: pytest.MonkeyPatch) -> list[tuple[int, int]]
 
 
 def test_ordered_map_requests_no_more_workers_than_fit(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("GOROROBA_WORKERS", "4")
+    monkeypatch.setattr(parallel, "workers", lambda: 4)
     sizes = _record_pool_sizes(monkeypatch)
     parallel._shutdown()
     try:
@@ -110,7 +110,7 @@ def test_ordered_map_requests_no_more_workers_than_fit(monkeypatch: pytest.Monke
 def test_two_workers_return_the_serial_verdicts(monkeypatch: pytest.MonkeyPatch) -> None:
     items = list(range(24))
     serial = [item * item for item in items]
-    monkeypatch.setenv("GOROROBA_WORKERS", "2")
+    monkeypatch.setattr(parallel, "workers", lambda: 2)
     parallel._shutdown()
     try:
         pooled = parallel.ordered_map(_pid_after_pause, items, min_items=1, worker_bytes=GIB, available_bytes=8 * GIB)
