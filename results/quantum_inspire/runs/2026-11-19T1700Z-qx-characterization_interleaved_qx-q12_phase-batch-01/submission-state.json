@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-11-19T17:23:12+00:00",
+ "approval": "owner chat 2026-11-19T16:42Z: ok those items are approved",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "aa93ffd877da97a522ab801a2bf65cc80665c552d3b7bf922cb6dfd5cd630a73",
+ "shots": 1024,
+ "jobs": [
+  {
+   "file": "ramsey-q9-w25-s48.cq",
+   "job": 1749565,
+   "sha256": "316763ee14992b820ceba9a5df6a491d8aac611ca4a39e37ba3768dda8b3c0d5"
+  },
+  {
+   "file": "ramsey-q9-w25-s00.cq",
+   "job": 1749566,
+   "sha256": "33b0f663fdcfe03e9e759a85f4008e911e740b606c0f4cd690596482d4f56d39"
+  },
+  {
+   "file": "ramsey-q9-w25-s24.cq",
+   "job": 1749567,
+   "sha256": "a78be24c0386b8755be02840913581a6f1e11d287b026ea5dabdcbba29e22322"
+  }
+ ],
+ "project": 861064,
+ "batch_job": 960989,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-11-19T17:23:14+00:00",
+  "approval": "owner chat 2026-11-19T16:42Z: ok those items are approved",
+  "backend": "QXsinglenodesimulator",
+  "backend_type_id": 1,
+  "cases_sha256": "aa93ffd877da97a522ab801a2bf65cc80665c552d3b7bf922cb6dfd5cd630a73",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 5,
+  "batch_job": 960989,
+  "project": 861064,
+  "shots": 1024,
+  "jobs": [
+   {
+    "file": "ramsey-q9-w25-s48.cq",
+    "job": 1749565,
+    "sha256": "316763ee14992b820ceba9a5df6a491d8aac611ca4a39e37ba3768dda8b3c0d5"
+   },
+   {
+    "file": "ramsey-q9-w25-s00.cq",
+    "job": 1749566,
+    "sha256": "33b0f663fdcfe03e9e759a85f4008e911e740b606c0f4cd690596482d4f56d39"
+   },
+   {
+    "file": "ramsey-q9-w25-s24.cq",
+    "job": 1749567,
+    "sha256": "a78be24c0386b8755be02840913581a6f1e11d287b026ea5dabdcbba29e22322"
+   }
+  ],
+  "submitted_utc": "2026-11-19T17:23:14+00:00"
+ },
+ "confirmed_utc": "2026-11-19T17:23:14+00:00"
+}

@@ -1,0 +1,57 @@
+{
+ "schema": "qi-tuna17-interleaved-cases-v1",
+ "arm": "crosstalk",
+ "meta": {
+  "unit": "pair"
+ },
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 1024,
+ "bit_order": "qubit 0 at the rightmost character",
+ "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-19T164737Z.json",
+ "circuits": [
+  {
+   "file": "xt-x90-128-all.cq",
+   "kind": "xt_x90",
+   "context": "all",
+   "pulses": 128,
+   "driven": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "expected_p1": 0.0,
+   "sha256": "b4b0a13a31fd85b0af089180dcb7ef37077250bb9788728776a6302414b946fb"
+  },
+  {
+   "file": "xt-x90-128-q1.cq",
+   "kind": "xt_x90",
+   "context": "q1",
+   "pulses": 128,
+   "driven": [
+    1
+   ],
+   "expected_p1": 0.0,
+   "sha256": "25370e4138a86e94498992ec5d824cae22b828e05b00644e8390e46ab4534d33"
+  },
+  {
+   "file": "xt-x90-128-q2.cq",
+   "kind": "xt_x90",
+   "context": "q2",
+   "pulses": 128,
+   "driven": [
+    2
+   ],
+   "expected_p1": 0.0,
+   "sha256": "c0578ae79883a30533ec6b19471294281ba7d62a04f86a2dadee239afac31aff"
+  }
+ ]
+}

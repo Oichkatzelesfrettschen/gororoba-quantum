@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-11-19T17:24:28+00:00",
+ "approval": "owner chat 2026-11-19T16:42Z: ok those items are approved",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "84bdc9bbfaf66e8c153d98e4e94393f56ca746d18257a9b522e49a7836b722c4",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 5,
+ "batch_job": 960991,
+ "project": 861066,
+ "shots": 1024,
+ "jobs": [
+  {
+   "file": "ramsey-q9-w25-s12.cq",
+   "job": 1749571,
+   "sha256": "01e90abb4859bd533bc4fb7aa5e7698ce9b0c8602af7e8543b0660da71e260c8"
+  },
+  {
+   "file": "ramsey-q9-w25-s36.cq",
+   "job": 1749572,
+   "sha256": "5ff5d9534a3e1b805aad390ab05d4b7fda833d92cee17625b585c994cb33a061"
+  },
+  {
+   "file": "ramsey-q9-w25-s60.cq",
+   "job": 1749573,
+   "sha256": "fda959d8bb6962ec58c7fecbab5252f965bab32b4bc7496846e1489a0e1aceff"
+  }
+ ],
+ "submitted_utc": "2026-11-19T17:24:29+00:00"
+}
