@@ -30,7 +30,7 @@ while kill -0 "$v9" 2>/dev/null; do
   if [ "$stopped" = 0 ] && done_tables; then
     if ps -o args= -p 10405 2>/dev/null | grep -q "ladder-v7.sh e8nm_d4_v7.jsonl"; then
       kill -KILL 10405
-      for pid in $(pgrep -f "fiber_rank_v7.py v7in/e8-nm.sing 4 15" || true) $(pgrep -f "<scratch>/q.sing" || true); do
+      for pid in $(pgrep -f "fiber_rank_v7.py v7in/e8-nm.sing 4 15" || true) $(pgrep -f "SCRATCH/q.sing" || true); do
         kill -TERM "$pid" 2>/dev/null || true
       done
       note "v9 tables complete; serial lane stopped"

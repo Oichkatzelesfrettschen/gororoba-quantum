@@ -1,9 +1,4 @@
 path	bytes_at_source	sha256_at_source	equals_tracked_path
-band-mesh-out/band-mesh.sh	919	bf2403b6fef95d0405f1158f9e1a12fd3d89e6a153ba76b8e74347d850e33fdf	
-band-mesh-out/done	0	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	docs/evidence/a5-char0-transfer/logs/truncation-xm-nm-n22.log
-band-mesh-out/mapped.json	4651	6d9da1c38687dfc2f6595183460d24a169a90ae5fb8901f377e41f599d3f9b4a	
-band-mesh-out/serial.json	4651	6d9da1c38687dfc2f6595183460d24a169a90ae5fb8901f377e41f599d3f9b4a	
-band-mesh-out/summary.txt	95	febf7b5a823d060829d56a2cd006ec172376152ee307c49e80b88f315c613787	
 blocks/t-fast_ladder_blocks.json	1378	37484a7a8d8354ebeae439e339549008ab81292082ff33fcbfcba1d4cf6c5456	
 blocks/t-fast_ladder.json	1294	6135797703d3e9927a505248c1bf4a0ae2a730445d54b17dbab96a1eedd85273	
 blockswap/local-e8-nm-----.log	29	11ae253fab7b69d872dacae757bbf2ca7eb18af29879e862e2315f16de9c7c7f	

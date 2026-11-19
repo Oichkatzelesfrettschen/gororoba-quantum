@@ -18,7 +18,7 @@ Traceback (most recent call last):
     raise TimeoutExpired(
     ...<2 lines>...
             stderr=b''.join(stderr_seq) if stderr_seq else None)
-subprocess.TimeoutExpired: Command '['prlimit', '--as=8589934592', 'Singular', '-q', '--no-warn', '--no-rc', '<scratch>/script.sing']' timed out after 3600 seconds
+subprocess.TimeoutExpired: Command '['prlimit', '--as=8589934592', 'Singular', '-q', '--no-warn', '--no-rc', 'SCRATCH/script.sing']' timed out after 3600 seconds
 
 The above exception was the direct cause of the following exception:
 

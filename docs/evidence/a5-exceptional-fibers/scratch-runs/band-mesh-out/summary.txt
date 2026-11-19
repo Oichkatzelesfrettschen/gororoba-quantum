@@ -1,4 +1,0 @@
-serial rc=0 seconds=160
-mapped rc=0 seconds=125
-outputs identical
-serial differs from retained

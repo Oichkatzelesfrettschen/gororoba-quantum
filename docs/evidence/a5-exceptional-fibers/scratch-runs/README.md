@@ -1,6 +1,6 @@
 # scratch-runs
 
-Run families that the compute workstation held in an untracked scratch directory (runs of 2026-11-02 to 2026-11-15) and that no file of this repository recorded: the files here are text files below 1.5 MB whose content equals no tracked file, with the exception of tiny marker, status and timing files that match a tracked file by content and are kept with their run (marked in [SOURCE-DIGESTS.tsv](SOURCE-DIGESTS.tsv)). Families that repeat a tracked file, copies of `gororoba_quantum/` modules and of other evidence directories, `.pyc` files and a 23 GB export tree are not imported. The files above the limit, with their sha256, are in [large-files-manifest.tsv](large-files-manifest.tsv); the sha256 of each imported file before the rewrite of home-directory paths to `~`, of temporary paths to `<scratch>` and of the workstation's absolute PowerShell path to `powershell.exe`, is in [SOURCE-DIGESTS.tsv](SOURCE-DIGESTS.tsv). Paths inside the Singular build record of `engine/v11/out/` are the upstream build tree of the Singular package, not paths of the workstation, and are kept.
+Run families that the compute workstation held in an untracked scratch directory (runs of 2026-11-02 to 2026-11-15) and that no file of this repository recorded: the files here are text files below 1.5 MB whose content equals no tracked file, with the exception of tiny marker, status and timing files that match a tracked file by content and are kept with their run (marked in [SOURCE-DIGESTS.tsv](SOURCE-DIGESTS.tsv)). Families that repeat a tracked file, copies of `gororoba_quantum/` modules and of other evidence directories, `.pyc` files and a 23 GB export tree are not imported. The `band-mesh-out` run of the same directory is Ascella band evidence, not a5, and stays outside this tree until an Ascella evidence directory imports it. The files above the limit, with their sha256, are in [large-files-manifest.tsv](large-files-manifest.tsv); the sha256 of each imported file before the rewrite of home-directory paths to `~`, of temporary paths to the word `SCRATCH` (a plain token, so a retained script still parses) and of the workstation's absolute PowerShell path to `powershell.exe`, is in [SOURCE-DIGESTS.tsv](SOURCE-DIGESTS.tsv). Paths inside the Singular build record of `engine/v11/out/` are the upstream build tree of the Singular package, not paths of the workstation, and are kept.
 
 Not imported: files above 1.5 MB and the derived Singular inputs and tables, which [large-files-manifest.tsv](large-files-manifest.tsv) lists with their sha256 and, where the bytes equal a tracked file, that path (a `.pyc` file is neither imported nor listed).
 
@@ -8,7 +8,6 @@ Class: result (an output that a finding rests on) or scratch (a failed, terminat
 
 | Directory | Class | Files | Bytes |
 |---|---|---|---|
-| [band-mesh-out](band-mesh-out/README.md) | result | 5 | 10316 |
 | [blocks](blocks/README.md) | result | 2 | 2672 |
 | [blockswap](blockswap/README.md) | scratch | 34 | 1818 |
 | [clo](clo/README.md) | result | 6 | 429677 |
