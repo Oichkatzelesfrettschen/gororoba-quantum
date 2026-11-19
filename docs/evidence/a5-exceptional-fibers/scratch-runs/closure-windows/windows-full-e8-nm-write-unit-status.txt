@@ -1,0 +1,11 @@
+ActiveState=inactive
+SubState=dead
+TimeoutStopUSec=1min 30s
+RuntimeMaxUSec=infinity
+Result=success
+ExecMainCode=0
+ExecMainStatus=0
+MemoryHigh=infinity
+MemoryMax=infinity
+MemorySwapMax=infinity
+KillMode=control-group
