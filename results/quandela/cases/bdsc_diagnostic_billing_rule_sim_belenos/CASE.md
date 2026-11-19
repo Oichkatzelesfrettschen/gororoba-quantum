@@ -51,8 +51,12 @@ own preregistration, resource estimate, review and approval.
 | Request | Groups (iterations in order of the builder) | Iterations | Samples per iteration | Cap per iteration |
 |---|---|---|---|---|
 | P1 | out-s0, out-s1 (j1's first two groups) | 12 | 40000 | 80000 shots |
-| P2 | rev-s0, rev-s1 (j2's last two groups, where the overrun fell) | 12 | 40000 | 80000 shots |
+| P2 | rev-s0, rev-s1 (two of j2's four groups; the cancelled 24th iteration of j2 is out-s2-pi, which P2 omits) | 12 | 40000 | 80000 shots |
 
+Each retained job holds four groups; P1 omits rev-s2 and rev-s3 (j1) and P2 omits out-s2 and out-s3 (j2), and the
+settings of `b1-j2` are in shuffled order, so the group sequence of the builder does not locate the overrun. The
+retained `cases.json` lists out-s2-pi last (compilation seed 20439) and the results hold 23 iterations. The six jobs
+therefore measure the durations of P1 and P2 only; no outcome below bounds the retained 24-iteration requests.
 The caps equal the retained caps, so per-iteration cost is unchanged (retained iterations used 40000 or 40001 shots). On
 sim:belenos the cap does not enter the bill (price 0.0 per shot; completed simulator jobs bill a fixed 1.0 credit). The
 order of jobs is P1 P2 P2 P1 P1 P2 (blocks P1 P2, P2 P1, P1 P2): P1 takes slots 1, 4 and 5 (mean slot 3.33) and P2 slots 2, 3
@@ -111,8 +115,8 @@ partly balanced.
 |---|---|---|
 | s(P1) or s(P2) above 10 % | observed spread above 10 %: more consistent with service variation (one request takes different times on different runs) | any 24-iteration job needs margin; record the spread as a provider property and size by the longest observed duration |
 | s(P1) and s(P2) at most 5 %, and |m1 - m2| / mean above 10 % | more consistent with request cost: groups differ in cost | read the job records for the costly groups; reorder or split them in a successor preregistration |
-| s(P1) and s(P2) at most 5 %, |m1 - m2| / mean at most 5 %, and 2 x (mean duration) above 295 s | inconclusive for the 24-iteration shape: doubling a 12-iteration duration counts any fixed start-up twice, so it bounds the 24-iteration duration from above only | drop the spread hypothesis; no change to the frozen request; a full 24-iteration repeat needs its own approval |
-| s(P1) and s(P2) at most 5 %, |m1 - m2| / mean at most 5 %, and 2 x (mean duration) at most 295 s | the 24-iteration shape fits under the limit (the doubled duration is an upper bound), so both retained jobs were outliers of one provider state | drop the hypothesis as unreproduced; one repeat of `b1-j2` in full is the only remaining test and needs its own approval |
+| s(P1) and s(P2) at most 5 %, |m1 - m2| / mean at most 5 %, and 2 x (mean duration) above 295 s | inconclusive for the original 24-iteration requests: P1 and P2 omit the groups rev-s2, rev-s3, out-s2 and out-s3, so doubling a 12-iteration duration bounds neither retained request | keep the hypothesis open for the original requests; no change to the frozen request; a full 24-iteration repeat needs its own approval |
+| s(P1) and s(P2) at most 5 %, |m1 - m2| / mean at most 5 %, and 2 x (mean duration) at most 295 s | the doubled P1 and P2 durations fit under the limit; this says nothing about the omitted groups, so the retained requests stay inconclusive and the outliers are not attributed | keep the hypothesis open for the original requests; one repeat of `b1-j1` and `b1-j2` in full is the only remaining test and needs its own approval |
 | any other pattern (for example s between 5 % and 10 %) | inconclusive at this power | no change to the frozen request; report and record an open row |
 | any job reaching the limit or failing | the stop condition below fires | read the job record, record the failure, do not rerun without approval |
 
