@@ -56,12 +56,15 @@ architecture; couplers from the
    multiplicative T1 calibration bias, and scatter fits per-qubit gaps or per-qubit T1 errors; 500 against 1000 pulses
    does not separate them, because both stationary mechanisms predict the same r at both counts. Separating a timing gap
    from a T1 calibration bias needs an independent T1 measurement (delay-based decay) or a second pulse duration on the
-   same qubits. That measurement is out of scope here; adding it is a separate case with its own cost and approval.
+   same qubits. That measurement is out of scope here; adding it is a separate case with its own cost and approval. H2 is gated on
+   H1: r is defined only when the pulsed qubits wait, which holds under ASAP. Under ALAP, a mixed schedule or an
+   unresolved schedule the pulsed qubits do not wait on every arm, the contrast carries no T1 information, and H2 is
+   unidentifiable; no common-r statistic is computed.
 2. Quantity. P(1) of each pulsed qubit at 0, 500 and 1000 train pulses on the train qubit. Contrast c = P(1) at 0 minus
    P(1) at N, corrected by the parallel ro0 and ro1 pair as in `iqm_cancellation_probe.fit_train`. Apparent T1 =
    -(N d) / ln(1 - c) with d = 24 ns, and r = apparent T1 / calibrated T1 (`characterization.model.QBn.t1_time`).
    Definitions follow the Garnet design's analysis, `results/iqm/idle_schedule_probe_analysis.json`.
-3. Falsifier and uncertainty model. H1 fails if any pulsed arm sits closer to the ALAP prediction than the midpoint, or
+3. Falsifier and uncertainty model. The common-r test runs only when every pulsed arm resolves to ASAP. H1 fails if any pulsed arm sits closer to the ALAP prediction than the midpoint, or
    the 20 arms split between schedules. For the common-r test, each qubit contributes one r_i from its 1000-pulse arm (a
    qubit pulsed in both layouts pools its arms by inverse variance of the shot noise; the calibrated T1 error is shared by
    its arms and is not reduced by pooling). The variance is sigma_i^2 = r_i^2 [ (sigma_Tapp/Tapp)^2 + (sigma_T1/T1)^2 ],
@@ -83,6 +86,8 @@ architecture; couplers from the
    - Arms split between schedules, or any arm statistically unresolved from the midpoint: the schedule is mixed or
      undetermined; no schedule is assumed for `iqm_sim`, the pulsed arms are tabulated per qubit and layout, and the later
      Emerald cases wait for a successor case with more shots on the unresolved arms.
+   - Common-r outcomes below apply only after ASAP on all arms; ALAP, mixed or unresolved schedules leave H2
+     unidentifiable and the common-r bullets do not apply.
    - Common r (chi2 not rejected) near 0.63 (within two standard errors of rbar): consistent with one common gap or one
      common T1 bias; it sets the effective per-pulse wait and the pulse-count budget of the pinching and QET cases as an
      effective value, without a mechanism claim.
