@@ -8,10 +8,11 @@ Generator and command: `run-probe.sh` (included): `monomial_probe.py --slug SLUG
 
 Host role: the compute workstation. Dates (file modification times, UTC date): 2026-11-10 to 2026-11-10.
 
-Content:
+Content (`.time` files hold the wall time and peak memory of a run, `.done`, `.status` and `.exit` files its terminal marker):
 
 | Path pattern | Files | Bytes | Examples |
 |---|---|---|---|
+| `*(none)` | 2 | 185 | `done`, `summary` |
 | `*.log` | 5 | 1119 | `monomial-probe-xm-nm-p32009-n12.log`, `monomial-probe-xm-nm-p32009-n14.log` |
 | `*.sh` | 1 | 660 | `run-probe.sh` |
 

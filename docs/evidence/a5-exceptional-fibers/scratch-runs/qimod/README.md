@@ -8,10 +8,11 @@ Generator and command: command not recorded.
 
 Host role: the compute workstation. Dates (file modification times, UTC date): 2026-11-11 to 2026-11-11.
 
-Content:
+Content (`.time` files hold the wall time and peak memory of a run, `.done`, `.status` and `.exit` files its terminal marker):
 
 | Path pattern | Files | Bytes | Examples |
 |---|---|---|---|
+| `*.c12` | 1 | 7 | `e8-nm.done.c12` |
 | `*.done` | 3 | 19 | `e8-nm.done`, `iso.done` |
 | `*.log` | 4 | 489651 | `e8-nm-driver.log`, `e8-nm-singular.c12.log` |
 

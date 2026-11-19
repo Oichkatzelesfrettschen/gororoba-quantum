@@ -8,10 +8,11 @@ Generator and command: `run-replay818.sh` (included).
 
 Host role: the compute workstation. Dates (file modification times, UTC date): 2026-11-10 to 2026-11-10.
 
-Content:
+Content (`.time` files hold the wall time and peak memory of a run, `.done`, `.status` and `.exit` files its terminal marker):
 
 | Path pattern | Files | Bytes | Examples |
 |---|---|---|---|
+| `*(none)` | 2 | 167 | `done`, `summary` |
 | `*.log` | 5 | 13725 | `float64-e8-nm-p32009-d3-n14.log`, `float64-xm-nm-p32009-d8-n32.log` |
 | `*.sh` | 1 | 758 | `run-replay818.sh` |
 

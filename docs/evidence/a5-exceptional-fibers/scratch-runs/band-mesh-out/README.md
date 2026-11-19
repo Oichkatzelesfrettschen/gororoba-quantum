@@ -8,10 +8,11 @@ Generator and command: `band-mesh.sh` (included): runs `docs/evidence/ascella-cz
 
 Host role: the compute workstation. Dates (file modification times, UTC date): 2026-11-09 to 2026-11-09.
 
-Content:
+Content (`.time` files hold the wall time and peak memory of a run, `.done`, `.status` and `.exit` files its terminal marker):
 
 | Path pattern | Files | Bytes | Examples |
 |---|---|---|---|
+| `*(none)` | 1 | 0 | `done` |
 | `*.json` | 2 | 9302 | `mapped.json`, `serial.json` |
 | `*.sh` | 1 | 919 | `band-mesh.sh` |
 | `*.txt` | 1 | 95 | `summary.txt` |

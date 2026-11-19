@@ -8,11 +8,11 @@ Generator and command: `closure-windows-orchestrate.sh`, `closure-windows-calibr
 
 Host role: the compute workstation. Dates (file modification times, UTC date): 2026-11-12 to 2026-11-12.
 
-Content:
+Content (`.time` files hold the wall time and peak memory of a run, `.done`, `.status` and `.exit` files its terminal marker):
 
 | Path pattern | Files | Bytes | Examples |
 |---|---|---|---|
-| `*.json` | 5 | 613683 | `windows-full-e8-nm-check-receipt.json`, `windows-full-e8-nm-write-receipt.json` |
+| `*.json` | 5 | 613683 | `transport-manifest.json`, `windows-full-e8-nm-check-receipt.json` |
 | `*.log` | 6 | 5059 | `windows-closure-calibration.log`, `windows-full-e8-nm-check.log` |
 | `*.py` | 2 | 11196 | `closure-windows-calibration.py`, `closure-windows-stage.py` |
 | `*.sh` | 3 | 4809 | `closure-windows-calibration.sh`, `closure-windows-orchestrate.sh` |

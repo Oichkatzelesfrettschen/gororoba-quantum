@@ -8,10 +8,11 @@ Generator and command: command not recorded; the warning path in the logs names 
 
 Host role: the compute workstation. Dates (file modification times, UTC date): 2026-11-10 to 2026-11-10.
 
-Content:
+Content (`.time` files hold the wall time and peak memory of a run, `.done`, `.status` and `.exit` files its terminal marker):
 
 | Path pattern | Files | Bytes | Examples |
 |---|---|---|---|
+| `*(none)` | 2 | 150 | `done`, `summary` |
 | `*.json` | 3 | 3000 | `xm-nm-p32009-d6-n26.json`, `xm-nm-p32009-d7-n29.json` |
 | `*.log` | 7 | 15228 | `e8-nm-p32009-d6-n18.log`, `xm-nm-p32009-d6-n26.log` |
 

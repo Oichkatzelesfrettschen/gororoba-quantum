@@ -8,10 +8,11 @@ Generator and command: `run-e8close.sh` (included): `mono/fast_ladder2.py --slug
 
 Host role: the compute workstation. Dates (file modification times, UTC date): 2026-11-10 to 2026-11-10.
 
-Content:
+Content (`.time` files hold the wall time and peak memory of a run, `.done`, `.status` and `.exit` files its terminal marker):
 
 | Path pattern | Files | Bytes | Examples |
 |---|---|---|---|
+| `*(none)` | 1 | 50 | `summary` |
 | `*.json` | 2 | 1457 | `e8-nm-p32009-d3-n14.json`, `e8-nm-p32009-d3-n16.json` |
 | `*.log` | 3 | 6647 | `e8-nm-p32009-d3-n14.log`, `e8-nm-p32009-d3-n16.log` |
 | `*.sh` | 1 | 685 | `run-e8close.sh` |

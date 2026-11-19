@@ -8,7 +8,7 @@ Generator and command: `run.sh` and `vb.sh` (included).
 
 Host role: the compute workstation. Dates (file modification times, UTC date): 2026-11-09 to 2026-11-09.
 
-Content:
+Content (`.time` files hold the wall time and peak memory of a run, `.done`, `.status` and `.exit` files its terminal marker):
 
 | Path pattern | Files | Bytes | Examples |
 |---|---|---|---|

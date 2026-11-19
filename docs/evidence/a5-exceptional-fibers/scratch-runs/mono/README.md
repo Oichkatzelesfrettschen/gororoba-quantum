@@ -8,10 +8,11 @@ Generator and command: `run-e8.sh` (included): `monomial-ladder` scripts for (D,
 
 Host role: the compute workstation. Dates (file modification times, UTC date): 2026-11-10 to 2026-11-10.
 
-Content:
+Content (`.time` files hold the wall time and peak memory of a run, `.done`, `.status` and `.exit` files its terminal marker):
 
 | Path pattern | Files | Bytes | Examples |
 |---|---|---|---|
+| `*(none)` | 2 | 275 | `summary`, `summary-1` |
 | `*.log` | 11 | 15085 | `e8-nm-p32009-d2-n10.log`, `e8-nm-p32009-d2-n12.log` |
 | `*.py` | 6 | 32596 | `e8_monomial_probe.py`, `fast_ladder.py` |
 | `*.sh` | 3 | 2003 | `run-e8.sh`, `run-fast.sh` |

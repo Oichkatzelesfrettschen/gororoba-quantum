@@ -8,7 +8,7 @@ Generator and command: `ladder2.sh JOBDIR PRIME STEP_TIMEOUT_S N...` (included).
 
 Host role: the compute workstation. Dates (file modification times, UTC date): 2026-10-31 to 2026-10-31.
 
-Content:
+Content (`.time` files hold the wall time and peak memory of a run, `.done`, `.status` and `.exit` files its terminal marker):
 
 | Path pattern | Files | Bytes | Examples |
 |---|---|---|---|

@@ -8,10 +8,11 @@ Generator and command: `run-fpm.sh` (included).
 
 Host role: the compute workstation. Dates (file modification times, UTC date): 2026-11-10 to 2026-11-10.
 
-Content:
+Content (`.time` files hold the wall time and peak memory of a run, `.done`, `.status` and `.exit` files its terminal marker):
 
 | Path pattern | Files | Bytes | Examples |
 |---|---|---|---|
+| `*(none)` | 1 | 305 | `summary` |
 | `*.json` | 9 | 6482 | `fiber-plucker-map-e8-p32009.json`, `fiber-plucker-map-iso-p32009.json` |
 | `*.log` | 9 | 13954 | `fiber-plucker-map-e8-p32009.log`, `fiber-plucker-map-iso-p32009.log` |
 | `*.sh` | 1 | 608 | `run-fpm.sh` |

@@ -8,10 +8,11 @@ Generator and command: command not recorded.
 
 Host role: the compute workstation. Dates (file modification times, UTC date): 2026-11-10 to 2026-11-10.
 
-Content:
+Content (`.time` files hold the wall time and peak memory of a run, `.done`, `.status` and `.exit` files its terminal marker):
 
 | Path pattern | Files | Bytes | Examples |
 |---|---|---|---|
+| `*(none)` | 1 | 64 | `summary` |
 | `*.json` | 4 | 2038 | `fiber-plucker-map-x-p32009.json`, `fiber-plucker-map-x-p32029.json` |
 | `*.log` | 3 | 3182 | `fiber-plucker-map-x-p32009.log`, `fiber-plucker-map-x-p32029.log` |
 
