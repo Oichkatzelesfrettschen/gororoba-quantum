@@ -9,5 +9,5 @@ Head read: the head before the fixing commit (inferred from the branch log, a7df
 | F3 | SERIOUS: the orchestration source of the Advisor and worker receipts has no locator | codex | git grep on origin/main finds no such record | Open as a boundary: ee2aa8622e00dd1cec03de3508b4c54d57a1f249 states the source is a private session record this repository does not retain |
 | F4 | SLOPPY: no index row or inbound link | codex | rg over docs/archive/reviews/README.md | Fixed in ee2aa8622e00dd1cec03de3508b4c54d57a1f249: the index links both records |
 | C1-2 | Claims 1 and 2: merge-ancestry of the named commits; no leak | codex | git merge-base --is-ancestor for five commits; changed-text scan | Pass |
-| A1 | Advisor (parent) | Advisor |  | Needs the abbreviated hashes expanded to 40 hex |
+| A1 | Advisor (parent) | Advisor |  | Fixed in b8893a86e2ea02a6f70c9d4a3157ec0c94067be4: the abbreviated hashes are expanded to 40 hex |
 | A1f | The expansion | this record | git rev-parse for each hash; git merge-base --is-ancestor against refs/pull/937/head and refs/pull/843/head; the merge commits against origin/main | Fixed in b8893a86e2ea02a6f70c9d4a3157ec0c94067be4 (full hashes; each reachable as the READMEs state) |
