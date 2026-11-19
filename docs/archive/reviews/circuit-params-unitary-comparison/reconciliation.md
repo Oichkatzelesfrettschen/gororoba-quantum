@@ -9,4 +9,4 @@ Hosted Codex raised no finding (receipt: no major issues; no thread exists); the
 | # | Reviewer | Finding | Disposition | Source | Check |
 |---|---|---|---|---|---|
 | A1 | advisor | Comparator confirmed; blocking digest-pin and --submit questions. | Closed (no pin; --submit sends frozen files). | orchestration record | no digest pin on touched files; --submit sends the frozen files (orchestration record) |
-| A2 | advisor | Pending theta = pi gauge fixture. | Fixed in 9fce104c (branch commit, merged by merge commit 97a2cc72). | orchestration record | theta = pi gauge fixture; 64 tests pass at 9fce104c (orchestration record) |
+| A2 | advisor | Pending theta = pi gauge fixture. | Fixed in 9fce104c5a1cb1a1086ef6bca2242f520aded837 (branch commit, merged by merge commit 97a2cc72fae23eb3f0605699d2bb37499f496cae). | orchestration record | theta = pi gauge fixture; 64 tests pass at 9fce104c5a1cb1a1086ef6bca2242f520aded837 (orchestration record) |
