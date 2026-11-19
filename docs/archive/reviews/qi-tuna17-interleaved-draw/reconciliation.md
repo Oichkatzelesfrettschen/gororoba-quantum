@@ -1,0 +1,13 @@
+# Reconciliation: local review of PR 957 (qi_tuna17_interleaved_cases: retained QRNG draw and batch order)
+
+Head read: f6f833c54ca558b1c774d5c19dd2dc2d81d2cf72 (the QX twin retention commit named in the report); the branch later gained 4fd42030d8581ff2711b0b77a9176f59e60e8f43. Reviewer: the local codex round (gpt-daybreak-blue, read-only, exit 0), chosen by the owner on 2026-11-19; the Advisor last. Every finding below carries its disposition; a fixing commit is named by its full hash after its diff was read.
+
+| # | Finding | Source | Check | Verdict |
+|---|---|---|---|---|
+| F1 | SERIOUS: the 90 retained QX jobs (1749484 to 1749573) are absent from docs/state; research_state.py --check exits 1 | codex | AGENTS.md rule: a retained run enters the research-state ledger in the retaining change | Open: the ledger refresh needs qi_platform.py snapshot, a live account read, not run; the PR body states it open |
+| F2 | SERIOUS: both case status lines say the QX emulator is not submitted | codex | CASE.md line 3 of the QX and Tuna-17 cases against 30 retained run directories that pass --sanity | Fixed in 4fd42030d8581ff2711b0b77a9176f59e60e8f43: both status lines state the submission and collection |
+| F3 | SERIOUS: the timing deviation is unrecorded and the retained sources give 25.398 min wall time, 237.866 s execution, not 25.5 min | codex | timestamps of admission.json and status-trace.json (1,523.864 s); sum of 90 job results | Fixed in 4fd42030d8581ff2711b0b77a9176f59e60e8f43: execution (237.866 s) and wall time (1,523.864 s) recorded separately against 289.8 s; the execution sum is marked a hypothesis until recomputed from the raw results (open) |
+| F4 | SLOPPY: "two test edits" is three DRAW = None pins | codex | tests/scripts/test_qi_tuna17_interleaved_cases.py lines 211, 251, 293 | Fixed in the PR body, which now says three tests pin DRAW |
+| C1-3 | Claims 1 to 3: draw mechanism, pending-state tests, recomputed analysis | codex | Stream.next/below read; --check and --self-test exit 0; 3 focused tests pass; analysis recomputed equal | Pass |
+| O1 | tail_verdict reads not_confirmed at 10 usable qubits; the documented rule gives inconclusive below 15 usable qubits | PR body | PR body "Open discrepancy" | Open: a question for the owner, unresolved in this change |
+| A1 | Advisor (parent) | Advisor |  | Not supplied to this record at its writing |
