@@ -14,4 +14,5 @@ Head read: 1ec3682569e9cfa4284698b21f831bf623a075b0 against origin/main f31df799
 | 8 | Medium: credit comparisons rest on an expired snapshot | codex | credit.json expiry 2026-11-01 | Fixed in 5eb930fa7d999ca885184198d6b846ac6215b6d0: stated as historical arithmetic |
 | 9 | Low: the packed-Pauli link omits the design that holds the Rigetti preference | codex | docs/design/packed-pauli-response-current-balance.md lines 44 and 49 | Fixed in 5eb930fa7d999ca885184198d6b846ac6215b6d0: the design is cited |
 | C | Claims that hold: architecture, topology, calibration, cost table, Garnet comparison, expiry | codex | architecture JSON, topology and cost commands | Pass |
+| 10 | Hosted Codex thread: the common-r analysis needs a resolved ASAP schedule; H2 is unidentifiable under ALAP, mixed or unresolved schedules | hosted codex | CASE.md pre-flight items 1, 3 and 5: under ALAP the pulsed qubits do not wait, so the contrast carries no T1 information | Fixed in 88dc5f522daa5eda91a346e9d61278f062ea5f28: H2 is gated on H1 and the common-r outcomes apply only after ASAP on all arms |
 | A1 | Advisor (parent) | Advisor | read after the fixes | Passes |
