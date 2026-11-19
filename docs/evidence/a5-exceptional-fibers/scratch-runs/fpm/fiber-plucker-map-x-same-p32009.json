@@ -1,0 +1,29 @@
+{
+ "schema": "a5-fiber-plucker-map-v1",
+ "family": "x-same",
+ "slug": "xm-nm",
+ "prime": 32009,
+ "order": 40,
+ "base_nullity": 16,
+ "generators": 15,
+ "arcs_requested": 360,
+ "arcs_with_limit": 360,
+ "cases": {
+  "x-same": {
+   "samples": 320,
+   "plucker_rank": 45,
+   "veronese_ranks": {
+    "1": 12,
+    "2": 45,
+    "3": 112
+   },
+   "delta": 2,
+   "solution_dimension": 1,
+   "scalars_all_nonzero": true,
+   "t_rank": 45,
+   "fit_exact_on_all_samples": true,
+   "held_out": 40,
+   "held_out_proportional": 40
+  }
+ }
+}
