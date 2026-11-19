@@ -87,6 +87,18 @@ SEEDS_PER_BLOCK = 64
 # (template name, coset of the operand e1 + e17 on the basis (16, 1, 2)); b0 is coset 0 and replays the coin series.
 OPERAND = (1, 17, 1)
 BASIS_VECTORS = (16, 1, 2)
+
+
+def canonical_float(value: float, digits: int) -> float:
+    """The value rounded to digits decimals with the sign of zero cleared. A probability or contrast that is zero in
+    exact arithmetic leaves the state-vector product as a residue of 1e-17 to 1e-33 whose sign follows the BLAS and
+    FMA scheduling of the platform, and json.dumps writes the rounded residue as 0.0 or -0.0; adding 0.0 maps -0.0 to
+    0.0 (IEEE 754 round to nearest). The nearest rounding boundary of every other float of the retained manifests
+    lies at least 4e-14 of a unit away, far above the last-bit noise of a libm or FMA difference, so those floats
+    keep their digits on every platform."""
+    return round(float(value), digits) + 0.0
+
+
 LOW_CZ = (("k4", 4), ("k8", 8), ("k12", 12))
 TEMPLATES = ("b0", *(name for name, _ in LOW_CZ))
 BLOCKS = {"b0": pcb.Block("b0", OPERAND, BASIS_VECTORS, 0)} | {
@@ -675,8 +687,8 @@ def series(
                 "initial_layout": t["initial_layout"],
                 "cz": t["cz"],
                 "roles": {k: place[list(region).index(q)] for k, q in t["roles"].items()},
-                "ideal_selector_contrast": round(t["ideal_selector_contrast"], 9) + 0.0,
-                "ideal_c": [round(float(x), 6) for x in t["ideal_c"]],
+                "ideal_selector_contrast": canonical_float(t["ideal_selector_contrast"], 9),
+                "ideal_c": [canonical_float(x, 6) for x in t["ideal_c"]],
             }
             for name, t in plan["templates"].items()
         },
@@ -704,7 +716,7 @@ def series(
                 else:
                     t = twin_entry(name, spec["coin"])
                     texts[spec["file"]] = cc.circuit_text(t["circuit"], place, nqubits, twin_note(name, spec["coin"]))
-                record["ideal"] = [round(float(x), 12) for x in t["ideal"]]
+                record["ideal"] = [canonical_float(x, 12) for x in t["ideal"]]
             record["sha256"] = hashlib.sha256(texts[spec["file"]].encode()).hexdigest()
             circuits.append(record)
             files[f"{row['batch']}/{spec['file']}"] = texts[spec["file"]]

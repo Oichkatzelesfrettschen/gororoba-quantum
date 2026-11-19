@@ -382,18 +382,36 @@ def test_the_qx_manifests_keep_the_bytes_that_the_retained_receipts_bind() -> No
         _expect(json.loads(stored)["preregistered"] == bc.control_preregistered(), f"{batch} states another text")
 
 
-LINUX_X86_64 = platform.system() == "Linux" and platform.machine() in {"x86_64", "AMD64"}
+LINUX_MEASURED = platform.system() == "Linux" and platform.machine() in {"x86_64", "AMD64", "aarch64"}
 
 
-@pytest.mark.skipif(not LINUX_X86_64, reason="the rebuilt manifests are measured byte-equal on linux x86_64 only")
+def test_a_zero_residue_of_either_sign_serializes_as_one_zero() -> None:
+    # The state-vector product leaves 1e-17..1e-33 residue where the exact value is zero; its sign follows the
+    # platform's BLAS and FMA scheduling, and a bare round() writes the negative residue as -0.0.
+    for digits in (6, 9, 12):
+        for residue in (0.0, -0.0, 1e-33, -1e-33, 1.1102230246251565e-16, -1.1102230246251565e-16):
+            _expect(json.dumps(oc.canonical_float(residue, digits)) == "0.0", f"{residue!r} at {digits} digits")
+    _expect(json.dumps(round(-1e-33, 12)) == "-0.0", "the bare rounding of a negative residue is the hazard")
+    _expect(json.dumps(oc.canonical_float(-0.995869, 6)) == "-0.995869", "a nonzero value keeps its sign and digits")
+    _expect(json.dumps(oc.canonical_float(0.1248440288385, 12)) == "0.124844028839", "a nonzero value keeps its digits")
+
+
+def test_the_retained_qx_manifests_hold_no_negative_zero() -> None:
+    for batch in QX_MANIFEST_SHA256:
+        text = (CASES / bc.QX_SERIES / batch / "cases.json").read_text(encoding="utf-8")
+        _expect("-0.0," not in text and "-0.0\n" not in text, f"{batch} holds a -0.0")
+
+
+@pytest.mark.skipif(
+    not LINUX_MEASURED, reason="the rebuilt manifests are measured byte-equal on linux x86_64 and aarch64"
+)
 def test_the_rebuilt_qx_manifests_equal_the_stored_bytes_and_the_receipt_digests(
     built: dict[str, dict[str, str]],
 ) -> None:
-    # Measured on linux x86_64 with the CI-pinned interpreter: 4 of 4 rebuilt manifests have the sha256 of the stored
-    # file and of the receipt's cases_sha256. hypothesis: a last-bit libm difference or a fused multiply-add on
-    # darwin-arm64 flips a digit of the 12-digit rounded float fields (a rebuild failed there), which
-    # test_the_qx_manifests_keep_the_bytes_that_the_retained_receipts_bind avoids by reading the stored bytes; issue
-    # 945 tracks a platform-stable serialization.
+    # Measured on linux x86_64 and linux aarch64 with the CI-pinned interpreter: 4 of 4 rebuilt manifests have the
+    # sha256 of the stored file and of the receipt's cases_sha256, although 1200 of the 2007 unrounded floats differ
+    # in the last bit between the two. hypothesis: darwin-arm64 differs in the sign of a zero residue, which
+    # oc.canonical_float clears; no darwin run has measured it.
     for batch, digest in QX_MANIFEST_SHA256.items():
         rebuilt = built[bc.QX_SERIES][f"{batch}/cases.json"].encode()
         stored = (CASES / bc.QX_SERIES / batch / "cases.json").read_bytes()
