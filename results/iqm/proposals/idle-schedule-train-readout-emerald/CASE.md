@@ -26,9 +26,11 @@ name) and calibrated T1 values from 18.9 us (QB37) to 80 us (QB24) on the qubits
 - QET compensated ladder on Emerald ([design](../../../../docs/design/iqm-garnet-qet-compensated-ladder.md#result)):
   lost because its Garnet H1 is unresolved on pair spread (0.150) and is a statistics question that 54 qubits do not
   change, and its window-phase split depends on the schedule that this case measures first.
-- Packed Pauli response on Emerald ([proposal](../packed-pauli-response-emerald/proposal.json)): lost because it would
-  commit 24 of the 30 credits to 52 qubits with its cost bound pending and its own design preferring the Rigetti route
-  for the density test; it also measures no Emerald timing, which sets its shot budget.
+- Packed Pauli response on Emerald ([proposal](../packed-pauli-response-emerald/proposal.json),
+  [current-balance design](../../../../docs/design/packed-pauli-response-current-balance.md)): lost because it would
+  commit 24 credits to 52 qubits with its cost bound pending, and the design prefers the Rigetti route for the density
+  test; it also measures no Emerald timing, which sets its shot budget. The 24 credits are measured against the historical
+  30.00-credit snapshot (see "Retained measurements").
 
 ## Circuits
 
@@ -48,26 +50,50 @@ architecture; couplers from the
 
 ## Pre-flight
 
-1. Hypothesis. H1: Emerald schedules ASAP. H2: the Garnet excess decay is a fixed per-pulse gap g of the control stack,
-   so apparent T1 over calibrated T1 is r = d / (d + g) with the same r on every qubit; the alternative is a per-qubit
-   calibration error, with r scattered by qubit and independent of d.
+1. Hypothesis. H1: Emerald schedules ASAP. H2: the job identifies two things only: the schedule, and whether the ratio
+   r = apparent T1 / calibrated T1 is common across qubits or varies by qubit. By the definition below,
+   r_i = d / (d + g_i) x T1_true_i / T1_cal_i, so a common r fits both a common additive timing gap g and a common
+   multiplicative T1 calibration bias, and scatter fits per-qubit gaps or per-qubit T1 errors; 500 against 1000 pulses
+   does not separate them, because both stationary mechanisms predict the same r at both counts. Separating a timing gap
+   from a T1 calibration bias needs an independent T1 measurement (delay-based decay) or a second pulse duration on the
+   same qubits. That measurement is out of scope here; adding it is a separate case with its own cost and approval.
 2. Quantity. P(1) of each pulsed qubit at 0, 500 and 1000 train pulses on the train qubit. Contrast c = P(1) at 0 minus
    P(1) at N, corrected by the parallel ro0 and ro1 pair as in `iqm_cancellation_probe.fit_train`. Apparent T1 =
    -(N d) / ln(1 - c) with d = 24 ns, and r = apparent T1 / calibrated T1 (`characterization.model.QBn.t1_time`).
    Definitions follow the Garnet design's analysis, `results/iqm/idle_schedule_probe_analysis.json`.
-3. Falsifier. H1 fails if any pulsed arm sits closer to the ALAP prediction than the midpoint, or the 20 arms split
-   between schedules. H2 (gap) fails if the per-qubit r values from the 1000-pulse arm reject a common value
-   (chi-square over 10 degrees of freedom at p < 0.01); it is supported by agreement, and the per-qubit alternative
-   wins when r varies with qubit but not with N (500 against 1000).
-4. Predicted outcome with budget. ASAP, at about 25 or more standard errors from the midpoint (hand estimate from the
-   retained T1: QB24 at 500 pulses, exp(-12/80) = 0.861, 14 percent below the ALAP value, 0.55 percent standard error at
-   4000 shots; QB37 at 1000 pulses, exp(-24/18.9) = 0.28). Gap model carried from Garnet: r = 0.53 there gives
-   g = 16 ns x (1/0.53 - 1) = 14 ns, hence r = 24 / (24 + 14) = 0.63 on Emerald (inference; it assumes one common g).
-   Budget: 3.00 credits expected, 4.50 ceiling (below).
-5. What each result changes. ASAP on Emerald fixes the schedule used by the `iqm_sim` predictions for every later
-   Emerald case. A common r near 0.63 sets the per-pulse gap and the pulse-count budget of the pinching and QET cases; a
-   scattered r sends the correction to per-qubit calibration and leaves those cases unpriced until T1 is remeasured.
-   ALAP, or r near 1, retires the Garnet excess as a Garnet-station property.
+3. Falsifier and uncertainty model. H1 fails if any pulsed arm sits closer to the ALAP prediction than the midpoint, or
+   the 20 arms split between schedules. For the common-r test, each qubit contributes one r_i from its 1000-pulse arm (a
+   qubit pulsed in both layouts pools its arms by inverse variance of the shot noise; the calibrated T1 error is shared by
+   its arms and is not reduced by pooling). The variance is sigma_i^2 = r_i^2 [ (sigma_Tapp/Tapp)^2 + (sigma_T1/T1)^2 ],
+   with sigma_T1 the retained T1 uncertainty of `metrics.json` (3.6 to 21.7 percent; QB44 21.7, QB26 13.2, QB34 12.8)
+   and sigma_Tapp the binomial propagation through the readout correction. The statistic is chi2 = sum_i (r_i - rbar)^2 /
+   sigma_i^2 about the weighted mean rbar, with 11 degrees of freedom (12 qubits, one fitted mean). It rejects a common r at
+   p < 0.01 (chi2 above 24.7). The variances are propagated from independent per-qubit T1 errors; any correlation among
+   qubits is unmodeled.
+4. Predicted outcome with budget. ASAP, at about 12.7 standard errors from the midpoint of the ASAP and ALAP predictions
+   (hand estimate from the retained T1: QB24 at 500 pulses, exp(-12/80) = 0.861, contrast 0.139 below the ALAP value,
+   binomial standard error 0.0055 at 4000 shots, so contrast over standard error is 25.4 and the midpoint over standard
+   error is 12.7; zero-pulse arm uncertainty only lowers it; QB37 at 1000 pulses, exp(-24/18.9) = 0.28). Gap model carried
+   from Garnet: r = 0.53 there gives g = 16 ns x (1/0.53 - 1) = 14 ns, hence r = 24 / (24 + 14) = 0.63 on Emerald
+   (inference; it assumes one common g and a calibrated T1 that is unbiased). Budget: 3.00 credits expected, 4.50 ceiling
+   (below).
+5. What each result changes.
+   - ASAP on all arms: fixes the schedule used by the `iqm_sim` predictions for every later Emerald case. ALAP on all arms:
+     retires the Garnet excess as a Garnet-station property and sets the ALAP schedule for `iqm_sim`.
+   - Arms split between schedules, or any arm statistically unresolved from the midpoint: the schedule is mixed or
+     undetermined; no schedule is assumed for `iqm_sim`, the pulsed arms are tabulated per qubit and layout, and the later
+     Emerald cases wait for a successor case with more shots on the unresolved arms.
+   - Common r (chi2 not rejected) near 0.63 (within two standard errors of rbar): consistent with one common gap or one
+     common T1 bias; it sets the effective per-pulse wait and the pulse-count budget of the pinching and QET cases as an
+     effective value, without a mechanism claim.
+   - Common r that differs from 0.63 (rbar more than two standard errors away): the Garnet gap does not transfer; the
+     pulse-count budgets use the measured rbar, and the Garnet-derived 14 ns is dropped.
+   - r varying with qubit (chi2 rejected): per-qubit gaps or per-qubit T1 errors; the later cases stay unpriced until T1 is
+     remeasured per qubit.
+   - r varying with pulse count (500 against 1000 differing beyond uncertainty): the stationary model fails; the case is
+     recorded as a finding and the decay model is reopened before any dependent case is priced.
+   - Both variation by qubit and by pulse count: treated as the pulse-count case first; the per-qubit reading waits for a
+     model that holds at one qubit.
 
 ## Why a simulation cannot answer it
 
@@ -91,18 +117,23 @@ and readout 360 ns.
 The train idle adds 0.29 s (4000 shots x 36 us over the two layouts). The active-reset shot time of Emerald is not
 measured; the `emerald:mock` estimate (0.00 credits) returns the runtime before any charge. Requested approval:
 backend `iqm:emerald`, 12 circuits x 4000 shots, active reset, expected 3.7 s, 3.00 credits, ceiling 4.50 credits (6
-billed seconds). If the mock refuses active reset or estimates above 4.5 s, the passive fallback needs its own approval
-at a ceiling of 18.00 credits (24 s), leaving 12.00 of the 30.00. Against the retained limits (20000 shots per circuit,
-100 circuits per job), the job fits.
+billed seconds at 0.75 credits per second). `scripts/iqm_idle_schedule_probe.py` requires 2 s of plan headroom under the
+ceiling, so the active path proceeds only if the mock estimate is at most 4.0 s. If the mock refuses active reset or
+estimates above 4.0 s, the passive fallback (21.35 s plus 2 s headroom fits 24 s) needs its own approval at a ceiling of
+18.00 credits (24 s); against the historical 30.00-credit snapshot that would leave 12.00, but the live balance decides.
+Against the retained limits (20000 shots per circuit, 100 circuits per job), the job fits.
 
 ## Retained measurements of the same shape
 
 - Garnet idle-schedule job `01a1707f`: 24 circuits x 4500 shots, 1.92 s run, 2 s billed, 1.00 credit at 0.50
-  credits per second. Same layouts and trains; all 68 Garnet pulsed arms read ASAP.
-- No retained Emerald job of this shape exists: a name search of `results/iqm/runs` finds one run record, the Garnet
-  QET ladder.
+  credits per second; all 68 Garnet pulsed arms read ASAP. It differs from this case: its train qubits are QB1 and QB20
+  (this case trains QB20 and QB26), its layouts cover a different qubit cohort, and it adds twelve isolated-train/readout
+  circuits that this case omits. The pulse counts (0, 500, 1000) and the idle-layout pattern are shared.
+- No retained Emerald job of this shape exists: no directory of `results/iqm/runs` and no run record there names
+  Emerald.
 - The balance on record is 30.00 credits at the 2026-10-22 snapshot, with an expiry of 2026-11-01 in
-  `docs/evidence/iqm/account/credit.json`; the live balance and expiry are read at submission.
+  `docs/evidence/iqm/account/credit.json`. That snapshot expired before this case was written, so every credit comparison
+  above (24 of 30, 12.00 of 30.00) is historical arithmetic; the live balance is unread and is read at submission.
 
 ## Open items before a build
 
