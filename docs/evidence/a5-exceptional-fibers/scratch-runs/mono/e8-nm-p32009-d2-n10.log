@@ -1,0 +1,24 @@
+{"slug": "e8-nm", "prime": 32009, "order": 10, "generators": 21, "generator_order": 2, "rows": [{"degree": 1, "order": 8, "A": 1056, "B": 1035, "r": 21}, {"degree": 2, "order": 10, "A": 2149, "B": 2066, "r": 83}], "seconds": 100.8}
+	Command being timed: "systemd-run --user --scope -q -p MemoryMax=30G -p MemorySwapMax=0 ~/a5env/bin/python docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_ladder.py --slug e8-nm --prime 32009 --degree 2 --order 10 --out ~/a5/mono/e8-nm-p32009-d2-n10.json"
+	User time (seconds): 99.01
+	System time (seconds): 2.25
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:41.30
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 941320
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 794721
+	Voluntary context switches: 8
+	Involuntary context switches: 1227
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

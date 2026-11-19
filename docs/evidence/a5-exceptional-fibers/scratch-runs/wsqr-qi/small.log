@@ -1,0 +1,41 @@
+Traceback (most recent call last):
+  File "~/worktrees/gororoba-quantum/a5-weight-slice-quadric-rings-qi/docs/evidence/a5-kernel-attachments/weight_slice_fiber_relations.py", line 623, in run_singular
+    process = subprocess.run(
+        [
+    ...<12 lines>...
+        timeout=SINGULAR_TIMEOUT_SECONDS,
+    )
+  File "~/.local/share/uv/python/cpython-3.13.18-linux-x86_64-gnu/lib/python3.13/subprocess.py", line 557, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "~/.local/share/uv/python/cpython-3.13.18-linux-x86_64-gnu/lib/python3.13/subprocess.py", line 1223, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "~/.local/share/uv/python/cpython-3.13.18-linux-x86_64-gnu/lib/python3.13/subprocess.py", line 2156, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "~/.local/share/uv/python/cpython-3.13.18-linux-x86_64-gnu/lib/python3.13/subprocess.py", line 1270, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['prlimit', '--as=8589934592', 'Singular', '-q', '--no-warn', '--no-rc', 'SCRATCH/script.sing']' timed out after 3600 seconds
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "~/worktrees/gororoba-quantum/a5-weight-slice-quadric-rings-qi/docs/evidence/a5-kernel-attachments/weight_slice_quadric_rings.py", line 297, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "~/worktrees/gororoba-quantum/a5-weight-slice-quadric-rings-qi/docs/evidence/a5-kernel-attachments/weight_slice_quadric_rings.py", line 279, in main
+    record["cells"] = [cell(source, orbit, retained, args.steps) for source, orbit in chosen]
+                       ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "~/worktrees/gororoba-quantum/a5-weight-slice-quadric-rings-qi/docs/evidence/a5-kernel-attachments/weight_slice_quadric_rings.py", line 222, in cell
+    row = decide(name, summary["generator_count"], polynomials(sorted(run["relations"])), steps)
+  File "~/worktrees/gororoba-quantum/a5-weight-slice-quadric-rings-qi/docs/evidence/a5-kernel-attachments/weight_slice_quadric_rings.py", line 196, in decide
+    first = step("cm", CM_SCRIPT)
+  File "~/worktrees/gororoba-quantum/a5-weight-slice-quadric-rings-qi/docs/evidence/a5-kernel-attachments/weight_slice_quadric_rings.py", line 185, in step
+    values = ws.run_singular(template.format(n=n, polynomials=text))["values"]
+             ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "~/worktrees/gororoba-quantum/a5-weight-slice-quadric-rings-qi/docs/evidence/a5-kernel-attachments/weight_slice_fiber_relations.py", line 640, in run_singular
+    raise RuntimeError(f"Singular exceeded {SINGULAR_TIMEOUT_SECONDS} s") from error
+RuntimeError: Singular exceeded 3600 s

@@ -1,0 +1,24 @@
+{"slug": "xm-nm", "prime": 32009, "order": 27, "generator_order": 3, "rows": [{"degree": 1, "order": 9, "A": 308, "B": 293, "r": 15}, {"degree": 2, "order": 12, "A": 593, "B": 542, "r": 51}, {"degree": 3, "order": 15, "A": 971, "B": 849, "r": 122}, {"degree": 4, "order": 18, "A": 1410, "B": 1170, "r": 240}, {"degree": 5, "order": 21, "A": 1856, "B": 1439, "r": 417}, {"degree": 6, "order": 24, "A": 2233, "B": 1737, "r": 496}, {"degree": 7, "order": 27, "A": 2646, "B": 2064, "r": 582}], "seconds": 202.7}
+	Command being timed: "systemd-run --user --scope -q -p MemoryMax=40G -p MemorySwapMax=0 ~/a5env/bin/python docs/evidence/a5-exceptional-fibers/monomial-ladder/x_same_ladder.py --slug xm-nm --prime 32009 --degree 7 --order 27 --out ~/a5/mono/xm-nm-p32009-d7-n27.json"
+	User time (seconds): 199.16
+	System time (seconds): 3.80
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 3:23.00
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1513432
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 2384137
+	Voluntary context switches: 9
+	Involuntary context switches: 508
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

@@ -1,0 +1,1 @@
+{"id": "Iso-32029-d5-N16-raw", "ok": true, "engine_exit": 0, "seconds": 1240.2, "mode": "raw", "original_mode": "raw"}

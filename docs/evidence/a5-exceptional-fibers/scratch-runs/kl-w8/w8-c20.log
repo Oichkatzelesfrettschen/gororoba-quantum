@@ -1,0 +1,28 @@
+w8-nm F_32009 {'arcs': 24, 'base_nullity': [16], 'arc_nullity': [8], 'limit_dimension': [8], 'g_order': [2], 'largest_pivot_valuation_sum': 8, 'limit_in_base_kernel': True, 'on_slice': True, 'groups': 6, 'groups_with_several_arcs': 6, 'one_plane_per_group': True, 'distinct_planes': 6, 'mutation_columns_without_pivot': [0]}
+w8-nm F_32029 {'arcs': 24, 'base_nullity': [16], 'arc_nullity': [8], 'limit_dimension': [8], 'g_order': [2], 'largest_pivot_valuation_sum': 8, 'limit_in_base_kernel': True, 'on_slice': True, 'groups': 6, 'groups_with_several_arcs': 6, 'one_plane_per_group': True, 'distinct_planes': 6, 'mutation_columns_without_pivot': [0]}
+w8-np F_32009 {'arcs': 24, 'base_nullity': [16], 'arc_nullity': [8], 'limit_dimension': [8], 'g_order': [2], 'largest_pivot_valuation_sum': 8, 'limit_in_base_kernel': True, 'on_slice': True, 'groups': 6, 'groups_with_several_arcs': 6, 'one_plane_per_group': True, 'distinct_planes': 6, 'mutation_columns_without_pivot': [0]}
+w8-np F_32029 {'arcs': 24, 'base_nullity': [16], 'arc_nullity': [8], 'limit_dimension': [8], 'g_order': [2], 'largest_pivot_valuation_sum': 8, 'limit_in_base_kernel': True, 'on_slice': True, 'groups': 6, 'groups_with_several_arcs': 6, 'one_plane_per_group': True, 'distinct_planes': 6, 'mutation_columns_without_pivot': [0]}
+reductions {} verdict survives
+	Command being timed: "~/a5env/bin/python docs/evidence/a5-exceptional-fibers/kernel-limits/plucker_limits.py w8-c20 --out ~/a5/kl-w8/w8-c20-result.json"
+	User time (seconds): 3360.04
+	System time (seconds): 7.44
+	Percent of CPU this job got: 2899%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:56.15
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 113256
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 1
+	Minor (reclaiming a frame) page faults: 1601645
+	Voluntary context switches: 913
+	Involuntary context switches: 43164
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

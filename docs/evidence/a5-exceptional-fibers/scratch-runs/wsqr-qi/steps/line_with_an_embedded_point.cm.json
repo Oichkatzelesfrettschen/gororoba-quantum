@@ -1,0 +1,16 @@
+{
+ "ideal_sha256": "6f2c0136152902f25cc81f3cbaa6acc6c49261dea77c6436e9da4cf388953e26",
+ "load_1min": 48.14794921875,
+ "seconds": 0.0,
+ "values": {
+  "chart": [
+   "0 1 1"
+  ],
+  "cm": [
+   "1 1 0 2"
+  ],
+  "done": [
+   "1"
+  ]
+ }
+}

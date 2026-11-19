@@ -1,0 +1,11 @@
+RESULT generators 21
+RESULT targets 225
+RESULT products_ms 8267902
+
+--- stderr ---
+Running as unit: run-p1791-i2190.service
+          Finished with result: exit-code
+Main processes terminated with: code=exited, status=124/n/a
+               Service runtime: 6h 842ms
+             CPU time consumed: 5h 59min 57.998s
+                   Memory peak: 17.2G (swap: 0B)

@@ -1,0 +1,7 @@
+9e309eb3cb10191e5f9a8e62319ca6f0a01e006c06bbb719d2476d77387ed5b2  ./docs/evidence/a5-kernel-attachments/fiber_inputs.py
+6afffb4114bdd001fa3a0ebfdee2840a2f2e465470374d20de46157264631a90  ./emit-32009.log
+6afffb4114bdd001fa3a0ebfdee2840a2f2e465470374d20de46157264631a90  ./emit-32029.log
+93497268f523a2ecd9a9a810f52ab8151998f85801058ebd9e0e2844bfff7a90  ./events
+b785a537808fadc8ae1b43f940ec153f29327a8edb94ac48bfbddaba1d67160b  ./out/survivors/X+-N-.json
+b785a537808fadc8ae1b43f940ec153f29327a8edb94ac48bfbddaba1d67160b  ./out/survivors/X--N+.json
+588b0cd0ba4c4d8f70e5fe25ccd006a0f2fa70b038fb0edbf5b6569811460bb2  ./run-emit.sh

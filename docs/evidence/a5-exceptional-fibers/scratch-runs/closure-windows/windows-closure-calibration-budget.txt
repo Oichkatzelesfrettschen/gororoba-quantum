@@ -1,0 +1,7 @@
+Source commit: 666b0a074d48c4352c024a6d3a16fb5a84eefc64
+Retained historical maxima: producer 85.2s + root linear algebra 396.2s + root export 0.1s + exact check 26.9s = 508.4s.
+Twice historical total: 1016.8s, rounded up to 1020s, with timeout kill-after 10s.
+The deadline is a bounded calibration exploration budget. Windows throughput remains unmeasured until completion.
+Native Windows FreePhysicalMemory before launch: 46048876 KiB, above the 8388608-KiB planning reservation.
+The source launcher takes the existing memory lock and repeats WSL memory admission immediately before execution.
+One worker, eight-GiB planning budget, native arithmetic threads one. Memory and swap caps remain unset.

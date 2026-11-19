@@ -1,0 +1,31 @@
+{"degree": 1, "order": 11, "A": 689, "B": 674, "r": 15, "seconds": 63.6}
+{"degree": 2, "order": 14, "A": 1227, "B": 1176, "r": 51, "seconds": 178.8}
+{"degree": 3, "order": 17, "A": 1946, "B": 1824, "r": 122, "seconds": 372.2}
+{"degree": 4, "order": 20, "A": 2826, "B": 2586, "r": 240, "seconds": 643.6}
+{"degree": 5, "order": 23, "A": 3825, "B": 3408, "r": 417, "seconds": 769.0}
+{"degree": 6, "order": 26, "A": 4879, "B": 4214, "r": 665, "seconds": 1254.8}
+{"degree": 7, "order": 29, "A": 5902, "B": 4906, "r": 996, "seconds": 2580.0}
+{"slug": "xm-nm", "prime": 32009, "order": 29, "generator_order": 3, "engine": "float64-batched-echelon", "batch": 1024, "device": "cpu", "threads": 24, "rows": [{"degree": 1, "order": 11, "A": 689, "B": 674, "r": 15, "seconds": 63.6}, {"degree": 2, "order": 14, "A": 1227, "B": 1176, "r": 51, "seconds": 178.8}, {"degree": 3, "order": 17, "A": 1946, "B": 1824, "r": 122, "seconds": 372.2}, {"degree": 4, "order": 20, "A": 2826, "B": 2586, "r": 240, "seconds": 643.6}, {"degree": 5, "order": 23, "A": 3825, "B": 3408, "r": 417, "seconds": 769.0}, {"degree": 6, "order": 26, "A": 4879, "B": 4214, "r": 665, "seconds": 1254.8}, {"degree": 7, "order": 29, "A": 5902, "B": 4906, "r": 996, "seconds": 2580.0}], "timing": {"generators": 1.7, "maps": 15.4, "products": 244.4, "echelon": 2318.1}, "seconds": 2580.0}
+	Command being timed: "systemd-run --user --scope -q -p MemoryMax=40G -p MemorySwapMax=0 ~/a5env/bin/python ~/a5/mono/fast_ladder.py --degree 7 --order 29 --threads 24 --out ~/a5/fast/xm-nm-p32009-d7-n29.json"
+	User time (seconds): 22940.90
+	System time (seconds): 586.38
+	Percent of CPU this job got: 910%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 43:03.07
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 6677896
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 16
+	Minor (reclaiming a frame) page faults: 99475761
+	Voluntary context switches: 2009536
+	Involuntary context switches: 3631843
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

@@ -1,0 +1,17 @@
+STAGE stdK 0 dim 4 deg 12 size 81
+PICK y(1) t=0
+PICK y(9) t=0
+PICK y(11)+y(13) t=0
+STAGE sparse_cm 0 dimQ 1 vdim -1
+   ? wrong range[4] in ideal/module _(3)
+   ? error occurred in or before ~/a5/wsqr-qi/diag/greedy-run.sing line 14: `ideal Z=std(sK+L1+ideal(Lf[a]-1));`
+   ? expected ideal-expression. type 'help ideal;'
+   ? `Z` is not defined
+   ? error occurred in or before ~/a5/wsqr-qi/diag/greedy-run.sing line 15: `GE chart "+string(rtimer-t0)+" dim "+string(dim(Z))+" vdim "+string(vdim(Z)));`
+   ? wrong type declaration. type 'help string;'
+   ? `Z` is undefined
+   ? error occurred in or before primdec.lib::radical line 6463: `parameter ideal i; parameter list #;  `
+   ? expected ideal-expression. type 'help ideal;'
+   ? leaving primdec.lib::radical (0)
+   skipping text from `)` error at token `)`
+STAGE chartrad 0 vdim -1
