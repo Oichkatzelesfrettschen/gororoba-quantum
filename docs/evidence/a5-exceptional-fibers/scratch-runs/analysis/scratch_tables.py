@@ -36,8 +36,24 @@ def read(path: str) -> str:
 
 
 def plucker_map(scratch: str, out: str) -> None:
-    columns = ["source", "family", "slug", "prime", "order", "base_nullity", "generators", "arcs", "case", "samples",
-               "plucker_rank", "veronese_ranks", "delta", "solution_dimension", "held_out", "held_out_proportional"]
+    columns = [
+        "source",
+        "family",
+        "slug",
+        "prime",
+        "order",
+        "base_nullity",
+        "generators",
+        "arcs",
+        "case",
+        "samples",
+        "plucker_rank",
+        "veronese_ranks",
+        "delta",
+        "solution_dimension",
+        "held_out",
+        "held_out_proportional",
+    ]
     with open(out, "w", encoding="ascii") as handle:
         handle.write("\t".join(columns) + "\n")
         for path in sorted(glob.glob(os.path.join(scratch, "fpm*", "*.json"))):
@@ -45,16 +61,44 @@ def plucker_map(scratch: str, out: str) -> None:
             if item.get("schema") != "a5-fiber-plucker-map-v1":
                 continue
             for name, case in item["cases"].items():
-                row = [os.path.relpath(path, scratch), item["family"], item["slug"], item["prime"], item["order"],
-                       item["base_nullity"], item["generators"], item["arcs_with_limit"], name, case["samples"],
-                       case["plucker_rank"], json.dumps(case["veronese_ranks"], separators=(",", ":")),
-                       case["delta"], case["solution_dimension"], case["held_out"], case["held_out_proportional"]]
+                row = [
+                    os.path.relpath(path, scratch),
+                    item["family"],
+                    item["slug"],
+                    item["prime"],
+                    item["order"],
+                    item["base_nullity"],
+                    item["generators"],
+                    item["arcs_with_limit"],
+                    name,
+                    case["samples"],
+                    case["plucker_rank"],
+                    json.dumps(case["veronese_ranks"], separators=(",", ":")),
+                    case["delta"],
+                    case["solution_dimension"],
+                    case["held_out"],
+                    case["held_out_proportional"],
+                ]
                 handle.write("\t".join(str(x) for x in row) + "\n")
 
 
 def kernel_limits(scratch: str, out: str) -> None:
-    columns = ["source", "family", "order", "verdict", "slug", "field", "arcs", "base_nullity", "arc_nullity",
-               "limit_dimension", "g_order", "pivot_valuation_sum", "limit_in_base_kernel", "distinct_planes"]
+    columns = [
+        "source",
+        "family",
+        "order",
+        "verdict",
+        "slug",
+        "field",
+        "arcs",
+        "base_nullity",
+        "arc_nullity",
+        "limit_dimension",
+        "g_order",
+        "pivot_valuation_sum",
+        "limit_in_base_kernel",
+        "distinct_planes",
+    ]
     with open(out, "w", encoding="ascii") as handle:
         handle.write("\t".join(columns) + "\n")
         for path in sorted(glob.glob(os.path.join(scratch, "kl*", "*-result.json"))):
@@ -62,10 +106,22 @@ def kernel_limits(scratch: str, out: str) -> None:
             if item.get("schema") != "a5-kernel-plucker-limits-v2":
                 continue
             for case in item["cases"]:
-                row = [os.path.relpath(path, scratch), item["family"], item["order"], item["verdict"], case["slug"],
-                       case["field"], case["arcs"], case["base_nullity"], case["arc_nullity"],
-                       case["limit_dimension"], case["g_order"], case["largest_pivot_valuation_sum"],
-                       case["limit_in_base_kernel"], case.get("distinct_planes", "")]
+                row = [
+                    os.path.relpath(path, scratch),
+                    item["family"],
+                    item["order"],
+                    item["verdict"],
+                    case["slug"],
+                    case["field"],
+                    case["arcs"],
+                    case["base_nullity"],
+                    case["arc_nullity"],
+                    case["limit_dimension"],
+                    case["g_order"],
+                    case["largest_pivot_valuation_sum"],
+                    case["limit_in_base_kernel"],
+                    case.get("distinct_planes", ""),
+                ]
                 handle.write("\t".join(str(x) for x in row) + "\n")
 
 
@@ -80,8 +136,16 @@ def monomial_probes(scratch: str, out: str) -> None:
                 if item.get("schema") != "a5-monomial-probe-v1":
                     continue
                 for space, value in item["spaces"].items():
-                    row = [os.path.relpath(path, scratch), item["slug"], item["prime"], item["order"], space,
-                           value["rank"], value["single_monomial_rows"], item["verdict"]]
+                    row = [
+                        os.path.relpath(path, scratch),
+                        item["slug"],
+                        item["prime"],
+                        item["order"],
+                        space,
+                        value["rank"],
+                        value["single_monomial_rows"],
+                        item["verdict"],
+                    ]
                     handle.write("\t".join(str(x) for x in row) + "\n")
 
 
@@ -100,8 +164,14 @@ def singular_timings(scratch: str, out: str) -> None:
                 body = read(log)
                 ms = RESULT_MS.search(body)
                 kbase = KBASE.search(body)
-            row = [os.path.relpath(path, scratch), "" if wall is None else wall, rss.group(1) if rss else "",
-                   ms.group(1) if ms else "", ms.group(2) if ms else "", kbase.group(1) if kbase else ""]
+            row = [
+                os.path.relpath(path, scratch),
+                "" if wall is None else wall,
+                rss.group(1) if rss else "",
+                ms.group(1) if ms else "",
+                ms.group(2) if ms else "",
+                kbase.group(1) if kbase else "",
+            ]
             handle.write("\t".join(str(x) for x in row) + "\n")
 
 

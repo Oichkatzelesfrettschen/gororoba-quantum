@@ -59,7 +59,9 @@ def main() -> int:
             degrees = [d for d in sorted(hist) if d < top - 1]
             values = [hist[d] for d in degrees]
             for level, row_values in enumerate(differences(values)):
-                handle.write(f"{key[0]}\t{key[1]}\tdiff{level}_of_hf_N{top}\t0\t{','.join(str(v) for v in row_values)}\n")
+                handle.write(
+                    f"{key[0]}\t{key[1]}\tdiff{level}_of_hf_N{top}\t0\t{','.join(str(v) for v in row_values)}\n"
+                )
     with open(out.replace(".tsv", "-relations.tsv"), "w", encoding="ascii") as handle:
         handle.write("prime\trelation\tstatus\tdetail\n")
         for prime in sorted({k[1] for k in lengths}):
@@ -68,16 +70,24 @@ def main() -> int:
             common = sorted(set(vb) & set(x))
             same = bool(common) and all(vb[n] == x[n] for n in common)
             detail = ",".join(f"{n}:{vb[n]}/{x[n]}" for n in common)
-            handle.write(f"{prime}\tquotient length of E8-bar -> VB against X-\t{'equal' if same else 'differs'}\t{detail}\n")
-            hv, hx, he = histograms.get(("e8-vb", prime)), histograms.get(("xmnm", prime)), histograms.get(("e8nm", prime))
+            handle.write(
+                f"{prime}\tquotient length of E8-bar -> VB against X-\t{'equal' if same else 'differs'}\t{detail}\n"
+            )
+            hv, hx, he = (
+                histograms.get(("e8-vb", prime)),
+                histograms.get(("xmnm", prime)),
+                histograms.get(("e8nm", prime)),
+            )
             if hv and hx:
                 a, b = hv[max(hv)], hx[max(hx)]
                 ok = all(a[d] == b[d] + b[d - 1] for d in range(1, 8))
-                handle.write(f"{prime}\tVB(d) = X(d) + X(d-1) for d = 1 to 7\t{'holds' if ok else 'fails'}\t{[a[d] for d in range(8)]}\n")
+                verdict, counts = ("holds" if ok else "fails"), [a[d] for d in range(8)]
+                handle.write(f"{prime}\tVB(d) = X(d) + X(d-1) for d = 1 to 7\t{verdict}\t{counts}\n")
             if hv and he:
                 a, b = hv[max(hv)], he[max(he)]
                 ok = all(a[d] == b[d] - b[d - 1] for d in range(1, 8))
-                handle.write(f"{prime}\tVB(d) = E8(d) - E8(d-1) for d = 1 to 7\t{'holds' if ok else 'fails'}\t{[a[d] for d in range(8)]}\n")
+                verdict, counts = ("holds" if ok else "fails"), [a[d] for d in range(8)]
+                handle.write(f"{prime}\tVB(d) = E8(d) - E8(d-1) for d = 1 to 7\t{verdict}\t{counts}\n")
     return 0
 
 

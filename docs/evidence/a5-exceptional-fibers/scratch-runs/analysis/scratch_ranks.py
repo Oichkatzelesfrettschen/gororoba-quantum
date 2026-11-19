@@ -141,13 +141,28 @@ def main() -> int:
     reference = ledger_h(evidence)
     records = engine_records(scratch, engine_names(evidence)) + ladder_records(scratch)
     columns = [
-        "source", "family", "sign", "prime", "degree", "order", "engine", "mode", "r", "dim_or_cols", "blocks",
-        "seconds", "ledger_h", "ledger_row", "relation",
+        "source",
+        "family",
+        "sign",
+        "prime",
+        "degree",
+        "order",
+        "engine",
+        "mode",
+        "r",
+        "dim_or_cols",
+        "blocks",
+        "seconds",
+        "ledger_h",
+        "ledger_row",
+        "relation",
     ]
     summary: Counter[tuple[str, str]] = Counter()
     with open(os.path.join(out_dir, "scratch-ranks.tsv"), "w", encoding="ascii") as handle:
         handle.write("\t".join(columns) + "\n")
-        for rec in sorted(records, key=lambda r: (str(r["family"]), int(r["prime"]), int(r["degree"]), int(r["order"]))):
+        for rec in sorted(
+            records, key=lambda r: (str(r["family"]), int(r["prime"]), int(r["degree"]), int(r["order"]))
+        ):
             ref = reference.get((str(rec["family"]), str(rec["prime"]), int(rec["degree"])))
             if ref is None:
                 relation = "no ledger value"
@@ -159,9 +174,21 @@ def main() -> int:
                 relation = "ABOVE"
             summary[(str(rec["family"]), relation)] += 1
             row = [
-                rec["source"], rec["family"], rec["sign"], rec["prime"], rec["degree"], rec["order"], rec["engine"],
-                rec["mode"], rec["r"], rec["dim"], rec["blocks"], rec["seconds"],
-                ref[0] if ref else "", ref[1] if ref else "", relation,
+                rec["source"],
+                rec["family"],
+                rec["sign"],
+                rec["prime"],
+                rec["degree"],
+                rec["order"],
+                rec["engine"],
+                rec["mode"],
+                rec["r"],
+                rec["dim"],
+                rec["blocks"],
+                rec["seconds"],
+                ref[0] if ref else "",
+                ref[1] if ref else "",
+                relation,
             ]
             handle.write("\t".join(str(x) for x in row) + "\n")
     by_family: dict[str, dict[str, int]] = defaultdict(dict)

@@ -99,9 +99,26 @@ def main() -> int:
             if len(members) > 1:
                 handle.write(f"{digest}\t{len(members)}\t{' '.join(sorted(members))}\n")
     header = [
-        "directory", "family", "prime", "order", "engine", "variables", "export_json", "j_sha256", "g_sha256",
-        "listed_files", "listed_match", "listed_mismatch", "listed_missing", "unlisted_tables", "sidecars_ok",
-        "sidecars_bad", "qb_monomials", "qb_degree_histogram", "generators_s", "table_bytes",
+        "directory",
+        "family",
+        "prime",
+        "order",
+        "engine",
+        "variables",
+        "export_json",
+        "j_sha256",
+        "g_sha256",
+        "listed_files",
+        "listed_match",
+        "listed_mismatch",
+        "listed_missing",
+        "unlisted_tables",
+        "sidecars_ok",
+        "sidecars_bad",
+        "qb_monomials",
+        "qb_degree_histogram",
+        "generators_s",
+        "table_bytes",
     ]
     with open(os.path.join(out, "exports-audit.tsv"), "w", encoding="ascii") as handle:
         handle.write("\t".join(header) + "\n")
@@ -134,13 +151,26 @@ def main() -> int:
             histogram = degree_histogram(os.path.join(path, "qB.txt")) if "qB.txt" in files else {}
             generators = count_top_level_commas(os.path.join(path, "s.txt")) + 1 if "s.txt" in files else ""
             row = [
-                entry, info["family"], info["prime"], info["order"], info["engine"],
+                entry,
+                info["family"],
+                info["prime"],
+                info["order"],
+                info["engine"],
                 len(record["vars"]) if record else "",
                 "yes" if record else "no",
-                record["J_sha256"] if record else "", record["G_sha256"] if record else "",
-                len(listed), match, ",".join(mismatch) or "-", ",".join(missing) or "-", ",".join(unlisted) or "-",
-                ok, bad, sum(histogram.values()) if histogram else "",
-                json.dumps(histogram, separators=(",", ":")) if histogram else "", generators, table_bytes,
+                record["J_sha256"] if record else "",
+                record["G_sha256"] if record else "",
+                len(listed),
+                match,
+                ",".join(mismatch) or "-",
+                ",".join(missing) or "-",
+                ",".join(unlisted) or "-",
+                ok,
+                bad,
+                sum(histogram.values()) if histogram else "",
+                json.dumps(histogram, separators=(",", ":")) if histogram else "",
+                generators,
+                table_bytes,
             ]
             handle.write("\t".join(str(x) for x in row) + "\n")
     return 0

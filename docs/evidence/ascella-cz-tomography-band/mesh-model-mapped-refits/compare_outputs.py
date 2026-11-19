@@ -8,9 +8,10 @@ difference, the count of leaves that match bit for bit, and the largest relative
 
 import json
 import sys
+from collections.abc import Iterator
 
 
-def leaves(node: object, path: str = ""):
+def leaves(node: object, path: str = "") -> Iterator[tuple[str, object]]:
     if isinstance(node, dict):
         for key in sorted(node):
             yield from leaves(node[key], f"{path}/{key}")
