@@ -1,0 +1,32 @@
+{"check": "oracle-families", "cases": 108, "failures": []}
+{"check": "unary-minus-inside-product", "rc": 1, "ok": true, "stderr": "ne 120, in parse_poly\n    raise ValueError(f\"polynomial outside the expanded signed-monomial grammar: {body_text[:120]!r}\")\nValueError: polynomial outside the expanded signed-monomial grammar: 'x*-y'\n"}
+{"check": "characteristic-2", "rc": 1, "ok": true, "stderr": "modulus 2 is not an odd prime: the character projectors need an invertible 2\n"}
+{"check": "direct-with-quotient", "rc": 1, "ok": true, "stderr": "--direct and --quotient are exclusive: quotient mode has no direct enumeration\n"}
+{"check": "one-letter-quotient", "rc": 0, "expected": 2, "observed": 2, "ok": true, "stderr": ""}
+{"check": "quotient-absent-block", "rc": 0, "expected": 1, "observed": 1, "ok": true, "stderr": ""}
+{"check": "direct-empty-seed", "rc": 0, "expected": 1, "observed": 1, "ok": true, "stderr": ""}
+{"check": "degree-zero-quotient", "rc": 0, "expected": 1, "observed": 1, "ok": true, "stderr": ""}
+{"check": "large-prime-quotient", "rc": 0, "expected": 2, "observed": 2, "ok": true, "stderr": ""}
+{"check": "large-prime-quotient-cached", "rc": 0, "expected": 2, "observed": 2, "ok": true, "stderr": ""}
+{"check": "negative-degree", "rc": 1, "ok": true, "stderr": "need d >= 0, N >= 1 and --chunk >= 1\n"}
+{"check": "parser-rejects x-+y", "rc": 1, "ok": true, "stderr": "ne 120, in parse_poly\n    raise ValueError(f\"polynomial outside the expanded signed-monomial grammar: {body_text[:120]!r}\")\nValueError: polynomial outside the expanded signed-monomial grammar: 'x-+y'\n"}
+{"check": "parser-rejects x--y", "rc": 1, "ok": true, "stderr": "ne 120, in parse_poly\n    raise ValueError(f\"polynomial outside the expanded signed-monomial grammar: {body_text[:120]!r}\")\nValueError: polynomial outside the expanded signed-monomial grammar: 'x--y'\n"}
+{"check": "parser-rejects x^", "rc": 1, "ok": true, "stderr": "line 120, in parse_poly\n    raise ValueError(f\"polynomial outside the expanded signed-monomial grammar: {body_text[:120]!r}\")\nValueError: polynomial outside the expanded signed-monomial grammar: 'x^'\n"}
+{"check": "parser-rejects x*", "rc": 1, "ok": true, "stderr": "line 120, in parse_poly\n    raise ValueError(f\"polynomial outside the expanded signed-monomial grammar: {body_text[:120]!r}\")\nValueError: polynomial outside the expanded signed-monomial grammar: 'x*'\n"}
+{"check": "parser-rejects x**2", "rc": 1, "ok": true, "stderr": "ne 120, in parse_poly\n    raise ValueError(f\"polynomial outside the expanded signed-monomial grammar: {body_text[:120]!r}\")\nValueError: polynomial outside the expanded signed-monomial grammar: 'x**2'\n"}
+{"check": "parser-rejects x^-1", "rc": 1, "ok": true, "stderr": "ne 120, in parse_poly\n    raise ValueError(f\"polynomial outside the expanded signed-monomial grammar: {body_text[:120]!r}\")\nValueError: polynomial outside the expanded signed-monomial grammar: 'x^-1'\n"}
+{"check": "parser-rejects x+", "rc": 1, "ok": true, "stderr": "line 120, in parse_poly\n    raise ValueError(f\"polynomial outside the expanded signed-monomial grammar: {body_text[:120]!r}\")\nValueError: polynomial outside the expanded signed-monomial grammar: 'x+'\n"}
+{"check": "parser-rejects 2x", "rc": 1, "ok": true, "stderr": "line 120, in parse_poly\n    raise ValueError(f\"polynomial outside the expanded signed-monomial grammar: {body_text[:120]!r}\")\nValueError: polynomial outside the expanded signed-monomial grammar: '2x'\n"}
+{"check": "parser-rejects (x+y)", "rc": 1, "ok": true, "stderr": "e 120, in parse_poly\n    raise ValueError(f\"polynomial outside the expanded signed-monomial grammar: {body_text[:120]!r}\")\nValueError: polynomial outside the expanded signed-monomial grammar: '(x+y)'\n"}
+{"check": "parser-rejects x*-y", "rc": 1, "ok": true, "stderr": "ne 120, in parse_poly\n    raise ValueError(f\"polynomial outside the expanded signed-monomial grammar: {body_text[:120]!r}\")\nValueError: polynomial outside the expanded signed-monomial grammar: 'x*-y'\n"}
+{"check": "parser-rejects y4+x2y", "rc": 1, "ok": true, "stderr": " 120, in parse_poly\n    raise ValueError(f\"polynomial outside the expanded signed-monomial grammar: {body_text[:120]!r}\")\nValueError: polynomial outside the expanded signed-monomial grammar: 'y4+x2y'\n"}
+{"check": "iso-d3-N9 split", "rc": 0, "expected": 216, "observed": 216, "ok": true, "stderr": ""}
+{"check": "iso-d3-N9 --no-split", "rc": 0, "expected": 216, "observed": 216, "ok": true, "stderr": ""}
+{"check": "iso-d3-N9 --direct", "rc": 0, "expected": 216, "observed": 216, "ok": true, "stderr": ""}
+{"check": "iso-d3-N9 --quotient", "rc": 0, "expected": 216, "observed": 216, "ok": true, "stderr": ""}
+{"check": "coordinate-oracle", "a": 0, "N": 3, "D": 5, "ok": true, "transpose_distinguished": true}
+{"check": "coordinate-oracle", "a": 1, "N": 3, "D": 5, "ok": true, "transpose_distinguished": true}
+{"check": "coordinate-oracle", "a": 2, "N": 3, "D": 5, "ok": true, "transpose_distinguished": true}
+{"check": "coordinate-oracle", "a": 3, "N": 3, "D": 5, "ok": true, "transpose_distinguished": true}
+{"check": "coordinate-oracle", "a": 4, "N": 3, "D": 5, "ok": true, "transpose_distinguished": true}
+{"summary": {"oracle_cases": 108, "fixtures": 30, "failed": 0}}

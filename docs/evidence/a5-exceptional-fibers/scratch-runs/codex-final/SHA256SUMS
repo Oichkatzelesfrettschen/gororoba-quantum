@@ -1,0 +1,8 @@
+55899c5c6715ce5c16aacede80f5f6dfc7c8f2e195e0f35e89dc1a750ce7c2cb  ./groebner-default-n13.log
+3ed0214918275f63de5be57f22724fd5268e394c6aefbcd7a886191c257b38fa  ./slimgb-baseline-n13.log
+9cf751df0e5dc5f329f758d7c0d2c71bbe3ce2c0c90d075ec4bcf1c9a03ca8e6  ./slimgb-degbound-n13.log
+f9486e35ca0a0b9395e61d17f29ec044d037565707f33d8301442e4081bf3867  ./slimgb-degbound-n15.log
+d68b3674349a080eec9220e20e84abd505a57c3faf2f1fb0fec5aadd625bc072  ./slimgb-noredtail-n13.log
+fbcc86a26f0e4b1ffd7575b3f9ab169afe34b9cb96a7b32ef6520bfbd8fecb14  ./slimgb-reverse-n13.log
+0c6e8fd0fd1c43c3b4521ae4901c22125f3a1d4b5a7b0237b7d7217fa3fdeca6  ./std-baseline-n13.log
+6c5fd260d2d34ccfe570170b71986607f0488c19d943746f04bde4eddede789f  ./std-length-n13.log
