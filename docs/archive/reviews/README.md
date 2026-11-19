@@ -202,3 +202,5 @@ of one reviewer and two red-teamers on the case generator and its written cases.
 The [Quantum Inspire status document review](qi-status-document/reconciliation.md) reconciles the seven findings
 of its [reviewer report](qi-status-document/codex-report.md) on [the brief](qi-status-document/brief.md) for
 `scripts/qi_status.py`.
+
+The [circuit_params unitary comparison review](circuit-params-unitary-comparison/README.md) (pull request 937) and the [workbench payload identity review](workbench-payload-identity/README.md) (pull request 843) are post-merge backfills. Each reconciles the Advisor and worker rounds of its pull request against the pull request's own threads and its merge commit.
