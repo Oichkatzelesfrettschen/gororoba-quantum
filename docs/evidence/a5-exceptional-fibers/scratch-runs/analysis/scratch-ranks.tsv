@@ -1,0 +1,80 @@
+source	family	sign	prime	degree	order	engine	mode	r	dim_or_cols	blocks	seconds	ledger_h	ledger_row	relation
+replay/out/E8-N--32009-d1-N5-raw/replay.jsonl	E8-bar -> N	-	32009	1	5	v8	raw	21	715	4	0.2	21	A5-090	equal
+replay/out/E8-Np-32009-d1-N5-raw/replay.jsonl	E8-bar -> N	+	32009	1	5	v8	raw	21	715	4	0.2	21	A5-090	equal
+e8close/e8-nm-p32009-d3-n14.json	E8-bar -> N	-	32009	1	10	fast-ladder	float64-batched-echelon	21	2930		16.1	21	A5-090	equal
+e8close/e8-nm-p32009-d3-n16.json	E8-bar -> N	-	32009	1	12	fast-ladder	float64-batched-echelon	21	6820		73.8	21	A5-090	equal
+replay/out/E8-N--32009-d2-N8-quotient/replay.jsonl	E8-bar -> N	-	32009	2	8	v8	quotient	83	1982	4	7.8	83	A5-091	equal
+e8close/e8-nm-p32009-d3-n14.json	E8-bar -> N	-	32009	2	12	fast-ladder	float64-batched-echelon	83	5453		54.7	83	A5-091	equal
+e8close/e8-nm-p32009-d3-n16.json	E8-bar -> N	-	32009	2	14	fast-ladder	float64-batched-echelon	83	11915		1284.8	83	A5-091	equal
+engine/e8nm_d3_raw_v6.jsonl	E8-bar -> N	-	32009	3	10	v6	raw	191	48620	4	1021.2	225	A5-092	below
+engine/e8nm_d3_raw_v6.jsonl	E8-bar -> N	-	32009	3	11	v6	raw	225	92378	4	4574.3	225	A5-092	equal
+engine/e8np_d3_p1_raw_v6.jsonl	E8-bar -> N	+	32009	3	11	v6	raw	225	92378	4	4517.1	225	A5-092	equal
+replay/out/E8-N--32009-d3-N11-quotient/replay.jsonl	E8-bar -> N	-	32009	3	11	v8	quotient	225	7887	4	226.8	225	A5-092	equal
+replay/out/E8-Np-32009-d3-N11-quotient/replay.jsonl	E8-bar -> N	+	32009	3	11	v8	quotient	225	7887	4	230.2	225	A5-092	equal
+e8close/e8-nm-p32009-d3-n14.json	E8-bar -> N	-	32009	3	14	fast-ladder	float64-batched-echelon	225	8879		265.2	225	A5-092	equal
+e8close/e8-nm-p32009-d3-n16.json	E8-bar -> N	-	32009	3	16	fast-ladder	float64-batched-echelon	225	18724		2470.8	225	A5-092	equal
+engine/e8nm_d4_v7.jsonl	E8-bar -> N	-	32009	4	12	v7	quotient	357	11595	4	4564.3	495	A5-093	below
+engine/e8nm_d4_v7.jsonl	E8-bar -> N	-	32009	4	13	v7	quotient	440	16575	4	12432.6	495	A5-093	below
+engine/e8nm_d4_v7.jsonl	E8-bar -> N	-	32009	4	14	v7	quotient	440	23128	4	30052.7	495	A5-093	below
+replay/out/e8n15-p1/out.json	E8-bar -> N	?	32009	4	15	v8	quotient	495	31599	4	11020.7	495	A5-093	equal
+replay/out/E8-N--32029-d1-N5-raw/replay.jsonl	E8-bar -> N	-	32029	1	5	v8	raw	21	715	4	0.2	21	A5-096	equal
+replay/out/E8-Np-32029-d1-N5-raw/replay.jsonl	E8-bar -> N	+	32029	1	5	v8	raw	21	715	4	0.2	21	A5-096	equal
+engine/e8nm_d3_p2_raw_v6.jsonl	E8-bar -> N	-	32029	3	11	v6	raw	225	92378	4	4526.1	225	A5-098	equal
+replay/out/E8-N--32029-d3-N11-quotient/replay.jsonl	E8-bar -> N	-	32029	3	11	v8	quotient	225	7887	4	225.8	225	A5-098	equal
+replay/out/E8-Np-32029-d3-N11-quotient/replay.jsonl	E8-bar -> N	+	32029	3	11	v8	quotient	225	7887	4	215.0	225	A5-098	equal
+engine/v11/out/e8nm_d5_n16_p32029.json	E8-bar -> N	-	32029	5	16	v11	quotient	742	42380	4	21266.7	952	A5-220	below
+replay/out/E8-VB-32009-d1-N5-raw/replay.jsonl	E8-bar -> VB	?	32009	1	5	v8	raw	10	495	4	0.1	10	A5-102	equal
+engine/vb_d5_v7.jsonl	E8-bar -> VB	?	32009	5	16	v7	quotient	266	7736	4	698.4	266	A5-106	equal
+replay/out/E8-VB-32009-d5-N16-quotient/replay.jsonl	E8-bar -> VB	?	32009	5	16	v8	quotient	266	7736	4	676.1	266	A5-106	equal
+replay/out/E8-VB-32029-d1-N5-raw/replay.jsonl	E8-bar -> VB	?	32029	1	5	v8	raw	10	495	4	0.1	10	A5-108	equal
+replay/out/E8-VB-32029-d5-N16-quotient/replay.jsonl	E8-bar -> VB	?	32029	5	16	v8	quotient	266	7736	4	749.4	266	A5-112	equal
+replay/out/Iso-32009-d1-N5-raw/replay.jsonl	Iso	?	32009	1	5	v8	raw	17	210	4	0.1	17	A5-114	equal
+replay/out/Iso-32009-d3-N10-quotient/replay.jsonl	Iso	?	32009	3	10	v8	quotient	265	3289	4	7.8	265	A5-116	equal
+replay/out/Iso-32009-d4-N13-raw/replay.jsonl	Iso	?	32009	4	13	v8	raw	640	18564	4	111.8	640	A5-117	equal
+engine/iso_d5.jsonl	Iso	?	32009	5	15	unrecorded	raw	1195	38760	4	840.7	1316	A5-118	below
+engine/iso_d5_v6.jsonl	Iso	?	32009	5	16	v6	raw	1316	54264	4	1062.2	1316	A5-118	equal
+replay/out/Iso-32009-d5-N16-raw/replay.jsonl	Iso	?	32009	5	16	v8	raw	1316	54264	4	1187.4	1316	A5-118	equal
+replay/out/Iso-32029-d1-N5-raw/replay.jsonl	Iso	?	32029	1	5	v8	raw	17	210	4	0.1	17	A5-120	equal
+replay/out/Iso-32029-d4-N13-raw/replay.jsonl	Iso	?	32029	4	13	v8	raw	640	18564	4	110.6	640	A5-123	equal
+engine/iso_d5_p2_v6.jsonl	Iso	?	32029	5	16	v6	raw	1316	54264	4	1039.7	1316	A5-124	equal
+replay/out/Iso-32029-d5-N16-raw/replay.jsonl	Iso	?	32029	5	16	v8	raw	1316	54264	4	1237.0	1316	A5-124	equal
+replay/out/W8-N--32009-d1-N5-raw/replay.jsonl	W8	-	32009	1	5	v8	raw	24	330	4	0.3	24	A5-138	equal
+replay/out/W8-N--32009-d3-N10-quotient/replay.jsonl	W8	-	32009	3	10	v8	quotient	600	8008	4	52.6	600	A5-140	equal
+engine/w8_d4_p1_v6.jsonl	W8	?	32009	4	13	v6	raw	1725	50388	4	1320.1	1725	A5-141	equal
+replay/out/W8-N--32009-d4-N13-raw/replay.jsonl	W8	-	32009	4	13	v8	raw	1725	50388	4	1566.8	1725	A5-141	equal
+replay/out/W8-N--32029-d1-N5-raw/replay.jsonl	W8	-	32029	1	5	v8	raw	24	330	4	0.3	24	A5-144	equal
+replay/out/W8-N--32029-d3-N10-quotient/replay.jsonl	W8	-	32029	3	10	v8	quotient	600	8008	4	47.7	600	A5-146	equal
+engine/w8_d4.jsonl	W8	?	32029	4	12	unrecorded	raw	1644	31824	4	1082.4	1725	A5-147	below
+engine/w8_d4_v6.jsonl	W8	?	32029	4	13	v6	raw	1725	50388	4	1439.6	1725	A5-147	equal
+replay/out/W8-N--32029-d4-N13-raw/replay.jsonl	W8	-	32029	4	13	v8	raw	1725	50388	4	1454.9	1725	A5-147	equal
+replay/out/X--32009-d1-N5-raw/replay.jsonl	X	?	32009	1	5	v8	raw	15	330	4	0.0	15	A5-162	equal
+fast/xm-nm-p32009-d6-n26.json	X	-	32009	1	11	fast-ladder	float64-batched-echelon	15	674		1.4	15	A5-162	equal
+fast/xm-nm-p32009-d7-n29.json	X	-	32009	1	11	fast-ladder	float64-batched-echelon	15	674		63.6	15	A5-162	equal
+fast/xm-nm-p32009-d8-n32.json	X	-	32009	1	11	fast-ladder	float64-batched-echelon	15	674		55.3	15	A5-162	equal
+blocks/t-fast_ladder.json	X	-	32009	1	13	fast-ladder	float64-batched-echelon	15	1320		5.7	15	A5-162	equal
+fast/xm-nm-p32009-d6-n26.json	X	-	32009	2	14	fast-ladder	float64-batched-echelon	51	1176		3.0	51	A5-163	equal
+fast/xm-nm-p32009-d7-n29.json	X	-	32009	2	14	fast-ladder	float64-batched-echelon	51	1176		178.8	51	A5-163	equal
+fast/xm-nm-p32009-d8-n32.json	X	-	32009	2	14	fast-ladder	float64-batched-echelon	51	1176		172.4	51	A5-163	equal
+blocks/t-fast_ladder.json	X	-	32009	2	16	fast-ladder	float64-batched-echelon	51	2175		12.4	51	A5-163	equal
+fast/xm-nm-p32009-d6-n26.json	X	-	32009	3	17	fast-ladder	float64-batched-echelon	122	1824		9.5	122	A5-164	equal
+fast/xm-nm-p32009-d7-n29.json	X	-	32009	3	17	fast-ladder	float64-batched-echelon	122	1824		372.2	122	A5-164	equal
+fast/xm-nm-p32009-d8-n32.json	X	-	32009	3	17	fast-ladder	float64-batched-echelon	122	1824		365.8	122	A5-164	equal
+blocks/t-fast_ladder.json	X	-	32009	3	19	fast-ladder	float64-batched-echelon	122	3280		112.9	122	A5-164	equal
+fast/xm-nm-p32009-d6-n26.json	X	-	32009	4	20	fast-ladder	float64-batched-echelon	240	2586		28.6	240	A5-165	equal
+fast/xm-nm-p32009-d7-n29.json	X	-	32009	4	20	fast-ladder	float64-batched-echelon	240	2586		643.6	240	A5-165	equal
+fast/xm-nm-p32009-d8-n32.json	X	-	32009	4	20	fast-ladder	float64-batched-echelon	240	2586		659.9	240	A5-165	equal
+blocks/t-fast_ladder.json	X	-	32009	4	22	fast-ladder	float64-batched-echelon	240	4615		185.2	240	A5-165	equal
+replay/out/X--32009-d5-N19-quotient/replay.jsonl	X	?	32009	5	19	v8	quotient	417	14611	4	761.9	417	A5-166	equal
+fast/xm-nm-p32009-d6-n26.json	X	-	32009	5	23	fast-ladder	float64-batched-echelon	417	3408		104.4	417	A5-166	equal
+fast/xm-nm-p32009-d7-n29.json	X	-	32009	5	23	fast-ladder	float64-batched-echelon	417	3408		769.0	417	A5-166	equal
+fast/xm-nm-p32009-d8-n32.json	X	-	32009	5	23	fast-ladder	float64-batched-echelon	417	3408		915.2	417	A5-166	equal
+blocks/t-fast_ladder.json	X	-	32009	5	25	fast-ladder	float64-batched-echelon	417	6138		474.5	417	A5-166	equal
+fast/xm-nm-p32009-d6-n26.json	X	-	32009	6	26	fast-ladder	float64-batched-echelon	665	4214		316.4	665	A5-167	equal
+fast/xm-nm-p32009-d7-n29.json	X	-	32009	6	26	fast-ladder	float64-batched-echelon	665	4214		1254.8	665	A5-167	equal
+fast/xm-nm-p32009-d8-n32.json	X	-	32009	6	26	fast-ladder	float64-batched-echelon	665	4214		1028.9	665	A5-167	equal
+fast/xm-nm-p32009-d7-n29.json	X	-	32009	7	29	fast-ladder	float64-batched-echelon	996	4906		2580.0	996	A5-298	equal
+fast/xm-nm-p32009-d8-n32.json	X	-	32009	7	29	fast-ladder	float64-batched-echelon	996	4906		2097.0	996	A5-298	equal
+fast/xm-nm-p32009-d8-n32.json	X	-	32009	8	32	fast-ladder	float64-batched-echelon	1133	5653		3217.3	1422	A5-299	below
+replay/out/X--32029-d1-N5-raw/replay.jsonl	X	?	32029	1	5	v8	raw	15	330	4	0.0	15	A5-168	equal
+replay/out/Xp-32029-d1-N5-raw/replay.jsonl	X	?	32029	1	5	v8	raw	15	330	4	0.0	15	A5-168	equal
+replay/out/X--32029-d5-N19-quotient/replay.jsonl	X	?	32029	5	19	v8	quotient	417	14611	4	694.6	417	A5-172	equal

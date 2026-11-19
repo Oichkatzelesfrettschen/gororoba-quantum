@@ -1,0 +1,10 @@
+family	relation	records
+E8-bar -> N	below	5
+E8-bar -> N	equal	19
+E8-bar -> VB	equal	5
+Iso	below	1
+Iso	equal	9
+W8	below	1
+W8	equal	8
+X	below	1
+X	equal	30
