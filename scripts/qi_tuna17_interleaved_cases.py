@@ -146,7 +146,7 @@ PROFILES: dict[str, dict[str, Any]] = {
     },
 }
 # The retained QRNG draw of this case: None until the draw named by qrng_request() is retained, then its canonical path.
-DRAW: str | None = None
+DRAW: str | None = "docs/evidence/anu_qrng/draw-2026-11-19T164737Z.json"
 DRAW_LENGTH = 256
 # Decision thresholds. The probability bound is the retained characterization's; the AICc gain is the usual 4.
 LACK_OF_FIT_PROBABILITY = 0.01

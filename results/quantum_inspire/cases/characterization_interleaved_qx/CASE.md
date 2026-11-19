@@ -1,6 +1,6 @@
 # Case: QX twin of the Tuna-17 interleaved T1, drive-context crosstalk and q12 phase series
 
-Status: written case awaiting the owner's approval; nothing has been submitted. The twin rehearses the series of
+Status: approved by the owner on 2026-11-19 with the Tuna-17 case; nothing has been submitted yet. The twin rehearses the series of
 [the Tuna-17 case](../characterization_interleaved_tuna_17/CASE.md) on the QX emulator (`QXsinglenodesimulator`, backend type 1)
 with the same circuit texts at 10 qubits, the same batch layout and the same order, before any Tuna-17 batch is submitted. Generator and checker:
 `scripts/qi_tuna17_interleaved_cases.py` (`--check results/quantum_inspire/cases` reproduces every file of this directory except this one).
@@ -25,7 +25,7 @@ platform's batch, queue and collection path, which is the part the hardware seri
 
 The same circuit texts as the Tuna-17 case at 10 qubits, in 30 provider batches of at most three circuits: 18 batches and 54 jobs for the interleaved arm
 (55,296 shots), 8 and 24 for the crosstalk arm (24,576 shots) and 4 and 12 for the phase arm (12,288 shots); 90 jobs and 92,160 shots in all. The order is the Tuna-17
-case's, from the same retained QRNG draw (`qrng_request.json` while it is pending).
+case's, from the same retained QRNG draw (`docs/evidence/anu_qrng/draw-2026-11-19T164737Z.json`, named by `qrng_request.json`).
 
 ## Expected seconds and credits
 
