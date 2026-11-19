@@ -1,0 +1,31 @@
+~/a5/mono/fast_ladder2.py:99: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/Context.cpp:916.)
+  return torch.sparse_csr_tensor(
+~/a5/mono/fast_ladder2.py:99: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  return torch.sparse_csr_tensor(
+{"degree": 1, "order": 12, "columns": 7371, "map_nnz": 3197211, "A": 6841, "B": 6820, "r": 21, "seconds": 73.8}
+{"degree": 2, "order": 14, "columns": 14756, "map_nnz": 10508729, "A": 11998, "B": 11915, "r": 83, "seconds": 1284.8}
+{"degree": 3, "order": 16, "columns": 27132, "map_nnz": 28880029, "A": 18949, "B": 18724, "r": 225, "seconds": 2470.8}
+{"slug": "e8-nm", "prime": 32009, "order": 16, "generators": 21, "generator_order": 2, "engine": "float64-batched-echelon", "batch": 1024, "threads": 28, "rows": [{"degree": 1, "order": 12, "columns": 7371, "map_nnz": 3197211, "A": 6841, "B": 6820, "r": 21, "seconds": 73.8}, {"degree": 2, "order": 14, "columns": 14756, "map_nnz": 10508729, "A": 11998, "B": 11915, "r": 83, "seconds": 1284.8}, {"degree": 3, "order": 16, "columns": 27132, "map_nnz": 28880029, "A": 18949, "B": 18724, "r": 225, "seconds": 2470.8}], "timing": {"generators": 11.9, "maps": 4.9, "products": 299.4, "echelon": 2150.5}, "seconds": 2470.8}
+	Command being timed: "systemd-run --user --scope -q -p MemoryMax=44G -p MemorySwapMax=0 ~/a5env/bin/python ~/a5/mono/fast_ladder2.py --slug e8-nm --prime 32009 --degree 3 --order 16 --threads 28 --out ~/a5/e8close/e8-nm-p32009-d3-n16.json"
+	User time (seconds): 39743.35
+	System time (seconds): 755.75
+	Percent of CPU this job got: 1637%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 41:13.72
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 16554944
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 168052334
+	Voluntary context switches: 780582
+	Involuntary context switches: 2412598
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
