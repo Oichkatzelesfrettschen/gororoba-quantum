@@ -2,7 +2,7 @@
 
 Class: result (an output of a recorded run; no row of the findings ledger cites these files yet).
 
-Question: Rerun of the three kernel-limit records (x opposite, e8, vb limit span) with a byte comparison against the retained records in `summary.txt`. `summary.txt` records that `e8-result` and `vb-limit-span-result` equaled the retained records of the rerun checkout and `x-opposite-result` differed; `x-opposite-result.json` (not imported) equals the tracked record of today, so the recorded difference was against an earlier version.
+Question: Rerun of the three kernel-limit records (x opposite, e8, vb limit span) with a byte comparison against the retained records in `summary.txt`. `summary.txt` records that `e8-result` and `vb-limit-span-result` equaled the retained records of the rerun checkout and `x-opposite-result` differed; the cause of that difference is not recorded, and the rerun's `x-opposite-result.json` is not imported.
 
 Generator and command: `kl-rerun.sh` (included).
 

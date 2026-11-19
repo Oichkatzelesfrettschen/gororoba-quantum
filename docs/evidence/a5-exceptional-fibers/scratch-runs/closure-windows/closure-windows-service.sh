@@ -26,7 +26,7 @@ for property in MemoryMax MemorySwapMax MemoryHigh; do
     test "$value" = infinity || exit 75
 done
 available_kib=$(sed -n 's/^MemAvailable:[[:space:]]*\([0-9]*\).*/\1/p' /proc/meminfo)
-native_kib=$(/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -NonInteractive \
+native_kib=$(powershell.exe -NoProfile -NonInteractive \
     -Command '(Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory' | tr -d '\r\n ')
 case "$native_kib" in ''|*[!0-9]*) exit 75 ;; esac
 required_kib=$((budget_gib * 1024 * 1024))

@@ -8,7 +8,7 @@ M=docs/evidence/ascella-cz-tomography-band/mesh_model.py
 run() { t0=$(date +%s); ~/a5env/bin/python "$M" "$out/$1.json" > "$out/$1.log" 2>&1; echo "$1 rc=$? seconds=$(( $(date +%s) - t0 ))" >> "$out/summary.txt"; }
 : > "$out/summary.txt"
 run serial
-cp /tmp/mesh_model.patched.py "$M"
+cp <scratch>/mesh_model.patched.py "$M"
 run mapped
 if cmp -s "$out/serial.json" "$out/mapped.json"; then echo "outputs identical" >> "$out/summary.txt"; else echo "outputs DIFFER" >> "$out/summary.txt"; fi
 if cmp -s "$out/serial.json" docs/evidence/ascella-cz-tomography-band/mesh-model.json; then echo "serial equals retained" >> "$out/summary.txt"; else echo "serial differs from retained" >> "$out/summary.txt"; fi

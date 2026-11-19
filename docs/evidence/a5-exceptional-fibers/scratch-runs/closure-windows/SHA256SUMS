@@ -1,7 +1,7 @@
 a7ff0b3b7f7c9e79d95abab16d36fb1f90a816e3b9710f43101b92c8568658b1  ./closure-windows-calibration.py
 57a714c1114f8e008d1034ae72cd0bf4969dbce16ce0142bd31efd762d07b708  ./closure-windows-calibration.sh
 f10cc8aa51a02658f00859fd6a09bac543ed4a146ff1d64a049c4d881e697292  ./closure-windows-orchestrate.sh
-850488b3e220a358ce253a59ee8d11b7b66ac8877e9f0ff7a8c6f6fa0001670d  ./closure-windows-service.sh
+f9efb0a8728a5cac35d6c7c1121ce6f4338ee955f43309e0daf75368c2904fb7  ./closure-windows-service.sh
 852a0b2e0d412853f30393b882cb6721d42a50a05d8403f6579885b9bda3e810  ./closure-windows-stage.py
 8934addc2a542ce27fe00152cc268c31f10eb5ee16428920a51a736bb036f841  ./e8-closure-certificate/checks/e8-nm-2280164-697240123988498/logs/e8-closure-e8-nm-p32009-r10754.time
 4ad1b87e232fbacfac40979b447998705b1e3c25c9173f0b12c43519a79dadcd  ./e8-closure-certificate/checks/e8-nm-2280164-697240123988498/logs/e8-closure-producer-e8-nm.time
