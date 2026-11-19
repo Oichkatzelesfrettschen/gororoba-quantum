@@ -55,8 +55,8 @@ own preregistration, resource estimate, review and approval.
 
 The caps equal the retained caps, so per-iteration cost is unchanged (retained iterations used 40000 or 40001 shots). On
 sim:belenos the cap does not enter the bill (price 0.0 per shot; completed simulator jobs bill a fixed 1.0 credit). The
-order of jobs is counterbalanced, P1 P2 P2 P1 P1 P2 (blocks P1 P2, P2 P1, P1 P2), so each request occupies early and late
-slots equally often. Residual assumption: order, warm-cache and odd/even service state remain only partly balanced, so
+order of jobs is P1 P2 P2 P1 P1 P2 (blocks P1 P2, P2 P1, P1 P2): P1 takes slots 1, 4 and 5 (mean slot 3.33) and P2 slots 2, 3
+and 6 (mean 3.67); three replicates per request cannot balance six slots, so P1 runs slightly earlier on average. Residual assumption: order, warm-cache and odd/even service state remain only partly balanced, so
 outcomes read as more consistent with request cost or with service variation, not as causal separation. Jobs run one at a
 time (`max_concurrent_jobs` 1), each submitted after the previous one is collected.
 
@@ -111,8 +111,8 @@ partly balanced.
 |---|---|---|
 | s(P1) or s(P2) above 10 % | observed spread above 10 %: more consistent with service variation (one request takes different times on different runs) | any 24-iteration job needs margin; record the spread as a provider property and size by the longest observed duration |
 | s(P1) and s(P2) at most 5 %, and |m1 - m2| / mean above 10 % | more consistent with request cost: groups differ in cost | read the job records for the costly groups; reorder or split them in a successor preregistration |
-| s(P1) and s(P2) at most 5 %, |m1 - m2| / mean at most 5 %, and 2 x (mean duration) above 295 s | the null: the 24-iteration shape needs about 300 s | drop the spread hypothesis, size every b1 successor from the measured duration, and record that the shape needs fewer iterations per job |
-| s(P1) and s(P2) at most 5 %, |m1 - m2| / mean at most 5 %, and 2 x (mean duration) at most 295 s | both retained jobs were outliers of one provider state | drop the hypothesis as unreproduced; one repeat of `b1-j2` in full is the only remaining test and needs its own approval |
+| s(P1) and s(P2) at most 5 %, |m1 - m2| / mean at most 5 %, and 2 x (mean duration) above 295 s | inconclusive for the 24-iteration shape: doubling a 12-iteration duration counts any fixed start-up twice, so it bounds the 24-iteration duration from above only | drop the spread hypothesis; no change to the frozen request; a full 24-iteration repeat needs its own approval |
+| s(P1) and s(P2) at most 5 %, |m1 - m2| / mean at most 5 %, and 2 x (mean duration) at most 295 s | the 24-iteration shape fits under the limit (the doubled duration is an upper bound), so both retained jobs were outliers of one provider state | drop the hypothesis as unreproduced; one repeat of `b1-j2` in full is the only remaining test and needs its own approval |
 | any other pattern (for example s between 5 % and 10 %) | inconclusive at this power | no change to the frozen request; report and record an open row |
 | any job reaching the limit or failing | the stop condition below fires | read the job record, record the failure, do not rerun without approval |
 
