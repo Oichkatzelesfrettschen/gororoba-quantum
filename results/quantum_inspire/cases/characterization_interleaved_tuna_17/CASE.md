@@ -1,6 +1,6 @@
 # Case: Tuna-17 interleaved T1 at per-qubit delays, drive-context crosstalk arm and q12 Ramsey phase scan
 
-Status: approved by the owner on 2026-11-19, the QX twin first; nothing has been submitted to any backend, the emulator included.
+Status: approved by the owner on 2026-11-19, the QX twin first; the QX twin is submitted and collected (its case records the outcome). Tuna-17 is not yet submitted to any backend; a waiter submits each batch when the device reads idle.
 Generator and checker: `scripts/qi_tuna17_interleaved_cases.py` (`--check results/quantum_inspire/cases` reproduces every file of this
 directory except this one, and the QX twin `../characterization_interleaved_qx/`). The case follows the record of
 [the 2026-11-16 characterization](../../../../docs/notes/quantum_inspire/tuna17-characterization-2026-11-16.md) and its

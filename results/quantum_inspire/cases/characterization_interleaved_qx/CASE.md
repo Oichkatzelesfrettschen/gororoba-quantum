@@ -1,6 +1,6 @@
 # Case: QX twin of the Tuna-17 interleaved T1, drive-context crosstalk and q12 phase series
 
-Status: approved by the owner on 2026-11-19 with the Tuna-17 case; nothing has been submitted yet. The twin rehearses the series of
+Status: approved by the owner on 2026-11-19 with the Tuna-17 case; submitted and collected on the QX emulator: 30 batches, 90 jobs, 92,160 shots, every run directory passes `--sanity`. Analysis: `results/quantum_inspire/characterization_interleaved_qx_analysis.json` (tail_statistic 0.0, tail_verdict `not_confirmed`, 10 usable qubits, 0 of 56 crosstalk contrasts flagged). The twin rehearses the series of
 [the Tuna-17 case](../characterization_interleaved_tuna_17/CASE.md) on the QX emulator (`QXsinglenodesimulator`, backend type 1)
 with the same circuit texts at 10 qubits, the same batch layout and the same order, before any Tuna-17 batch is submitted. Generator and checker:
 `scripts/qi_tuna17_interleaved_cases.py` (`--check results/quantum_inspire/cases` reproduces every file of this directory except this one).
@@ -58,3 +58,10 @@ aggregate and the staggered comparison are exercised by the test file only.
 - Falsifier: any circuit off its noiseless law (five binomial deviations for a fringe point), a fringe offset of 0.05 rad or more, or a run directory without both records.
 - Predicted outcome: all circuits on their law, offset 0.00 within 0.018 rad, 30 run directories with both records.
 - Budget: 30 batches, 90 jobs, 92,160 shots, 289.8 s, 0 credits, against the twin of the retained series (14 jobs, 178 s measured).
+
+## Execution and wall time against the prediction
+
+Predicted: 289.8 s of execution (`prediction.json`, `total.expected_execution_seconds`).
+Measured execution: 237.866 s, the sum of the 90 job results. This sum was taken from the PR review record at the reviewed head and has not been recomputed from the raw results in this record (hypothesis until recomputed).
+Measured wall time: 1,523.864 s from the first admission to the final status trace, from the retained `admission.json` and `status-trace.json` timestamps. Submission creation to final collection measures 1,512 s.
+Deviation: execution ran 18% under the prediction (237.866 s against 289.8 s). Wall time is not comparable to the execution prediction because it includes the queue and pause waits.
