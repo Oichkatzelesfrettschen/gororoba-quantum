@@ -29,8 +29,8 @@ name) and calibrated T1 values from 18.9 us (QB37) to 80 us (QB24) on the qubits
 - Packed Pauli response on Emerald ([proposal](../packed-pauli-response-emerald/proposal.json),
   [current-balance design](../../../../docs/design/packed-pauli-response-current-balance.md)): lost because it would
   commit 24 credits to 52 qubits with its cost bound pending, and the design prefers the Rigetti route for the density
-  test; it also measures no Emerald timing, which sets its shot budget. The 24 credits are measured against the historical
-  30.00-credit snapshot (see "Retained measurements").
+  test; it also measures no Emerald timing, which sets its shot budget. The 24 credits are compared with the live account
+  reading of 30.00 credits (see "Retained measurements").
 
 ## Circuits
 
@@ -125,7 +125,7 @@ backend `iqm:emerald`, 12 circuits x 4000 shots, active reset, expected 3.7 s, 3
 billed seconds at 0.75 credits per second). `scripts/iqm_idle_schedule_probe.py` requires 2 s of plan headroom under the
 ceiling, so the active path proceeds only if the mock estimate is at most 4.0 s. If the mock refuses active reset or
 estimates above 4.0 s, the passive fallback (21.35 s plus 2 s headroom fits 24 s) needs its own approval at a ceiling of
-18.00 credits (24 s); against the historical 30.00-credit snapshot that would leave 12.00, but the live balance decides.
+18.00 credits (24 s); against the live reading of 30.00 credits that would leave 12.00; the balance is read again at submission.
 Against the retained limits (20000 shots per circuit, 100 circuits per job), the job fits.
 
 ## Retained measurements of the same shape
@@ -136,9 +136,10 @@ Against the retained limits (20000 shots per circuit, 100 circuits per job), the
   circuits that this case omits. The pulse counts (0, 500, 1000) and the idle-layout pattern are shared.
 - No retained Emerald job of this shape exists: no directory of `results/iqm/runs` and no run record there names
   Emerald.
-- The balance on record is 30.00 credits at the 2026-10-22 snapshot, with an expiry of 2026-11-01 in
-  `docs/evidence/iqm/account/credit.json`. That snapshot expired before this case was written, so every credit comparison
-  above (24 of 30, 12.00 of 30.00) is historical arithmetic; the live balance is unread and is read at submission.
+- Measured account read at 2026-11-19T23:17Z (read-only credit query of `scripts/iqm_jobs.py`): currentBalance 30.00,
+  expiresAt 2026-12-01T00:00:00+00:00. The retained snapshot `docs/evidence/iqm/account/credit.json` is older (2026-10-22,
+  expiry 2026-11-01). The credit comparisons above (24 of 30, 12.00 of 30.00) use the live reading; the balance is read
+  again at submission.
 
 ## Open items before a build
 
