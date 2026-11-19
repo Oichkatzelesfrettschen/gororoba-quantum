@@ -1,12 +1,12 @@
 # replay
 
-Class: result (an output that a finding of the A_5 fiber track rests on).
+Class: result (an output of a recorded run; no row of the findings ledger cites these files yet).
 
 Question: Per-cell replay logs of the engine cells named in `replay-ids.txt` (raw and quotient modes at degree 1 to 5, orders 5 to 19, W8, Iso, X, E8 and E8-VB), each a JSON line with exit status and seconds.
 
 Generator and command: command not recorded; `replay-ids.txt` lists the cells.
 
-Host role: the compute workstation. Dates (file modification times, UTC date): 2026-11-04 to 2026-11-05.
+Host role: the compute workstation. Dates (file modification times of the inventory): 2026-11-04 to 2026-11-05.
 
 Content (`.time` files hold the wall time and peak memory of a run, `.done`, `.status` and `.exit` files its terminal marker):
 
@@ -145,4 +145,4 @@ Content (`.time` files hold the wall time and peak memory of a run, `.done`, `.s
 | `out/e8n15-p1/*(none)` | 3 | 43 | `err`, `exit` |
 | `out/e8n15-p1/*.json` | 1 | 768 | `out.json` |
 
-Each file is listed with its sha256 in `SHA256SUMS` (verify with `sha256sum -c SHA256SUMS` from this directory). Home-directory paths in the files read `~`; the digest of each file before that rewrite is in [../SOURCE-DIGESTS.tsv](../SOURCE-DIGESTS.tsv). Scope: diagnostic working data over F_32009 and F_32029 unless a file says otherwise; the files carry no claim row in [../../ledger.tsv](../../ledger.tsv).
+Each file is listed with its sha256 in `SHA256SUMS` (verify with `sha256sum -c SHA256SUMS` from this directory). Home-directory paths in the files read `~`; the digest of each file before that rewrite, and the tracked path whose bytes a small marker or timing file happens to equal, are in [../SOURCE-DIGESTS.tsv](../SOURCE-DIGESTS.tsv). Scope: diagnostic working data over F_32009 and F_32029 unless a file says otherwise.

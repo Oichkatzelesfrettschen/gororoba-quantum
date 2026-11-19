@@ -1,8 +1,8 @@
 # scratch-runs
 
-Run families that the compute workstation held in an untracked scratch directory (runs of 2026-11-02 to 2026-11-15) and that no file of this repository recorded: the files here are those whose content equals no tracked file and that sit below 1.5 MB. Families that repeat a tracked file, copies of `gororoba_quantum/` modules and of other evidence directories, `.pyc` files and a 23 GB export tree are not imported. The files above the limit, with their sha256, are in [large-files-manifest.tsv](large-files-manifest.tsv); the sha256 of each imported file before the rewrite of home-directory paths to `~` is in [SOURCE-DIGESTS.tsv](SOURCE-DIGESTS.tsv).
+Run families that the compute workstation held in an untracked scratch directory (runs of 2026-11-02 to 2026-11-15) and that no file of this repository recorded: the files here are text files below 1.5 MB whose content equals no tracked file, with the exception of tiny marker, status and timing files that match a tracked file by content and are kept with their run (marked in [SOURCE-DIGESTS.tsv](SOURCE-DIGESTS.tsv)). Families that repeat a tracked file, copies of `gororoba_quantum/` modules and of other evidence directories, `.pyc` files and a 23 GB export tree are not imported. The files above the limit, with their sha256, are in [large-files-manifest.tsv](large-files-manifest.tsv); the sha256 of each imported file before the rewrite of home-directory paths to `~` is in [SOURCE-DIGESTS.tsv](SOURCE-DIGESTS.tsv).
 
-Not imported: files above 1.5 MB and the derived Singular inputs and tables, which [large-files-manifest.tsv](large-files-manifest.tsv) lists with their sha256 (a `.pyc` file is neither imported nor listed).
+Not imported: files above 1.5 MB and the derived Singular inputs and tables, which [large-files-manifest.tsv](large-files-manifest.tsv) lists with their sha256 and, where the bytes equal a tracked file, that path (a `.pyc` file is neither imported nor listed).
 
 Class: result (an output that a finding rests on) or scratch (a failed, terminated or superseded run kept as the record of the attempt). Each family directory holds a README (question, generator command as recorded, dates) and `SHA256SUMS` (`sha256sum -c SHA256SUMS` from the directory). `kernel-limits-variants/` holds the scripts that produced the `kl`, `fpm` and `vb-special` outputs.
 
@@ -12,7 +12,7 @@ Class: result (an output that a finding rests on) or scratch (a failed, terminat
 | [blocks](blocks/README.md) | result | 2 | 2672 |
 | [blockswap](blockswap/README.md) | scratch | 34 | 1818 |
 | [clo](clo/README.md) | result | 6 | 429677 |
-| [closure-windows](closure-windows/README.md) | result | 31 | 641176 |
+| [closure-windows](closure-windows/README.md) | result | 47 | 653869 |
 | [codex-final](codex-final/README.md) | result | 24 | 143113 |
 | [e8close](e8close/README.md) | result | 7 | 8839 |
 | [e8cone](e8cone/README.md) | result | 9 | 2825 |
@@ -45,5 +45,5 @@ Class: result (an output that a finding rests on) or scratch (a failed, terminat
 | [trunc](trunc/README.md) | result | 3 | 2111 |
 | [vb-special](vb-special/README.md) | result | 3 | 18455 |
 | [wsqr-qi](wsqr-qi/README.md) | scratch | 73 | 44105 |
-| [xpm](xpm/README.md) | result | 24 | 28285 |
+| [xpm](xpm/README.md) | result | 25 | 47843 |
 | [kernel-limits-variants](kernel-limits-variants/README.md) | code copy | 4 | 55188 |
