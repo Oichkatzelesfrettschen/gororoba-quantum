@@ -140,9 +140,20 @@ def test_the_processes_cover_the_single_sweep_and_each_source_once() -> None:
             counted[path] += 1
     _same(sorted(swept - set(counted)), [])
     _same(sorted(path for path, count in counted.items() if count > 1), [])
-    # The sweep's own exclusions stay: the one file with its own process, and the ignored working directory.
+    # The sweep's own exclusions stay: the files with their own processes (the actor-pilot analysis and the
+    # generators of the a5 scratch-run analysis tables), and the ignored retained copies.
     extra = sorted(set(counted) - swept)
-    _same(extra, ["docs/evidence/ibm-fez-actor-pilot/analyze.py"])
+    analysis = "docs/evidence/a5-exceptional-fibers/scratch-runs/analysis/"
+    _same(
+        extra,
+        [
+            analysis + "exports_audit.py",
+            analysis + "hilbert_samuel.py",
+            analysis + "scratch_ranks.py",
+            analysis + "scratch_tables.py",
+            "docs/evidence/ibm-fez-actor-pilot/analyze.py",
+        ],
+    )
 
 
 def test_a_bare_import_in_a_separated_directory_names_its_sibling() -> None:
