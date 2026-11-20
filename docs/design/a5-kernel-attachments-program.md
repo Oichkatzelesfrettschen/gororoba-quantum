@@ -394,3 +394,59 @@ about a thousand generators.
   computation as validly as the inert prime, so modular replays use a split prime with `i` as a field element. The
   Iso->N+- eliminations at `F_{32003^2}` each exhausted 24 GiB after about 2.7 h; their split-prime, homogenized reruns
   queue behind the split-prime E8bar->VB run.
+
+## Orchestrator note after 2w: state of deliverables 1 to 4 and the first attaching-map sub-step
+
+The plan steps in `docs/state/plans/a5-kernel-attachments.json` lag the ledger. Read against the
+[ledger](../evidence/a5-kernel-attachments/ledger.md) rows 1 to 2w, the four deliverables stand as follows.
+
+| Plan step | Evidence | Plan state and what remains |
+| --- | --- | --- |
+| incidence census | rows 1 and 1b: 33 incidences, first-order complex linearity at all 21 points, partner purity at every point | done |
+| limit sets 8 to 12 | rows 2b to 2d, 2i, 2j-c and 2l: 14 of 15 holomorphic fibers at the selected basepoints, each equal to the real limit set on the slice germ; E8-bar to `VB` imports its fiber (2q, conditional on A5-009 through degree 7) | todo (the plan admits one active step); open: the E8-bar to `VB` real limit set, variation along the boundary orbit (2r and 2w sample the boost only), and arcs that leave the slice on `V` and `VB` |
+| limit sets into nullity 16 | rows 2k-a to 2m and 2q: eight 12-to-16 fibers computed, the ten 8-to-16 fibers imported from the exceptional-fiber record | todo; open: the real limit set for `Iso`, `W8` and E8-bar into `N+-` waits on a characteristic-0 fiber cone |
+| compatibility | row 2s: a composed limit lies in a linear section of the direct fiber | todo; open: `hypothesis:` through `VB` the composed limit set is the reduced section; which planes of a section through `B9` or `V` are composed limits stays open |
+| attaching maps | none | doing: sub-step 3a below |
+
+### Sub-step 3a: attaching maps of the eight first-order-resolved incidences
+
+Scope: the eight incidences 8 to 12 whose first-order map one blow-up resolves (row 2c): E8-bar to `B9` and to `V`,
+`Iso` to `B9`, `W8` to `B9`, `X+-` to `B9`, `X_+` to `V^a_+` and `X_-` to `V^a_-`. Each has a retained
+germ (2b), tangent cone and first-order image (2c), holomorphic Schur fiber (2i) and real limit set (2l).
+
+Objects. The source closure is complex-algebraic (2l, consequence 2), so its transverse germ `(Z, 0)` of complex
+dimension `d` has a link `L = Z meet S_eps`, a real `(2d - 1)`-dimensional space. The Gauss map
+`kappa: Z minus 0 -> Gr(4, K_0)` extends continuously to the blow-up `Bl_0 Z` exactly when one blow-up resolves it,
+and on the exceptional divisor `E = P(C_0 Z)` it equals the projectivized first-order map `phi`. The attaching map
+is the composite `L -> E -> Lambda`, where `L -> E` is the circle bundle of the tautological line bundle of `E`
+(the boundary of a tubular neighbourhood of `E` in `Bl_0 Z`) and `E -> Lambda` is `phi`. The sphere-union map
+sends `(P, v)`, `P` in `Lambda` and `v` a unit vector of `P`, to `v` in `S(K_0)`: the unit sphere bundle of the
+tautological 4-plane bundle restricted to `Lambda`.
+
+`hypothesis:` the retained records predict, row by row:
+
+| Incidence | Germ (2b) | Link `L` | `E -> Lambda` |
+| --- | --- | --- | --- |
+| `Iso` to `B9` | smooth, dimension 2 | `S^3` | `P^1 -> P^1` of degree 1, so `L -> Lambda` is the Hopf map |
+| `W8` to `B9` | smooth, dimension 3 | `S^5` | `P^2 -> P^2` of degree 1, the Hopf circle bundle |
+| `X+-` to `B9` | smooth, dimension 1 | `S^1` | a point: the canonical plane |
+| E8-bar to `B9` | quadric cone, dimension 2, multiplicity 2 | `RP^3` | smooth conic `P^1 -> P^1` of degree 1 onto the image conic |
+| E8-bar to `V`, `X_+` to `V^a_+`, `X_-` to `V^a_-` | two components, dimension 3, multiplicity 2 | `S^5` disjoint union `S^5` | each component `P^2 -> P^2` of degree 1 onto one of two disjoint planes |
+
+Producer `attaching_maps_resolved.py`, reading only the retained records 2b, 2c, 2i and 2l, certifies per row:
+1. the topological type of the germ from its tangent cone: multiplicity 1 (smooth); for E8-bar to `B9`, a
+   hypersurface in its 3-dimensional embedding space whose quadratic part has rank 3 over `Q(i)`, so the Morse lemma
+   makes the germ analytically the `A_1` cone; for the two-component rows, each component of multiplicity 1 and the
+   two tangent spaces meeting only at 0;
+2. that `phi` is linear on each tangent-cone component and injective there (exact rank over `Q(i)` and modulo 32009),
+   so `E -> Lambda` is an isomorphism onto its image and the image invariants equal those of 2i;
+3. the homotopy data in the form item 7 reads: the Euler class of `L -> E` (minus the hyperplane class restricted to
+   `E`: `-1` on `P^1` and `P^2`, `-2` on the conic), the degree of `E -> Lambda` on `H_2`, and the first Chern
+   class of the tautological 4-plane bundle on `Lambda` (minus the Pluecker degree of `Lambda`).
+
+Mutation on a core input: replace `phi` on one row by a map of rank one less; the injectivity check must fail and a
+degeneracy point must appear. Falsifiers: a rank deficiency of `phi` on a tangent-cone component, a quadratic part of
+rank below 3 for E8-bar to `B9`, two components whose tangent spaces meet outside 0, or image invariants that differ
+from 2i. Cost: exact linear algebra on retained polynomials, predicted under 10 s and 200 MiB; it runs on the compute
+workstation, not on the build host. The seven higher-order rows and the eighteen rows into nullity 16 follow in later
+sub-steps, since their maps factor through iterated or weighted blow-ups.
