@@ -12,9 +12,15 @@ import bdsc_diagnostic_acquisition_case as acquisition
 import bdsc_diagnostic_timing_case as timing
 import pytest
 import qd_platform
+
 from rebound import rebound
 
 TREE = timing.TREE
+
+
+def require(condition: bool, message: str) -> None:
+    if not condition:
+        raise AssertionError(message)
 
 
 def committed(name: str) -> dict[str, Any]:
@@ -41,7 +47,7 @@ def test_the_committed_tree_equals_a_fresh_build_apart_from_the_source_digests()
     # The manifests bind the digests of timing.SOURCES; a change to one of those files calls for a rebuild before the
     # plan (the strict comparison is the check subcommand), so the pull-request test compares everything else.
     flat = {str(p.relative_to(TREE)) for p in TREE.rglob("*") if p.is_file()}
-    assert flat == set(timing.files_of(timing.documents()))
+    require(flat == set(timing.files_of(timing.documents())), f"tree files differ from a fresh build: {sorted(flat)}")
     on_disk = {
         "case.json": (TREE / "case.json").read_bytes(),
         **{
@@ -49,9 +55,9 @@ def test_the_committed_tree_equals_a_fresh_build_apart_from_the_source_digests()
             for name in timing.REQUESTS
         },
     }
-    assert without_sources(on_disk) == without_sources(timing.documents())
+    require(without_sources(on_disk) == without_sources(timing.documents()), "the tree differs from a fresh build")
     for name in timing.REQUESTS:
-        assert sorted(committed(name)["successor_sources"]) == sorted(timing.SOURCES)
+        require(sorted(committed(name)["successor_sources"]) == sorted(timing.SOURCES), f"{name}: bound sources")
 
 
 @pytest.mark.parametrize("name", sorted(timing.REQUESTS))
@@ -59,22 +65,25 @@ def test_each_request_keeps_its_groups_byte_for_byte_in_the_retained_order(name:
     job, groups = timing.REQUESTS[name]
     source, manifest = retained(job), committed(name)
     kept = [s for s in source["settings"] if timing.group_of(s) in groups]
-    assert manifest["settings"] == kept
-    assert len(kept) == 12 and {timing.group_of(s) for s in kept} == set(groups)
-    assert (manifest["iterations"], manifest["max_samples"], manifest["max_shots"]) == (12, 480000, 960000)
+    require(manifest["settings"] == kept, f"{name}: settings differ from the retained {job} subset")
+    require(len(kept) == 12 and {timing.group_of(s) for s in kept} == set(groups), f"{name}: {len(kept)} settings")
+    budgets = (manifest["iterations"], manifest["max_samples"], manifest["max_shots"])
+    require(budgets == (12, 480000, 960000), f"{name}: budgets {budgets}")
     kept_keys = ("diagnostic_case_sha256", "draw", "target_sha256", "mitigations", "max_duration", "circuit")
-    assert manifest["platforms"] == source["platforms"]
+    require(manifest["platforms"] == source["platforms"], f"{name}: platforms")
     for key in kept_keys:
-        assert manifest[key] == source[key]
-    assert manifest["job"] == name and manifest["source_job"]["job"] == job
-    assert manifest["timing_case_sha256"] == timing.sha256_bytes((TREE / "case.json").read_bytes())
-    assert (TREE / name / "circuit.json").read_bytes() == (timing.SOURCE_TREE / job / "circuit.json").read_bytes()
+        require(manifest[key] == source[key], f"{name}: {key} differs from {job}")
+    require(manifest["job"] == name and manifest["source_job"]["job"] == job, f"{name}: job names")
+    record = timing.sha256_bytes((TREE / "case.json").read_bytes())
+    require(manifest["timing_case_sha256"] == record, f"{name}: timing record digest")
+    circuit = (TREE / name / "circuit.json").read_bytes()
+    require(circuit == (timing.SOURCE_TREE / job / "circuit.json").read_bytes(), f"{name}: circuit differs from {job}")
 
 
 def test_the_requests_omit_the_groups_the_case_names() -> None:
     names = {name: {timing.group_of(s) for s in committed(name)["settings"]} for name in timing.REQUESTS}
-    assert names == {"p1": {"out-s0", "out-s1"}, "p2": {"rev-s0", "rev-s1"}}
-    assert "out-s2-pi" not in {s["name"] for s in committed("p2")["settings"]}
+    require(names == {"p1": {"out-s0", "out-s1"}, "p2": {"rev-s0", "rev-s1"}}, f"groups {names}")
+    require("out-s2-pi" not in {s["name"] for s in committed("p2")["settings"]}, "P2 carries out-s2-pi")
 
 
 def test_the_retained_draw_stays_claimed_by_its_own_record_only() -> None:
@@ -86,7 +95,8 @@ def test_the_retained_draw_stays_claimed_by_its_own_record_only() -> None:
         case_record=lambda: acquisition.case_record(platform),
         bdsc_cases=acquisition.cases_namespace(platform),
     )(committed("p1")["draw"])
-    assert not [path for path in claims if "bdsc_diagnostic_timing_sim_belenos" in path]
+    timing_claims = [path for path in claims if "bdsc_diagnostic_timing_sim_belenos" in path]
+    require(not timing_claims, f"the retained draw is claimed by {timing_claims}")
 
 
 @pytest.mark.parametrize(
@@ -101,7 +111,8 @@ def test_the_retained_draw_stays_claimed_by_its_own_record_only() -> None:
     ],
 )
 def test_the_decision_rows_of_the_case(p1: list[float], p2: list[float], reading: str) -> None:
-    assert timing.decide({"p1": p1, "p2": p2})["reading"] == reading
+    decided = timing.decide({"p1": p1, "p2": p2})
+    require(decided["reading"] == reading, f"{decided} reads {decided['reading']}, not {reading}")
 
 
 class Runs:
@@ -136,8 +147,9 @@ def test_the_schedule_admits_the_six_slots_and_the_analysis_reads_them(runs: Run
     for name in timing.ORDER:
         runs.add(name, duration=148.0)
     result = timing.analyze(runs.made)
-    assert [f["request"] for f in result["runs"]] == list(timing.ORDER)
-    assert result["reading"] == "doubled-above-fit" and result["deviations_from_prediction"] == []
+    require([f["request"] for f in result["runs"]] == list(timing.ORDER), "slot order")
+    require(result["reading"] == "doubled-above-fit", f"reading {result['reading']}")
+    require(result["deviations_from_prediction"] == [], f"deviations {result['deviations_from_prediction']}")
 
 
 @pytest.mark.parametrize(
@@ -179,9 +191,10 @@ def test_the_recorder_logs_each_status_read_then_collects(tmp_path: Path, monkey
     monkeypatch.setattr(qd_platform, "request", lambda method, route: next(answers))
     monkeypatch.setattr(qd_platform, "collect", lambda directory, poll, timeout: {"status": "collected"})
     monkeypatch.setattr(timing.time, "sleep", sleeps.append)
-    assert timing.record(run, poll=10.0) == {"status": "collected"}
+    require(timing.record(run, poll=10.0) == {"status": "collected"}, "the recorder did not collect")
     lines = [json.loads(line) for line in (run / timing.STATUS_LOG).read_text().splitlines()]
-    assert [line["status"] for line in lines] == ["running", "completed"] and sleeps == [10.0]
+    require([line["status"] for line in lines] == ["running", "completed"], f"logged {lines}")
+    require(sleeps == [10.0], f"slept {sleeps}")
     with pytest.raises(timing.TimingError, match="outside"):
         timing.record(run, poll=11.0)
 
