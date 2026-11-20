@@ -131,6 +131,7 @@ repository-relative; a branch name stands for its worktree.
 | [2026-11-10-kernel-limits-fiber-map/](2026-11-10-kernel-limits-fiber-map/README.md) | Local codex and nemotron reviews and the hosted Codex and Copilot findings on the kernel-plane limits at the special VB point and the fiber-to-Grassmannian map (pull request 817), each with its verdict and disposition |
 | [2026-11-10-monomial-ladder/](2026-11-10-monomial-ladder/README.md) | Local codex review of the monomial ladder (pull request 818) and the disposition of its six findings |
 | [untracked-records-audit-2026-11-11/](untracked-records-audit-2026-11-11/README.md) | Read-only audit of the ignored `docs/local/` trees of the A5 exceptional-fiber program (22,648 + 456 + 505 files) against every ref: result-missing, already-represented, scratch and failed-run groups with the home of each; the per-file listing is not retained and the counts are the audit's own |
+| [review-record-backfill-937-843/reconciliation.md](review-record-backfill-937-843/reconciliation.md) | Local codex round on the backfilled records of PRs 937 and 843 (PR 958): the contradictory no-finding summaries, record shape, source locator and the full hashes; with the brief |
 
 The [Tuna projector campaign review](tuna-projector-campaign-review.md) and its
 [model provenance](tuna-projector-campaign-review.json) separate QX conformance, bounded hardware qualification and causal successors.
@@ -203,3 +204,5 @@ of one reviewer and two red-teamers on the case generator and its written cases.
 The [Quantum Inspire status document review](qi-status-document/reconciliation.md) reconciles the seven findings
 of its [reviewer report](qi-status-document/codex-report.md) on [the brief](qi-status-document/brief.md) for
 `scripts/qi_status.py`.
+
+The [circuit_params unitary comparison review](circuit-params-unitary-comparison/README.md) (pull request 937) and the [workbench payload identity review](workbench-payload-identity/README.md) (pull request 843) are post-merge backfills. Each reconciles the Advisor and worker rounds of its pull request against the pull request's own threads and its merge commit.
