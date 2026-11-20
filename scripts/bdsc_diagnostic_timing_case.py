@@ -357,7 +357,7 @@ def bound_runs(results: Path = RESULTS, tree: Path = TREE) -> list[Path]:
     committed = {(tree / name / "cases.json").read_bytes() for name in REQUESTS}
     for path in sorted(results.rglob("cases.json")):
         run = path.parent
-        if run.parent == tree or path.read_bytes() not in committed:
+        if path.read_bytes() not in committed:
             continue
         receipt, state = run / "submission.json", run / "submission-state.json"
         if not receipt.is_file():
@@ -424,7 +424,8 @@ def next_request(runs: list[Path], tree: Path = TREE) -> str:
 
 
 class SubmissionGate:
-    """The verify step of qd_platform.submit for one run: the slot, the idle token and the empty mitigation list.
+    """The verify step of qd_platform.submit for one run: a copy of a committed request, the slot, the idle token and
+    the empty mitigation list.
 
     It runs under the token's submit lock, after the plan whose body is posted, so the runs it reads and the counters
     it checks are the ones the submission sees."""
@@ -437,6 +438,10 @@ class SubmissionGate:
     def __call__(self, checked: dict[str, Any]) -> None:
         import qd_platform
 
+        if self.run.resolve().parent == self.tree.resolve():
+            raise qd_platform.PlatformError(
+                f"{self.run} is a committed request; submit a copy under results/quandela/runs"
+            )
         name = request_of(self.run, self.tree)
         expected = next_request(bound_runs(self.results, self.tree), self.tree)
         if expected != name:

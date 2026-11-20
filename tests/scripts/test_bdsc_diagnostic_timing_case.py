@@ -280,6 +280,21 @@ def test_the_submission_gate_refuses(runs: Runs, name: str, plan: dict[str, Any]
         timing.SubmissionGate(staged(runs, name), runs.root)(plan)
 
 
+def test_the_submission_gate_refuses_a_committed_request_directory(runs: Runs) -> None:
+    with pytest.raises(qd_platform.PlatformError, match="committed request"):
+        timing.SubmissionGate(TREE / "p1", runs.root)(checked())
+
+
+def test_a_receipt_inside_a_request_directory_is_counted(runs: Runs, tmp_path: Path) -> None:
+    tree = runs.root / "cases" / "tree"
+    for name in timing.REQUESTS:
+        (tree / name).mkdir(parents=True)
+        (tree / name / "cases.json").write_bytes((TREE / name / "cases.json").read_bytes())
+    receipt = {"platform": timing.PLATFORM, "submitted_utc": "2026-12-01T10:00:00+00:00"}
+    (tree / "p1" / "submission.json").write_text(json.dumps(receipt))
+    require(timing.bound_runs(runs.root, tree) == [tree / "p1"], "a receipt in a request directory binds a run")
+
+
 def test_qd_platform_submit_refuses_a_p_run_without_the_gate(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(qd_platform, "load_case", lambda directory: (committed("p1"), {}, "x"))
     with pytest.raises(qd_platform.PlatformError, match="submits only through"):
