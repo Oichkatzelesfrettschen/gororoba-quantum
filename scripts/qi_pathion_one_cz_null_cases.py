@@ -91,11 +91,12 @@ BASIS_VECTORS = (16, 1, 2)
 
 def canonical_float(value: float, digits: int) -> float:
     """The value rounded to digits decimals with the sign of zero cleared. A probability or contrast that is zero in
-    exact arithmetic leaves the state-vector product as a residue of 1e-17 to 1e-33 whose sign follows the BLAS and
-    FMA scheduling of the platform, and json.dumps writes the rounded residue as 0.0 or -0.0; adding 0.0 maps -0.0 to
-    0.0 (IEEE 754 round to nearest). The nearest rounding boundary of every other float of the retained manifests
-    lies at least 4e-14 of a unit away, far above the last-bit noise of a libm or FMA difference, so those floats
-    keep their digits on every platform."""
+    exact arithmetic leaves the state-vector product as a residue of 1e-17 to 1e-33, and json.dumps writes the rounded
+    residue as 0.0 or -0.0 by the residue's sign; adding 0.0 maps -0.0 to 0.0 (IEEE 754 round to nearest) and leaves
+    every finite value bit-identical. The change removes the signed-zero difference only: a last-bit difference
+    that carries a nonzero value across a rounding boundary is not addressed. The nearest such boundary among the
+    floats of the retained manifests lies 4e-14 of a unit away, measured on linux x86_64. hypothesis: the sign of the
+    residue follows the accumulation order of the probability computation on the platform."""
     return round(float(value), digits) + 0.0
 
 

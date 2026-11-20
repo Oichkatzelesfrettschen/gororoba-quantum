@@ -386,14 +386,38 @@ LINUX_MEASURED = platform.system() == "Linux" and platform.machine() in {"x86_64
 
 
 def test_a_zero_residue_of_either_sign_serializes_as_one_zero() -> None:
-    # The state-vector product leaves 1e-17..1e-33 residue where the exact value is zero; its sign follows the
-    # platform's BLAS and FMA scheduling, and a bare round() writes the negative residue as -0.0.
+    # The state-vector product leaves 1e-17..1e-33 residue where the exact value is zero, and a bare round() writes a
+    # negative residue as -0.0.
     for digits in (6, 9, 12):
         for residue in (0.0, -0.0, 1e-33, -1e-33, 1.1102230246251565e-16, -1.1102230246251565e-16):
             _expect(json.dumps(oc.canonical_float(residue, digits)) == "0.0", f"{residue!r} at {digits} digits")
     _expect(json.dumps(round(-1e-33, 12)) == "-0.0", "the bare rounding of a negative residue is the hazard")
     _expect(json.dumps(oc.canonical_float(-0.995869, 6)) == "-0.995869", "a nonzero value keeps its sign and digits")
     _expect(json.dumps(oc.canonical_float(0.1248440288385, 12)) == "0.124844028839", "a nonzero value keeps its digits")
+
+
+def test_the_manifest_writer_serializes_a_negative_residue_as_zero(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Every probability source returns -1e-33: the written manifests hold 0.0 through canonical_float at the
+    # ideal_selector_contrast, ideal_c and per-circuit ideal fields.
+    real_plan = oc.series_plan()
+    plan = copy.deepcopy(real_plan)
+    for t in plan["templates"].values():
+        t["ideal_selector_contrast"] = -1e-33
+        t["ideal_c"] = [-1e-33] * len(t["ideal_c"])
+    monkeypatch.setattr(oc, "series_plan", lambda: plan)
+    width = len(real_plan["templates"]["b0"]["ideal"])
+    monkeypatch.setattr(oc.blk, "ideal_of_record", lambda circuit: np.full(width, -1e-33))
+    files = oc.build()[oc.QX_SERIES]
+    _expect(all("-0.0" not in text for rel, text in files.items() if rel.endswith("cases.json")), "a -0.0 was written")
+    seen = 0
+    for manifest in _manifests(files):
+        for name, t in manifest["templates"].items():
+            _expect(t["ideal_selector_contrast"] == 0.0 and t["ideal_c"] == [0.0] * len(t["ideal_c"]), name)
+        for record in manifest["circuits"]:
+            if "ideal" in record:
+                seen += 1
+                _expect(all(x == 0.0 for x in record["ideal"]), "a circuit ideal kept a nonzero residue")
+    _expect(seen > 0, "no circuit ideal was checked")
 
 
 def test_the_retained_qx_manifests_hold_no_negative_zero() -> None:
@@ -409,9 +433,8 @@ def test_the_rebuilt_qx_manifests_equal_the_stored_bytes_and_the_receipt_digests
     built: dict[str, dict[str, str]],
 ) -> None:
     # Measured on linux x86_64 and linux aarch64 with the CI-pinned interpreter: 4 of 4 rebuilt manifests have the
-    # sha256 of the stored file and of the receipt's cases_sha256, although 1200 of the 2007 unrounded floats differ
-    # in the last bit between the two. hypothesis: darwin-arm64 differs in the sign of a zero residue, which
-    # oc.canonical_float clears; no darwin run has measured it.
+    # sha256 of the stored file and of the receipt's cases_sha256. hypothesis: darwin-arm64 differs in the sign of a
+    # zero residue, which oc.canonical_float clears; no darwin run has measured it.
     for batch, digest in QX_MANIFEST_SHA256.items():
         rebuilt = built[bc.QX_SERIES][f"{batch}/cases.json"].encode()
         stored = (CASES / bc.QX_SERIES / batch / "cases.json").read_bytes()
