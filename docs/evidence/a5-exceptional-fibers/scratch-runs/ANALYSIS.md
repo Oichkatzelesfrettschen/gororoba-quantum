@@ -108,4 +108,4 @@ The expensive file of an export is `s.txt`: 43,597 s (12.1 h) at E8-bar -> N-, p
 
 ## Reproduction
 
-`analysis/scratch_ranks.py`, `scratch_tables.py` and `hilbert_samuel.py` run from this tree (`python3 scratch_ranks.py ../.. .` from `analysis/`); `exports_audit.py` needs the export tree and was run once on the compute workstation (hashing 23.7 GB took under one minute from the page cache). The python lanes of the repository check the four scripts; the mypy sweep excludes `scratch-runs/`.
+`analysis/scratch_ranks.py`, `scratch_tables.py` and `hilbert_samuel.py` run from this tree (`python3 scratch_ranks.py ../.. .` from `analysis/`); `exports_audit.py` needs the export tree and was run once on the compute workstation (hashing 23.7 GB took under one minute from the page cache). The python lanes of the repository check the four scripts: ruff with the other Python files, and mypy in a process of its own (`ci/gates.json`, sources-122), since the evidence sweep excludes the retained copies of `scratch-runs/`.
