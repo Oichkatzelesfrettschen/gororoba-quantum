@@ -37,6 +37,28 @@ def test_b0_replay_is_byte_equal_to_the_retained_circuit() -> None:
     _expect(ref["cz"] == 21 and ref["region"] == (2, 4, 8, 11, 12), "the retained b0 changed")
 
 
+def test_the_build_reads_b0_from_the_retained_circuit_on_its_role_map() -> None:
+    # The pinned b0.cq is the circuit of record on every platform; the compile contributes the layout only.
+    ref = oc.reference()
+    circuit = oc.retained_b0()
+    region = list(ref["region"])
+    note = (oc.COIN_BATCH / "b0.cq").read_text(encoding="utf-8").splitlines()[5]
+    text = cc.circuit_text(circuit, dict(enumerate(region)), oc.NQUBITS, note)
+    _expect(text == (oc.COIN_BATCH / "b0.cq").read_text(encoding="utf-8"), "the retained b0 does not re-emit its bytes")
+    final = circuit.layout.final_index_layout()
+    _expect({k: region[final[v]] for v, k in enumerate(oc.KEYS)} == ref["roles"], "the layout is off the role map")
+    _expect(circuit.count_ops().get("cz") == ref["cz"], "the retained b0 lost a CZ")
+
+
+def test_the_retained_b0_refuses_a_compile_off_the_role_map(monkeypatch: pytest.MonkeyPatch) -> None:
+    ref = dict(oc.reference())
+    roles = dict(ref["roles"])
+    roles["d0"], roles["d1"] = roles["d1"], roles["d0"]
+    monkeypatch.setattr(oc, "reference", lambda: {**ref, "roles": roles})
+    with pytest.raises(ValueError, match="off the retained role map"):
+        oc.retained_b0()
+
+
 def test_pins_refuse_a_changed_retained_file(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setitem(oc.COIN_PINS, "b0.cq", "0" * 64)
     oc.reference.cache_clear()

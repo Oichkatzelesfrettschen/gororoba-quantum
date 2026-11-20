@@ -46,6 +46,7 @@ import hashlib
 import itertools
 import json
 import math
+import re
 import sys
 from functools import cache, partial
 from pathlib import Path
@@ -258,6 +259,53 @@ def compile_b0() -> Any:
     return cc.compile_template(topology(), index, ref["region"], ref["seed"])
 
 
+# One gate line of the Tuna-17 emitter (kcc.emit): Rz on the pi/36 grid, X90, X or CZ on register qubits.
+TUNA_GATE = re.compile(r"(?:Rz\((?P<angle>[-0-9.e+]+)\)|(?P<gate>X90|X|CZ)) q\[(?P<a>\d+)\](?:, q\[(?P<b>\d+)\])?")
+
+
+def retained_b0() -> Any:
+    """b0 as the coin series executed it: the gates of the pinned b0.cq on the qubit layout of b0's compile.
+
+    The transpile of b0 depends on the numeric identity of the platform: on darwin-arm64 it resynthesizes 13 of the 119
+    gates on another Euler branch (an rz after a CZ moves by pi), so the replayed angles, and the ideal law computed
+    from them, differ from the retained circuit. The pinned b0.cq is the circuit of record; the compile supplies only
+    the layout, which the role map of the coin manifest pins. The build refuses a compile whose final layout differs
+    from that role map, a gate line outside the emitter's vocabulary, and a circuit that does not re-emit the pinned
+    bytes."""
+    from qiskit.circuit.library import CZGate, RZGate, SXGate, XGate
+
+    ref = reference()
+    region = list(ref["region"])
+    compiled = compile_b0()
+    final = compiled.layout.final_index_layout()
+    if {k: int(region[final[v]]) for v, k in enumerate(KEYS)} != ref["roles"]:
+        raise ValueError("the compile of b0 places its logical bits off the retained role map")
+    out = compiled.copy_empty_like()
+    out._layout = compiled.layout
+    text = (COIN_BATCH / "b0.cq").read_text(encoding="utf-8")
+    note = ""
+    for line in text.splitlines():
+        if not line or line.startswith(("version ", "qubit[", "bit[")) or line in ("barrier q", "b = measure q"):
+            continue
+        if line.startswith("//"):
+            note = line
+            continue
+        match = TUNA_GATE.fullmatch(line)
+        if match is None:
+            raise ValueError(f"the retained b0.cq holds a line outside the emitter's vocabulary: {line!r}")
+        qubits = [out.qubits[region.index(int(q))] for q in (match["a"], match["b"]) if q is not None]
+        gate = match["gate"]
+        operation = (
+            RZGate(float(match["angle"])) if gate is None else {"X90": SXGate(), "X": XGate(), "CZ": CZGate()}[gate]
+        )
+        if len(qubits) != operation.num_qubits:
+            raise ValueError(f"the retained b0.cq gives {gate or 'Rz'} {len(qubits)} qubits: {line!r}")
+        out.append(operation, qubits)
+    if cc.circuit_text(out, dict(enumerate(region)), NQUBITS, note) != text:
+        raise ValueError("the circuit read from the retained b0.cq does not re-emit its bytes")
+    return out
+
+
 def entry_of(
     name: str, compiled: Any, seed: int, draw_index: int | None, layout: tuple[int, ...] | None
 ) -> dict[str, Any]:
@@ -423,9 +471,10 @@ def joint_text(nqubits: int, prep: tuple[int, ...]) -> str:
 
 @cache
 def series_plan() -> dict[str, Any]:
-    """b0 replayed and the 6-CZ blocks (selector q8 and coin q2 held, data qubits free) on b0's region."""
+    """b0 as retained (retained_b0) and the 6-CZ blocks (selector q8 and coin q2 held, data qubits free) on b0's
+    region."""
     region = reference()["region"]
-    templates = {"b0": entry_of("b0", compile_b0(), reference()["seed"], reference()["draw_index"], None)}
+    templates = {"b0": entry_of("b0", retained_b0(), reference()["seed"], reference()["draw_index"], None)}
     for name, _ in LOW_CZ:
         templates[name] = routed(SERIES_PIN, name)
     return {"region": region, "templates": templates}

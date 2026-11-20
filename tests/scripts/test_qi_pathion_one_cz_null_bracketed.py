@@ -12,7 +12,6 @@ import hashlib
 import itertools
 import json
 import math
-import os
 import shutil
 from collections import Counter
 from datetime import datetime, timedelta, timezone
@@ -428,80 +427,42 @@ def test_the_retained_qx_manifests_hold_no_negative_zero() -> None:
         _expect("-0.0," not in text and "-0.0\n" not in text, f"{batch} holds a -0.0")
 
 
-def _b0_diagnostic() -> str:
-    """The b0 compile of this platform as text: leg versions, BLAS, transpiler seed and the gate sequence with each
-    rz angle before and after round_to_grid; the first transpile pass that differs between legs shows in this sequence."""
-    import platform
-
-    import qi_pathion_coset_block_cases as blk
-    import qiskit
-    import scipy
-
-    compiled = oc.compile_b0()
-    rounded = blk.round_to_grid(compiled)
-    config = np.show_config(mode="dicts")  # type: ignore[no-untyped-call]
-    blas = config.get("Build Dependencies", {}).get("blas", {})
-    lines = [
-        f"platform {platform.platform()} machine {platform.machine()} python {platform.python_version()}",
-        f"qiskit {qiskit.__version__} numpy {np.__version__} scipy {scipy.__version__}",
-        f"blas {blas.get('name')} {blas.get('version')} {blas.get('openblas configuration')}",
-        f"transpiler_seed {oc.reference()['seed']} ops {dict(sorted(compiled.count_ops().items()))}",
-    ]
-    for k, (raw, snapped) in enumerate(zip(compiled.data, rounded.data, strict=True)):
-        qubits = ",".join(str(compiled.find_bit(q).index) for q in raw.qubits)
-        if raw.operation.name == "rz":
-            angle = float(raw.operation.params[0])
-            after = float(snapped.operation.params[0])
-            lines.append(f"{k} rz q{qubits} {angle!r} -> {after!r} step {round(angle / blk.GRID)}")
-        else:
-            lines.append(f"{k} {raw.operation.name} q{qubits}")
-    return "\n".join(lines)
-
-
-def _first_difference(left: object, right: object, path: str = "$") -> str | None:
-    """The JSON path of the first differing leaf of two parsed manifests, with both values, or None when equal."""
+def _differences(left: object, right: object, path: str = "$") -> list[str]:
+    """The JSON path of every differing leaf of two parsed manifests, with both values; empty when equal."""
     if isinstance(left, dict) and isinstance(right, dict):
+        found: list[str] = []
         for key in sorted(set(left) | set(right)):
             if key not in left or key not in right:
-                return f"{path}.{key}: present in {'rebuilt' if key in left else 'stored'} only"
-            found = _first_difference(left[key], right[key], f"{path}.{key}")
-            if found:
-                return found
-        return None
+                found.append(f"{path}.{key}: present in {'rebuilt' if key in left else 'stored'} only")
+            else:
+                found += _differences(left[key], right[key], f"{path}.{key}")
+        return found
     if isinstance(left, list) and isinstance(right, list):
         if len(left) != len(right):
-            return f"{path}: length {len(left)} rebuilt, {len(right)} stored"
-        for i, (a, b) in enumerate(zip(left, right, strict=True)):
-            found = _first_difference(a, b, f"{path}[{i}]")
-            if found:
-                return found
-        return None
+            return [f"{path}: length {len(left)} rebuilt, {len(right)} stored"]
+        return [d for i, (a, b) in enumerate(zip(left, right, strict=True)) for d in _differences(a, b, f"{path}[{i}]")]
     if json.dumps(left) != json.dumps(right):
-        return f"{path}: rebuilt {json.dumps(left)}, stored {json.dumps(right)}"
-    return None
+        return [f"{path}: rebuilt {json.dumps(left)}, stored {json.dumps(right)}"]
+    return []
 
 
 def test_the_rebuilt_qx_manifests_equal_the_stored_bytes_and_the_receipt_digests(
     built: dict[str, dict[str, str]],
 ) -> None:
-    out = os.environ.get("QX_B0_DIAGNOSTIC_FILE")
-    if out:
-        Path(out).write_text(_b0_diagnostic() + "\n", encoding="utf-8")
     # Measured on linux x86_64 and linux aarch64 with the CI-pinned interpreter: 4 of 4 rebuilt manifests have the
-    # sha256 of the stored file and of the receipt's cases_sha256. hypothesis: darwin-arm64 differs in the sign of a
-    # zero residue, which oc.canonical_float clears; no darwin run has measured it. Every platform runs the rebuild, and
-    # a mismatch names the first differing JSON path with both values.
-    for batch, digest in QX_MANIFEST_SHA256.items():
-        rebuilt = built[bc.QX_SERIES][f"{batch}/cases.json"].encode()
-        stored = (CASES / bc.QX_SERIES / batch / "cases.json").read_bytes()
+    # sha256 of the stored file and of the receipt's cases_sha256. b0 enters the build as the pinned retained circuit
+    # (oc.retained_b0), since its transpile resynthesizes 13 of 119 gates differently on darwin-arm64; every platform
+    # runs the rebuild, and a mismatch names every differing JSON path of every batch with both values.
+    found: list[str] = []
+    for batch in QX_MANIFEST_SHA256:
+        rebuilt = built[bc.QX_SERIES][f"{batch}/cases.json"]
+        stored = (CASES / bc.QX_SERIES / batch / "cases.json").read_text(encoding="utf-8")
         if rebuilt != stored:
-            where = _first_difference(json.loads(rebuilt), json.loads(stored))
-            _expect(
-                False,
-                f"the rebuilt {batch} manifest differs from the stored file at {where}\n{_b0_diagnostic()}",
-            )
-        _expect(hashlib.sha256(rebuilt).hexdigest() == digest, f"the rebuilt {batch} manifest differs from the receipt")
-        _expect(rebuilt == stored, f"the rebuilt {batch} manifest differs from the stored file")
+            found += [f"{batch} {d}" for d in _differences(json.loads(rebuilt), json.loads(stored)) or ["bytes only"]]
+    _expect(not found, "the rebuilt manifests differ from the stored files:\n" + "\n".join(found))
+    for batch, digest in QX_MANIFEST_SHA256.items():
+        rebuilt_digest = hashlib.sha256(built[bc.QX_SERIES][f"{batch}/cases.json"].encode()).hexdigest()
+        _expect(rebuilt_digest == digest, f"the rebuilt {batch} manifest differs from the receipt")
 
 
 def _survival(dof: int, x: float) -> float:
