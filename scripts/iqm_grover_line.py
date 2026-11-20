@@ -1,0 +1,568 @@
+"""IQM Garnet case of three-qubit Grover search with a seven-CZ line-native CCZ.
+
+Garnet's couplers form a square lattice with no triangle, so a three-qubit diagonal gate runs on a path
+a-b-c whose end qubits share no coupler. CCZ is the phase polynomial
+pi x0 x1 x2 = (pi/4)(x0 + x1 + x2 - x0^x1 - x0^x2 - x1^x2 + x0^x1^x2), so a CNOT network on the path's two
+couplers that carries each of the seven parities onto some wire implements it with one phase gate
+diag(1, exp(+-i pi/4)) per parity. line_networks() searches every reachable pair of linear map and covered
+parity set breadth first: the shortest network that returns each wire to its input has 8 CNOTs, and the
+shortest one that may end in a wire permutation has 7 and exchanges the middle wire with one end. Grover's
+later layers act qubit by qubit, so the compiler tracks that exchange as a relabeling. A CNOT is a CZ between
+Hadamards on its target; every Z rotation travels as a frame into the phase of the qubit's next prx, which
+CZ commutes with, and the frame left before the measurement is dropped. A k-iteration search therefore costs
+14k CZ, and the case carries the generic qiskit compile of one iteration on the same path for comparison.
+
+Arms, one job under active reset with all-zeros heralding:
+  k0                 Hadamards and measurement, the uniform reference
+  m101-k1, m101-k2   marked 101 (bit q of the string is qubit q), line-native, one and two iterations
+  m011-k1, m011-k2   marked 011, which is not a palindrome, so a reversed bit order shows as 110
+  m101-k1-generic    marked 101, one iteration through qiskit transpile at optimization level 3 on the path
+  ro-xyz             the eight basis preparations of the readout assignment matrix
+
+The builder scores every oriented calibrated path by the mean predicted marked probability of the four
+line-native arms and predicts every arm on the best one. A prediction is exact: the density matrix under
+scripts/iqm_sim.py's depolarizing PRX and CZ plus idle T1 and T2 over the ALAP schedule, then each measured
+qubit's unheralded assignment matrix. Probabilities round to 9 digits and angles to 10, so the bytes the gate
+replays do not follow one CPU's floating-point path.
+
+Usage: "$PYTHON" scripts/iqm_grover_line.py (build DIR --calibration SRC | check DIR | --self-test)
+"""
+
+from __future__ import annotations
+
+import argparse
+import cmath
+import itertools
+import json
+import math
+import shutil
+import sys
+from collections import deque
+from pathlib import Path
+from typing import Any
+
+import numpy as np
+from qiskit import QuantumCircuit, transpile
+from qiskit.transpiler import CouplingMap
+from qiskit_aer import AerSimulator
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
+import iqm_sim  # noqa: E402
+from iqm_jobs import CASE_SCHEMA, JOB_SECONDS, ceiling_credits, dump  # noqa: E402
+from iqm_platform import sha256  # noqa: E402
+from iqm_signed_probe import ACTIVE_SHOT_SECONDS, CALIBRATION_FILES, OPTIONS, relaxed, target_of  # noqa: E402
+
+from parallel import ordered_map  # noqa: E402
+
+CASE = "grover-line-ccz"
+QCS = ["garnet:mock", "garnet"]
+# Pay-as-you-go price per second of each quantum computer in the 2026-11-20 snapshot (details.json pricing).
+PRICE = {"garnet:mock": 0.0, "garnet": 0.5}
+SHOTS = 4000
+SELF_TEST_SEED = 20261120
+TRANSPILER_SEED = 11
+MARKS = ("101", "011")
+# Preregistered decision: a difference resolves when it lies Z_RESOLVE binomial standard errors from zero.
+Z_RESOLVE = 3.0
+EPS = 1e-12
+
+NEEDED = (0b011, 0b101, 0b110, 0b111)
+LINE_MOVES = ((0, 1), (1, 0), (1, 2), (2, 1))
+IDENTITY_WIRES = (1, 2, 4)
+
+H = np.array([[1, 1], [1, -1]], dtype=complex) / math.sqrt(2)
+X = np.array([[0, 1], [1, 0]], dtype=complex)
+
+
+def covered(wires: tuple[int, ...], mask: int) -> int:
+    for n, parity in enumerate(NEEDED):
+        if parity in wires:
+            mask |= 1 << n
+    return mask
+
+
+def line_networks() -> dict[str, tuple[tuple[int, int], ...]]:
+    """Shortest CNOT networks (control, target) on the path 0-1-2 that carry every parity of two or three
+    inputs onto a wire: "fixed" ends with each wire holding its input, "exchanged" in any wire permutation."""
+    full = (1 << len(NEEDED)) - 1
+    start = (IDENTITY_WIRES, covered(IDENTITY_WIRES, 0))
+    queue: deque[tuple[tuple[int, ...], int, tuple[tuple[int, int], ...]]] = deque([(*start, ())])
+    seen: set[tuple[tuple[int, ...], int]] = {start}
+    found: dict[str, tuple[tuple[int, int], ...]] = {}
+    while queue and len(found) < 2:
+        wires, mask, network = queue.popleft()
+        if mask == full:
+            if wires == IDENTITY_WIRES:
+                found.setdefault("fixed", network)
+            if tuple(sorted(wires)) == IDENTITY_WIRES:
+                found.setdefault("exchanged", network)
+        for control, target in LINE_MOVES:
+            nxt = list(wires)
+            nxt[target] ^= nxt[control]
+            state = (tuple(nxt), covered(tuple(nxt), mask))
+            if state not in seen:
+                seen.add(state)
+                queue.append((*state, (*network, (control, target))))
+    return found
+
+
+def ccz_block(network: tuple[tuple[int, int], ...]) -> tuple[list[tuple[Any, ...]], tuple[int, ...]]:
+    """The network with one phase gate diag(1, exp(i theta)) on each parity's first appearance, theta = +pi/4
+    for odd and -pi/4 for even weight, and the final wire contents (wire p holds input log2(wires[p]))."""
+    wires = list(IDENTITY_WIRES)
+    phased: set[int] = set()
+    ops: list[tuple[Any, ...]] = []
+
+    def mark() -> None:
+        for position, parity in enumerate(wires):
+            if parity not in phased:
+                phased.add(parity)
+                ops.append(("phase", position, (1 if bin(parity).count("1") % 2 else -1) * math.pi / 4))
+
+    mark()
+    for control, target in network:
+        wires[target] ^= wires[control]
+        ops.append(("cnot", control, target))
+        mark()
+    if len(phased) != 7:
+        raise ValueError(f"network {network} carries {len(phased)} of the 7 parities")
+    return ops, tuple(wires)
+
+
+def grover_ops(marked: str, k: int) -> list[tuple[Any, ...]]:
+    """Logical gates of k Grover iterations for the basis state whose bit q is marked[q]."""
+    ops: list[tuple[Any, ...]] = [("h", q) for q in range(3)]
+    zeros = [q for q in range(3) if marked[q] == "0"]
+    for _ in range(k):
+        ops += [("x", q) for q in zeros] + [("ccz",)] + [("x", q) for q in zeros]
+        ops += [("h", q) for q in range(3)] + [("x", q) for q in range(3)] + [("ccz",)]
+        ops += [("x", q) for q in range(3)] + [("h", q) for q in range(3)]
+    return ops
+
+
+def ideal_probability(k: int) -> float:
+    return math.sin((2 * k + 1) * math.asin(1 / math.sqrt(8))) ** 2
+
+
+def rz(gamma: float) -> np.ndarray:
+    return np.diag([cmath.exp(-0.5j * gamma), cmath.exp(0.5j * gamma)])
+
+
+def prx_matrix(theta: float, phi: float) -> np.ndarray:
+    c, s = math.cos(theta / 2), math.sin(theta / 2)
+    return np.array([[c, -1j * cmath.exp(-1j * phi) * s], [-1j * cmath.exp(1j * phi) * s, c]])
+
+
+def euler(u: np.ndarray) -> tuple[float, float, float]:
+    """(theta, phi, gamma) with u = exp(i delta) rz(gamma) prx(theta, phi): the prx runs first."""
+    c, s = abs(u[0, 0]), abs(u[1, 0])
+    theta = 2 * math.atan2(s, c)
+    if s < 1e-9:
+        return 0.0, 0.0, cmath.phase(u[1, 1] / u[0, 0])
+    if c < 1e-9:
+        return theta, 0.0, cmath.phase(u[1, 0] / u[0, 1])
+    return theta, cmath.phase(1j * u[1, 0] / u[1, 1]), cmath.phase(u[1, 1] / u[0, 0])
+
+
+def angle(x: float) -> float:
+    return round(math.remainder(x, 2 * math.pi), 10) + 0.0
+
+
+def compile_line(
+    ops: list[tuple[Any, ...]], network: tuple[tuple[int, int], ...], path: list[str], name: str
+) -> tuple[dict[str, Any], list[int]]:
+    """Native circuit of the logical gates on path positions 0-1-2, and the final position of each logical qubit."""
+    block, final = ccz_block(network)
+    source = [wire.bit_length() - 1 for wire in final]
+    position = [0, 1, 2]
+    pending = [np.eye(2, dtype=complex) for _ in range(3)]
+    out: list[dict[str, Any]] = []
+
+    def flush(p: int) -> None:
+        theta, phi, gamma = euler(pending[p])
+        if theta > 1e-9:
+            out.append({"name": "prx", "locus": [path[p]], "args": {"angle": angle(theta), "phase": angle(phi)}})
+        pending[p] = rz(gamma)
+
+    for op in ops:
+        if op[0] in ("h", "x"):
+            p = position[op[1]]
+            pending[p] = (H if op[0] == "h" else X) @ pending[p]
+            continue
+        for item in block:
+            if item[0] == "phase":
+                pending[item[1]] = np.diag([1, cmath.exp(1j * item[2])]) @ pending[item[1]]
+                continue
+            control, target = item[1], item[2]
+            pending[target] = H @ pending[target]
+            flush(control)
+            flush(target)
+            out.append({"name": "cz", "locus": [path[control], path[target]], "args": {}})
+            pending[target] = H @ pending[target]
+        position = [source.index(position[q]) for q in range(3)]
+    for p in range(3):
+        flush(p)
+    out.append({"name": "measure", "locus": [path[position[q]] for q in range(3)], "args": {"key": "m"}})
+    return {"name": name, "instructions": out}, position
+
+
+def generic(marked: str, path: list[str], name: str) -> dict[str, Any]:
+    """One iteration through qiskit's optimization level 3 on the path's two couplers."""
+    logical = QuantumCircuit(3, 3)
+    for op in grover_ops(marked, 1):
+        if op[0] == "h":
+            logical.h(op[1])
+        elif op[0] == "x":
+            logical.x(op[1])
+        else:
+            logical.ccz(0, 1, 2)
+    logical.measure(range(3), range(3))
+    compiled = transpile(
+        logical,
+        basis_gates=["r", "cz"],
+        coupling_map=CouplingMap([[0, 1], [1, 0], [1, 2], [2, 1]]),
+        initial_layout=[0, 1, 2],
+        optimization_level=3,
+        seed_transpiler=TRANSPILER_SEED,
+    )
+    out: list[dict[str, Any]] = []
+    readout: dict[int, str] = {}
+    for item in compiled.data:
+        op = item.operation
+        locus = [path[compiled.find_bit(q).index] for q in item.qubits]
+        if op.name == "r":
+            theta, phi = (float(p) for p in op.params)
+            out.append({"name": "prx", "locus": locus, "args": {"angle": angle(theta), "phase": angle(phi)}})
+        elif op.name == "cz":
+            out.append({"name": "cz", "locus": locus, "args": {}})
+        elif op.name == "measure":
+            readout[compiled.find_bit(item.clbits[0]).index] = locus[0]
+        elif op.name != "barrier":
+            raise ValueError(f"{name}: {op.name} is not a Garnet native operation")
+    out.append({"name": "measure", "locus": [readout[q] for q in range(3)], "args": {"key": "m"}})
+    return {"name": name, "instructions": out}
+
+
+def readout_circuit(bits: str, path: list[str]) -> dict[str, Any]:
+    out: list[dict[str, Any]] = [
+        {"name": "prx", "locus": [path[q]], "args": {"angle": angle(math.pi), "phase": 0.0}}
+        for q in range(3)
+        if bits[q] == "1"
+    ]
+    out.append({"name": "measure", "locus": list(path), "args": {"key": "m"}})
+    return {"name": f"ro-{bits}", "instructions": out}
+
+
+def arms(path: list[str]) -> list[tuple[str, dict[str, Any], str | None, int | None]]:
+    """(name, circuit, marked string, iterations) of every circuit in the job's order."""
+    network = line_networks()["exchanged"]
+    out: list[tuple[str, dict[str, Any], str | None, int | None]] = [
+        ("k0", compile_line(grover_ops("000", 0), network, path, "k0")[0], None, 0)
+    ]
+    for marked in MARKS:
+        for k in (1, 2):
+            name = f"m{marked}-k{k}"
+            out.append((name, compile_line(grover_ops(marked, k), network, path, name)[0], marked, k))
+    out.append(("m101-k1-generic", generic("101", path, "m101-k1-generic"), "101", 1))
+    for bits in ("".join(b) for b in itertools.product("01", repeat=3)):
+        out.append((f"ro-{bits}", readout_circuit(bits, path), None, None))
+    return out
+
+
+def logical_unitary(ops: list[tuple[Any, ...]]) -> np.ndarray:
+    """8x8 unitary on basis index sum(x_q << q)."""
+    u = np.eye(8, dtype=complex)
+    for op in ops:
+        if op[0] == "ccz":
+            u = np.diag([-1 if i == 7 else 1 for i in range(8)]) @ u
+        else:
+            u = embed(H if op[0] == "h" else X, op[1]) @ u
+    return u
+
+
+def embed(gate: np.ndarray, q: int) -> np.ndarray:
+    full = np.zeros((8, 8), dtype=complex)
+    for i in range(8):
+        for j in range(8):
+            if (i ^ j) & ~(1 << q) == 0:
+                full[i, j] = gate[(i >> q) & 1, (j >> q) & 1]
+    return full
+
+
+def native_unitary(circuit: dict[str, Any], path: list[str]) -> tuple[np.ndarray, list[int]]:
+    """8x8 unitary of the prx and cz gates on basis index sum(x_p << p) over path positions, and the
+    path position each measured bit reads."""
+    u = np.eye(8, dtype=complex)
+    measured: list[int] = []
+    for op in circuit["instructions"]:
+        where = [path.index(q) for q in op["locus"]]
+        if op["name"] == "prx":
+            u = embed(prx_matrix(op["args"]["angle"], op["args"]["phase"]), where[0]) @ u
+        elif op["name"] == "cz":
+            a, b = where
+            u = np.diag([-1 if (i >> a) & (i >> b) & 1 else 1 for i in range(8)]) @ u
+        elif op["name"] == "measure":
+            measured = where
+    return u, measured
+
+
+def ideal_distribution(circuit: dict[str, Any], path: list[str]) -> np.ndarray:
+    """Noiseless probability of each logical outcome index sum(bit_q << q), bit q from the q-th measured qubit."""
+    u, measured = native_unitary(circuit, path)
+    amplitudes = u[:, 0]
+    out = np.zeros(8)
+    for i in range(8):
+        out[sum(((i >> p) & 1) << q for q, p in enumerate(measured))] += abs(amplitudes[i]) ** 2
+    return out
+
+
+def verify_line(ops: list[tuple[Any, ...]], circuit: dict[str, Any], position: list[int], path: list[str]) -> float:
+    """Largest off-diagonal of U_native (P U_ideal)^dagger: zero when the native circuit equals the logical one
+    up to the final per-qubit Z frame and the tracked relabeling P."""
+    native, _ = native_unitary(circuit, path)
+    permute = np.zeros((8, 8))
+    for x in range(8):
+        permute[sum(((x >> q) & 1) << position[q] for q in range(3)), x] = 1
+    product = native @ (permute @ logical_unitary(ops)).conj().T
+    return float(np.max(np.abs(product - np.diag(np.diag(product)))))
+
+
+def key_of(index: int) -> str:
+    return "".join(str((index >> q) & 1) for q in range(3))
+
+
+def predicted(item: tuple[str, str]) -> dict[str, float]:
+    """Exact predicted outcome distribution of one circuit, keyed by the marked-string convention."""
+    circuit_text, calibration_dir = item
+    circuit = json.loads(circuit_text)
+    calibration = iqm_sim.Calibration.from_directory(Path(calibration_dir))
+    target, _ = target_of(calibration)
+    qiskit_circuit, bits = iqm_sim.to_qiskit(circuit, calibration)
+    measured = [calibration.qubits.index(qubit) for _, qubit in bits]
+    scheduled = transpile(qiskit_circuit, target=target, optimization_level=0, scheduling_method="alap")
+    body = relaxed(calibration, scheduled).remove_final_measurements(inplace=False)
+    body.save_probabilities(measured)
+    simulator = AerSimulator(method="density_matrix", noise_model=calibration.noise_model())
+    true = np.asarray(simulator.run(body).result().data(0)["probabilities"], dtype=float)
+    read = true
+    for q, (_, qubit) in enumerate(bits):
+        e01, e10 = calibration.readout(qubit)
+        confusion = np.array([[1 - e01, e10], [e01, 1 - e10]])
+        shaped = read.reshape(2 ** (2 - q), 2, 2**q)
+        read = np.einsum("rt,atb->arb", confusion, shaped).reshape(8)
+    return {key_of(i): round(float(read[i]), 9) for i in range(8)}
+
+
+def oriented_paths(calibration: iqm_sim.Calibration) -> list[list[str]]:
+    neighbors: dict[str, list[str]] = {q: [] for q in calibration.qubits}
+    for pair in calibration.cz:
+        a, b = sorted(pair, key=calibration.qubits.index)
+        neighbors[a].append(b)
+        neighbors[b].append(a)
+    return [
+        [a, b, c]
+        for b in calibration.qubits
+        for a, c in itertools.permutations(sorted(neighbors[b], key=calibration.qubits.index), 2)
+    ]
+
+
+def path_score(item: tuple[list[str], str]) -> tuple[list[str], float | None, str | None]:
+    path, calibration_dir = item
+    try:
+        scores = []
+        for name, circuit, marked, _ in arms(path)[1:5]:
+            if marked is None:
+                raise ValueError(f"{name} marks no state")
+            scores.append(predicted((dump(circuit), calibration_dir))[marked])
+        return path, round(sum(scores) / len(scores), 9), None
+    except (KeyError, ValueError) as error:
+        return path, None, f"{type(error).__name__}: {error}"
+
+
+def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
+    calibration = iqm_sim.Calibration.from_directory(calibration_dir)
+    scored = ordered_map(path_score, [(path, str(calibration_dir)) for path in oriented_paths(calibration)])
+    usable = [(score, path) for path, score, _ in scored if score is not None]
+    if not usable:
+        raise ValueError("no oriented path has a complete calibration")
+    best = max(usable, key=lambda item: item[0])
+    path = best[1]
+    chosen = arms(path)
+    files: dict[str, str] = {}
+    for name, circuit, _, _ in chosen:
+        files[f"circuits/{name}.json"] = dump(circuit)
+    distributions = ordered_map(
+        predicted, [(files[f"circuits/{name}.json"], str(calibration_dir)) for name, *_ in chosen]
+    )
+    arm_records: dict[str, Any] = {}
+    for (name, circuit, marked, k), distribution in zip(chosen, distributions, strict=True):
+        arm_records[name] = {
+            "cz": sum(op["name"] == "cz" for op in circuit["instructions"]),
+            "prx": sum(op["name"] == "prx" for op in circuit["instructions"]),
+            "marked": marked,
+            "iterations": k,
+            "ideal_marked": None if marked is None or k is None else ideal_probability(k),
+            "predicted_marked": None if marked is None else distribution[marked],
+            "predicted": distribution,
+        }
+    expected = round(len(chosen) * SHOTS * ACTIVE_SHOT_SECONDS, 3)
+    job = {
+        "job": "grover",
+        "circuits": [
+            {"file": f"circuits/{name}.json", "sha256": sha256(files[f"circuits/{name}.json"].encode())}
+            for name, *_ in chosen
+        ],
+        "shots": SHOTS,
+        # The QPU compiles against the calibration set of the prediction, or fails if it is gone; the mock
+        # twin's sets differ, so it compiles against its own default.
+        "options": {**OPTIONS, "calibration_set_id": {"garnet": calibration.set_id}},
+        "expected_seconds": expected,
+        "max_credits": {qc: ceiling_credits(expected, PRICE[qc], JOB_SECONDS) for qc in QCS},
+    }
+    networks = line_networks()
+
+    def sign(first: str, second: str) -> str:
+        return "+" if arm_records[first]["predicted_marked"] > arm_records[second]["predicted_marked"] else "-"
+
+    prediction = {
+        "calibration_set": calibration.set_id,
+        "networks": {kind: [list(step) for step in network] for kind, network in networks.items()},
+        "path": path,
+        "paths_scored": len(usable),
+        "paths_skipped": [{"path": p, "reason": reason} for p, score, reason in scored if score is None],
+        "best_paths": [{"path": p, "score": round(s, 4)} for s, p in sorted(usable, key=lambda item: -item[0])[:10]],
+        "arms": arm_records,
+        "decisions": {
+            "z_resolve": Z_RESOLVE,
+            "line_vs_generic": f"P(m101-k1) - P(m101-k1-generic); predicted sign {sign('m101-k1', 'm101-k1-generic')}",
+            "second_iteration": {
+                m: f"P(m{m}-k2) - P(m{m}-k1); predicted sign {sign(f'm{m}-k2', f'm{m}-k1')}" for m in MARKS
+            },
+            "bit_order": "the most frequent outcome of m011-k1 and m011-k2 is 011, not 110",
+        },
+        "model": (
+            "exact density matrix: iqm_sim depolarizing PRX and CZ, ALAP idle T1/T2, unheralded readout assignment; "
+            "no coherent error, leakage or crosstalk"
+        ),
+    }
+    files["cases.json"] = dump(
+        {
+            "schema": CASE_SCHEMA,
+            "case": CASE,
+            "question": (
+                "Does three-qubit Grover search compiled with a seven-CZ line-native CCZ reach a higher marked-state "
+                "probability on a Garnet path than the generic compile of the same search, and does a second "
+                "iteration move it in the direction the calibration model predicts?"
+            ),
+            "ideal": {name: record["ideal_marked"] for name, record in arm_records.items() if record["marked"]},
+            "qcs": QCS,
+            "jobs": [job],
+        }
+    )
+    files["prediction.json"] = dump(prediction)
+    return files, prediction
+
+
+def write(directory: Path, source: Path) -> None:
+    calibration_dir = directory / "calibration"
+    calibration_dir.mkdir(parents=True, exist_ok=True)
+    for name in CALIBRATION_FILES:
+        shutil.copyfile(source / name, calibration_dir / name)
+    files, prediction = build_from(calibration_dir)
+    for rel, text in files.items():
+        path = directory / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text, encoding="utf-8")
+    summary = {name: (a["cz"], a["predicted_marked"]) for name, a in prediction["arms"].items() if a["marked"]}
+    print(json.dumps({"path": prediction["path"], "arms": summary}, indent=1))
+
+
+def check(directory: Path) -> None:
+    files, _ = build_from(directory / "calibration")
+    present = {p.relative_to(directory).as_posix() for p in directory.rglob("*") if p.is_file()}
+    expected = set(files) | {f"calibration/{name}" for name in CALIBRATION_FILES}
+    if present != expected:
+        raise ValueError(f"{directory}: files differ from the build: {sorted(present ^ expected)}")
+    for rel, text in files.items():
+        if (directory / rel).read_text(encoding="utf-8") != text:
+            raise ValueError(f"{directory}/{rel} differs from the build")
+    print(f"{directory}: matches the build from its retained calibration")
+
+
+def self_test() -> str:
+    networks = line_networks()
+    if [len(networks["fixed"]), len(networks["exchanged"])] != [8, 7]:
+        raise AssertionError(f"network lengths {[len(n) for n in networks.values()]}, expected fixed 8, exchanged 7")
+    for kind, network in networks.items():
+        _, final = ccz_block(network)
+        if kind == "fixed" and final != IDENTITY_WIRES:
+            raise AssertionError("the fixed network moves a wire")
+        if tuple(sorted(final)) != IDENTITY_WIRES:
+            raise AssertionError(f"the {kind} network ends in a non-permutation {final}")
+    rng = np.random.default_rng(SELF_TEST_SEED)
+    for _ in range(200):
+        z = rng.normal(size=(2, 2)) + 1j * rng.normal(size=(2, 2))
+        u, _ = np.linalg.qr(z)
+        theta, phi, gamma = euler(u)
+        rebuilt = rz(gamma) @ prx_matrix(theta, phi)
+        overlap = abs(np.trace(rebuilt.conj().T @ u)) / 2
+        if abs(overlap - 1) > 1e-10:
+            raise AssertionError(f"euler round trip overlap {overlap}")
+    path = ["QA", "QB", "QC"]
+    worst = 0.0
+    for kind, network in networks.items():
+        for marked in ("000", "101", "011", "110", "111"):
+            for k in (0, 1, 2, 3):
+                ops = grover_ops(marked, k)
+                circuit, position = compile_line(ops, network, path, "t")
+                worst = max(worst, verify_line(ops, circuit, position, path))
+                cz = sum(op["name"] == "cz" for op in circuit["instructions"])
+                if cz != 2 * k * len(network):
+                    raise AssertionError(f"{kind} {marked} k={k}: {cz} CZ")
+                p = ideal_distribution(circuit, path)[int(marked[::-1], 2)]
+                if abs(p - ideal_probability(k)) > 1e-9:
+                    raise AssertionError(f"{kind} {marked} k={k}: P(marked) {p}, law {ideal_probability(k)}")
+    if worst > 1e-8:
+        raise AssertionError(f"a line-native circuit differs from its logical circuit by {worst}")
+    gen = generic("101", path, "g")
+    p_generic = ideal_distribution(gen, path)
+    p_line = ideal_distribution(compile_line(grover_ops("101", 1), networks["exchanged"], path, "l")[0], path)
+    if float(np.max(np.abs(p_generic - p_line))) > 1e-9:
+        raise AssertionError("the generic compile's distribution differs from the line-native one")
+    if any(op["name"] == "cz" and set(op["locus"]) == {"QA", "QC"} for op in gen["instructions"]):
+        raise AssertionError("the generic compile uses the absent end-to-end coupler")
+    for bits in ("".join(b) for b in itertools.product("01", repeat=3)):
+        if ideal_distribution(readout_circuit(bits, path), path)[int(bits[::-1], 2)] < 1 - 1e-12:
+            raise AssertionError(f"readout preparation {bits} misses its state")
+    generic_cz = sum(op["name"] == "cz" for op in gen["instructions"])
+    return (
+        f"iqm_grover_line self-test passed: networks 8 and 7 CNOTs, unitary residual {worst:.1e}, "
+        f"generic one-iteration CZ {generic_cz}"
+    )
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
+    parser.add_argument("--self-test", action="store_true")
+    sub = parser.add_subparsers(dest="command")
+    b = sub.add_parser("build")
+    b.add_argument("directory", type=Path)
+    b.add_argument(
+        "--calibration", type=Path, required=True, help="folder of metrics.json and dynamic-quantum-architecture.json"
+    )
+    sub.add_parser("check").add_argument("directory", type=Path)
+    args = parser.parse_args()
+    if args.self_test:
+        print(self_test())
+    elif args.command == "build":
+        write(args.directory, args.calibration)
+    elif args.command == "check":
+        check(args.directory)
+    else:
+        parser.error("a subcommand or --self-test is required")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

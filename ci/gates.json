@@ -3597,6 +3597,25 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_line.py --self-test",
+      "name": "core-772",
+      "seconds": 1.5
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_line.py check results/iqm/cases/grover-line-ccz",
+      "name": "core-773",
+      "seconds": 41.2,
+      "replays": [
+        "results/iqm/cases/grover-line-ccz/cases.json",
+        "results/iqm/cases/grover-line-ccz/circuits",
+        "results/iqm/cases/grover-line-ccz/prediction.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --self-test",
       "name": "core-457",
       "seconds": 0.1
