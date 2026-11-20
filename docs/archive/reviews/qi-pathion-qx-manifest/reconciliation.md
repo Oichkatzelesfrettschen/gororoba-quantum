@@ -10,3 +10,7 @@ against the source at head `eb8c234e4`; every finding holds and is fixed by narr
 | 3 | Medium: the 1200-of-2007 comparison has no retained source | git grep finds the number in one comment only; no output, versions or command retained | cited line read | fixed by removal: the number leaves the comment; the 4-of-4 byte equality on linux x86_64 and aarch64 stays, bound by the receipt digests | 5b359bcf8 |
 | 4 | Low: every other value bit-identical is overbroad | a signaling NaN gains the quiet bit under + 0.0 | cited line read | fixed: the docstring reads every finite value | 5b359bcf8 |
 | 5 | Low: the BLAS and FMA attribution has no source | the visible path is Statevector.probabilities() and NumPy accumulation | cited line read | fixed: the docstring and test comment read hypothesis: the sign follows the accumulation order of the probability computation | 5b359bcf8 |
+
+## Darwin measurement
+
+The hosted `arm (macos-26)` leg (run 44670995561, head 67558e856) rebuilt the four QX manifests. batch-00 differs from the stored file at `$.circuits[1].ideal[0]`: rebuilt 0.124834861469, stored 0.124844028839. The difference is 9.2e-6, a numerical difference in a circuit ideal and not a sign of zero. The signed-zero hypothesis does not explain the macOS arm64 difference; the fix removes the signed-zero hazard only. Cause open: accumulation order, transpilation or library version. Next check: the statevector of that circuit on darwin-arm64 against Linux.
