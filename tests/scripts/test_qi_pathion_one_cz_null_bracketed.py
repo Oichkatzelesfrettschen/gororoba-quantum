@@ -408,7 +408,11 @@ def test_the_manifest_writer_serializes_a_negative_residue_as_zero(monkeypatch: 
     monkeypatch.setattr(oc, "series_plan", lambda: plan)
     width = len(real_plan["templates"]["b0"]["ideal"])
     monkeypatch.setattr(oc.blk, "ideal_of_record", lambda circuit: np.full(width, -1e-33))
-    files = oc.build()[oc.QX_SERIES]
+    oc.twin_entry.cache_clear()  # the coin-fixed twins are cached; none built from the patched sources may outlive it
+    try:
+        files = oc.build()[oc.QX_SERIES]
+    finally:
+        oc.twin_entry.cache_clear()
     _expect(all("-0.0" not in text for rel, text in files.items() if rel.endswith("cases.json")), "a -0.0 was written")
     seen = 0
     for manifest in _manifests(files):
