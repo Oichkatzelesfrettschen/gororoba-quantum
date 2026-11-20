@@ -10,19 +10,20 @@ only).
 | Role | Reviewer | Outcome |
 |---|---|---|
 | reviewer | grok (grok-4.7, headless) | report |
-| reviewer | codex gpt-daybreak-blue-latest, high, read-only | first attempt refused ("not supported when using Codex with a ChatGPT account", after nine reconnects); the retry reported |
+| reviewer | codex gpt-daybreak-blue-latest, high, read-only | the first attempt ended without a report; the retry reported |
 | reviewer | agy gemini-4-hydrogen-high | report |
 | red team | agy gemini-3.8-flash-high | report |
 | red team | agy gemini-4-neon-high | report |
 | red team | opencode, OpenCode Go account, glm-5.3 | report |
-| red team | vibe mistral-medium-3.5 | `not run`: headless and TUI both answer HTTP 401 "Invalid API key (from the keyring)"; `/whoami` shows no Mistral sign-in. A new key or sign-in (`vibe --setup`) is the owner's step |
+| last | the Advisor | read every finding with its verdict; its items are rows below |
+| red team | vibe mistral-medium-3.5 | `not run`: the CLI could not authenticate |
 
 The briefs and raw reports stay in the ignored `docs/local/pr965-review/` of the primary checkout, since they carry local
 paths.
 
 ## Findings and resolutions
 
-Fixes landed in 432de1c4c and the commit that adds this record. Verdicts are checked against the source at those commits.
+Fixes landed in 432de1c4c, 737f778dd and the commit after it. Verdicts are checked against the source at those commits.
 
 | Finding | Raised by | Verdict | Resolution |
 |---|---|---|---|
@@ -50,9 +51,15 @@ Fixes landed in 432de1c4c and the commit that adds this record. Verdicts are che
 | `check_budgets` rejects the P manifests | agy Flash | Refuted | `iteration_form` calls it only when settings name budgets (`qd_records.py` 212-217); the P settings, like the retained ones, name none |
 | `analyze` applies the rules despite a deviation | agy Flash | Refuted | CASE.md records a deviation as a finding before the rules and does not suspend them; `analyze` lists deviations beside the reading |
 | `collect`'s final status read is unlogged | agy Flash | Refuted | `record` logs the terminal read before calling `collect` |
+| A gate or plan refusal raises `PlatformError`, which `main` does not catch, so a refusal prints a traceback | agy Hydrogen | confirmed | Fixed: `main` prints the message and exits 1; a test drives it |
+| The stock plan output omits the body, so the approval record would not show the mitigation policy | codex | confirmed | Fixed: `bdsc_diagnostic_timing_case.py plan` prints each plan summary with the body's mitigation list |
+| No test shows the diagnostic analyzer refusing a P run | agy Hydrogen, agy Neon | Boundary | The refusal rests on two source lines, the served platform and job membership (`bdsc_diagnostic.py` 850, 878); a test needs a synthetic run checked against a frozen rebuild, which the acquisition tests construct through the solver |
+| The wrapper takes the run path as given, where the stock CLI applies `case_path` containment | Advisor | confirmed | Fixed: `submit` and `record` resolve the run through `qd_platform.case_path` |
+| The claim that P derives from the manifests the retained jobs were sent with rests on a one-off comparison | Advisor | confirmed | Fixed: a test compares `source_job.cases_sha256` with the retained receipts' `cases_sha256` |
+| A boundary test row labeled 10 % has spread 14/147 | Advisor | confirmed | Fixed: the row is 133, 140, 147, spread exactly 1/10 |
 
 ## Open before approval
 
 - `qd_platform.py plan` on `p1` and `p2` (read-only, the first block of the CASE.md runbook) has not run; its output
   enters the approval request.
-- vibe stays `not run` until its Mistral credential is renewed.
+- vibe stays `not run` until it authenticates again.

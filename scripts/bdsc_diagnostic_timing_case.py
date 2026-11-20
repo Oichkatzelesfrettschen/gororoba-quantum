@@ -23,6 +23,8 @@ Subcommands:
   token's submit lock it refuses a request other than the next slot's, a token with a running or queued job, a body
   with mitigations, and every stop condition `next` applies. The manifests name this wrapper as submit_wrapper, so
   qd_platform.py submit refuses them without it.
+- plan runs qd_platform.plan on p1 and p2 in the tree (read-only, network) and prints each plan summary with the
+  mitigation list of the body it built.
 - record RUN [--poll S] reads the job status on a fixed cadence of S seconds (at most 10), appends (UTC time,
   status, progress, progress message) or the transient error to RUN/status-log.jsonl until the job is terminal, then
   collects it through qd_platform.collect.
@@ -33,6 +35,7 @@ Subcommands:
 Usage:
   "$PYTHON" scripts/bdsc_diagnostic_timing_case.py build
   "$PYTHON" scripts/bdsc_diagnostic_timing_case.py check
+  "$PYTHON" scripts/bdsc_diagnostic_timing_case.py plan
   "$PYTHON" scripts/bdsc_diagnostic_timing_case.py next
   "$PYTHON" scripts/bdsc_diagnostic_timing_case.py submit RUN --approval TEXT
   "$PYTHON" scripts/bdsc_diagnostic_timing_case.py record RUN
@@ -299,6 +302,7 @@ def record(run: Path, poll: float = MAX_POLL, timeout: float = 3600.0) -> dict[s
     import qd_platform
 
     require(0 < poll <= MAX_POLL, f"--poll {poll} is outside (0, {MAX_POLL:g}]")
+    run = qd_platform.case_path(str(run))
     _, _, cases_sha256 = qd_platform.load_case(run)
     submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
     require(submission.get("cases_sha256") == cases_sha256, f"{run}: cases.json differs from the submission receipt")
@@ -444,9 +448,24 @@ class SubmissionGate:
             raise qd_platform.PlatformError("the job body carries mitigations")
 
 
+def plan(tree: Path = TREE) -> dict[str, Any]:
+    """qd_platform.plan of each committed request in the tree (read-only), with the mitigation list of the body the
+    plan built, which the stock plan output omits."""
+    import qd_platform
+
+    out = {}
+    for name in REQUESTS:
+        checked = qd_platform.plan(
+            qd_platform.case_path(str(tree / name)), PLATFORM, MAX_CREDITS_PER_JOB, EXPECTED_SECONDS, PER_JOB_CREDITS
+        )
+        out[name] = {**qd_platform.plan_summary(checked), "mitigations": qd_platform.body_mitigations(checked["body"])}
+    return out
+
+
 def submit(run: Path, approval: str) -> dict[str, Any]:
     import qd_platform
 
+    run = qd_platform.case_path(str(run))
     gate = SubmissionGate(run)
     return qd_platform.submit(
         run, PLATFORM, approval, MAX_CREDITS_PER_JOB, EXPECTED_SECONDS, PER_JOB_CREDITS, verify=gate
@@ -508,9 +527,12 @@ def main() -> int:
     record_parser.add_argument("run", type=Path)
     record_parser.add_argument("--poll", type=float, default=MAX_POLL)
     record_parser.add_argument("--timeout", type=float, default=3600.0)
+    commands.add_parser("plan")
     commands.add_parser("next")
     commands.add_parser("analyze")
     args = parser.parse_args()
+    import qd_platform
+
     try:
         if args.command == "build":
             write(args.out)
@@ -521,11 +543,13 @@ def main() -> int:
             print(json.dumps(submit(args.run, args.approval)["job_id"]))
         elif args.command == "record":
             print(json.dumps(record(args.run, args.poll, args.timeout)["status"], indent=1))
+        elif args.command == "plan":
+            print(json.dumps(plan(), indent=1, sort_keys=True))
         elif args.command == "next":
             print(next_request(bound_runs()))
         else:
             print(json.dumps(analyze(bound_runs()), indent=1))
-    except TimingError as error:
+    except (TimingError, qd_platform.PlatformError) as error:
         print(f"bdsc timing: {error}", file=sys.stderr)
         return 1
     return 0

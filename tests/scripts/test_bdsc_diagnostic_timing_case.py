@@ -80,6 +80,30 @@ def test_each_request_keeps_its_groups_byte_for_byte_in_the_retained_order(name:
     require(circuit == (timing.SOURCE_TREE / job / "circuit.json").read_bytes(), f"{name}: circuit differs from {job}")
 
 
+def test_each_request_names_the_manifest_the_retained_job_was_submitted_with() -> None:
+    retained = {
+        "p1": "results/quandela/runs/2026-11-14T203218Z-sim_belenos-bdsc_diagnostic-b1-j1",
+        "p2": "results/quandela/runs/2026-11-15T180000Z-sim_belenos-bdsc_diagnostic-b1-j2",
+    }
+    for name, run in retained.items():
+        receipt = json.loads((timing.ROOT / run / "submission.json").read_bytes())
+        source = committed(name)["source_job"]["cases_sha256"]
+        require(source == receipt["cases_sha256"], f"{name}: {source} is not the receipt digest of {run}")
+
+
+def test_a_platform_refusal_ends_the_command_with_its_message(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    def refuse(runs: list[Path], tree: Path = TREE) -> str:
+        raise qd_platform.PlatformError("the token has a running or queued job")
+
+    monkeypatch.setattr(timing, "bound_runs", lambda: [])
+    monkeypatch.setattr(timing, "next_request", refuse)
+    monkeypatch.setattr(timing.sys, "argv", ["bdsc_diagnostic_timing_case.py", "next"])
+    require(timing.main() == 1, "a refusal exits 1")
+    require("running or queued" in capsys.readouterr().err, "the refusal is printed")
+
+
 def test_the_requests_omit_the_groups_the_case_names() -> None:
     names = {name: {timing.group_of(s) for s in committed(name)["settings"]} for name in timing.REQUESTS}
     require(names == {"p1": {"out-s0", "out-s1"}, "p2": {"rev-s0", "rev-s1"}}, f"groups {names}")
@@ -110,9 +134,10 @@ def test_the_retained_draw_stays_claimed_by_its_own_record_only() -> None:
         ([150.0, 151.0, 152.0], [140.0, 141.0, 142.0], "inconclusive"),
         # |m1 - m2| / mean is exactly 1/20 here, which binary64 rounds above 0.05; the rule reads "at most 5 %".
         ([150.0, 150.0, 151.0], [143.0, 143.0, 143.0], "doubled-within-fit"),
-        # Exactly 2 x mean = 295 s sits within the fit, and a spread of exactly 10 % is not above it.
+        # Exactly 2 x mean = 295 s sits within the fit; a spread of exactly 14 / 140 = 10 % is not above 10 %, and
+        # being above 5 % it leaves the run inconclusive.
         ([147.5, 147.5, 147.5], [147.5, 147.5, 147.5], "doubled-within-fit"),
-        ([140.0, 147.0, 154.0], [147.0, 147.0, 147.0], "inconclusive"),
+        ([133.0, 140.0, 147.0], [147.0, 147.0, 147.0], "inconclusive"),
     ],
 )
 def test_the_decision_rows_of_the_case(p1: list[float], p2: list[float], reading: str) -> None:
@@ -296,6 +321,7 @@ def test_the_recorder_reads_on_a_fixed_cadence_and_logs_transient_errors(
             raise answer
         return answer
 
+    monkeypatch.setattr(qd_platform, "case_path", Path)
     monkeypatch.setattr(qd_platform, "load_case", lambda directory: ({}, {}, "x"))
     monkeypatch.setattr(qd_platform, "request", request)
     monkeypatch.setattr(qd_platform, "collect", lambda directory, poll, timeout: {"status": "collected"})
@@ -317,6 +343,7 @@ def test_the_recorder_refuses_a_run_whose_receipt_names_another_case(
     run = tmp_path / "run"
     run.mkdir()
     (run / "submission.json").write_text(json.dumps({"job_id": "job-1", "cases_sha256": "y"}))
+    monkeypatch.setattr(qd_platform, "case_path", Path)
     monkeypatch.setattr(qd_platform, "load_case", lambda directory: ({}, {}, "x"))
     with pytest.raises(timing.TimingError, match="submission receipt"):
         timing.record(run)

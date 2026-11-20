@@ -174,8 +174,8 @@ their own.
   arithmetic, so a ratio equal to a threshold falls on the side the table names. It lists each duration above 150 s
   or below 135 s as a deviation from the prediction. The caps gate a further submission only, so the sixth run is
   read whatever they hold.
-- Plan and review packet: `scripts/qd_platform.py plan` on `p1` and `p2` in the tree reads the live platform and
-  restates credits and seconds per job (read-only); it runs before the approval request, and its output enters the
+- Plan and review packet: `bdsc_diagnostic_timing_case.py plan` runs `qd_platform.plan` on `p1` and `p2` in the tree,
+  reads the live platform and restates credits, seconds and the body's mitigation list per job (read-only); it runs before the approval request, and its output enters the
   approval record. `submit` repeats the plan under the lock before each job. `qd_platform.py review` writes a
   packet only for an Ascella acquisition (`acquisition_sources` requires the predecessor analyzer identities), and the
   retained sim:belenos jobs were submitted without one, so this case's review packet is the review record of the
@@ -193,10 +193,7 @@ export QUANDELA_TOKEN_FILE="${QUANDELA_TOKEN_FILE:?set to the token file}"
 TREE=results/quandela/cases/bdsc_diagnostic_timing_sim_belenos
 "$PYTHON" scripts/bdsc_diagnostic_timing_case.py check
 # before the approval request (read-only):
-for NAME in p1 p2; do
-  "$PYTHON" scripts/qd_platform.py plan "$TREE/$NAME" --platform sim:belenos \
-    --max-credits 1.08 --expected-seconds 150 --per-job-credits 1
-done
+"$PYTHON" scripts/bdsc_diagnostic_timing_case.py plan
 # after the owner's approval, one slot at a time; the loop ends when "next" prints complete or refuses (exit 1),
 # and analyze refuses a case that holds fewer than six admitted runs:
 while NAME=$("$PYTHON" scripts/bdsc_diagnostic_timing_case.py next) && [ "$NAME" != complete ]; do
