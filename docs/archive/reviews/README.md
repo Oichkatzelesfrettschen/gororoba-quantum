@@ -39,6 +39,7 @@ repository-relative; a branch name stands for its worktree.
 | [layout-reconciliation/operating-data.md](layout-reconciliation/operating-data.md) | Operating data behind the falsification pass: Codex rounds per PR, pr.yml failure rates, nightly audit outcomes, gate cost, dry runs against live_run commits, instruction-text size |
 | [belenos-mesh-persistence-pr729-review-brief.md](belenos-mesh-persistence-pr729-review-brief.md) | Brief for the adversarial review of the Belenos mesh-persistence pull request (#729) at 5deb80f95: statistic, power record, mesh-selection correction, repository rules, hardware case, tests |
 | [belenos-mesh-persistence-pr729-review-codex-daybreak-blue.md](belenos-mesh-persistence-pr729-review-codex-daybreak-blue.md) | Codex gpt-daybreak-blue-latest review: within-block relabeling against whole-mesh units, coverage of the slope bound, unbound thresholds in the tests |
+| [anu-qrng-retained-draws-crossing-benchmark/reconciliation.md](anu-qrng-retained-draws-crossing-benchmark/reconciliation.md) | Local codex round on the retained ANU draw of the crossing benchmark (PR 956): the missing consumer binding and its owned ledger row; with the brief |
 | [belenos-mesh-persistence-pr729-review-grok.md](belenos-mesh-persistence-pr729-review-grok.md) | Grok Build review: the drift gate's missing contrast at a zero count; statistic, power record and corrected numbers reproduced |
 | [belenos-mesh-persistence-pr729-review-opus.md](belenos-mesh-persistence-pr729-review-opus.md) | Opus review: the slope bound under unequal block spreads, identity by serialized digest, a block-matching fixture that cannot fail, the slope floor of the persists reading |
 | [belenos-mesh-persistence-pr729-reconciliation.md](belenos-mesh-persistence-pr729-reconciliation.md) | Reconciliation of the three reviews: two scratch simulations, the disposition of each finding, and the resolutions of the four findings first left open: the relabeling slope bound, the four-model power record, the slope floor on persists and identity by decoded unitary |
@@ -100,6 +101,7 @@ repository-relative; a branch name stands for its worktree.
 | [pr-149-jax-bridge-and-atlas-fringe.md](pr-149-jax-bridge-and-atlas-fringe.md) | PR #149 jax bridge sweep, and the atlas fringe amplitudes branch (PR #158) |
 | [audit-kaggle-aer-runner.md](audit-kaggle-aer-runner.md) | tools/kaggle-aer-runner against main and the substrate-routing branch |
 | [audit-dangling-docs-references.md](audit-dangling-docs-references.md) | dangling references under docs/ on main |
+| [quandela-belenos-b1-repeat-case/reconciliation.md](quandela-belenos-b1-repeat-case/reconciliation.md) | Local codex round on the sim:belenos b1 completion-time repeat case (PR 960): job-level timing, six jobs, slot balance and the billing terms; with the brief |
 | [open-issue-triage.md](open-issue-triage.md) | open issues checked against the named files |
 | [quantum-inspire-branch-pair-map.md](quantum-inspire-branch-pair-map.md) | the two Quantum Inspire branches and their merge order |
 | [open-gororoba-anf-degree-issue-draft.md](open-gororoba-anf-degree-issue-draft.md) | draft upstream issue for open_gororoba (ANF degree closed forms); not filed |
@@ -120,6 +122,7 @@ repository-relative; a branch name stands for its worktree.
 | [primorial-coherence-case-2-results-codex-review.md](primorial-coherence-case-2-results-codex-review.md) | Codex (gpt-daybreak-blue-latest, high) review of the second primorial case's retained results: the upper-bound and path-maximum band construction, the backfilled calibration and the case-3 design; correction: two of the three largest-bound paths falsified, not three |
 | [2026-10-26-belenos-teleportation-rehearsal-review-goal.md](2026-10-26-belenos-teleportation-rehearsal-review-goal.md) | standing brief of the Codex (gpt-daybreak-blue-latest, high) deep peer review of the Belenos teleportation rehearsal, job-00 evidence and the job-01 case of #560 |
 | [2026-10-26-belenos-teleportation-rehearsal-review.md](2026-10-26-belenos-teleportation-rehearsal-review.md) | Codex (gpt-daybreak-blue-latest, high) deep peer review of the Belenos teleportation rehearsal and job-01: fourteen findings, the fixes in #560 and the questions left to the owner |
+| [iqm-emerald-idle-schedule-case/reconciliation.md](iqm-emerald-idle-schedule-case/reconciliation.md) | Local codex round on the written case of one IQM Emerald idle-schedule job (PR 959): what H2 identifies, the chi-square model, the mock cutoff and the historical credit snapshot; with the brief |
 | [2026-10-26-belenos-job-01-redesign-consult.md](2026-10-26-belenos-job-01-redesign-consult.md) | Codex (gpt-daybreak-blue-latest, high, web search) research consult on the job-01 redesign, with its [brief](2026-10-26-belenos-job-01-redesign-consult-goal.md) |
 | [2026-10-26-belenos-job-01-redesign-operator-research.md](2026-10-26-belenos-job-01-redesign-operator-research.md) | operator's parallel reading of the same questions, superseded in part |
 | [2026-10-26-belenos-job-01-redesign-disposition.md](2026-10-26-belenos-job-01-redesign-disposition.md) | how the consult, the operator reading and the source notes became the descriptive job-01 design |
@@ -131,6 +134,7 @@ repository-relative; a branch name stands for its worktree.
 | [2026-11-10-kernel-limits-fiber-map/](2026-11-10-kernel-limits-fiber-map/README.md) | Local codex and nemotron reviews and the hosted Codex and Copilot findings on the kernel-plane limits at the special VB point and the fiber-to-Grassmannian map (pull request 817), each with its verdict and disposition |
 | [2026-11-10-monomial-ladder/](2026-11-10-monomial-ladder/README.md) | Local codex review of the monomial ladder (pull request 818) and the disposition of its six findings |
 | [untracked-records-audit-2026-11-11/](untracked-records-audit-2026-11-11/README.md) | Read-only audit of the ignored `docs/local/` trees of the A5 exceptional-fiber program (22,648 + 456 + 505 files) against every ref: result-missing, already-represented, scratch and failed-run groups with the home of each; the per-file listing is not retained and the counts are the audit's own |
+| [review-record-backfill-937-843/reconciliation.md](review-record-backfill-937-843/reconciliation.md) | Local codex round on the backfilled records of PRs 937 and 843 (PR 958): the contradictory no-finding summaries, record shape, source locator and the full hashes; with the brief |
 
 The [Tuna projector campaign review](tuna-projector-campaign-review.md) and its
 [model provenance](tuna-projector-campaign-review.json) separate QX conformance, bounded hardware qualification and causal successors.
@@ -203,3 +207,5 @@ of one reviewer and two red-teamers on the case generator and its written cases.
 The [Quantum Inspire status document review](qi-status-document/reconciliation.md) reconciles the seven findings
 of its [reviewer report](qi-status-document/codex-report.md) on [the brief](qi-status-document/brief.md) for
 `scripts/qi_status.py`.
+
+The [circuit_params unitary comparison review](circuit-params-unitary-comparison/README.md) (pull request 937) and the [workbench payload identity review](workbench-payload-identity/README.md) (pull request 843) are post-merge backfills. Each reconciles the Advisor and worker rounds of its pull request against the pull request's own threads and its merge commit.

@@ -1,0 +1,9 @@
+Frozen source commit: 666b0a074d48c4352c024a6d3a16fb5a84eefc64
+Measured calibration: producer 37.9s, modular 172.91s, exact 14.1s, total 225.836s; peak RSS 4311492KiB.
+Historical max-root/reference ratio 396.2/320.5=1.2362; projected worst root=213.75s; twelve roots/four workers=three waves.
+Expected per-sign 641.25+37.9+14.1=693.25s; twice=1386.5s; approved deadline rounded up to1500s.
+Assumptions: the same six split primes stabilize reconstruction; the historical root-duration ratio bounds relative root cost; factor-two margin covers concurrency and scheduling uncertainty.
+Exact check measured-rate estimate=37.9+3*14.1=80.2s; approved deadline300s.
+One sign and stage at a time, four-worker/24GiB write and one-worker/8GiB check. Native threads one; memory/swap cap properties omitted.
+Fresh native Windows and WSL available-memory admission follows memory-lock acquisition inside every service.
+Services bind RuntimeMaxSec1500(write)/300(check), KillModecontrol-group, TimeoutStopSec10; effective memory/swap/high properties must read infinity before compute.

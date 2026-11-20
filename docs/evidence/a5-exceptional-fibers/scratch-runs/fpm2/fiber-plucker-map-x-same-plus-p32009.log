@@ -1,0 +1,24 @@
+{"schema": "a5-fiber-plucker-map-v1", "family": "x-same", "slug": "xp-np", "prime": 32009, "order": 40, "base_nullity": 16, "generators": 15, "arcs_requested": 360, "arcs_with_limit": 360, "cases": {"x-same": {"samples": 320, "plucker_rank": 45, "veronese_ranks": {"1": 12, "2": 45, "3": 112}, "mutation_solution_dimension": 0, "delta": 2, "solution_dimension": 1, "scalars_all_nonzero": true, "t_rank": 45, "t_sha256": "0a7697384b573ef47581285a5bcbe16ad501148b1156df57cc6a7326ccdd6170", "fit_exact_on_all_samples": true, "held_out": 40, "held_out_proportional": 40, "distinct_fiber_points": 360, "verdict": "degree_2_fit_validated"}}}
+	Command being timed: "~/a5env/bin/python docs/evidence/a5-exceptional-fibers/kernel-limits/fiber_plucker_map.py x-same --plus --prime 32009 --fit 320 --held-out 40 --out ~/a5/fpm2/fiber-plucker-map-x-same-plus-p32009.json"
+	User time (seconds): 1677.14
+	System time (seconds): 4.62
+	Percent of CPU this job got: 2011%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:23.60
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 337760
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 811597
+	Voluntary context switches: 1053
+	Involuntary context switches: 109170
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

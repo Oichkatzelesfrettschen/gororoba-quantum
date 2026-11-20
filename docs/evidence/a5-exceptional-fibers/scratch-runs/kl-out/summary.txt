@@ -1,0 +1,6 @@
+x rc=0 seconds=18
+e8 rc=0 seconds=229
+vb rc=0 seconds=433
+x-opposite-result DIFFERS from retained
+e8-result identical to retained
+vb-limit-span-result identical to retained

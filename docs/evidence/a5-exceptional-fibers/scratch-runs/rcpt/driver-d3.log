@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "~/a5/rcpt/docs/evidence/a5-kernel-attachments/fiber_cone_driver.py", line 463, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "~/a5/rcpt/docs/evidence/a5-kernel-attachments/fiber_cone_driver.py", line 454, in main
+    run_degree(args.header, args.degree, args.previous_relations, args.out, args.prime,
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+               args.memory_gib, args.timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "~/a5/rcpt/docs/evidence/a5-kernel-attachments/fiber_cone_driver.py", line 316, in run_degree
+    _require(first.error is None, f"products stage failed: {first.error}")
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "~/a5/rcpt/docs/evidence/a5-kernel-attachments/fiber_cone_driver.py", line 42, in _require
+    raise ValueError(message)
+ValueError: products stage failed: exit status 124

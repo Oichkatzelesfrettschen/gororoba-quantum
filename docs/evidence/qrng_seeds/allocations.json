@@ -2729,6 +2729,11 @@
    "record": "docs/evidence/anu_qrng/draw-2026-11-08T182935Z.json",
    "path": "docs/evidence/a5-exceptional-fibers/structure/c30-bounded/c30_gen.py",
    "reason": "DRAW: the W8 base-locus plane points, controls and slice forms of the bounded C30 check, read as raw values in [1, 32008] by index (indices 4 to 358: the points and controls first, then 24 values for each of five slice forms)"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-19T164733Z.json",
+   "path": "docs/notes/qrng/external-consumers.md",
+   "reason": "the six analysis seeds of an external benchmark registration, two values each (indices 0 to 11), mapped as the cited file states"
   }
  ]
 }

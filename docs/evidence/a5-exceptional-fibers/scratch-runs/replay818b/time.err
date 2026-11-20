@@ -1,0 +1,30 @@
+~/a5/gq-main/docs/evidence/a5-exceptional-fibers/monomial-ladder/fast_ladder.py:124: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/Context.cpp:916.)
+  return torch.sparse_csr_tensor(
+~/a5/gq-main/docs/evidence/a5-exceptional-fibers/monomial-ladder/fast_ladder.py:124: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  return torch.sparse_csr_tensor(
+Command terminated by signal 9
+	Command being timed: "systemd-run --user --scope -q -p MemoryMax=40G -p MemorySwapMax=0 ~/a5env/bin/python docs/evidence/a5-exceptional-fibers/monomial-ladder/fast_ladder.py --slug xm-nm --prime 32009 --degree 8 --order 34 --threads 24 --out ~/a5/replay818b/float64-xm-nm-p32009-d8-n34.json"
+	User time (seconds): 45196.48
+	System time (seconds): 1622.65
+	Percent of CPU this job got: 1836%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 42:29.43
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 24719816
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 182
+	Minor (reclaiming a frame) page faults: 227451357
+	Voluntary context switches: 173413
+	Involuntary context switches: 1251475
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+~/.local/share/uv/python/cpython-3.13.18-linux-x86_64-gnu/lib/python3.13/multiprocessing/resource_tracker.py:479: UserWarning: resource_tracker: There appear to be 5 leaked semaphore objects to clean up at shutdown: {'/mp-0acyniys', '/mp-bahtc9qk', '/mp-oz6b1wbr', '/mp-5jew3f46', '/mp-0t8fouuq'}
+  warnings.warn(

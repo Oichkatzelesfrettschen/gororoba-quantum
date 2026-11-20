@@ -1,0 +1,24 @@
+{"schema": "a5-fiber-plucker-map-v1", "family": "e8", "slug": "e8-nm", "prime": 32009, "order": 48, "base_nullity": 16, "generators": 21, "arcs_requested": 720, "arcs_with_limit": 720, "cases": {"p2": {"samples": 320, "plucker_rank": 22, "veronese_ranks": {"1": 7, "2": 22, "3": 50}, "delta": 2, "solution_dimension": 1, "scalars_all_nonzero": true, "t_rank": 22, "fit_exact_on_all_samples": true, "held_out": 40, "held_out_proportional": 40}, "p1": {"samples": 320, "plucker_rank": 53, "veronese_ranks": {"1": 12, "2": 53, "3": 155}, "delta": 2, "solution_dimension": 1, "scalars_all_nonzero": true, "t_rank": 53, "fit_exact_on_all_samples": true, "held_out": 40, "held_out_proportional": 40}, "all": {"samples": 640, "plucker_rank": 69, "veronese_ranks": {"1": 16, "2": 69, "3": 195}, "delta": 2, "solution_dimension": 1, "scalars_all_nonzero": true, "t_rank": 69, "fit_exact_on_all_samples": true, "held_out": 80, "held_out_proportional": 80}}}
+	Command being timed: "~/a5env/bin/python docs/evidence/a5-exceptional-fibers/kernel-limits/fiber_plucker_map.py e8 --prime 32009 --fit 320 --held-out 40 --out ~/a5/fpm/fiber-plucker-map-e8-p32009.json"
+	User time (seconds): 18005.03
+	System time (seconds): 50.89
+	Percent of CPU this job got: 2044%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 14:42.98
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 912736
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 4047020
+	Voluntary context switches: 1135
+	Involuntary context switches: 1846257
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

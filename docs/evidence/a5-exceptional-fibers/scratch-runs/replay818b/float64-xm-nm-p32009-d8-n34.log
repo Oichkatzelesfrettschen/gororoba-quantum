@@ -1,0 +1,7 @@
+{"degree": 1, "order": 13, "columns": 1820, "map_nnz": 221306, "A": 1335, "B": 1320, "r": 15, "seconds": 18.2}
+{"degree": 2, "order": 16, "columns": 3876, "map_nnz": 871394, "A": 2226, "B": 2175, "r": 51, "seconds": 25.8}
+{"degree": 3, "order": 19, "columns": 7315, "map_nnz": 2574794, "A": 3402, "B": 3280, "r": 122, "seconds": 50.3}
+{"degree": 4, "order": 22, "columns": 12650, "map_nnz": 6294056, "A": 4855, "B": 4615, "r": 240, "seconds": 120.6}
+{"degree": 5, "order": 25, "columns": 20475, "map_nnz": 13457399, "A": 6555, "B": 6138, "r": 417, "seconds": 302.7}
+{"degree": 6, "order": 28, "columns": 31465, "map_nnz": 26051537, "A": 8450, "B": 7785, "r": 665, "seconds": 711.0}
+{"degree": 7, "order": 31, "columns": 46376, "map_nnz": 46714505, "A": 10466, "B": 9470, "r": 996, "seconds": 1590.2}

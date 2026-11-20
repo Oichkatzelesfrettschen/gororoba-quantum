@@ -1,0 +1,193 @@
+prime 32009 finite_e_rank 22 total_rank 22
+  {'pole': False, 'pattern': [1, 1, 1, 2], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 0, 'rank_after': 6}
+  {'pole': False, 'pattern': [2, 2, 2, 2], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 6, 'rank_after': 6}
+  {'pole': False, 'pattern': [1, 1, 1, -1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 6, 'rank_after': 12}
+  {'pole': False, 'pattern': [2, 2, 2, -1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 12, 'rank_after': 12}
+  {'pole': False, 'pattern': [1, 1, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 12, 'rank_after': 18}
+  {'pole': False, 'pattern': [2, 2, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 18, 'rank_after': 18}
+  {'pole': False, 'pattern': [1, 1, 1, 3], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 18, 'rank_after': 21}
+  {'pole': False, 'pattern': [2, 2, 2, 3], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 21, 'rank_after': 21}
+  {'pole': False, 'pattern': [1, 1, 1, 5], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 21, 'rank_after': 22}
+  {'pole': False, 'pattern': [2, 2, 2, 5], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': False, 'pattern': [1, 1, 1, 7], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': False, 'pattern': [2, 2, 2, 7], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 1, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 1, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 1, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 1, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 1, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 1, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 2, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 2, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 2, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 2, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 2, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 2, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 3, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 3, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 3, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 3, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 3, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 3, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 1, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 1, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 1, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 1, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 1, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 1, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 2, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 2, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 2, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 2, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 2, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 2, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 3, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 3, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 3, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 3, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 3, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 3, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 1, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 1, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 1, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 1, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 1, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 1, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 2, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 2, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 2, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 2, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 2, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 2, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 3, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 3, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 3, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 3, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 3, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 3, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 1, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 1, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 1, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 1, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 1, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 1, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 2, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 2, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 2, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 2, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 2, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 2, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 3, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 3, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 3, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 3, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 3, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 3, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+prime 32029 finite_e_rank 22 total_rank 22
+  {'pole': False, 'pattern': [1, 1, 1, 2], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 0, 'rank_after': 6}
+  {'pole': False, 'pattern': [2, 2, 2, 2], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 6, 'rank_after': 6}
+  {'pole': False, 'pattern': [1, 1, 1, -1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 6, 'rank_after': 12}
+  {'pole': False, 'pattern': [2, 2, 2, -1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 12, 'rank_after': 12}
+  {'pole': False, 'pattern': [1, 1, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 12, 'rank_after': 18}
+  {'pole': False, 'pattern': [2, 2, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 18, 'rank_after': 18}
+  {'pole': False, 'pattern': [1, 1, 1, 3], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 18, 'rank_after': 21}
+  {'pole': False, 'pattern': [2, 2, 2, 3], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 21, 'rank_after': 21}
+  {'pole': False, 'pattern': [1, 1, 1, 5], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 21, 'rank_after': 22}
+  {'pole': False, 'pattern': [2, 2, 2, 5], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': False, 'pattern': [1, 1, 1, 7], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': False, 'pattern': [2, 2, 2, 7], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': None, 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 1, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 1, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 1, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 1, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 1, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 1, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 2, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 2, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 2, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 2, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 2, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 2, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 3, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 3, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 3, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 3, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 3, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 1, 3, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 1, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 1, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 1, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 1, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 1, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 1, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 2, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 2, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 2, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 2, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 2, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 2, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 3, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 3, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 3, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 3, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 3, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [1, 2, 3, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 1, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 1, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 1, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 1, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 1, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 1, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 2, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 2, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 2, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 2, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 2, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 2, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 3, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 3, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 3, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 3, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 3, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 1, 3, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 1, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 1, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 1, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 1, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 1, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 1, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 2, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 2, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 2, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 2, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 6, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 2, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 2, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 3, 1, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 3, 1, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 3, 2, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 3, 2, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 24, 'span_rank': 3, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 3, 3, 0], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+  {'pole': True, 'pattern': [2, 2, 3, 3, 1], 'arcs_with_limit': 24, 'base_nullities': [12], 'arc_nullities': [8], 'j_nonzero': [0], 'distinct_planes': 1, 'span_rank': 1, 'rank_before': 22, 'rank_after': 22}
+	Command being timed: "~/a5env/bin/python docs/evidence/a5-exceptional-fibers/kernel-limits/vb_pole_arcs.py --out ~/a5/kl-pole/vb-pole-arcs-result.json"
+	User time (seconds): 5393.09
+	System time (seconds): 5.42
+	Percent of CPU this job got: 2780%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 3:14.18
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 98596
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 898650
+	Voluntary context switches: 1592
+	Involuntary context switches: 64412
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

@@ -1,0 +1,253 @@
+{
+ "calibration": [
+  {
+   "chart": {
+    "dim": 0,
+    "length": 3,
+    "squarefree_eliminants": 2,
+    "variables": 4
+   },
+   "cohen_macaulay": true,
+   "degree": 3,
+   "generators": 3,
+   "hypothesis_holds": true,
+   "known_cohen_macaulay": true,
+   "known_reduced": true,
+   "krull_dim": 2,
+   "length": 3,
+   "measurements": {
+    "cm": {
+     "load_1min": 0.5439453125,
+     "seconds": 0.0
+    },
+    "radical": {
+     "load_1min": 0.5439453125,
+     "seconds": 0.0
+    }
+   },
+   "parameter_forms": "y(1),y(4)",
+   "radical": {
+    "linear_forms": 0,
+    "linear_outside_K": true,
+    "linear_square_in_K": true,
+    "radical_degree": 3,
+    "radical_dim": 2,
+    "radical_equal": true
+   },
+   "reduced": true,
+   "reduced_basis": "rad K = K",
+   "reproduced": true,
+   "ring": "twisted cubic",
+   "variables": 4
+  },
+  {
+   "chart": {
+    "dim": 0,
+    "length": 2,
+    "squarefree_eliminants": 2,
+    "variables": 3
+   },
+   "cohen_macaulay": true,
+   "degree": 2,
+   "generators": 1,
+   "hypothesis_holds": false,
+   "known_cohen_macaulay": true,
+   "known_reduced": false,
+   "krull_dim": 2,
+   "length": 2,
+   "measurements": {
+    "cm": {
+     "load_1min": 0.5439453125,
+     "seconds": 0.0
+    },
+    "radical": {
+     "load_1min": 0.5439453125,
+     "seconds": 0.0
+    }
+   },
+   "parameter_forms": "y(2),y(3)",
+   "radical": {
+    "linear_forms": 1,
+    "linear_outside_K": true,
+    "linear_square_in_K": true,
+    "radical_degree": 1,
+    "radical_dim": 2,
+    "radical_equal": false
+   },
+   "reduced": false,
+   "reduced_basis": "rad K contains an element outside K",
+   "reproduced": true,
+   "ring": "double plane",
+   "variables": 3
+  },
+  {
+   "chart": {
+    "dim": 0,
+    "length": 2,
+    "squarefree_eliminants": 4,
+    "variables": 4
+   },
+   "cohen_macaulay": false,
+   "degree": 2,
+   "generators": 4,
+   "hypothesis_holds": false,
+   "known_cohen_macaulay": false,
+   "known_reduced": true,
+   "krull_dim": 2,
+   "length": 3,
+   "measurements": {
+    "cm": {
+     "load_1min": 0.5439453125,
+     "seconds": 0.0
+    },
+    "radical": {
+     "load_1min": 0.5439453125,
+     "seconds": 0.0
+    }
+   },
+   "parameter_forms": "y(1)+y(3),y(2)+y(4)",
+   "radical": {
+    "linear_forms": 0,
+    "linear_outside_K": true,
+    "linear_square_in_K": true,
+    "radical_degree": 2,
+    "radical_dim": 2,
+    "radical_equal": true
+   },
+   "reduced": true,
+   "reduced_basis": "rad K = K",
+   "reproduced": true,
+   "ring": "two planes meeting in a point",
+   "variables": 4
+  },
+  {
+   "chart": {
+    "dim": 0,
+    "length": 1,
+    "squarefree_eliminants": 2,
+    "variables": 2
+   },
+   "cohen_macaulay": false,
+   "degree": 1,
+   "generators": 2,
+   "hypothesis_holds": true,
+   "known_cohen_macaulay": false,
+   "known_reduced": false,
+   "krull_dim": 1,
+   "length": 2,
+   "measurements": {
+    "cm": {
+     "load_1min": 0.5439453125,
+     "seconds": 0.0
+    },
+    "radical": {
+     "load_1min": 0.5439453125,
+     "seconds": 0.0
+    }
+   },
+   "parameter_forms": "y(2)",
+   "radical": {
+    "linear_forms": 1,
+    "linear_outside_K": true,
+    "linear_square_in_K": true,
+    "radical_degree": 1,
+    "radical_dim": 1,
+    "radical_equal": false
+   },
+   "reduced": false,
+   "reduced_basis": "rad K contains an element outside K",
+   "reproduced": true,
+   "ring": "line with an embedded point",
+   "variables": 2
+  }
+ ],
+ "cells": [
+  {
+   "chart": {
+    "dim": 0,
+    "length": 13,
+    "squarefree_eliminants": 4,
+    "variables": 15
+   },
+   "cohen_macaulay": false,
+   "degree": 12,
+   "generators": 69,
+   "hypothesis_holds": true,
+   "krull_dim": 4,
+   "length": 15,
+   "measurements": {
+    "cm": {
+     "load_1min": 1.30322265625,
+     "seconds": 0.9
+    },
+    "radical": {
+     "load_1min": 1.51953125,
+     "seconds": 0.8
+    }
+   },
+   "parameter_forms": "y(1),y(9),y(11)+y(13),y(7)+y(8)+y(15)",
+   "radical": {
+    "linear_forms": 3,
+    "linear_outside_K": true,
+    "linear_square_in_K": true,
+    "radical_degree": 12,
+    "radical_dim": 4,
+    "radical_equal": false
+   },
+   "reduced": false,
+   "reduced_basis": "rad K contains an element outside K",
+   "relations_match_retained": true,
+   "relations_sha256": "55b9928144fd01d6de2b4438418e1ea8c765e8658016c3524eacc616298525de",
+   "ring": "X-->N-",
+   "variables": 15
+  },
+  {
+   "chart": {
+    "dim": 0,
+    "length": 23,
+    "squarefree_eliminants": 3,
+    "variables": 17
+   },
+   "cohen_macaulay": true,
+   "degree": 23,
+   "generators": 68,
+   "hypothesis_holds": true,
+   "krull_dim": 5,
+   "length": 23,
+   "measurements": {
+    "cm": {
+     "load_1min": 1.63818359375,
+     "seconds": 2.5
+    },
+    "radical": {
+     "load_1min": 1.63818359375,
+     "seconds": 42.7
+    }
+   },
+   "parameter_forms": "y(1),y(7),y(14),y(13)+y(15),y(4)+y(12)+y(17)",
+   "radical": {
+    "linear_forms": 0,
+    "linear_outside_K": true,
+    "linear_square_in_K": true,
+    "radical_degree": 23,
+    "radical_dim": 5,
+    "radical_equal": true
+   },
+   "reduced": true,
+   "reduced_basis": "rad K = K",
+   "relations_match_retained": true,
+   "relations_sha256": "f98219385df2a2cd47a8312d57a9861396d986234ec3f4175dad3fdc4182c955",
+   "ring": "Iso->N-",
+   "variables": 17
+  }
+ ],
+ "complete": false,
+ "field": "Q(i)",
+ "hypothesis_holds_on_every_cell": true,
+ "problems": [],
+ "schema": "gororoba.a5.weight-slice-quadric-rings/1",
+ "tools": {
+  "singular": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Oct 12 2026 04:31:22",
+  "singular_version": "4.4.1"
+ }
+}
