@@ -202,3 +202,7 @@ of one reviewer and two red-teamers on the case generator and its written cases.
 The [Quantum Inspire status document review](qi-status-document/reconciliation.md) reconciles the seven findings
 of its [reviewer report](qi-status-document/codex-report.md) on [the brief](qi-status-document/brief.md) for
 `scripts/qi_status.py`.
+
+The [one-CZ null manifest serializer review](qi-pathion-qx-manifest/reconciliation.md) reconciles the five findings
+of its [reviewer report](qi-pathion-qx-manifest/codex-report.md) on [the brief](qi-pathion-qx-manifest/brief.md) for
+`canonical_float` in `scripts/qi_pathion_one_cz_null_cases.py`.
