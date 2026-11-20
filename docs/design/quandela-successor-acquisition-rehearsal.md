@@ -230,3 +230,9 @@ same frozen request on the merged digest was built on 2026-11-15 and withdrawn i
 `acquisition_admission: ready` and carry the 176.16 s estimate that the two jobs disproved, so a tree of this shape is not
 acquisition-ready. The free ANU draw taken for it, `docs/evidence/anu_qrng/draw-2026-11-15T190401Z.json`, stays unclaimed for
 the reviewed successor.
+
+The controlled repeat of the b1 shape is the written case
+[`bdsc_diagnostic_billing_rule_sim_belenos/CASE.md`](../../results/quandela/cases/bdsc_diagnostic_billing_rule_sim_belenos/CASE.md):
+six 12-iteration jobs of two requests, P1 and P2, that
+[`scripts/bdsc_diagnostic_timing_case.py`](../../scripts/bdsc_diagnostic_timing_case.py) builds from the retained
+`b1-j1` and `b1-j2` manifests with their retained seeds, so the repeat takes no new draw.

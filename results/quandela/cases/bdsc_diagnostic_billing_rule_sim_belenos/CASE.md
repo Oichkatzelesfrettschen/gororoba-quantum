@@ -2,8 +2,9 @@
 
 Status: written case awaiting the owner's approval; nothing has been submitted to any backend, the simulator included.
 The owner approved writing this case on 2026-11-16 (leftover W-160, "approve a controlled sim:belenos b1 repeat or drop the
-hypothesis") and again on 2026-11-19; the approval of the run itself is the open step. Request files, the successor builder
-variant and the run directory do not exist yet, and no command below sends a job.
+hypothesis") and again on 2026-11-19; the approval of the run itself is the open step. The requests P1 and P2 live in
+`results/quandela/cases/bdsc_diagnostic_timing_sim_belenos/`, built by `scripts/bdsc_diagnostic_timing_case.py` (see
+"Implementation steps before approval"); no run directory exists, and no command below sends a job.
 
 ## Retained records
 
@@ -135,8 +136,52 @@ the row open.
 
 ## Implementation steps before approval
 
-The retained tree refuses a later plan on the changed digest of `scripts/qd_platform.py`. The case needs a successor
-builder variant that emits P1 and P2 from the frozen group definitions with the iteration subset, a plan whose output restates
-credits and seconds above, the review packet and the free ANU draw the builder requires (the unclaimed draw of 2026-11-15 in
-`docs/evidence/anu_qrng/` serves, or a fresh free draw per the QRNG guide). None of these exists; this file asks only for
-the written-case approval.
+The retained tree refuses a later plan on the changed digest of `scripts/qd_platform.py`, so the requests live in a tree of
+their own.
+
+- Builder: `scripts/bdsc_diagnostic_timing_case.py build` writes `results/quandela/cases/bdsc_diagnostic_timing_sim_belenos/`:
+  `case.json` (requests, slot order, expected seconds and credits, stop conditions and decision thresholds of this file)
+  and `p1/`, `p2/`. Each request keeps the settings of its groups from the retained `b1-j1` or `b1-j2` manifest byte for
+  byte and in the retained iteration order, with 12 iterations, `max_samples` 480000 and `max_shots` 960000; its
+  `circuit.json` is the retained file. `successor_sources` binds the builder, `qd_platform.py`, `oq_platform.py` and
+  `qd_records.py`; a change to one of them before the first run calls for `build` again, and `check` compares the tree
+  with a fresh build byte for byte.
+- QRNG: the case takes no new value. The settings carry the compilation seeds and draw indices of
+  `docs/evidence/anu_qrng/draw-2026-11-14T203208Z.json`, which the retained jobs consumed, and a seed that reproduces a
+  retained request is an identifier (AGENTS.md, "Seeds"). The earlier text of this section named a free draw because it
+  assumed a fresh build of the frozen request; a subset of the retained manifests needs none, and the unclaimed draw
+  `draw-2026-11-15T190401Z.json` stays unclaimed. The P manifests keep the retained `diagnostic_case_sha256` and `draw`, so
+  `bdsc_diagnostic.draw_claims` still admits the retained tree's rebuild, and the diagnostic analyzer refuses a P run
+  because `p1` and `p2` are not jobs of the diagnostic.
+- Recorder: `bdsc_diagnostic_timing_case.py record RUN` polls the job status every 10 s into `RUN/status-log.jsonl`
+  and collects the run through `qd_platform.collect` at the terminal status.
+- Stop conditions: `bdsc_diagnostic_timing_case.py next RUN...` names the request of the next slot and refuses when a
+  job ended canceled or failed, a job was submitted before the previous one was collected, the slot order differs,
+  spent credits reach 6.48 or reported durations reach 1800 s.
+- Decision rules: `bdsc_diagnostic_timing_case.py analyze` applies "Decision rules" to the six runs and lists each
+  duration above 150 s or below 135 s as a deviation from the prediction.
+- Plan and review packet: `scripts/qd_platform.py plan` reads the live platform and restates credits and seconds per
+  job; it runs before the approval request, and its output enters the approval record. `qd_platform.py review` writes
+  a packet only for an Ascella acquisition (`acquisition_sources` requires the predecessor analyzer identities), and the
+  retained sim:belenos jobs were submitted without one, so this case's review packet is the review record of the
+  builder's pull request under `docs/archive/reviews/bdsc-diagnostic-timing/`.
+
+```sh
+export PYTHON="${PYTHON:-python3}"
+export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
+export QUANDELA_TOKEN_FILE="${QUANDELA_TOKEN_FILE:?set to the token file}"
+TREE=results/quandela/cases/bdsc_diagnostic_timing_sim_belenos
+"$PYTHON" scripts/bdsc_diagnostic_timing_case.py check
+# per slot, after the owner's approval; NAME is what "next" prints for the runs collected so far:
+NAME=$("$PYTHON" scripts/bdsc_diagnostic_timing_case.py next $DONE)
+RUN=results/quandela/runs/$(date -u +%Y-%m-%dT%H%M%SZ)-sim_belenos-bdsc_timing-$NAME
+mkdir -p "$RUN" && cp "$TREE/$NAME/cases.json" "$TREE/$NAME/circuit.json" "$RUN"/
+"$PYTHON" scripts/qd_platform.py plan "$RUN" --platform sim:belenos \
+  --max-credits 1.08 --expected-seconds 150 --per-job-credits 1
+"$PYTHON" scripts/qd_platform.py submit "$RUN" --platform sim:belenos \
+  --max-credits 1.08 --expected-seconds 150 --per-job-credits 1 --approval "APPROVAL TEXT"
+"$PYTHON" scripts/bdsc_diagnostic_timing_case.py record "$RUN"
+DONE="$DONE $RUN"
+# after the sixth slot:
+"$PYTHON" scripts/bdsc_diagnostic_timing_case.py analyze $DONE
+```

@@ -1,0 +1,63 @@
+{
+ "schema": "bdsc-diagnostic-timing-case-v1",
+ "record": "timing_case",
+ "case": "results/quandela/cases/bdsc_diagnostic_billing_rule_sim_belenos/CASE.md",
+ "builder": "scripts/bdsc_diagnostic_timing_case.py",
+ "question": "whether the completion time of the 24-iteration b1 shape varies near the 300 s platform limit through request cost, service variation, or neither",
+ "authorization": "none: the six jobs wait for the owner's approval of the written case",
+ "platform": "sim:belenos",
+ "source_case_sha256": "67a4e7bbb4eb6477d6412ddae0a5223f0f7a555c29584dad88850b062008eecf",
+ "requests": {
+  "p1": {
+   "source_job": "b1-j1",
+   "source_cases_sha256": "2d4c47a99d6293c4324a2c2cb25d9787caccb9d6921d0eaceae8fbedbbc09118",
+   "groups": [
+    "out-s0",
+    "out-s1"
+   ],
+   "iterations": 12
+  },
+  "p2": {
+   "source_job": "b1-j2",
+   "source_cases_sha256": "4d11a3653aa3cca34374478d618e887a334598489cda13a638565ab066ef6eec",
+   "groups": [
+    "rev-s0",
+    "rev-s1"
+   ],
+   "iterations": 12
+  }
+ },
+ "order": [
+  "p1",
+  "p2",
+  "p2",
+  "p1",
+  "p1",
+  "p2"
+ ],
+ "quantity": "the provider-reported duration of each job, in seconds; wall time from submission to collection is recorded beside it and not analyzed",
+ "resources": {
+  "expected_seconds_per_job": 150.0,
+  "expected_seconds": 900.0,
+  "per_job_credits": 1.0,
+  "max_credits_per_job": 1.08,
+  "expected_credits": 6.0,
+  "credit_cap": 6.48,
+  "duration_cap": 1800.0
+ },
+ "stop_conditions": [
+  "a job ends canceled or failed",
+  "a job is submitted before the previous job is collected",
+  "spent credits reach 6.48",
+  "the sum of reported durations reaches 1800.0 s"
+ ],
+ "decision": {
+  "spread": "s(P) = (max - min) / mean of the three durations of request P",
+  "means": "|m1 - m2| / mean(m1, m2) of the replicate means",
+  "narrow": 0.05,
+  "wide": 0.1,
+  "fit_seconds": 295.0,
+  "deviation": "a duration above 150 s or below 135 s departs from the prediction and is recorded before any rule is applied"
+ },
+ "recorder": "scripts/bdsc_diagnostic_timing_case.py record polls the job status every 10 s at most into status-log.jsonl"
+}
