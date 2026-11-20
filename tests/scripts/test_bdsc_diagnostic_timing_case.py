@@ -108,6 +108,11 @@ def test_the_retained_draw_stays_claimed_by_its_own_record_only() -> None:
         ([140.0, 141.0, 142.0], [140.0, 141.0, 142.0], "doubled-within-fit"),
         ([150.0, 160.0, 155.0], [150.0, 151.0, 152.0], "inconclusive"),
         ([150.0, 151.0, 152.0], [140.0, 141.0, 142.0], "inconclusive"),
+        # |m1 - m2| / mean is exactly 1/20 here, which binary64 rounds above 0.05; the rule reads "at most 5 %".
+        ([150.0, 150.0, 151.0], [143.0, 143.0, 143.0], "doubled-within-fit"),
+        # Exactly 2 x mean = 295 s sits within the fit, and a spread of exactly 10 % is not above it.
+        ([147.5, 147.5, 147.5], [147.5, 147.5, 147.5], "doubled-within-fit"),
+        ([140.0, 147.0, 154.0], [147.0, 147.0, 147.0], "inconclusive"),
     ],
 )
 def test_the_decision_rows_of_the_case(p1: list[float], p2: list[float], reading: str) -> None:
@@ -115,23 +120,35 @@ def test_the_decision_rows_of_the_case(p1: list[float], p2: list[float], reading
     require(decided["reading"] == reading, f"{decided} reads {decided['reading']}, not {reading}")
 
 
+def test_a_zero_duration_is_refused() -> None:
+    with pytest.raises(timing.TimingError, match="not positive"):
+        timing.decide({"p1": [0.0, 0.0, 0.0], "p2": [150.0, 150.0, 150.0]})
+
+
 class Runs:
-    """Synthetic collected runs of the committed requests under a scratch directory."""
+    """Synthetic submitted and collected runs of the committed requests under a scratch results tree."""
 
     def __init__(self, root: Path) -> None:
-        self.root = root
+        self.root = root / "results"
         self.made: list[Path] = []
 
-    def add(self, name: str, duration: float = 150.0, status: str = "completed", gap: int = 0) -> Path:
+    def add(
+        self, name: str, duration: float = 148.0, status: str = "completed", gap: int = 0, platform: str = "sim:belenos"
+    ) -> Path:
         slot = len(self.made)
-        run = self.root / f"run-{slot}-{name}"
-        run.mkdir()
+        run = self.root / "runs" / f"run-{slot}-{name}"
+        run.mkdir(parents=True)
         (run / "cases.json").write_bytes((TREE / name / "cases.json").read_bytes())
         minute = 10 * slot - gap
         submitted = f"2026-12-01T10:{minute:02d}:00+00:00"
-        collected = f"2026-12-01T10:{10 * slot + 5:02d}:00+00:00"
+        collected = f"2026-12-01T10:{10 * slot + 5:02d}:00Z"
         (run / "submission.json").write_text(json.dumps({"platform": timing.PLATFORM, "submitted_utc": submitted}))
-        results = {"status": {"status": status, "duration": duration}, "collected_utc": collected}
+        (run / "job-body.json").write_text(json.dumps({"payload": {}}))
+        results = {
+            "status": {"status": status, "duration": duration},
+            "collected_utc": collected,
+            "data": {"platform_name": platform},
+        }
         (run / "results.json").write_text(json.dumps(results))
         self.made.append(run)
         return run
@@ -140,16 +157,31 @@ class Runs:
 @pytest.fixture
 def runs(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Runs:
     monkeypatch.setattr(qd_platform, "run_facts", lambda run: {"charge": 1.0})
+    monkeypatch.setattr(qd_platform, "body_mitigations", lambda body: [])
     return Runs(tmp_path)
 
 
-def test_the_schedule_admits_the_six_slots_and_the_analysis_reads_them(runs: Runs) -> None:
+def test_the_runs_are_found_in_submission_order_and_read_after_the_sixth_slot(runs: Runs) -> None:
     for name in timing.ORDER:
-        runs.add(name, duration=148.0)
-    result = timing.analyze(runs.made)
-    require([f["request"] for f in result["runs"]] == list(timing.ORDER), "slot order")
+        runs.add(name, duration=299.0)
+    staged = runs.root / "runs" / "staged"
+    staged.mkdir()
+    (staged / "cases.json").write_bytes((TREE / "p1" / "cases.json").read_bytes())
+    found = timing.bound_runs(runs.root)
+    require(found == runs.made, f"found {found}")
+    require(timing.next_request(found) == "complete", "six admitted runs complete the case")
+    result = timing.analyze(found)
+    # Six durations of 299 s sum past 1800 s; the cap gates a further submission and leaves the reading intact.
     require(result["reading"] == "doubled-above-fit", f"reading {result['reading']}")
-    require(result["deviations_from_prediction"] == [], f"deviations {result['deviations_from_prediction']}")
+    require(len(result["deviations_from_prediction"]) == 6, f"deviations {result['deviations_from_prediction']}")
+
+
+def test_an_interrupted_submission_stops_the_discovery(runs: Runs) -> None:
+    run = runs.add("p1")
+    (run / "submission.json").unlink()
+    (run / "submission-state.json").write_text("{}")
+    with pytest.raises(timing.TimingError, match="interrupted submission"):
+        timing.bound_runs(runs.root)
 
 
 @pytest.mark.parametrize(
@@ -157,55 +189,149 @@ def test_the_schedule_admits_the_six_slots_and_the_analysis_reads_them(runs: Run
     [
         (lambda r: (r.add("p2"),), "slot 1 runs p1"),
         (lambda r: (r.add("p1", status="canceled"),), "ended canceled"),
+        (lambda r: (r.add("p1", duration=300.0),), "reaches the limit"),
+        (lambda r: (r.add("p1", platform="qpu:belenos"),), "the service reports"),
         (lambda r: (r.add("p1"), r.add("p2", gap=6)), "before slot 1 was collected"),
-        (lambda r: tuple(r.add(n, duration=300.0) for n in timing.ORDER), "reach 1800"),
     ],
 )
-def test_the_schedule_refuses_each_stop_condition(
+def test_each_per_job_stop_condition_refuses(
     runs: Runs, make: Callable[[Runs], tuple[Path, ...]], message: str
 ) -> None:
     made = make(runs)
     with pytest.raises(timing.TimingError, match=message):
-        timing.schedule(list(made))
+        timing.next_request(list(made))
 
 
-def test_the_schedule_refuses_the_credit_cap(runs: Runs, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_a_submission_in_the_second_of_the_previous_collection_is_admitted(runs: Runs) -> None:
+    first = runs.add("p1")
+    second = runs.add("p2")
+    receipt = json.loads((second / "submission.json").read_text())
+    receipt["submitted_utc"] = "2026-12-01T10:05:00+00:00"
+    (second / "submission.json").write_text(json.dumps(receipt))
+    require(timing.next_request([first, second]) == "p2", "the same second spelled Z and +00:00 is one instant")
+
+
+def test_the_caps_reserve_the_next_job(runs: Runs, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(qd_platform, "run_facts", lambda run: {"charge": 1.1})
-    made = [runs.add(name) for name in timing.ORDER]
-    with pytest.raises(timing.TimingError, match="reach the cap"):
-        timing.schedule(made)
+    made = [runs.add(name) for name in timing.ORDER[:5]]
+    with pytest.raises(timing.TimingError, match="leave no room"):
+        timing.next_request(made)
 
 
-def test_the_recorder_logs_each_status_read_then_collects(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_the_mitigation_list_of_a_run_is_read(runs: Runs, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(qd_platform, "body_mitigations", lambda body: ["detector-balancing"])
+    run = runs.add("p1")
+    with pytest.raises(timing.TimingError, match="carries mitigations"):
+        timing.next_request([run])
+
+
+def checked(concurrent: int = 0, queued: int = 0) -> dict[str, Any]:
+    return {"availability_at_plan": {"num_concurrent_jobs": concurrent, "num_jobs_in_queue": queued}, "body": {}}
+
+
+def staged(runs: Runs, name: str) -> Path:
+    run = runs.root / "runs" / f"staged-{name}"
+    run.mkdir(parents=True)
+    (run / "cases.json").write_bytes((TREE / name / "cases.json").read_bytes())
+    return run
+
+
+def test_the_submission_gate_admits_the_next_slot_on_an_idle_token(runs: Runs) -> None:
+    runs.add("p1")
+    timing.SubmissionGate(staged(runs, "p2"), runs.root)(checked())
+    require(timing.SubmissionGate.submit_wrapper == committed("p1")["submit_wrapper"], "wrapper capability")
+
+
+@pytest.mark.parametrize(
+    ("name", "plan", "message"),
+    [
+        ("p2", checked(), "next slot runs p1"),
+        ("p1", checked(concurrent=1), "running or queued"),
+        ("p1", checked(queued=1), "running or queued"),
+    ],
+)
+def test_the_submission_gate_refuses(runs: Runs, name: str, plan: dict[str, Any], message: str) -> None:
+    with pytest.raises(qd_platform.PlatformError, match=message):
+        timing.SubmissionGate(staged(runs, name), runs.root)(plan)
+
+
+def test_qd_platform_submit_refuses_a_p_run_without_the_gate(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(qd_platform, "load_case", lambda directory: (committed("p1"), {}, "x"))
+    with pytest.raises(qd_platform.PlatformError, match="submits only through"):
+        qd_platform.submit(TREE / "p1", timing.PLATFORM, "approval", 1.08, 150.0, 1.0)
+
+
+class Clock:
+    """A monotonic clock that a read advances by its latency and a sleep by its argument."""
+
+    def __init__(self, latency: float) -> None:
+        self.now, self.latency = 0.0, latency
+        self.sleeps: list[float] = []
+
+    def monotonic(self) -> float:
+        return self.now
+
+    def sleep(self, seconds: float) -> None:
+        self.sleeps.append(seconds)
+        self.now += seconds
+
+
+def test_the_recorder_reads_on_a_fixed_cadence_and_logs_transient_errors(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     run = tmp_path / "run"
     run.mkdir()
-    (run / "submission.json").write_text(json.dumps({"job_id": "job-1"}))
-    answers = iter(
-        [
-            {"status": "running", "progress": 0.5, "progress_message": "step 1"},
-            {"status": "completed", "progress": 1.0, "progress_message": None},
-        ]
-    )
-    sleeps: list[float] = []
-    monkeypatch.setattr(qd_platform, "load_case", lambda directory: ({}, {}, ""))
-    monkeypatch.setattr(qd_platform, "request", lambda method, route: next(answers))
+    (run / "submission.json").write_text(json.dumps({"job_id": "job-1", "cases_sha256": "x"}))
+    clock = Clock(latency=3.0)
+    answers: list[Any] = [
+        {"status": "running", "progress": 0.5, "progress_message": "step 1"},
+        qd_platform.RefusedError("busy", code=503),
+        {"status": "completed", "progress": 1.0, "progress_message": None},
+    ]
+
+    def request(method: str, route: str) -> Any:
+        clock.now += clock.latency
+        answer = answers.pop(0)
+        if isinstance(answer, Exception):
+            raise answer
+        return answer
+
+    monkeypatch.setattr(qd_platform, "load_case", lambda directory: ({}, {}, "x"))
+    monkeypatch.setattr(qd_platform, "request", request)
     monkeypatch.setattr(qd_platform, "collect", lambda directory, poll, timeout: {"status": "collected"})
-    monkeypatch.setattr(timing.time, "sleep", sleeps.append)
+    monkeypatch.setattr(timing.time, "monotonic", clock.monotonic)
+    monkeypatch.setattr(timing.time, "sleep", clock.sleep)
     require(timing.record(run, poll=10.0) == {"status": "collected"}, "the recorder did not collect")
     lines = [json.loads(line) for line in (run / timing.STATUS_LOG).read_text().splitlines()]
-    require([line["status"] for line in lines] == ["running", "completed"], f"logged {lines}")
-    require(sleeps == [10.0], f"slept {sleeps}")
+    require([line.get("status") for line in lines] == ["running", None, "completed"], f"logged {lines}")
+    require("busy" in lines[1]["error"], f"logged {lines[1]}")
+    # Each read starts 10 s after the previous one started, so the 3 s read latency shortens the sleep to 7 s.
+    require(clock.sleeps == [7.0, 7.0], f"slept {clock.sleeps}")
     with pytest.raises(timing.TimingError, match="outside"):
         timing.record(run, poll=11.0)
 
 
-def test_a_rebuild_is_refused_once_a_run_binds_the_tree(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    tree, runs = tmp_path / "tree", tmp_path / "runs"
-    timing.write(tree, runs)
+def test_the_recorder_refuses_a_run_whose_receipt_names_another_case(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    run = tmp_path / "run"
+    run.mkdir()
+    (run / "submission.json").write_text(json.dumps({"job_id": "job-1", "cases_sha256": "y"}))
+    monkeypatch.setattr(qd_platform, "load_case", lambda directory: ({}, {}, "x"))
+    with pytest.raises(timing.TimingError, match="submission receipt"):
+        timing.record(run)
+
+
+def test_a_rebuild_is_refused_once_a_submission_binds_the_tree(tmp_path: Path) -> None:
+    tree, results = tmp_path / "tree", tmp_path / "results"
+    timing.write(tree, results)
     (tree / "p1" / "cases.json").write_bytes(b"{}\n")
-    timing.write(tree, runs)
+    stage = results / "runs" / "r1"
+    stage.mkdir(parents=True)
+    (stage / "cases.json").write_bytes((TREE / "p2" / "cases.json").read_bytes())
+    # A staged copy without a receipt binds nothing, so the rebuild still runs.
+    timing.write(tree, results)
     (tree / "p1" / "cases.json").write_bytes(b"{}\n")
-    (runs / "r1").mkdir(parents=True)
-    (runs / "r1" / "cases.json").write_bytes((tree / "p2" / "cases.json").read_bytes())
+    (stage / "submission-state.json").write_text("{}")
     with pytest.raises(timing.TimingError, match="bind the tree"):
-        timing.write(tree, runs)
+        timing.write(tree, results)

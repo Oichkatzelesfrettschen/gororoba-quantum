@@ -46,10 +46,11 @@
   "duration_cap": 1800.0
  },
  "stop_conditions": [
-  "a job ends canceled or failed",
-  "a job is submitted before the previous job is collected",
-  "spent credits reach 6.48",
-  "the sum of reported durations reaches 1800.0 s"
+  "a job ends canceled or failed, or reports a duration at the 300 s limit",
+  "a job is submitted before the previous job is collected, or while the token holds a running or queued job",
+  "a job body carries a mitigation, or the service reports another platform",
+  "spent credits plus one job's authorization of 1.08 exceed 6.48",
+  "the sum of reported durations reaches 1800 s before the next submission"
  ],
  "decision": {
   "spread": "s(P) = (max - min) / mean of the three durations of request P",
@@ -59,5 +60,6 @@
   "fit_seconds": 295.0,
   "deviation": "a duration above 150 s or below 135 s departs from the prediction and is recorded before any rule is applied"
  },
- "recorder": "scripts/bdsc_diagnostic_timing_case.py record polls the job status every 10 s at most into status-log.jsonl"
+ "recorder": "scripts/bdsc_diagnostic_timing_case.py record reads the job status on a fixed 10 s cadence into status-log.jsonl; a read that takes longer than the cadence delays the next read, and the log carries each read's own time",
+ "submission": "scripts/bdsc_diagnostic_timing_case.py submit"
 }

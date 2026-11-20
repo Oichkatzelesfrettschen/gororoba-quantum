@@ -2329,14 +2329,16 @@
  },
  "acquisition_admission": "ready",
  "successor_sources": {
-  "scripts/bdsc_diagnostic_timing_case.py": "fb8793368b10f903facb1a39f681ddda93ea00178ebda26370306713bdc7ca1d",
+  "scripts/bdsc_diagnostic_timing_case.py": "08118752b3fcfeea85e2449ab2d6579b71789d65632d117d78ba8e5740501b7a",
   "gororoba_quantum/qd_records.py": "a340a076b3323b434bd27ec26e776199a440ff95c4262b8ef6d4bbff9eac62d8",
   "scripts/oq_platform.py": "7a109e1419d81ed6558f18f551805a20c3b4a134c63f2078b710dc03955b8316",
   "scripts/qd_platform.py": "af434d4a7f958124abfa9a794e2673ec5ebf108911473db093494cf008eee079"
  },
- "timing_case_sha256": "928a48f46c6a6c7ac3d483f834c3a207b01c50761a180e310fc0f9de050f1d35",
+ "timing_case_sha256": "791969fa3b8e83ad898d29dcb44704784aa4ae73f5db16a26c298677196d24a1",
  "source_job": {
   "job": "b1-j1",
   "cases_sha256": "2d4c47a99d6293c4324a2c2cb25d9787caccb9d6921d0eaceae8fbedbbc09118"
- }
+ },
+ "max_credits": 1.08,
+ "submit_wrapper": "scripts/bdsc_diagnostic_timing_case.py submit"
 }

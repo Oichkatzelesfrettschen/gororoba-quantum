@@ -16,32 +16,39 @@ that plan, submit and collect a P run (qd_platform.load_case refuses a run whose
 
 Subcommands:
 - build [--out DIR] writes case.json, p1/ and p2/ (the default DIR is TREE). The manifests bind the digests of
-  SOURCES, so a change to one of them needs a rebuild before the plan; once a run under results/quandela/runs carries
-  a P manifest, a file whose bytes differ is refused. check [DIR] requires the bytes of a fresh build.
-- record RUN [--poll S] polls the submitted job's status every S seconds (at most 10) and appends (UTC time, status,
-  progress, progress message) to RUN/status-log.jsonl until the job is terminal, then collects it through
-  qd_platform.collect.
-- next RUN... reads the runs submitted so far, in submission order, and prints the request of the next slot, or
-  "complete" after the sixth; it refuses (exit 1) when a stop condition of the case has fired.
-- analyze RUN... applies the decision rules of the case to the six collected runs and prints the reading as JSON.
+  SOURCES, so a change to one of them needs a rebuild before the plan; once a directory under results/quandela holds
+  a submission receipt or checkpoint beside a P manifest, a file whose bytes differ is refused. check [DIR] requires
+  the bytes of a fresh build.
+- submit RUN --approval TEXT sends RUN through qd_platform.submit with SubmissionGate as its verify step: under the
+  token's submit lock it refuses a request other than the next slot's, a token with a running or queued job, a body
+  with mitigations, and every stop condition `next` applies. The manifests name this wrapper as submit_wrapper, so
+  qd_platform.py submit refuses them without it.
+- record RUN [--poll S] reads the job status on a fixed cadence of S seconds (at most 10), appends (UTC time,
+  status, progress, progress message) or the transient error to RUN/status-log.jsonl until the job is terminal, then
+  collects it through qd_platform.collect.
+- next finds every submitted P run under results/quandela, orders them by submission time and prints the request of
+  the next slot, or "complete" after the sixth; it exits 1 when a stop condition of the case has fired.
+- analyze applies the decision rules of the case to the six runs and prints the reading as JSON.
 
 Usage:
   "$PYTHON" scripts/bdsc_diagnostic_timing_case.py build
   "$PYTHON" scripts/bdsc_diagnostic_timing_case.py check
+  "$PYTHON" scripts/bdsc_diagnostic_timing_case.py next
+  "$PYTHON" scripts/bdsc_diagnostic_timing_case.py submit RUN --approval TEXT
   "$PYTHON" scripts/bdsc_diagnostic_timing_case.py record RUN
-  "$PYTHON" scripts/bdsc_diagnostic_timing_case.py next [RUN...]
-  "$PYTHON" scripts/bdsc_diagnostic_timing_case.py analyze RUN RUN RUN RUN RUN RUN
+  "$PYTHON" scripts/bdsc_diagnostic_timing_case.py analyze
 """
 
 from __future__ import annotations
 
 import argparse
+import datetime
 import hashlib
 import json
 import os
-import statistics
 import sys
 import time
+from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
@@ -51,9 +58,11 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 SOURCE_TREE = ROOT / "results/quandela/cases/bdsc_diagnostic_billing_rule_sim_belenos"
 TREE = ROOT / "results/quandela/cases/bdsc_diagnostic_timing_sim_belenos"
-RUNS = ROOT / "results/quandela/runs"
+RESULTS = ROOT / "results/quandela"
 CASE_DOCUMENT = "results/quandela/cases/bdsc_diagnostic_billing_rule_sim_belenos/CASE.md"
 BUILDER = "scripts/bdsc_diagnostic_timing_case.py"
+# qd_platform.submit sends a manifest that names this wrapper only through a verify step carrying the same value.
+SUBMIT_WRAPPER = f"{BUILDER} submit"
 PLATFORM = "sim:belenos"
 # request -> (retained job, its groups the request keeps)
 REQUESTS: dict[str, tuple[str, tuple[str, ...]]] = {
@@ -84,7 +93,7 @@ SOURCES = (
 
 
 class TimingError(Exception):
-    """A refused build, schedule or analysis."""
+    """A refused build, submission, schedule or analysis."""
 
 
 def require(condition: bool, message: str) -> None:
@@ -143,10 +152,11 @@ def case_record(source_case: bytes, sources: dict[str, dict[str, Any]]) -> dict[
             "duration_cap": DURATION_CAP,
         },
         "stop_conditions": [
-            "a job ends canceled or failed",
-            "a job is submitted before the previous job is collected",
-            f"spent credits reach {CREDIT_CAP}",
-            f"the sum of reported durations reaches {DURATION_CAP} s",
+            "a job ends canceled or failed, or reports a duration at the 300 s limit",
+            "a job is submitted before the previous job is collected, or while the token holds a running or queued job",
+            "a job body carries a mitigation, or the service reports another platform",
+            f"spent credits plus one job's authorization of {MAX_CREDITS_PER_JOB} exceed {CREDIT_CAP}",
+            f"the sum of reported durations reaches {DURATION_CAP:g} s before the next submission",
         ],
         "decision": {
             "spread": "s(P) = (max - min) / mean of the three durations of request P",
@@ -157,7 +167,9 @@ def case_record(source_case: bytes, sources: dict[str, dict[str, Any]]) -> dict[
             "deviation": f"a duration above {LIMIT_SECONDS / 2:g} s or below {(1 - WIDE) * LIMIT_SECONDS / 2:g} s "
             "departs from the prediction and is recorded before any rule is applied",
         },
-        "recorder": f"{BUILDER} record polls the job status every {MAX_POLL:g} s at most into {STATUS_LOG}",
+        "recorder": f"{BUILDER} record reads the job status on a fixed {MAX_POLL:g} s cadence into {STATUS_LOG}; a "
+        "read that takes longer than the cadence delays the next read, and the log carries each read's own time",
+        "submission": SUBMIT_WRAPPER,
     }
 
 
@@ -207,6 +219,8 @@ def documents(source_tree: Path = SOURCE_TREE, root: Path = ROOT) -> dict[str, A
             successor_sources=source_digests(root),
             timing_case_sha256=sha256_bytes(record_bytes),
             source_job={"job": job, "cases_sha256": item["cases_sha256"]},
+            max_credits=MAX_CREDITS_PER_JOB,
+            submit_wrapper=SUBMIT_WRAPPER,
         )
         out[name] = {"cases.json": dump(manifest), "circuit.json": item["circuit"]}
     return out
@@ -222,16 +236,19 @@ def files_of(tree: dict[str, Any]) -> dict[str, bytes]:
     return flat
 
 
-def submitted_runs(runs: Path = RUNS) -> list[str]:
-    """Run directories whose cases.json binds a timing record: once one exists, the tree keeps its bytes."""
-    return sorted(
-        str(path.parent.relative_to(runs))
-        for path in runs.glob("*/cases.json")
-        if b'"timing_case_sha256"' in path.read_bytes()
-    )
+def submitted_runs(results: Path = RESULTS) -> list[str]:
+    """Directories under results/quandela that hold a submission receipt or checkpoint beside a cases.json binding a
+    timing record: once one exists, the tree keeps its bytes. A staged cases.json alone binds nothing."""
+    found = []
+    for path in sorted(results.rglob("cases.json")):
+        run = path.parent
+        sent = (run / "submission.json").is_file() or (run / "submission-state.json").is_file()
+        if sent and b'"timing_case_sha256"' in path.read_bytes():
+            found.append(str(run.relative_to(results)))
+    return found
 
 
-def write(directory: Path = TREE, runs: Path = RUNS) -> None:
+def write(directory: Path = TREE, results: Path = RESULTS) -> None:
     """Write the tree. Before the first P run it rewrites a file whose bytes differ, since the manifests bind the
     digests of SOURCES and a change to one of them needs a rebuild before the plan; after it, a differing file is
     refused."""
@@ -241,7 +258,7 @@ def write(directory: Path = TREE, runs: Path = RUNS) -> None:
         for relative, data in flat.items()
         if (directory / relative).exists() and (directory / relative).read_bytes() != data
     ]
-    retained = submitted_runs(runs)
+    retained = submitted_runs(results)
     require(not (changed and retained), f"runs {retained} bind the tree; retained files differ: {changed}")
     for relative, data in flat.items():
         target = directory / relative
@@ -264,34 +281,56 @@ def utc_now() -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
 
+def instant(text: str) -> datetime.datetime:
+    """A recorded UTC stamp as an aware datetime; "Z" and "+00:00" spellings name the same instant."""
+    value = datetime.datetime.fromisoformat(text.replace("Z", "+00:00"))
+    require(value.tzinfo is not None, f"{text!r} carries no UTC offset")
+    return value
+
+
 def record(run: Path, poll: float = MAX_POLL, timeout: float = 3600.0) -> dict[str, Any]:
-    """Log the job status at most every MAX_POLL seconds until it is terminal, then collect the run."""
+    """Read the job status on a fixed cadence of poll seconds (at most MAX_POLL) until it is terminal, then collect.
+
+    Each read starts poll seconds after the previous one started, so the sleep absorbs the read's own latency. A read
+    that fails transiently is logged as an error line at its own time and the cadence continues; any other failure
+    raises. Every line carries the UTC time the read returned."""
     import qd_platform
 
     require(0 < poll <= MAX_POLL, f"--poll {poll} is outside (0, {MAX_POLL:g}]")
-    qd_platform.load_case(run)
-    job = json.loads((run / "submission.json").read_text(encoding="utf-8"))["job_id"]
+    _, _, cases_sha256 = qd_platform.load_case(run)
+    submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
+    require(submission.get("cases_sha256") == cases_sha256, f"{run}: cases.json differs from the submission receipt")
+    job = submission["job_id"]
     deadline = time.monotonic() + timeout
     log = run / STATUS_LOG
+    tick = time.monotonic()
     while True:
-        status: dict[str, Any] = qd_platform.patient(
-            lambda: qd_platform.request("GET", qd_platform.job_route(job, "status")), job, "status", deadline, poll
-        )
-        line = {
-            "utc": utc_now(),
-            "status": status.get("status"),
-            "progress": status.get("progress"),
-            "progress_message": status.get("progress_message"),
-        }
+        line: dict[str, Any]
+        terminal = False
+        try:
+            status = qd_platform.request("GET", qd_platform.job_route(job, "status"))
+        except qd_platform.PlatformError as error:
+            if not qd_platform.transient(error):
+                raise
+            line = {"utc": utc_now(), "error": str(error)[:200]}
+        else:
+            line = {
+                "utc": utc_now(),
+                "status": status.get("status"),
+                "progress": status.get("progress"),
+                "progress_message": status.get("progress_message"),
+            }
+            terminal = status.get("status") in qd_platform.TERMINAL
         with log.open("a", encoding="utf-8") as stream:
             stream.write(json.dumps(line) + "\n")
             stream.flush()
             os.fsync(stream.fileno())
-        if status.get("status") in qd_platform.TERMINAL:
+        if terminal:
             break
-        require(time.monotonic() <= deadline, f"job {job} is still {status.get('status')}")
-        time.sleep(poll)
-    return qd_platform.collect(run, poll, timeout)
+        require(time.monotonic() <= deadline, f"job {job} is not terminal after {timeout:g} s")
+        tick += poll
+        time.sleep(max(0.0, tick - time.monotonic()))
+    return qd_platform.collect(run, poll, max(deadline - time.monotonic(), poll))
 
 
 def request_of(run: Path, tree: Path = TREE) -> str:
@@ -303,73 +342,154 @@ def request_of(run: Path, tree: Path = TREE) -> str:
     raise TimingError(f"{run}: cases.json is neither committed request")
 
 
-def schedule(runs: list[Path], tree: Path = TREE) -> list[dict[str, Any]]:
-    """Each run's facts after the stop conditions, in submission order; raises when a condition has fired."""
+def bound_runs(results: Path = RESULTS, tree: Path = TREE) -> list[Path]:
+    """Every submitted run under results/quandela that carries a committed request, in submission order.
+
+    A directory that holds only a staged cases.json is not a run; one with a submission checkpoint but no receipt is
+    an interrupted submission, which stops the case until qd_platform recover writes its receipt."""
+    found: list[tuple[datetime.datetime, Path]] = []
+    committed = {(tree / name / "cases.json").read_bytes() for name in REQUESTS}
+    for path in sorted(results.rglob("cases.json")):
+        run = path.parent
+        if run.parent == tree or path.read_bytes() not in committed:
+            continue
+        receipt, state = run / "submission.json", run / "submission-state.json"
+        if not receipt.is_file():
+            require(not state.is_file(), f"{run}: interrupted submission; run qd_platform.py recover first")
+            continue
+        submitted = json.loads(receipt.read_text(encoding="utf-8"))["submitted_utc"]
+        found.append((instant(str(submitted)), run))
+    return [run for _, run in sorted(found)]
+
+
+def admitted(runs: list[Path], tree: Path = TREE) -> list[dict[str, Any]]:
+    """Each run's facts after the per-job stop conditions of the case, in submission order; raises when one fired."""
     import qd_platform
 
     require(len(runs) <= len(ORDER), f"{len(runs)} runs; the case has {len(ORDER)} slots")
     facts: list[dict[str, Any]] = []
-    previous_collected = ""
+    previous: datetime.datetime | None = None
     for slot, run in enumerate(runs):
         name = request_of(run, tree)
         require(name == ORDER[slot], f"{run}: slot {slot + 1} runs {ORDER[slot]}, not {name}")
         submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
         require(submission.get("platform") == PLATFORM, f"{run}: submitted to {submission.get('platform')!r}")
-        submitted = str(submission["submitted_utc"])
-        require(submitted > previous_collected, f"{run}: submitted before slot {slot} was collected")
+        submitted = instant(str(submission["submitted_utc"]))
+        require(previous is None or submitted >= previous, f"{run}: submitted before slot {slot} was collected")
         results = run / "results.json"
         require(results.is_file(), f"{run}: not collected")
         collected = json.loads(results.read_text(encoding="utf-8"))
         state = collected["status"]
         require(state.get("status") == "completed", f"{run}: the job ended {state.get('status')}; stop")
-        previous_collected = str(collected["collected_utc"])
+        served = collected.get("data", {}).get("platform_name")
+        require(served == PLATFORM, f"{run}: the service reports {served!r}")
+        body = json.loads((run / "job-body.json").read_text(encoding="utf-8"))
+        require(qd_platform.body_mitigations(body) == [], f"{run}: the job body carries mitigations")
+        duration = float(state["duration"])
+        require(0 < duration < LIMIT_SECONDS, f"{run}: reported duration {duration:g} s reaches the limit; stop")
+        previous = instant(str(collected["collected_utc"]))
         facts.append(
             {
                 "slot": slot + 1,
                 "request": name,
                 "run": run.name,
-                "duration": float(state["duration"]),
+                "duration": duration,
                 "charge": float(qd_platform.run_facts(run)["charge"]),
-                "submitted_utc": submitted,
-                "collected_utc": previous_collected,
+                "submitted_utc": str(submission["submitted_utc"]),
+                "collected_utc": str(collected["collected_utc"]),
             }
         )
-    spent = sum(f["charge"] for f in facts)
-    seconds = sum(f["duration"] for f in facts)
-    require(spent < CREDIT_CAP, f"spent credits {spent:g} reach the cap {CREDIT_CAP}; stop")
-    require(seconds < DURATION_CAP, f"reported durations {seconds:g} s reach {DURATION_CAP:g} s; stop")
     return facts
 
 
-def spread(values: list[float]) -> float:
-    return (max(values) - min(values)) / statistics.fmean(values)
+def next_request(runs: list[Path], tree: Path = TREE) -> str:
+    """The request of the next slot, or "complete"; raises when a stop condition of the case has fired.
+
+    The caps stop the next submission, so they reserve its budget: the spent credits plus one job's authorization
+    must stay within CREDIT_CAP, and the summed reported durations below DURATION_CAP."""
+    facts = admitted(runs, tree)
+    if len(facts) == len(ORDER):
+        return "complete"
+    spent = sum(f["charge"] for f in facts)
+    seconds = sum(f["duration"] for f in facts)
+    require(spent + MAX_CREDITS_PER_JOB <= CREDIT_CAP, f"spent credits {spent:g} leave no room for a job; stop")
+    require(seconds < DURATION_CAP, f"reported durations {seconds:g} s reach {DURATION_CAP:g} s; stop")
+    return ORDER[len(facts)]
+
+
+class SubmissionGate:
+    """The verify step of qd_platform.submit for one run: the slot, the idle token and the empty mitigation list.
+
+    It runs under the token's submit lock, after the plan whose body is posted, so the runs it reads and the counters
+    it checks are the ones the submission sees."""
+
+    submit_wrapper = SUBMIT_WRAPPER
+
+    def __init__(self, run: Path, results: Path = RESULTS, tree: Path = TREE) -> None:
+        self.run, self.results, self.tree = run, results, tree
+
+    def __call__(self, checked: dict[str, Any]) -> None:
+        import qd_platform
+
+        name = request_of(self.run, self.tree)
+        expected = next_request(bound_runs(self.results, self.tree), self.tree)
+        if expected != name:
+            raise qd_platform.PlatformError(f"the next slot runs {expected}, not {name}")
+        counters = checked["availability_at_plan"]
+        if counters.get("num_concurrent_jobs") or counters.get("num_jobs_in_queue"):
+            raise qd_platform.PlatformError(f"the token has a running or queued job: {counters}")
+        if qd_platform.body_mitigations(checked["body"]) != []:
+            raise qd_platform.PlatformError("the job body carries mitigations")
+
+
+def submit(run: Path, approval: str) -> dict[str, Any]:
+    import qd_platform
+
+    gate = SubmissionGate(run)
+    return qd_platform.submit(
+        run, PLATFORM, approval, MAX_CREDITS_PER_JOB, EXPECTED_SECONDS, PER_JOB_CREDITS, verify=gate
+    )
+
+
+def spread(values: list[Fraction]) -> Fraction:
+    return (max(values) - min(values)) / (sum(values, Fraction(0)) / len(values))
 
 
 def decide(durations: dict[str, list[float]]) -> dict[str, Any]:
-    """The decision row of the case for three durations of each request."""
+    """The decision row of the case for three durations of each request, in exact rational arithmetic, so a ratio
+    that equals a threshold falls on the side the case names."""
     for name in REQUESTS:
         require(len(durations[name]) == ORDER.count(name), f"{name}: {len(durations[name])} durations")
-    s1, s2 = spread(durations["p1"]), spread(durations["p2"])
-    m1, m2 = statistics.fmean(durations["p1"]), statistics.fmean(durations["p2"])
-    means = abs(m1 - m2) / statistics.fmean([m1, m2])
-    mean = statistics.fmean(durations["p1"] + durations["p2"])
-    if s1 > WIDE or s2 > WIDE:
+        require(all(d > 0 for d in durations[name]), f"{name}: a duration is not positive")
+    exact = {name: [Fraction(d) for d in durations[name]] for name in REQUESTS}
+    # NARROW and WIDE as exact ratios: Fraction(0.05) is the binary64 neighbor of 1/20, not 1/20.
+    narrow, wide, fit = Fraction(5, 100), Fraction(10, 100), Fraction(FIT_SECONDS)
+    s1, s2 = spread(exact["p1"]), spread(exact["p2"])
+    m1, m2 = sum(exact["p1"], Fraction(0)) / 3, sum(exact["p2"], Fraction(0)) / 3
+    means = abs(m1 - m2) / ((m1 + m2) / 2)
+    mean = (m1 + m2) / 2
+    if s1 > wide or s2 > wide:
         reading = "service-variation"
-    elif s1 <= NARROW and s2 <= NARROW and means > WIDE:
+    elif s1 <= narrow and s2 <= narrow and means > wide:
         reading = "request-cost"
-    elif s1 <= NARROW and s2 <= NARROW and means <= NARROW:
-        reading = "doubled-above-fit" if 2 * mean > FIT_SECONDS else "doubled-within-fit"
+    elif s1 <= narrow and s2 <= narrow and means <= narrow:
+        reading = "doubled-above-fit" if 2 * mean > fit else "doubled-within-fit"
     else:
         reading = "inconclusive"
-    return {"s_p1": s1, "s_p2": s2, "m_p1": m1, "m_p2": m2, "means": means, "mean": mean, "reading": reading}
+    values = {"s_p1": s1, "s_p2": s2, "m_p1": m1, "m_p2": m2, "means": means, "mean": mean}
+    return {**{key: float(value) for key, value in values.items()}, "reading": reading}
 
 
 def analyze(runs: list[Path], tree: Path = TREE) -> dict[str, Any]:
-    require(len(runs) == len(ORDER), f"the analysis needs {len(ORDER)} runs, not {len(runs)}")
-    facts = schedule(runs, tree)
+    """The reading of the six runs. The caps gate a further submission only, so the sixth run is read whatever they
+    hold; the per-job stop conditions still apply."""
+    facts = admitted(runs, tree)
+    require(len(facts) == len(ORDER), f"the analysis needs {len(ORDER)} runs, not {len(facts)}")
     durations = {name: [f["duration"] for f in facts if f["request"] == name] for name in REQUESTS}
-    deviations = [f["run"] for f in facts if not (1 - WIDE) * LIMIT_SECONDS / 2 <= f["duration"] <= LIMIT_SECONDS / 2]
-    return {"runs": facts, "deviations_from_prediction": deviations, **decide(durations)}
+    low, high = (1 - WIDE) * LIMIT_SECONDS / 2, LIMIT_SECONDS / 2
+    deviations = [f["run"] for f in facts if not low <= f["duration"] <= high]
+    totals = {"credits": sum(f["charge"] for f in facts), "seconds": sum(f["duration"] for f in facts)}
+    return {"runs": facts, "totals": totals, "deviations_from_prediction": deviations, **decide(durations)}
 
 
 def main() -> int:
@@ -379,14 +499,15 @@ def main() -> int:
     build_parser.add_argument("--out", type=Path, default=TREE)
     check_parser = commands.add_parser("check")
     check_parser.add_argument("directory", type=Path, nargs="?", default=TREE)
+    submit_parser = commands.add_parser("submit")
+    submit_parser.add_argument("run", type=Path)
+    submit_parser.add_argument("--approval", required=True)
     record_parser = commands.add_parser("record")
     record_parser.add_argument("run", type=Path)
     record_parser.add_argument("--poll", type=float, default=MAX_POLL)
     record_parser.add_argument("--timeout", type=float, default=3600.0)
-    next_parser = commands.add_parser("next")
-    next_parser.add_argument("runs", type=Path, nargs="*")
-    analyze_parser = commands.add_parser("analyze")
-    analyze_parser.add_argument("runs", type=Path, nargs="+")
+    commands.add_parser("next")
+    commands.add_parser("analyze")
     args = parser.parse_args()
     try:
         if args.command == "build":
@@ -394,13 +515,14 @@ def main() -> int:
             check(args.out)
         elif args.command == "check":
             check(args.directory)
+        elif args.command == "submit":
+            print(json.dumps(submit(args.run, args.approval)["job_id"]))
         elif args.command == "record":
             print(json.dumps(record(args.run, args.poll, args.timeout)["status"], indent=1))
         elif args.command == "next":
-            facts = schedule(args.runs)
-            print("complete" if len(facts) == len(ORDER) else ORDER[len(facts)])
+            print(next_request(bound_runs()))
         else:
-            print(json.dumps(analyze(args.runs), indent=1))
+            print(json.dumps(analyze(bound_runs()), indent=1))
     except TimingError as error:
         print(f"bdsc timing: {error}", file=sys.stderr)
         return 1
