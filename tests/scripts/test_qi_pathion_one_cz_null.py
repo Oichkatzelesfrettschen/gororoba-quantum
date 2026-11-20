@@ -64,6 +64,8 @@ def test_the_retained_b0_refuses_a_compile_off_the_role_map(monkeypatch: pytest.
     [
         ("X90 q[2]", "Y90 q[2]", "outside the emitter's vocabulary"),
         ("Rz(1.5707963267948966) q[2]", "Rz(1.57079632679489660) q[2]", "does not re-emit its bytes"),
+        ("X90 q[2]", "X90 q[2], q[4]", "gives X90 2 qubits"),
+        ("X90 q[2]", "X90 q[3]", "outside the region"),
     ],
 )
 def test_the_retained_b0_refuses_a_changed_circuit_file(

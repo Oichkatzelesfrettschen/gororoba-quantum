@@ -267,13 +267,17 @@ TUNA_GATE = re.compile(r"(?:Rz\((?P<angle>[-0-9.e+]+)\)|(?P<gate>X90|X|CZ)) q\[(
 def retained_b0() -> Any:
     """b0 as the coin series executed it: the gates of the pinned b0.cq on the qubit layout of b0's compile.
 
-    The transpile of b0 depends on the platform: on darwin-arm64, measured on the hosted macOS leg, 13 of its 119 gates
-    differ from the Linux compile (an rz right after a CZ moves by pi), so the replayed angles, and the ideal
-    law computed from them, differ from the retained circuit. hypothesis: the one-qubit resynthesis picks another Euler
-    branch under that platform's numeric identity. The pinned b0.cq is the circuit of record; the compile supplies only
+    The transpile of b0 depends on the platform: on darwin-arm64 (measured on the hosted macOS leg) its compile differs
+    from the pinned b0.cq, which the Linux replay reproduces byte for byte, at 13 of 115 gate positions: six rz angles
+    (the first, right after a CZ, by pi) and seven positions where two CZ move one slot later, over the same 21 CZ
+    pairs. The ideal law computed from that compile differs from the retained circuit's. hypothesis: the pi shift is an
+    Euler-branch choice of the one-qubit resynthesis under that platform's numeric identity; the moved CZ are not
+    explained. The pinned b0.cq is the circuit of record; the compile supplies only
     the layout, which the role map of the coin manifest pins. The build refuses a compile whose final layout differs
-    from that role map, a gate line outside the emitter's vocabulary, and a circuit that does not re-emit the pinned
-    bytes."""
+    from that role map, a gate line outside the emitter's vocabulary, a gate on a qubit outside the region or with the
+    wrong number of qubits, and a circuit that does not re-emit the pinned bytes. Of the initial layout the build
+    reads only the coin's start qubit (fixed_qubit), and coin_fixed refuses a start run that is not the Hadamard. The
+    global phase is set to 0, since the circuit file carries none."""
     from qiskit.circuit.library import CZGate, RZGate, SXGate, XGate
 
     ref = reference()
@@ -284,6 +288,7 @@ def retained_b0() -> Any:
         raise ValueError("the compile of b0 places its logical bits off the retained role map")
     out = compiled.copy_empty_like()
     out._layout = compiled.layout
+    out.global_phase = 0.0
     text = (COIN_BATCH / "b0.cq").read_text(encoding="utf-8")
     note = ""
     for line in text.splitlines():
@@ -295,7 +300,10 @@ def retained_b0() -> Any:
         match = TUNA_GATE.fullmatch(line)
         if match is None:
             raise ValueError(f"the retained b0.cq holds a line outside the emitter's vocabulary: {line!r}")
-        qubits = [out.qubits[region.index(int(q))] for q in (match["a"], match["b"]) if q is not None]
+        physical = [int(q) for q in (match["a"], match["b"]) if q is not None]
+        if any(q not in region for q in physical):
+            raise ValueError(f"the retained b0.cq acts on a qubit outside the region {region}: {line!r}")
+        qubits = [out.qubits[region.index(q)] for q in physical]
         gate = match["gate"]
         operation = (
             RZGate(float(match["angle"])) if gate is None else {"X90": SXGate(), "X": XGate(), "CZ": CZGate()}[gate]

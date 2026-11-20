@@ -374,7 +374,8 @@ QX_MANIFEST_SHA256 = {
 
 
 def test_the_qx_manifests_keep_the_bytes_that_the_retained_receipts_bind() -> None:
-    # The stored bytes are read, not rebuilt: a rebuild rounds differently on darwin-arm64.
+    # The stored bytes are read directly; test_the_rebuilt_qx_manifests_equal_the_stored_bytes_and_the_receipt_digests
+    # rebuilds them on every platform.
     for batch, digest in QX_MANIFEST_SHA256.items():
         stored = (CASES / bc.QX_SERIES / batch / "cases.json").read_bytes()
         _expect(hashlib.sha256(stored).hexdigest() == digest, f"the stored {batch} manifest changed")
@@ -451,7 +452,7 @@ def test_the_rebuilt_qx_manifests_equal_the_stored_bytes_and_the_receipt_digests
 ) -> None:
     # Measured on linux x86_64 and linux aarch64 with the CI-pinned interpreter: 4 of 4 rebuilt manifests have the
     # sha256 of the stored file and of the receipt's cases_sha256. b0 enters the build as the pinned retained circuit
-    # (oc.retained_b0), since its transpile differs in 13 of 119 gates on darwin-arm64 (measured); every platform
+    # (oc.retained_b0), since its transpile differs in 13 of 115 gates on darwin-arm64 (measured); every platform
     # runs the rebuild, and a mismatch names every differing JSON path of every batch with both values.
     found: list[str] = []
     for batch in QX_MANIFEST_SHA256:
