@@ -3606,7 +3606,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_line.py check results/iqm/cases/grover-line-ccz",
       "name": "core-773",
-      "seconds": 41.2,
+      "seconds": 29.2,
       "replays": [
         "results/iqm/cases/grover-line-ccz/cases.json",
         "results/iqm/cases/grover-line-ccz/circuits",

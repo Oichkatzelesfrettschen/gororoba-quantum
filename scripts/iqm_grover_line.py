@@ -16,7 +16,8 @@ Arms, one job under active reset with all-zeros heralding:
   k0                 Hadamards and measurement, the uniform reference
   m101-k1, m101-k2   marked 101 (bit q of the string is qubit q), line-native, one and two iterations
   m011-k1, m011-k2   marked 011, which is not a palindrome, so a reversed bit order shows as 110
-  m101-k1-generic    marked 101, one iteration through qiskit transpile at optimization level 3 on the path
+  m101-k1-generic    marked 101, one iteration through qiskit transpile at optimization level 3 on the path;
+                     it and m101-k1 run in three copies (-c1, -c2) spread through the job
   ro-xyz             the eight basis preparations of the readout assignment matrix
 
 The builder scores every oriented calibrated path by the mean predicted marked probability of the four
@@ -60,9 +61,10 @@ QCS = ["garnet:mock", "garnet"]
 # Pay-as-you-go price per second of each quantum computer in the 2026-11-20 snapshot (details.json pricing).
 PRICE = {"garnet:mock": 0.0, "garnet": 0.5}
 SHOTS = 4000
-SELF_TEST_SEED = 20261120
-TRANSPILER_SEED = 11
+# docs/evidence/anu_qrng/draw-2026-11-16T041214Z.json#3
+TRANSPILER_SEED = 53987
 MARKS = ("101", "011")
+DECISION_COPIES = 3
 # Preregistered decision: a difference resolves when it lies Z_RESOLVE binomial standard errors from zero.
 Z_RESOLVE = 3.0
 EPS = 1e-12
@@ -254,19 +256,39 @@ def readout_circuit(bits: str, path: list[str]) -> dict[str, Any]:
     return {"name": f"ro-{bits}", "instructions": out}
 
 
-def arms(path: list[str]) -> list[tuple[str, dict[str, Any], str | None, int | None]]:
-    """(name, circuit, marked string, iterations) of every circuit in the job's order."""
-    network = line_networks()["exchanged"]
-    out: list[tuple[str, dict[str, Any], str | None, int | None]] = [
-        ("k0", compile_line(grover_ops("000", 0), network, path, "k0")[0], None, 0)
+Arm = tuple[str, dict[str, Any], str | None, int | None]
+LINE_ARMS = (("101", 1), ("101", 2), ("011", 1), ("011", 2))
+
+
+def line_arm(marked: str, k: int, path: list[str], name: str) -> Arm:
+    return (name, compile_line(grover_ops(marked, k), line_networks()["exchanged"], path, name)[0], marked, k)
+
+
+def arms(path: list[str]) -> list[Arm]:
+    """(name, circuit, marked string, iterations) of every circuit in the job's order. The two arms of the
+    line-against-generic decision run in DECISION_COPIES copies spread through the job, so the copies share
+    the job's drift with the other arms and the pooled difference reaches its preregistered resolution."""
+
+    def pair(copy: int) -> list[Arm]:
+        suffix = f"-c{copy}" if copy else ""
+        name = f"m101-k1-generic{suffix}"
+        return [line_arm("101", 1, path, f"m101-k1{suffix}"), (name, generic("101", path, name), "101", 1)]
+
+    readout: list[Arm] = [
+        (f"ro-{bits}", readout_circuit(bits, path), None, None)
+        for bits in ("".join(b) for b in itertools.product("01", repeat=3))
     ]
-    for marked in MARKS:
-        for k in (1, 2):
-            name = f"m{marked}-k{k}"
-            out.append((name, compile_line(grover_ops(marked, k), network, path, name)[0], marked, k))
-    out.append(("m101-k1-generic", generic("101", path, "m101-k1-generic"), "101", 1))
-    for bits in ("".join(b) for b in itertools.product("01", repeat=3)):
-        out.append((f"ro-{bits}", readout_circuit(bits, path), None, None))
+    others: list[list[Arm]] = [
+        [
+            line_arm("000", 0, path, "k0"),
+            *(line_arm(m, k, path, f"m{m}-k{k}") for m, k in LINE_ARMS if (m, k) != ("101", 1)),
+        ],
+        readout[:4],
+        readout[4:],
+    ]
+    out: list[Arm] = []
+    for copy, block in zip(range(DECISION_COPIES), others, strict=True):
+        out += pair(copy) + block
     return out
 
 
@@ -371,9 +393,8 @@ def path_score(item: tuple[list[str], str]) -> tuple[list[str], float | None, st
     path, calibration_dir = item
     try:
         scores = []
-        for name, circuit, marked, _ in arms(path)[1:5]:
-            if marked is None:
-                raise ValueError(f"{name} marks no state")
+        for marked, k in LINE_ARMS:
+            _, circuit, _, _ = line_arm(marked, k, path, f"m{marked}-k{k}")
             scores.append(predicted((dump(circuit), calibration_dir))[marked])
         return path, round(sum(scores) / len(scores), 9), None
     except (KeyError, ValueError) as error:
@@ -435,7 +456,10 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
         "arms": arm_records,
         "decisions": {
             "z_resolve": Z_RESOLVE,
-            "line_vs_generic": f"P(m101-k1) - P(m101-k1-generic); predicted sign {sign('m101-k1', 'm101-k1-generic')}",
+            "line_vs_generic": (
+                f"P(m101-k1) - P(m101-k1-generic), each pooled over its {DECISION_COPIES} copies; "
+                f"predicted sign {sign('m101-k1', 'm101-k1-generic')}"
+            ),
             "second_iteration": {
                 m: f"P(m{m}-k2) - P(m{m}-k1); predicted sign {sign(f'm{m}-k2', f'm{m}-k1')}" for m in MARKS
             },
@@ -500,15 +524,15 @@ def self_test() -> str:
             raise AssertionError("the fixed network moves a wire")
         if tuple(sorted(final)) != IDENTITY_WIRES:
             raise AssertionError(f"the {kind} network ends in a non-permutation {final}")
-    rng = np.random.default_rng(SELF_TEST_SEED)
-    for _ in range(200):
-        z = rng.normal(size=(2, 2)) + 1j * rng.normal(size=(2, 2))
-        u, _ = np.linalg.qr(z)
-        theta, phi, gamma = euler(u)
-        rebuilt = rz(gamma) @ prx_matrix(theta, phi)
-        overlap = abs(np.trace(rebuilt.conj().T @ u)) / 2
+    edges = (0.0, 1e-7, 0.3, math.pi / 2, 2.0, math.pi - 1e-7, math.pi)
+    for theta, phi, gamma, delta in itertools.product(
+        edges, (-3.0, -0.7, 0.0, 1.1, math.pi), (-2.5, 0.0, 0.9), (0.0, 1.3)
+    ):
+        u = cmath.exp(1j * delta) * rz(gamma) @ prx_matrix(theta, phi)
+        a, b, c = euler(u)
+        overlap = abs(np.trace((rz(c) @ prx_matrix(a, b)).conj().T @ u)) / 2
         if abs(overlap - 1) > 1e-10:
-            raise AssertionError(f"euler round trip overlap {overlap}")
+            raise AssertionError(f"euler round trip of theta {theta}, phi {phi}, gamma {gamma}: overlap {overlap}")
     path = ["QA", "QB", "QC"]
     worst = 0.0
     for kind, network in networks.items():
