@@ -17,14 +17,17 @@ Arms, one job under active reset with all-zeros heralding:
   m101-k1, m101-k2   marked 101 (bit q of the string is qubit q), line-native, one and two iterations
   m011-k1, m011-k2   marked 011, which is not a palindrome, so a reversed bit order shows as 110
   m101-k1-generic    marked 101, one iteration through qiskit transpile at optimization level 3 on the path;
-                     it and m101-k1 run in three copies (-c1, -c2) spread through the job
+                     it and m101-k1 run in DECISION_COPIES copies (-c1, -c2, ...) in ABBA order, so a
+                     drift linear in circuit position cancels from their pooled difference
   ro-xyz             the eight basis preparations of the readout assignment matrix
 
 The builder scores every oriented calibrated path by the mean predicted marked probability of the four
 line-native arms and predicts every arm on the best one. A prediction is exact: the density matrix under
-scripts/iqm_sim.py's depolarizing PRX and CZ plus idle T1 and T2 over the ALAP schedule, then each measured
-qubit's unheralded assignment matrix. Probabilities round to 9 digits and angles to 10, so the bytes the gate
-replays do not follow one CPU's floating-point path.
+scripts/iqm_sim.py's depolarizing PRX and CZ plus idle T1 and T2 over the ASAP schedule Garnet runs
+(docs/notes/iqm/README.md, "Schedule"), then each measured qubit's assignment matrix conditioned on the
+all-zeros herald the job's kept shots pass. Probabilities round to 9 digits and angles to 10, which holds the
+line-native circuits and the prediction across numpy's CPU dispatch; the generic copies come from qiskit's
+seeded transpile, whose gate sequence follows the qiskit release, so the build runs under requirements.txt.
 
 Usage: "$PYTHON" scripts/iqm_grover_line.py (build DIR --calibration SRC | check DIR | --self-test)
 """
@@ -64,7 +67,7 @@ SHOTS = 4000
 # docs/evidence/anu_qrng/draw-2026-11-16T041214Z.json#3
 TRANSPILER_SEED = 53987
 MARKS = ("101", "011")
-DECISION_COPIES = 3
+DECISION_COPIES = 4
 # Preregistered decision: a difference resolves when it lies Z_RESOLVE binomial standard errors from zero.
 Z_RESOLVE = 3.0
 EPS = 1e-12
@@ -266,13 +269,16 @@ def line_arm(marked: str, k: int, path: list[str], name: str) -> Arm:
 
 def arms(path: list[str]) -> list[Arm]:
     """(name, circuit, marked string, iterations) of every circuit in the job's order. The two arms of the
-    line-against-generic decision run in DECISION_COPIES copies spread through the job, so the copies share
-    the job's drift with the other arms and the pooled difference reaches its preregistered resolution."""
+    line-against-generic decision run in DECISION_COPIES copies spread through the job in ABBA order (line
+    first, generic first, generic first, line first), so the summed positions of the two arms are equal and a
+    drift linear in circuit position cancels from their pooled difference."""
 
     def pair(copy: int) -> list[Arm]:
         suffix = f"-c{copy}" if copy else ""
         name = f"m101-k1-generic{suffix}"
-        return [line_arm("101", 1, path, f"m101-k1{suffix}"), (name, generic("101", path, name), "101", 1)]
+        line = line_arm("101", 1, path, f"m101-k1{suffix}")
+        other: Arm = (name, generic("101", path, name), "101", 1)
+        return [line, other] if copy % 4 in (0, 3) else [other, line]
 
     readout: list[Arm] = [
         (f"ro-{bits}", readout_circuit(bits, path), None, None)
@@ -285,6 +291,7 @@ def arms(path: list[str]) -> list[Arm]:
         ],
         readout[:4],
         readout[4:],
+        [],
     ]
     out: list[Arm] = []
     for copy, block in zip(range(DECISION_COPIES), others, strict=True):
@@ -362,14 +369,20 @@ def predicted(item: tuple[str, str]) -> dict[str, float]:
     target, _ = target_of(calibration)
     qiskit_circuit, bits = iqm_sim.to_qiskit(circuit, calibration)
     measured = [calibration.qubits.index(qubit) for _, qubit in bits]
-    scheduled = transpile(qiskit_circuit, target=target, optimization_level=0, scheduling_method="alap")
-    body = relaxed(calibration, scheduled).remove_final_measurements(inplace=False)
+    # Scheduling runs on the circuit without its measurement, so a qubit whose gates end early idles until the
+    # joint measure; a measure that stays mid-circuit collapses the density matrix per shot and turns the exact
+    # probabilities into a sampled average.
+    unmeasured = qiskit_circuit.remove_final_measurements(inplace=False)
+    scheduled = transpile(unmeasured, target=target, optimization_level=0, scheduling_method="asap")
+    body = relaxed(calibration, scheduled)
+    if any(item.operation.name in ("measure", "reset") for item in body.data):
+        raise ValueError(f"{circuit['name']}: a measure or reset precedes the joint final measure")
     body.save_probabilities(measured)
     simulator = AerSimulator(method="density_matrix", noise_model=calibration.noise_model())
     true = np.asarray(simulator.run(body).result().data(0)["probabilities"], dtype=float)
     read = true
     for q, (_, qubit) in enumerate(bits):
-        e01, e10 = calibration.readout(qubit)
+        e01, e10 = calibration.readout(qubit, heralded=True)
         confusion = np.array([[1 - e01, e10], [e01, 1 - e10]])
         shaped = read.reshape(2 ** (2 - q), 2, 2**q)
         read = np.einsum("rt,atb->arb", confusion, shaped).reshape(8)
@@ -457,8 +470,17 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
         "decisions": {
             "z_resolve": Z_RESOLVE,
             "line_vs_generic": (
-                f"P(m101-k1) - P(m101-k1-generic), each pooled over its {DECISION_COPIES} copies; "
+                f"P(m101-k1) - P(m101-k1-generic), each pooled over its {DECISION_COPIES} copies in ABBA order; "
                 f"predicted sign {sign('m101-k1', 'm101-k1-generic')}"
+            ),
+            "pooling": (
+                "every difference pools all copies of each arm: a binomial standard error from the arm's summed "
+                "heralded kept shots"
+            ),
+            "readout_correction": (
+                "reported beside the raw decisions: the 8 x 8 assignment matrix of the ro circuits, read in the "
+                "physical order of their measurement locus, is permuted into each circuit's own measurement locus "
+                "order before it is inverted"
             ),
             "second_iteration": {
                 m: f"P(m{m}-k2) - P(m{m}-k1); predicted sign {sign(f'm{m}-k2', f'm{m}-k1')}" for m in MARKS
@@ -466,7 +488,8 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
             "bit_order": "the most frequent outcome of m011-k1 and m011-k2 is 011, not 110",
         },
         "model": (
-            "exact density matrix: iqm_sim depolarizing PRX and CZ, ALAP idle T1/T2, unheralded readout assignment; "
+            "exact density matrix: iqm_sim depolarizing PRX and CZ, ASAP idle T1/T2, herald-conditioned readout "
+            "assignment; "
             "no coherent error, leakage or crosstalk"
         ),
     }

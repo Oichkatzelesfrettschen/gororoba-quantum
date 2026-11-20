@@ -6,7 +6,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB3"
+    "QB20"
    ],
    "name": "prx"
   },
@@ -16,7 +16,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB4"
+    "QB16"
    ],
    "name": "prx"
   },
@@ -25,9 +25,9 @@
     "key": "m"
    },
    "locus": [
-    "QB3",
-    "QB4",
-    "QB1"
+    "QB20",
+    "QB16",
+    "QB17"
    ],
    "name": "measure"
   }

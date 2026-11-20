@@ -7,9 +7,11 @@
   "m101-k1": 0.7812499999999999,
   "m101-k1-c1": 0.7812499999999999,
   "m101-k1-c2": 0.7812499999999999,
+  "m101-k1-c3": 0.7812499999999999,
   "m101-k1-generic": 0.7812499999999999,
   "m101-k1-generic-c1": 0.7812499999999999,
   "m101-k1-generic-c2": 0.7812499999999999,
+  "m101-k1-generic-c3": 0.7812499999999999,
   "m101-k2": 0.9453125000000001
  },
  "jobs": [
@@ -17,78 +19,86 @@
    "circuits": [
     {
      "file": "circuits/m101-k1.json",
-     "sha256": "055d930124388081fdc98777368d07e64b05ad446d8da4326abe41626ff3c953"
+     "sha256": "2bb09acfbb01e3b151b1caa042d15335c657d09db833db413d1cc02540b28ba4"
     },
     {
      "file": "circuits/m101-k1-generic.json",
-     "sha256": "bef5fa82f95d435f30df14acdc418062671a052e194182ea6a572b9c97502f63"
+     "sha256": "2ad6ce20603165ae272861199ce21c5cc208db88f66dfe10fa5c5d6632a84c23"
     },
     {
      "file": "circuits/k0.json",
-     "sha256": "ff784a424edb4604e64d5eb8469b871155f2082916e82485ea9bc7fd80216b8f"
+     "sha256": "ffb28015c914b4a6dede914a7c82c96a355a6bdb65886108a59bb0feecf8e10c"
     },
     {
      "file": "circuits/m101-k2.json",
-     "sha256": "780c5afc3914fe92a7844c60e45e3fe32098e5f8b907e87a2f3722790f3a69c8"
+     "sha256": "6f1e6bbcab450df9122ec982cb55f75dbb77a6a20c52400d2f43035f532a2003"
     },
     {
      "file": "circuits/m011-k1.json",
-     "sha256": "bd61561bd55eb5d522639a501912ecf2cfb4dac5ee59839b885f7dc1f141c525"
+     "sha256": "429b0c1bbc4949a77521eae9986a7d97d79222d1342d863729bd1ef5230dbea8"
     },
     {
      "file": "circuits/m011-k2.json",
-     "sha256": "66eb083cd1283f7bf6b0770ba9d13c7752e4a2390fa75c62ba1ac274f0609fba"
-    },
-    {
-     "file": "circuits/m101-k1-c1.json",
-     "sha256": "7f424c37aea32040fc7c1ff86896026da00d99ab7a4ad180fe2ed6d51aa457dd"
+     "sha256": "f1c44974845f7b811be5cf8a3beda4b68e164addfdd45f02b712c455404f6dcb"
     },
     {
      "file": "circuits/m101-k1-generic-c1.json",
-     "sha256": "29ba5f6e84fc46045731266895adf59eb48c8a5e06169860d30f12408ce5b010"
+     "sha256": "25810f694656d815965179897a745b5b7f6e1d0c547fcae2d193c3d1dac9d4e6"
+    },
+    {
+     "file": "circuits/m101-k1-c1.json",
+     "sha256": "d08481609ac14388996385d54b7e6200b65aee3ce6906deebe08c6ff305bd168"
     },
     {
      "file": "circuits/ro-000.json",
-     "sha256": "aff2bc4a580a777f6828893a40494eee070506df24c9f7c1d3332b6970dd2caf"
+     "sha256": "7ac9de616b24f6af14641628c32ad019a75859b3f12788b4c4c054d57c164d36"
     },
     {
      "file": "circuits/ro-001.json",
-     "sha256": "22ce79b86f6f0e7acd3bd66b193e9cec996f17444a805acbee0eeab8016949a5"
+     "sha256": "c2a17c2693360c4fdee94203d5c2f50373d8921cbd5c1bea8dab4f7583324028"
     },
     {
      "file": "circuits/ro-010.json",
-     "sha256": "3fe3163ed4b77b16d91f6e471883634fe9f23c441f6c2fa5bd1d7c0e6544f1f0"
+     "sha256": "92277bb113396cb15a709db7aedfa17cb012f371c11806c94e4c7b7f2cab6deb"
     },
     {
      "file": "circuits/ro-011.json",
-     "sha256": "6a4772a0732f7a1e985f309c7336465ee07f587e92282c284125eae73b41ce3c"
-    },
-    {
-     "file": "circuits/m101-k1-c2.json",
-     "sha256": "f6a76f65242fde494d7bc485fb8c7a6f51b95f7cff390203a22f6d8c6bbfaf01"
+     "sha256": "866eb9ea2655c8c8e37d1f58a9e527c243a74226ec424b37e74ebfce4f74ce3e"
     },
     {
      "file": "circuits/m101-k1-generic-c2.json",
-     "sha256": "9e7882109d9944b58cbfd9651146a1b561c793368fab419689412fc984508526"
+     "sha256": "2a09a0daaa46287ed45e7804ad00499a536e67e82d338cac553ee252aab2b167"
+    },
+    {
+     "file": "circuits/m101-k1-c2.json",
+     "sha256": "84d9794e0e2e9454e13a297a63aba011725ab86da92c70b0af138e45f3fd839d"
     },
     {
      "file": "circuits/ro-100.json",
-     "sha256": "1cce38936803d903e0b633d200a86844c590f35e8443b73ec09c27607388b2ce"
+     "sha256": "996685eb52fd9647e666c5455ae5e7c9950acfe4539f952d5ae64e5439cafec3"
     },
     {
      "file": "circuits/ro-101.json",
-     "sha256": "71cce2b01077f056b26125cac78679a67a1f4893617716a9668bcdb92270540a"
+     "sha256": "8a9d6ffa51aa18e89b45618ecd7d07ee73e115dcc564085f382255a9da7e7bf5"
     },
     {
      "file": "circuits/ro-110.json",
-     "sha256": "1c054919ec5d440dca66e45f92ca77c66f892093bd2006d62a113814b3bace7c"
+     "sha256": "0638d660cc1d913bf4aa1927a78f8a14373e2dbe0d854b1c8fc4c8ebab13df68"
     },
     {
      "file": "circuits/ro-111.json",
-     "sha256": "54e71dc3bc61b6cd18b57327af8be691c2df33ddf63b5011c163d2c9941be8c5"
+     "sha256": "b44cbd475f7630d157fcaf5fad3aa7e9aebc9a8ce2c4e3974235b263854c3ee0"
+    },
+    {
+     "file": "circuits/m101-k1-c3.json",
+     "sha256": "c08fc85e35466d417c23654046a12cacce0ff5281b0081194c2b3bf9550cc1b2"
+    },
+    {
+     "file": "circuits/m101-k1-generic-c3.json",
+     "sha256": "fb84c91edf01af0f9bf396c65ed7d250b044d10ca480932eb66b9e720c873839"
     }
    ],
-   "expected_seconds": 2.7,
+   "expected_seconds": 3.0,
    "job": "grover",
    "max_credits": {
     "garnet": 2.5,
