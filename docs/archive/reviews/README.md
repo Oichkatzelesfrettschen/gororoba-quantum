@@ -210,6 +210,6 @@ of its [reviewer report](qi-status-document/codex-report.md) on [the brief](qi-s
 
 The [one-CZ null manifest serializer review](qi-pathion-qx-manifest/reconciliation.md) reconciles the five findings
 of its [reviewer report](qi-pathion-qx-manifest/codex-report.md) on [the brief](qi-pathion-qx-manifest/brief.md) for
-`canonical_float` in `scripts/qi_pathion_one_cz_null_cases.py`.
+`canonical_float` and, in its second round, `retained_b0` in `scripts/qi_pathion_one_cz_null_cases.py`.
 
 The [circuit_params unitary comparison review](circuit-params-unitary-comparison/README.md) (pull request 937) and the [workbench payload identity review](workbench-payload-identity/README.md) (pull request 843) are post-merge backfills. Each reconciles the Advisor and worker rounds of its pull request against the pull request's own threads and its merge commit.
