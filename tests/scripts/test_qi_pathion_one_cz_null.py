@@ -59,6 +59,26 @@ def test_the_retained_b0_refuses_a_compile_off_the_role_map(monkeypatch: pytest.
         oc.retained_b0()
 
 
+@pytest.mark.parametrize(
+    ("old", "new", "error"),
+    [
+        ("X90 q[2]", "Y90 q[2]", "outside the emitter's vocabulary"),
+        ("Rz(1.5707963267948966) q[2]", "Rz(1.57079632679489660) q[2]", "does not re-emit its bytes"),
+    ],
+)
+def test_the_retained_b0_refuses_a_changed_circuit_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, old: str, new: str, error: str
+) -> None:
+    text = (oc.COIN_BATCH / "b0.cq").read_text(encoding="utf-8")
+    _expect(old in text, f"the premise: the retained b0.cq holds {old}")
+    (tmp_path / "b0.cq").write_text(text.replace(old, new, 1), encoding="utf-8")
+    ref = oc.reference()
+    monkeypatch.setattr(oc, "reference", lambda: ref)
+    monkeypatch.setattr(oc, "COIN_BATCH", tmp_path)
+    with pytest.raises(ValueError, match=error):
+        oc.retained_b0()
+
+
 def test_pins_refuse_a_changed_retained_file(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setitem(oc.COIN_PINS, "b0.cq", "0" * 64)
     oc.reference.cache_clear()

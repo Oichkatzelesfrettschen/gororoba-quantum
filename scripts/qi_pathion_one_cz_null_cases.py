@@ -10,7 +10,8 @@ which keeps its bytes.
 
 Replay. b0 is the coin series' own compile (region, transpiler seed and role map read from the retained batch-02
 cases.json, whose b0.cq and cases.json digests COIN_PINS pins); replay_text() regenerates its circuit bytes and
---replay refuses any difference from the retained file.
+--replay refuses any difference from the retained file. The build reads b0's gates from the pinned b0.cq
+(retained_b0) and takes only the layout from the compile, since the compile differs between platforms.
 
 Routing. The coin template of each low-CZ block (cosets 4, 8, 12) compiles on b0's region from each of the 120
 initial layouts of the five logical bits at SEEDS_PER_BLOCK transpiler seeds from the retained ANU QRNG draw
@@ -266,9 +267,10 @@ TUNA_GATE = re.compile(r"(?:Rz\((?P<angle>[-0-9.e+]+)\)|(?P<gate>X90|X|CZ)) q\[(
 def retained_b0() -> Any:
     """b0 as the coin series executed it: the gates of the pinned b0.cq on the qubit layout of b0's compile.
 
-    The transpile of b0 depends on the numeric identity of the platform: on darwin-arm64 it resynthesizes 13 of the 119
-    gates on another Euler branch (an rz after a CZ moves by pi), so the replayed angles, and the ideal law computed
-    from them, differ from the retained circuit. The pinned b0.cq is the circuit of record; the compile supplies only
+    The transpile of b0 depends on the platform: on darwin-arm64, measured on the hosted macOS leg, 13 of its 119 gates
+    differ from the Linux compile (an rz right after a CZ moves by pi), so the replayed angles, and the ideal
+    law computed from them, differ from the retained circuit. hypothesis: the one-qubit resynthesis picks another Euler
+    branch under that platform's numeric identity. The pinned b0.cq is the circuit of record; the compile supplies only
     the layout, which the role map of the coin manifest pins. The build refuses a compile whose final layout differs
     from that role map, a gate line outside the emitter's vocabulary, and a circuit that does not re-emit the pinned
     bytes."""
