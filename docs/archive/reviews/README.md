@@ -80,6 +80,7 @@ repository-relative; a branch name stands for its worktree.
 | [tuna-readback-expiry-review.md](tuna-readback-expiry-review.md) | Review of receipt retention across the post-response expiry boundary |
 | [tuna-capture-commitment-review.md](tuna-capture-commitment-review.md) | Review of capture commitment encoding, substitution and admission boundaries |
 | [tuna-capture-commitment-followup-review.md](tuna-capture-commitment-followup-review.md) | Follow-up on coherent capture substitutions and scoring separation |
+| [qi-tuna17-interleaved-draw/reconciliation.md](qi-tuna17-interleaved-draw/reconciliation.md) | Local codex round on the retained draw, batch order and QX twin of the interleaved Tuna-17 case (PR 957): stale status lines, the timing record and the open research-state ledger row; with the brief |
 | [tuna-attempt-transport-review.md](tuna-attempt-transport-review.md) | Review of attempt retention, failure paths and admission boundaries |
 | [tuna-private-attempt-journal-review.md](tuna-private-attempt-journal-review.md) | Review of attempt journal replay, lifecycle and persistence boundaries |
 | [tuna-attempt-retention-followup-review.md](tuna-attempt-retention-followup-review.md) | Follow-up on attempt transport and journal repairs |

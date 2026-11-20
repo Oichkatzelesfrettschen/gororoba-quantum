@@ -1,0 +1,64 @@
+{
+ "schema": "qi-tuna17-interleaved-cases-v1",
+ "arm": "crosstalk",
+ "meta": {
+  "unit": "t1-250"
+ },
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 1024,
+ "bit_order": "qubit 0 at the rightmost character",
+ "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-19T164737Z.json",
+ "circuits": [
+  {
+   "file": "xt-t1-250-all.cq",
+   "kind": "xt_t1",
+   "context": "all",
+   "wait_cycles": 250,
+   "driven": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "expected_p1": 1.0,
+   "sha256": "5a052bc1873937d096281c2d53b67b5453b6073e74e63068a742e8c0f7af2bbc"
+  },
+  {
+   "file": "xt-t1-250-A.cq",
+   "kind": "xt_t1",
+   "context": "A",
+   "wait_cycles": 250,
+   "driven": [
+    0,
+    4,
+    5,
+    6,
+    9
+   ],
+   "expected_p1": 1.0,
+   "sha256": "a2eae8322b3e2d9428f077f5742c77b8d2ee2a3aaa58264db58ad83d8ba02acd"
+  },
+  {
+   "file": "xt-t1-250-B.cq",
+   "kind": "xt_t1",
+   "context": "B",
+   "wait_cycles": 250,
+   "driven": [
+    1,
+    3,
+    7,
+    8
+   ],
+   "expected_p1": 1.0,
+   "sha256": "6379445e7cda3a34ee51228893db77e5c826a1cd18f74f174478c95f2be71e3b"
+  }
+ ]
+}

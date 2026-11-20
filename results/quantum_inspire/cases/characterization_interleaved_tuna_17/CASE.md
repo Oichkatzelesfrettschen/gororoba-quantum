@@ -1,15 +1,15 @@
 # Case: Tuna-17 interleaved T1 at per-qubit delays, drive-context crosstalk arm and q12 Ramsey phase scan
 
-Status: written case awaiting the owner's approval; nothing has been submitted to any backend, the emulator included.
+Status: approved by the owner on 2026-11-19, the QX twin first; the QX twin is submitted and collected (its case records the outcome). Tuna-17 is not yet submitted to any backend; a waiter submits each batch when the device reads idle.
+Approval record: owner, chat 2026-11-19T16:42Z, "ok those items are approved" (PR 944 follow-up runs); backend Tuna-17 (backend type 7), 30 batches, 90 jobs, 688,128 shots, 660.2 s expected execution, 0 credits. The submitting waiter passes the short quote as its --approval string; this line is the full record. The Tuna-17 runs and their analysis land in a follow-up change.
 Generator and checker: `scripts/qi_tuna17_interleaved_cases.py` (`--check results/quantum_inspire/cases` reproduces every file of this
 directory except this one, and the QX twin `../characterization_interleaved_qx/`). The case follows the record of
 [the 2026-11-16 characterization](../../../../docs/notes/quantum_inspire/tuna17-characterization-2026-11-16.md) and its
 [case](../characterization_tuna_17/CASE.md).
 
-The batch order waits for one retained QRNG draw. `qrng_request.json` names the ANU request (256 uint16 values; the order consumes
-59 plus any rejected values); no draw was made while this case was written, so the batch directories, their circuits and `schedule.json`
-do not exist yet and `--check` prints a skip. Setting `DRAW` in the generator to the retained path and running `--write` creates them.
-No batch can be submitted before that.
+The batch order comes from one retained QRNG draw, `docs/evidence/anu_qrng/draw-2026-11-19T164737Z.json` (ANU, 256 uint16 values, sha256
+f1c4bd68917eaf5142c716814fe7e6127e68ad78c450e80036eafe3187e34e65; the order consumes 59 plus any rejected values), which `qrng_request.json`
+names and `DRAW` in the generator holds. The batch directories, their circuits and `schedule.json` are written from it, and `--check` reproduces them.
 
 ## What the run measures
 

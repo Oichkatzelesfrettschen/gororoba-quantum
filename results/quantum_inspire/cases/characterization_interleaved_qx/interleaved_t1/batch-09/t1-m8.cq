@@ -1,0 +1,37 @@
+version 3.0
+
+qubit[10] q
+bit[10] b
+
+wait(3974) q[0]
+X q[0]
+wait(6653) q[0]
+wait(2928) q[1]
+X q[1]
+wait(7699) q[1]
+wait(2119) q[2]
+X q[2]
+wait(8508) q[2]
+wait(5626) q[3]
+X q[3]
+wait(5001) q[3]
+wait(1626) q[4]
+X q[4]
+wait(9001) q[4]
+wait(2644) q[5]
+X q[5]
+wait(7983) q[5]
+wait(4351) q[6]
+X q[6]
+wait(6276) q[6]
+X q[7]
+wait(10627) q[7]
+wait(3037) q[8]
+X q[8]
+wait(7590) q[8]
+wait(2438) q[9]
+X q[9]
+wait(8189) q[9]
+
+barrier q
+b = measure q
