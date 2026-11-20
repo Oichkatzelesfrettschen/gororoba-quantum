@@ -16,6 +16,7 @@ only).
 | red team | agy gemini-4-neon-high | report |
 | red team | opencode, OpenCode Go account, glm-5.3 | report |
 | last | the Advisor | read every finding with its verdict; its items are rows below |
+| hosted | Codex, one round at 8eeffd57c | one finding, a row below |
 | red team | vibe mistral-medium-3.5 | `not run`: the CLI could not authenticate |
 
 The briefs and raw reports stay in the ignored `docs/local/pr965-review/` of the primary checkout, since they carry local
@@ -57,6 +58,7 @@ Fixes landed in 432de1c4c, 737f778dd and the commit after it. Verdicts are check
 | The wrapper takes the run path as given, where the stock CLI applies `case_path` containment | Advisor | confirmed | Fixed: `submit` and `record` resolve the run through `qd_platform.case_path` |
 | The claim that P derives from the manifests the retained jobs were sent with rests on a one-off comparison | Advisor | confirmed | Fixed: a test compares `source_job.cases_sha256` with the retained receipts' `cases_sha256` |
 | A boundary test row labeled 10 % has spread 14/147 | Advisor | confirmed | Fixed: the row is 133, 140, 147, spread exactly 1/10 |
+| A job submitted from a committed request directory is never discovered, so `next` repeats its slot and its charge escapes the caps | hosted Codex at 8eeffd57c | confirmed | Fixed in 7b52e556f: `bound_runs` counts a receipt or checkpoint wherever it sits, and the gate refuses a committed request directory |
 
 ## Open before approval
 
