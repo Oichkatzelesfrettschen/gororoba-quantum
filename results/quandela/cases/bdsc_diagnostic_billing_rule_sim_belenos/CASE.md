@@ -2,8 +2,9 @@
 
 Status: written case awaiting the owner's approval; nothing has been submitted to any backend, the simulator included.
 The owner approved writing this case on 2026-11-16 (leftover W-160, "approve a controlled sim:belenos b1 repeat or drop the
-hypothesis") and again on 2026-11-19; the approval of the run itself is the open step. Request files, the successor builder
-variant and the run directory do not exist yet, and no command below sends a job.
+hypothesis") and again on 2026-11-19; the approval of the run itself is the open step. The requests P1 and P2 live in
+`results/quandela/cases/bdsc_diagnostic_timing_sim_belenos/`, built by `scripts/bdsc_diagnostic_timing_case.py` (see
+"Implementation steps before approval"); no run directory exists, and the commands there send jobs only after that approval.
 
 ## Retained records
 
@@ -50,7 +51,7 @@ own preregistration, resource estimate, review and approval.
 
 | Request | Groups (iterations in order of the builder) | Iterations | Samples per iteration | Cap per iteration |
 |---|---|---|---|---|
-| P1 | out-s0, out-s1 (j1's first two groups) | 12 | 40000 | 80000 shots |
+| P1 | out-s0, out-s1 (two of j1's four groups) | 12 | 40000 | 80000 shots |
 | P2 | rev-s0, rev-s1 (two of j2's four groups; the cancelled 24th iteration of j2 is out-s2-pi, which P2 omits) | 12 | 40000 | 80000 shots |
 
 Each retained job holds four groups; P1 omits rev-s2 and rev-s3 (j1) and P2 omits out-s2 and out-s3 (j2), and the
@@ -64,11 +65,11 @@ and 6 (mean 3.67); three replicates per request cannot balance six slots, so P1 
 outcomes read as more consistent with request cost or with service variation, not as causal separation. Jobs run one at a
 time (`max_concurrent_jobs` 1), each submitted after the previous one is collected.
 
-Recorder. For each job the run polls the job's status through the platform client at intervals of at most 10 s and writes
-(UTC time, status, progress, progress message) to a log in the run directory. Only job-level timing (submission to terminal
+Recorder. For each job the run reads the job's status through the platform client on a fixed 10 s cadence (a read slower
+than the cadence delays the next) and writes (UTC time, status, progress, progress message) to a log in the run directory.
+Only job-level timing (submission to terminal
 state, and the reported duration) is analyzed; progress transitions are retained as logged but are not read as
 iteration completions unless validated against the completed result entries of that job.
-
 ## Expected seconds and credits
 
 | Quantity | Value | Source |
@@ -100,7 +101,7 @@ leave credits unchanged elsewhere, so each job's bill is read from the usage rep
 
 The retained jobs record job-level durations only: 300 s for 24 of 24 iterations (j1) and 305 s for 23 complete iterations
 (920000 of 960000 samples at 40000 per iteration, j2), with no per-iteration latency identified. The six new jobs of 12
-iterations are compared with the retained pair at job level: a duration of 12 iterations well below half of 300 s, or above
+iterations are compared with the retained pair at job level: a duration of 12 iterations below 135 s (10 % under half of 300 s), or above
 it, is a deviation and is recorded as the finding before any rule below is applied. Start-up and per-iteration cost are
 not separated, because iteration count changes together with request composition.
 
@@ -135,8 +136,72 @@ the row open.
 
 ## Implementation steps before approval
 
-The retained tree refuses a later plan on the changed digest of `scripts/qd_platform.py`. The case needs a successor
-builder variant that emits P1 and P2 from the frozen group definitions with the iteration subset, a plan whose output restates
-credits and seconds above, the review packet and the free ANU draw the builder requires (the unclaimed draw of 2026-11-15 in
-`docs/evidence/anu_qrng/` serves, or a fresh free draw per the QRNG guide). None of these exists; this file asks only for
-the written-case approval.
+The retained tree refuses a later plan on the changed digest of `scripts/qd_platform.py`, so the requests live in a tree of
+their own.
+
+- Builder: `scripts/bdsc_diagnostic_timing_case.py build` writes `results/quandela/cases/bdsc_diagnostic_timing_sim_belenos/`:
+  `case.json` (requests, slot order, expected seconds and credits, stop conditions and decision thresholds of this file)
+  and `p1/`, `p2/`. Each request keeps the settings of its groups from the retained `b1-j1` or `b1-j2` manifest byte for
+  byte and in the retained iteration order, with 12 iterations, `max_samples` 480000 and `max_shots` 960000; its
+  `circuit.json` is the retained file. `successor_sources` binds the builder, `qd_platform.py`, `oq_platform.py` and
+  `qd_records.py`; a change to one of them before the first run calls for `build` again, and `check` compares the tree
+  with a fresh build byte for byte.
+- QRNG: the case takes no new value. The settings carry the compilation seeds and draw indices of
+  `docs/evidence/anu_qrng/draw-2026-11-14T203208Z.json`, which the retained jobs consumed, and a seed that reproduces a
+  retained request is an identifier (AGENTS.md, "Seeds"). The earlier text of this section named a free draw because it
+  assumed a fresh build of the frozen request; a subset of the retained manifests needs none, and the unclaimed draw
+  `draw-2026-11-15T190401Z.json` stays unclaimed. The P manifests keep the retained `diagnostic_case_sha256` and `draw`, so
+  `bdsc_diagnostic.draw_claims` still admits the retained tree's rebuild, and the diagnostic analyzer refuses a P run
+  because `p1` and `p2` are not jobs of the diagnostic.
+- Recorder: `bdsc_diagnostic_timing_case.py record RUN` reads the job status on a fixed 10 s cadence (each read starts
+  10 s after the previous one started), writes each read or its transient error to `RUN/status-log.jsonl` with the
+  time the read returned, and collects the run through `qd_platform.collect` at the terminal status. A read slower
+  than the cadence delays the next one; the log shows the actual spacing.
+- Submission: each manifest names `scripts/bdsc_diagnostic_timing_case.py submit` as its `submit_wrapper`, so
+  `qd_platform.py submit` refuses a P run sent directly. `bdsc_diagnostic_timing_case.py submit RUN --approval TEXT`
+  calls `qd_platform.submit` with a verify step that runs under the token's submit lock, after the plan whose body is
+  posted. It refuses a request other than the next slot's, a token with a running or queued job (the plan's
+  availability counters), a body with mitigations and every stop condition below. Each manifest also carries
+  `max_credits` 1.08, the case ceiling `qd_platform.plan` enforces.
+- Stop conditions: `bdsc_diagnostic_timing_case.py next` finds every submitted P run under `results/quandela` (a
+  directory with a submission receipt; a checkpoint without a receipt stops the case until `qd_platform.py recover`
+  writes it) and orders them by submission time. It refuses when a job ended canceled or failed, reported a duration at
+  the 300 s limit, ran on another platform or with mitigations, was submitted before the previous job was collected,
+  or ran in the wrong slot. Before a further submission it also refuses when the spent credits plus one job's 1.08
+  authorization exceed 6.48 or the reported durations reach 1800 s. A rerun or a dropped run cannot escape these
+  checks, because `next` reads the runs from the tree, not from its arguments.
+- Decision rules: `bdsc_diagnostic_timing_case.py analyze` applies "Decision rules" to the six runs in exact rational
+  arithmetic, so a ratio equal to a threshold falls on the side the table names. It lists each duration above 150 s
+  or below 135 s as a deviation from the prediction. The caps gate a further submission only, so the sixth run is
+  read whatever they hold.
+- Plan and review packet: `bdsc_diagnostic_timing_case.py plan` runs `qd_platform.plan` on `p1` and `p2` in the tree,
+  reads the live platform and restates credits, seconds and the body's mitigation list per job (read-only); it runs before the approval request, and its output enters the
+  approval record. `submit` repeats the plan under the lock before each job. `qd_platform.py review` writes a
+  packet only for an Ascella acquisition (`acquisition_sources` requires the predecessor analyzer identities), and the
+  retained sim:belenos jobs were submitted without one, so this case's review packet is the review record of the
+  builder's pull request under `docs/archive/reviews/bdsc-diagnostic-timing/`.
+- Bound sources: once the first job is submitted the tree keeps its bytes, and a change to a file of
+  `successor_sources` makes `plan`, `submit` and `collect` refuse the remaining slots. The six jobs therefore run
+  from one commit of main in one session (about an hour); a source change that lands mid-case stops it, and a
+  successor tree with its own approval restarts it.
+
+```sh
+set -eu
+export PYTHON="${PYTHON:-python3}"
+export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
+export QUANDELA_TOKEN_FILE="${QUANDELA_TOKEN_FILE:?set to the token file}"
+TREE=results/quandela/cases/bdsc_diagnostic_timing_sim_belenos
+"$PYTHON" scripts/bdsc_diagnostic_timing_case.py check
+# before the approval request (read-only):
+"$PYTHON" scripts/bdsc_diagnostic_timing_case.py plan
+# after the owner's approval, one slot at a time; the loop ends when "next" prints complete or refuses (exit 1),
+# and analyze refuses a case that holds fewer than six admitted runs:
+while NAME=$("$PYTHON" scripts/bdsc_diagnostic_timing_case.py next) && [ "$NAME" != complete ]; do
+  RUN=results/quandela/runs/$(date -u +%Y-%m-%dT%H%M%SZ)-sim_belenos-bdsc_timing-$NAME
+  mkdir -p "$RUN"
+  cp "$TREE/$NAME/cases.json" "$TREE/$NAME/circuit.json" "$RUN"/
+  "$PYTHON" scripts/bdsc_diagnostic_timing_case.py submit "$RUN" --approval "APPROVAL TEXT"
+  "$PYTHON" scripts/bdsc_diagnostic_timing_case.py record "$RUN"
+done
+"$PYTHON" scripts/bdsc_diagnostic_timing_case.py analyze
+```
