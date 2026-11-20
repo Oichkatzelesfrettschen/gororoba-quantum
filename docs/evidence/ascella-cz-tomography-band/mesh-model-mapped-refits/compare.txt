@@ -1,0 +1,10 @@
+/band_to_retained/deviance_in_sample_ceiling	14855.249654756317	14855.249654756315	abs 1.819e-12	rel 1.224e-16
+/band_to_retained/gain	0.8829973212616414	0.8829973212616413	abs 1.110e-16	rel 1.257e-16
+/band_to_retained/shift_correlation	0.19940125788644286	0.1994012578864428	abs 5.551e-17	rel 2.784e-16
+/band_to_retained/train/deviance	62684.997823407226	62684.99782340723	abs 7.276e-12	rel 1.161e-16
+/retained_to_band/deviance_in_sample_ceiling	62684.997823407226	62684.99782340723	abs 7.276e-12	rel 1.161e-16
+/retained_to_band/shift_correlation	0.21686912918489987	0.21686912918489976	abs 1.110e-16	rel 5.119e-16
+/retained_to_band/train/deviance	14855.249654756317	14855.249654756315	abs 1.819e-12	rel 1.224e-16
+/within_band/shift_correlation	0.06847173148068861	0.06847173148068864	abs 2.776e-17	rel 4.054e-16
+/within_retained/shift_correlation	0.08092998210540149	0.08092998210540142	abs 6.939e-17	rel 8.574e-16
+leaves 117 identical 108 differing 9 max relative difference 8.574e-16

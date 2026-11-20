@@ -1,0 +1,13 @@
+source	family	order	verdict	slug	field	arcs	base_nullity	arc_nullity	limit_dimension	g_order	pivot_valuation_sum	limit_in_base_kernel	distinct_planes
+kl-w8/w8-c30-result.json	w8-c30	32	refuted	w8-nm	F_32009	24	[16]	[8]	[8]	[4]	16	True	6
+kl-w8/w8-c30-result.json	w8-c30	32	refuted	w8-nm	F_32029	24	[16]	[8]	[8]	[4]	16	True	6
+kl-w8/w8-c30-result.json	w8-c30	32	refuted	w8-nm	Q	24	[16]	[8]	[8]	[]	16	True	6
+kl-w8/w8-c30-result.json	w8-c30	32	refuted	w8-np	F_32009	24	[16]	[8]	[8]	[4]	16	True	6
+kl-w8/w8-c30-result.json	w8-c30	32	refuted	w8-np	F_32029	24	[16]	[8]	[8]	[4]	16	True	6
+kl-w8/w8-c30-result.json	w8-c30	32	refuted	w8-np	Q	24	[16]	[8]	[8]	[]	16	True	6
+kl/x-result.json	x	12	survives	xp-nm	F_32009	36	[16]	[8]	[8]	[2]	8	True	9
+kl/x-result.json	x	12	survives	xp-nm	F_32029	36	[16]	[8]	[8]	[2]	8	True	9
+kl/x-result.json	x	12	survives	xp-nm	Q	36	[16]	[8]	[8]	[]	8	True	9
+kl/x-result.json	x	12	survives	xm-np	F_32009	36	[16]	[8]	[8]	[2]	8	True	9
+kl/x-result.json	x	12	survives	xm-np	F_32029	36	[16]	[8]	[8]	[2]	8	True	9
+kl/x-result.json	x	12	survives	xm-np	Q	36	[16]	[8]	[8]	[]	8	True	9

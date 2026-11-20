@@ -1,0 +1,7 @@
+prime	relation	status	detail
+32009	quotient length of E8-bar -> VB against X-	equal	20:17690/17690,21:21231/21231,22:25278/25278
+32009	VB(d) = X(d) + X(d-1) for d = 1 to 7	holds	[1, 8, 34, 94, 199, 360, 589, 898]
+32009	VB(d) = E8(d) - E8(d-1) for d = 1 to 7	holds	[1, 8, 34, 94, 199, 360, 589, 898]
+32029	quotient length of E8-bar -> VB against X-	equal	20:17690/17690,21:21231/21231,22:25278/25278
+32029	VB(d) = X(d) + X(d-1) for d = 1 to 7	holds	[1, 8, 34, 94, 199, 360, 589, 898]
+32029	VB(d) = E8(d) - E8(d-1) for d = 1 to 7	holds	[1, 8, 34, 94, 199, 360, 589, 898]

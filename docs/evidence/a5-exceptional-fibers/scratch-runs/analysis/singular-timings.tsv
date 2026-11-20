@@ -1,0 +1,43 @@
+source	wall_seconds	peak_rss_kib	result_ms	sb_size	kbase_size
+probes/vb-levers/ladder/ladder-n1-slimgb.time	0.01	12952			
+probes/vb-levers/ladder/ladder-n1-std.time	0.0	12904			
+probes/vb-levers/ladder/ladder-n10-slimgb.time	7.52	144452			
+probes/vb-levers/ladder/ladder-n10-std.time	8.02	20272			
+probes/vb-levers/ladder/ladder-n11-slimgb.time	14.29	166644			
+probes/vb-levers/ladder/ladder-n11-std.time	26.66	25924			
+probes/vb-levers/ladder/ladder-n12-slimgb.time	31.34	191044			
+probes/vb-levers/ladder/ladder-n12-std.time	77.35	34116			
+probes/vb-levers/ladder/ladder-n13-slimgb.time	76.7	224604			
+probes/vb-levers/ladder/ladder-n13-std.time	200.43	45796			
+probes/vb-levers/ladder/ladder-n14-slimgb.time	150.76	283728			
+probes/vb-levers/ladder/ladder-n14-std.time	534.67	64180			
+probes/vb-levers/ladder/ladder-n15-slimgb.time	339.18	351620			
+probes/vb-levers/ladder/ladder-n15-std.time	1313.06	87228			
+probes/vb-levers/ladder/ladder-n16-slimgb.time	972.53	438548			
+probes/vb-levers/ladder/ladder-n16-std.time	2796.41	120772			
+probes/vb-levers/ladder/ladder-n17-slimgb.time	1740.92	528760			
+probes/vb-levers/ladder/ladder-n17-std.time	4963.0	165556			
+probes/vb-levers/ladder/ladder-n2-slimgb.time	0.0	12980			
+probes/vb-levers/ladder/ladder-n2-std.time	0.0	12996			
+probes/vb-levers/ladder/ladder-n3-slimgb.time	0.0	13728			
+probes/vb-levers/ladder/ladder-n3-std.time	0.0	13164			
+probes/vb-levers/ladder/ladder-n4-slimgb.time	0.02	14208			
+probes/vb-levers/ladder/ladder-n4-std.time	0.01	13044			
+probes/vb-levers/ladder/ladder-n5-slimgb.time	0.03	15900			
+probes/vb-levers/ladder/ladder-n5-std.time	0.02	13616			
+probes/vb-levers/ladder/ladder-n6-slimgb.time	0.17	21540			
+probes/vb-levers/ladder/ladder-n6-std.time	0.06	13428			
+probes/vb-levers/ladder/ladder-n7-slimgb.time	0.53	34360			
+probes/vb-levers/ladder/ladder-n7-std.time	0.24	13492			
+probes/vb-levers/ladder/ladder-n8-slimgb.time	1.21	60348			
+probes/vb-levers/ladder/ladder-n8-std.time	0.78	14928			
+probes/vb-levers/ladder/ladder-n9-slimgb.time	4.12	122168			
+probes/vb-levers/ladder/ladder-n9-std.time	2.51	17220			
+codex-final/groebner-default-n13.time	173.02	46032	172972	1244	3627
+codex-final/slimgb-baseline-n13.time	54.83	224892	54778	1244	3627
+codex-final/slimgb-degbound-n13.time	48.26	224532	48237	1244	3627
+codex-final/slimgb-degbound-n15.time	225.65	352632	225604	1797	6105
+codex-final/slimgb-noredtail-n13.time	55.88	224624	55849	1244	3627
+codex-final/slimgb-reverse-n13.time	99.13	343592	99095	1236	3627
+codex-final/std-baseline-n13.time	200.61	45796	200553	1244	3627
+codex-final/std-length-n13.time	279.08	46128	278992	1244	3627
