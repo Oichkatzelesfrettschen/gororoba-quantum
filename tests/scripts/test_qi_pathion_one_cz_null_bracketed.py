@@ -12,6 +12,7 @@ import hashlib
 import itertools
 import json
 import math
+import os
 import shutil
 from collections import Counter
 from datetime import datetime, timedelta, timezone
@@ -427,6 +428,36 @@ def test_the_retained_qx_manifests_hold_no_negative_zero() -> None:
         _expect("-0.0," not in text and "-0.0\n" not in text, f"{batch} holds a -0.0")
 
 
+def _b0_diagnostic() -> str:
+    """The b0 compile of this platform as text: leg versions, BLAS, transpiler seed and the gate sequence with each
+    rz angle before and after round_to_grid; the first transpile pass that differs between legs shows in this sequence."""
+    import platform
+
+    import qi_pathion_coset_block_cases as blk
+    import qiskit
+    import scipy
+
+    compiled = oc.compile_b0()
+    rounded = blk.round_to_grid(compiled)
+    config = np.show_config(mode="dicts")  # type: ignore[no-untyped-call]
+    blas = config.get("Build Dependencies", {}).get("blas", {})
+    lines = [
+        f"platform {platform.platform()} machine {platform.machine()} python {platform.python_version()}",
+        f"qiskit {qiskit.__version__} numpy {np.__version__} scipy {scipy.__version__}",
+        f"blas {blas.get('name')} {blas.get('version')} {blas.get('openblas configuration')}",
+        f"transpiler_seed {oc.reference()['seed']} ops {dict(sorted(compiled.count_ops().items()))}",
+    ]
+    for k, (raw, snapped) in enumerate(zip(compiled.data, rounded.data, strict=True)):
+        qubits = ",".join(str(compiled.find_bit(q).index) for q in raw.qubits)
+        if raw.operation.name == "rz":
+            angle = float(raw.operation.params[0])
+            after = float(snapped.operation.params[0])
+            lines.append(f"{k} rz q{qubits} {angle!r} -> {after!r} step {round(angle / blk.GRID)}")
+        else:
+            lines.append(f"{k} {raw.operation.name} q{qubits}")
+    return "\n".join(lines)
+
+
 def _first_difference(left: object, right: object, path: str = "$") -> str | None:
     """The JSON path of the first differing leaf of two parsed manifests, with both values, or None when equal."""
     if isinstance(left, dict) and isinstance(right, dict):
@@ -453,6 +484,9 @@ def _first_difference(left: object, right: object, path: str = "$") -> str | Non
 def test_the_rebuilt_qx_manifests_equal_the_stored_bytes_and_the_receipt_digests(
     built: dict[str, dict[str, str]],
 ) -> None:
+    out = os.environ.get("QX_B0_DIAGNOSTIC_FILE")
+    if out:
+        Path(out).write_text(_b0_diagnostic() + "\n", encoding="utf-8")
     # Measured on linux x86_64 and linux aarch64 with the CI-pinned interpreter: 4 of 4 rebuilt manifests have the
     # sha256 of the stored file and of the receipt's cases_sha256. hypothesis: darwin-arm64 differs in the sign of a
     # zero residue, which oc.canonical_float clears; no darwin run has measured it. Every platform runs the rebuild, and
@@ -462,7 +496,10 @@ def test_the_rebuilt_qx_manifests_equal_the_stored_bytes_and_the_receipt_digests
         stored = (CASES / bc.QX_SERIES / batch / "cases.json").read_bytes()
         if rebuilt != stored:
             where = _first_difference(json.loads(rebuilt), json.loads(stored))
-            _expect(False, f"the rebuilt {batch} manifest differs from the stored file at {where}")
+            _expect(
+                False,
+                f"the rebuilt {batch} manifest differs from the stored file at {where}\n{_b0_diagnostic()}",
+            )
         _expect(hashlib.sha256(rebuilt).hexdigest() == digest, f"the rebuilt {batch} manifest differs from the receipt")
         _expect(rebuilt == stored, f"the rebuilt {batch} manifest differs from the stored file")
 
