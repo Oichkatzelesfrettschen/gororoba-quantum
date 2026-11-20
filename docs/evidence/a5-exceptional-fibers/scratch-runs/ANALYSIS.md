@@ -87,7 +87,7 @@ No ledger row is edited by this change. The rows above are proposals; the regist
 
 | Follow-up | Decisive run or proof | Cost |
 |---|---|---|
-| Close A5-325 on the computed side | std(J + m^N) of same-sign X at N = 18 and 19, p = 32009, compared with the VB lengths 11,952 and 14,611 (`exports-audit.tsv`); slimgb with the exports layout | about an hour each if X behaves like VB at N = 17 (1,741 s slimgb; estimate, X has one variable fewer) |
+| Close A5-325 on the computed side | the X lengths at N = 19 are already retained (`replay/out/X--32009-d5-N19-quotient/replay.jsonl` and its p = 32029 twin record dim_quotient 14,611, equal to the VB length; read into `scratch-ranks.tsv`); the uncomputed cell is X at N = 18 (VB 11,952), std(J + m^N) with slimgb in the exports layout | about an hour if X behaves like VB at N = 17 (1,741 s slimgb; estimate, X has one variable fewer) |
 | Close A5-325 by proof | an isomorphism of the presolved germs of X- and E8-bar -> VB, or a Hilbert-Samuel function in closed form for both: Rocq (a finite certificate) or Lean (the statement for the family); the first step is the equality of their Hilbert series after removing the linear form (A5-325) | days, no compute |
 | Decide the X- closing N | r_28 at d = 7 (needs 771 for the last-jump law) and r_33 at d = 8 (needs 1,133), engine `fast_ladder` with 24 threads | 2,097 s at order 29 and 3,217 s at order 32 are the retained times |
 | Confirm the multiplicity 3 of E8-bar -> N- | l(19) = 93,271 predicted by the quintic through N = 12 to 18; std at N = 19 with slimgb | 43,597 s of std at N = 17 (engine v11) extrapolates to more than 100,000 s per step; this is a hypothesis check that is cheaper by proof (A5-002 gives the multiplicity 3) |

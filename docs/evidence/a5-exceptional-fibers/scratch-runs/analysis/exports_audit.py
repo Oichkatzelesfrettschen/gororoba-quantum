@@ -17,6 +17,11 @@ import re
 import sys
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[5]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+from parallel import ordered_map  # noqa: E402
 
 CHUNK = 1 << 24
 POWER = re.compile(r"\^(\d+)")
@@ -57,6 +62,14 @@ def count_top_level_commas(path: str) -> int:
         while block := handle.read(CHUNK):
             count += block.count(b",")
     return count
+
+
+def directory_summary(path: str) -> tuple[dict[int, int], int | str]:
+    """The degree histogram of qB.txt and the generator count of s.txt of one export directory."""
+    names = set(os.listdir(path))
+    histogram = degree_histogram(os.path.join(path, "qB.txt")) if "qB.txt" in names else {}
+    generators: int | str = count_top_level_commas(os.path.join(path, "s.txt")) + 1 if "s.txt" in names else ""
+    return histogram, generators
 
 
 def parse_name(name: str) -> dict[str, str]:
@@ -120,12 +133,19 @@ def main() -> int:
         "generators_s",
         "table_bytes",
     ]
+    entries = [entry for entry in sorted(os.listdir(exports)) if os.path.isdir(os.path.join(exports, entry))]
+    # Independent per-directory parses of qB.txt and s.txt (CPU-bound) run through parallel.ordered_map.
+    summaries = dict(
+        zip(
+            entries,
+            ordered_map(directory_summary, [os.path.join(exports, entry) for entry in entries], min_items=1),
+            strict=True,
+        )
+    )
     with open(os.path.join(out, "exports-audit.tsv"), "w", encoding="ascii") as handle:
         handle.write("\t".join(header) + "\n")
-        for entry in sorted(os.listdir(exports)):
+        for entry in entries:
             path = os.path.join(exports, entry)
-            if not os.path.isdir(path):
-                continue
             info = parse_name(entry)
             files = {name: value for (e, name), value in digests.items() if e == entry}
             table_bytes = sum(size for _, size in files.values())
@@ -148,8 +168,7 @@ def main() -> int:
                         ok += 1
                     else:
                         bad += 1
-            histogram = degree_histogram(os.path.join(path, "qB.txt")) if "qB.txt" in files else {}
-            generators = count_top_level_commas(os.path.join(path, "s.txt")) + 1 if "s.txt" in files else ""
+            histogram, generators = summaries[entry]
             row = [
                 entry,
                 info["family"],
