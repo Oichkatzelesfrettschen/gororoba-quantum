@@ -75,7 +75,8 @@ Any other integer is refused when the arguments are parsed. The experiment a
 record names stays the same across the dry run, the submission and the
 collection of one experiment, so they share their QRNG values; a second
 experiment needs another index. The ledger row that consumes a value lands in
-the change that retains the run: `"$PYTHON" ci/seed_provenance.py --add-runtime`
+the change that retains the run (a draw consumed by another repository is listed in
+[external-consumers.md](external-consumers.md) and owned whole): `"$PYTHON" ci/seed_provenance.py --add-runtime`
 appends a row to the `runtime` list of
 `docs/evidence/qrng_seeds/allocations.json` for every retained reference that
 lacks one, and `--runtime` (run by the `tests` check) requires every qrng

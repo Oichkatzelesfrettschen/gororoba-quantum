@@ -1,0 +1,22 @@
+{
+ "schema": "anu-qrng-draw-v1",
+ "source": "https://api.quantumnumbers.anu.edu.au?length=12&type=uint16",
+ "retrieved_utc": "2026-11-19T164733Z",
+ "raw": "{\"success\": true, \"type\": \"uint16\", \"length\": \"12\", \"data\": [904, 55140, 40047, 53370, 53752, 2754, 16789, 58431, 530, 29016, 8828, 18582]}",
+ "raw_sha256": "65cd25f09b9f9006421cfb7156f008123d37c3c207b68f3ff220f7f9e5720ff1",
+ "type": "uint16",
+ "values": [
+  904,
+  55140,
+  40047,
+  53370,
+  53752,
+  2754,
+  16789,
+  58431,
+  530,
+  29016,
+  8828,
+  18582
+ ]
+}
