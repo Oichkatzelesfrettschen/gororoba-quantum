@@ -1,0 +1,20 @@
+{
+ "ideal_sha256": "54fa2382b98c5a5f2e5c4ab1016851f2f36152e04caea31d49801bdc7ceada2f",
+ "load_1min": 61.1259765625,
+ "script_sha256": "d88e38176c8002ba2191b2e111d77e3e12f4c1e47e3c445f75759b5ea8e94305",
+ "seconds": 6.6,
+ "values": {
+  "chart": [
+   "0 23 3 17"
+  ],
+  "cm": [
+   "5 23 0 23"
+  ],
+  "done": [
+   "1"
+  ],
+  "forms": [
+   "y(1),y(7),y(14),y(13)+y(15),y(4)+y(12)+y(17)"
+  ]
+ }
+}

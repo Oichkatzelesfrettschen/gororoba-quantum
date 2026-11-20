@@ -1,0 +1,20 @@
+{
+ "ideal_sha256": "54fa2382b98c5a5f2e5c4ab1016851f2f36152e04caea31d49801bdc7ceada2f",
+ "load_1min": 64.544921875,
+ "script_sha256": "df1a911c2fd32067d6c8a3e4df2c190fabd15e2602a37e0ce928d1a76f4665f4",
+ "seconds": 80.9,
+ "values": {
+  "done": [
+   "1"
+  ],
+  "linear": [
+   "0 1 1"
+  ],
+  "radical": [
+   "5 23"
+  ],
+  "radical_equal": [
+   "1"
+  ]
+ }
+}

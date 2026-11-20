@@ -1,0 +1,1 @@
+{"mutations": {"cofactor": {"bad_identities": 1, "status": "completed", "verdict": "failed"}, "generator": {"bad_identities": 42, "status": "completed", "verdict": "failed"}}, "slug": "e8-nm", "verdict": "i_equals_is", "wall_seconds": 14.1}

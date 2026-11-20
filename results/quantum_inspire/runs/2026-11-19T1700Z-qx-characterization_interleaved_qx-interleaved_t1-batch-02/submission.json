@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-11-19T17:00:51+00:00",
+ "approval": "owner chat 2026-11-19T16:42Z: ok those items are approved",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "a77616a3d461156b003009f93f3ff361c02980152a356d8c2a600787c3776157",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 5,
+ "batch_job": 960964,
+ "project": 861039,
+ "shots": 1024,
+ "jobs": [
+  {
+   "file": "t1-0-m4.cq",
+   "job": 1749490,
+   "sha256": "3169b3059c7dd5c00c992f0c9e33bbd7bc752c6759ee8358bd0531e36be1e3b3"
+  },
+  {
+   "file": "t1-m4.cq",
+   "job": 1749491,
+   "sha256": "d82b23eefe0712a4a65beadba8d980b1cadcb82003a35feae1e4de8aefc6d5b6"
+  },
+  {
+   "file": "readout-0-m4.cq",
+   "job": 1749492,
+   "sha256": "8cb298fedfd0b01f0da751f0365181e7a4940235bcbed51ceaeaf377d1411c7b"
+  }
+ ],
+ "submitted_utc": "2026-11-19T17:00:52+00:00"
+}

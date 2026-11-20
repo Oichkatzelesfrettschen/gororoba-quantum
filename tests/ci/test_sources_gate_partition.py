@@ -24,10 +24,13 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 GATE = "sources-122"
 JOIN = " || rc=1; "
-# The first process of the gate before the partition: one sweep with the two exclusions it already had.
+# The first process of the gate before the partition: one sweep with the exclusions it already had. The two
+# a5-exceptional-fibers exclusions hold retained copies of run directories (working/ and scratch-runs/), whose
+# scripts repeat module names of the tracked evidence scripts and are records, not checked code.
 SINGLE_SWEEP = (
     'MYPYPATH=docs "$PYTHON" ci/pinned_tool.py mypy --explicit-package-bases'
     " --exclude 'ibm-fez-actor-pilot/analyze[.]py$' --exclude 'a5-exceptional-fibers/working/'"
+    " --exclude 'a5-exceptional-fibers/scratch-runs/'"
     " docs/verify_sources.py docs/check_verify_sources.py docs/evidence"
 )
 SINGLE_SWEEP_COLLISIONS = {"analyze", "common", "make_kernels", "runner"}
@@ -137,9 +140,20 @@ def test_the_processes_cover_the_single_sweep_and_each_source_once() -> None:
             counted[path] += 1
     _same(sorted(swept - set(counted)), [])
     _same(sorted(path for path, count in counted.items() if count > 1), [])
-    # The sweep's own exclusions stay: the one file with its own process, and the ignored working directory.
+    # The sweep's own exclusions stay: the files with their own processes (the actor-pilot analysis and the
+    # generators of the a5 scratch-run analysis tables), and the ignored retained copies.
     extra = sorted(set(counted) - swept)
-    _same(extra, ["docs/evidence/ibm-fez-actor-pilot/analyze.py"])
+    analysis = "docs/evidence/a5-exceptional-fibers/scratch-runs/analysis/"
+    _same(
+        extra,
+        [
+            analysis + "exports_audit.py",
+            analysis + "hilbert_samuel.py",
+            analysis + "scratch_ranks.py",
+            analysis + "scratch_tables.py",
+            "docs/evidence/ibm-fez-actor-pilot/analyze.py",
+        ],
+    )
 
 
 def test_a_bare_import_in_a_separated_directory_names_its_sibling() -> None:

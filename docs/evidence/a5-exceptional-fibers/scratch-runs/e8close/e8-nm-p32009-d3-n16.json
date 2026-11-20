@@ -1,0 +1,49 @@
+{
+ "slug": "e8-nm",
+ "prime": 32009,
+ "order": 16,
+ "generators": 21,
+ "generator_order": 2,
+ "engine": "float64-batched-echelon",
+ "batch": 1024,
+ "threads": 28,
+ "rows": [
+  {
+   "degree": 1,
+   "order": 12,
+   "columns": 7371,
+   "map_nnz": 3197211,
+   "A": 6841,
+   "B": 6820,
+   "r": 21,
+   "seconds": 73.8
+  },
+  {
+   "degree": 2,
+   "order": 14,
+   "columns": 14756,
+   "map_nnz": 10508729,
+   "A": 11998,
+   "B": 11915,
+   "r": 83,
+   "seconds": 1284.8
+  },
+  {
+   "degree": 3,
+   "order": 16,
+   "columns": 27132,
+   "map_nnz": 28880029,
+   "A": 18949,
+   "B": 18724,
+   "r": 225,
+   "seconds": 2470.8
+  }
+ ],
+ "timing": {
+  "generators": 11.9,
+  "maps": 4.9,
+  "products": 299.4,
+  "echelon": 2150.5
+ },
+ "seconds": 2470.8
+}

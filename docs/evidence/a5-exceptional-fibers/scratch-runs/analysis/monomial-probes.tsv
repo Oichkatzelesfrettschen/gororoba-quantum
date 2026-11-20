@@ -1,0 +1,11 @@
+source	slug	prime	order	space	rank	single_monomial_rows	verdict
+mprobe/monomial-probe-xm-nm-p32009-n12.log	xm-nm	32009	12	I	973	973	monomial_span
+mprobe/monomial-probe-xm-nm-p32009-n12.log	xm-nm	32009	12	m_R I	958	958	monomial_span
+mprobe/monomial-probe-xm-nm-p32009-n14.log	xm-nm	32009	14	I	1788	1788	monomial_span
+mprobe/monomial-probe-xm-nm-p32009-n14.log	xm-nm	32009	14	m_R I	1773	1773	monomial_span
+mprobe/monomial-probe-xm-nm-p32029-n12.log	xm-nm	32029	12	I	973	973	monomial_span
+mprobe/monomial-probe-xm-nm-p32029-n12.log	xm-nm	32029	12	m_R I	958	958	monomial_span
+mprobe/monomial-probe-xp-np-p32009-n12.log	xp-np	32009	12	I	973	973	monomial_span
+mprobe/monomial-probe-xp-np-p32009-n12.log	xp-np	32009	12	m_R I	958	958	monomial_span
+mprobe/monomial-probe-xp-np-p32029-n12.log	xp-np	32029	12	I	973	973	monomial_span
+mprobe/monomial-probe-xp-np-p32029-n12.log	xp-np	32029	12	m_R I	958	958	monomial_span

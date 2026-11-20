@@ -1,0 +1,10 @@
+TimeoutStopUSec=10s
+RuntimeMaxUSec=25min
+MemoryHigh=infinity
+MemoryMax=infinity
+MemorySwapMax=infinity
+KillMode=control-group
+Admission UTC: 2026-11-12T19:50:46Z
+WSL MemAvailable: 55629208 KiB
+Native Windows FreePhysicalMemory: 44110436 KiB
+Planning budget: 24 GiB

@@ -1,0 +1,24 @@
+{"schema": "a5-fiber-plucker-map-v1", "family": "w8", "slug": "w8-nm", "prime": 32009, "order": 32, "base_nullity": 16, "generators": 24, "arcs_requested": 720, "arcs_with_limit": 720, "cases": {"c30": {"samples": 320, "plucker_rank": 120, "veronese_ranks": {"1": 20, "2": 120, "3": 320}, "mutation_solution_dimension": 0, "delta": 2, "solution_dimension": 1, "scalars_all_nonzero": true, "t_rank": 120, "t_sha256": "31251df5e1d5436c6a3214d36f42ddc61c1219a899ae2447200721eabdfec664", "fit_exact_on_all_samples": true, "held_out": 40, "held_out_proportional": 40, "distinct_fiber_points": 360, "verdict": "degree_2_fit_validated"}, "c20": {"samples": 320, "plucker_rank": 84, "veronese_ranks": {"1": 15, "2": 84, "3": 300}, "mutation_solution_dimension": 0, "delta": 2, "solution_dimension": 1, "scalars_all_nonzero": true, "t_rank": 84, "t_sha256": "b13291e8066d748b06d05a0fd32aa1ca4699b2b65f579d5e1c4486b122bf2f68", "fit_exact_on_all_samples": true, "held_out": 40, "held_out_proportional": 40, "distinct_fiber_points": 360, "verdict": "degree_2_fit_validated"}, "all": {"samples": 640, "plucker_rank": 156, "veronese_ranks": {"1": 24, "2": 156, "3": 600}, "mutation_solution_dimension": 0, "delta": 2, "solution_dimension": 1, "scalars_all_nonzero": true, "t_rank": 156, "t_sha256": "a7ad3b8dfa9e127bbe1cc5a2c6453561f6a3bc8b930562aa21d3448e55dd6d1b", "fit_exact_on_all_samples": true, "held_out": 80, "held_out_proportional": 80, "distinct_fiber_points": 720, "verdict": "degree_2_fit_validated"}}}
+	Command being timed: "~/a5env/bin/python docs/evidence/a5-exceptional-fibers/kernel-limits/fiber_plucker_map.py w8 --prime 32009 --fit 320 --held-out 40 --out ~/a5/fpm2/fiber-plucker-map-w8-p32009.json"
+	User time (seconds): 20896.39
+	System time (seconds): 77.50
+	Percent of CPU this job got: 1892%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 18:27.99
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1600376
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 9598050
+	Voluntary context switches: 1150
+	Involuntary context switches: 2195093
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

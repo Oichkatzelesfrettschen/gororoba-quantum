@@ -1,6 +1,6 @@
 # Case: QX twin of the Tuna-17 interleaved T1, drive-context crosstalk and q12 phase series
 
-Status: written case awaiting the owner's approval; nothing has been submitted. The twin rehearses the series of
+Status: approved by the owner on 2026-11-19 with the Tuna-17 case; submitted and collected on the QX emulator: 30 batches, 90 jobs, 92,160 shots, every run directory passes `--sanity`. Analysis: `results/quantum_inspire/characterization_interleaved_qx_analysis.json` (tail_statistic 0.0, tail_verdict `not_confirmed`, 10 usable qubits, 0 of 56 crosstalk contrasts flagged). The twin rehearses the series of
 [the Tuna-17 case](../characterization_interleaved_tuna_17/CASE.md) on the QX emulator (`QXsinglenodesimulator`, backend type 1)
 with the same circuit texts at 10 qubits, the same batch layout and the same order, before any Tuna-17 batch is submitted. Generator and checker:
 `scripts/qi_tuna17_interleaved_cases.py` (`--check results/quantum_inspire/cases` reproduces every file of this directory except this one).
@@ -25,7 +25,7 @@ platform's batch, queue and collection path, which is the part the hardware seri
 
 The same circuit texts as the Tuna-17 case at 10 qubits, in 30 provider batches of at most three circuits: 18 batches and 54 jobs for the interleaved arm
 (55,296 shots), 8 and 24 for the crosstalk arm (24,576 shots) and 4 and 12 for the phase arm (12,288 shots); 90 jobs and 92,160 shots in all. The order is the Tuna-17
-case's, from the same retained QRNG draw (`qrng_request.json` while it is pending).
+case's, from the same retained QRNG draw (`docs/evidence/anu_qrng/draw-2026-11-19T164737Z.json`, named by `qrng_request.json`).
 
 ## Expected seconds and credits
 
@@ -58,3 +58,10 @@ aggregate and the staggered comparison are exercised by the test file only.
 - Falsifier: any circuit off its noiseless law (five binomial deviations for a fringe point), a fringe offset of 0.05 rad or more, or a run directory without both records.
 - Predicted outcome: all circuits on their law, offset 0.00 within 0.018 rad, 30 run directories with both records.
 - Budget: 30 batches, 90 jobs, 92,160 shots, 289.8 s, 0 credits, against the twin of the retained series (14 jobs, 178 s measured).
+
+## Execution and wall time against the prediction
+
+Predicted: 289.8 s of execution (`prediction.json`, `total.expected_execution_seconds`).
+Measured execution: 237.866 s, the sum of the 90 job results. This sum was taken from the PR review record at the reviewed head and has not been recomputed from the raw results in this record (hypothesis until recomputed).
+Measured wall time: 1,523.864 s from the first admission to the final status trace, from the retained `admission.json` and `status-trace.json` timestamps. Submission creation to final collection measures 1,512 s.
+Deviation: execution ran 18% under the prediction (237.866 s against 289.8 s). Wall time is not comparable to the execution prediction because it includes the queue and pause waits.

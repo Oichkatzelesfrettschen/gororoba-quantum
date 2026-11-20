@@ -1,0 +1,310 @@
+{
+ "schema": "qi-tuna17-interleaved-cases-v1",
+ "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-19T164737Z.json",
+ "consumed": {
+  "interleaved_t1 blocks": [
+   0,
+   13
+  ],
+  "interleaved_t1 slots": [
+   14,
+   25
+  ],
+  "crosstalk": [
+   26,
+   48
+  ],
+  "q12_phase": [
+   49,
+   58
+  ]
+ },
+ "arms": {
+  "interleaved_t1": [
+   {
+    "circuits": [
+     "t1-0-m2.cq",
+     "t1-m2.cq",
+     "readout-0-m2.cq"
+    ],
+    "round": 0,
+    "multiplier": 2,
+    "chain_cycles": 2657
+   },
+   {
+    "circuits": [
+     "readout-0-m12.cq",
+     "t1-m12.cq",
+     "t1-0-m12.cq"
+    ],
+    "round": 0,
+    "multiplier": 12,
+    "chain_cycles": 15940
+   },
+   {
+    "circuits": [
+     "t1-0-m4.cq",
+     "t1-m4.cq",
+     "readout-0-m4.cq"
+    ],
+    "round": 0,
+    "multiplier": 4,
+    "chain_cycles": 5313
+   },
+   {
+    "circuits": [
+     "t1-0-m1.cq",
+     "t1-m1.cq",
+     "readout-0-m1.cq"
+    ],
+    "round": 0,
+    "multiplier": 1,
+    "chain_cycles": 1328
+   },
+   {
+    "circuits": [
+     "t1-m0.5.cq",
+     "readout-0-m0.5.cq",
+     "t1-0-m0.5.cq"
+    ],
+    "round": 0,
+    "multiplier": 0.5,
+    "chain_cycles": 664
+   },
+   {
+    "circuits": [
+     "t1-m8.cq",
+     "readout-0-m8.cq",
+     "t1-0-m8.cq"
+    ],
+    "round": 0,
+    "multiplier": 8,
+    "chain_cycles": 10627
+   },
+   {
+    "circuits": [
+     "t1-m1.cq",
+     "readout-0-m1.cq",
+     "t1-0-m1.cq"
+    ],
+    "round": 1,
+    "multiplier": 1,
+    "chain_cycles": 1328
+   },
+   {
+    "circuits": [
+     "t1-m4.cq",
+     "readout-0-m4.cq",
+     "t1-0-m4.cq"
+    ],
+    "round": 1,
+    "multiplier": 4,
+    "chain_cycles": 5313
+   },
+   {
+    "circuits": [
+     "readout-0-m0.5.cq",
+     "t1-0-m0.5.cq",
+     "t1-m0.5.cq"
+    ],
+    "round": 1,
+    "multiplier": 0.5,
+    "chain_cycles": 664
+   },
+   {
+    "circuits": [
+     "readout-0-m8.cq",
+     "t1-0-m8.cq",
+     "t1-m8.cq"
+    ],
+    "round": 1,
+    "multiplier": 8,
+    "chain_cycles": 10627
+   },
+   {
+    "circuits": [
+     "t1-m2.cq",
+     "readout-0-m2.cq",
+     "t1-0-m2.cq"
+    ],
+    "round": 1,
+    "multiplier": 2,
+    "chain_cycles": 2657
+   },
+   {
+    "circuits": [
+     "t1-m12.cq",
+     "t1-0-m12.cq",
+     "readout-0-m12.cq"
+    ],
+    "round": 1,
+    "multiplier": 12,
+    "chain_cycles": 15940
+   },
+   {
+    "circuits": [
+     "t1-0-m8.cq",
+     "t1-m8.cq",
+     "readout-0-m8.cq"
+    ],
+    "round": 2,
+    "multiplier": 8,
+    "chain_cycles": 10627
+   },
+   {
+    "circuits": [
+     "t1-0-m0.5.cq",
+     "t1-m0.5.cq",
+     "readout-0-m0.5.cq"
+    ],
+    "round": 2,
+    "multiplier": 0.5,
+    "chain_cycles": 664
+   },
+   {
+    "circuits": [
+     "t1-0-m12.cq",
+     "readout-0-m12.cq",
+     "t1-m12.cq"
+    ],
+    "round": 2,
+    "multiplier": 12,
+    "chain_cycles": 15940
+   },
+   {
+    "circuits": [
+     "readout-0-m2.cq",
+     "t1-0-m2.cq",
+     "t1-m2.cq"
+    ],
+    "round": 2,
+    "multiplier": 2,
+    "chain_cycles": 2657
+   },
+   {
+    "circuits": [
+     "readout-0-m1.cq",
+     "t1-0-m1.cq",
+     "t1-m1.cq"
+    ],
+    "round": 2,
+    "multiplier": 1,
+    "chain_cycles": 1328
+   },
+   {
+    "circuits": [
+     "readout-0-m4.cq",
+     "t1-0-m4.cq",
+     "t1-m4.cq"
+    ],
+    "round": 2,
+    "multiplier": 4,
+    "chain_cycles": 5313
+   }
+  ],
+  "crosstalk": [
+   {
+    "circuits": [
+     "xt-prep1-A.cq",
+     "readout-0.cq",
+     "xt-prep1-B.cq"
+    ],
+    "unit": "anchors"
+   },
+   {
+    "circuits": [
+     "xt-x90-32-B.cq",
+     "xt-x90-32-A.cq",
+     "xt-x90-32-all.cq"
+    ],
+    "unit": "x90-32"
+   },
+   {
+    "circuits": [
+     "xt-x90-128-all.cq",
+     "xt-x90-128-q1.cq",
+     "xt-x90-128-q2.cq"
+    ],
+    "unit": "pair"
+   },
+   {
+    "circuits": [
+     "xt-x90-128-A.cq",
+     "xt-x90-128-B.cq",
+     "xt-x90-128-all.cq"
+    ],
+    "unit": "x90-128"
+   },
+   {
+    "circuits": [
+     "xt-t1-1000-A.cq",
+     "xt-t1-1000-B.cq",
+     "xt-t1-1000-all.cq"
+    ],
+    "unit": "t1-1000"
+   },
+   {
+    "circuits": [
+     "xt-t1-250-all.cq",
+     "xt-t1-250-A.cq",
+     "xt-t1-250-B.cq"
+    ],
+    "unit": "t1-250"
+   },
+   {
+    "circuits": [
+     "xt-x90-256-B.cq",
+     "xt-x90-256-A.cq",
+     "xt-x90-256-all.cq"
+    ],
+    "unit": "x90-256"
+   },
+   {
+    "circuits": [
+     "xt-t1-4000-B.cq",
+     "xt-t1-4000-all.cq",
+     "xt-t1-4000-A.cq"
+    ],
+    "unit": "t1-4000"
+   }
+  ],
+  "q12_phase": [
+   {
+    "circuits": [
+     "ramsey-q9-w0-s48.cq",
+     "ramsey-q9-w0-s00.cq",
+     "ramsey-q9-w0-s24.cq"
+    ],
+    "wait_cycles": 0,
+    "triad": 0
+   },
+   {
+    "circuits": [
+     "ramsey-q9-w25-s48.cq",
+     "ramsey-q9-w25-s00.cq",
+     "ramsey-q9-w25-s24.cq"
+    ],
+    "wait_cycles": 25,
+    "triad": 0
+   },
+   {
+    "circuits": [
+     "ramsey-q9-w0-s60.cq",
+     "ramsey-q9-w0-s12.cq",
+     "ramsey-q9-w0-s36.cq"
+    ],
+    "wait_cycles": 0,
+    "triad": 1
+   },
+   {
+    "circuits": [
+     "ramsey-q9-w25-s12.cq",
+     "ramsey-q9-w25-s36.cq",
+     "ramsey-q9-w25-s60.cq"
+    ],
+    "wait_cycles": 25,
+    "triad": 1
+   }
+  ]
+ }
+}

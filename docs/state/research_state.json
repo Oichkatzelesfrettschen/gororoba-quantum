@@ -3724,6 +3724,216 @@
       "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
       "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (17 qubits)",
       "question": "On Tuna-17, do the per-qubit readout pair, the single-exponential T1 and the X90 repetition ladder of 2026-10-16 and 2026-10-17 still describe each of the 17 qubits, with an opening and a closing readout pair?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-crosstalk-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-crosstalk-batch-00",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-crosstalk-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-crosstalk-batch-01",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-crosstalk-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-crosstalk-batch-02",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-crosstalk-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-crosstalk-batch-03",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-crosstalk-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-crosstalk-batch-04",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-crosstalk-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-crosstalk-batch-05",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-crosstalk-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-crosstalk-batch-06",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-crosstalk-batch-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-crosstalk-batch-07",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-interleaved_t1-batch-00",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-interleaved_t1-batch-01",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-interleaved_t1-batch-02",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-interleaved_t1-batch-03",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-interleaved_t1-batch-04",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-interleaved_t1-batch-05",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-interleaved_t1-batch-06",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-interleaved_t1-batch-07",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-08",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-interleaved_t1-batch-08",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-09",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-interleaved_t1-batch-09",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-10",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-interleaved_t1-batch-10",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-11",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-interleaved_t1-batch-11",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-12",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-interleaved_t1-batch-12",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-13",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-interleaved_t1-batch-13",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-14",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-interleaved_t1-batch-14",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-15",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-interleaved_t1-batch-15",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-16",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-interleaved_t1-batch-16",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-17",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-interleaved_t1-batch-17",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-q12-phase-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-q12_phase-batch-00",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-q12-phase-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-q12_phase-batch-01",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-q12-phase-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-q12_phase-batch-02",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "qi-interleaved-qx-2026-11-19t1700-q12-phase-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-q12_phase-batch-03",
+      "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
+      "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
     }
   ],
   "claims": [

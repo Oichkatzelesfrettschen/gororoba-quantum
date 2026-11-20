@@ -13,4 +13,20 @@ against the source at head `eb8c234e4`; every finding holds and is fixed by narr
 
 ## Darwin measurement
 
-The hosted `arm (macos-26)` leg (run 44670995561, head 67558e856) rebuilt the four QX manifests. batch-00 differs from the stored file at `$.circuits[1].ideal[0]`: rebuilt 0.124834861469, stored 0.124844028839. The difference is 9.2e-6, a numerical difference in a circuit ideal and not a sign of zero. The signed-zero hypothesis does not explain the macOS arm64 difference; the fix removes the signed-zero hazard only. Cause open: accumulation order, transpilation or library version. Next check: the statevector of that circuit on darwin-arm64 against Linux.
+The hosted `arm (macos-26)` leg (run 44670995561, head 67558e856) rebuilt the four QX manifests. batch-00 differs from the stored file at `$.circuits[1].ideal[0]`: rebuilt 0.124834861469, stored 0.124844028839. The difference is 9.2e-6, a numerical difference in a circuit ideal and not a sign of zero. The signed-zero hypothesis does not explain the macOS arm64 difference; the fix removes the signed-zero hazard only. A diagnostic run (44672793029, head 62c282dfb) printed the compile of b0 on every leg. Both legs ran CPython 3.14.7,
+qiskit 2.6.2, numpy 2.5.4 and scipy 1.18.1 at transpiler seed 22836; the compiled circuits agree on gates 0 to 38, and
+gate 39, the rz on q1 after `cz q0,1`, reads pi/4 on macOS and -3 pi/4 on Linux. 13 of the 119 gates differ while the
+operation totals match (cz 21, rz 45, sx 49). The difference is therefore a platform-dependent compile of b0, not
+float serialization; the repository already records it as the darwin-arm64 expected failure of
+`test_b0_replay_is_byte_equal_to_the_retained_circuit`. Linux x86_64 and aarch64 agree, which leaves the macOS
+numeric identity (libm or Accelerate) rather than the architecture. hypothesis: the one-qubit resynthesis of the
+transpile picks another Euler branch there.
+
+## Fix
+
+`retained_b0` builds b0 from the pinned retained `b0.cq` of the coin series, the circuit the hardware executed,
+placed on the layout of b0's compile. The build refuses a compile whose final layout differs from the retained role
+map, a gate line outside the emitter's vocabulary, and a circuit that does not re-emit the pinned bytes. On Linux the
+retained circuit equals the compile, so the stored manifests and receipt digests keep their bytes. The transpile
+replay keeps its own test, which stays an expected failure on darwin-arm64. An integer or rational serialization is
+not adopted. The `_b0_diagnostic` probe leaves the test file with the change.

@@ -1,0 +1,28 @@
+Running as unit: e8-closure-e8-nm-write-666b0a074.service; invocation ID: e7a3e90505f94ab0a49875530e2fbca8
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 10min 56.656s
+             CPU time consumed: 40min 47.592s
+                   Memory peak: 16.5G (swap: 0B)
+STAGE_TERMINAL slug=e8-nm mode=write status=0
+Running as unit: e8-closure-e8-nm-check-666b0a074.service; invocation ID: cb3289ef156b46d6ac403b9e60f42fa3
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 1min 21.503s
+             CPU time consumed: 1min 20.903s
+                   Memory peak: 222.9M (swap: 0B)
+STAGE_TERMINAL slug=e8-nm mode=check status=0
+Running as unit: e8-closure-e8-np-write-666b0a074.service; invocation ID: ffe1351bcbe1487287754076b272251e
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 10min 54.263s
+             CPU time consumed: 40min 28.733s
+                   Memory peak: 16.3G (swap: 0B)
+STAGE_TERMINAL slug=e8-np mode=write status=0
+Running as unit: e8-closure-e8-np-check-666b0a074.service; invocation ID: c7c05839867f4ad4a76f0b9dddb5ffa2
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 1min 22.278s
+             CPU time consumed: 1min 21.736s
+                   Memory peak: 222.5M (swap: 0B)
+STAGE_TERMINAL slug=e8-np mode=check status=0

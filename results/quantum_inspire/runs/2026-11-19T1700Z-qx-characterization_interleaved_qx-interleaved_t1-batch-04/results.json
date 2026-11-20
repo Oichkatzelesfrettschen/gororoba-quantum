@@ -1,0 +1,106 @@
+{
+ "schema": "qi-collection-v1",
+ "collected_utc": "2026-11-19T17:02:27+00:00",
+ "jobs": [
+  {
+   "file": "t1-m0.5.cq",
+   "job": {
+    "id": 1749496,
+    "created_on": "2026-11-19T17:02:05.498985Z",
+    "file_id": 1760161,
+    "algorithm_type": "quantum",
+    "status": "completed",
+    "batch_job_id": 960966,
+    "queued_at": "2026-11-19T17:02:13.100520Z",
+    "finished_at": "2026-11-19T17:02:13.306503Z",
+    "number_of_shots": 1024,
+    "raw_data_enabled": true,
+    "session_id": "a221cabe-f36d-4547-ab0f-5508d468fcd7",
+    "trace_id": "",
+    "message": "",
+    "source": ""
+   },
+   "results": [
+    {
+     "id": 1710024,
+     "created_on": "2026-11-19T17:02:13.242662Z",
+     "job_id": 1749496,
+     "execution_time_in_seconds": 0.00809,
+     "shots_requested": 1024,
+     "shots_done": 1024,
+     "results": {
+      "1111111111": 1024
+     }
+    }
+   ],
+   "logs": null
+  },
+  {
+   "file": "readout-0-m0.5.cq",
+   "job": {
+    "id": 1749497,
+    "created_on": "2026-11-19T17:02:06.300555Z",
+    "file_id": 1760162,
+    "algorithm_type": "quantum",
+    "status": "completed",
+    "batch_job_id": 960966,
+    "queued_at": "2026-11-19T17:02:12.582720Z",
+    "finished_at": "2026-11-19T17:02:12.806233Z",
+    "number_of_shots": 1024,
+    "raw_data_enabled": true,
+    "session_id": "a221cabe-f36d-4547-ab0f-5508d468fcd7",
+    "trace_id": "",
+    "message": "",
+    "source": ""
+   },
+   "results": [
+    {
+     "id": 1710022,
+     "created_on": "2026-11-19T17:02:12.715130Z",
+     "job_id": 1749497,
+     "execution_time_in_seconds": 0.00353,
+     "shots_requested": 1024,
+     "shots_done": 1024,
+     "results": {
+      "0000000000": 1024
+     }
+    }
+   ],
+   "logs": null
+  },
+  {
+   "file": "t1-0-m0.5.cq",
+   "job": {
+    "id": 1749498,
+    "created_on": "2026-11-19T17:02:07.024964Z",
+    "file_id": 1760163,
+    "algorithm_type": "quantum",
+    "status": "completed",
+    "batch_job_id": 960966,
+    "queued_at": "2026-11-19T17:02:12.852434Z",
+    "finished_at": "2026-11-19T17:02:13.054396Z",
+    "number_of_shots": 1024,
+    "raw_data_enabled": true,
+    "session_id": "a221cabe-f36d-4547-ab0f-5508d468fcd7",
+    "trace_id": "",
+    "message": "",
+    "source": ""
+   },
+   "results": [
+    {
+     "id": 1710023,
+     "created_on": "2026-11-19T17:02:12.987527Z",
+     "job_id": 1749498,
+     "execution_time_in_seconds": 0.003875,
+     "shots_requested": 1024,
+     "shots_done": 1024,
+     "results": {
+      "1111111111": 1024
+     }
+    }
+   ],
+   "logs": null
+  }
+ ],
+ "transactions": []
+}

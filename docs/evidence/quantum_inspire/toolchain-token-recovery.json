@@ -1,7 +1,7 @@
 {
  "schema": "qi-toolchain-check-v1",
  "toolchain": {
-  "python": "3.13.15",
+  "python": "3.13.18",
   "libqasm": "1.2.1",
   "opensquirrel": "0.9.1"
  },
@@ -15534,6 +15534,3296 @@
    "gate_sequence_preserved": true,
    "control_changes": {},
    "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-00/xt-prep1-A.cq",
+   "sha256": "3a2e26daa1ea67a2d7b5a86fd5d3df187b2151753164cdcc5adbac1c1644422e",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "45620250d7dfee258028fe920b8157ad8d0bca66fc06977c2824d724eed642d5",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-00/readout-0.cq",
+   "sha256": "2d78d57b89ecf2b806fba508734b560ae7042f4b0c1df8cfe1dc7f519285c28c",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "d3d806c848de80581f7a2eb8a6bf133bb4ba1d7b2451826d3f244fadf08f02e2",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-00/xt-prep1-B.cq",
+   "sha256": "55ddd9522bc2be8d7aa1b5ae5bf12a649b2302c3dc3d0b09a07a423cceab2dff",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "8f50a210a83f9420b21ecd06544b1546a2b2bdccbbc1e8d165216218a6083dcf",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-01/xt-x90-32-B.cq",
+   "sha256": "d952ca4ea4e0cfee31bf2fe694b0cfb91610aaf03272e1aded8bba71a7f4f291",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "f68a0d78bd2838c72ff8d967abb82943f1cd9229c2100e6e2a82aacdd41b669a",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-01/xt-x90-32-A.cq",
+   "sha256": "ea5be05141d2b1682adae2fff72993fa9103c4a69059796a23c4439908d9486b",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "e364dfe74f7c17a09c9da435aff1c114a9c36229a3d45a14d44e2f767158506d",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-01/xt-x90-32-all.cq",
+   "sha256": "0defd2b7ba2c9a58b5115a5c221b469899cba5ef05b5f018f57f75fa51b398ec",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "6b46c4f5ddee203dec786bd326f87777edda31c9e8d6b9c7ca54766a35ad177f",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-02/xt-x90-128-all.cq",
+   "sha256": "b4b0a13a31fd85b0af089180dcb7ef37077250bb9788728776a6302414b946fb",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "04ddbb7a8d2d09c661b539455cf8efc49b3d5da8df6c9fd2e38cfb9e8291d65b",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-02/xt-x90-128-q1.cq",
+   "sha256": "25370e4138a86e94498992ec5d824cae22b828e05b00644e8390e46ab4534d33",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "0508b59a712cac0ba037914f9f6d8262f3308d68f3cdd4206b010aaf1e4de6c6",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-02/xt-x90-128-q2.cq",
+   "sha256": "c0578ae79883a30533ec6b19471294281ba7d62a04f86a2dadee239afac31aff",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "68c35717904f1d30c6093dbc8f5f2cc53dba29a07f90267c1d934bdbcd9e592a",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-03/xt-x90-128-A.cq",
+   "sha256": "721d42131b822ea61d4f9b9572baf5c04ffd0625935d03649719d0e6ef3ad9d4",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "e0a77c6f22c0241be40517476adcb74969b69df9239cbcb7e0c93c24bedd2462",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-03/xt-x90-128-B.cq",
+   "sha256": "c08d9d8b7daaebfdb27ab71a1cd62c8a973bcd4044f6aa06bd22ed2d61d17820",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "0c004befb27b9af0846585d7d43c1c1e10599883b52dad2f01aed07a69ea6262",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-03/xt-x90-128-all.cq",
+   "sha256": "b4b0a13a31fd85b0af089180dcb7ef37077250bb9788728776a6302414b946fb",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "04ddbb7a8d2d09c661b539455cf8efc49b3d5da8df6c9fd2e38cfb9e8291d65b",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-04/xt-t1-1000-A.cq",
+   "sha256": "afc7182e4bff5d97b491527f6dcf088fac9649df71d7eff6bac1ce07238747ee",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "87500dcab2e206555406d17e23417178c93c30f2e6dedfcd155820eed8885a74",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-04/xt-t1-1000-B.cq",
+   "sha256": "92babce41648fb904053b93441e752688aacc725d616be1b9a443a2bcded18b0",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "3467473237fc858762e263341344a68e134948f1273e79c87dd76c450edf7f69",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-04/xt-t1-1000-all.cq",
+   "sha256": "de838731f4e44e3e5971f02c48083f9271110f89708c329fbdc0848e82cf3a6c",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "671e1c23e6e91281b70d1dd6bd7d86a940c4b6a28896d24c8e343f1c8e9c5925",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-05/xt-t1-250-all.cq",
+   "sha256": "5a052bc1873937d096281c2d53b67b5453b6073e74e63068a742e8c0f7af2bbc",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "5c925c0ac2b0877e08e0a0429dfba34a10febb55f6b65692296b3d0071ad00cb",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-05/xt-t1-250-A.cq",
+   "sha256": "a2eae8322b3e2d9428f077f5742c77b8d2ee2a3aaa58264db58ad83d8ba02acd",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "c9ea2f0677de471555718422b1e1e9b443cb3d390530cb6b8146371fceea81df",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-05/xt-t1-250-B.cq",
+   "sha256": "6379445e7cda3a34ee51228893db77e5c826a1cd18f74f174478c95f2be71e3b",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "c171e1d883c0fe6357b7a70ee13105ce0d21bb46b74d40616cb9c59a46d4c895",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-06/xt-x90-256-B.cq",
+   "sha256": "465c54b365ae862593225e4bc138fe97a84a0aecf65a11ad15afda962cb3c477",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "77f1d3de93bc12f59ebf2ccc5364480c5eba1c487916edf64cde6f89c847617a",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-06/xt-x90-256-A.cq",
+   "sha256": "accb7b735c5a8c6f7c28c9b307df0e84fcbc7fcfed9520e1201a8e9a83596560",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "08b14a5034c698319637c76b51b5d114c832472f22f892c5b98b33e08fce4af9",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-06/xt-x90-256-all.cq",
+   "sha256": "e1804168c84c5e1f3cbccb04a8c3265327f44a2073d2bb6ba0a87b045fb821a2",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "33cd2a630cf617b9a82ab0ed7c416239cae5c15946c3092554d7e3ee29e1e407",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-07/xt-t1-4000-B.cq",
+   "sha256": "53a052c56465e60518751cd842883d4063b8c4f5f4d9b8c6096ee8a7446cf5f2",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "3f62596ad2316b173418e49594dc17f26ddbf1c92111debf241bb046a99b3ce6",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-07/xt-t1-4000-all.cq",
+   "sha256": "c14ba6085ff70cdef28c5d893f90494714b8496cd633a2bb4ed2eb2fff877f1c",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "b92df7c9ad9916b05a5497d8796eac9dd5aae78d6d3318140cfd189b7bf734b9",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/crosstalk/batch-07/xt-t1-4000-A.cq",
+   "sha256": "131121eb690c02204528a9dfca40e23eb9f50e5d8fa170a6ed8de5bcccd6f26e",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "7f0a2f89ab9bf30f84966b1bebc268b1dc018315b2e58d7cf5a23358a7773348",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-00/t1-0-m2.cq",
+   "sha256": "e65210bea4c77c6cf91e438f9a19933f75e8d5ed23c3bded6eccafacf7b2feca",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "dad08d9e831c9cf30dbc6526019cd14b30dc90cd432c7eaf726d4568198e1e60",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-00/t1-m2.cq",
+   "sha256": "6fbc8a2b5841ed521e4bb7c70dff3a3dded03a006f81ced09e06b76e5cdfdfdd",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "a97c41700a2d124855946ed878f5a39d2f34b14da380eb705c88fa55a3a10fe6",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-00/readout-0-m2.cq",
+   "sha256": "0da676b37750d5c904a946067e489327d55ea148a9f37ab7609220b9020cdbf8",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "48c3a3513ed31cd9fc53bf24d56981c608e2831e50a39ea8622c09265d7c3104",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-01/readout-0-m12.cq",
+   "sha256": "1b4c02fb4f793b672e0dccf5359bcb9d78148aef64d1c8a2af3dba9627e918b0",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "4013798ba74d77b52083deab13a71cf1d855c745b71f79a7e0f52e856534ba70",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-01/t1-m12.cq",
+   "sha256": "7cfaab8e37b2be4db656ce1642d6acf48e6790889056c540216029976193f46b",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "f0e48bf4320401eab3abca3b8a3f832a9439b103b3e2bf8017caa4f70a8f1943",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-01/t1-0-m12.cq",
+   "sha256": "bb1b343f4ab35a28d2ac269b09f2ddc0024422fd5189cd28149a871bbb03b71a",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "648720d57cc74d95be1baf91570e29819333138a5826d307c24c691298f30138",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-02/t1-0-m4.cq",
+   "sha256": "3169b3059c7dd5c00c992f0c9e33bbd7bc752c6759ee8358bd0531e36be1e3b3",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "6aa49d1dec6627db117885a1677e20376c7cbf9a18c15867972f4b1231886ecf",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-02/t1-m4.cq",
+   "sha256": "d82b23eefe0712a4a65beadba8d980b1cadcb82003a35feae1e4de8aefc6d5b6",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "646ffcf1659cde2ffe87d84c9cd0309c7e6566387b203dde7d4b4952bbc3e1eb",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-02/readout-0-m4.cq",
+   "sha256": "8cb298fedfd0b01f0da751f0365181e7a4940235bcbed51ceaeaf377d1411c7b",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "d2d411a08afa940c1f1574ebd7adb45bb6505fbab2030e609a831951a6617eb5",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-03/t1-0-m1.cq",
+   "sha256": "89ee88bfe915c6d377971251f3bf4c9b8ad675c6cd046cff154f429347499dd6",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "55f8f7d26c362a653992205d904712457134f0bd33d7774ca70dd2766028c649",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-03/t1-m1.cq",
+   "sha256": "37ca1a304c6ba8bd9d65cdb02bbc8cb69ff412d6c6b6557fb52b1c56d4d81017",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "50a1f0455efc3e753f44755e9f17c914995ea08954017bc30db937804c661776",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-03/readout-0-m1.cq",
+   "sha256": "ff50ee842f56048fc00e59d01bcd4bf39a99e802503a7e7a8cd56a393d55ac8a",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "92fa7289512ddaff33b6a6801b4816ea9c19ec46a533f40c07ee47bce4ff8078",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-04/t1-m0.5.cq",
+   "sha256": "6993c263282cfcc3912bcac1c25050cd51de492c069c0553ad32182e9abe6119",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "ac253eac369d481c80de8e17153006b650044334adfe3d6f00373e894d48351c",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-04/readout-0-m0.5.cq",
+   "sha256": "9b067941665e7d360f231fb4b6c162f3844487cc5cf2fe6efe56f8f4709b6471",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "fae24c4cc750821130ede11edfbbcfbf68051f90eab9642c6fd1c74ee1ea0bd4",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-04/t1-0-m0.5.cq",
+   "sha256": "de5ea83f0cd26939e383000628df8da6908226edcb49766a597bb2858d45ac39",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "7e80b635aa7c387ad0285bfb7be7b71f80b228f46b0126439f832c9c13f33b2d",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-05/t1-m8.cq",
+   "sha256": "33b258c8ee8be19b25a877da3560b4a65a08e850a7c2e5babd01b5d1f40f5305",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "77b928cc9de57d51f088566349cbebb8a3f02278db18301bed6af8bc4b0fe048",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-05/readout-0-m8.cq",
+   "sha256": "0c17987d01f4471808c18195d8d332757a1cf7ab3c4b707a95fb1e1f9bddc0cc",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "0d786a5d93ab5ff22285577f4166af74d287bac89c3425f0ba088ef36e59efbe",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-05/t1-0-m8.cq",
+   "sha256": "353d6dafc368341b1140ad65f379a8fceb8c05f7b88ad8f1cbbe9458ae8de20a",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "fb4c431e618385fca197c5728869bfd155f70f241dcec741948ee687cde6056d",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-06/t1-m1.cq",
+   "sha256": "37ca1a304c6ba8bd9d65cdb02bbc8cb69ff412d6c6b6557fb52b1c56d4d81017",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "50a1f0455efc3e753f44755e9f17c914995ea08954017bc30db937804c661776",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-06/readout-0-m1.cq",
+   "sha256": "ff50ee842f56048fc00e59d01bcd4bf39a99e802503a7e7a8cd56a393d55ac8a",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "92fa7289512ddaff33b6a6801b4816ea9c19ec46a533f40c07ee47bce4ff8078",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-06/t1-0-m1.cq",
+   "sha256": "89ee88bfe915c6d377971251f3bf4c9b8ad675c6cd046cff154f429347499dd6",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "55f8f7d26c362a653992205d904712457134f0bd33d7774ca70dd2766028c649",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-07/t1-m4.cq",
+   "sha256": "d82b23eefe0712a4a65beadba8d980b1cadcb82003a35feae1e4de8aefc6d5b6",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "646ffcf1659cde2ffe87d84c9cd0309c7e6566387b203dde7d4b4952bbc3e1eb",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-07/readout-0-m4.cq",
+   "sha256": "8cb298fedfd0b01f0da751f0365181e7a4940235bcbed51ceaeaf377d1411c7b",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "d2d411a08afa940c1f1574ebd7adb45bb6505fbab2030e609a831951a6617eb5",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-07/t1-0-m4.cq",
+   "sha256": "3169b3059c7dd5c00c992f0c9e33bbd7bc752c6759ee8358bd0531e36be1e3b3",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "6aa49d1dec6627db117885a1677e20376c7cbf9a18c15867972f4b1231886ecf",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-08/readout-0-m0.5.cq",
+   "sha256": "9b067941665e7d360f231fb4b6c162f3844487cc5cf2fe6efe56f8f4709b6471",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "fae24c4cc750821130ede11edfbbcfbf68051f90eab9642c6fd1c74ee1ea0bd4",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-08/t1-0-m0.5.cq",
+   "sha256": "de5ea83f0cd26939e383000628df8da6908226edcb49766a597bb2858d45ac39",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "7e80b635aa7c387ad0285bfb7be7b71f80b228f46b0126439f832c9c13f33b2d",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-08/t1-m0.5.cq",
+   "sha256": "6993c263282cfcc3912bcac1c25050cd51de492c069c0553ad32182e9abe6119",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "ac253eac369d481c80de8e17153006b650044334adfe3d6f00373e894d48351c",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-09/readout-0-m8.cq",
+   "sha256": "0c17987d01f4471808c18195d8d332757a1cf7ab3c4b707a95fb1e1f9bddc0cc",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "0d786a5d93ab5ff22285577f4166af74d287bac89c3425f0ba088ef36e59efbe",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-09/t1-0-m8.cq",
+   "sha256": "353d6dafc368341b1140ad65f379a8fceb8c05f7b88ad8f1cbbe9458ae8de20a",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "fb4c431e618385fca197c5728869bfd155f70f241dcec741948ee687cde6056d",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-09/t1-m8.cq",
+   "sha256": "33b258c8ee8be19b25a877da3560b4a65a08e850a7c2e5babd01b5d1f40f5305",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "77b928cc9de57d51f088566349cbebb8a3f02278db18301bed6af8bc4b0fe048",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-10/t1-m2.cq",
+   "sha256": "6fbc8a2b5841ed521e4bb7c70dff3a3dded03a006f81ced09e06b76e5cdfdfdd",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "a97c41700a2d124855946ed878f5a39d2f34b14da380eb705c88fa55a3a10fe6",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-10/readout-0-m2.cq",
+   "sha256": "0da676b37750d5c904a946067e489327d55ea148a9f37ab7609220b9020cdbf8",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "48c3a3513ed31cd9fc53bf24d56981c608e2831e50a39ea8622c09265d7c3104",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-10/t1-0-m2.cq",
+   "sha256": "e65210bea4c77c6cf91e438f9a19933f75e8d5ed23c3bded6eccafacf7b2feca",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "dad08d9e831c9cf30dbc6526019cd14b30dc90cd432c7eaf726d4568198e1e60",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-11/t1-m12.cq",
+   "sha256": "7cfaab8e37b2be4db656ce1642d6acf48e6790889056c540216029976193f46b",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "f0e48bf4320401eab3abca3b8a3f832a9439b103b3e2bf8017caa4f70a8f1943",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-11/t1-0-m12.cq",
+   "sha256": "bb1b343f4ab35a28d2ac269b09f2ddc0024422fd5189cd28149a871bbb03b71a",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "648720d57cc74d95be1baf91570e29819333138a5826d307c24c691298f30138",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-11/readout-0-m12.cq",
+   "sha256": "1b4c02fb4f793b672e0dccf5359bcb9d78148aef64d1c8a2af3dba9627e918b0",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "4013798ba74d77b52083deab13a71cf1d855c745b71f79a7e0f52e856534ba70",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-12/t1-0-m8.cq",
+   "sha256": "353d6dafc368341b1140ad65f379a8fceb8c05f7b88ad8f1cbbe9458ae8de20a",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "fb4c431e618385fca197c5728869bfd155f70f241dcec741948ee687cde6056d",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-12/t1-m8.cq",
+   "sha256": "33b258c8ee8be19b25a877da3560b4a65a08e850a7c2e5babd01b5d1f40f5305",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "77b928cc9de57d51f088566349cbebb8a3f02278db18301bed6af8bc4b0fe048",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-12/readout-0-m8.cq",
+   "sha256": "0c17987d01f4471808c18195d8d332757a1cf7ab3c4b707a95fb1e1f9bddc0cc",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "0d786a5d93ab5ff22285577f4166af74d287bac89c3425f0ba088ef36e59efbe",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-13/t1-0-m0.5.cq",
+   "sha256": "de5ea83f0cd26939e383000628df8da6908226edcb49766a597bb2858d45ac39",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "7e80b635aa7c387ad0285bfb7be7b71f80b228f46b0126439f832c9c13f33b2d",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-13/t1-m0.5.cq",
+   "sha256": "6993c263282cfcc3912bcac1c25050cd51de492c069c0553ad32182e9abe6119",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "ac253eac369d481c80de8e17153006b650044334adfe3d6f00373e894d48351c",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-13/readout-0-m0.5.cq",
+   "sha256": "9b067941665e7d360f231fb4b6c162f3844487cc5cf2fe6efe56f8f4709b6471",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "fae24c4cc750821130ede11edfbbcfbf68051f90eab9642c6fd1c74ee1ea0bd4",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-14/t1-0-m12.cq",
+   "sha256": "bb1b343f4ab35a28d2ac269b09f2ddc0024422fd5189cd28149a871bbb03b71a",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "648720d57cc74d95be1baf91570e29819333138a5826d307c24c691298f30138",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-14/readout-0-m12.cq",
+   "sha256": "1b4c02fb4f793b672e0dccf5359bcb9d78148aef64d1c8a2af3dba9627e918b0",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "4013798ba74d77b52083deab13a71cf1d855c745b71f79a7e0f52e856534ba70",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-14/t1-m12.cq",
+   "sha256": "7cfaab8e37b2be4db656ce1642d6acf48e6790889056c540216029976193f46b",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "f0e48bf4320401eab3abca3b8a3f832a9439b103b3e2bf8017caa4f70a8f1943",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-15/readout-0-m2.cq",
+   "sha256": "0da676b37750d5c904a946067e489327d55ea148a9f37ab7609220b9020cdbf8",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "48c3a3513ed31cd9fc53bf24d56981c608e2831e50a39ea8622c09265d7c3104",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-15/t1-0-m2.cq",
+   "sha256": "e65210bea4c77c6cf91e438f9a19933f75e8d5ed23c3bded6eccafacf7b2feca",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "dad08d9e831c9cf30dbc6526019cd14b30dc90cd432c7eaf726d4568198e1e60",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-15/t1-m2.cq",
+   "sha256": "6fbc8a2b5841ed521e4bb7c70dff3a3dded03a006f81ced09e06b76e5cdfdfdd",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "a97c41700a2d124855946ed878f5a39d2f34b14da380eb705c88fa55a3a10fe6",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-16/readout-0-m1.cq",
+   "sha256": "ff50ee842f56048fc00e59d01bcd4bf39a99e802503a7e7a8cd56a393d55ac8a",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "92fa7289512ddaff33b6a6801b4816ea9c19ec46a533f40c07ee47bce4ff8078",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-16/t1-0-m1.cq",
+   "sha256": "89ee88bfe915c6d377971251f3bf4c9b8ad675c6cd046cff154f429347499dd6",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "55f8f7d26c362a653992205d904712457134f0bd33d7774ca70dd2766028c649",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-16/t1-m1.cq",
+   "sha256": "37ca1a304c6ba8bd9d65cdb02bbc8cb69ff412d6c6b6557fb52b1c56d4d81017",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "50a1f0455efc3e753f44755e9f17c914995ea08954017bc30db937804c661776",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-17/readout-0-m4.cq",
+   "sha256": "8cb298fedfd0b01f0da751f0365181e7a4940235bcbed51ceaeaf377d1411c7b",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "d2d411a08afa940c1f1574ebd7adb45bb6505fbab2030e609a831951a6617eb5",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-17/t1-0-m4.cq",
+   "sha256": "3169b3059c7dd5c00c992f0c9e33bbd7bc752c6759ee8358bd0531e36be1e3b3",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "6aa49d1dec6627db117885a1677e20376c7cbf9a18c15867972f4b1231886ecf",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/interleaved_t1/batch-17/t1-m4.cq",
+   "sha256": "d82b23eefe0712a4a65beadba8d980b1cadcb82003a35feae1e4de8aefc6d5b6",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "646ffcf1659cde2ffe87d84c9cd0309c7e6566387b203dde7d4b4952bbc3e1eb",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/q12_phase/batch-00/ramsey-q9-w0-s48.cq",
+   "sha256": "e83607fce1ffd07a5a21270c344c0982ca789bbea2757d973b1336b2373acd9f",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "0673c8b419822cbf8dd174f08cc9ca1004f61d5ae1d764ef3f38260eb0b9b434",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "9": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(4.1887902047863905)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.0943951)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/q12_phase/batch-00/ramsey-q9-w0-s00.cq",
+   "sha256": "87d3c88f9da678465fb0ee39710d4ae78d7a4d5e61b1e13342b8224f38a17397",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "11ca1ae9053078e5950b0fae6f46d16167cf4d4026e91a67f4a38b9391941dfd",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/q12_phase/batch-00/ramsey-q9-w0-s24.cq",
+   "sha256": "21b6b9ada28194007e89e5b63adae093be734879448cab71482e03edeac1bb98",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "3c3ca1814522fedeac058f8230968184f6270e6dd3a78e9aa3087e818ac9cf47",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "9": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(2.0943951023931953)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(2.0943951)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/q12_phase/batch-01/ramsey-q9-w25-s48.cq",
+   "sha256": "316763ee14992b820ceba9a5df6a491d8aac611ca4a39e37ba3768dda8b3c0d5",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "3a3c2df28278c110a29adb7b5f733c6b769cd3933e2eef446686118a65b4b497",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "9": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(4.1887902047863905)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.0943951)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/q12_phase/batch-01/ramsey-q9-w25-s00.cq",
+   "sha256": "33b0f663fdcfe03e9e759a85f4008e911e740b606c0f4cd690596482d4f56d39",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "8cf282c28d5f838866269b3b299946a5eb1f0b3b65a7ced6c39cca3cd80a75d6",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/q12_phase/batch-01/ramsey-q9-w25-s24.cq",
+   "sha256": "a78be24c0386b8755be02840913581a6f1e11d287b026ea5dabdcbba29e22322",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "7c4dd88334ed9a1f70fdd31d36e77f0e32b42a01c65886b6531dc49b7dc226a6",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "9": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(2.0943951023931953)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(2.0943951)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/q12_phase/batch-02/ramsey-q9-w0-s60.cq",
+   "sha256": "730fada080f43a39e0d8dbeb234920bd00967b21361084fa60c4261129aa713f",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "126f8775abca948e7ae0882e8a270be7124b7644595be8f099bda67e52065554",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "9": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(5.235987755982988)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.0471976)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/q12_phase/batch-02/ramsey-q9-w0-s12.cq",
+   "sha256": "594b09d408bb9b815117b3955371650ae25d88af758ae8e59276460a21c4ecdf",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "a9f280b3cfb5cf8b1481e4a76767b5940b73a6987421af680fdc0321d54a99bf",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "9": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.0471975511965976)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.0471976)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/q12_phase/batch-02/ramsey-q9-w0-s36.cq",
+   "sha256": "7ac7f75683df699759572c5fa52bbb98352d9fb7dceb654b93dc733ce07054ce",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "2e6bdf63eb04fea354caf90717589d0c645587bf5dbca644e60b2370a5ecb0c8",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "9": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/q12_phase/batch-03/ramsey-q9-w25-s12.cq",
+   "sha256": "01e90abb4859bd533bc4fb7aa5e7698ce9b0c8602af7e8543b0660da71e260c8",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "467b8c6ea2f16687d875881423d932dfe25c6156b533c922f1aafb96fb25faa1",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "9": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.0471975511965976)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.0471976)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/q12_phase/batch-03/ramsey-q9-w25-s36.cq",
+   "sha256": "5ff5d9534a3e1b805aad390ab05d4b7fda833d92cee17625b585c994cb33a061",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "782ce5d20dfce6bb43cf12452938e1d460d992b0b81f44fb517db4c46e0bba41",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "9": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_qx/q12_phase/batch-03/ramsey-q9-w25-s60.cq",
+   "sha256": "fda959d8bb6962ec58c7fecbab5252f965bab32b4bc7496846e1489a0e1aceff",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "fd8e6824136e2eb03de394d6d0eeb73313d7a8e36728f9b292c31d5c59d9f4ff",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "9": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(5.235987755982988)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.0471976)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-00/xt-prep1-A.cq",
+   "sha256": "a908338d87a5a1b659d1475949c97171cf085015535f8633d4f16ac709d1d64d",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "2dd0e1bff5e69ce3e9b397e2dd525f5c553c063367a3f536e19e705994bd8a17",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-00/readout-0.cq",
+   "sha256": "a36928ee64d24ae0e45618bfb9192a49f1d6993a9b320bae474cd5ea7a75a74d",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "b9f6522943487823c55f09c907d3b3fbfbb9c2cf628f9a5cda94f990975ebe87",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-00/xt-prep1-B.cq",
+   "sha256": "2e9a3ed9ce5dd197c4bee920ab91b4cc1ad830227f5e428a22f2db4d08a5fc90",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "884faab7c76007341862185f19990ff5349ab79cab5b3dd794c37932260bec82",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-01/xt-x90-32-B.cq",
+   "sha256": "dbeff3d77a19ae7184edc9799c096b088087caa8e12a26f0d46219f0bfd44e16",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "3b0a9191d0dbb5864bfcb353408b2ccbed8a82b412f9f65f1f3fbb25f40910bf",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-01/xt-x90-32-A.cq",
+   "sha256": "76b18cf0e8b22ec160f044f6e20774ff309b1af3625fd9fdd628fbaa0d3a5f96",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "a000579a432d104fc1af55c478557b76a67fcf8a595d9baa5efb4dfc366166ff",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-01/xt-x90-32-all.cq",
+   "sha256": "aa427d12309279afb370d1b204933534fb845f0104d3d543f357cd424d3629de",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "295cdb7e8f56ff4966f61795eb4cb587e7457038f667b988ed935d7892d18472",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-02/xt-x90-128-all.cq",
+   "sha256": "846ee4473784407ee28bc85b0f576c5a16e2bdc6b943522286a32e90a05d4b1b",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "c2aa59c17952addc431ab8a455d9676d37eef2b667e7ea16f3cc3a30ff9f86b9",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-02/xt-x90-128-q1.cq",
+   "sha256": "bac8a11e7e5637886bdf2079c43973eeaf868e37c5813aeeed3068532c342b45",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "d28f5e3d7998f6e87e5f8af268a5e1f051419c1c13b491135591fb4efdb68fc4",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-02/xt-x90-128-q2.cq",
+   "sha256": "c49e75b81ae14b540ebac909b7f2275a4359e1f1b42f855ba8ea7b0d30bd947e",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "1838115383061931a629a941393aab5f628065b6a9b4f6d04df814eff71d4312",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-03/xt-x90-128-A.cq",
+   "sha256": "ae9ec89f0ed362351fa10f581d786e7c8a806e1c3d6648957b7c2e1b9391db3d",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "59079431e734177f873237b5222b3064d5827d4e6271dbd3fd0d98d15ecd2fd6",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-03/xt-x90-128-B.cq",
+   "sha256": "08ac883c08e90251ac935c5c8379d54c12fbf5722785ad49faa3137272c0cfc5",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "720531aeb5d41a69bf8c90d9c0e5cab0c672216d55089e78727853c4ea8e510f",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-03/xt-x90-128-all.cq",
+   "sha256": "846ee4473784407ee28bc85b0f576c5a16e2bdc6b943522286a32e90a05d4b1b",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "c2aa59c17952addc431ab8a455d9676d37eef2b667e7ea16f3cc3a30ff9f86b9",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-04/xt-t1-1000-A.cq",
+   "sha256": "fab8981294e9be364800f79fea1df43d2e41350246c55fc78276584c50700fac",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "8f8d969f6d2bc2dce73ae5567382bd02e2e6e05c06bfc762f4a65e70e9d15393",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-04/xt-t1-1000-B.cq",
+   "sha256": "12b23b01cca7289aabf6f784cb9cd1cc6f2046b2f33d2854b2da09c1c6fc0a39",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "8b738cd133eee5ad9cda10286b9d4a5c5513aac2de4b020cc3332a431fe6331e",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-04/xt-t1-1000-all.cq",
+   "sha256": "eaab1c5b954a8d5f05552525fa3f8dbd59eac023344634a051c679659bb96a8a",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "4d955d9c300d95f2c9fcf9cc45e0eaa2869559e471cb509468bac26df5e1e61b",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-05/xt-t1-250-all.cq",
+   "sha256": "e7935bf6cbc0eca646bfc3e887f9e7bf0cdc6276ee310734bafd660dbff628ce",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "cfba885c514784642dc6aed9157975b8e756950f26512eb7ce4459645de742d8",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-05/xt-t1-250-A.cq",
+   "sha256": "d4856256626f59adf92992b7006a172e7bbc6ccde9eea3a66917876c203cf5f2",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "314255c07ae81043fb09c8e7a8b03b7c95de11046380f050cbbb733352a5007b",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-05/xt-t1-250-B.cq",
+   "sha256": "62f7d1541bbca57693df78788d77409b9d0cbdcf4ffd8dbf8db26cf9a6af210f",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "831077e75c0176254dd8a555a584ab66a2715e86648e70f3c7c5a9dd3c48436f",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-06/xt-x90-256-B.cq",
+   "sha256": "143d49424d8fc5a3fd20e4a1b950e0fda2a4088f16d7289198419bd7fa18bb11",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "5b6922a84282d13203b1b4c44c7d29959d7752c709ddad280357abbb65022540",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-06/xt-x90-256-A.cq",
+   "sha256": "03f41c37ee742b66432807bf8df17d4e73f2738150352614ad32fec958cdae16",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "bb9c4f3354b3a4984835e35efe58f53ee38758a736cfcbc51add1df9646bf221",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-06/xt-x90-256-all.cq",
+   "sha256": "54b9f30a2d419ab1328a6649f1124e79c6d089d43058fc4212813cb58abd9cd6",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "b9aa5074c90f94fcada362d3f952ca535a632b0b635202b0fa58080962d76acb",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-07/xt-t1-4000-B.cq",
+   "sha256": "3520195e654d85a969d85518d475b811f5bba8a48f294455ab501d337441a03f",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "3bda28d62c41ec2ae8ea73f428c5939a494c650529f177d791a83b6b15ed1d45",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-07/xt-t1-4000-all.cq",
+   "sha256": "afea9c5c0143ccf57d196e86d3b6450f3a6412c2ce34d58a3179761afbb83bc7",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "0810d52de226b2e8ffff4182264be368314a28f5f3517edcbdc7b07c7049535e",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/crosstalk/batch-07/xt-t1-4000-A.cq",
+   "sha256": "24b054d32f067392c81fb0bb8fe68e8d85fb72cc3707fe13f0f7d886606097f8",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "61cbcf496bd8df3a9ac5199928f79634f6cb29c06daaac85b8870111e2323951",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-00/t1-0-m2.cq",
+   "sha256": "25c9bc4424b9af5e6d10dc150a1900f09cc98fcb43c3480bf9215430311ad208",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "987552b6e6814cebcdc2b9a973d5b6f3718192b41d577dde94e7661e16b49c5c",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-00/t1-m2.cq",
+   "sha256": "03f4bf65d9f06e17c6b27c46ce21878274ff407a2202265cc97e28693dda4b05",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "bb042d4849f4a5d6d861367e098e22ddac65782851ee4bbf9a7a9693f909294e",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-00/readout-0-m2.cq",
+   "sha256": "dc2ae65f829fc47fe57b2b8e58515578ebc76f8e5e738354a5b30e00ef2bbd73",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "d95a3b34241732e0e4497dd0b69785d8d6e78b8678439f65a6132780ea98934d",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-01/readout-0-m12.cq",
+   "sha256": "033a9c3a5db000fba768cad18401d21be421dcc4e71f82174ff6957895230987",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "df4b1ee43e311fc4a52f4882cac8235b9dc19b94a385ad869c05779fc3a480e6",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-01/t1-m12.cq",
+   "sha256": "a88822d2b5394132625efb0c135137ca9cc522b6103f430c150e313514a58b17",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "ce84dae56a1a2608c0cf0a174f254cde514afd7704e5a892f29d04ac5c47e5c4",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-01/t1-0-m12.cq",
+   "sha256": "13c562b7b46235035806cb953671699af85d4846bee846b199a67e87bd356ceb",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "52b0ee938899fde8cbf7d690d51b8eb422ab4171d99244806ade6b7740146f0c",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-02/t1-0-m4.cq",
+   "sha256": "a2235c7c969430394f3e9400c3fba8893c2c621190fcf6422de2b8f16a94f3c2",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "3a833c406c37e3a1a110970838fb0b9baafa6bf81881d9f7a28d27b67794dac7",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-02/t1-m4.cq",
+   "sha256": "b984db9a2d0f7e77cf7e78be309e20774b7cfdefe57bc3f727cd2a2d23472f05",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "b7c448527cff0593609e5cdd2845878684481101b42c35881394ab99c330e956",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-02/readout-0-m4.cq",
+   "sha256": "026e2d6c4c8418a365456327997eaeb32cee6f911b5c8d9c233b14a6f5d0a4ed",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "1f228e82113feb303df6733b259f1ad38aa0a0754acf8b16a8e1f856900fbe6b",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-03/t1-0-m1.cq",
+   "sha256": "7617ba76fc4cc5e33b29da49f41b29f27e797b87d40e6c1e8b15dfa934f120c9",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "2789d2b78034d8989078120f091791f819be2b708d5ea081935620ae32c4fe90",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-03/t1-m1.cq",
+   "sha256": "16ea4ee9d80e044176bf597b9e1523e157a881a416d220b5aa2086fe4bf48a54",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "00d27905256c0c188ecdebd22dea70def549c625803e02f133b11747e226150c",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-03/readout-0-m1.cq",
+   "sha256": "9183980b7cd103244b2057be301a8068eb27a4a7d2de11abcfc205486eefe811",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "332e1d581b0179bef920fa9d6e9f989b8d54095fe5bcb587b6a073f8134ef840",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-04/t1-m0.5.cq",
+   "sha256": "2cac0545536ad9e631a6294e197894fdc6a77832ab8b5d21af2965ba4c9bec3f",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "9234e8615c7badb41bd691b930cc99b0ac909905df7d7bcff31f1f124495f058",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-04/readout-0-m0.5.cq",
+   "sha256": "e14b3ea618a17ea517252278eabd935a63177722441683d32e4c05dd03929d24",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "e2d14f7a6ac7d1115d521954415cd041379b09b7489af0e5d16909d13ef75403",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-04/t1-0-m0.5.cq",
+   "sha256": "79284de25fea4b1b5afc5d95316975f9a5b2d60bed871a3836e622ecb0698dc9",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "8545705d0311a58149db4084e94953e28975669682132b9d176d68533b768ced",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-05/t1-m8.cq",
+   "sha256": "60f9ca685e9a68b1fef353b93b9010fce224c812bd376e4560c262faf911f3ef",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "aeb318a03dce9bd8169bd5d533bb25c025ebd810c57f44a2d379ff506104a32c",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-05/readout-0-m8.cq",
+   "sha256": "721a1df5768baab342b8ffb5f4612c05cdd98de9ea3c324353f7ee4ab39a49f5",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "c71e9587e050024c0528c43406fa86ea461d7f4ac97c6f3abc380354f90b67ef",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-05/t1-0-m8.cq",
+   "sha256": "9f2d2eb87bad2d27ecd178262985168afa5019893f98c6e700abc95e83414816",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "94230e5ff5c76c90df3c258c0fb28c62e2b9404ac7ccfad148d359ba625992c1",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-06/t1-m1.cq",
+   "sha256": "16ea4ee9d80e044176bf597b9e1523e157a881a416d220b5aa2086fe4bf48a54",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "00d27905256c0c188ecdebd22dea70def549c625803e02f133b11747e226150c",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-06/readout-0-m1.cq",
+   "sha256": "9183980b7cd103244b2057be301a8068eb27a4a7d2de11abcfc205486eefe811",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "332e1d581b0179bef920fa9d6e9f989b8d54095fe5bcb587b6a073f8134ef840",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-06/t1-0-m1.cq",
+   "sha256": "7617ba76fc4cc5e33b29da49f41b29f27e797b87d40e6c1e8b15dfa934f120c9",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "2789d2b78034d8989078120f091791f819be2b708d5ea081935620ae32c4fe90",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-07/t1-m4.cq",
+   "sha256": "b984db9a2d0f7e77cf7e78be309e20774b7cfdefe57bc3f727cd2a2d23472f05",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "b7c448527cff0593609e5cdd2845878684481101b42c35881394ab99c330e956",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-07/readout-0-m4.cq",
+   "sha256": "026e2d6c4c8418a365456327997eaeb32cee6f911b5c8d9c233b14a6f5d0a4ed",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "1f228e82113feb303df6733b259f1ad38aa0a0754acf8b16a8e1f856900fbe6b",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-07/t1-0-m4.cq",
+   "sha256": "a2235c7c969430394f3e9400c3fba8893c2c621190fcf6422de2b8f16a94f3c2",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "3a833c406c37e3a1a110970838fb0b9baafa6bf81881d9f7a28d27b67794dac7",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-08/readout-0-m0.5.cq",
+   "sha256": "e14b3ea618a17ea517252278eabd935a63177722441683d32e4c05dd03929d24",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "e2d14f7a6ac7d1115d521954415cd041379b09b7489af0e5d16909d13ef75403",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-08/t1-0-m0.5.cq",
+   "sha256": "79284de25fea4b1b5afc5d95316975f9a5b2d60bed871a3836e622ecb0698dc9",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "8545705d0311a58149db4084e94953e28975669682132b9d176d68533b768ced",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-08/t1-m0.5.cq",
+   "sha256": "2cac0545536ad9e631a6294e197894fdc6a77832ab8b5d21af2965ba4c9bec3f",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "9234e8615c7badb41bd691b930cc99b0ac909905df7d7bcff31f1f124495f058",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-09/readout-0-m8.cq",
+   "sha256": "721a1df5768baab342b8ffb5f4612c05cdd98de9ea3c324353f7ee4ab39a49f5",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "c71e9587e050024c0528c43406fa86ea461d7f4ac97c6f3abc380354f90b67ef",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-09/t1-0-m8.cq",
+   "sha256": "9f2d2eb87bad2d27ecd178262985168afa5019893f98c6e700abc95e83414816",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "94230e5ff5c76c90df3c258c0fb28c62e2b9404ac7ccfad148d359ba625992c1",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-09/t1-m8.cq",
+   "sha256": "60f9ca685e9a68b1fef353b93b9010fce224c812bd376e4560c262faf911f3ef",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "aeb318a03dce9bd8169bd5d533bb25c025ebd810c57f44a2d379ff506104a32c",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-10/t1-m2.cq",
+   "sha256": "03f4bf65d9f06e17c6b27c46ce21878274ff407a2202265cc97e28693dda4b05",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "bb042d4849f4a5d6d861367e098e22ddac65782851ee4bbf9a7a9693f909294e",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-10/readout-0-m2.cq",
+   "sha256": "dc2ae65f829fc47fe57b2b8e58515578ebc76f8e5e738354a5b30e00ef2bbd73",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "d95a3b34241732e0e4497dd0b69785d8d6e78b8678439f65a6132780ea98934d",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-10/t1-0-m2.cq",
+   "sha256": "25c9bc4424b9af5e6d10dc150a1900f09cc98fcb43c3480bf9215430311ad208",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "987552b6e6814cebcdc2b9a973d5b6f3718192b41d577dde94e7661e16b49c5c",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-11/t1-m12.cq",
+   "sha256": "a88822d2b5394132625efb0c135137ca9cc522b6103f430c150e313514a58b17",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "ce84dae56a1a2608c0cf0a174f254cde514afd7704e5a892f29d04ac5c47e5c4",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-11/t1-0-m12.cq",
+   "sha256": "13c562b7b46235035806cb953671699af85d4846bee846b199a67e87bd356ceb",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "52b0ee938899fde8cbf7d690d51b8eb422ab4171d99244806ade6b7740146f0c",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-11/readout-0-m12.cq",
+   "sha256": "033a9c3a5db000fba768cad18401d21be421dcc4e71f82174ff6957895230987",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "df4b1ee43e311fc4a52f4882cac8235b9dc19b94a385ad869c05779fc3a480e6",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-12/t1-0-m8.cq",
+   "sha256": "9f2d2eb87bad2d27ecd178262985168afa5019893f98c6e700abc95e83414816",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "94230e5ff5c76c90df3c258c0fb28c62e2b9404ac7ccfad148d359ba625992c1",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-12/t1-m8.cq",
+   "sha256": "60f9ca685e9a68b1fef353b93b9010fce224c812bd376e4560c262faf911f3ef",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "aeb318a03dce9bd8169bd5d533bb25c025ebd810c57f44a2d379ff506104a32c",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-12/readout-0-m8.cq",
+   "sha256": "721a1df5768baab342b8ffb5f4612c05cdd98de9ea3c324353f7ee4ab39a49f5",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "c71e9587e050024c0528c43406fa86ea461d7f4ac97c6f3abc380354f90b67ef",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-13/t1-0-m0.5.cq",
+   "sha256": "79284de25fea4b1b5afc5d95316975f9a5b2d60bed871a3836e622ecb0698dc9",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "8545705d0311a58149db4084e94953e28975669682132b9d176d68533b768ced",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-13/t1-m0.5.cq",
+   "sha256": "2cac0545536ad9e631a6294e197894fdc6a77832ab8b5d21af2965ba4c9bec3f",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "9234e8615c7badb41bd691b930cc99b0ac909905df7d7bcff31f1f124495f058",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-13/readout-0-m0.5.cq",
+   "sha256": "e14b3ea618a17ea517252278eabd935a63177722441683d32e4c05dd03929d24",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "e2d14f7a6ac7d1115d521954415cd041379b09b7489af0e5d16909d13ef75403",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-14/t1-0-m12.cq",
+   "sha256": "13c562b7b46235035806cb953671699af85d4846bee846b199a67e87bd356ceb",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "52b0ee938899fde8cbf7d690d51b8eb422ab4171d99244806ade6b7740146f0c",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-14/readout-0-m12.cq",
+   "sha256": "033a9c3a5db000fba768cad18401d21be421dcc4e71f82174ff6957895230987",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "df4b1ee43e311fc4a52f4882cac8235b9dc19b94a385ad869c05779fc3a480e6",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-14/t1-m12.cq",
+   "sha256": "a88822d2b5394132625efb0c135137ca9cc522b6103f430c150e313514a58b17",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "ce84dae56a1a2608c0cf0a174f254cde514afd7704e5a892f29d04ac5c47e5c4",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-15/readout-0-m2.cq",
+   "sha256": "dc2ae65f829fc47fe57b2b8e58515578ebc76f8e5e738354a5b30e00ef2bbd73",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "d95a3b34241732e0e4497dd0b69785d8d6e78b8678439f65a6132780ea98934d",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-15/t1-0-m2.cq",
+   "sha256": "25c9bc4424b9af5e6d10dc150a1900f09cc98fcb43c3480bf9215430311ad208",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "987552b6e6814cebcdc2b9a973d5b6f3718192b41d577dde94e7661e16b49c5c",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-15/t1-m2.cq",
+   "sha256": "03f4bf65d9f06e17c6b27c46ce21878274ff407a2202265cc97e28693dda4b05",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "bb042d4849f4a5d6d861367e098e22ddac65782851ee4bbf9a7a9693f909294e",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-16/readout-0-m1.cq",
+   "sha256": "9183980b7cd103244b2057be301a8068eb27a4a7d2de11abcfc205486eefe811",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "332e1d581b0179bef920fa9d6e9f989b8d54095fe5bcb587b6a073f8134ef840",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-16/t1-0-m1.cq",
+   "sha256": "7617ba76fc4cc5e33b29da49f41b29f27e797b87d40e6c1e8b15dfa934f120c9",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "2789d2b78034d8989078120f091791f819be2b708d5ea081935620ae32c4fe90",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-16/t1-m1.cq",
+   "sha256": "16ea4ee9d80e044176bf597b9e1523e157a881a416d220b5aa2086fe4bf48a54",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "00d27905256c0c188ecdebd22dea70def549c625803e02f133b11747e226150c",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-17/readout-0-m4.cq",
+   "sha256": "026e2d6c4c8418a365456327997eaeb32cee6f911b5c8d9c233b14a6f5d0a4ed",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "1f228e82113feb303df6733b259f1ad38aa0a0754acf8b16a8e1f856900fbe6b",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-17/t1-0-m4.cq",
+   "sha256": "a2235c7c969430394f3e9400c3fba8893c2c621190fcf6422de2b8f16a94f3c2",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "3a833c406c37e3a1a110970838fb0b9baafa6bf81881d9f7a28d27b67794dac7",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/interleaved_t1/batch-17/t1-m4.cq",
+   "sha256": "b984db9a2d0f7e77cf7e78be309e20774b7cfdefe57bc3f727cd2a2d23472f05",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "b7c448527cff0593609e5cdd2845878684481101b42c35881394ab99c330e956",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/q12_phase/batch-00/ramsey-q12-w0-s48.cq",
+   "sha256": "42ba63b346ab7962731bb4b9f95805b2fe614da214c36c8dbcefe463bfbaf9d7",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "cb9157412d130214094c6722bd36931b2e04886785ca1a30e93d7990b1e0008f",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "12": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(4.1887902047863905)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.0943951)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/q12_phase/batch-00/ramsey-q12-w0-s00.cq",
+   "sha256": "c98e35fa9c176ac57bf0fa7feba0b42b61fd8a74636f134e9e2b738cb9fca053",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "ce450ac4db7d56c46739504b73bb41054dbb3ba956b6640d9f2d76bb6010ed0a",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/q12_phase/batch-00/ramsey-q12-w0-s24.cq",
+   "sha256": "828f2740a35bfe78fb66952dcdcfb79fb3b37e8ebb4e41e6f2c0b5fa9eeee9e3",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "179be9412cd9fdfc1355b1f720c3d61b7ff0a8889065db96abdc69f7d4ad7447",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "12": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(2.0943951023931953)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(2.0943951)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/q12_phase/batch-01/ramsey-q12-w25-s48.cq",
+   "sha256": "3d1511bf76dbc2a92aa6ad430f41a46f33eed5a7539a340e40182fc1b715b770",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "17eec7ee17c813b8febb8af7569fad8c8a6dfd9f303c0bee2bc444aa0a85073c",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "12": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(4.1887902047863905)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.0943951)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/q12_phase/batch-01/ramsey-q12-w25-s00.cq",
+   "sha256": "5cd56c588b112840a5e74b33b796bc2d6cbb6ce0657dc3fe2eaf76f877fe6d84",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "f66b99ff4e0514a4a9310f0b41b00ff5816694b0ab1ccf3efffad610a5162093",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/q12_phase/batch-01/ramsey-q12-w25-s24.cq",
+   "sha256": "0974163549ad9cfef7802c31f0ceeaedfc2a888e8536a91fc69d985617931541",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "facb120a859f6a3f9940efa92a0e1ebb8789361eb0b67466b74629b6ae3408ff",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "12": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(2.0943951023931953)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(2.0943951)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/q12_phase/batch-02/ramsey-q12-w0-s60.cq",
+   "sha256": "df83a32050e14df046bd0f127575830f71a6b74a5be0ee3ed5fde356bb6eccf3",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "dd068a17a8f0d7c0841f9a80fdffd26ec1d323b03da13803f45e386f29b9f869",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "12": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(5.235987755982988)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.0471976)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/q12_phase/batch-02/ramsey-q12-w0-s12.cq",
+   "sha256": "9baeddffe85d5329b7211b2f87db0b65420f0a4c541d4a60c549e78ca1270882",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "dfd4e023ed55fe98232ba71c5cf1ec816a56c3a352cfde86f5cd978e7dd4cd2e",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "12": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.0471975511965976)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.0471976)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/q12_phase/batch-02/ramsey-q12-w0-s36.cq",
+   "sha256": "9aa58e117bf92b0f92383220e10c61f6e07a97b342208e7f9c41613afe2e1df9",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "8e03500e07567dbd232d02a6c0b6ef8d11e4d616a7033c75d54889de68838bcd",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "12": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/q12_phase/batch-03/ramsey-q12-w25-s12.cq",
+   "sha256": "afb3d3d575e3fb3ae7c27f4af1a0854a392dbb7382eacabf25293965f9b52ff8",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "778d10fc918172275ee85e25048ce269fb87b000f933cdd02dd6692c357f48c1",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "12": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.0471975511965976)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.0471976)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/q12_phase/batch-03/ramsey-q12-w25-s36.cq",
+   "sha256": "9f4d5726f3b9696ba9bade9bd724982c71e28cee6ec54c1d6288514f0e979126",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "f38cdeb93ce9c707663b8d641fc375358b9321f6b573afed8c443ddda9c62bfc",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "12": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/characterization_interleaved_tuna_17/q12_phase/batch-03/ramsey-q12-w25-s60.cq",
+   "sha256": "50507f4a06639df337edd8c756eb5fb38efa9b1dca540a59bd6c9c64c4746e16",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "c5794fe5acff2a597a0a9f2709dba54fea0ffc43c718eac72889cd58a14cdce1",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "12": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(5.235987755982988)"
+      ],
+      [
+       "X90"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.0471976)"
+      ],
+      [
+       "X90"
+      ]
+     ]
+    }
+   }
   },
   {
    "case": "results/quantum_inspire/cases/characterization_qx/batch-00/readout-0.cq",

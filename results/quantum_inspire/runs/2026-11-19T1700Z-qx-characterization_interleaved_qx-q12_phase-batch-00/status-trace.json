@@ -1,0 +1,26 @@
+{
+ "schema": "qi-status-trace-v1",
+ "poll_seconds": 15.0,
+ "rows": [
+  {
+   "utc": "2026-11-19T17:22:33.838992+00:00",
+   "status": "idle",
+   "queue_own": 0
+  },
+  {
+   "utc": "2026-11-19T17:22:42.924858+00:00",
+   "status": "idle",
+   "queue_own": 1
+  },
+  {
+   "utc": "2026-11-19T17:23:02.200407+00:00",
+   "status": "idle",
+   "queue_own": 0
+  },
+  {
+   "utc": "2026-11-19T17:23:06.118736+00:00",
+   "status": "idle",
+   "queue_own": 0
+  }
+ ]
+}

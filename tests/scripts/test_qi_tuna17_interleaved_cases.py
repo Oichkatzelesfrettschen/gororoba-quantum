@@ -208,6 +208,7 @@ def test_every_written_circuit_sits_beside_a_manifest_that_lists_it(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     retained = retained_fixture()
+    monkeypatch.setattr(cases, "DRAW", None)
     cases.write(tmp_path / "pending", draw_root=tmp_path, retained=retained)
     pending = cases.case_directory(tmp_path / "pending", "tuna_17")
     if list(pending.rglob("*.cq")):
@@ -247,6 +248,7 @@ def test_pending_state_writes_no_batches_then_the_draw_creates_them(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     retained = retained_fixture()
+    monkeypatch.setattr(cases, "DRAW", None)
     cases.write(tmp_path / "cases", draw_root=tmp_path, retained=retained)
     directory = cases.case_directory(tmp_path / "cases", "tuna_17")
     if (
@@ -288,6 +290,7 @@ def test_pending_state_writes_no_batches_then_the_draw_creates_them(
 def test_the_request_stays_generated_when_the_draw_is_set(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     retained = retained_fixture()
     root = tmp_path / "cases"
+    monkeypatch.setattr(cases, "DRAW", None)
     cases.write(root, draw_root=tmp_path, retained=retained)
     path = "docs/evidence/anu_qrng/draw-2026-01-01T000000Z.json"
     (tmp_path / path).parent.mkdir(parents=True)

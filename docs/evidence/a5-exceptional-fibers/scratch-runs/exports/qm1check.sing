@@ -1,0 +1,10 @@
+ring r=32009,(t1,t2,t3,t4,t5,t6,t7,t8,t9),dp;
+option(redSB);
+execute("ideal s=" + read("~/a5/exports/e8nm-p32009-n15-v9/s.txt") + ";");
+attrib(s,"isSB",1);
+ideal B=kbase(s);
+int t0=rtimer;
+ideal Mk=reduce(var(1)*B,s);
+short=0; write(":w ~/a5/exports/qM1-recomputed.txt",Mk);
+"RESULT t1", ncols(Mk), rtimer-t0;
+quit;
