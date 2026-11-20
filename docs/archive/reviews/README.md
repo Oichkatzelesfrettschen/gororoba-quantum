@@ -100,6 +100,7 @@ repository-relative; a branch name stands for its worktree.
 | [pr-149-jax-bridge-and-atlas-fringe.md](pr-149-jax-bridge-and-atlas-fringe.md) | PR #149 jax bridge sweep, and the atlas fringe amplitudes branch (PR #158) |
 | [audit-kaggle-aer-runner.md](audit-kaggle-aer-runner.md) | tools/kaggle-aer-runner against main and the substrate-routing branch |
 | [audit-dangling-docs-references.md](audit-dangling-docs-references.md) | dangling references under docs/ on main |
+| [quandela-belenos-b1-repeat-case/reconciliation.md](quandela-belenos-b1-repeat-case/reconciliation.md) | Local codex round on the sim:belenos b1 completion-time repeat case (PR 960): job-level timing, six jobs, slot balance and the billing terms; with the brief |
 | [open-issue-triage.md](open-issue-triage.md) | open issues checked against the named files |
 | [quantum-inspire-branch-pair-map.md](quantum-inspire-branch-pair-map.md) | the two Quantum Inspire branches and their merge order |
 | [open-gororoba-anf-degree-issue-draft.md](open-gororoba-anf-degree-issue-draft.md) | draft upstream issue for open_gororoba (ANF degree closed forms); not filed |
