@@ -404,6 +404,7 @@ def test_the_manifest_writer_serializes_a_negative_residue_as_zero(monkeypatch: 
     for t in plan["templates"].values():
         t["ideal_selector_contrast"] = -1e-33
         t["ideal_c"] = [-1e-33] * len(t["ideal_c"])
+        t["ideal"] = np.full(len(t["ideal"]), -1e-33)
     monkeypatch.setattr(oc, "series_plan", lambda: plan)
     width = len(real_plan["templates"]["b0"]["ideal"])
     monkeypatch.setattr(oc.blk, "ideal_of_record", lambda circuit: np.full(width, -1e-33))
