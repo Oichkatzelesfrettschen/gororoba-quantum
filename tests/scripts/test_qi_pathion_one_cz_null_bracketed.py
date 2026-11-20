@@ -12,7 +12,6 @@ import hashlib
 import itertools
 import json
 import math
-import platform
 import shutil
 from collections import Counter
 from datetime import datetime, timedelta, timezone
@@ -375,30 +374,96 @@ QX_MANIFEST_SHA256 = {
 
 
 def test_the_qx_manifests_keep_the_bytes_that_the_retained_receipts_bind() -> None:
-    # The stored bytes are read, not rebuilt: a rebuild rounds differently on darwin-arm64.
+    # The stored bytes are read directly; test_the_rebuilt_qx_manifests_equal_the_stored_bytes_and_the_receipt_digests
+    # rebuilds them on every platform.
     for batch, digest in QX_MANIFEST_SHA256.items():
         stored = (CASES / bc.QX_SERIES / batch / "cases.json").read_bytes()
         _expect(hashlib.sha256(stored).hexdigest() == digest, f"the stored {batch} manifest changed")
         _expect(json.loads(stored)["preregistered"] == bc.control_preregistered(), f"{batch} states another text")
 
 
-LINUX_X86_64 = platform.system() == "Linux" and platform.machine() in {"x86_64", "AMD64"}
+def test_a_zero_residue_of_either_sign_serializes_as_one_zero() -> None:
+    # The state-vector product leaves 1e-17..1e-33 residue where the exact value is zero, and a bare round() writes a
+    # negative residue as -0.0.
+    for digits in (6, 9, 12):
+        for residue in (0.0, -0.0, 1e-33, -1e-33, 1.1102230246251565e-16, -1.1102230246251565e-16):
+            _expect(json.dumps(oc.canonical_float(residue, digits)) == "0.0", f"{residue!r} at {digits} digits")
+    _expect(json.dumps(round(-1e-33, 12)) == "-0.0", "the bare rounding of a negative residue is the hazard")
+    _expect(json.dumps(oc.canonical_float(-0.995869, 6)) == "-0.995869", "a nonzero value keeps its sign and digits")
+    _expect(json.dumps(oc.canonical_float(0.1248440288385, 12)) == "0.124844028839", "a nonzero value keeps its digits")
 
 
-@pytest.mark.skipif(not LINUX_X86_64, reason="the rebuilt manifests are measured byte-equal on linux x86_64 only")
+def test_the_manifest_writer_serializes_a_negative_residue_as_zero(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Every probability source returns -1e-33: the written manifests hold 0.0 through canonical_float at the
+    # ideal_selector_contrast, ideal_c and per-circuit ideal fields.
+    real_plan = oc.series_plan()
+    plan = copy.deepcopy(real_plan)
+    for t in plan["templates"].values():
+        t["ideal_selector_contrast"] = -1e-33
+        t["ideal_c"] = [-1e-33] * len(t["ideal_c"])
+        t["ideal"] = np.full(len(t["ideal"]), -1e-33)
+    monkeypatch.setattr(oc, "series_plan", lambda: plan)
+    width = len(real_plan["templates"]["b0"]["ideal"])
+    monkeypatch.setattr(oc.blk, "ideal_of_record", lambda circuit: np.full(width, -1e-33))
+    oc.twin_entry.cache_clear()  # the coin-fixed twins are cached; none built from the patched sources may outlive it
+    try:
+        files = oc.build()[oc.QX_SERIES]
+    finally:
+        oc.twin_entry.cache_clear()
+    _expect(all("-0.0" not in text for rel, text in files.items() if rel.endswith("cases.json")), "a -0.0 was written")
+    seen = 0
+    for manifest in _manifests(files):
+        for name, t in manifest["templates"].items():
+            _expect(t["ideal_selector_contrast"] == 0.0 and t["ideal_c"] == [0.0] * len(t["ideal_c"]), name)
+        for record in manifest["circuits"]:
+            if "ideal" in record:
+                seen += 1
+                _expect(all(x == 0.0 for x in record["ideal"]), "a circuit ideal kept a nonzero residue")
+    _expect(seen > 0, "no circuit ideal was checked")
+
+
+def test_the_retained_qx_manifests_hold_no_negative_zero() -> None:
+    for batch in QX_MANIFEST_SHA256:
+        text = (CASES / bc.QX_SERIES / batch / "cases.json").read_text(encoding="utf-8")
+        _expect("-0.0," not in text and "-0.0\n" not in text, f"{batch} holds a -0.0")
+
+
+def _differences(left: object, right: object, path: str = "$") -> list[str]:
+    """The JSON path of every differing leaf of two parsed manifests, with both values; empty when equal."""
+    if isinstance(left, dict) and isinstance(right, dict):
+        found: list[str] = []
+        for key in sorted(set(left) | set(right)):
+            if key not in left or key not in right:
+                found.append(f"{path}.{key}: present in {'rebuilt' if key in left else 'stored'} only")
+            else:
+                found += _differences(left[key], right[key], f"{path}.{key}")
+        return found
+    if isinstance(left, list) and isinstance(right, list):
+        if len(left) != len(right):
+            return [f"{path}: length {len(left)} rebuilt, {len(right)} stored"]
+        return [d for i, (a, b) in enumerate(zip(left, right, strict=True)) for d in _differences(a, b, f"{path}[{i}]")]
+    if json.dumps(left) != json.dumps(right):
+        return [f"{path}: rebuilt {json.dumps(left)}, stored {json.dumps(right)}"]
+    return []
+
+
 def test_the_rebuilt_qx_manifests_equal_the_stored_bytes_and_the_receipt_digests(
     built: dict[str, dict[str, str]],
 ) -> None:
-    # Measured on linux x86_64 with the CI-pinned interpreter: 4 of 4 rebuilt manifests have the sha256 of the stored
-    # file and of the receipt's cases_sha256. hypothesis: a last-bit libm difference or a fused multiply-add on
-    # darwin-arm64 flips a digit of the 12-digit rounded float fields (a rebuild failed there), which
-    # test_the_qx_manifests_keep_the_bytes_that_the_retained_receipts_bind avoids by reading the stored bytes; issue
-    # 945 tracks a platform-stable serialization.
+    # Measured on linux x86_64 and linux aarch64 with the CI-pinned interpreter: 4 of 4 rebuilt manifests have the
+    # sha256 of the stored file and of the receipt's cases_sha256. b0 enters the build as the pinned retained circuit
+    # (oc.retained_b0), since its transpile differs in 13 of 115 gates on darwin-arm64 (measured); every platform
+    # runs the rebuild, and a mismatch names every differing JSON path of every batch with both values.
+    found: list[str] = []
+    for batch in QX_MANIFEST_SHA256:
+        rebuilt = built[bc.QX_SERIES][f"{batch}/cases.json"]
+        stored = (CASES / bc.QX_SERIES / batch / "cases.json").read_text(encoding="utf-8")
+        if rebuilt != stored:
+            found += [f"{batch} {d}" for d in _differences(json.loads(rebuilt), json.loads(stored)) or ["bytes only"]]
+    _expect(not found, "the rebuilt manifests differ from the stored files:\n" + "\n".join(found))
     for batch, digest in QX_MANIFEST_SHA256.items():
-        rebuilt = built[bc.QX_SERIES][f"{batch}/cases.json"].encode()
-        stored = (CASES / bc.QX_SERIES / batch / "cases.json").read_bytes()
-        _expect(hashlib.sha256(rebuilt).hexdigest() == digest, f"the rebuilt {batch} manifest differs from the receipt")
-        _expect(rebuilt == stored, f"the rebuilt {batch} manifest differs from the stored file")
+        rebuilt_digest = hashlib.sha256(built[bc.QX_SERIES][f"{batch}/cases.json"].encode()).hexdigest()
+        _expect(rebuilt_digest == digest, f"the rebuilt {batch} manifest differs from the receipt")
 
 
 def _survival(dof: int, x: float) -> float:
