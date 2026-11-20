@@ -1,10 +1,34 @@
 # Case: sim:belenos b1 completion-time repeat (timing only)
 
-Status: written case awaiting the owner's approval; nothing has been submitted to any backend, the simulator included.
-The owner approved writing this case on 2026-11-16 (leftover W-160, "approve a controlled sim:belenos b1 repeat or drop the
-hypothesis") and again on 2026-11-19; the approval of the run itself is the open step. The requests P1 and P2 live in
-`results/quandela/cases/bdsc_diagnostic_timing_sim_belenos/`, built by `scripts/bdsc_diagnostic_timing_case.py` (see
-"Implementation steps before approval"); no run directory exists, and the commands there send jobs only after that approval.
+Status: approved by the owner on 2026-11-20 and run the same day; stopped after slot 4 by its own stop condition. The
+read-only plan (`docs/archive/reviews/bdsc-diagnostic-timing/plan-2026-11-20.json`) read 1.0 credit per job, price 0.0
+per shot and no mitigations before the approval. The section "Run record" holds the outcome; the requests P1 and P2
+live in `results/quandela/cases/bdsc_diagnostic_timing_sim_belenos/`, built by `scripts/bdsc_diagnostic_timing_case.py`.
+## Run record
+
+The submit loop of "Implementation steps before approval" ran on 2026-11-20 from commit `b67d19f60`, one job at a
+time with the token idle. The usage counter of sim:belenos (`free_credits` and `nb_jobs` in each run's
+`submission.json` and `results.json`) reads the bill of each job.
+
+| Slot | Request | Job | Run | Reported duration | Status | Bill |
+|---|---|---|---|---|---|---|
+| 1 | P1 | 7266d221 | `results/quandela/runs/2026-11-20T231935Z-sim_belenos-bdsc_timing-p1` | 159 s | completed | 1.0 credit (24.0 to 25.0) |
+| 2 | P2 | 04d355e3 | `results/quandela/runs/2026-11-20T232303Z-sim_belenos-bdsc_timing-p2` | 161 s | completed | 1.0 credit (25.0 to 26.0) |
+| 3 | P2 | 0c0e22c7 | `results/quandela/runs/2026-11-20T232631Z-sim_belenos-bdsc_timing-p2` | 156 s | completed | 1.0 credit (26.0 to 27.0) |
+| 4 | P1 | f141e80d | `results/quandela/runs/2026-11-20T233005Z-sim_belenos-bdsc_timing-p1` | 82 s | error, "Worker timeout" | none (27.0 to 27.0; `nb_jobs` 29 to 30) |
+
+Slot 4 reached progress 0.5007 at 23:32:02 UTC, 100 s after submission, and its status log (`status-log.jsonl`, one
+read every 10 s) shows that value and status `running` unchanged for 20 minutes until the job ended `error` with
+status message "Worker timeout" at about 23:52 UTC. The platform's 300 s limit did not end it, and its reported
+duration of 82 s counts compute time only, not the stalled interval. The stop condition on a failed job ended the case
+before slot 5: three jobs completed and 3.0 credits were spent of the 6.48 authorized.
+
+Each completed duration lies above 150 s, so each is a deviation under "Comparison with the retained runs". `analyze`
+reads six runs and does not run on three; no decision row of "Decision rules" applies, and the request-cost and
+service-variation contrasts stay unmeasured (one P1 replicate, two P2 replicates). Measured: the 12-iteration requests
+took 156 to 161 s, above half the retained 300 s. `hypothesis:` a 24-iteration b1 job needs about 320 s and does not
+fit the 300 s limit; the falsifier is a 24-iteration job that completes below 300 s, as `b1-j1` did once at 300 s.
+A resumed or packed successor needs its own written case and approval.
 
 ## Retained records
 
