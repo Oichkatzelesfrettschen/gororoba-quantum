@@ -2329,12 +2329,12 @@
  },
  "acquisition_admission": "ready",
  "successor_sources": {
-  "scripts/bdsc_diagnostic_timing_case.py": "08118752b3fcfeea85e2449ab2d6579b71789d65632d117d78ba8e5740501b7a",
+  "scripts/bdsc_diagnostic_timing_case.py": "2799e21a27edebfd6efd1d9770d401ae0051f65b537600a2dc2f416d1ce25fcf",
   "gororoba_quantum/qd_records.py": "a340a076b3323b434bd27ec26e776199a440ff95c4262b8ef6d4bbff9eac62d8",
   "scripts/oq_platform.py": "7a109e1419d81ed6558f18f551805a20c3b4a134c63f2078b710dc03955b8316",
   "scripts/qd_platform.py": "af434d4a7f958124abfa9a794e2673ec5ebf108911473db093494cf008eee079"
  },
- "timing_case_sha256": "791969fa3b8e83ad898d29dcb44704784aa4ae73f5db16a26c298677196d24a1",
+ "timing_case_sha256": "227619527e7aa8d1b6f152d41ee406b376e3a7204cf074478ec6ab25bff11533",
  "source_job": {
   "job": "b1-j2",
   "cases_sha256": "4d11a3653aa3cca34374478d618e887a334598489cda13a638565ab066ef6eec"

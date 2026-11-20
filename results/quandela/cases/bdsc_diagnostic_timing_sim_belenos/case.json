@@ -50,7 +50,8 @@
   "a job is submitted before the previous job is collected, or while the token holds a running or queued job",
   "a job body carries a mitigation, or the service reports another platform",
   "spent credits plus one job's authorization of 1.08 exceed 6.48",
-  "the sum of reported durations reaches 1800 s before the next submission"
+  "the sum of reported durations reaches 1800 s before the next submission",
+  "qd_platform.plan refuses the platform or the tree, or collection refuses a result that is not an integer BSCount (the run then holds no results.json and the next slot is refused)"
  ],
  "decision": {
   "spread": "s(P) = (max - min) / mean of the three durations of request P",

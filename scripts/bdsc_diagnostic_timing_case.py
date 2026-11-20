@@ -157,6 +157,8 @@ def case_record(source_case: bytes, sources: dict[str, dict[str, Any]]) -> dict[
             "a job body carries a mitigation, or the service reports another platform",
             f"spent credits plus one job's authorization of {MAX_CREDITS_PER_JOB} exceed {CREDIT_CAP}",
             f"the sum of reported durations reaches {DURATION_CAP:g} s before the next submission",
+            "qd_platform.plan refuses the platform or the tree, or collection refuses a result that is not an "
+            "integer BSCount (the run then holds no results.json and the next slot is refused)",
         ],
         "decision": {
             "spread": "s(P) = (max - min) / mean of the three durations of request P",
