@@ -1,0 +1,34 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-11-21T18:54:41+00:00",
+ "approval": "owner AskUserQuestion 2026-11-21T16:43Z: Finish, then scan (Recommended)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "eaf1a89cca7315454297c37c1683ab9858ca9e72d9ee646fdb8aa93f882ce1fd",
+ "backend_status_at_submit": "calibrating",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 1,
+ "batch_job": 963068,
+ "project": 864248,
+ "shots": 32768,
+ "jobs": [
+  {
+   "file": "readout-1.cq",
+   "job": 1754678,
+   "sha256": "9ab3ef152dab6ab9fb472c9b7583674feb5d7fc4fb006a2b514af4f89c917d36"
+  },
+  {
+   "file": "readout-0.cq",
+   "job": 1754679,
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  }
+ ],
+ "submitted_utc": "2026-11-21T18:54:42+00:00"
+}

@@ -1,0 +1,78 @@
+{
+ "backend": "QXsinglenodesimulator",
+ "batch_cases_sha256": {
+  "batch-00": "904af6e4e361c1a0283644827358aad0e055e421222b863dd9b093bd9ab09f6a",
+  "batch-01": "9dbadbf47172287e9d335ae96a274c7e5a75651a570f6794e8a49de009ef4485",
+  "batch-02": "78b2b14f575c55d098f5796dde57ea41cfbfe6205d2acd6c1e8d1456521347dd",
+  "batch-03": "e794e5755f8d3107c7ebf95196abde6c1bb67faf8b0da40f4fee34950ef87638"
+ },
+ "claim_kind": "preregistered emulator control",
+ "complete": true,
+ "qx_control": {
+  "arms": {
+   "batch-00/b0-rx.cq": {
+    "floor": 0.03567304289284069,
+    "ok": true,
+    "tvd": 0.029029789694
+   },
+   "batch-00/b0-rxz-q4-m10.cq": {
+    "floor": 0.038561075881873574,
+    "ok": true,
+    "tvd": 0.04752232096450001
+   },
+   "batch-00/b0-rxz.cq": {
+    "floor": 0.03567304289284069,
+    "ok": true,
+    "tvd": 0.048533003512999995
+   },
+   "batch-01/b0-rxz-q4-m5.cq": {
+    "floor": 0.03671797719413193,
+    "ok": true,
+    "tvd": 0.03360794058300001
+   },
+   "batch-01/b0-rxz-q4-p10.cq": {
+    "floor": 0.03848295264138471,
+    "ok": true,
+    "tvd": 0.041116602407000005
+   },
+   "batch-01/b0-rxz-q4-p5.cq": {
+    "floor": 0.03668239792158485,
+    "ok": true,
+    "tvd": 0.026907432927499995
+   },
+   "batch-02/b0-rxz-z12-m10.cq": {
+    "floor": 0.03896194551265336,
+    "ok": true,
+    "tvd": 0.04418837533049999
+   },
+   "batch-02/b0-rxz-z12-m30.cq": {
+    "floor": 0.043859701896247306,
+    "ok": true,
+    "tvd": 0.037963055806
+   },
+   "batch-02/b0-rxz-z12-p10.cq": {
+    "floor": 0.037704210493250234,
+    "ok": true,
+    "tvd": 0.041463050412000005
+   },
+   "batch-03/b0-rxz-z12-p30.cq": {
+    "floor": 0.04344034634916678,
+    "ok": true,
+    "tvd": 0.0427239824865
+   },
+   "batch-03/b0-rxz-z8c-m10.cq": {
+    "floor": 0.03890375506348297,
+    "ok": true,
+    "tvd": 0.043378610995
+   },
+   "batch-03/b0-rxz-z8c-p10.cq": {
+    "floor": 0.03896787011125696,
+    "ok": true,
+    "tvd": 0.0392183200265
+   }
+  },
+  "factor": 2.0,
+  "pass": true
+ },
+ "schema": "qi-pathion-null-phase-scan-analysis-v1"
+}
