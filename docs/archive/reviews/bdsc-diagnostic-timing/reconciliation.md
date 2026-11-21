@@ -60,8 +60,28 @@ Fixes landed in 432de1c4c, 737f778dd and the commit after it. Verdicts are check
 | A boundary test row labeled 10 % has spread 14/147 | Advisor | confirmed | Fixed: the row is 133, 140, 147, spread exactly 1/10 |
 | A job submitted from a committed request directory is never discovered, so `next` repeats its slot and its charge escapes the caps | hosted Codex at 8eeffd57c | confirmed | Fixed in 7b52e556f: `bound_runs` counts a receipt or checkpoint wherever it sits, and the gate refuses a committed request directory |
 
-## Open before approval
+## Before approval
 
-- `qd_platform.py plan` on `p1` and `p2` (read-only, the first block of the CASE.md runbook) has not run; its output
-  enters the approval request.
-- vibe stays `not run` until it authenticates again.
+- The read-only plan ran on 2026-11-20 before the approval request; its output is
+  [plan-2026-11-20.json](plan-2026-11-20.json) (1.0 credit per job, price 0.0 per shot, no mitigations).
+- vibe was not run on PR 965; it authenticates again since 2026-11-20.
+
+## Run retention (PR 968)
+
+Reviewer: grok, on head 4cc03d3a9 (the four runs, the plan output, the acquisition rows and the CASE.md run record).
+The Advisor reviewed last. The packed successor case (5493e2b2d) came after the grok round and was read by the Advisor.
+
+| Finding | Source | Verdict | Disposition |
+|---|---|---|---|
+| The failure row of "Decision rules" applies to slot 4; "no decision row applies" is wrong | grok | confirmed | Fixed in 06a5dfbb8 |
+| The falsifier "completes below 300 s, as b1-j1 did at 300 s" conflates the boundary completion with a strict one | grok | confirmed | Fixed: a later 24-iteration completion at or below 300 s; b1-j1's 300 s completion keeps the doubling an open hypothesis |
+| "82 s counts compute time only" reads a field whose definition the case leaves unread | grok | confirmed | Fixed: 82 s equals the duration-counter delta and excludes the stall; queue and start-up stay unread |
+| Progress 0.5007 came 102 s after submitted_utc, not 100 s | grok | confirmed | Fixed |
+| "Worker timeout" lives in results.json, not in the status log | grok | confirmed | Fixed |
+| The earlier sim:belenos "Worker timeout" job (2026-10-21) billed nothing | self-check | refuted | Its usage report spans several jobs and does not separate the bill; the packed case says so |
+| The approved CASE.md was edited in place after submission and lost its approval-history sentences | Advisor | confirmed | Fixed in e32571669: CASE.md keeps the bytes of b67d19f60, and the run record lives in the rehearsal record, section "Measured timing case of the b1 shape" |
+| Packing shape C (3 x 32) contradicts whole groups of six and the two-job block | Advisor | confirmed | Fixed: dropped; the case states why fewer jobs per block break `require_schedule` |
+| "Iterations added cost nothing" rests on the Ascella rule | Advisor | confirmed | Fixed: the four retained qpu:belenos diagnostic jobs billed 1.08 each for 960000 shots under an 80000 cap |
+| "The decision rules stand" asserted from `require_schedule` alone | Advisor | confirmed | Fixed: shape A is `SLOTS` 4 to 6, marked `hypothesis:`, with the analyzer and draw changes listed |
+| The packing case's two links to the rehearsal record climb three directories, not four; the Markdown checker skips `results/` | hosted Codex at 7b30b4276 | confirmed | Fixed: `../../../../docs/design/...`, both targets checked to exist |
+| The timing rule (7.34 s per iteration) is not cited and the margin overstated; QPU limit cancellations and the sample axis are missing | Advisor | confirmed | Fixed: 246 to 264 s, 36 s margin by the rule; the two canceled qpu:belenos jobs; shape D on samples |

@@ -3460,6 +3460,34 @@
       "question": "Does the 24-iteration b1-j2 request of the successor tree finish inside sim:belenos's 300 s job limit, and what does a job that reaches the limit return?"
     },
     {
+      "id": "qd-bdsc-timing-sim-belenos-slot1-p1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-20T231935Z-sim_belenos-bdsc_timing-p1",
+      "family": "bdsc_diagnostic",
+      "question": "Slot 1 of the b1 timing case: the reported duration of the 12-iteration request P1 (out-s0, out-s1) on sim:belenos."
+    },
+    {
+      "id": "qd-bdsc-timing-sim-belenos-slot2-p2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-20T232303Z-sim_belenos-bdsc_timing-p2",
+      "family": "bdsc_diagnostic",
+      "question": "Slot 2 of the b1 timing case: the reported duration of the 12-iteration request P2 (rev-s0, rev-s1) on sim:belenos."
+    },
+    {
+      "id": "qd-bdsc-timing-sim-belenos-slot3-p2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-20T232631Z-sim_belenos-bdsc_timing-p2",
+      "family": "bdsc_diagnostic",
+      "question": "Slot 3 of the b1 timing case: a replicate of the reported duration of request P2 on sim:belenos."
+    },
+    {
+      "id": "qd-bdsc-timing-sim-belenos-slot4-p1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-20T233005Z-sim_belenos-bdsc_timing-p1",
+      "family": "bdsc_diagnostic",
+      "question": "Slot 4 of the b1 timing case: a replicate of the reported duration of request P1 on sim:belenos; the job ended in the provider error \"Worker timeout\" at progress 0.5007 and stopped the case."
+    },
+    {
       "id": "qi-pathion-one-cz-null-bracketed-qx-2026-11-15t184810-batch-00",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-15T184810Z-pathion_one_cz_null_bracketed_qx-batch-00",

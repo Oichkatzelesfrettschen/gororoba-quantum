@@ -236,3 +236,34 @@ The timing case of the b1 shape is the written case
 six 12-iteration jobs of two requests, P1 and P2, that
 [`scripts/bdsc_diagnostic_timing_case.py`](../../scripts/bdsc_diagnostic_timing_case.py) builds from the retained
 `b1-j1` and `b1-j2` manifests with their retained seeds, so the repeat takes no new draw.
+
+## Measured timing case of the b1 shape
+
+The owner approved the [timing case](../../results/quandela/cases/bdsc_diagnostic_billing_rule_sim_belenos/CASE.md) on 2026-11-20 after its read-only plan ([plan-2026-11-20.json](../archive/reviews/bdsc-diagnostic-timing/plan-2026-11-20.json): 1.0 credit per job, price 0.0 per shot, no mitigations). Its submit loop ran the same day from commit `b67d19f60`, one job at a
+time with the token idle. The usage counter of sim:belenos (`free_credits` and `nb_jobs` in each run's
+`submission.json` and `results.json`) reads the bill of each job.
+
+| Slot | Request | Job | Run | Reported duration | Status | Bill |
+|---|---|---|---|---|---|---|
+| 1 | P1 | 7266d221 | `results/quandela/runs/2026-11-20T231935Z-sim_belenos-bdsc_timing-p1` | 159 s | completed | 1.0 credit (24.0 to 25.0) |
+| 2 | P2 | 04d355e3 | `results/quandela/runs/2026-11-20T232303Z-sim_belenos-bdsc_timing-p2` | 161 s | completed | 1.0 credit (25.0 to 26.0) |
+| 3 | P2 | 0c0e22c7 | `results/quandela/runs/2026-11-20T232631Z-sim_belenos-bdsc_timing-p2` | 156 s | completed | 1.0 credit (26.0 to 27.0) |
+| 4 | P1 | f141e80d | `results/quandela/runs/2026-11-20T233005Z-sim_belenos-bdsc_timing-p1` | 82 s | error, "Worker timeout" | none (27.0 to 27.0; `nb_jobs` 29 to 30) |
+
+Slot 4 reached progress 0.5007 (stored 0.5006666666666667) at 23:32:02 UTC, 102 s after `submitted_utc` 23:30:20, and
+its status log (`status-log.jsonl`, one read every 10 s) shows that value and status `running` unchanged until the read
+of 23:52:32 UTC returned `error`; `results.json` holds the status message "Worker timeout" and a null `failure_code`.
+The platform's 300 s limit did not end it. Its reported duration of 82 s equals the sim:belenos `duration_seconds`
+delta (2607 to 2689) and excludes the stall of about 20 minutes; whether it counts queue or start-up stays unread. The stop condition on a failed job ended the case
+before slot 5: three jobs completed and 3.0 credits were spent of the 6.48 authorized.
+
+Each completed duration lies above 150 s, so each is a deviation under the case's "Comparison with the retained runs". The
+failure row of the case's "Decision rules" applies (a job failing: record the failure and rerun nothing without approval); the
+spread rows need three replicates of each request and do not apply, so the request-cost and service-variation
+contrasts stay unmeasured (one P1 replicate, two P2 replicates). `analyze` needs six admitted runs and does not run. Measured: the 12-iteration requests
+took 156 to 161 s, above half the retained 300 s. `hypothesis:` a 24-iteration b1 job needs about 320 s and does not
+fit the 300 s limit; the falsifier is a later 24-iteration job that completes at or below 300 s. `b1-j1` already completed with
+a reported 300 s, so the doubled 156 to 161 s figure is an open scaling hypothesis, not a measurement of the
+24-iteration shape.
+A resumed or packed successor needs its own written case and approval; the packed qpu:belenos request is proposed in
+[`bdsc_diagnostic_packed_qpu_belenos/CASE.md`](../../results/quandela/cases/bdsc_diagnostic_packed_qpu_belenos/CASE.md).
