@@ -3626,6 +3626,32 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/sedenion_sign_oracle.py",
+      "name": "core-775",
+      "seconds": 22.7
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_garnet_followup.py --self-test",
+      "name": "core-776",
+      "seconds": 13.3
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_garnet_followup.py check results/iqm/cases/grover-depth-sedenion-walsh",
+      "name": "core-777",
+      "seconds": 37.3,
+      "replays": [
+        "results/iqm/cases/grover-depth-sedenion-walsh/cases.json",
+        "results/iqm/cases/grover-depth-sedenion-walsh/circuits",
+        "results/iqm/cases/grover-depth-sedenion-walsh/prediction.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --self-test",
       "name": "core-457",
       "seconds": 0.1

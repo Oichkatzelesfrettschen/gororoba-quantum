@@ -129,6 +129,12 @@ def validate_job(records: Records, job: str) -> tuple[dict[str, Any], dict[str, 
         data = records.circuits.get(circuit["file"])
         if data is None or sha256(data) != circuit["sha256"]:
             raise RecordError(f"{case_dir}/{circuit['file']} differs from its recorded sha256")
+    # A case that binds its prediction names its digest in cases.json, so the approved digest covers the
+    # prediction the analysis decides against; submission, the run copy and the analysis all pass here.
+    if "prediction_sha256" in case:
+        prediction = case_dir / "prediction.json"
+        if not prediction.is_file() or sha256(prediction.read_bytes()) != case["prediction_sha256"]:
+            raise RecordError(f"{case_dir}/prediction.json differs from the digest cases.json binds")
     return case, rows[0], sha256(raw)
 
 
