@@ -31,8 +31,10 @@ requested duration t is realized as a t + b, the offset b enters the fitted ampl
 fit gives T1 independently of g; the scale a is assumed to be 1. A scale a != 1 makes the fit read T1 / a and moves g
 with it, and no reading of this job detects a, since the decay stays a single exponential and both train lengths see
 the same a. T1 below is therefore T1 per requested delay second, and H2 is conditional on a = 1. The playlist repeats all sixteen circuits 4000 times, so the T1 and the trains are read over the
-same minutes (hypothesis: the mock's `playlist_repeats` 4000 reads as every repetition passing through all sixteen
-circuits; the served order is not documented).
+same minutes: IQM documents that a playlist's segments run in order and the whole sequence repeats once per shot,
+with an undefined delay between chunks when a playlist exceeds memory (iqm-pulse, "Concepts and classes",
+https://docs.iqm.tech/iqm-pulse/concepts.html, read 2026-11-21), and the mock estimate reports `playlist_repeats`
+4000.
 
 ## Pre-flight
 

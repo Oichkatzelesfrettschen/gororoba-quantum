@@ -803,10 +803,11 @@ def study(case_dir: Path) -> dict[str, Any]:
         "schema": "iqm-idle-schedule-t1-study-v1",
         "case": EMERALD_T1.case,
         "calibration_set": calibration.set_id,
+        # The draw is cited by the constant's comment and the seed ledger; a record under results/ that named the
+        # draw file would claim the whole draw (ci/seed_provenance.py).
         "seed": {
             "value": CALIBRATION_STUDY_SEED,
-            "draw": "docs/evidence/anu_qrng/draw-2026-11-21T184244Z.json",
-            "index": 0,
+            "constant": "scripts/iqm_idle_schedule_probe.py CALIBRATION_STUDY_SEED",
         },
         "shots": shots,
         "devices": rows,

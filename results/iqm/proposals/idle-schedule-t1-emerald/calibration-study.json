@@ -37,8 +37,7 @@
  ],
  "schema": "iqm-idle-schedule-t1-study-v1",
  "seed": {
-  "draw": "docs/evidence/anu_qrng/draw-2026-11-21T184244Z.json",
-  "index": 0,
+  "constant": "scripts/iqm_idle_schedule_probe.py CALIBRATION_STUDY_SEED",
   "value": 50182
  },
  "shots": 4000
