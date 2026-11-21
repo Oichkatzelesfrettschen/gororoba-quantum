@@ -218,3 +218,7 @@ The [circuit_params unitary comparison review](circuit-params-unitary-comparison
 The [line-native CCZ Grover case review](grover-line-ccz/reconciliation.md) (pull request 966) reconciles
 the findings of one reviewer and one red-teamer on [the brief](grover-line-ccz/brief.md) for
 `scripts/iqm_grover_line.py` and its Garnet case, fixed before the case spent credits.
+
+The [Grover results gap review](grover-line-gap-review/reconciliation.md) reconciles three low-effort
+reviewers' findings on the Garnet run, the gororoba-math degree theorems and the `math/` quasi-Riemann
+formalization, with the corrections they produced and the questions the records do not yet ask.
