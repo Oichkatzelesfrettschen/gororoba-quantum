@@ -52,7 +52,13 @@ def main(out: Path) -> None:
         difference = math.remainder(a["phase"] - b["phase"], 2 * math.pi)
         se = math.hypot(a["phase_se"], b["phase_se"])
         comparisons.append(
-            {"wait_cycles": wait, "runs": [a["run"], b["run"]], "difference": difference, "se": se, "z": difference / se}
+            {
+                "wait_cycles": wait,
+                "runs": [a["run"], b["run"]],
+                "difference": difference,
+                "se": se,
+                "z": difference / se,
+            }
         )
     record = {"schema": "qi-tuna17-q12-batch-phases-v1", "batches": fits, "comparisons": comparisons}
     out.write_text(json.dumps(record, indent=1) + "\n")

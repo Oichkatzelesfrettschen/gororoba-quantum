@@ -94,6 +94,7 @@ lint)
 	checked_files="$checked_files docs/evidence/a5-kernel-attachments/weight_slice_smooth_points.py docs/evidence/a5-kernel-attachments/e8_quadric_nilradical.py docs/evidence/a5-kernel-attachments/e8_component_geometry.py docs/evidence/a5-kernel-attachments/e8_birational_degree.py docs/evidence/a5-kernel-attachments/e8_toric_face_strata.py docs/evidence/a5-kernel-attachments/e8_relation_ideal_orders.py docs/evidence/a5-kernel-attachments/weight_slice_relation_membership.py docs/evidence/a5-kernel-attachments/iso_w8_relation_ideal_orders.py docs/evidence/a5-kernel-attachments/w8_component_models.py docs/evidence/a5-kernel-attachments/g2_derivation_tables.py docs/evidence/a5-char0-transfer/w8_component_arcs_qi.py docs/evidence/a5-char0-transfer/w8_component_arc_matrices_qi.py"
 	checked_files="$checked_files docs/evidence/a5-kernel-attachments/weight_slice_quadric_rings.py"
 	checked_files="$checked_files docs/evidence/qi-tuna17-interleaved-rounds/round_fits.py"
+	checked_files="$checked_files docs/evidence/qi-tuna17-interleaved-rounds/q12_batches.py"
 	# shellcheck disable=SC2086
 	"$PYTHON" ci/pinned_tool.py ruff check $code_dirs $checked_files
 	# shellcheck disable=SC2086
@@ -138,6 +139,7 @@ types)
 	typed_files="$typed_files ../docs/evidence/a5-kernel-attachments/weight_slice_smooth_points.py ../docs/evidence/a5-kernel-attachments/e8_quadric_nilradical.py ../docs/evidence/a5-kernel-attachments/e8_component_geometry.py ../docs/evidence/a5-kernel-attachments/e8_birational_degree.py ../docs/evidence/a5-kernel-attachments/e8_toric_face_strata.py ../docs/evidence/a5-kernel-attachments/e8_relation_ideal_orders.py ../docs/evidence/a5-kernel-attachments/weight_slice_relation_membership.py ../docs/evidence/a5-kernel-attachments/iso_w8_relation_ideal_orders.py ../docs/evidence/a5-kernel-attachments/w8_component_models.py ../docs/evidence/a5-kernel-attachments/g2_derivation_tables.py ../docs/evidence/a5-char0-transfer/w8_component_arcs_qi.py ../docs/evidence/a5-char0-transfer/w8_component_arc_matrices_qi.py"
 	typed_files="$typed_files ../docs/evidence/a5-kernel-attachments/weight_slice_quadric_rings.py"
 	typed_files="$typed_files ../docs/evidence/qi-tuna17-interleaved-rounds/round_fits.py"
+	typed_files="$typed_files ../docs/evidence/qi-tuna17-interleaved-rounds/q12_batches.py"
 	cd gororoba_quantum
 	# shellcheck disable=SC2086
 	"$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel $typed_files

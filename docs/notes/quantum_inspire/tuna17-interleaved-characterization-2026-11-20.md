@@ -40,8 +40,11 @@ against the case's 660.2 s, 0 credits; the series spanned about 21 hours of wall
   0.05 rad. The prediction of about -0.15 rad from the null-rotation scan refit
   ([refit](tuna17-null-rotation-scan-phase-refit.md)) is falsified on q12. `null` is the band's verdict, not zero
   rotation: the wait-0 offset lies 3.2 binomial standard errors from zero. Its error carries binomial variance only,
-  and its two batches (00 and 02, complementary triads of angles) ran 20.6 hours apart; each triad alone fixes a phase
-  with no degree of freedom left, so the analysis pools them without a separate comparison.
+  and its two batches (00 and 02, complementary triads of angles) ran 20.6 hours apart. Each triad alone fixes a phase
+  with its binomial error and no degree of freedom for a fit test, and the post-hoc split
+  `docs/evidence/qi-tuna17-interleaved-rounds/q12_batches.py` compares them: batch 00 reads +0.018 +- 0.012 rad and
+  batch 02 +0.037 +- 0.012, a difference of -0.019 +- 0.017 (z -1.1); at 25 cycles batches 01 and 03 differ by
+  -0.002 +- 0.020. The pooled offsets do not hide a shift between the days at that resolution.
 - Simultaneous against staggered excitation, descriptive: over 48 rows the all-driven crosstalk reading minus the
   interleaved fit at the same wait has a mean of 0.002, and the mean of the rows' own standardized differences is 0.36.
   That mean of z-scores is not a standard error of the mean difference, and the rows share anchors and fits, so the
