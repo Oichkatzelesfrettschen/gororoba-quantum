@@ -1,0 +1,33 @@
+{
+ "instructions": [
+  {
+   "args": {
+    "key": "c"
+   },
+   "locus": [
+    "QB8",
+    "QB4",
+    "QB1",
+    "QB3",
+    "QB12",
+    "QB10",
+    "QB17",
+    "QB11",
+    "QB15",
+    "QB13",
+    "QB9",
+    "QB14",
+    "QB20",
+    "QB18",
+    "QB16",
+    "QB19",
+    "QB6",
+    "QB2",
+    "QB7",
+    "QB5"
+   ],
+   "name": "measure"
+  }
+ ],
+ "name": "buffer-031"
+}

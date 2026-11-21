@@ -6,7 +6,7 @@ on Garnet as one 68-circuit job: the 36 circuits of the proposal and 32 buffer c
 built by `scripts/iqm_packed_pauli_case.py build DIR --calibration SRC` from Garnet's default calibration set
 `ea681de1-9661-41e5-bd6f-cb524fa056a6` (a live read on 2026-11-21, copied into the case's `calibration/`).
 `prediction.json`, bound by digest into `cases.json`, holds the per-circuit predictions. The only provider job so far is
-the `garnet:mock` job of the 36-circuit body (admission items below); nothing is submitted for the 68-circuit job, and
+the `garnet:mock` job of the 36-circuit body (admission items below); the `garnet:mock` job `01a1ffe7` of the 68-circuit body; no paid job is submitted, and
 it waits for the owner's approval.
 
 ## Question
@@ -116,7 +116,7 @@ tests carry `audit` and the unmarked tests cover one pair circuit, one buffer an
 |---|---|---|
 | Native ISA and map conformance | closed for the client compile | `build` and `check` verify every circuit; each cell's noiseless native distribution equals the logical cell's within 1e-9, and each cell's state at the barrier equals the logical preparation state |
 | IQM `barrier` in the job body | closed on the mock | `garnet:mock` job `01a1ff98` (owner AskUserQuestion 2026-11-21T19:31Z) completed the 36-circuit body at 2000 shots with the barrier; run record `results/iqm/runs/2026-11-21T193252Z-garnet_mock-packed-pauli-response-garnet-packed`; its bits are random and are not analyzed. The dynamic architecture lists no `barrier` gate, and acceptance on the mock station is the evidence; Garnet runs the same station-control release |
-| Buffer circuits in the job body | open | a circuit of one joint `measure` and no gate has not run on the mock; the 68-circuit body has no mock estimate |
+| Buffer circuits in the job body | closed on the mock | `garnet:mock` job `01a1ffe7` (owner AskUserQuestion 2026-11-21T20:53Z) completed the 68-circuit body (36 proposal circuits and 32 buffers) at 2000 shots, execution estimate 2.807 s (sweep) and 1.207 s (QPU); run record `results/iqm/runs/2026-11-21T205843Z-garnet_mock-packed-pauli-response-garnet-packed`; its bits are random and are not analyzed |
 | Served order of a job's circuits | closed by documentation | the repository's mirror of iqm-pulse "Concepts and classes" (`docs/notes/iqm/docs/iqm-pulse/concepts.md`, line 83) states that segments run in order and the whole sequence repeats once per shot; the mock estimate of the 36-circuit body reports `playlist_repeats` 2000. The circuits of one job therefore interleave shot by shot, and the buffers make each science circuit's predecessor a buffer |
 | Carryover | open, measured by the diagnostic | the buffer removes lag-one treatment-dependent carryover and leaves lag-two carryover through the buffer; `carryover_after_dense_minus_sparse` reads it per sentinel cell and for the register. The reset pilot measured initialization error after one active-reset cycle |
 | Execution timing and reset | open | the mock execution estimate of the 36-circuit body is 2.251 s (sweep) and 0.651 s (QPU); the real runtime of the 68-circuit job is unmeasured |

@@ -1,0 +1,17 @@
+{
+ "approval": "owner AskUserQuestion 2026-11-21T20:53Z: Mock, then review (Recommended)",
+ "body_sha256": "af1b668d47d0f8311ce2232fbda02379466890f69b9a8d047edb52807119dbff",
+ "cases_sha256": "12a17407ac83c02762c3cb90b6e3bfe5a80a8f59f50ca323ad109a78e13b153e",
+ "credit_before": {
+  "currentBalance": "26.75",
+  "expiresAt": "2026-12-01T00:00:00+00:00"
+ },
+ "expected_seconds": 5.111,
+ "job": "packed",
+ "job_id": "01a1ffe7-897a-7330-b300-cc2e16bfbe88",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "garnet:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-11-21T20:58:46Z"
+}
