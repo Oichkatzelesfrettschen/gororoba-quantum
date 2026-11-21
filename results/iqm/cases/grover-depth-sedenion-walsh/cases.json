@@ -8,6 +8,10 @@
      "sha256": "00505a1abae71ae9faf7bbdc7c32f316aed91ede306fa2e5e1a9e6c5c9d16472"
     },
     {
+     "file": "circuits/m101-k1-padded-c0.json",
+     "sha256": "c0bc14d2513ea379c78a2d3e14c5a5481dea5a7965c41c1f3ecf43217b934924"
+    },
+    {
      "file": "circuits/m101-k1-fused-c0.json",
      "sha256": "8e1bf73ddb5d6c68c1aadfa6f22f5a71fba286f61ab0573e887922c4c70a779c"
     },
@@ -48,12 +52,16 @@
      "sha256": "b0ce6a81dbb2f11b7d86cceefd85d97f2376a25fc1cedb1c4474cd6e521ad205"
     },
     {
+     "file": "circuits/m101-k1-padded-c1.json",
+     "sha256": "64a50e19f0c0ca3d18a65b5f0973537eee831e8e72ed579ca8ddd9c3004745d8"
+    },
+    {
      "file": "circuits/m101-k1-c1.json",
      "sha256": "d08481609ac14388996385d54b7e6200b65aee3ce6906deebe08c6ff305bd168"
     },
     {
-     "file": "circuits/k0.json",
-     "sha256": "ffb28015c914b4a6dede914a7c82c96a355a6bdb65886108a59bb0feecf8e10c"
+     "file": "circuits/r-m101-k1-c1.json",
+     "sha256": "c45632a70a39d0c5dc509dca488a4a17335c768efedd0b21b669717797fbb0b3"
     },
     {
      "file": "circuits/m101-k2.json",
@@ -68,6 +76,10 @@
      "sha256": "429b0c1bbc4949a77521eae9986a7d97d79222d1342d863729bd1ef5230dbea8"
     },
     {
+     "file": "circuits/k0.json",
+     "sha256": "ffb28015c914b4a6dede914a7c82c96a355a6bdb65886108a59bb0feecf8e10c"
+    },
+    {
      "file": "circuits/m011-k2.json",
      "sha256": "f1c44974845f7b811be5cf8a3beda4b68e164addfdd45f02b712c455404f6dcb"
     },
@@ -76,12 +88,16 @@
      "sha256": "1c033ffa60edf887d0a335ceb9018f245e73466d88620a7ced8fbdb00cab7413"
     },
     {
-     "file": "circuits/r-k0.json",
-     "sha256": "ec25b0f9bcbdfe860e69bd4663a46d86094a745cc9ca1593006af8d41f61a4cf"
+     "file": "circuits/r-m101-k1-c2.json",
+     "sha256": "7ba40490b9af5f4187ffb82b77fbc62262be3bb9fa5737d03f5c5334b930592c"
     },
     {
      "file": "circuits/m101-k1-c2.json",
      "sha256": "84d9794e0e2e9454e13a297a63aba011725ab86da92c70b0af138e45f3fd839d"
+    },
+    {
+     "file": "circuits/m101-k1-padded-c2.json",
+     "sha256": "608f5fa9a3b07fae42dd620f7e95479eb621d918ceac9ff7035b4d13e4bbe98e"
     },
     {
      "file": "circuits/m101-k1-fused-c2.json",
@@ -96,8 +112,8 @@
      "sha256": "96cc8be67d8d2bb7c6da4f1791c1cd5ba2d6e6f98fc63a4d0644d5cac4e01f6b"
     },
     {
-     "file": "circuits/r-m101-k1-c1.json",
-     "sha256": "c45632a70a39d0c5dc509dca488a4a17335c768efedd0b21b669717797fbb0b3"
+     "file": "circuits/r-m101-k1-c3.json",
+     "sha256": "6d1bc0d502ebf0c6c6388accbc8eb7a8856ec48d4f0cd0f980a5edb8efc5b450"
     },
     {
      "file": "circuits/ro-100.json",
@@ -124,11 +140,15 @@
      "sha256": "c7adb2d8beced8389b9508be7825a67f20f92b240db6fbc845e7a3fc13aaaba2"
     },
     {
+     "file": "circuits/m101-k1-padded-c3.json",
+     "sha256": "457aa32f9dc2541905a22bbea785503177defc0a9b3284c437a0fb423793c911"
+    },
+    {
      "file": "circuits/m101-k1-c3.json",
      "sha256": "c08fc85e35466d417c23654046a12cacce0ff5281b0081194c2b3bf9550cc1b2"
     }
    ],
-   "expected_seconds": 4.65,
+   "expected_seconds": 5.4,
    "job": "grover",
    "max_credits": {
     "garnet": 3.5,
@@ -146,8 +166,12 @@
   {
    "circuits": [
     {
-     "file": "circuits/s-id-c0.json",
-     "sha256": "9efb778b30c051afe18b62ccf64c2bd330c5d3c1f35935b3b595000ce00c10be"
+     "file": "circuits/s5-id-c0.json",
+     "sha256": "981af44e6e0af44f9975bc56a51e25e8e22d4b95063efb150f7a3c32947d9518"
+    },
+    {
+     "file": "circuits/s10-id-c0.json",
+     "sha256": "ee6a97c37290e202fe001351a290c2cf3c4a26a9a8ef0775f1cccbb0a47237b2"
     },
     {
      "file": "circuits/s5-row-c0.json",
@@ -246,11 +270,15 @@
      "sha256": "bf49b86e8b1227cd5f685e8392e220f50015d89985794b460236ef6870201b90"
     },
     {
-     "file": "circuits/s-id-c1.json",
-     "sha256": "856e6e4b0c0bbb9142a15dc2a34eed2f0f1978825bcf548f8401cab83f3ca1cc"
+     "file": "circuits/s10-id-c1.json",
+     "sha256": "ac816479d622d5d28aa1694e33a53f0972e0d394301f1e4d177acb363cc9adf4"
+    },
+    {
+     "file": "circuits/s5-id-c1.json",
+     "sha256": "274d3523550d7c2f0c9712fea43f2c44b187827a58c3e8893903e27a852e1aaa"
     }
    ],
-   "expected_seconds": 0.975,
+   "expected_seconds": 1.05,
    "job": "sedenion",
    "max_credits": {
     "garnet": 1.5,
@@ -266,7 +294,7 @@
    "shots": 1000
   }
  ],
- "prediction_sha256": "8cda3e8746d3394916893da80a8e9b73952f5b48f02a3d42c35947a109a05b57",
+ "prediction_sha256": "cb272ea7b60e7464dd55d81be75cf8536926abdc6d6934c274a15599151d390d",
  "qcs": [
   "garnet:mock",
   "garnet"

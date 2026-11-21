@@ -222,3 +222,8 @@ the findings of one reviewer and one red-teamer on [the brief](grover-line-ccz/b
 The [Grover results gap review](grover-line-gap-review/reconciliation.md) reconciles three low-effort
 reviewers' findings on the Garnet run, the gororoba-math degree theorems and the `math/` quasi-Riemann
 formalization, with the corrections they produced and the questions the records do not yet ask.
+
+The [Garnet follow-up case review](garnet-followup-case/reconciliation.md) (pull request 970) reconciles two
+reviewers' and one red-teamer's findings on [the brief](garnet-followup-case/brief.md) for
+`scripts/iqm_garnet_followup.py`, `gororoba_quantum/sedenion_sign_oracle.py` and the written case, fixed before
+the case spent credits.

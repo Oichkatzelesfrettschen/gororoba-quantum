@@ -1,42 +1,43 @@
-"""IQM Garnet follow-up case: Grover depth, single-qubit load, qubit-versus-position, and sedenion sign-row
-Walsh spectroscopy, built on the line-native CCZ compile of scripts/iqm_grover_line.py.
+"""IQM Garnet follow-up case: Grover depth, single-qubit load, qubit-versus-role, and sedenion sign-row Walsh
+spectroscopy, built on the line-native CCZ compile of scripts/iqm_grover_line.py.
 
 The retained grover-line-ccz run (docs/design/iqm-garnet-grover-line-ccz.md) leaves four questions this case
-answers in two jobs on one calibration set:
+answers in two jobs on one calibration set (the written case: docs/design/iqm-garnet-grover-depth-sedenion-walsh.md).
 
 Job "grover" (three qubits, the retained path FORWARD_PATH and its reversal):
-  m101-k1, m101-k1-fused, m101-k1-generic   one iteration three ways: line-native (14 CZ), the
-                     generic qiskit compile of the retained case (18 CZ, grover.generic at the retained
-                     seed grover.TRANSPILER_SEED) with its single-qubit runs fused into one prx per qubit
-                     between CZs ("fused"), and that compile as emitted ("generic"); fused against generic
-                     changes only the prx count at a fixed CZ sequence, line against fused changes the CZ
-                     sequence. Four copies each, in blocks L F G and G F L mirrored about the job's center,
-                     so a drift linear in position cancels from every pairwise contrast.
-  m101-k2, m101-k3, m011-k1, m011-k2, m011-k3, k0   the depth series on FORWARD_PATH: three depths test the
-                     geometric retention law lambda_k = A r^k that two depths fit exactly.
-  r-m101-k1, r-m011-k1, r-k0   the same circuits on the reversed path: each physical qubit takes another
-                     logical role, so a per-qubit error profile that follows the qubit stays and one that
-                     follows the role moves.
+  m101-k1 one iteration four ways, four copies each in blocks L P F G and G F P L mirrored about the job's
+                     center: line-native (L, 14 CZ, 22 prx); padded (P, the line arm with PAD_PAIRS identity prx
+                     pairs, 38 prx at the line's CZ sequence); fused (F, the retained 18-CZ generic compile at
+                     grover.TRANSPILER_SEED with each run of prx between CZs fused, 38 prx); generic (G, that
+                     compile as emitted, 68 prx). L - P and F - G each change only the prx count at a fixed CZ
+                     sequence; P - F changes the CZ sequence and the logical-to-physical measurement mapping
+                     together at equal prx count.
+  m101-k2, m101-k3, k0, m011-k1, m011-k2, m011-k3   the depth series, grouped at the job's center (not mirrored):
+                     three depths test the geometric retention law lambda_k = A r^k that two depths fit exactly;
+                     k0 is the reference of the unmarked-uniformity test.
+  r-m101-k1 (four copies), r-m011-k1 (two)   the reversed path: QB20 and QB17 exchange logical roles while QB16
+                     keeps the middle.
   ro-xyz             the eight readout preparations on FORWARD_PATH (the reversed arms measure the same qubits).
 
 Job "sedenion" (four qubits on a square):
-  s5-row, s5-trunc, s10-row, s10-trunc, s-id   H on every wire, a phase oracle, H on every wire. The row is
-                     the left sign row diag(cd_sign(16, m, x)) of the sedenion basis element e_m
-                     (gororoba_quantum/sedenion_sign_oracle.py): 8 CNOTs on the square for m = 5 and m = 10,
-                     whose two bits sit on opposite corners. Its ideal output is 9/16 on one string, 1/16 on
-                     seven, 0 on eight. trunc is the mutation: the degree-two truncation of the row's sign
-                     polynomial, realized by the same CNOT network with four of the eight phases set to zero, so
-                     the physical CZ sequence is identical and only virtual frames differ; its ideal output puts
-                     1/4 on four strings. id sets every phase to zero, the null arm, ideal output all zeros. Row
-                     and truncation run row, trunc, trunc, row per m; id opens and closes the job.
+  s5-row, s5-trunc, s5-id, s10-row, s10-trunc, s10-id   H on every wire, a phase oracle, H on every wire. The row
+                     is the left sign row diag(cd_sign(16, m, x)) of the sedenion basis element e_m
+                     (gororoba_quantum/sedenion_sign_oracle.py): 8 CNOTs on the square for m = 5 and m = 10, whose
+                     two bits sit on opposite corners; ideal output 9/16 on one string, 1/16 on seven, 0 on eight.
+                     trunc is the mutation, the degree-two truncation of the row's sign polynomial: the same CNOT
+                     network with four of the row's eight parity phases removed and the other four changed, so the
+                     CZ list is identical while the prx count falls (12 to 8); its ideal output puts 1/4 on four
+                     strings. id runs the same network with every phase zero, the null arm, ideal output 0000.
+                     Row, truncation and null run two copies each in mirrored order.
   ro4-wxyz           the sixteen readout preparations on the square.
 
-Path and square selection are fixed before any prediction: the Grover arms run on the retained case's path
-(no re-selection on this calibration) and its reversal; the square is the one of the calibration's squares
-whose predicted mean peak probability of the two rows is highest, labeled from its lowest-index qubit toward
-that qubit's lower-index square neighbor. Every prediction is the exact density matrix of
-iqm_grover_line.predicted's model (depolarizing PRX and CZ, idle T1 and T2 over the ASAP schedule,
-herald-conditioned readout), generalized here to four qubits.
+The Grover arms run on the retained case's path (no re-selection on this calibration) and its reversal; the
+square is SQUARE, which the rule (highest predicted mean peak probability of the two rows, labeled from its
+lowest-index qubit toward that qubit's lower-index square neighbor) chose on calibration set ea681de1 and which
+later rebuilds keep. Every prediction is the exact density matrix of iqm_grover_line.predicted's model
+(depolarizing PRX and CZ, idle T1 and T2 over the ASAP schedule, herald-conditioned readout), generalized here
+to four qubits. Native compiles drop the final Z frames, so they agree with their logical circuits in every
+computational-basis probability, not as unitaries.
 
 Usage: "$PYTHON" scripts/iqm_garnet_followup.py (build DIR --calibration SRC | check DIR | --self-test)
 """
@@ -78,10 +79,12 @@ FORWARD_PATH = ["QB20", "QB16", "QB17"]
 REVERSED_PATH = FORWARD_PATH[::-1]
 ROWS = (5, 10)
 COPIES = 4
+# Identity pairs that bring the line-native arm's 22 prx to the fused generic arm's 38.
+PAD_PAIRS = 8
 # The square the selection rule chose on calibration set ea681de1 (score 0.5115; the next three within 0.004).
 # A rebuild on a later calibration keeps it, so the square is never re-selected on the predicting calibration.
 SQUARE = ["QB11", "QB12", "QB17", "QB16"]
-KINDS = ("fused", "generic")
+KINDS = ("padded", "fused", "generic")
 DEPTHS = (("101", 2), ("101", 3), ("011", 1), ("011", 2), ("011", 3))
 H = grover.H
 X = grover.X
@@ -126,6 +129,30 @@ def fused(circuit: dict[str, Any], path: list[str], name: str) -> dict[str, Any]
     for p in range(len(path)):
         flush(p)
     out.append(measure)
+    return {"name": name, "instructions": out}
+
+
+def padded(circuit: dict[str, Any], pairs: int, name: str) -> dict[str, Any]:
+    """The circuit with an identity pair prx(pi/2, 0) prx(pi/2, pi) inserted on the first locus qubit before each
+    of its first `pairs` CZ: 2 * pairs more prx at the same CZ sequence, loci and measurement, and the same
+    unitary, since prx(theta, phi + pi) = prx(-theta, phi)."""
+    out: list[dict[str, Any]] = []
+    left = pairs
+    for op in circuit["instructions"]:
+        if op["name"] == "cz" and left:
+            qubit = op["locus"][0]
+            out.append({"name": "prx", "locus": [qubit], "args": {"angle": grover.angle(math.pi / 2), "phase": 0.0}})
+            out.append(
+                {
+                    "name": "prx",
+                    "locus": [qubit],
+                    "args": {"angle": grover.angle(math.pi / 2), "phase": grover.angle(math.pi)},
+                }
+            )
+            left -= 1
+        out.append(op)
+    if left:
+        raise ValueError(f"{name}: {pairs} pairs need {pairs} CZ")
     return {"name": name, "instructions": out}
 
 
@@ -310,6 +337,9 @@ def grover_arms() -> list[Arm]:
         name = "m101-k1" + ("" if kind == "line" else f"-{kind}") + f"-c{copy}"
         if kind == "line":
             return line("101", 1, path, name)
+        if kind == "padded":
+            base = grover.line_arm("101", 1, path, name)[1]
+            return {"name": name, "circuit": padded(base, PAD_PAIRS, name), "path": path, "marked": "101", "k": 1}
         generic = grover.generic("101", path, name)
         circuit = generic if kind == "generic" else fused(generic, path, name)
         return {"name": name, "circuit": circuit, "path": path, "marked": "101", "k": 1}
@@ -318,11 +348,15 @@ def grover_arms() -> list[Arm]:
     # every arm's summed position is equal and a drift linear in position cancels from each pairwise contrast.
     blocks = [
         [one_iteration(kind, copy) for kind in (order if copy in (0, 2) else order[::-1])]
-        for copy, order in zip(range(COPIES), [("line", "fused", "generic")] * COPIES, strict=True)
+        for copy, order in zip(range(COPIES), [("line", "padded", "fused", "generic")] * COPIES, strict=True)
     ]
-    depth = [line("000", 0, path, "k0"), *(line(m, k, path, f"m{m}-k{k}") for m, k in DEPTHS)]
+    # The depth arms sit in one block at the job's center (k0 in the middle); they are not mirrored, so a drift
+    # linear in position enters each depth statistic through offsets of at most three positions.
+    depth_arms = [line(m, k, path, f"m{m}-k{k}") for m, k in DEPTHS]
+    depth = [*depth_arms[:3], line("000", 0, path, "k0"), *depth_arms[3:]]
     reversed_first = [line("101", 1, rev, "r-m101-k1-c0"), line("011", 1, rev, "r-m011-k1-c0")]
-    reversed_last = [line("011", 1, rev, "r-m011-k1-c1"), line("101", 1, rev, "r-m101-k1-c1")]
+    reversed_mid = [line("101", 1, rev, "r-m101-k1-c1"), line("101", 1, rev, "r-m101-k1-c2")]
+    reversed_last = [line("011", 1, rev, "r-m011-k1-c1"), line("101", 1, rev, "r-m101-k1-c3")]
     readout = [
         {"name": c["name"], "circuit": c, "path": path, "marked": None, "k": None}
         for c in (readout_circuit("".join(b), path, "ro") for b in itertools.product("01", repeat=3))
@@ -332,8 +366,9 @@ def grover_arms() -> list[Arm]:
         + readout[:4]
         + reversed_first
         + blocks[1]
+        + reversed_mid[:1]
         + depth
-        + [line("000", 0, rev, "r-k0")]
+        + reversed_mid[1:]
         + blocks[2]
         + reversed_last
         + readout[4:]
@@ -356,13 +391,14 @@ def sedenion_arms(square: list[str]) -> list[Arm]:
         circuit, p = sedenion_circuit(m, kind, square, name)
         return {"name": name, "circuit": circuit, "path": square, "m": m, "kind": kind, "ideal": p}
 
-    first = [arm(ROWS[0], "id", "s-id-c0")]
+    # Each row's null runs its own network with every phase zero, so row, truncation and null share one CZ list.
+    first = [arm(m, "id", f"s{m}-id-c0") for m in ROWS]
     for m in ROWS:
         first += [arm(m, "row", f"s{m}-row-c0"), arm(m, "trunc", f"s{m}-trunc-c0")]
     last = []
     for m in reversed(ROWS):
         last += [arm(m, "trunc", f"s{m}-trunc-c1"), arm(m, "row", f"s{m}-row-c1")]
-    last.append(arm(ROWS[0], "id", "s-id-c1"))
+    last += [arm(m, "id", f"s{m}-id-c1") for m in reversed(ROWS)]
     readout = [
         {"name": c["name"], "circuit": c, "path": square, "m": None, "kind": None, "ideal": None}
         for c in (readout_circuit("".join(b), square, "ro4") for b in itertools.product("01", repeat=4))
@@ -499,62 +535,79 @@ def decision(arms: dict[str, Any], first: str, second: str, outcome: str, rule: 
         "rule": rule,
         "predicted": round(p1 - p2, 4),
         "se_at_planned_shots": round(se, 4),
-        "predicted_z": round((p1 - p2) / se, 1),
+        "predicted_z": round((p1 - p2) / se, 2),
     }
 
 
-def wrong_bits(arms: dict[str, Any], stem: str, marked: str) -> tuple[dict[str, float], float]:
-    """Per physical qubit, the probability that its measured bit differs from the marked bit, averaged over the
-    copies of an arm (bit q of an outcome key is the q-th qubit of the arm's measurement locus), and the kept
-    shots pooled."""
+def end_bits(arms: dict[str, Any], stem: str) -> tuple[float, float, float]:
+    """For an arm marked 101 (both end bits ideally 1), averaged over its copies: D = P(QB17 wrong) - P(QB20 wrong),
+    the per-shot variance of I(QB17 wrong) - I(QB20 wrong) from the joint outcome distribution (which carries
+    the covariance of two bits read in one shot), and the kept shots pooled."""
     copies = [a for name, a in arms.items() if name == stem or name.startswith(stem + "-c")]
-    out: dict[str, float] = {}
+    d = 0.0
+    second = 0.0
     for arm in copies:
-        for q, qubit in enumerate(arm["locus"]):
-            wrong = sum(p for outcome, p in arm["predicted"].items() if outcome[q] != marked[q])
-            out[qubit] = out.get(qubit, 0.0) + wrong / len(copies)
-    return out, SHOTS["grover"] * KEPT * len(copies)
+        q17, q20 = arm["locus"].index("QB17"), arm["locus"].index("QB20")
+        for outcome, p in arm["predicted"].items():
+            x = (outcome[q17] != "1") - (outcome[q20] != "1")
+            d += x * p / len(copies)
+            second += x * x * p / len(copies)
+    return d, second - d * d, SHOTS["grover"] * KEPT * len(copies)
 
 
 def role_decision(arms: dict[str, Any]) -> dict[str, Any]:
-    """D = w(QB17) - w(QB20) per path, pooled over m101-k1 and m011-k1. QB20 and QB17 exchange roles between
-    the paths while QB16 keeps the middle: the qubit hypothesis keeps the sign of D on the reversed path, the
-    role hypothesis flips it."""
-    per_path: dict[str, Any] = {}
-    for label, prefix in (("forward", ""), ("reversed", "r-")):
-        w = [wrong_bits(arms, f"{prefix}m{m}-k1", m) for m in grover.MARKS]
-        shots = sum(n for _, n in w)
-        mean = {q: sum(x[q] * n for x, n in w) / shots for q in w[0][0]}
-        d = mean["QB17"] - mean["QB20"]
-        se = math.sqrt((mean["QB17"] * (1 - mean["QB17"]) + mean["QB20"] * (1 - mean["QB20"])) / shots)
-        per_path[label] = {"wrong_bit": {q: round(v, 4) for q, v in mean.items()}, "D": round(d, 4), "se": round(se, 4)}
+    """QB20 and QB17 exchange logical roles between the two paths while QB16 keeps the middle. On mark 101 both
+    end bits are ideally 1, so D = w(QB17) - w(QB20) compares the two qubits alone; mark 011 mixes qubit quality
+    with the asymmetry of e01 and e10 and is reported, not decided."""
+    out: dict[str, Any] = {}
+    for label, stem in (("forward", "m101-k1"), ("reversed", "r-m101-k1")):
+        d, variance, shots = end_bits(arms, stem)
+        se = math.sqrt(variance / shots)
+        out[label] = {"D": round(d, 4), "se_paired": round(se, 4), "z": round(d / se, 2)}
     return {
         "rule": (
-            "D = w(QB17) - w(QB20) from raw frequencies on the reversed path, pooled over m101-k1 and m011-k1 "
-            "(two copies each): D > 3 se keeps QB20's advantage with the qubit, D < -3 se moves it with the role, "
-            "otherwise neither resolves; the forward D is reported beside (retained +0.024, corrected)"
+            "D = w(QB17) - w(QB20) from raw frequencies of the m101-k1 arms on each path (four copies each), with the "
+            "paired per-shot variance of I(QB17 wrong) - I(QB20 wrong); when the forward D resolves (|z| > 3), a "
+            "reversed D of the same sign resolved keeps the difference with the qubits, a reversed D of the "
+            "opposite sign resolved moves it with the roles, and anything else leaves the question open; the "
+            "m011 arms are reported beside"
         ),
-        "model": per_path,
-        "retained_corrected_wrong_bit": {"QB20": 0.154, "QB16": 0.180, "QB17": 0.178},
+        "model": out,
+        "retained_corrected_wrong_bit_m101_k1": {"QB20": 0.1542, "QB16": 0.18, "QB17": 0.1775},
+        "retained_corrected_wrong_bit_m011_k1": {"QB20": 0.1961, "QB16": 0.1833, "QB17": 0.1702},
     }
 
 
 def decisions(arms: dict[str, Any]) -> dict[str, Any]:
     out: dict[str, Any] = {
         "z_resolve": grover.Z_RESOLVE,
-        "prx_load": decision(
+        "prx_load_generic": decision(
             arms,
             "m101-k1-fused",
             "m101-k1-generic",
             "101",
-            "P(101) of fused minus generic, four copies each: the effect of 30 prx at a fixed 18-CZ sequence",
+            "P(101) of fused minus generic, four copies each: 30 prx at the fixed 18-CZ generic sequence",
         ),
-        "cz_sequence": decision(
+        "prx_load_line": decision(
             arms,
             "m101-k1",
+            "m101-k1-padded",
+            "101",
+            "P(101) of line minus padded line, four copies each: 16 identity-pair prx at the fixed 14-CZ line sequence",
+        ),
+        "cz_sequence_and_role": decision(
+            arms,
+            "m101-k1-padded",
             "m101-k1-fused",
             "101",
-            "P(101) of line minus fused: 14 CZ and 22 prx against 18 CZ and 38 prx",
+            (
+                "P(101) of padded line minus fused generic, both 38 prx: 14 against 18 CZ on different loci, with a "
+                "different logical-to-physical measurement mapping; it does not separate the CZ sequence from the role"
+            ),
+        ),
+        "k0_reference": (
+            "the corrected uniformity Wald statistic of k0 (7 degrees of freedom) is the reference of the unmarked "
+            "uniformity test of every Grover arm, as in the retained analysis"
         ),
     }
     for marked in grover.MARKS:
@@ -569,7 +622,8 @@ def decisions(arms: dict[str, Any]) -> dict[str, Any]:
             "rule": (
                 "f = lambda_3 - lambda_2^2 / lambda_1 from raw marked frequencies, decided against the model's f "
                 "(raw frequencies carry readout, so the model's f is not zero); resolves at z 3; the readout-"
-                "corrected f, zero under lambda_k = A r^k, is reported beside"
+                "corrected f, zero under lambda_k = A r^k, is reported beside; the depth arms are centrally "
+                "grouped, not mirrored"
             ),
             "predicted_lambda": {str(k): round(v, 4) for k, v in lam.items()},
             "predicted": round(lam[3] - lam[2] ** 2 / lam[1], 4),
@@ -578,14 +632,18 @@ def decisions(arms: dict[str, Any]) -> dict[str, Any]:
         }
     out["role_or_qubit"] = role_decision(arms)
     for m in ROWS:
+        peak = arms[f"s{m}-row-c0"]["row_peak"]
         out[f"sedenion_{m}"] = decision(
             arms,
             f"s{m}-row",
             f"s{m}-trunc",
-            arms[f"s{m}-row-c0"]["row_peak"],
-            f"P(row peak) of row minus truncation for e_{m}, two copies each on one CZ sequence",
+            peak,
+            (
+                f"P(row peak) of row minus truncation for e_{m}, two copies each on one CZ list; the most frequent "
+                "string of the row arms must be the row peak"
+            ),
         )
-        out[f"sedenion_{m}"]["null_floor"] = round(pooled(arms, "s-id", arms[f"s{m}-row-c0"]["row_peak"])[0], 4)
+        out[f"sedenion_{m}"]["null_floor"] = round(pooled(arms, f"s{m}-id", peak)[0], 4)
     return out
 
 
@@ -631,6 +689,12 @@ def self_test() -> str:
         p = ideal(grover.line_arm(marked, k, path, "t")[1], path)[int(marked[::-1], 2)]
         if abs(p - ideal_probability(k)) > 1e-9:
             raise AssertionError(f"line m{marked}-k{k}: P(marked) {p}")
+    line_circuit = grover.line_arm("101", 1, path, "l")[1]
+    pad = padded(line_circuit, PAD_PAIRS, "p")
+    if count(pad, "prx") != count(merged, "prx") or count(pad, "cz") != count(line_circuit, "cz"):
+        raise AssertionError(f"padded line has {count(pad, 'prx')} prx and {count(pad, 'cz')} CZ")
+    if float(np.max(np.abs(ideal(pad, path) - ideal(line_circuit, path)))) > 1e-9:
+        raise AssertionError("the identity pairs change the padded line's distribution")
     reversed_line = grover.line_arm("101", 1, path[::-1], "r")[1]
     forward_line = grover.line_arm("101", 1, path, "f")[1]
     if reversed_line["instructions"][-1]["locus"] == forward_line["instructions"][-1]["locus"]:
@@ -649,7 +713,11 @@ def self_test() -> str:
                 raise AssertionError(f"e_{m} {kind}: {count(circuit, 'cz')} CZ")
             peaks[kind] = got
         top = int(np.argmax(peaks["row"]))
-        if abs(peaks["row"][top] - 9 / 16) > 1e-9 or peaks["trunc"][top] > 0.25 + 1e-9 or peaks["id"][0] < 1 - 1e-9:
+        if (
+            abs(peaks["row"][top] - 9 / 16) > 1e-9
+            or abs(peaks["trunc"][top] - 0.25) > 1e-9
+            or peaks["id"][0] < 1 - 1e-9
+        ):
             raise AssertionError(f"e_{m}: peak {peaks['row'][top]}, truncation {peaks['trunc'][top]}")
         loci = [
             [op["locus"] for op in sedenion_circuit(m, kind, square, "s")[0]["instructions"] if op["name"] == "cz"]

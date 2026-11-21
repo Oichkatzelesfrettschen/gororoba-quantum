@@ -3,12 +3,15 @@
 Tests that read the retained case carry audit; the others build their input here."""
 
 import json
+import shutil
+from pathlib import Path
 
 import iqm_garnet_followup as followup
 import iqm_grover_line as grover
 import numpy as np
 import pytest
 
+import iqm_records
 import sedenion_sign_oracle as sed
 
 
@@ -61,7 +64,31 @@ def test_retained_case_mirrors_its_contrasts() -> None:
     case = json.loads((followup.ROOT / "results/iqm/cases" / followup.CASE / "cases.json").read_text())
     for job in case["jobs"]:
         names = [c["file"].split("/")[-1].removesuffix(".json").rsplit("-c", 1)[0] for c in job["circuits"]]
-        for stem in {n for n in names if n.startswith(("m101-k1", "r-m", "s5-", "s10-", "s-id"))}:
+        for stem in {n for n in names if n.startswith(("m101-k1", "r-m", "s5-", "s10-"))}:
             positions = [i for i, n in enumerate(names) if n == stem]
             if sum(positions) * 2 != (len(names) - 1) * len(positions):
                 raise AssertionError(f"{job['job']}: {stem} positions {positions} are not mirrored")
+
+
+@pytest.mark.audit
+def test_each_row_null_shares_the_row_cz_list() -> None:
+    case_dir = followup.ROOT / "results/iqm/cases" / followup.CASE
+
+    def loci(name: str) -> list[list[str]]:
+        circuit = json.loads((case_dir / "circuits" / f"{name}.json").read_text())
+        return [op["locus"] for op in circuit["instructions"] if op["name"] == "cz"]
+
+    for m in followup.ROWS:
+        if not loci(f"s{m}-row-c0") == loci(f"s{m}-trunc-c0") == loci(f"s{m}-id-c0") == loci(f"s{m}-id-c1"):
+            raise AssertionError(f"e_{m}: the null or truncation runs another CZ list")
+
+
+@pytest.mark.audit
+def test_an_altered_prediction_fails_the_case_binding(tmp_path: Path) -> None:
+    case_dir = tmp_path / "case"
+    shutil.copytree(followup.ROOT / "results/iqm/cases" / followup.CASE, case_dir)
+    iqm_records.load_job(case_dir, "grover")
+    prediction = case_dir / "prediction.json"
+    prediction.write_text(prediction.read_text().replace('"z_resolve": 3.0', '"z_resolve": 2.0'))
+    with pytest.raises(iqm_records.RecordError, match="prediction.json"):
+        iqm_records.load_job(case_dir, "grover")

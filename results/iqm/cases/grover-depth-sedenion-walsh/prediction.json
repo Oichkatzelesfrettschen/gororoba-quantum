@@ -384,6 +384,102 @@
    "predicted_marked": 0.643030521,
    "prx": 68
   },
+  "m101-k1-padded-c0": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "predicted": {
+    "000": 0.042080371,
+    "001": 0.061601238,
+    "010": 0.041898667,
+    "011": 0.043645255,
+    "100": 0.054233812,
+    "101": 0.669637514,
+    "110": 0.041189288,
+    "111": 0.045713856
+   },
+   "predicted_marked": 0.669637514,
+   "prx": 38
+  },
+  "m101-k1-padded-c1": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "predicted": {
+    "000": 0.042080371,
+    "001": 0.061601238,
+    "010": 0.041898667,
+    "011": 0.043645255,
+    "100": 0.054233812,
+    "101": 0.669637514,
+    "110": 0.041189288,
+    "111": 0.045713856
+   },
+   "predicted_marked": 0.669637514,
+   "prx": 38
+  },
+  "m101-k1-padded-c2": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "predicted": {
+    "000": 0.042080371,
+    "001": 0.061601238,
+    "010": 0.041898667,
+    "011": 0.043645255,
+    "100": 0.054233812,
+    "101": 0.669637514,
+    "110": 0.041189288,
+    "111": 0.045713856
+   },
+   "predicted_marked": 0.669637514,
+   "prx": 38
+  },
+  "m101-k1-padded-c3": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "predicted": {
+    "000": 0.042080371,
+    "001": 0.061601238,
+    "010": 0.041898667,
+    "011": 0.043645255,
+    "100": 0.054233812,
+    "101": 0.669637514,
+    "110": 0.041189288,
+    "111": 0.045713856
+   },
+   "predicted_marked": 0.669637514,
+   "prx": 38
+  },
   "m101-k2": {
    "cz": 28,
    "ideal_marked": 0.9453125000000001,
@@ -431,30 +527,6 @@
    },
    "predicted_marked": 0.26497427,
    "prx": 62
-  },
-  "r-k0": {
-   "cz": 0,
-   "ideal_marked": 0.12499999999999997,
-   "iterations": 0,
-   "job": "grover",
-   "locus": [
-    "QB17",
-    "QB16",
-    "QB20"
-   ],
-   "marked": "000",
-   "predicted": {
-    "000": 0.130241849,
-    "001": 0.124327609,
-    "010": 0.127922221,
-    "011": 0.122113315,
-    "100": 0.127864691,
-    "101": 0.122058397,
-    "110": 0.1255874,
-    "111": 0.119884518
-   },
-   "predicted_marked": 0.130241849,
-   "prx": 3
   },
   "r-m011-k1-c0": {
    "cz": 14,
@@ -529,6 +601,54 @@
    "prx": 22
   },
   "r-m101-k1-c1": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB17",
+    "QB16",
+    "QB20"
+   ],
+   "marked": "101",
+   "predicted": {
+    "000": 0.041272085,
+    "001": 0.053418399,
+    "010": 0.041253851,
+    "011": 0.041337953,
+    "100": 0.062070661,
+    "101": 0.676200805,
+    "110": 0.04173617,
+    "111": 0.042710077
+   },
+   "predicted_marked": 0.676200805,
+   "prx": 22
+  },
+  "r-m101-k1-c2": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB17",
+    "QB16",
+    "QB20"
+   ],
+   "marked": "101",
+   "predicted": {
+    "000": 0.041272085,
+    "001": 0.053418399,
+    "010": 0.041253851,
+    "011": 0.041337953,
+    "100": 0.062070661,
+    "101": 0.676200805,
+    "110": 0.04173617,
+    "111": 0.042710077
+   },
+   "predicted_marked": 0.676200805,
+   "prx": 22
+  },
+  "r-m101-k1-c3": {
    "cz": 14,
    "ideal_marked": 0.7812499999999999,
    "iterations": 1,
@@ -1176,7 +1296,7 @@
    },
    "prx": 4
   },
-  "s-id-c0": {
+  "s10-id-c0": {
    "cz": 8,
    "ideal": {
     "0000": 1.0
@@ -1189,30 +1309,30 @@
     "QB17",
     "QB16"
    ],
-   "m": 5,
+   "m": 10,
    "predicted": {
-    "0000": 0.943540056,
-    "0001": 0.014797174,
-    "0010": 0.00690577,
-    "0011": 0.003791806,
-    "0100": 0.014299692,
-    "0101": 0.000346979,
-    "0110": 0.003795644,
-    "0111": 0.003688092,
-    "1000": 0.002638926,
-    "1001": 0.002022558,
-    "1010": 4.2615e-05,
-    "1011": 3.9989e-05,
-    "1100": 0.002027957,
-    "1101": 0.001983287,
-    "1110": 4.0098e-05,
-    "1111": 3.9359e-05
+    "0000": 0.948750418,
+    "0001": 0.006482851,
+    "0010": 0.012729371,
+    "0011": 0.003345107,
+    "0100": 0.004896199,
+    "0101": 5.901e-05,
+    "0110": 0.002543574,
+    "0111": 5.0413e-05,
+    "1000": 0.009411272,
+    "1001": 0.003289613,
+    "1010": 0.000226842,
+    "1011": 0.003192404,
+    "1100": 0.002499119,
+    "1101": 4.9667e-05,
+    "1110": 0.002425569,
+    "1111": 4.8572e-05
    },
-   "predicted_row_peak": 0.002022558,
+   "predicted_row_peak": 0.002543574,
    "prx": 4,
-   "row_peak": "1001"
+   "row_peak": "0110"
   },
-  "s-id-c1": {
+  "s10-id-c1": {
    "cz": 8,
    "ideal": {
     "0000": 1.0
@@ -1225,28 +1345,28 @@
     "QB17",
     "QB16"
    ],
-   "m": 5,
+   "m": 10,
    "predicted": {
-    "0000": 0.943540056,
-    "0001": 0.014797174,
-    "0010": 0.00690577,
-    "0011": 0.003791806,
-    "0100": 0.014299692,
-    "0101": 0.000346979,
-    "0110": 0.003795644,
-    "0111": 0.003688092,
-    "1000": 0.002638926,
-    "1001": 0.002022558,
-    "1010": 4.2615e-05,
-    "1011": 3.9989e-05,
-    "1100": 0.002027957,
-    "1101": 0.001983287,
-    "1110": 4.0098e-05,
-    "1111": 3.9359e-05
+    "0000": 0.948750418,
+    "0001": 0.006482851,
+    "0010": 0.012729371,
+    "0011": 0.003345107,
+    "0100": 0.004896199,
+    "0101": 5.901e-05,
+    "0110": 0.002543574,
+    "0111": 5.0413e-05,
+    "1000": 0.009411272,
+    "1001": 0.003289613,
+    "1010": 0.000226842,
+    "1011": 0.003192404,
+    "1100": 0.002499119,
+    "1101": 4.9667e-05,
+    "1110": 0.002425569,
+    "1111": 4.8572e-05
    },
-   "predicted_row_peak": 0.002022558,
+   "predicted_row_peak": 0.002543574,
    "prx": 4,
-   "row_peak": "1001"
+   "row_peak": "0110"
   },
   "s10-row-c0": {
    "cz": 8,
@@ -1411,6 +1531,78 @@
    "predicted_row_peak": 0.228862057,
    "prx": 8,
    "row_peak": "0110"
+  },
+  "s5-id-c0": {
+   "cz": 8,
+   "ideal": {
+    "0000": 1.0
+   },
+   "job": "sedenion",
+   "kind": "id",
+   "locus": [
+    "QB11",
+    "QB12",
+    "QB17",
+    "QB16"
+   ],
+   "m": 5,
+   "predicted": {
+    "0000": 0.943540056,
+    "0001": 0.014797174,
+    "0010": 0.00690577,
+    "0011": 0.003791806,
+    "0100": 0.014299692,
+    "0101": 0.000346979,
+    "0110": 0.003795644,
+    "0111": 0.003688092,
+    "1000": 0.002638926,
+    "1001": 0.002022558,
+    "1010": 4.2615e-05,
+    "1011": 3.9989e-05,
+    "1100": 0.002027957,
+    "1101": 0.001983287,
+    "1110": 4.0098e-05,
+    "1111": 3.9359e-05
+   },
+   "predicted_row_peak": 0.002022558,
+   "prx": 4,
+   "row_peak": "1001"
+  },
+  "s5-id-c1": {
+   "cz": 8,
+   "ideal": {
+    "0000": 1.0
+   },
+   "job": "sedenion",
+   "kind": "id",
+   "locus": [
+    "QB11",
+    "QB12",
+    "QB17",
+    "QB16"
+   ],
+   "m": 5,
+   "predicted": {
+    "0000": 0.943540056,
+    "0001": 0.014797174,
+    "0010": 0.00690577,
+    "0011": 0.003791806,
+    "0100": 0.014299692,
+    "0101": 0.000346979,
+    "0110": 0.003795644,
+    "0111": 0.003688092,
+    "1000": 0.002638926,
+    "1001": 0.002022558,
+    "1010": 4.2615e-05,
+    "1011": 3.9989e-05,
+    "1100": 0.002027957,
+    "1101": 0.001983287,
+    "1110": 4.0098e-05,
+    "1111": 3.9359e-05
+   },
+   "predicted_row_peak": 0.002022558,
+   "prx": 4,
+   "row_peak": "1001"
   },
   "s5-row-c0": {
    "cz": 8,
@@ -1579,10 +1771,10 @@
  },
  "calibration_set": "ea681de1-9661-41e5-bd6f-cb524fa056a6",
  "decisions": {
-  "cz_sequence": {
-   "predicted": 0.0201,
-   "predicted_z": 3.5,
-   "rule": "P(101) of line minus fused: 14 CZ and 22 prx against 18 CZ and 38 prx",
+  "cz_sequence_and_role": {
+   "predicted": 0.0116,
+   "predicted_z": 2.04,
+   "rule": "P(101) of padded line minus fused generic, both 38 prx: 14 against 18 CZ on different loci, with a different logical-to-physical measurement mapping; it does not separate the CZ sequence from the role",
    "se_at_planned_shots": 0.0057
   },
   "depth_law_011": {
@@ -1593,7 +1785,7 @@
     "3": 0.7081
    },
    "resolvable_deviation": 0.124,
-   "rule": "f = lambda_3 - lambda_2^2 / lambda_1 from raw marked frequencies, decided against the model's f (raw frequencies carry readout, so the model's f is not zero); resolves at z 3; the readout-corrected f, zero under lambda_k = A r^k, is reported beside",
+   "rule": "f = lambda_3 - lambda_2^2 / lambda_1 from raw marked frequencies, decided against the model's f (raw frequencies carry readout, so the model's f is not zero); resolves at z 3; the readout-corrected f, zero under lambda_k = A r^k, is reported beside; the depth arms are centrally grouped, not mirrored",
    "se_at_planned_shots": 0.0415
   },
   "depth_law_101": {
@@ -1604,55 +1796,59 @@
     "3": 0.6825
    },
    "resolvable_deviation": 0.122,
-   "rule": "f = lambda_3 - lambda_2^2 / lambda_1 from raw marked frequencies, decided against the model's f (raw frequencies carry readout, so the model's f is not zero); resolves at z 3; the readout-corrected f, zero under lambda_k = A r^k, is reported beside",
+   "rule": "f = lambda_3 - lambda_2^2 / lambda_1 from raw marked frequencies, decided against the model's f (raw frequencies carry readout, so the model's f is not zero); resolves at z 3; the readout-corrected f, zero under lambda_k = A r^k, is reported beside; the depth arms are centrally grouped, not mirrored",
    "se_at_planned_shots": 0.0405
   },
-  "prx_load": {
+  "k0_reference": "the corrected uniformity Wald statistic of k0 (7 degrees of freedom) is the reference of the unmarked uniformity test of every Grover arm, as in the retained analysis",
+  "prx_load_generic": {
    "predicted": 0.015,
    "predicted_z": 2.6,
-   "rule": "P(101) of fused minus generic, four copies each: the effect of 30 prx at a fixed 18-CZ sequence",
+   "rule": "P(101) of fused minus generic, four copies each: 30 prx at the fixed 18-CZ generic sequence",
    "se_at_planned_shots": 0.0058
+  },
+  "prx_load_line": {
+   "predicted": 0.0085,
+   "predicted_z": 1.5,
+   "rule": "P(101) of line minus padded line, four copies each: 16 identity-pair prx at the fixed 14-CZ line sequence",
+   "se_at_planned_shots": 0.0057
   },
   "role_or_qubit": {
    "model": {
     "forward": {
-     "D": -0.0054,
-     "se": 0.0041,
-     "wrong_bit": {
-      "QB16": 0.1693,
-      "QB17": 0.1752,
-      "QB20": 0.1806
-     }
+     "D": -0.0101,
+     "se_paired": 0.0038,
+     "z": -2.66
     },
     "reversed": {
-     "D": -0.0137,
-     "se": 0.0046,
-     "wrong_bit": {
-      "QB16": 0.1717,
-      "QB17": 0.1727,
-      "QB20": 0.1863
-     }
+     "D": -0.0091,
+     "se_paired": 0.0038,
+     "z": -2.38
     }
    },
-   "retained_corrected_wrong_bit": {
-    "QB16": 0.18,
-    "QB17": 0.178,
-    "QB20": 0.154
+   "retained_corrected_wrong_bit_m011_k1": {
+    "QB16": 0.1833,
+    "QB17": 0.1702,
+    "QB20": 0.1961
    },
-   "rule": "D = w(QB17) - w(QB20) from raw frequencies on the reversed path, pooled over m101-k1 and m011-k1 (two copies each): D > 3 se keeps QB20's advantage with the qubit, D < -3 se moves it with the role, otherwise neither resolves; the forward D is reported beside (retained +0.024, corrected)"
+   "retained_corrected_wrong_bit_m101_k1": {
+    "QB16": 0.18,
+    "QB17": 0.1775,
+    "QB20": 0.1542
+   },
+   "rule": "D = w(QB17) - w(QB20) from raw frequencies of the m101-k1 arms on each path (four copies each), with the paired per-shot variance of I(QB17 wrong) - I(QB20 wrong); when the forward D resolves (|z| > 3), a reversed D of the same sign resolved keeps the difference with the qubits, a reversed D of the opposite sign resolved moves it with the roles, and anything else leaves the question open; the m011 arms are reported beside"
   },
   "sedenion_10": {
-   "null_floor": 0.0038,
+   "null_floor": 0.0025,
    "predicted": 0.2836,
-   "predicted_z": 18.0,
-   "rule": "P(row peak) of row minus truncation for e_10, two copies each on one CZ sequence",
+   "predicted_z": 17.97,
+   "rule": "P(row peak) of row minus truncation for e_10, two copies each on one CZ list; the most frequent string of the row arms must be the row peak",
    "se_at_planned_shots": 0.0158
   },
   "sedenion_5": {
    "null_floor": 0.002,
    "predicted": 0.2833,
-   "predicted_z": 18.0,
-   "rule": "P(row peak) of row minus truncation for e_5, two copies each on one CZ sequence",
+   "predicted_z": 17.97,
+   "rule": "P(row peak) of row minus truncation for e_5, two copies each on one CZ list; the most frequent string of the row arms must be the row peak",
    "se_at_planned_shots": 0.0158
   },
   "z_resolve": 3.0

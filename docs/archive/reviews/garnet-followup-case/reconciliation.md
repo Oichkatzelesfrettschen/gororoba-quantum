@@ -1,0 +1,34 @@
+# Reconciliation: review of the Garnet follow-up case (pull request 970)
+
+codex (gpt-daybreak-blue, high) and grok reviewed head 377f7175e on [the brief](brief.md); opencode red-teamed
+the same head on the red-team variant of the brief through `workspace/opencode-redteam.sh` in
+gororoba-infrastructure, where the first model in its list, `opencode-go/beam-free`, answered. Verdicts:
+confirmed (the source or a recomputation agrees), partly confirmed, refuted (with the refuting source). Every
+fix lands in the commit that files this record; no job had been submitted.
+
+| # | Reviewer | Finding | Verdict | Check | Disposition |
+|---|---|---|---|---|---|
+| F1 | codex, grok | Line minus fused does not isolate the CZ sequence: it changes 4 CZ, 16 prx and the logical-to-physical measurement mapping (line measures QB20, QB16, QB17; fused QB16, QB17, QB20). Under the model the 16 prx carry 0.008 of the 0.020 contrast. | Confirmed. | Loci and counts from the retained circuit files; model P(101) 0.678, 0.658, 0.643 give 4.99e-4 per prx. | A padded line arm (line plus 8 identity prx pairs, 38 prx at 14 CZ, four mirrored copies) makes a two-by-two design: line minus padded and fused minus generic each change only prx count; padded minus fused is named `cz_sequence_and_role` and read as the joint effect. |
+| F2 | codex, grok | The e_10 null arm ran e_5's network (`sedenion_arms` built both `s-id` copies from `ROWS[0]`), so e_10's floor came from another CZ list; the per-m self-test missed it. | Confirmed. | Retained loci: `s-id` matched e_5's row and differed from e_10's. | `s5-id` and `s10-id`, two mirrored copies each; an audit test compares the retained CZ loci of row, truncation and both null copies per row. |
+| F3 | codex, grok | The role statistic's SE adds two Bernoulli variances and omits Cov(I17, I20) of two bits read in one shot (true SE about 0.0037 against 0.0046). | Confirmed. | Paired per-shot variance from the joint predicted distributions. | `end_bits` computes D and the paired variance from the joint outcome distribution. |
+| F4 | grok | Pooling m101-k1 with m011-k1 sums opposite-sign estimands: on mark 101 both ends are ideally 1, on 011 they are 0 and 1, so D mixes qubit quality with the e01 and e10 asymmetry. Retained corrected D: +0.023 (m101), -0.026 (m011). A resolved negative pool is what the calibration model predicts, and the rule would have labeled it "role". | Confirmed. | `results/iqm/grover_line_ccz_analysis.json` wrong-bit rates per arm. | The decision reads m101 alone, forward (four copies) and reversed (four copies, two added): with the forward D resolved, a resolved reversed D of the same sign keeps the difference with the qubits, of the opposite sign moves it with the roles; m011 arms are reported. The design quotes both retained values. |
+| F5 | codex | `prediction_sha256` is recorded, but nothing enforces it: submission hashes only cases.json and the circuits, and the analysis reader trusts the copied prediction. | Confirmed. | `iqm_records.validate_job` and `iqm_jobs.post_job`. | `validate_job`, which submission, the run copy and the analysis reader all pass through, refuses a case whose prediction.json differs from the bound digest; an audit test alters a copy and expects the refusal. |
+| F6 | codex, grok | The depth arms are not position-balanced, while the design said every contrast is mirrored. | Confirmed. | Positions in cases.json. | Narrowed: the depth arms and k0 form one central block, at most three positions off center (about 0.0006 at the retained slope against SE 0.041); the design and the rule say "centrally grouped, not mirrored". |
+| F7 | codex | k0 and r-k0 enter no decision. | Partly confirmed: k0 is the reference of the unmarked-uniformity Wald test in the retained analysis, and no decision named it. | `decisions()`. | r-k0 removed; k0 registered as the Wald reference (`k0_reference`). |
+| F8 | codex, grok, opencode | "The unitary agrees to 7e-11" is false: fusion and the native compile drop final Z frames, so only computational-basis probabilities agree (3.6e-11 on all 8 inputs); the operators differ at order 1. | Confirmed. | Recomputed by codex and grok. | The design and the builder's docstring state probability agreement and the dropped frames. |
+| F9 | codex, grok | "38 is the floor" holds for frame fusion at this CZ sequence only. | Confirmed. | Per-qubit segment counts 8, 18, 12. | Stated so, with the unsearched resynthesis named. |
+| F10 | codex, opencode | "Only the virtual frames differ" between row and truncation is false: prx counts are 12, 8 and 4; and the truncation reweights its four remaining phases (e_5, parity 3: 2 to 4 eighths of pi). | Confirmed. | `phase_eighths` of row and truncation. | Wording corrected in the design and the builder. |
+| F11 | grok | core-776 checks the truncation's peak value only from above (`> 0.25`), so a value below 1/4 would pass. | Confirmed (latent; the value is 0.25). | `self_test`. | Equality check. |
+| F12 | grok | The credit forecast scaled billed seconds; the retained runtime was 1.27 s against a 2.14 s estimate, so "runtime tracked 2.14 s" is wrong. | Confirmed. | Retained results.json metrics. | The forecast scales the measured runtime: about 2.0 credits for the revised 172,000 shots, marked as an extrapolation from one job. |
+| F13 | grok | The resolution table printed 0.34 and 0.36 for "z 2.6". | Partly refuted: the second was z 2.64 (0.359); the table printed both z to one digit. | Normal tail. | z printed to two digits (`predicted_z` rounds to 2). |
+| F14 | opencode | The prx-load decision is underpowered under the model. | Confirmed; stated in the case before review. | Pre-flight table. | Kept, with the second prx contrast; the design states both resolution probabilities. |
+| F15 | opencode | The mirror test covers only some stems. | Confirmed for the depth arms (F6). | Test source. | The test covers every mirrored stem; the depth block is named as unmirrored. |
+| F16 | ci (tests check) | The three replayed case paths of core-777 were neither bound nor exempt in `ci/runner_image_records.json`. | Confirmed. | `tests/ci/test_runner_image_records.py`. | Exempt entries beside the retained grover-line-ccz case's. |
+
+Conjectures from the reviews, recorded as hypotheses for later work: square-dihedral relabelings partition the
+sedenion rows into network classes (codex; grok found e_5 and e_10 not related by a rotation); the trailing
+CNOT of the square popcount-2 networks only restores the permutation, so a stop at full coverage with a linear
+relabeling costs 7 CZ (grok, computed for e_5 and e_10); a 9/16 Walsh peak keeps its mode under per-qubit
+readout asymmetry while a flat truncation spectrum loses it (grok, computed for this model).
+
+The opencode chain recorded one attempt (`opencode-go/beam-free`, ok, 8127 characters); codex and grok exited 0.
