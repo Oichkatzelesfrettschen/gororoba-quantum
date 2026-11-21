@@ -1,0 +1,87 @@
+{
+ "schema": "qi-tuna17-q12-batch-phases-v1",
+ "batches": [
+  {
+   "run": "2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-q12_phase-batch-00",
+   "wait_cycles": 0,
+   "angles": [
+    0.0,
+    2.0943951023931953,
+    4.1887902047863905
+   ],
+   "phase": 0.017909675437145688,
+   "phase_se": 0.011851338733716023,
+   "amplitude": 0.47224370433837576,
+   "offset": 0.49609375000000006,
+   "chi_square": 7.224256419858923e-27,
+   "dof": 0
+  },
+  {
+   "run": "2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-q12_phase-batch-01",
+   "wait_cycles": 25,
+   "angles": [
+    0.0,
+    2.0943951023931953,
+    4.1887902047863905
+   ],
+   "phase": 0.024475210190771556,
+   "phase_se": 0.013663545616666363,
+   "amplitude": 0.42045470348899827,
+   "offset": 0.4927571614583334,
+   "chi_square": 3.078592865225807e-28,
+   "dof": 0
+  },
+  {
+   "run": "2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-q12_phase-batch-02",
+   "wait_cycles": 0,
+   "angles": [
+    1.0471975511965976,
+    3.141592653589793,
+    5.235987755982988
+   ],
+   "phase": 0.03716951111623651,
+   "phase_se": 0.012215841179059108,
+   "amplitude": 0.4665494624050373,
+   "offset": 0.4913736979166668,
+   "chi_square": 8.418032879504646e-28,
+   "dof": 0
+  },
+  {
+   "run": "2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-q12_phase-batch-03",
+   "wait_cycles": 25,
+   "angles": [
+    1.0471975511965976,
+    3.141592653589793,
+    5.235987755982988
+   ],
+   "phase": 0.025978335473057425,
+   "phase_se": 0.014184073810677105,
+   "amplitude": 0.4124112904012521,
+   "offset": 0.4933268229166667,
+   "chi_square": 1.1134827837924886e-27,
+   "dof": 0
+  }
+ ],
+ "comparisons": [
+  {
+   "wait_cycles": 0,
+   "runs": [
+    "2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-q12_phase-batch-00",
+    "2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-q12_phase-batch-02"
+   ],
+   "difference": -0.01925983567909082,
+   "se": 0.017020017787689704,
+   "z": -1.131599033522817
+  },
+  {
+   "wait_cycles": 25,
+   "runs": [
+    "2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-q12_phase-batch-01",
+    "2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-q12_phase-batch-03"
+   ],
+   "difference": -0.0015031252822858693,
+   "se": 0.01969468021282546,
+   "z": -0.07632138557431424
+  }
+ ]
+}
