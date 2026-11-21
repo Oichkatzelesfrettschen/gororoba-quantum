@@ -421,14 +421,14 @@ dimension `d` has a link `L = Z meet S_eps`, a real `(2d - 1)`-dimensional space
 the exceptional divisor `E = P(C_0 Z)` it equals the projectivized first-order map `phi`. That extension fixes the map
 on `E` only. The link enters through a conical structure: where the germ is analytically equivalent to its tangent
 cone (certificate 1 below), that equivalence identifies `L` with the unit circle bundle `p: S(O_E(-1)) -> E` and makes
-`kappa` on `L` homotopic to `phi o p` through the radial deformation. The local attaching datum at the selected
+`kappa` on `L` homotopic to `phi o p` through the radial deformation; the record labels that step inferred, from the
+certificates and the cited theorems, as the plan step's acceptance requires. The local attaching datum at the selected
 basepoint is that homotopy class `L -> Lambda`, together with the pullback along it of the unit sphere bundle of the
 tautological 4-plane bundle `S` on `Lambda`, which maps into the boundary partner sphere `S(K_0)` by
 `(x, v) -> v`. Conventions: `h = c_1(O_E(1))`, circle fibers oriented by the complex structure, and `H = c_1(det S*)`
 the Pluecker hyperplane class.
 
-`hypothesis:` the retained records predict, row by row (the reviews of this note computed the quadric rank and the
-component factorizations from the recorded generators; the producer certifies them):
+`hypothesis:` the retained records predict, row by row:
 
 | Incidence | Germ (2b) | Link `L` | `phi: E -> Lambda` and the composite |
 | --- | --- | --- | --- |
@@ -439,6 +439,7 @@ component factorizations from the recorded generators; the producer certifies th
 | E8-bar to `V`, `X_+` to `V^a_+`, `X_-` to `V^a_-` | two smooth components, dimension 3, multiplicity 2 | `S^5` disjoint union `S^5` | each component a linear isomorphism `P^2 -> P^2` onto one of two disjoint planes |
 
 Producer `attaching_maps_resolved.py`, reading only the retained records 2b, 2c, 2i and 2l, certifies per row:
+0. that the punctured germ has constant nullity 8, so `kappa` is defined on the whole link;
 1. the conical structure: multiplicity 1 with embedding dimension equal to dimension (smooth); for E8-bar to `B9`, a
    hypersurface in its 3-dimensional embedding space whose quadratic part has rank 3 over `Q(i)`, so the holomorphic
    Morse lemma makes the germ analytically the `A_1` cone; for the two-component rows, each component smooth and the

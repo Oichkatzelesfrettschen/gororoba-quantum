@@ -18,6 +18,10 @@ question on what roadmap item 7 needs). The Advisor reviewed last. Fixes landed 
 | "The Hopf circle bundle" placed on `P^2 -> P^2` rather than on `L -> Lambda` | grok | confirmed | Fixed |
 | The local datum is not item 7's input: missing the pullback sphere bundle into `S(K_0)`, variation along the boundary orbit, and coherence of direct and composed specializations | codex, grok (design question) | confirmed | Fixed in scope: the note names the pullback sphere bundle as part of the datum and lists the variation, higher-order rows, nullity-16 rows and coherence as later sub-steps |
 
+| `docs/design/a5-open-tasks-and-compute-scope.md` still shows task 126 doing and 127 to 130 todo, with 130 waiting on 129 | Advisor | confirmed | Fixed: the table carries the reconciled states, and 3a proceeds ahead of the open remainders |
+| A reviewer breadcrumb in the program note | Advisor | confirmed | Fixed: removed; this record holds it |
+| The producer must certify constant nullity 8 on the punctured germ and label the step to `kappa` homotopic to `phi o p` as inferred | Advisor | confirmed | Fixed in the 3a specification (certificate 0 and the objects paragraph) |
+
 Computed by the reviewers from the recorded generators: the E8-bar to `B9` quadratic part has rank 3 (the `t2, t4`
 block has determinant -256), and each multiplicity-2 cone factors into two linear 3-spaces meeting only at 0. These are
 reviewer computations; the producer of sub-step 3a certifies them.
