@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-11-20T22:56:42+00:00",
+ "approval": "owner chat 2026-11-19T16:42Z: ok those items are approved",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "7df14a778a0266946f72ec13bb9c2704b4d121150bf2a1e76be491030902221a",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 1,
+ "batch_job": 961307,
+ "project": 861373,
+ "shots": 8192,
+ "jobs": [
+  {
+   "file": "xt-x90-32-B.cq",
+   "job": 1750783,
+   "sha256": "dbeff3d77a19ae7184edc9799c096b088087caa8e12a26f0d46219f0bfd44e16"
+  },
+  {
+   "file": "xt-x90-32-A.cq",
+   "job": 1750784,
+   "sha256": "76b18cf0e8b22ec160f044f6e20774ff309b1af3625fd9fdd628fbaa0d3a5f96"
+  },
+  {
+   "file": "xt-x90-32-all.cq",
+   "job": 1750785,
+   "sha256": "aa427d12309279afb370d1b204933534fb845f0104d3d543f357cd424d3629de"
+  }
+ ],
+ "submitted_utc": "2026-11-20T22:56:43+00:00"
+}

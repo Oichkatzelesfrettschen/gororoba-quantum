@@ -4018,6 +4018,216 @@
       "run": "results/iqm/runs/2026-11-21T205843Z-garnet_mock-packed-pauli-response-garnet-packed",
       "family": "IQM packed Pauli response",
       "question": "Does the garnet:mock station accept the 68-circuit packed Pauli body with measure-only buffer circuits, and what runtime does it estimate?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-crosstalk-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-crosstalk-batch-00",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does a qubit's reading change between its class (A or B') driven alone and all 17 qubits driven, at the T1 and X90-ladder conditions and for the q1/q2 pair?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-crosstalk-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-crosstalk-batch-01",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does a qubit's reading change between its class (A or B') driven alone and all 17 qubits driven, at the T1 and X90-ladder conditions and for the q1/q2 pair?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-crosstalk-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-crosstalk-batch-02",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does a qubit's reading change between its class (A or B') driven alone and all 17 qubits driven, at the T1 and X90-ladder conditions and for the q1/q2 pair?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-crosstalk-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-crosstalk-batch-03",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does a qubit's reading change between its class (A or B') driven alone and all 17 qubits driven, at the T1 and X90-ladder conditions and for the q1/q2 pair?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-crosstalk-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-crosstalk-batch-04",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does a qubit's reading change between its class (A or B') driven alone and all 17 qubits driven, at the T1 and X90-ladder conditions and for the q1/q2 pair?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-crosstalk-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-crosstalk-batch-05",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does a qubit's reading change between its class (A or B') driven alone and all 17 qubits driven, at the T1 and X90-ladder conditions and for the q1/q2 pair?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-crosstalk-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-crosstalk-batch-06",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does a qubit's reading change between its class (A or B') driven alone and all 17 qubits driven, at the T1 and X90-ladder conditions and for the q1/q2 pair?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-crosstalk-batch-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-crosstalk-batch-07",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does a qubit's reading change between its class (A or B') driven alone and all 17 qubits driven, at the T1 and X90-ladder conditions and for the q1/q2 pair?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-interleaved_t1-batch-00",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does each qubit decay along one exponential when every delay is repeated in three interleaved rounds with both readout anchors in every batch, and does the pooled tail statistic reach its registered threshold?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-interleaved_t1-batch-01",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does each qubit decay along one exponential when every delay is repeated in three interleaved rounds with both readout anchors in every batch, and does the pooled tail statistic reach its registered threshold?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-interleaved_t1-batch-02",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does each qubit decay along one exponential when every delay is repeated in three interleaved rounds with both readout anchors in every batch, and does the pooled tail statistic reach its registered threshold?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-interleaved_t1-batch-03",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does each qubit decay along one exponential when every delay is repeated in three interleaved rounds with both readout anchors in every batch, and does the pooled tail statistic reach its registered threshold?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-interleaved_t1-batch-04",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does each qubit decay along one exponential when every delay is repeated in three interleaved rounds with both readout anchors in every batch, and does the pooled tail statistic reach its registered threshold?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-interleaved_t1-batch-05",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does each qubit decay along one exponential when every delay is repeated in three interleaved rounds with both readout anchors in every batch, and does the pooled tail statistic reach its registered threshold?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-interleaved_t1-batch-06",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does each qubit decay along one exponential when every delay is repeated in three interleaved rounds with both readout anchors in every batch, and does the pooled tail statistic reach its registered threshold?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-interleaved_t1-batch-07",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does each qubit decay along one exponential when every delay is repeated in three interleaved rounds with both readout anchors in every batch, and does the pooled tail statistic reach its registered threshold?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-08",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-interleaved_t1-batch-08",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does each qubit decay along one exponential when every delay is repeated in three interleaved rounds with both readout anchors in every batch, and does the pooled tail statistic reach its registered threshold?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-09",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-interleaved_t1-batch-09",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does each qubit decay along one exponential when every delay is repeated in three interleaved rounds with both readout anchors in every batch, and does the pooled tail statistic reach its registered threshold?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-10",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-interleaved_t1-batch-10",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does each qubit decay along one exponential when every delay is repeated in three interleaved rounds with both readout anchors in every batch, and does the pooled tail statistic reach its registered threshold?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-11",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-interleaved_t1-batch-11",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does each qubit decay along one exponential when every delay is repeated in three interleaved rounds with both readout anchors in every batch, and does the pooled tail statistic reach its registered threshold?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-12",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-interleaved_t1-batch-12",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does each qubit decay along one exponential when every delay is repeated in three interleaved rounds with both readout anchors in every batch, and does the pooled tail statistic reach its registered threshold?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-13",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-interleaved_t1-batch-13",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does each qubit decay along one exponential when every delay is repeated in three interleaved rounds with both readout anchors in every batch, and does the pooled tail statistic reach its registered threshold?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-14",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-interleaved_t1-batch-14",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does each qubit decay along one exponential when every delay is repeated in three interleaved rounds with both readout anchors in every batch, and does the pooled tail statistic reach its registered threshold?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-15",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-interleaved_t1-batch-15",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does each qubit decay along one exponential when every delay is repeated in three interleaved rounds with both readout anchors in every batch, and does the pooled tail statistic reach its registered threshold?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-16",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-interleaved_t1-batch-16",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does each qubit decay along one exponential when every delay is repeated in three interleaved rounds with both readout anchors in every batch, and does the pooled tail statistic reach its registered threshold?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-17",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-interleaved_t1-batch-17",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does each qubit decay along one exponential when every delay is repeated in three interleaved rounds with both readout anchors in every batch, and does the pooled tail statistic reach its registered threshold?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-q12-phase-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-q12_phase-batch-00",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does the q12 Ramsey fringe carry the static phase offset of about -0.15 rad that the null-rotation scan refit predicts, at waits of 0 and 25 cycles?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-q12-phase-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-q12_phase-batch-01",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does the q12 Ramsey fringe carry the static phase offset of about -0.15 rad that the null-rotation scan refit predicts, at waits of 0 and 25 cycles?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-q12-phase-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-q12_phase-batch-02",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does the q12 Ramsey fringe carry the static phase offset of about -0.15 rad that the null-rotation scan refit predicts, at waits of 0 and 25 cycles?"
+    },
+    {
+      "id": "qi-interleaved-tuna-17-2026-11-19t1735-q12-phase-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-q12_phase-batch-03",
+      "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
+      "question": "On Tuna-17, does the q12 Ramsey fringe carry the static phase offset of about -0.15 rad that the null-rotation scan refit predicts, at waits of 0 and 25 cycles?"
     }
   ],
   "claims": [

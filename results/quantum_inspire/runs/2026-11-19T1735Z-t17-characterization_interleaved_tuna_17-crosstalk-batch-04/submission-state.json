@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-11-20T23:00:13+00:00",
+ "approval": "owner chat 2026-11-19T16:42Z: ok those items are approved",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "23811c135b1c12fd3873b7ba8b4eb8b0b07edc1b11ad91f601cfc457f3f14d58",
+ "shots": 8192,
+ "jobs": [
+  {
+   "file": "xt-t1-1000-A.cq",
+   "job": 1750792,
+   "sha256": "fab8981294e9be364800f79fea1df43d2e41350246c55fc78276584c50700fac"
+  },
+  {
+   "file": "xt-t1-1000-B.cq",
+   "job": 1750793,
+   "sha256": "12b23b01cca7289aabf6f784cb9cd1cc6f2046b2f33d2854b2da09c1c6fc0a39"
+  },
+  {
+   "file": "xt-t1-1000-all.cq",
+   "job": 1750794,
+   "sha256": "eaab1c5b954a8d5f05552525fa3f8dbd59eac023344634a051c679659bb96a8a"
+  }
+ ],
+ "project": 861376,
+ "batch_job": 961310,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-11-20T23:00:16+00:00",
+  "approval": "owner chat 2026-11-19T16:42Z: ok those items are approved",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "23811c135b1c12fd3873b7ba8b4eb8b0b07edc1b11ad91f601cfc457f3f14d58",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 961310,
+  "project": 861376,
+  "shots": 8192,
+  "jobs": [
+   {
+    "file": "xt-t1-1000-A.cq",
+    "job": 1750792,
+    "sha256": "fab8981294e9be364800f79fea1df43d2e41350246c55fc78276584c50700fac"
+   },
+   {
+    "file": "xt-t1-1000-B.cq",
+    "job": 1750793,
+    "sha256": "12b23b01cca7289aabf6f784cb9cd1cc6f2046b2f33d2854b2da09c1c6fc0a39"
+   },
+   {
+    "file": "xt-t1-1000-all.cq",
+    "job": 1750794,
+    "sha256": "eaab1c5b954a8d5f05552525fa3f8dbd59eac023344634a051c679659bb96a8a"
+   }
+  ],
+  "submitted_utc": "2026-11-20T23:00:17+00:00"
+ },
+ "confirmed_utc": "2026-11-20T23:00:17+00:00"
+}

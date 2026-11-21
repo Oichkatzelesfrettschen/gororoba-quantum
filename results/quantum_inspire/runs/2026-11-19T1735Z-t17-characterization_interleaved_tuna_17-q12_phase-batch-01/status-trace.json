@@ -1,0 +1,31 @@
+{
+ "schema": "qi-status-trace-v1",
+ "poll_seconds": 15.0,
+ "rows": [
+  {
+   "utc": "2026-11-20T23:05:34.765351+00:00",
+   "status": "idle",
+   "queue_own": 0
+  },
+  {
+   "utc": "2026-11-21T17:36:11.994626+00:00",
+   "status": "idle",
+   "queue_own": 0
+  },
+  {
+   "utc": "2026-11-21T17:36:24.308250+00:00",
+   "status": "executing",
+   "queue_own": 1
+  },
+  {
+   "utc": "2026-11-21T17:36:43.363245+00:00",
+   "status": "executing",
+   "queue_own": 0
+  },
+  {
+   "utc": "2026-11-21T17:36:47.295360+00:00",
+   "status": "executing",
+   "queue_own": 0
+  }
+ ]
+}
