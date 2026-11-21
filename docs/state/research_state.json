@@ -3983,6 +3983,20 @@
       "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-q12_phase-batch-03",
       "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
       "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "iqm-garnet-mock-packed-pauli-36",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-21T193252Z-garnet_mock-packed-pauli-response-garnet-packed",
+      "family": "IQM packed Pauli response",
+      "question": "Does the garnet:mock station accept the 36-circuit packed Pauli body with an IQM barrier, and what runtime does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-mock-packed-pauli-68",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-21T205843Z-garnet_mock-packed-pauli-response-garnet-packed",
+      "family": "IQM packed Pauli response",
+      "question": "Does the garnet:mock station accept the 68-circuit packed Pauli body with measure-only buffer circuits, and what runtime does it estimate?"
     }
   ],
   "claims": [
