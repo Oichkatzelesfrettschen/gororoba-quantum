@@ -46,6 +46,12 @@ failure and discarded those four reports.
 | R5 | opencode | The chi-squared reference is anti-conservative: a null bootstrap gives mean 21.8 on 6 degrees of freedom. | Refuted: a null simulation that redraws both the arm counts under an equal unmarked floor and all eight readout columns gives means 6.04 to 6.07, 95th percentiles 12.6 to 13.6 and false-rejection rates 5.2 to 7.0 % at 12.59 (600 draws per arm); grok's independent null (400 draws) agrees. | None. |
 | R6 | grok | Is the Wald test the right test? | Confirmed: the contrast covariance carries the cells' dependence, and the null sits on chi-squared. | None. |
 
+Hosted Codex reviewed 92d40e7413483e0bf428df7566fbd0b8bf48802a (review
+6002590789) with one finding: the covariance self-test evaluated its ten
+independent finite-difference terms in a serial loop, against the root
+`AGENTS.md` rule that such loops run through `parallel.py`. Fixed: each term
+is `finite_difference_term`, mapped by `parallel.ordered_map`.
+
 ## The quasi-Riemann-hypothesis formalization (math/ family 003)
 
 All three reviewers agree, and the sources confirm:

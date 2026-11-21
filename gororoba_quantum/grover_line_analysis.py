@@ -35,6 +35,7 @@ import numpy as np
 from boolean_anf import anf_degree
 from cd_core import cd_sign
 from iqm_records import ROOT, read_run
+from parallel import ordered_map
 from walsh_counts import parity_numerators
 
 MARKS = ("101", "011")
@@ -358,6 +359,24 @@ def analyze(acquisition: Acquisition, model_readout: dict[str, tuple[float, floa
     }
 
 
+def finite_difference_term(item: tuple[Acquisition, str]) -> np.ndarray:
+    """One circuit's multinomial contribution to the covariance of corrected("arm"), from central differences."""
+    base, name = item
+    n = base.counts[name].sum()
+    p = base.counts[name] / n
+    jacobian = np.zeros((8, 8))
+    for i in range(8):
+        shifted = []
+        for sign in (1, -1):
+            moved = dict(base.counts)
+            vector = p.copy()
+            vector[i] += sign * 1e-6
+            moved[name] = vector * n
+            shifted.append(Readout(Acquisition(base.run, base.names, moved, base.orders, {})).corrected("arm"))
+        jacobian[:, i] = (shifted[0] - shifted[1]) / 2e-6
+    return jacobian @ ((np.diag(p) - np.outer(p, p)) / n) @ jacobian.T
+
+
 def covariance_selftest() -> None:
     """corrected_covariance against central differences of corrected() on a synthetic acquisition whose arm
     measures in another order than its readout preparations."""
@@ -372,22 +391,7 @@ def covariance_selftest() -> None:
     names = list(counts)
     base = Acquisition("synthetic", names, counts, orders, {})
     _, cov = Readout(base).corrected_covariance("arm")
-    columns = []
-    for name in names:
-        n = counts[name].sum()
-        p = counts[name] / n
-        jac = np.zeros((8, 8))
-        for i in range(8):
-            shifted = []
-            for sign in (1, -1):
-                moved = dict(counts)
-                vector = p.copy()
-                vector[i] += sign * 1e-6
-                moved[name] = vector * n
-                shifted.append(Readout(Acquisition("synthetic", names, moved, orders, {})).corrected("arm"))
-            jac[:, i] = (shifted[0] - shifted[1]) / 2e-6
-        columns.append(jac @ ((np.diag(p) - np.outer(p, p)) / n) @ jac.T)
-    numeric = sum(columns)
+    numeric = np.sum(ordered_map(finite_difference_term, [(base, name) for name in names]), axis=0)
     if float(np.max(np.abs(numeric - cov))) > 1e-9:
         raise AssertionError("corrected_covariance differs from the finite-difference covariance")
 
