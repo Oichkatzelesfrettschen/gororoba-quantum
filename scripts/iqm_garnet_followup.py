@@ -983,6 +983,7 @@ def analysis_checks() -> str:
         if abs(role["forward"]["D"] - prediction["decisions"]["role_or_qubit"]["model"]["forward"]["D"]) > 0.002:
             raise AssertionError(f"model device, forward D {role['forward']['D']}")
         require(role["reading"].startswith("open"), f"model device, role reading {role['reading']}")
+        require(decisions["bit_order"]["holds"], f"model device, bit order {decisions['bit_order']}")
         for m in ROWS:
             row = decisions[f"sedenion_{m}"]
             if row["verdict"] != "resolved" or row["row_minus_truncation_z"] < 15 or row["row_minus_null_z"] < 30:

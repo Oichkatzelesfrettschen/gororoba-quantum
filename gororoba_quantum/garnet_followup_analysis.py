@@ -381,6 +381,12 @@ def grover_analysis(job: Job) -> tuple[dict[str, Any], dict[str, Any]]:
             entry["copy_positions"] = positions
             entry["copy_slope_per_position"] = r6(float(np.polyfit(positions, freqs, 1)[0]))
         arms[stem] = entry
+    m011 = {stem: arms[stem]["most_frequent"] for stem in stems if marks[stem] == "011"}
+    decisions["bit_order"] = {
+        "rule": "the bit order of the Grover arms follows the retained run: the most frequent outcome of m011 arms is 011",
+        "m011_most_frequent": m011,
+        "holds": all(value == "011" for value in m011.values()),
+    }
     exploratory = {
         "arms": arms,
         "role_m011_beside": beside,
