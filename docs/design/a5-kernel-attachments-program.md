@@ -454,7 +454,7 @@ Producer `attaching_maps_resolved.py`, reading only the retained records 2b, 2c,
 Controls. Two mutations on core inputs: lower the rank of `phi` restricted to one named tangent-cone component and
 require an explicit projective kernel point on that component; and replace the E8-bar to `B9` quadratic part by a rank-2
 form, which must fail the Morse certificate. Independent topology checks recompute the Euler number from the degree of
-`E` in its span, `H_1(L)` (`Z/2` for `RP^3`, 0 for the spheres) from the Gysin sequence, and `c_1 = -H` from the
+`E` in its span, `H_1(L)` (`Z/2` for `RP^3`, `Z` for the circle links of `X+-` to `B9`, 0 for `S^3` and `S^5`) from the Gysin sequence, and `c_1 = -H` from the
 Pluecker coordinates of 2i. Falsifiers: a rank deficiency of `phi` on a tangent-cone component, a quadratic part of
 rank below 3, two components whose tangent spaces meet outside 0, image invariants that differ from 2i, or a link
 homology that differs from the table. Cost: exact linear algebra on retained polynomials, predicted under 10 s and
