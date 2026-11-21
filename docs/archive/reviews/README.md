@@ -138,6 +138,7 @@ repository-relative; a branch name stands for its worktree.
 | [2026-11-10-monomial-ladder/](2026-11-10-monomial-ladder/README.md) | Local codex review of the monomial ladder (pull request 818) and the disposition of its six findings |
 | [untracked-records-audit-2026-11-11/](untracked-records-audit-2026-11-11/README.md) | Read-only audit of the ignored `docs/local/` trees of the A5 exceptional-fiber program (22,648 + 456 + 505 files) against every ref: result-missing, already-represented, scratch and failed-run groups with the home of each; the per-file listing is not retained and the counts are the audit's own |
 | [review-record-backfill-937-843/reconciliation.md](review-record-backfill-937-843/reconciliation.md) | Local codex round on the backfilled records of PRs 937 and 843 (PR 958): the contradictory no-finding summaries, record shape, source locator and the full hashes; with the brief |
+| [iqm-emerald-idle-schedule-t1-run/](iqm-emerald-idle-schedule-t1-run/README.md) | grok review and opencode Nemotron red team of the Emerald idle-schedule successor run's retention (PR 973): thirteen findings on the result note's descriptive readings and hypotheses, each with its disposition |
 
 The [Tuna projector campaign review](tuna-projector-campaign-review.md) and its
 [model provenance](tuna-projector-campaign-review.json) separate QX conformance, bounded hardware qualification and causal successors.
