@@ -1,0 +1,753 @@
+{
+ "calibration_set": "ea681de1-9661-41e5-bd6f-cb524fa056a6",
+ "case": "grover-depth-sedenion-walsh",
+ "cases_sha256": "e4c71f05b25d28d2edc11e5fed0d3e5f768b8f06cad2e00376eb66a66e601f84",
+ "decisions": {
+  "bit_order": {
+   "holds": true,
+   "m011_most_frequent": {
+    "m011-k1": "011",
+    "m011-k2": "011",
+    "m011-k3": "011",
+    "r-m011-k1": "011"
+   },
+   "rule": "the Grover arms keep the retained run's bit order: the most frequent outcome of m011 arms is 011"
+  },
+  "cz_sequence": {
+   "corrected": -0.009651,
+   "corrected_se": 0.005976,
+   "first": "m101-k1-padded",
+   "predicted": {
+    "predicted": 0.0128,
+    "predicted_z": 2.24,
+    "se_at_planned_shots": 0.0057
+   },
+   "raw": -0.009199,
+   "reading": "unresolved: no effect and a small effect are not separated",
+   "se": 0.005743,
+   "second": "m101-k1-fused",
+   "verdict": "unresolved",
+   "z": -1.60174
+  },
+  "depth_law_011": {
+   "corrected_f": 0.060214,
+   "corrected_f_se": 0.04281,
+   "corrected_f_z_against_zero": 1.406532,
+   "corrected_lambda": {
+    "1": 0.838445,
+    "2": 0.714527,
+    "3": 0.669137
+   },
+   "f_raw": 0.060775,
+   "lambda_raw": {
+    "1": 0.807389,
+    "2": 0.688109,
+    "3": 0.647226
+   },
+   "model_f": 0.0245,
+   "predicted": {
+    "predicted_lambda": {
+     "1": 0.8584,
+     "2": 0.7661,
+     "3": 0.7081
+    },
+    "resolvable_deviation": 0.124,
+    "se_at_planned_shots": 0.0415
+   },
+   "se": 0.04111,
+   "verdict": "inside",
+   "z_against_model": 0.882405
+  },
+  "depth_law_101": {
+   "corrected_f": -0.121076,
+   "corrected_f_se": 0.040938,
+   "corrected_f_z_against_zero": -2.957587,
+   "corrected_lambda": {
+    "1": 0.866572,
+    "2": 0.761217,
+    "3": 0.547595
+   },
+   "f_raw": -0.122238,
+   "lambda_raw": {
+    "1": 0.830646,
+    "2": 0.729867,
+    "3": 0.519077
+   },
+   "model_f": 0.0104,
+   "predicted": {
+    "predicted_lambda": {
+     "1": 0.8429,
+     "2": 0.7527,
+     "3": 0.6825
+    },
+    "resolvable_deviation": 0.122,
+    "se_at_planned_shots": 0.0405
+   },
+   "se": 0.039303,
+   "verdict": "outside the model: the retention law bends with depth",
+   "z_against_model": -3.374775
+  },
+  "prx_load_generic": {
+   "corrected": 0.034011,
+   "corrected_se": 0.006022,
+   "first": "m101-k1-fused",
+   "predicted": {
+    "predicted": 0.0152,
+    "predicted_z": 2.64,
+    "se_at_planned_shots": 0.0058
+   },
+   "raw": 0.032668,
+   "reading": "resolved positive: the hypothesis stands",
+   "se": 0.005786,
+   "second": "m101-k1-generic",
+   "verdict": "positive",
+   "z": 5.645683
+  },
+  "prx_load_line": {
+   "corrected": 0.009515,
+   "corrected_se": 0.005989,
+   "first": "m101-k1",
+   "predicted": {
+    "predicted": 0.0085,
+    "predicted_z": 1.5,
+    "se_at_planned_shots": 0.0057
+   },
+   "raw": 0.009055,
+   "reading": "unresolved: no effect and a small effect are not separated",
+   "se": 0.005755,
+   "second": "m101-k1-padded",
+   "verdict": "unresolved",
+   "z": 1.573416
+  },
+  "role_or_qubit": {
+   "forward": {
+    "D": 0.014126,
+    "arm": "m101-k1",
+    "copies": [
+     "m101-k1-c0",
+     "m101-k1-c1",
+     "m101-k1-c2",
+     "m101-k1-c3"
+    ],
+    "kept_shots": 13450,
+    "se_paired": 0.003962,
+    "wrong_bit": {
+     "QB16": 0.182677,
+     "QB17": 0.186171,
+     "QB20": 0.172045
+    },
+    "z": 3.565716
+   },
+   "forward_resolved": true,
+   "predicted": {
+    "forward": {
+     "D": -0.0101,
+     "se_paired": 0.0038,
+     "z": -2.66
+    },
+    "reversed": {
+     "D": -0.0091,
+     "se_paired": 0.0038,
+     "z": -2.38
+    }
+   },
+   "reading": "open: the reversed D does not resolve",
+   "reversed": {
+    "D": 0.002651,
+    "arm": "r-m101-k1",
+    "copies": [
+     "r-m101-k1-c0",
+     "r-m101-k1-c1",
+     "r-m101-k1-c2",
+     "r-m101-k1-c3"
+    ],
+    "kept_shots": 13578,
+    "se_paired": 0.003685,
+    "wrong_bit": {
+     "QB16": 0.177346,
+     "QB17": 0.189792,
+     "QB20": 0.187141
+    },
+    "z": 0.719438
+   },
+   "reversed_resolved": false
+  },
+  "sedenion_10": {
+   "kept_shots": {
+    "null": 1261,
+    "row": 1147,
+    "truncation": 1101
+   },
+   "most_frequent_row_string": "1100",
+   "p_null": 0.058684,
+   "p_row": 0.06626,
+   "p_truncation": 0.042688,
+   "predicted": {
+    "predicted": 0.2836,
+    "predicted_z": 17.97,
+    "row_minus_null_z": 42.0,
+    "se_at_planned_shots": 0.0158
+   },
+   "reading": "unresolved: a row peak within 3 SE of its truncation or null, or not the most frequent string",
+   "row_minus_null": 0.007576,
+   "row_minus_null_se": 0.009887,
+   "row_minus_null_z": 0.766306,
+   "row_minus_truncation": 0.023571,
+   "row_minus_truncation_se": 0.009542,
+   "row_minus_truncation_z": 2.470167,
+   "row_peak": "0110",
+   "row_peak_is_unique_mode": false,
+   "verdict": "unresolved"
+  },
+  "sedenion_5": {
+   "kept_shots": {
+    "null": 1311,
+    "row": 1189,
+    "truncation": 1135
+   },
+   "most_frequent_row_string": "1001",
+   "p_null": 0.000763,
+   "p_row": 0.183347,
+   "p_truncation": 0.127753,
+   "predicted": {
+    "predicted": 0.2833,
+    "predicted_z": 17.97,
+    "row_minus_null_z": 41.92,
+    "se_at_planned_shots": 0.0158
+   },
+   "reading": "resolved: the eight-CZ sign oracle keeps its Walsh peak against truncation and null",
+   "row_minus_null": 0.182585,
+   "row_minus_null_se": 0.011248,
+   "row_minus_null_z": 16.233001,
+   "row_minus_truncation": 0.055594,
+   "row_minus_truncation_se": 0.01497,
+   "row_minus_truncation_z": 3.713633,
+   "row_peak": "1001",
+   "row_peak_is_unique_mode": true,
+   "verdict": "resolved"
+  },
+  "unmarked_uniformity": {
+   "arms": {
+    "m011-k1": {
+     "dof": 6,
+     "over_k0": 5.559629,
+     "wald": 84.476456
+    },
+    "m011-k2": {
+     "dof": 6,
+     "over_k0": 3.727319,
+     "wald": 56.635202
+    },
+    "m011-k3": {
+     "dof": 6,
+     "over_k0": 16.058193,
+     "wald": 243.998163
+    },
+    "m101-k1": {
+     "dof": 6,
+     "over_k0": 5.174209,
+     "wald": 78.620153
+    },
+    "m101-k1-fused": {
+     "dof": 6,
+     "over_k0": 1.146898,
+     "wald": 17.426674
+    },
+    "m101-k1-generic": {
+     "dof": 6,
+     "over_k0": 3.633559,
+     "wald": 55.210553
+    },
+    "m101-k1-padded": {
+     "dof": 6,
+     "over_k0": 8.314134,
+     "wald": 126.330119
+    },
+    "m101-k2": {
+     "dof": 6,
+     "over_k0": 1.280855,
+     "wald": 19.462113
+    },
+    "m101-k3": {
+     "dof": 6,
+     "over_k0": 5.719961,
+     "wald": 86.912642
+    },
+    "r-m011-k1": {
+     "dof": 6,
+     "over_k0": 6.530773,
+     "wald": 99.232617
+    },
+    "r-m101-k1": {
+     "dof": 6,
+     "over_k0": 1.996949,
+     "wald": 30.34288
+    }
+   },
+   "k0_reference": {
+    "dof": 7,
+    "wald": 15.194621
+   },
+   "reading": "reported against the k0 statistic as in the retained analysis; no threshold decides",
+   "rule": "the corrected uniformity Wald statistic of k0 (7 degrees of freedom) is the reference of the unmarked uniformity test of every Grover arm, as in the retained analysis"
+  }
+ },
+ "exploratory": {
+  "grover": {
+   "arms": {
+    "k0": {
+     "copies": [
+      "k0"
+     ],
+     "corrected_marked": 0.122457,
+     "corrected_marked_se": 0.005804,
+     "kept_shots": 3402,
+     "marked": "000",
+     "measured_on": [
+      "QB20",
+      "QB16",
+      "QB17"
+     ],
+     "most_frequent": "011",
+     "predicted_marked": 0.130241849,
+     "raw_marked": 0.126396
+    },
+    "m011-k1": {
+     "copies": [
+      "m011-k1"
+     ],
+     "corrected_marked": 0.67523,
+     "corrected_marked_se": 0.008697,
+     "kept_shots": 3413,
+     "marked": "011",
+     "measured_on": [
+      "QB20",
+      "QB16",
+      "QB17"
+     ],
+     "most_frequent": "011",
+     "predicted_marked": 0.688319866,
+     "raw_marked": 0.654849
+    },
+    "m011-k2": {
+     "copies": [
+      "m011-k2"
+     ],
+     "corrected_marked": 0.711136,
+     "corrected_marked_se": 0.008479,
+     "kept_shots": 3436,
+     "marked": "011",
+     "measured_on": [
+      "QB20",
+      "QB16",
+      "QB17"
+     ],
+     "most_frequent": "011",
+     "predicted_marked": 0.753424278,
+     "raw_marked": 0.689464
+    },
+    "m011-k3": {
+     "copies": [
+      "m011-k3"
+     ],
+     "corrected_marked": 0.262225,
+     "corrected_marked_se": 0.007857,
+     "kept_shots": 3395,
+     "marked": "011",
+     "measured_on": [
+      "QB20",
+      "QB16",
+      "QB17"
+     ],
+     "most_frequent": "011",
+     "predicted_marked": 0.270225243,
+     "raw_marked": 0.257732
+    },
+    "m101-k1": {
+     "copies": [
+      "m101-k1-c0",
+      "m101-k1-c1",
+      "m101-k1-c2",
+      "m101-k1-c3"
+     ],
+     "copy_frequencies": [
+      0.679603,
+      0.66215,
+      0.6735,
+      0.665379
+     ],
+     "copy_positions": [
+      0,
+      13,
+      22,
+      35
+     ],
+     "copy_slope_per_position": -0.000303,
+     "corrected_marked": 0.693688,
+     "corrected_marked_se": 0.004786,
+     "kept_shots": 13450,
+     "marked": "101",
+     "measured_on": [
+      "QB20",
+      "QB16",
+      "QB17"
+     ],
+     "most_frequent": "101",
+     "predicted_marked": 0.67813158,
+     "raw_marked": 0.670112
+    },
+    "m101-k1-fused": {
+     "copies": [
+      "m101-k1-fused-c0",
+      "m101-k1-fused-c1",
+      "m101-k1-fused-c2",
+      "m101-k1-fused-c3"
+     ],
+     "copy_frequencies": [
+      0.664002,
+      0.671145,
+      0.674287,
+      0.67158
+     ],
+     "copy_positions": [
+      2,
+      11,
+      24,
+      33
+     ],
+     "copy_slope_per_position": 0.000244,
+     "corrected_marked": 0.693824,
+     "corrected_marked_se": 0.004771,
+     "kept_shots": 13562,
+     "marked": "101",
+     "measured_on": [
+      "QB20",
+      "QB16",
+      "QB17"
+     ],
+     "most_frequent": "101",
+     "predicted_marked": 0.656846142,
+     "raw_marked": 0.670255
+    },
+    "m101-k1-generic": {
+     "copies": [
+      "m101-k1-generic-c0",
+      "m101-k1-generic-c1",
+      "m101-k1-generic-c2",
+      "m101-k1-generic-c3"
+     ],
+     "copy_frequencies": [
+      0.647023,
+      0.63766,
+      0.631082,
+      0.63468
+     ],
+     "copy_positions": [
+      3,
+      10,
+      25,
+      32
+     ],
+     "copy_slope_per_position": -0.000428,
+     "corrected_marked": 0.659813,
+     "corrected_marked_se": 0.004821,
+     "kept_shots": 13446,
+     "marked": "101",
+     "measured_on": [
+      "QB20",
+      "QB16",
+      "QB17"
+     ],
+     "most_frequent": "101",
+     "predicted_marked": 0.641621529,
+     "raw_marked": 0.637587
+    },
+    "m101-k1-padded": {
+     "copies": [
+      "m101-k1-padded-c0",
+      "m101-k1-padded-c1",
+      "m101-k1-padded-c2",
+      "m101-k1-padded-c3"
+     ],
+     "copy_frequencies": [
+      0.655549,
+      0.668142,
+      0.664745,
+      0.655831
+     ],
+     "copy_positions": [
+      1,
+      12,
+      23,
+      34
+     ],
+     "copy_slope_per_position": -2.3e-05,
+     "corrected_marked": 0.684173,
+     "corrected_marked_se": 0.004802,
+     "kept_shots": 13427,
+     "marked": "101",
+     "measured_on": [
+      "QB20",
+      "QB16",
+      "QB17"
+     ],
+     "most_frequent": "101",
+     "predicted_marked": 0.669635716,
+     "raw_marked": 0.661056
+    },
+    "m101-k2": {
+     "copies": [
+      "m101-k2"
+     ],
+     "corrected_marked": 0.749436,
+     "corrected_marked_se": 0.008372,
+     "kept_shots": 3377,
+     "marked": "101",
+     "measured_on": [
+      "QB20",
+      "QB16",
+      "QB17"
+     ],
+     "most_frequent": "101",
+     "predicted_marked": 0.742419237,
+     "raw_marked": 0.723719
+    },
+    "m101-k3": {
+     "copies": [
+      "m101-k3"
+     ],
+     "corrected_marked": 0.2373,
+     "corrected_marked_se": 0.007591,
+     "kept_shots": 3383,
+     "marked": "101",
+     "measured_on": [
+      "QB20",
+      "QB16",
+      "QB17"
+     ],
+     "most_frequent": "101",
+     "predicted_marked": 0.26497427,
+     "raw_marked": 0.231451
+    },
+    "r-m011-k1": {
+     "copies": [
+      "r-m011-k1-c0",
+      "r-m011-k1-c1"
+     ],
+     "copy_frequencies": [
+      0.672066,
+      0.655265
+     ],
+     "copy_positions": [
+      9,
+      26
+     ],
+     "copy_slope_per_position": -0.000988,
+     "corrected_marked": 0.6823,
+     "corrected_marked_se": 0.006246,
+     "kept_shots": 6881,
+     "marked": "011",
+     "measured_on": [
+      "QB17",
+      "QB16",
+      "QB20"
+     ],
+     "most_frequent": "011",
+     "predicted_marked": 0.676093241,
+     "raw_marked": 0.663857
+    },
+    "r-m101-k1": {
+     "copies": [
+      "r-m101-k1-c0",
+      "r-m101-k1-c1",
+      "r-m101-k1-c2",
+      "r-m101-k1-c3"
+     ],
+     "copy_frequencies": [
+      0.680959,
+      0.684086,
+      0.665059,
+      0.682497
+     ],
+     "copy_positions": [
+      8,
+      14,
+      21,
+      27
+     ],
+     "copy_slope_per_position": -0.000254,
+     "corrected_marked": 0.702236,
+     "corrected_marked_se": 0.004757,
+     "kept_shots": 13578,
+     "marked": "101",
+     "measured_on": [
+      "QB17",
+      "QB16",
+      "QB20"
+     ],
+     "most_frequent": "101",
+     "predicted_marked": 0.676200805,
+     "raw_marked": 0.678229
+    }
+   },
+   "readout_assignment_diagonal": {
+    "000": 0.990801,
+    "001": 0.975396,
+    "010": 0.9801,
+    "011": 0.967645,
+    "100": 0.974549,
+    "101": 0.964582,
+    "110": 0.970649,
+    "111": 0.952159
+   },
+   "role_m011_beside": {
+    "m011_forward": {
+     "D": -0.020217,
+     "arm": "m011-k1",
+     "copies": [
+      "m011-k1"
+     ],
+     "kept_shots": 3413,
+     "se_paired": 0.008357,
+     "wrong_bit": {
+      "QB16": 0.181951,
+      "QB17": 0.174333,
+      "QB20": 0.19455
+     },
+     "z": -2.419036
+    },
+    "m011_reversed": {
+     "D": 0.015259,
+     "arm": "r-m011-k1",
+     "copies": [
+      "r-m011-k1-c0",
+      "r-m011-k1-c1"
+     ],
+     "kept_shots": 6881,
+     "se_paired": 0.005452,
+     "wrong_bit": {
+      "QB16": 0.168871,
+      "QB17": 0.192995,
+      "QB20": 0.177736
+     },
+     "z": 2.798858
+    }
+   }
+  },
+  "note": "exploratory: no decision rests on these",
+  "sedenion": {
+   "readout_assignment_diagonal": {
+    "0000": 0.871575,
+    "0001": 0.914328,
+    "0010": 0.911392,
+    "0011": 0.904325,
+    "0100": 0.49806,
+    "0101": 0.477237,
+    "0110": 0.503003,
+    "0111": 0.485039,
+    "1000": 0.849673,
+    "1001": 0.862069,
+    "1010": 0.873039,
+    "1011": 0.904313,
+    "1100": 0.543276,
+    "1101": 0.513688,
+    "1110": 0.457187,
+    "1111": 0.492611
+   },
+   "sedenion_10": {
+    "copy_peak_frequencies": {
+     "id": [
+      0.070201,
+      0.044405
+     ],
+     "row": [
+      0.072954,
+      0.059829
+     ],
+     "trunc": [
+      0.04717,
+      0.038529
+     ]
+    },
+    "readout_corrected_row_peak": 0.128694,
+    "row_distribution": {
+     "0000": 0.058413,
+     "0001": 0.031386,
+     "0010": 0.049695,
+     "0011": 0.031386,
+     "0100": 0.073235,
+     "0101": 0.065388,
+     "0110": 0.06626,
+     "0111": 0.057541,
+     "1000": 0.047951,
+     "1001": 0.026155,
+     "1010": 0.102877,
+     "1011": 0.027899,
+     "1100": 0.18483,
+     "1101": 0.040105,
+     "1110": 0.087184,
+     "1111": 0.049695
+    },
+    "tvd_to_ideal": 0.629414,
+    "tvd_to_model": 0.567353
+   },
+   "sedenion_5": {
+    "copy_peak_frequencies": {
+     "id": [
+      0.001497,
+      0.0
+     ],
+     "row": [
+      0.186646,
+      0.179245
+     ],
+     "trunc": [
+      0.129848,
+      0.125461
+     ]
+    },
+    "readout_corrected_row_peak": 0.060638,
+    "row_distribution": {
+     "0000": 0.010934,
+     "0001": 0.021867,
+     "0010": 0.13709,
+     "0011": 0.098402,
+     "0100": 0.047098,
+     "0101": 0.033642,
+     "0110": 0.051304,
+     "0111": 0.043734,
+     "1000": 0.117746,
+     "1001": 0.183347,
+     "1010": 0.004205,
+     "1011": 0.012616,
+     "1100": 0.047098,
+     "1101": 0.154752,
+     "1110": 0.016821,
+     "1111": 0.019344
+    },
+    "tvd_to_ideal": 0.424516,
+    "tvd_to_model": 0.364535
+   }
+  }
+ },
+ "not_run": [],
+ "prediction_sha256": "48b615d84122000ea45cd8f542850a39c3ec4e8afad2d8195c04aede2ea66556",
+ "runs": {
+  "grover": {
+   "billed_seconds": 3.0,
+   "charge": 1.5,
+   "job_id": "01a20023-427c-768d-ae3b-da9c12a7d827",
+   "run": "2026-11-21T220358Z-garnet-grover-depth-sedenion-walsh-grover",
+   "runtime_seconds": 2.43538
+  },
+  "sedenion": {
+   "billed_seconds": 1.0,
+   "charge": 0.5,
+   "job_id": "01a20023-5ea3-74e6-878c-ba154d175aa4",
+   "run": "2026-11-21T220406Z-garnet-grover-depth-sedenion-walsh-sedenion",
+   "runtime_seconds": 0.630391
+  }
+ },
+ "schema": "iqm-garnet-followup-analysis-v1",
+ "z_resolve": 3.0
+}
