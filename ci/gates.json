@@ -3841,7 +3841,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/iqm_idle_schedule_probe.py --self-test",
       "name": "core-681",
-      "seconds": 62.0
+      "seconds": 400.0
     },
     {
       "suite": "core",

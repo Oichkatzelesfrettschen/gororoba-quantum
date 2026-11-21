@@ -1,0 +1,17 @@
+{
+ "approval": "owner chat 2026-11-19T16:42Z: ok those items are approved",
+ "body_sha256": "28c53c9ac9b3a7623f65c9b9fdbeab263ae1cc8785cf4a925af3f60299ca5f16",
+ "cases_sha256": "512932c07d27e7730df028558bdd9f1a82a7cc8589b42045b4f976eb88564253",
+ "credit_before": {
+  "currentBalance": "30.00",
+  "expiresAt": "2026-12-01T00:00:00+00:00"
+ },
+ "expected_seconds": 2.088,
+ "job": "probe",
+ "job_id": "01a1f811-0c87-7217-a9ee-fc82226b8612",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "emerald:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-11-20T08:27:09Z"
+}

@@ -33,13 +33,22 @@ Preregistered decisions (Z_RESOLVE standard errors):
 Descriptive outputs, deciding nothing: the parallel over-rotation map, the parallel minus isolated eps of each
 TRAIN_QUBITS qubit, and under an asap verdict each pulsed qubit's apparent T1 from its readout-corrected decay.
 
-Usage: "$PYTHON" scripts/iqm_idle_schedule_probe.py (build DIR [--live] | check DIR | analyze RUN_DIR --out FILE
-       [--replay] | --self-test)
+Emerald. --qc emerald builds the Emerald case (results/iqm/proposals/idle-schedule-train-readout-emerald/CASE.md):
+twelve chosen qubits, train qubits QB20 and QB26, the 24 ns prx of Emerald's drag_crf_sx implementation,
+4000 shots and no isolated train block. Garnet stays the default and its build is unchanged byte for byte.
+
+Emerald successor. --qc emerald-t1 builds idle-schedule-t1-emerald: the Emerald circuits and four delay circuits
+(T1_DELAYS) that read every measured qubit's T1 in the same job, so H2 separates a per-pulse timing gap from a
+T1 calibration error (evaluate, "t1_delay" and "h2_gap"); --live reads the computer's current calibration.
+
+Usage: "$PYTHON" scripts/iqm_idle_schedule_probe.py (build DIR [--live] [--qc QC] | check DIR [--qc QC] |
+       study CASE_DIR --out FILE | analyze RUN_DIR --out FILE [--replay] | --self-test)
 """
 
 from __future__ import annotations
 
 import argparse
+import dataclasses
 import json
 import math
 import shutil
@@ -80,6 +89,94 @@ IDLE_TRAIN_QUBITS = ("QB1", "QB20")
 IDLE_PULSES = (0, 500, 1000)
 Z_RESOLVE = 3.0
 TRAIN_P_MIN = 0.001
+# The successor's T1 fit keeps delay points at least this many standard errors above zero population, and its
+# common-gap test rejects at this chi-square survival.
+T1_POINT_SE = 3.0
+GAP_P_REJECT = 0.01
+# A qubit enters H2 only when its delay fit's chi-square survival is at least T1_FIT_P_MIN and its readout pair leaves
+# a positive contrast; the primary verdict needs every pulsed qubit of the case and reads unidentifiable otherwise. H2
+# reads its readout correction from the bare pair par-ro0, par-ro1 and not from the train fit, which failed its
+# linearity test on 7 of 20 Garnet qubits (results/iqm/idle_schedule_probe_analysis.json).
+T1_FIT_P_MIN = 0.001
+# The successor's calibration study (study()) draws its binomial replicates from this seed: draw
+# docs/evidence/anu_qrng/draw-2026-11-21T184244Z.json, index 0.
+CALIBRATION_STUDY_SEED = 50182
+STUDY_REPLICATES = 400
+STUDY_TRUE_GAPS = (0.0, 14e-9)
+
+
+@dataclasses.dataclass(frozen=True)
+class Profile:
+    """The quantum computer a case is built for: its cohort, train qubits, prx length, shots and approved charge."""
+
+    qc: str
+    case: str
+    question: str
+    shots: int
+    prx_seconds: float
+    train: tuple[str, ...]
+    qubits: tuple[str, ...] | None
+    max_credits: dict[str, float]
+    price: dict[str, float]
+    isolated: bool
+    delays: tuple[float, ...] = ()
+
+    @property
+    def qcs(self) -> list[str]:
+        return [f"{self.qc}:mock", self.qc]
+
+
+GARNET = Profile(
+    qc=QC,
+    case=CASE,
+    question=(
+        "Does Garnet schedule a circuit job's gates as soon or as late as possible, read by whether pulsed "
+        "qubits relax while an uncoupled qubit runs an identity train, and what over-rotation does every "
+        "qubit's prx carry when fitted with its own readout, driven alone and all at once?"
+    ),
+    shots=SHOTS,
+    prx_seconds=DURATIONS["r"],
+    train=IDLE_TRAIN_QUBITS,
+    qubits=None,
+    max_credits=MAX_CREDITS,
+    price=PRICE,
+    isolated=True,
+)
+# Emerald's 24 ns prx is its drag_crf_sx implementation's duration in the retained static architecture.
+EMERALD = Profile(
+    qc="emerald",
+    case="idle-schedule-train-readout-emerald",
+    question=(
+        "Does Emerald schedule a circuit job's gates as soon or as late as possible, read by whether pulsed "
+        "qubits relax while an uncoupled qubit runs an identity train, and is the decay beyond the schedule's "
+        "prediction one common per-pulse gap or varies by qubit?"
+    ),
+    shots=4000,
+    prx_seconds=24e-9,
+    train=("QB20", "QB26"),
+    qubits=tuple(f"QB{n}" for n in (5, 10, 14, 18, 20, 24, 26, 30, 34, 37, 42, 44)),
+    max_credits={"emerald": 4.5, "emerald:mock": 0.0},
+    price={"emerald": 0.75, "emerald:mock": 0.0},
+    isolated=False,
+)
+# The successor reads each measured qubit's T1 in the same job: every qubit gets one prx(pi), then an explicit delay
+# instruction on all twelve (IQM's circuit delay, duration in seconds, rounded up to the hardware's step), then the
+# joint measure. The pulse train of an idle layout waits N (d + g) for a per-pulse gap g; a delay waits its stated
+# duration plus one offset shared by every delay, which the decay's amplitude absorbs. The slope therefore gives T1
+# independently of g, and the 1000-pulse arm then gives g itself (evaluate, "h2_gap").
+T1_DELAYS = (8e-6, 16e-6, 32e-6, 64e-6)
+EMERALD_T1 = dataclasses.replace(
+    EMERALD,
+    case="idle-schedule-t1-emerald",
+    question=(
+        "Does Emerald schedule a circuit job's gates as soon or as late as possible, and is the decay beyond the "
+        "schedule's prediction a per-pulse timing gap common to the qubits, read against each qubit's T1 measured "
+        "by delay circuits in the same job?"
+    ),
+    max_credits={"emerald": 12.0, "emerald:mock": 0.0},
+    delays=T1_DELAYS,
+)
+PROFILES = {"garnet": GARNET, "emerald": EMERALD, "emerald-t1": EMERALD_T1}
 # Draw docs/evidence/anu_qrng/draw-2026-10-25T001615Z.json, indices 0 and 1 (allocations.json).
 SYNTHETIC_SEEDS = (36215, 40623)
 # The model device's readout per qubit, (P(1|0), P(0|1)), unlike every qubit's calibrated readout.
@@ -95,6 +192,14 @@ def measure(qubits: list[str]) -> dict[str, Any]:
     return {"name": "measure", "locus": qubits, "args": {"key": "c"}}
 
 
+def delay(qubits: list[str], seconds: float) -> dict[str, Any]:
+    return {"name": "delay", "locus": qubits, "args": {"duration": seconds}}
+
+
+def delay_name(seconds: float) -> str:
+    return f"t1-{round(seconds * 1e6)}us"
+
+
 def train_pulses(k: int) -> int:
     return 4 * k + 1
 
@@ -103,18 +208,22 @@ def ordered(qubits: Any) -> list[str]:
     return sorted(qubits, key=lambda q: int(q[2:]))
 
 
-def pulsed_qubits(train_qubit: str, calibration: iqm_sim.Calibration) -> list[str]:
-    """Every qubit that shares no coupler with the train qubit and is not it."""
+def pulsed_qubits(
+    train_qubit: str, calibration: iqm_sim.Calibration, within: tuple[str, ...] | None = None
+) -> list[str]:
+    """Every qubit of the cohort (the calibration's, unless given) that shares no coupler with the train qubit."""
     return ordered(
-        q for q in calibration.qubits if q != train_qubit and frozenset((q, train_qubit)) not in calibration.cz
+        q
+        for q in (within or calibration.qubits)
+        if q != train_qubit and frozenset((q, train_qubit)) not in calibration.cz
     )
 
 
-def circuits_of(calibration: iqm_sim.Calibration) -> list[dict[str, Any]]:
-    every = ordered(calibration.qubits)
+def circuits_of(calibration: iqm_sim.Calibration, profile: Profile = GARNET) -> list[dict[str, Any]]:
+    every = ordered(profile.qubits or calibration.qubits)
     circuits: list[dict[str, Any]] = []
-    for b in IDLE_TRAIN_QUBITS:
-        pulsed = pulsed_qubits(b, calibration)
+    for b in profile.train:
+        pulsed = pulsed_qubits(b, calibration, profile.qubits)
         for n in IDLE_PULSES:
             instructions = [*(prx(q, math.pi) for q in pulsed), *(prx(b, math.pi) for _ in range(n))]
             circuits.append({"name": f"idle-{b}-{n}", "instructions": [*instructions, measure(every)]})
@@ -123,12 +232,15 @@ def circuits_of(calibration: iqm_sim.Calibration) -> list[dict[str, Any]]:
     for k in AMPLIFY_K:
         pulses = [prx(q, math.pi / 2) for _ in range(train_pulses(k)) for q in every]
         circuits.append({"name": f"par-amp-{k}", "instructions": [*pulses, measure(every)]})
-    for qubit in TRAIN_QUBITS:
+    for qubit in TRAIN_QUBITS if profile.isolated else ():
         circuits.append({"name": f"ro0-{qubit}", "instructions": [measure([qubit])]})
         circuits.append({"name": f"ro1-{qubit}", "instructions": [prx(qubit, math.pi), measure([qubit])]})
         for k in AMPLIFY_K:
             pulses = [prx(qubit, math.pi / 2) for _ in range(train_pulses(k))]
             circuits.append({"name": f"amp-{qubit}-{k}", "instructions": [*pulses, measure([qubit])]})
+    for seconds in profile.delays:
+        instructions = [*(prx(q, math.pi) for q in every), delay(every, seconds), measure(every)]
+        circuits.append({"name": delay_name(seconds), "instructions": instructions})
     return circuits
 
 
@@ -146,17 +258,22 @@ def marginal(circuit: dict[str, Any], qubit: str) -> dict[str, Any]:
             counts[op["locus"][0]] = counts.get(op["locus"][0], 0) + 1
     timing = max(sorted(counts), key=lambda q: counts[q]) if counts else qubit
     keep = [qubit] if timing == qubit else [qubit, timing]
-    ops = [op for op in circuit["instructions"] if op["name"] == "prx" and op["locus"][0] in keep]
+    ops = []
+    for op in circuit["instructions"]:
+        if op["name"] == "prx" and op["locus"][0] in keep:
+            ops.append(op)
+        elif op["name"] == "delay" and any(q in keep for q in op["locus"]):
+            ops.append({**op, "locus": [q for q in op["locus"] if q in keep]})
     return {"name": f"{circuit['name']}@{qubit}", "instructions": [*ops, measure(keep)]}
 
 
-def exact(item: tuple[dict[str, Any], str, str, dict[str, float]]) -> float:
+def exact(item: tuple[dict[str, Any], str, str, dict[str, float], float]) -> float:
     """Exact <Z> of a circuit's first measured qubit before readout: the calibration's gate noise, idle T1/T2 over
     the given schedule and prx angles scaled by 1 + eps on the named qubits.
 
     A joint measure is one instruction on the device, so a barrier over its locus aligns its readouts here.
     """
-    circuit, calibration_dir, method, over = item
+    circuit, calibration_dir, method, over, prx_seconds = item
     calibration = iqm_sim.Calibration.from_directory(Path(calibration_dir))
     index = {q: n for n, q in enumerate(calibration.qubits)}
     model = QuantumCircuit(len(calibration.qubits), 1)
@@ -166,6 +283,8 @@ def exact(item: tuple[dict[str, Any], str, str, dict[str, float]]) -> float:
         if op["name"] == "prx":
             scale = 1 + over.get(op["locus"][0], 0.0)
             model.append(RGate(op["args"]["angle"] * scale, op["args"]["phase"]), locus)
+        elif op["name"] == "delay":
+            model.delay(op["args"]["duration"], locus, unit="s")
         elif op["name"] == "measure":
             model.barrier(*locus)
             first = locus[0]
@@ -174,7 +293,7 @@ def exact(item: tuple[dict[str, Any], str, str, dict[str, float]]) -> float:
             raise ValueError(f"{circuit['name']}: {op['name']} has no model here")
     if first is None:
         raise ValueError(f"{circuit['name']} measures no qubit")
-    target, _ = target_of(calibration)
+    target, _ = target_of(calibration, prx_seconds)
     scheduled = relaxed(calibration, transpile(model, target=target, optimization_level=0, scheduling_method=method))
     out = QuantumCircuit(*scheduled.qregs, *scheduled.cregs)
     for instruction in scheduled.data:
@@ -187,76 +306,86 @@ def exact(item: tuple[dict[str, Any], str, str, dict[str, float]]) -> float:
 
 
 def readings(
-    circuits: list[dict[str, Any]], calibration_dir: Path, method: str, over: dict[str, float]
+    circuits: list[dict[str, Any]],
+    calibration_dir: Path,
+    method: str,
+    over: dict[str, float],
+    prx_seconds: float = DURATIONS["r"],
 ) -> dict[str, float]:
     """True <Z> of every measured qubit of every circuit, keyed name@qubit."""
     keys = [(c, q) for c in circuits for q in measured(c)]
-    values = ordered_map(exact, [(marginal(c, q), str(calibration_dir), method, over) for c, q in keys])
+    values = ordered_map(exact, [(marginal(c, q), str(calibration_dir), method, over, prx_seconds) for c, q in keys])
     return {f"{c['name']}@{q}": value for (c, q), value in zip(keys, values, strict=True)}
 
 
-def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
+def build_from(calibration_dir: Path, profile: Profile = GARNET) -> tuple[dict[str, str], dict[str, Any]]:
     calibration = iqm_sim.Calibration.from_directory(calibration_dir)
-    circuits = circuits_of(calibration)
+    circuits = circuits_of(calibration, profile)
+    shots, qc = profile.shots, profile.qc
     files = {f"circuits/{c['name']}.json": dump(c) for c in circuits}
     no_error: dict[str, float] = {}
-    true = {method: readings(circuits, calibration_dir, method, no_error) for method in ("asap", "alap")}
+    true = {
+        method: readings(circuits, calibration_dir, method, no_error, profile.prx_seconds)
+        for method in ("asap", "alap")
+    }
     z = {
         method: {key: read(value, *calibration.readout(key.split("@")[1])) for key, value in values.items()}
         for method, values in true.items()
     }
     idle: dict[str, Any] = {}
-    for b in IDLE_TRAIN_QUBITS:
+    for b in profile.train:
         rows = {}
-        for qubit in pulsed_qubits(b, calibration):
+        for qubit in pulsed_qubits(b, calibration, profile.qubits):
             contrasts = []
             for n in IDLE_PULSES[1:]:
                 name, base = f"idle-{b}-{n}@{qubit}", f"idle-{b}-0@{qubit}"
                 asap = z["asap"][name] - z["asap"][base]
                 alap = z["alap"][name] - z["alap"][base]
-                se = math.hypot(*(math.sqrt(max(1 - z["alap"][m] ** 2, 1 / SHOTS) / SHOTS) for m in (name, base)))
+                se = math.hypot(*(math.sqrt(max(1 - z["alap"][m] ** 2, 1 / shots) / shots) for m in (name, base)))
                 contrasts.append({"pulses": n, "asap": asap, "alap": alap, "separation_se": abs(asap - alap) / se})
             rows[qubit] = {
                 "t1_seconds": calibration.values[f"characterization.model.{qubit}.t1_time"],
                 "contrasts": contrasts,
             }
         idle[b] = rows
-    shot = len(circuits) * ACTIVE_SHOT_SECONDS + sum(n * DURATIONS["r"] for _ in IDLE_TRAIN_QUBITS for n in IDLE_PULSES)
-    expected = round(SHOTS * shot, 3)
-    budget = MAX_CREDITS[QC] / PRICE[QC]
+    shot = len(circuits) * ACTIVE_SHOT_SECONDS + sum(
+        n * profile.prx_seconds for _ in profile.train for n in IDLE_PULSES
+    )
+    if profile.delays:
+        shot += sum(profile.delays)
+    expected = round(shots * shot, 3)
+    budget = profile.max_credits[qc] / profile.price[qc]
     if JOB_SECONDS + expected > budget - PLAN_HEADROOM:
         raise ValueError(f"{expected} s of shots plus {JOB_SECONDS} s leave less than {PLAN_HEADROOM} s of {budget} s")
     job = {
         "job": "probe",
         "circuits": [{"file": rel, "sha256": sha256(text.encode())} for rel, text in files.items()],
-        "shots": SHOTS,
+        "shots": shots,
         # The job compiles against the calibration set the prediction was made from, or fails if it is gone.
-        "options": {**OPTIONS, "calibration_set_id": {QC: calibration.set_id}},
+        "options": {**OPTIONS, "calibration_set_id": {qc: calibration.set_id}},
         "expected_seconds": expected,
-        "max_credits": MAX_CREDITS,
+        "max_credits": profile.max_credits,
     }
     prediction = {
         "calibration_set": calibration.set_id,
-        "prx_seconds": DURATIONS["r"],
+        "prx_seconds": profile.prx_seconds,
         "idle": idle,
         "z": z,
-        "coherent_attribution": {q: COHERENT[q] for q in TRAIN_QUBITS if q in COHERENT},
+        "coherent_attribution": {q: COHERENT[q] for q in TRAIN_QUBITS if q in COHERENT and profile.isolated},
         "model": (
             "iqm_sim depolarizing PRX with unheralded readout, idle T1/T2 over ASAP and over ALAP schedules with the "
             "joint measure aligned, exact density matrix per measured qubit"
         ),
     }
+    if profile.delays:
+        prediction["t1_delays"] = {delay_name(s): s for s in profile.delays}
     files["prediction.json"] = dump(prediction)
     files["cases.json"] = dump(
         {
             "schema": CASE_SCHEMA,
-            "case": CASE,
-            "question": (
-                "Does Garnet schedule a circuit job's gates as soon or as late as possible, read by whether pulsed "
-                "qubits relax while an uncoupled qubit runs an identity train, and what over-rotation does every "
-                "qubit's prx carry when fitted with its own readout, driven alone and all at once?"
-            ),
-            "qcs": QCS,
+            "case": profile.case,
+            "question": profile.question,
+            "qcs": profile.qcs,
             "jobs": [job],
             # The approval digest of cases.json covers the prediction the analysis decides against.
             "prediction_sha256": sha256(files["prediction.json"].encode()),
@@ -265,17 +394,18 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
     return files, prediction
 
 
-def write(directory: Path, live: bool = False) -> None:
-    """Build the case; --live reads Garnet's current calibration, otherwise the retained snapshot's copy."""
+def write(directory: Path, live: bool = False, profile: Profile = GARNET) -> None:
+    """Build the case; --live reads the quantum computer's current calibration, otherwise the retained snapshot's
+    copy."""
     calibration_dir = directory / "calibration"
     calibration_dir.mkdir(parents=True, exist_ok=True)
     if live:
-        fetch_calibration(calibration_dir)
+        fetch_calibration(calibration_dir, profile.qc)
     else:
-        source = iqm_sim.EVIDENCE / QC / "calibration"
+        source = iqm_sim.EVIDENCE / profile.qc / "calibration"
         for name in CALIBRATION_FILES:
             shutil.copyfile(source / name, calibration_dir / name)
-    files, prediction = build_from(calibration_dir)
+    files, prediction = build_from(calibration_dir, profile)
     for stale in (directory / "circuits").glob("*.json") if (directory / "circuits").exists() else []:
         if stale.relative_to(directory).as_posix() not in files:
             stale.unlink()
@@ -289,8 +419,8 @@ def write(directory: Path, live: bool = False) -> None:
     print(json.dumps({"circuits": len(files) - 2, "weakest_separation_se": weakest}))
 
 
-def check(directory: Path) -> None:
-    files, _ = build_from(directory / "calibration")
+def check(directory: Path, profile: Profile = GARNET) -> None:
+    files, _ = build_from(directory / "calibration", profile)
     present = {p.relative_to(directory).as_posix() for p in directory.rglob("*") if p.is_file()}
     expected = set(files) | {f"calibration/{name}" for name in CALIBRATION_FILES}
     if present != expected:
@@ -328,10 +458,11 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
     """The preregistered decisions H1 and H2 and the descriptive outputs from per name@qubit (ones, shots)."""
     qubits = ordered({key.split("@")[1] for key in counts if key.startswith("par-ro0@")})
     items = [(counts, "par-amp", "par-ro", q) for q in qubits]
-    items += [(counts, "amp-" + q, "ro", q) for q in TRAIN_QUBITS]
+    train = [q for q in TRAIN_QUBITS if f"ro0-{q}@{q}" in counts]
+    items += [(counts, "amp-" + q, "ro", q) for q in train]
     fits = ordered_map(fit, items)
     parallel = dict(zip(qubits, fits[: len(qubits)], strict=True))
-    isolated_fits = dict(zip(TRAIN_QUBITS, fits[len(qubits) :], strict=True))
+    isolated_fits = dict(zip(train, fits[len(qubits) :], strict=True))
     arms: dict[str, dict[str, list[dict[str, Any]]]] = {}
     for b, rows in prediction["idle"].items():
         arms[b] = {}
@@ -350,12 +481,21 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
                 before, after = (((1 - value) / 2 - e01) / (1 - e01 - e10) for value in (z0, z))
                 wait = contrast["pulses"] * prediction["prx_seconds"]
                 arm["apparent_t1_seconds"] = wait / math.log(before / after) if 0 < after < before else None
+                if "t1_delays" in prediction:
+                    # The decay rate ln(before / after) / wait through the bare readout pair (readout_pair), which
+                    # stands whether or not the over-rotation model fits the qubit's trains.
+                    r01, r10 = readout_pair(counts, qubit)
+                    pair = 1 - r01 - r10
+                    up, down = (((1 - value) / 2 - r01) / pair for value in (z0, z))
+                    if pair > 0 and 0 < down < up:
+                        arm["apparent_rate_per_second"] = math.log(up / down) / wait
+                        arm["apparent_rate_se"] = math.hypot(se0 / (2 * pair) / up, se_z / (2 * pair) / down) / wait
                 arms[b][qubit].append(arm)
     readings_ = {arm["verdict"] for layout in arms.values() for rows in layout.values() for arm in rows}
     resolved = readings_ - {"unresolved"}
     schedule = "mixed" if len(resolved) > 1 else readings_.pop() if len(readings_) == 1 else "unresolved"
     isolated: dict[str, Any] = {}
-    for qubit in TRAIN_QUBITS:
+    for qubit in train:
         row = isolated_fits[qubit]
         attributed = prediction["coherent_attribution"].get(qubit)
         if attributed is not None and row["linear"]:
@@ -369,11 +509,161 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
             shift = parallel[qubit]["eps"] - row["eps"]
             row["parallel_minus_isolated"] = {"eps": shift, "se": math.hypot(parallel[qubit]["eps_se"], row["eps_se"])}
         isolated[qubit] = row
-    return {
+    report: dict[str, Any] = {
         "h1_schedule": {"verdict": schedule, "arms": arms},
         "h2_isolated_trains": isolated,
         "parallel_trains": parallel,
     }
+    if "t1_delays" in prediction:
+        pairs = {q: readout_pair(counts, q) for q in qubits}
+        t1 = {q: t1_fit(counts, q, {"e01": pairs[q][0], "e10": pairs[q][1]}, prediction["t1_delays"]) for q in qubits}
+        calibrated = {q: row["t1_seconds"] for rows in prediction["idle"].values() for q, row in rows.items()}
+        for qubit, fitted in t1.items():
+            if fitted.get("t1_seconds") is not None and qubit in calibrated:
+                # Descriptive: the delay-measured T1 per requested delay second over the calibration copy's T1.
+                fitted["over_calibrated"] = fitted["t1_seconds"] / calibrated[qubit]
+        report["t1_delay"] = t1
+        valid = {q for q in qubits if 1 - sum(pairs[q]) > 0 and usable_t1(t1[q])}
+        report["h2_gap"] = gap_test(arms, t1, prediction["prx_seconds"], schedule, set(calibrated), valid)
+    return report
+
+
+def readout_pair(counts: dict[str, tuple[int, int]], qubit: str) -> tuple[float, float]:
+    """(P(1|0), P(0|1)) of one qubit from the bare readout pair par-ro0 and par-ro1 of the parallel block."""
+    z0, _, _ = z_of(counts, f"par-ro0@{qubit}")
+    z1, _, _ = z_of(counts, f"par-ro1@{qubit}")
+    return (1 - z0) / 2, (1 + z1) / 2
+
+
+def usable_t1(fitted: dict[str, Any]) -> bool:
+    """A delay fit that gives a rate and whose chi-square survival is at least T1_FIT_P_MIN."""
+    from scipy.stats import chi2 as chi2_law
+
+    if fitted.get("t1_seconds") is None:
+        return False
+    dof = fitted["dof"]
+    return dof < 1 or float(chi2_law.sf(fitted["chi2"], dof)) >= T1_FIT_P_MIN
+
+
+def t1_fit(
+    counts: dict[str, tuple[int, int]], qubit: str, readout: dict[str, Any], delays: dict[str, float]
+) -> dict[str, Any]:
+    """One qubit's T1 from its delay circuits: the excited population through the parallel readout pair, fitted as
+    A exp(-t / T1) by weighted least squares on its logarithm over the points at least T1_POINT_SE standard errors
+    above zero. The fit uses the delay circuits alone, so the offset a delay instruction adds is common to its
+    points and enters A only."""
+    e01, e10 = readout["e01"], readout["e10"]
+    scale = 1 - e01 - e10
+    points = []
+    for name, seconds in delays.items():
+        z, se, _ = z_of(counts, f"{name}@{qubit}")
+        p, se_p = ((1 - z) / 2 - e01) / scale, se / (2 * scale)
+        if p > T1_POINT_SE * se_p:
+            points.append((seconds, math.log(p), se_p / p))
+    if len(points) < 3:
+        return {"t1_seconds": None, "points": len(points)}
+    t = np.array([x[0] for x in points])
+    y = np.array([x[1] for x in points])
+    w = np.array([1 / x[2] ** 2 for x in points])
+    design = np.stack([np.ones_like(t), -t], axis=1)
+    normal = design.T @ (design * w[:, None])
+    coef = np.linalg.solve(normal, design.T @ (w * y))
+    cov = np.linalg.inv(normal)
+    rate, rate_se = float(coef[1]), math.sqrt(float(cov[1, 1]))
+    chi2 = float(np.sum(w * (y - design @ coef) ** 2))
+    if rate <= 0:
+        return {"t1_seconds": None, "points": len(points), "rate_per_second": rate, "chi2": chi2}
+    return {
+        "t1_seconds": 1 / rate,
+        "t1_se_seconds": rate_se / rate**2,
+        "rate_per_second": rate,
+        "rate_se": rate_se,
+        "amplitude": math.exp(float(coef[0])),
+        "chi2": chi2,
+        "dof": len(points) - 2,
+        "points": len(points),
+    }
+
+
+def gap_test(
+    arms: dict[str, dict[str, list[dict[str, Any]]]],
+    t1: dict[str, dict[str, Any]],
+    prx_seconds: float,
+    schedule: str,
+    registered: set[str],
+    valid: set[str],
+) -> dict[str, Any]:
+    """H2 of the successor: the per-pulse gap g of each pulsed qubit from its longest train, g = d (k / k_T1 - 1)
+    with k the train's decay rate per second of nominal pulse time and k_T1 the qubit's delay-measured rate; a common
+    g is rejected when the chi-square of the qubits' g about their weighted mean has survival below GAP_P_REJECT.
+    The shorter train repeats the estimate as a stationarity check. Under any schedule but asap the trains carry no
+    decay to read and the test reports unidentifiable; so does a case in which a registered pulsed qubit lacks a valid
+    readout fit, a usable delay fit or a decay rate on every train, since the preregistered test covers all of them.
+    T1 here is per requested delay second: a delay realized as a t + b with a != 1 scales it, and no reading of this
+    job detects a."""
+    from scipy.stats import chi2 as chi2_law
+
+    if schedule != "asap":
+        return {"verdict": "unidentifiable", "schedule": schedule}
+    lengths = {arm["pulses"] for layout in arms.values() for row in layout.values() for arm in row}
+    rated = {
+        q
+        for q in valid
+        if all("apparent_rate_per_second" in arm for layout in arms.values() for arm in layout.get(q, []))
+        and any(q in layout for layout in arms.values())
+    }
+    excluded = sorted(registered - rated, key=lambda q: int(q[2:]))
+    by_count: dict[int, dict[str, dict[str, float]]] = {}
+    for layout in arms.values():
+        for qubit, row in layout.items():
+            if qubit not in rated:
+                continue
+            for arm in row:
+                if "apparent_rate_per_second" not in arm:
+                    continue
+                # Pool a qubit's layouts by inverse variance of the train's rate; its T1 is shared by both.
+                held = by_count.setdefault(arm["pulses"], {}).setdefault(qubit, {"w": 0.0, "wk": 0.0})
+                weight = 1 / arm["apparent_rate_se"] ** 2
+                held["w"] += weight
+                held["wk"] += weight * arm["apparent_rate_per_second"]
+    out: dict[str, Any] = {}
+    for pulses, pooled in sorted(by_count.items()):
+        gaps = {}
+        for qubit, held in pooled.items():
+            k, se_k = held["wk"] / held["w"], 1 / math.sqrt(held["w"])
+            k1, se_k1 = t1[qubit]["rate_per_second"], t1[qubit]["rate_se"]
+            gap = prx_seconds * (k / k1 - 1)
+            se = prx_seconds * math.hypot(se_k / k1, k * se_k1 / k1**2)
+            gaps[qubit] = {"gap_seconds": gap, "se_seconds": se}
+        weights = {q: 1 / g["se_seconds"] ** 2 for q, g in gaps.items()}
+        mean = sum(weights[q] * g["gap_seconds"] for q, g in gaps.items()) / sum(weights.values())
+        chi2 = sum(weights[q] * (g["gap_seconds"] - mean) ** 2 for q, g in gaps.items())
+        dof = len(gaps) - 1
+        survival = float(chi2_law.sf(chi2, dof)) if dof > 0 else None
+        out[str(pulses)] = {
+            "gaps": gaps,
+            "mean_seconds": mean,
+            "mean_se_seconds": 1 / math.sqrt(sum(weights.values())),
+            "chi2": chi2,
+            "dof": dof,
+            "survival": survival,
+        }
+    longest = out.get(str(max(lengths))) if by_count and lengths else None
+    if excluded or longest is None or longest["survival"] is None:
+        return {"verdict": "unidentifiable", "schedule": schedule, "excluded": excluded, "trains": out}
+    verdict = "common" if longest["survival"] >= GAP_P_REJECT else "per-qubit"
+    report: dict[str, Any] = {"verdict": verdict, "schedule": schedule, "excluded": excluded, "trains": out}
+    counts = sorted(by_count)
+    if len(counts) > 1:
+        # The stationary gap model predicts one mean at every train length; a difference beyond Z_RESOLVE combined
+        # standard errors falsifies it. Both means cover the same qubits and share each qubit's T1 and readout, so
+        # the combined error is not the difference's; study() measures the test's false-alarm rate.
+        short, long_ = out[str(counts[0])], out[str(counts[-1])]
+        z = (long_["mean_seconds"] - short["mean_seconds"]) / math.hypot(
+            long_["mean_se_seconds"], short["mean_se_seconds"]
+        )
+        report["stationarity"] = {"z": z, "verdict": "stationary" if abs(z) <= Z_RESOLVE else "falsified"}
+    return report
 
 
 def analyze(run_dir: Path) -> dict[str, Any]:
@@ -392,8 +682,11 @@ def analyze(run_dir: Path) -> dict[str, Any]:
     if facts["statuses"] != {"completed": 1}:
         raise ValueError(f"{run_dir}: the job is {sorted(facts['statuses'])}; the analysis reads completed jobs")
     # Mock outcomes are random bits and never enter the analysis.
-    if submission["qc"] != QC or case.get("case") != CASE:
-        raise ValueError(f"{run_dir}: a {case.get('case')} run on {submission['qc']}, not a {CASE} run on {QC}")
+    profile = next((p for p in PROFILES.values() if p.case == case.get("case")), GARNET)
+    if submission["qc"] != profile.qc or case.get("case") != profile.case:
+        raise ValueError(
+            f"{run_dir}: a {case.get('case')} run on {submission['qc']}, not a {profile.case} run on {profile.qc}"
+        )
     if record["compilation"]["calibration_set_id"] != prediction["calibration_set"]:
         raise ValueError(f"{run_dir}: compiled against another calibration set than the prediction's")
     row = next(r for r in case["jobs"] if r["job"] == submission["job"])
@@ -412,16 +705,113 @@ def analyze(run_dir: Path) -> dict[str, Any]:
 
 
 def synthetic(
-    circuits: list[dict[str, Any]], calibration_dir: Path, method: str, eps: dict[str, float], seed: int
+    circuits: list[dict[str, Any]],
+    calibration_dir: Path,
+    method: str,
+    eps: dict[str, float],
+    seed: int,
+    profile: Profile = GARNET,
 ) -> dict[str, tuple[int, int]]:
     """Counts of a model device: the calibration's gate noise and relaxation over one schedule, the over-rotations
-    eps and SYNTHETIC_READOUT, sampled at SHOTS."""
+    eps and SYNTHETIC_READOUT, sampled at the profile's shots."""
     rng = np.random.default_rng(seed)
     counts = {}
-    for key, value in readings(circuits, calibration_dir, method, eps).items():
+    for key, value in readings(circuits, calibration_dir, method, eps, profile.prx_seconds).items():
         e01, e10 = SYNTHETIC_READOUT.get(key.split("@")[1], SYNTHETIC_DEFAULT)
-        counts[key] = (int(rng.binomial(SHOTS, (1 - read(value, e01, e10)) / 2)), SHOTS)
+        counts[key] = (int(rng.binomial(profile.shots, (1 - read(value, e01, e10)) / 2)), profile.shots)
     return counts
+
+
+def expected_ones(
+    circuits: list[dict[str, Any]], calibration_dir: Path, method: str, eps: dict[str, float], prx_seconds: float
+) -> dict[str, float]:
+    """P(read 1) per name@qubit on the model device of synthetic(): its gate noise, relaxation and SYNTHETIC_READOUT."""
+    out = {}
+    for key, value in readings(circuits, calibration_dir, method, eps, prx_seconds).items():
+        e01, e10 = SYNTHETIC_READOUT.get(key.split("@")[1], SYNTHETIC_DEFAULT)
+        out[key] = (1 - read(value, e01, e10)) / 2
+    return out
+
+
+def study_replicate(item: tuple[dict[str, float], int, int, dict[str, Any], int]) -> dict[str, Any]:
+    """One binomial replicate of the model device, evaluated; seed is the replicate's spawned generator entropy."""
+    ones, shots, entropy, prediction, index = item
+    rng = np.random.default_rng(np.random.SeedSequence(entropy, spawn_key=(index,)))
+    keys = sorted(ones)
+    drawn = rng.binomial(shots, [ones[k] for k in keys])
+    return evaluate({k: (int(n), shots) for k, n in zip(keys, drawn, strict=True)}, prediction)
+
+
+def study(case_dir: Path) -> dict[str, Any]:
+    """Calibration study of the successor's H2 estimator on the case's own calibration and circuits. For a device
+    whose pulses last the prediction's d plus each gap of STUDY_TRUE_GAPS: the noise-free reading (every count at
+    its expected value, rounded, at the case's shots) and STUDY_REPLICATES binomial replicates at the case's shots,
+    drawn from CALIBRATION_STUDY_SEED. It records the mean gap's bias, the coverage of the mean +- one standard error,
+    the common-gap test's rejection rate at GAP_P_REJECT (every planted device has one common gap, so each rejection is
+    false), the stationarity test's false-alarm rate, and the spread of the per-qubit gap and T1 z-scores."""
+    calibration_dir = case_dir / "calibration"
+    calibration = iqm_sim.Calibration.from_directory(calibration_dir)
+    files, prediction = build_from(calibration_dir, EMERALD_T1)
+    circuits = [json.loads(text) for rel, text in files.items() if rel.startswith("circuits/")]
+    shots = EMERALD_T1.shots
+    rows = []
+    for number, gap in enumerate(STUDY_TRUE_GAPS):
+        ones = expected_ones(circuits, calibration_dir, "asap", {}, EMERALD_T1.prx_seconds + gap)
+        # Expected counts at the case's shots: the estimator's bias at the scale its gates and errors apply to.
+        exact = evaluate({k: (round(p * shots), shots) for k, p in ones.items()}, prediction)
+        entropy = CALIBRATION_STUDY_SEED * 1000 + number
+        reports = ordered_map(
+            study_replicate, [(ones, shots, entropy, prediction, i) for i in range(STUDY_REPLICATES)], min_items=2
+        )
+        longest = str(IDLE_PULSES[-1])
+        means, covered, rejected, alarms, gap_z, t1_z, unidentifiable = [], 0, 0, 0, [], [], 0
+        for report in reports:
+            h2 = report["h2_gap"]
+            if h2["verdict"] == "unidentifiable":
+                unidentifiable += 1
+                continue
+            train = h2["trains"][longest]
+            means.append(train["mean_seconds"])
+            covered += abs(train["mean_seconds"] - gap) <= train["mean_se_seconds"]
+            rejected += h2["verdict"] == "per-qubit"
+            alarms += h2.get("stationarity", {}).get("verdict") == "falsified"
+            gap_z += [(g["gap_seconds"] - gap) / g["se_seconds"] for g in train["gaps"].values()]
+            for qubit, fitted in report["t1_delay"].items():
+                if fitted.get("t1_seconds") is not None:
+                    t1 = calibration.values[f"characterization.model.{qubit}.t1_time"]
+                    t1_z.append((fitted["t1_seconds"] - t1) / fitted["t1_se_seconds"])
+        used = len(means)
+        rows.append(
+            {
+                "true_gap_ns": gap * 1e9,
+                "noise_free_mean_ns": exact["h2_gap"]["trains"].get(longest, {}).get("mean_seconds", math.nan) * 1e9,
+                "noise_free_excluded": exact["h2_gap"].get("excluded", []),
+                "noise_free_verdict": exact["h2_gap"]["verdict"],
+                "replicates": STUDY_REPLICATES,
+                "unidentifiable": unidentifiable,
+                "mean_of_means_ns": float(np.mean(means)) * 1e9 if used else None,
+                "spread_of_means_ns": float(np.std(means, ddof=1)) * 1e9 if used > 1 else None,
+                "coverage_one_se": covered / used if used else None,
+                "common_gap_rejection_rate": rejected / used if used else None,
+                "stationarity_false_alarm_rate": alarms / used if used else None,
+                "gap_z_sd": float(np.std(gap_z, ddof=1)) if len(gap_z) > 1 else None,
+                "t1_z_mean": float(np.mean(t1_z)) if t1_z else None,
+                "t1_z_sd": float(np.std(t1_z, ddof=1)) if len(t1_z) > 1 else None,
+            }
+        )
+    return {
+        "schema": "iqm-idle-schedule-t1-study-v1",
+        "case": EMERALD_T1.case,
+        "calibration_set": calibration.set_id,
+        # The draw is cited by the constant's comment and the seed ledger; a record under results/ that named the
+        # draw file would claim the whole draw (ci/seed_provenance.py).
+        "seed": {
+            "value": CALIBRATION_STUDY_SEED,
+            "constant": "scripts/iqm_idle_schedule_probe.py CALIBRATION_STUDY_SEED",
+        },
+        "shots": shots,
+        "devices": rows,
+    }
 
 
 def self_test() -> str:
@@ -468,10 +858,147 @@ def self_test() -> str:
     if flat["h2_isolated_trains"]["QB11"].get("attribution", {}).get("verdict") != "excluded":
         raise RuntimeError(f"a QB11 without over-rotation reads {flat['h2_isolated_trains']['QB11']}")
     pulsed = sum(len(rows) for rows in prediction["idle"].values())
+    committed = ROOT / "results/iqm/cases" / CASE
+    own, _ = build_from(committed / "calibration")
+    for rel, text in own.items():
+        built, kept = json.loads(text), json.loads((committed / rel).read_text(encoding="utf-8"))
+        if rel == "cases.json":
+            # The digest binds the prediction's bytes, which differ in the last float digit between numeric paths.
+            built.pop("prediction_sha256"), kept.pop("prediction_sha256")
+        if not same(built, kept):
+            raise RuntimeError(f"the Garnet build of {rel} differs from the committed case")
+    emerald_self_test()
+    emerald_t1_self_test()
     return (
         f"idle schedule probe: {len(circuits)} circuits, {pulsed} pulsed-qubit layouts; an ASAP and an ALAP model "
-        "device read their own schedule, and injected over-rotations come back through unlike readouts"
+        "device read their own schedule, and injected over-rotations come back through unlike readouts; the Garnet "
+        "build matches its committed case and the Emerald build matches its written case; the Emerald successor reads "
+        "a zero gap and a planted 14 ns gap through its delay-measured T1"
     )
+
+
+def same(a: Any, b: Any) -> bool:
+    """Equality of parsed JSON with floats compared to 1e-12 relative, the spread of two numeric paths."""
+    if isinstance(a, float) and isinstance(b, float):
+        return math.isclose(a, b, rel_tol=1e-12, abs_tol=1e-15)
+    if isinstance(a, dict) and isinstance(b, dict):
+        return a.keys() == b.keys() and all(same(a[k], b[k]) for k in a)
+    if isinstance(a, list) and isinstance(b, list):
+        return len(a) == len(b) and all(same(x, y) for x, y in zip(a, b, strict=True))
+    return bool(a == b)
+
+
+def emerald_t1_self_test() -> None:
+    """The successor: the Emerald circuits unchanged plus four delay circuits on all twelve qubits, inside its ceiling;
+    a model device whose pulses last the prediction's 24 ns reads a common gap near zero and each qubit's calibrated
+    T1, and one whose pulses last 14 ns longer reads that gap."""
+    committed = ROOT / "results/iqm/cases" / EMERALD_T1.case / "calibration"
+    calibration_dir = committed if committed.is_dir() else iqm_sim.EVIDENCE / EMERALD_T1.qc / "calibration"
+    calibration = iqm_sim.Calibration.from_directory(calibration_dir)
+    files, prediction = build_from(calibration_dir, EMERALD_T1)
+    base, _ = build_from(calibration_dir, EMERALD)
+    case = json.loads(files["cases.json"])
+    job = case["jobs"][0]
+    circuits = [json.loads(text) for rel, text in files.items() if rel.startswith("circuits/")]
+    if case["case"] != EMERALD_T1.case or len(circuits) != 16 or job["max_credits"] != EMERALD_T1.max_credits:
+        raise RuntimeError(f"the successor is {case['case']} with {len(circuits)} circuits at {job['max_credits']}")
+    if any(base[rel] != files[rel] for rel in base if rel.startswith("circuits/")):
+        raise RuntimeError("the successor changes a circuit of the Emerald case")
+    if calibration_dir == committed:
+        # The committed case against this build, floats to 1e-12: its prediction bytes come from another numeric
+        # path than every host's, as the Garnet case's do.
+        for rel, text in files.items():
+            built, kept = json.loads(text), json.loads((committed.parent / rel).read_text(encoding="utf-8"))
+            if rel == "cases.json":
+                built.pop("prediction_sha256"), kept.pop("prediction_sha256")
+            if not same(built, kept):
+                raise RuntimeError(f"the successor build of {rel} differs from the committed case")
+    every = ordered(EMERALD_T1.qubits or ())
+    for seconds in T1_DELAYS:
+        ops = json.loads(files[f"circuits/{delay_name(seconds)}.json"])["instructions"]
+        if [op["name"] for op in ops] != ["prx"] * 12 + ["delay", "measure"] or ops[12]["locus"] != every:
+            raise RuntimeError(f"{delay_name(seconds)} is not prx(pi) on the twelve, one delay and one measure")
+    if JOB_SECONDS + job["expected_seconds"] > EMERALD_T1.max_credits["emerald"] / 0.75 - PLAN_HEADROOM:
+        raise RuntimeError(f"the successor's {job['expected_seconds']} s leave no headroom under its ceiling")
+
+    # Expected counts at the case's shots (no random draw): the sampled behavior is the calibration study's
+    # (study(), results/iqm/proposals/idle-schedule-t1-emerald/calibration-study.json).
+    def expected(method: str, gap: float) -> dict[str, Any]:
+        ones = expected_ones(circuits, calibration_dir, method, {}, EMERALD_T1.prx_seconds + gap)
+        return evaluate({k: (round(p * EMERALD_T1.shots), EMERALD_T1.shots) for k, p in ones.items()}, prediction)
+
+    zero = expected("asap", 0.0)
+    if zero["h1_schedule"]["verdict"] != "asap" or zero["h2_gap"]["verdict"] != "common":
+        read = (zero["h1_schedule"]["verdict"], zero["h2_gap"]["verdict"])
+        raise RuntimeError(f"a gap-free ASAP device reads schedule {read[0]}, gap {read[1]}")
+    for qubit, fitted in zero["t1_delay"].items():
+        t1 = calibration.values[f"characterization.model.{qubit}.t1_time"]
+        if fitted["t1_seconds"] is None or abs(fitted["t1_seconds"] / t1 - 1) > 0.01:
+            raise RuntimeError(f"{qubit}: the delay fit reads {fitted.get('t1_seconds')} against the model's {t1}")
+    for planted in (0.0, 14e-9):
+        got = zero if planted == 0.0 else expected("asap", planted)
+        train = got["h2_gap"]["trains"][str(IDLE_PULSES[-1])]
+        # The calibration study reads the estimator's bias at expected counts as 0.02 to 0.04 ns.
+        if abs(train["mean_seconds"] - planted) > 0.1e-9:
+            raise RuntimeError(f"a {planted * 1e9:.0f} ns gap reads {train['mean_seconds'] * 1e9:.3f} ns")
+        if got["h2_gap"]["stationarity"]["verdict"] != "stationary":
+            raise RuntimeError(f"a stationary {planted * 1e9:.0f} ns gap reads {got['h2_gap']['stationarity']}")
+    flat = expected("alap", 0.0)
+    if flat["h2_gap"]["verdict"] != "unidentifiable":
+        raise RuntimeError(f"an ALAP device's gap reads {flat['h2_gap']['verdict']}")
+    # The preregistered test covers every pulsed qubit: one qubit without a usable delay fit, or with a nonlinear
+    # readout fit, leaves H2 unidentifiable and names the qubit.
+    registered = {q for rows in prediction["idle"].values() for q in rows}
+    arms, t1 = zero["h1_schedule"]["arms"], zero["t1_delay"]
+    lost = sorted(registered)[0]
+    for broken in ({**t1, lost: {"t1_seconds": None, "points": 2}}, t1):
+        valid = {q for q in registered if usable_t1(broken[q]) and (broken is t1 or q != lost)}
+        if broken is t1:
+            valid.discard(lost)
+        got = gap_test(arms, broken, prediction["prx_seconds"], "asap", registered, valid)
+        if got["verdict"] != "unidentifiable" or got["excluded"] != [lost]:
+            raise RuntimeError(f"a case without {lost} reads {got['verdict']}, excluded {got['excluded']}")
+
+
+def emerald_self_test() -> None:
+    """The Emerald build against its written case: cohort, layouts, circuits, shots, reset, ceiling, schedule."""
+    calibration_dir = iqm_sim.EVIDENCE / EMERALD.qc / "calibration"
+    calibration = iqm_sim.Calibration.from_directory(calibration_dir)
+    files, prediction = build_from(calibration_dir, EMERALD)
+    case = json.loads(files["cases.json"])
+    job = case["jobs"][0]
+    if case["prediction_sha256"] != sha256(files["prediction.json"].encode()):
+        raise RuntimeError("the Emerald cases.json does not bind its prediction")
+    if case["case"] != EMERALD.case or case["qcs"] != ["emerald:mock", "emerald"]:
+        raise RuntimeError(f"the Emerald case names {case['case']} on {case['qcs']}")
+    if job["shots"] != 4000 or len(job["circuits"]) != 12:
+        raise RuntimeError(f"the Emerald job is {len(job['circuits'])} circuits at {job['shots']} shots")
+    if job["options"]["heralding_mode"] != "none" or job["options"]["active_reset_cycles"] != 1:
+        raise RuntimeError(f"the Emerald job resets as {job['options']}")
+    if job["options"]["calibration_set_id"] != {"emerald": calibration.set_id}:
+        raise RuntimeError("the Emerald job does not pin the calibration set of its prediction")
+    if job["max_credits"] != {"emerald": 4.5, "emerald:mock": 0.0} or job["expected_seconds"] != 2.088:
+        raise RuntimeError(f"the Emerald ceiling reads {job['max_credits']} for {job['expected_seconds']} s")
+    circuits = [json.loads(text) for rel, text in files.items() if rel.startswith("circuits/")]
+    if {q for c in circuits for q in measured(c)} != set(EMERALD.qubits or ()) or len(EMERALD.qubits or ()) != 12:
+        raise RuntimeError("the Emerald circuits do not read exactly the case's twelve qubits")
+    if any(measured(c) != ordered(EMERALD.qubits or ()) for c in circuits):
+        raise RuntimeError("an Emerald circuit does not read the twelve qubits in one joint measure")
+    if {b: len(rows) for b, rows in prediction["idle"].items()} != {"QB20": 11, "QB26": 9}:
+        raise RuntimeError(f"the Emerald layouts pulse { ({b: len(r) for b, r in prediction['idle'].items()}) }")
+    if set().union(*(prediction["idle"][b] for b in EMERALD.train)) != set(EMERALD.qubits or ()):
+        raise RuntimeError("an Emerald qubit is pulsed in no idle layout")
+    if prediction["prx_seconds"] != 24e-9 or prediction["coherent_attribution"]:
+        raise RuntimeError("the Emerald prediction carries Garnet's prx length or over-rotation attribution")
+    for b, rows in prediction["idle"].items():
+        for qubit, row in rows.items():
+            weakest = min(contrast["separation_se"] for contrast in row["contrasts"])
+            if weakest < 2 * Z_RESOLVE:
+                raise RuntimeError(f"{qubit} beside {b}: the schedules separate by only {weakest:.1f} standard errors")
+    for method, seed in (("asap", SYNTHETIC_SEEDS[0]), ("alap", SYNTHETIC_SEEDS[1])):
+        got = evaluate(synthetic(circuits, calibration_dir, method, {}, seed, EMERALD), prediction)
+        if got["h1_schedule"]["verdict"] != method or got["h2_isolated_trains"]:
+            raise RuntimeError(f"an {method} Emerald device reads {got['h1_schedule']['verdict']}")
 
 
 def main() -> int:
@@ -480,8 +1007,16 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command")
     bd = sub.add_parser("build")
     bd.add_argument("directory", type=Path)
-    bd.add_argument("--live", action="store_true", help="read Garnet's current calibration (network, read-only)")
-    sub.add_parser("check").add_argument("directory", type=Path)
+    bd.add_argument(
+        "--live", action="store_true", help="read the quantum computer's current calibration (network, read-only)"
+    )
+    ck = sub.add_parser("check")
+    ck.add_argument("directory", type=Path)
+    for each in (bd, ck):
+        each.add_argument("--qc", choices=sorted(PROFILES), default="garnet", help="the case profile to build")
+    sd = sub.add_parser("study", help="calibration study of the successor's H2 estimator (local, no provider)")
+    sd.add_argument("case_dir", type=Path)
+    sd.add_argument("--out", type=Path, required=True)
     an = sub.add_parser("analyze")
     an.add_argument("run_dir", type=Path)
     an.add_argument("--out", type=Path, required=True)
@@ -490,9 +1025,11 @@ def main() -> int:
     if args.self_test:
         print(self_test())
     elif args.command == "build":
-        write(args.directory, args.live)
+        write(args.directory, args.live, PROFILES[args.qc])
     elif args.command == "check":
-        check(args.directory)
+        check(args.directory, PROFILES[args.qc])
+    elif args.command == "study":
+        args.out.write_text(dump(study(args.case_dir)), encoding="utf-8")
     elif args.command == "analyze":
         text = dump(analyze(args.run_dir))
         if args.replay:
