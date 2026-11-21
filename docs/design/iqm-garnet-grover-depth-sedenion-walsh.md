@@ -204,12 +204,16 @@ Wald uniformity statistic of the Grover arms.
 Runs `results/iqm/runs/2026-11-21T220358Z-garnet-grover-depth-sedenion-walsh-grover` (job
 `01a20023-427c-768d-ae3b-da9c12a7d827`) and `results/iqm/runs/2026-11-21T220406Z-garnet-grover-depth-sedenion-walsh-sedenion`
 (job `01a20023-5ea3-74e6-878c-ba154d175aa4`), owner AskUserQuestion 2026-11-21T22:00Z on cases.json sha256
-e4c71f05b25d28d2edc11e5fed0d3e5f768b8f06cad2e00376eb66a66e601f84, calibration set ea681de1 (the pinned set and the live
-default at submission). Analysis: `results/iqm/garnet_grover_depth_sedenion_walsh_analysis.json`
-(`scripts/iqm_garnet_followup.py analyze`, written and self-tested before the counts were read; a second run
-reproduced it byte for byte). Cost: 3 and 1 billed seconds, 1.5 and 0.5 credits; balance 23.75 afterwards.
+e4c71f05b25d28d2edc11e5fed0d3e5f768b8f06cad2e00376eb66a66e601f84, compiled on calibration set ea681de1, the set the case
+pins and the default the IQM service returned at 21:43 UTC. Analysis: `results/iqm/garnet_grover_depth_sedenion_walsh_analysis.json`
+(`scripts/iqm_garnet_followup.py analyze`); gate `core-iqm-garnet-followup-replay` reruns it and compares the bytes.
+The analyzer and its synthetic self-test were committed (db46b1277, 593c83adc, 56d947f75) before the runs entered the
+tree (3c81d9d74); the jobs had completed at 22:04 UTC, and git does not record when their counts were first read. The
+bit-order check comes from this document's decision list, not from `prediction.json` `decisions`, and entered the
+analyzer at 593c83adc. Cost: 3 and 1 billed seconds, 1.5 and 0.5 credits; balance 23.75 afterwards.
 
-Preregistered decisions (z resolves at 3):
+Preregistered decisions (z resolves at 3; each verdict reads the raw counts, and the readout-corrected values beside
+it decide nothing):
 
 | Decision | Measured | Model | Verdict |
 |---|---|---|---|
@@ -218,26 +222,43 @@ Preregistered decisions (z resolves at 3):
 | CZ sequence: padded line minus fused generic | -0.0092 +- 0.0057 (z -1.6) | +0.0128 | unresolved; the predicted gain of the 14-CZ line list over the 18-CZ generic list at equal prx does not appear |
 | Depth law, 101: f = lambda_3 - lambda_2^2 / lambda_1 | -0.122 +- 0.039 (lambda 0.831, 0.730, 0.519) | 0.010 | outside the model (z -3.4): the third iteration retains less than the geometric law of the first two predicts |
 | Depth law, 011 | 0.061 +- 0.041 (lambda 0.807, 0.688, 0.647) | 0.025 | inside |
-| Qubit or role: D = w(QB17) - w(QB20) | forward 0.0141 (z 3.6), reversed 0.0027 (z 0.7) | | open: the reversed D does not resolve |
+| Qubit or role: D = w(QB17) - w(QB20) | forward 0.0141 (z 3.6), reversed 0.0027 (z 0.7) | forward -0.0101 | open: the reversed D does not resolve |
 | Bit order of the Grover arms | every m011 arm reads 011 most often | | holds |
-| Sedenion e_5 row peak 1001 | row 0.183, truncation 0.128, null 0.0008 (z 3.7 and 16.2); mode 1001 | row 0.283 | resolved |
-| Sedenion e_10 row peak 0110 | row 0.066, truncation 0.043, null 0.059 (z 2.5 and 0.8); mode 1100 | row 0.284 | unresolved |
+| Sedenion e_5 row peak 1001 | row 0.183, truncation 0.128, null 0.0008 (z 3.7 and 16.2); mode 1001 | row 0.511, row minus truncation 0.283 | resolved |
+| Sedenion e_10 row peak 0110 | row 0.066, truncation 0.043, null 0.059 (z 2.5 and 0.8); mode 1100 | row 0.513, row minus truncation 0.284 | unresolved |
 
-QB12, measured in both jobs: in the sedenion job's sixteen readout preparations QB12 (logical qubit 1 of the
-square) reads 1 in 49 to 56 percent of shots when prepared in 1 and in 6 to 13 percent when prepared in 0, while the
-other three square qubits read 1 in 97.5 to 99.8 percent and at most 1.0 percent of shots; in the e_5 null arm, ideal 0000, QB12 reads 1 in 47
-percent of shots. In the packed Pauli job one minute earlier, QB12 reads 1 in 36 and 39 percent of the all-zero
-reference shots and 55 and 52 percent of the all-ones ones, against 0.03 to 0.15 and 0.92 to 0.99 on the other
-nineteen qubits. Calibration set ea681de1 (02:43 UTC) lists QB12's readout errors as 0.018 (0 to 1) and 0.014 (1 to 0).
-The e_10 peak 0110 sets QB12 and the e_5 peak 1001 does not, so QB12 accounts for the unresolved e_10 row; the
-Grover path (QB20, QB16, QB17) does not include it.
+Descriptive readings beside the decisions, deciding nothing:
 
-hypothesis: QB12's drive or frequency moved between the calibration at 02:43 UTC and the jobs at 22:03 UTC, leaving
-its pulses near a random rotation. Test: QB12's metrics in the next calibration set, or a single-qubit Rabi and
-readout circuit on QB12 at the next job; the e_10 row reruns only after QB12 reads within its calibration.
+- The readout-corrected 101 depth statistic reads f = -0.121 +- 0.041, z -2.96 against zero, under 3. The depth arms
+  k = 2 and 3 are single circuits grouped at the job's center, while k = 1 pools four mirrored copies across the job,
+  so a drift across the 36 circuits enters f through the position of the arms (the case marks the depth arms as
+  centrally grouped).
+- The forward end-qubit difference D reads +0.0141 against the model's -0.0101, the opposite sign: QB17 reads its bit
+  wrong more often than QB20 on the forward path.
+- QB12, measured in the sedenion job: across the sixteen readout preparations, QB12 (logical qubit 1 of the square,
+  character 1 of an outcome string) reads 1 in 48.5 to 55.5 percent of shots when prepared in 1 and in 5.7 to 12.9
+  percent when prepared in 0, while the other three square qubits read 1 in 97.5 to 99.8 percent and at most 1.0
+  percent. In the e_5 null arm, ideal 0000, QB12 reads 1 in 47 percent of shots and QB11 and QB17 stay below 1
+  percent. Calibration ea681de1 (02:43 UTC) lists QB12's `metrics.ssro.measure_fidelity.constant` errors as 0.0182
+  (0 to 1) and 0.0142 (1 to 0), and 0.0012 and 0.0093 conditioned on the herald these jobs use. The packed Pauli job
+  one minute earlier shows the same fault in its references (its retention, PR 974,
+  `docs/evidence/iqm-garnet-packed-pauli-run/readout_split.json`).
+- The e_10 row does not read as a QB12 readout fault alone. Its mode 1100 and its peak 0110 both set QB12, and differ
+  on QB11 and QB17; a QB12 readout or single-qubit fault scales both strings alike and keeps the ideal ratio of 9 to 1,
+  which the data invert (0.066 against 0.185). The e_10 null arm, ideal 0000, reads QB12 at 0.23 to 0.30 and QB11 and
+  QB17 at 0.13 to 0.17, where the e_5 null arm leaves QB11 and QB17 below 0.01. The e_10 network places all four of
+  its oracle phase gates on QB12 and runs CZs through it, while the e_5 network gives QB12 only its two Hadamard
+  layers.
 
-hypothesis: the bend of the 101 depth law is coherent error accumulating with iterations, which the model omits.
-Test: a fourth depth on the same path, where a coherent error predicts a non-monotone retention.
+Open hypotheses:
+
+- hypothesis: QB12's drive or frequency moved between the calibration at 02:43 UTC and the jobs at 22:03 UTC, and
+  the e_10 network spreads the fault through its CZs into QB11 and QB17. Test: QB12's metrics in the next calibration
+  set, and a single-qubit Rabi and readout circuit on QB12 at the next job; the e_10 row reruns only after QB12 reads
+  within its calibration, and a healthy QB12 that leaves the e_10 null's QB11 and QB17 excited points at a second fault.
+- hypothesis: the bend of the 101 depth law is coherent error accumulating with iterations, which the model omits;
+  the alternative is drift across the job's positions. Test: the per-copy and per-position frequencies already in
+  the run, then a fourth depth with mirrored depth arms, where a coherent error predicts a non-monotone retention.
 
 ## Commands
 
