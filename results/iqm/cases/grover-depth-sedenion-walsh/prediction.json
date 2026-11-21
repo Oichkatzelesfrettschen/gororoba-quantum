@@ -456,7 +456,7 @@
    "predicted_marked": 0.130241849,
    "prx": 3
   },
-  "r-m011-k1": {
+  "r-m011-k1-c0": {
    "cz": 14,
    "ideal_marked": 0.7812499999999999,
    "iterations": 1,
@@ -480,7 +480,55 @@
    "predicted_marked": 0.676093241,
    "prx": 22
   },
-  "r-m101-k1": {
+  "r-m011-k1-c1": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB17",
+    "QB16",
+    "QB20"
+   ],
+   "marked": "011",
+   "predicted": {
+    "000": 0.043492298,
+    "001": 0.050311507,
+    "010": 0.062030655,
+    "011": 0.676093241,
+    "100": 0.041249031,
+    "101": 0.041384036,
+    "110": 0.039560782,
+    "111": 0.045878451
+   },
+   "predicted_marked": 0.676093241,
+   "prx": 22
+  },
+  "r-m101-k1-c0": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB17",
+    "QB16",
+    "QB20"
+   ],
+   "marked": "101",
+   "predicted": {
+    "000": 0.041272085,
+    "001": 0.053418399,
+    "010": 0.041253851,
+    "011": 0.041337953,
+    "100": 0.062070661,
+    "101": 0.676200805,
+    "110": 0.04173617,
+    "111": 0.042710077
+   },
+   "predicted_marked": 0.676200805,
+   "prx": 22
+  },
+  "r-m101-k1-c1": {
    "cz": 14,
    "ideal_marked": 0.7812499999999999,
    "iterations": 1,
@@ -1544,8 +1592,9 @@
     "2": 0.7661,
     "3": 0.7081
    },
-   "rule": "lambda_3 minus lambda_2^2 / lambda_1 (raw marked probabilities; the corrected values are reported beside): zero under lambda_k = A r^k",
-   "se_lambda3_at_planned_shots": 0.037
+   "resolvable_deviation": 0.124,
+   "rule": "f = lambda_3 - lambda_2^2 / lambda_1 from raw marked frequencies, decided against the model's f (raw frequencies carry readout, so the model's f is not zero); resolves at z 3; the readout-corrected f, zero under lambda_k = A r^k, is reported beside",
+   "se_at_planned_shots": 0.0415
   },
   "depth_law_101": {
    "predicted": 0.0104,
@@ -1554,8 +1603,9 @@
     "2": 0.7527,
     "3": 0.6825
    },
-   "rule": "lambda_3 minus lambda_2^2 / lambda_1 (raw marked probabilities; the corrected values are reported beside): zero under lambda_k = A r^k",
-   "se_lambda3_at_planned_shots": 0.0368
+   "resolvable_deviation": 0.122,
+   "rule": "f = lambda_3 - lambda_2^2 / lambda_1 from raw marked frequencies, decided against the model's f (raw frequencies carry readout, so the model's f is not zero); resolves at z 3; the readout-corrected f, zero under lambda_k = A r^k, is reported beside",
+   "se_at_planned_shots": 0.0405
   },
   "prx_load": {
    "predicted": 0.015,
@@ -1564,12 +1614,32 @@
    "se_at_planned_shots": 0.0058
   },
   "role_or_qubit": {
-   "retained": {
+   "model": {
+    "forward": {
+     "D": -0.0054,
+     "se": 0.0041,
+     "wrong_bit": {
+      "QB16": 0.1693,
+      "QB17": 0.1752,
+      "QB20": 0.1806
+     }
+    },
+    "reversed": {
+     "D": -0.0137,
+     "se": 0.0046,
+     "wrong_bit": {
+      "QB16": 0.1717,
+      "QB17": 0.1727,
+      "QB20": 0.1863
+     }
+    }
+   },
+   "retained_corrected_wrong_bit": {
     "QB16": 0.18,
     "QB17": 0.178,
     "QB20": 0.154
    },
-   "rule": "per physical qubit, the probability that its measured bit differs from the marked bit, pooled over m101-k1 and m011-k1 on each path; the qubit hypothesis keeps QB20 lowest on both paths, the role hypothesis moves the lowest wrong-bit probability with the logical position"
+   "rule": "D = w(QB17) - w(QB20) from raw frequencies on the reversed path, pooled over m101-k1 and m011-k1 (two copies each): D > 3 se keeps QB20's advantage with the qubit, D < -3 se moves it with the role, otherwise neither resolves; the forward D is reported beside (retained +0.024, corrected)"
   },
   "sedenion_10": {
    "null_floor": 0.0038,

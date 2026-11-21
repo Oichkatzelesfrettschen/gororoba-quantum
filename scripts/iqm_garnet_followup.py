@@ -78,6 +78,9 @@ FORWARD_PATH = ["QB20", "QB16", "QB17"]
 REVERSED_PATH = FORWARD_PATH[::-1]
 ROWS = (5, 10)
 COPIES = 4
+# The square the selection rule chose on calibration set ea681de1 (score 0.5115; the next three within 0.004).
+# A rebuild on a later calibration keeps it, so the square is never re-selected on the predicting calibration.
+SQUARE = ["QB11", "QB12", "QB17", "QB16"]
 KINDS = ("fused", "generic")
 DEPTHS = (("101", 2), ("101", 3), ("011", 1), ("011", 2), ("011", 3))
 H = grover.H
@@ -318,12 +321,24 @@ def grover_arms() -> list[Arm]:
         for copy, order in zip(range(COPIES), [("line", "fused", "generic")] * COPIES, strict=True)
     ]
     depth = [line("000", 0, path, "k0"), *(line(m, k, path, f"m{m}-k{k}") for m, k in DEPTHS)]
-    reversed_arms = [line("101", 1, rev, "r-m101-k1"), line("011", 1, rev, "r-m011-k1"), line("000", 0, rev, "r-k0")]
+    reversed_first = [line("101", 1, rev, "r-m101-k1-c0"), line("011", 1, rev, "r-m011-k1-c0")]
+    reversed_last = [line("011", 1, rev, "r-m011-k1-c1"), line("101", 1, rev, "r-m101-k1-c1")]
     readout = [
         {"name": c["name"], "circuit": c, "path": path, "marked": None, "k": None}
         for c in (readout_circuit("".join(b), path, "ro") for b in itertools.product("01", repeat=3))
     ]
-    out = blocks[0] + readout[:4] + blocks[1] + depth + reversed_arms + blocks[2] + readout[4:] + blocks[3]
+    out = (
+        blocks[0]
+        + readout[:4]
+        + reversed_first
+        + blocks[1]
+        + depth
+        + [line("000", 0, rev, "r-k0")]
+        + blocks[2]
+        + reversed_last
+        + readout[4:]
+        + blocks[3]
+    )
     total = len(out)
     sums = {kind: sum(n for n, a in enumerate(out) if a["name"].startswith(f"m101-k1-{kind}-c")) for kind in KINDS}
     sums["line"] = sum(n for n, a in enumerate(out) if a["name"].startswith("m101-k1-c"))
@@ -374,9 +389,9 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
         raise ValueError(f"the retained case ran on {retained['path']}, not {FORWARD_PATH}")
     scored = ordered_map(square_score, [(s, str(calibration_dir)) for s in squares(calibration)], min_items=1)
     usable = [(score, s) for s, score, _ in scored if score is not None]
-    if not usable:
-        raise ValueError("no square has a complete calibration")
-    square = max(usable, key=lambda item: item[0])[1]
+    if SQUARE not in [s for _, s in usable]:
+        raise ValueError(f"the case's square {SQUARE} has no complete calibration")
+    square = SQUARE
     jobs = {"grover": grover_arms(), "sedenion": sedenion_arms(square)}
     files: dict[str, str] = {}
     for arms in jobs.values():
@@ -449,10 +464,13 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
             "assignment; no coherent error, leakage or crosstalk"
         ),
     }
+    files["prediction.json"] = dump(prediction)
     files["cases.json"] = dump(
         {
             "schema": CASE_SCHEMA,
             "case": CASE,
+            # The approval quotes this file's digest, so the prediction the analysis decides against is bound.
+            "prediction_sha256": sha256(files["prediction.json"].encode()),
             "question": (
                 "On one Garnet calibration: does the line-native Grover retention stay geometric at a third depth, "
                 "does fusing the generic compile's single-qubit gates recover its loss, does the per-qubit error "
@@ -463,7 +481,6 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
             "jobs": job_records,
         }
     )
-    files["prediction.json"] = dump(prediction)
     return files, prediction
 
 
@@ -486,6 +503,42 @@ def decision(arms: dict[str, Any], first: str, second: str, outcome: str, rule: 
     }
 
 
+def wrong_bits(arms: dict[str, Any], stem: str, marked: str) -> tuple[dict[str, float], float]:
+    """Per physical qubit, the probability that its measured bit differs from the marked bit, averaged over the
+    copies of an arm (bit q of an outcome key is the q-th qubit of the arm's measurement locus), and the kept
+    shots pooled."""
+    copies = [a for name, a in arms.items() if name == stem or name.startswith(stem + "-c")]
+    out: dict[str, float] = {}
+    for arm in copies:
+        for q, qubit in enumerate(arm["locus"]):
+            wrong = sum(p for outcome, p in arm["predicted"].items() if outcome[q] != marked[q])
+            out[qubit] = out.get(qubit, 0.0) + wrong / len(copies)
+    return out, SHOTS["grover"] * KEPT * len(copies)
+
+
+def role_decision(arms: dict[str, Any]) -> dict[str, Any]:
+    """D = w(QB17) - w(QB20) per path, pooled over m101-k1 and m011-k1. QB20 and QB17 exchange roles between
+    the paths while QB16 keeps the middle: the qubit hypothesis keeps the sign of D on the reversed path, the
+    role hypothesis flips it."""
+    per_path: dict[str, Any] = {}
+    for label, prefix in (("forward", ""), ("reversed", "r-")):
+        w = [wrong_bits(arms, f"{prefix}m{m}-k1", m) for m in grover.MARKS]
+        shots = sum(n for _, n in w)
+        mean = {q: sum(x[q] * n for x, n in w) / shots for q in w[0][0]}
+        d = mean["QB17"] - mean["QB20"]
+        se = math.sqrt((mean["QB17"] * (1 - mean["QB17"]) + mean["QB20"] * (1 - mean["QB20"])) / shots)
+        per_path[label] = {"wrong_bit": {q: round(v, 4) for q, v in mean.items()}, "D": round(d, 4), "se": round(se, 4)}
+    return {
+        "rule": (
+            "D = w(QB17) - w(QB20) from raw frequencies on the reversed path, pooled over m101-k1 and m011-k1 "
+            "(two copies each): D > 3 se keeps QB20's advantage with the qubit, D < -3 se moves it with the role, "
+            "otherwise neither resolves; the forward D is reported beside (retained +0.024, corrected)"
+        ),
+        "model": per_path,
+        "retained_corrected_wrong_bit": {"QB20": 0.154, "QB16": 0.180, "QB17": 0.178},
+    }
+
+
 def decisions(arms: dict[str, Any]) -> dict[str, Any]:
     out: dict[str, Any] = {
         "z_resolve": grover.Z_RESOLVE,
@@ -505,28 +558,25 @@ def decisions(arms: dict[str, Any]) -> dict[str, Any]:
         ),
     }
     for marked in grover.MARKS:
-        p = {k: pooled(arms, f"m{marked}-k{k}", marked)[0] for k in (1, 2, 3)}
-        lam = {k: retention(p[k], k) for k in p}
-        extrapolated = lam[2] ** 2 / lam[1]
-        n = SHOTS["grover"] * KEPT
-        se3 = math.sqrt(p[3] * (1 - p[3]) / n) / (ideal_probability(3) - 1 / 8)
+        stems = {k: f"m{marked}-k{k}" for k in (1, 2, 3)}
+        pooled_p = {k: pooled(arms, stems[k], marked) for k in stems}
+        lam = {k: retention(p, k) for k, (p, _) in pooled_p.items()}
+        se = {k: math.sqrt(p * (1 - p) / n) / (ideal_probability(k) - 1 / 8) for k, (p, n) in pooled_p.items()}
+        # Delta method for lambda_3 - lambda_2^2 / lambda_1 over three independent arms.
+        gradient = {3: 1.0, 2: -2 * lam[2] / lam[1], 1: lam[2] ** 2 / lam[1] ** 2}
+        se_f = math.sqrt(sum((gradient[k] * se[k]) ** 2 for k in se))
         out[f"depth_law_{marked}"] = {
             "rule": (
-                "lambda_3 minus lambda_2^2 / lambda_1 (raw marked probabilities; the corrected values are "
-                "reported beside): zero under lambda_k = A r^k"
+                "f = lambda_3 - lambda_2^2 / lambda_1 from raw marked frequencies, decided against the model's f "
+                "(raw frequencies carry readout, so the model's f is not zero); resolves at z 3; the readout-"
+                "corrected f, zero under lambda_k = A r^k, is reported beside"
             ),
             "predicted_lambda": {str(k): round(v, 4) for k, v in lam.items()},
-            "predicted": round(lam[3] - extrapolated, 4),
-            "se_lambda3_at_planned_shots": round(se3, 4),
+            "predicted": round(lam[3] - lam[2] ** 2 / lam[1], 4),
+            "se_at_planned_shots": round(se_f, 4),
+            "resolvable_deviation": round(grover.Z_RESOLVE * se_f, 3),
         }
-    out["role_or_qubit"] = {
-        "rule": (
-            "per physical qubit, the probability that its measured bit differs from the marked bit, pooled over "
-            "m101-k1 and m011-k1 on each path; the qubit hypothesis keeps QB20 lowest on both paths, the role "
-            "hypothesis moves the lowest wrong-bit probability with the logical position"
-        ),
-        "retained": {"QB20": 0.154, "QB16": 0.180, "QB17": 0.178},
-    }
+    out["role_or_qubit"] = role_decision(arms)
     for m in ROWS:
         out[f"sedenion_{m}"] = decision(
             arms,

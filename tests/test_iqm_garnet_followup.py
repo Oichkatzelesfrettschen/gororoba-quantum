@@ -61,7 +61,7 @@ def test_retained_case_mirrors_its_contrasts() -> None:
     case = json.loads((followup.ROOT / "results/iqm/cases" / followup.CASE / "cases.json").read_text())
     for job in case["jobs"]:
         names = [c["file"].split("/")[-1].removesuffix(".json").rsplit("-c", 1)[0] for c in job["circuits"]]
-        for stem in {n for n in names if n.startswith(("m101-k1", "s5-", "s10-", "s-id"))}:
+        for stem in {n for n in names if n.startswith(("m101-k1", "r-m", "s5-", "s10-", "s-id"))}:
             positions = [i for i, n in enumerate(names) if n == stem]
             if sum(positions) * 2 != (len(names) - 1) * len(positions):
                 raise AssertionError(f"{job['job']}: {stem} positions {positions} are not mirrored")
