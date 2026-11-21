@@ -59,3 +59,11 @@ shared readout nuisance carries part of a common gap (codex); Emerald's executio
 | A3 | Prove the Garnet analysis unchanged, not only the builds | Measured: the retained Garnet run analyzed by the origin/main script and by the head script gives identical bytes, equal to `results/iqm/idle_schedule_probe_analysis.json` (compute host) |
 | A4 | The playlist interleaving is stated as fact | Fixed: marked hypothesis in CASE.md |
 | A5 | The PR body is stale | Fixed: body rewritten for the head |
+
+### Replacement red-teamer: opencode on opencode/nemotron-3.5-super-vl-free (owner choice, 2026-11-21)
+
+It reviewed the brief's head 11c316a6b. Its defects D1 (unretained model-device numbers), D2 (readout correction through
+the train fit), D3 (no per-qubit gate) and D4 (undocumented delay scale) are rows 8, A1, 1 and 3 above, fixed in
+c22070077, 2d540f8db and d2ed61f37. D5 (9.00-credit ceiling tight) is row 6. Its conjecture C1 (an independent T1 to
+detect a delay scale a) is the boundary of row 3: an inversion-recovery T1 on IQM also waits through `delay`, so the
+independent clock it needs is a pulse train of known length, which carries the gap g this job measures.
