@@ -32,5 +32,6 @@ All 30 Tuna-17 receipts of stamp `2026-11-19T1735Z-t17` (lab host, retained by t
 `queue_user_only` true with an own queue of 0; 29 read `idle` at submit and batch 01 reads `executing`. The 30 QX twin
 run directories that main tracks (`results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-*`)
 pass `--sanity` under the old and the new rule. Batches 02 and 03 of `q12_phase` were submitted on 2026-11-21 by the
-script at commit facfcf748 (this change), 18.5 hours after batch 00; the analysis compares the two `w0` batches (00
-and 02) before pooling them.
+script at commit facfcf748 (this change), 20.6 hours after batch 00. The two `w0` batches (00 and 02) hold complementary
+triads of angles, so neither alone leaves a degree of freedom for a comparison; the analysis pools them
+([result](tuna17-interleaved-characterization-2026-11-20.md)).

@@ -3853,6 +3853,17 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/qi_tuna17_interleaved_cases.py --analyze \"${TMPDIR:-/tmp}/interleaved-analysis.json\" results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-* --prediction results/quantum_inspire/cases/characterization_interleaved_tuna_17/prediction.json && cmp \"${TMPDIR:-/tmp}/interleaved-analysis.json\" results/quantum_inspire/characterization_interleaved_tuna_17_analysis.json && \"$PYTHON\" -B -W error docs/evidence/qi-tuna17-interleaved-rounds/round_fits.py \"${TMPDIR:-/tmp}/interleaved-round-fits.json\" && cmp \"${TMPDIR:-/tmp}/interleaved-round-fits.json\" docs/evidence/qi-tuna17-interleaved-rounds/round_fits.json",
+      "name": "core-qi-tuna17-interleaved-replay",
+      "seconds": 60.0,
+      "replays": [
+        "results/quantum_inspire/characterization_interleaved_tuna_17_analysis.json",
+        "docs/evidence/qi-tuna17-interleaved-rounds/round_fits.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/iqm_idle_schedule_probe.py check results/iqm/cases/idle-schedule-train-readout",
       "name": "core-682",
       "seconds": 35.0,
