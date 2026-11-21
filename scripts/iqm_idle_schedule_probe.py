@@ -598,7 +598,18 @@ def gap_test(
     if longest is None or longest["survival"] is None:
         return {"verdict": "unidentifiable", "schedule": schedule, "trains": out}
     verdict = "common" if longest["survival"] >= GAP_P_REJECT else "per-qubit"
-    return {"verdict": verdict, "schedule": schedule, "trains": out}
+    report: dict[str, Any] = {"verdict": verdict, "schedule": schedule, "trains": out}
+    counts = sorted(by_count)
+    if len(counts) > 1:
+        # The stationary gap model predicts one mean at every train length; a difference beyond Z_RESOLVE combined
+        # standard errors falsifies it. The two means share each qubit's T1, so the combined error overstates the
+        # difference's spread and the test is conservative.
+        short, long_ = out[str(counts[0])], out[str(counts[-1])]
+        z = (long_["mean_seconds"] - short["mean_seconds"]) / math.hypot(
+            long_["mean_se_seconds"], short["mean_se_seconds"]
+        )
+        report["stationarity"] = {"z": z, "verdict": "stationary" if abs(z) <= Z_RESOLVE else "falsified"}
+    return report
 
 
 def analyze(run_dir: Path) -> dict[str, Any]:
@@ -770,6 +781,8 @@ def emerald_t1_self_test() -> None:
         train = got["h2_gap"]["trains"][str(IDLE_PULSES[-1])]
         if abs(train["mean_seconds"] - planted) > 4 * train["mean_se_seconds"] + 2e-9:
             raise RuntimeError(f"a {planted * 1e9:.0f} ns gap reads {train['mean_seconds'] * 1e9:.2f} ns")
+        if got["h2_gap"]["stationarity"]["verdict"] != "stationary":
+            raise RuntimeError(f"a stationary {planted * 1e9:.0f} ns gap reads {got['h2_gap']['stationarity']}")
     flat = evaluate(synthetic(circuits, calibration_dir, "alap", {}, SYNTHETIC_SEEDS[1], EMERALD_T1), prediction)
     if flat["h2_gap"]["verdict"] != "unidentifiable":
         raise RuntimeError(f"an ALAP device's gap reads {flat['h2_gap']['verdict']}")
