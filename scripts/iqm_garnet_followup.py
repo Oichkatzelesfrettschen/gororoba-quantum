@@ -40,7 +40,12 @@ later rebuilds keep. Every prediction is the exact density matrix of iqm_grover_
 to four qubits. Native compiles drop the final Z frames, so they agree with their logical circuits in every
 computational-basis probability, not as unitaries.
 
-Usage: "$PYTHON" scripts/iqm_garnet_followup.py (build DIR --calibration SRC | check DIR | --self-test)
+Usage: "$PYTHON" scripts/iqm_garnet_followup.py (build DIR --calibration SRC | check DIR | --self-test
+       | analyze RUN_DIR [RUN_DIR] --out OUT.json)
+
+analyze applies the preregistered decisions of gororoba_quantum/garnet_followup_analysis.py to the runs of the two
+jobs; --self-test also runs that analysis on synthetic acquisitions built from prediction.json's model
+distributions, with planted alternatives and the refusals of mock runs and of a case with another prediction.
 """
 
 from __future__ import annotations
@@ -52,6 +57,8 @@ import json
 import math
 import shutil
 import sys
+import tempfile
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -68,6 +75,8 @@ from iqm_jobs import CASE_SCHEMA, JOB_SECONDS, ceiling_credits, dump  # noqa: E4
 from iqm_platform import sha256  # noqa: E402
 from iqm_signed_probe import ACTIVE_SHOT_SECONDS, CALIBRATION_FILES, OPTIONS, relaxed, target_of  # noqa: E402
 
+import garnet_followup_analysis as analysis  # noqa: E402
+import iqm_records  # noqa: E402
 import sedenion_sign_oracle as sed  # noqa: E402
 from grover_line_analysis import ideal_probability  # noqa: E402
 from parallel import ordered_map  # noqa: E402
@@ -819,8 +828,233 @@ def self_test() -> str:
             raise AssertionError(f"e_{m}: the row, truncation and identity differ in their CZ sequence")
     return (
         f"iqm_garnet_followup self-test passed: fused generic {count(merged, 'cz')} CZ {count(merged, 'prx')} prx "
-        f"(emitted {count(generic, 'prx')}), sedenion rows {ROWS} at 8 CZ"
+        f"(emitted {count(generic, 'prx')}), sedenion rows {ROWS} at 8 CZ; {analysis_checks()}"
     )
+
+
+def largest_remainder(distribution: list[float], total: int) -> list[int]:
+    raw = [v * total for v in distribution]
+    counts = [int(v) for v in raw]
+    for index in sorted(range(len(raw)), key=lambda i: (counts[i] - raw[i], i))[: total - sum(counts)]:
+        counts[index] += 1
+    return counts
+
+
+Plant = Callable[[str, dict[str, float]], dict[str, float]]
+
+
+def shifted(distribution: dict[str, float], source: str, target: str, amount: float) -> dict[str, float]:
+    """The distribution with probability amount moved from outcome source to outcome target."""
+    out = dict(distribution)
+    out[source] = out[source] - amount
+    out[target] = out[target] + amount
+    return out
+
+
+def synthetic_run(
+    case_dir: Path,
+    run_dir: Path,
+    job: str,
+    plant: Plant | None = None,
+    qc: str = "garnet",
+    prediction_edit: str | None = None,
+) -> Path:
+    """A run directory of a model device over the built case, in the layout iqm_records reads: every circuit's
+    model distribution (plant may replace it) rounded to the kept shots by largest remainder, with no random
+    generator. prediction_edit "unbound" changes prediction.json alone; "rebound" also rebinds cases.json to the
+    changed bytes, as a case built with another prediction would."""
+    shutil.copytree(case_dir, run_dir, ignore=shutil.ignore_patterns("calibration"))
+    prediction = json.loads((run_dir / "prediction.json").read_text(encoding="utf-8"))
+    if prediction_edit:
+        edited = (
+            (run_dir / "prediction.json").read_text(encoding="utf-8").replace('"z_resolve": 3.0', '"z_resolve": 2.0')
+        )
+        (run_dir / "prediction.json").write_text(edited, encoding="utf-8")
+        if prediction_edit == "rebound":
+            case = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
+            case["prediction_sha256"] = sha256(edited.encode())
+            (run_dir / "cases.json").write_text(dump(case), encoding="utf-8")
+    case = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
+    (row,) = [r for r in case["jobs"] if r["job"] == job]
+    kept = round(KEPT * row["shots"])
+    measurements = []
+    counts_records = []
+    for circuit in row["circuits"]:
+        name = Path(circuit["file"]).stem
+        arm = prediction["arms"][name]
+        distribution = dict(arm["predicted"])
+        if plant is not None:
+            distribution = plant(name, distribution)
+        keys = sorted(distribution)
+        counts = largest_remainder([distribution[k] for k in keys], kept)
+        bits: list[list[int]] = []
+        for key, n in zip(keys, counts, strict=True):
+            bits.extend([[int(c) for c in key]] * n)
+        measurements.append({"c": bits})
+        counts_records.append({"counts": {k: n for k, n in zip(keys, counts, strict=True) if n}})
+    raw = run_dir / "raw"
+    raw.mkdir()
+    job_record = {
+        "id": "job-1",
+        "status": "completed",
+        "metrics": {"billed_seconds": 3.0, "runtime_seconds": 2.5},
+        "compilation": {"calibration_set_id": prediction["calibration_set"]},
+    }
+    files = {
+        "job.json": dump(job_record).encode(),
+        "measurements.json": json.dumps(measurements).encode(),
+        "measurement_counts.json": json.dumps(counts_records).encode(),
+    }
+    for name, data in files.items():
+        (raw / name).write_bytes(data)
+    (run_dir / "submission.json").write_text(
+        dump(
+            {
+                "schema": iqm_records.SUBMISSION_SCHEMA,
+                "job_id": "job-1",
+                "qc": qc,
+                "job": job,
+                "cases_sha256": sha256((run_dir / "cases.json").read_bytes()),
+                "approval": "synthetic fixture",
+                "price_per_second": PRICE[qc],
+                "submitted_at": "2026-01-01T00:00:00Z",
+            }
+        ),
+        encoding="utf-8",
+    )
+    (run_dir / "results.json").write_text(
+        dump(
+            {
+                "schema": iqm_records.RESULTS_SCHEMA,
+                "job_id": "job-1",
+                "status": "completed",
+                "raw_sha256": {n: sha256(d) for n, d in files.items()},
+                "shots_per_circuit": [kept] * len(row["circuits"]),
+            }
+        ),
+        encoding="utf-8",
+    )
+    return run_dir
+
+
+def analysis_refusal(action: Callable[[], Any], fragment: str) -> None:
+    try:
+        action()
+    except (analysis.AnalysisError, iqm_records.RecordError) as error:
+        if fragment not in str(error):
+            raise AssertionError(f"refused for another reason than {fragment!r}: {error}") from error
+        return
+    raise AssertionError(f"no refusal containing {fragment!r}")
+
+
+def require(condition: bool, message: str) -> None:
+    if not condition:
+        raise AssertionError(message)
+
+
+def analysis_checks() -> str:
+    """The analysis on synthetic acquisitions: the model device resolves what the model resolves and nothing
+    else; each planted alternative moves its own decision; a mock run and a case with another prediction are
+    refused."""
+    case_dir = RETAINED_CASE.parent / CASE
+    prediction = json.loads((case_dir / "prediction.json").read_text(encoding="utf-8"))
+    with tempfile.TemporaryDirectory(prefix="garnet-followup-analysis-") as scratch:
+        base = Path(scratch)
+        counter = iter(range(1000))
+
+        def run(job: str, plant: Plant | None = None, **extra: Any) -> Path:
+            return synthetic_run(case_dir, base / f"run{next(counter)}", job, plant, **extra)
+
+        def rows(job: str, plant: Plant | None = None) -> dict[str, Any]:
+            return analysis.analyze([run(job, plant)], case_dir)["decisions"]
+
+        both = analysis.analyze([run("grover"), run("sedenion")], case_dir)
+        decisions = both["decisions"]
+        require(both["schema"] == analysis.SCHEMA and not both["not_run"], "the model record lacks a job")
+        for key in ("prx_load_generic", "prx_load_line", "cz_sequence"):
+            predicted = prediction["decisions"][key]["predicted"]
+            if abs(decisions[key]["raw"] - predicted) > 0.003 or decisions[key]["verdict"] != "unresolved":
+                raise AssertionError(f"model device, {key}: {decisions[key]}")
+        for marked in grover.MARKS:
+            depth = decisions[f"depth_law_{marked}"]
+            if abs(depth["f_raw"] - depth["model_f"]) > 0.003 or "inside" != depth["verdict"]:
+                raise AssertionError(f"model device, depth {marked}: {depth}")
+        role = decisions["role_or_qubit"]
+        if abs(role["forward"]["D"] - prediction["decisions"]["role_or_qubit"]["model"]["forward"]["D"]) > 0.002:
+            raise AssertionError(f"model device, forward D {role['forward']['D']}")
+        require(role["reading"].startswith("open"), f"model device, role reading {role['reading']}")
+        for m in ROWS:
+            row = decisions[f"sedenion_{m}"]
+            if row["verdict"] != "resolved" or row["row_minus_truncation_z"] < 15 or row["row_minus_null_z"] < 30:
+                raise AssertionError(f"model device, sedenion {m}: {row}")
+
+        def gain(name: str, p: dict[str, float]) -> dict[str, float]:
+            return shifted(p, "101", "000", 0.06) if name.startswith("m101-k1-generic") else p
+
+        planted = rows("grover", gain)
+        require(planted["prx_load_generic"]["verdict"] == "positive", f"planted gain: {planted['prx_load_generic']}")
+        require(planted["prx_load_line"]["verdict"] == "unresolved", "a planted generic gain moved the line contrast")
+
+        def loss(name: str, p: dict[str, float]) -> dict[str, float]:
+            return shifted(p, "101", "000", 0.06) if name.startswith("m101-k1-fused") else p
+
+        require(rows("grover", loss)["prx_load_generic"]["verdict"] == "negative", "a planted loss is not negative")
+
+        def bent(name: str, p: dict[str, float]) -> dict[str, float]:
+            return shifted(p, "101", "000", 0.2) if name == "m101-k3" else p
+
+        depth = rows("grover", bent)
+        require(depth["depth_law_101"]["verdict"].startswith("outside"), f"planted depth: {depth['depth_law_101']}")
+        require(depth["depth_law_011"]["verdict"] == "inside", "a planted 101 depth bend moved the 011 law")
+
+        def roles(forward: tuple[str, str], reverse: tuple[str, str]) -> Plant:
+            def plant(name: str, p: dict[str, float]) -> dict[str, float]:
+                if name.startswith("m101-k1-c"):
+                    return shifted(p, forward[0], forward[1], 0.03)
+                if name.startswith("r-m101-k1"):
+                    return shifted(p, reverse[0], reverse[1], 0.03)
+                return p
+
+            return plant
+
+        # Forward line arms: character 2 is QB17, character 0 is QB20. Reversed arms: character 0 is QB17.
+        moved = rows("grover", roles(("101", "100"), ("101", "100")))["role_or_qubit"]
+        require(moved["forward"]["D"] > 0 > moved["reversed"]["D"], f"planted roles: {moved}")
+        require(moved["reading"].startswith("moves with the roles"), f"planted roles reading: {moved['reading']}")
+        kept = rows("grover", roles(("101", "100"), ("101", "001")))["role_or_qubit"]
+        require(kept["reading"].startswith("with the qubits"), f"planted qubits reading: {kept['reading']}")
+        require(
+            rows("grover", roles(("101", "100"), ("101", "111")))["role_or_qubit"]["reading"].startswith("open"),
+            "an unresolved reversed D does not leave the question open",
+        )
+
+        def peakless(name: str, p: dict[str, float]) -> dict[str, float]:
+            if name.startswith("s5-row"):
+                return dict(prediction["arms"][name.replace("row", "trunc")]["predicted"])
+            return p
+
+        flat = rows("sedenion", peakless)
+        require(flat["sedenion_5"]["verdict"] == "unresolved", f"a row equal to its truncation: {flat['sedenion_5']}")
+        require(abs(flat["sedenion_5"]["row_minus_truncation"]) < 0.01, "the planted truncation row differs")
+        require(flat["sedenion_10"]["verdict"] == "resolved", "a planted e_5 change moved e_10")
+
+        def nulled(name: str, p: dict[str, float]) -> dict[str, float]:
+            return dict(prediction["arms"][name.replace("row", "id")]["predicted"]) if name.startswith("s10-row") else p
+
+        require(rows("sedenion", nulled)["sedenion_10"]["verdict"] == "unresolved", "a row equal to its null resolves")
+        analysis_refusal(lambda: analysis.analyze([run("grover", qc="garnet:mock")], case_dir), "not a")
+        analysis_refusal(
+            lambda: analysis.analyze([run("grover", prediction_edit="unbound")], case_dir), "prediction.json"
+        )
+        analysis_refusal(
+            lambda: analysis.analyze([run("grover", prediction_edit="rebound")], case_dir), "another prediction digest"
+        )
+        analysis_refusal(lambda: analysis.analyze([run("grover"), run("grover")], case_dir), "second run of job grover")
+        record = base / "record.json"
+        analysis.write_record(both, record)
+        if json.loads(record.read_text(encoding="utf-8"))["decisions"].keys() != decisions.keys():
+            raise AssertionError("the written record lost a decision")
+    return "analysis self-test passed: model device, 3 plants, 2 role readings, 2 sedenion nulls, 4 refusals"
 
 
 def main() -> int:
@@ -831,6 +1065,9 @@ def main() -> int:
     b.add_argument("directory", type=Path)
     b.add_argument("--calibration", type=Path, required=True)
     sub.add_parser("check").add_argument("directory", type=Path)
+    a = sub.add_parser("analyze")
+    a.add_argument("runs", type=Path, nargs="+", metavar="RUN_DIR")
+    a.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
     if args.self_test:
         print(self_test())
@@ -838,8 +1075,12 @@ def main() -> int:
         write(args.directory, args.calibration)
     elif args.command == "check":
         check(args.directory)
+    elif args.command == "analyze":
+        if len(args.runs) > len(analysis.JOBS):
+            parser.error("analyze takes at most one run per job")
+        analysis.write_record(analysis.analyze(args.runs), args.out)
     else:
-        parser.error("choose build, check or --self-test")
+        parser.error("choose build, check, analyze or --self-test")
     return 0
 
 

@@ -4,6 +4,7 @@ Tests that read the retained case carry audit; the others build their input here
 
 import json
 import shutil
+import sys
 from pathlib import Path
 
 import iqm_garnet_followup as followup
@@ -11,6 +12,7 @@ import iqm_grover_line as grover
 import numpy as np
 import pytest
 
+import garnet_followup_analysis as analysis
 import iqm_records
 import sedenion_sign_oracle as sed
 
@@ -114,3 +116,61 @@ def test_a_bound_prediction_is_checked_on_a_synthetic_case(tmp_path: Path) -> No
     (tmp_path / "prediction.json").unlink()
     with pytest.raises(iqm_records.RecordError, match="prediction.json"):
         iqm_records.load_job(tmp_path, "j")
+
+
+def test_a_verdict_resolves_at_three_standard_errors() -> None:
+    if [analysis.verdict_of(z) for z in (3.0, 2.99, -3.0, -2.99)] != [
+        "positive",
+        "unresolved",
+        "negative",
+        "unresolved",
+    ]:
+        raise AssertionError("verdict_of misreads the resolution threshold")
+    if analysis.verdict_of(3.0, strict=True) != "unresolved" or analysis.verdict_of(3.01, strict=True) != "positive":
+        raise AssertionError("the role rule is strict")
+    with pytest.raises(analysis.AnalysisError, match="zero variance"):
+        analysis.z_of(0.1, 0.0)
+
+
+def test_outcome_strings_read_character_q_as_bit_q() -> None:
+    if (
+        analysis.outcome_index("1001") != 9
+        or analysis.outcome_key(9, 4) != "1001"
+        or analysis.outcome_index("110") != 3
+    ):
+        raise AssertionError("outcome strings are not little-endian")
+    with pytest.raises(analysis.AnalysisError, match="bit string"):
+        analysis.outcome_index("10a")
+
+
+def test_synthetic_shots_keep_their_total_without_a_generator() -> None:
+    counts = followup.largest_remainder([0.5, 0.3, 0.2 - 1e-12, 1e-12], 3424)
+    if sum(counts) != 3424 or counts != followup.largest_remainder([0.5, 0.3, 0.2 - 1e-12, 1e-12], 3424):
+        raise AssertionError(f"largest remainder gave {counts}")
+    moved = followup.shifted({"a": 0.5, "b": 0.5}, "a", "b", 0.1)
+    if abs(moved["a"] - 0.4) > 1e-12 or abs(sum(moved.values()) - 1.0) > 1e-12:
+        raise AssertionError(f"shifted gave {moved}")
+
+
+@pytest.mark.audit
+def test_analysis_decides_synthetic_acquisitions() -> None:
+    followup.analysis_checks()
+
+
+@pytest.mark.audit
+def test_analyze_writes_one_record_from_both_runs(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    case_dir = followup.RETAINED_CASE.parent / followup.CASE
+    runs = [followup.synthetic_run(case_dir, tmp_path / job, job) for job in ("sedenion", "grover")]
+    out = tmp_path / "analysis.json"
+    monkeypatch.setattr(sys, "argv", ["iqm_garnet_followup.py", "analyze", *map(str, runs), "--out", str(out)])
+    if followup.main() != 0:
+        raise AssertionError("analyze failed")
+    record = json.loads(out.read_text())
+    if record["schema"] != analysis.SCHEMA or record["not_run"] or "exploratory" not in record:
+        raise AssertionError(f"record keys {sorted(record)}")
+    required = {"prx_load_generic", "prx_load_line", "cz_sequence", "depth_law_101", "depth_law_011"}
+    if not required | {"role_or_qubit", "sedenion_5", "sedenion_10"} <= set(record["decisions"]):
+        raise AssertionError(f"decisions {sorted(record['decisions'])}")
+    single = analysis.analyze(runs[:1], case_dir)
+    if single["not_run"] != ["grover"] or "sedenion_5" not in single["decisions"]:
+        raise AssertionError("a single sedenion run does not analyze alone")
