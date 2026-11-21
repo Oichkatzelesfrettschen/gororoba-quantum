@@ -7,9 +7,9 @@
     "docs/evidence/plan-reconciliation/sources/bd8abdb6d731bd308ec849cb2c36bab7d2b3c2ab3c93f636873098a68e88c9d2.txt",
     "docs/design/packed-pauli-response-current-balance.md"
   ],
-  "state": "inbox",
+  "state": "active",
   "scope": "Packed Pauli response under current provider balances",
-  "next_action": "Qualify native compilation and obtain a circuit-free pricing observation where supported.",
+  "next_action": "Review of the Garnet case (PR 972), then the owner's approval of the paid run.",
   "reconciliation": {
     "status": "unresolved",
     "note": "Logical cases remain unsubmitted; each provider retains its native budget unit and case-specific execution authority."
@@ -19,7 +19,25 @@
       "id": "reconcile-obligation-1",
       "action": "Qualify native compilation and obtain a circuit-free pricing observation where supported.",
       "acceptance": "Logical cases remain unsubmitted; each provider retains its native budget unit and case-specific execution authority.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Native compilation of the Garnet case qualified: 36 proposal programs compile on the fixed physical map with no routing (scripts/iqm_packed_pauli_case.py refusals), and two free garnet:mock jobs gave runtime estimates (36-circuit body 2.251 s, 68-circuit body with buffers 2.807 s) at 0 credits.",
+          "observed_at": "2026-11-21T20:59:00Z",
+          "revision": "c92d64862a90357f93932a99f1d56d81bf4af2de",
+          "evidence": [
+            {
+              "ref": "results/iqm/cases/packed-pauli-response-garnet/cases.json",
+              "sha256": "12a17407ac83c02762c3cb90b6e3bfe5a80a8f59f50ca323ad109a78e13b153e"
+            },
+            {
+              "ref": "results/iqm/runs/2026-11-21T205843Z-garnet_mock-packed-pauli-response-garnet-packed/raw/runtime_estimates.json",
+              "sha256": "cc8429c4de8dadb5d26eae2ce25b1c491aad58bb5ccbbb253448dc2958a5b40c"
+            }
+          ],
+          "scope_sha256": "e083f543e726128dd2e554cc62e5abbfee2db514c986f7e36ba537cdbd7dfe65"
+        }
+      ]
     },
     {
       "id": "reconcile-obligation-2",
@@ -27,5 +45,6 @@
       "acceptance": "Logical cases remain unsubmitted; each provider retains its native budget unit and case-specific execution authority.",
       "state": "todo"
     }
-  ]
+  ],
+  "owner": "gororoba-quantum-session"
 }
