@@ -164,14 +164,18 @@ readout split: `docs/evidence/iqm-garnet-packed-pauli-run/readout_split.json` fr
   primary test does not read it; its own buffer carryover reads 0.0046 +- 0.0051. The same hour's Grover and sedenion
   jobs are retained separately with their own reading of QB12.
 - Cost: compilation 0.196 s and execution 1.636 s, billed as 2 whole seconds, 1.0 credit (balance 25.75 afterwards).
-  The case planned 5.111 s from 37.5 us per shot (`ACTIVE_SHOT_SECONDS`, measured by the reset pilot on one heralded
-  circuit) plus each circuit's path; the job ran 12.0 us per circuit-shot (1.636 s over 68 circuits of 2000 shots).
+  The case planned 5.111 s from 37.5 us per shot (`ACTIVE_SHOT_SECONDS`, measured by the reset and billing pilot on a
+  two-circuit job with one active-reset cycle and no heralding, `results/iqm/cases/reset-billing-pilot`) plus each
+  circuit's path; the job ran 12.0 us per circuit-shot (1.636 s over 68 circuits of 2000 shots). The same hour's
+  heralded Garnet jobs ran 13.9 us (36 circuits of 4000 shots in 1.999 s) and 18.4 us (28 circuits of 1000 shots in
+  0.514 s) per circuit-shot.
 
 Open hypotheses:
 
-- hypothesis: the per-shot overhead behind `ACTIVE_SHOT_SECONDS` (heralding measurement and reset) is paid once per
-  shot of the playlist, not once per circuit, so a model of 37.5 us per circuit-shot overestimates a many-circuit
-  job. Test: the execution seconds of retained jobs with one and with many circuits at equal shots, heralded and not.
+- hypothesis: part of the time behind `ACTIVE_SHOT_SECONDS` is paid once per shot of the playlist or once per job,
+  not once per circuit, so 37.5 us per circuit-shot overestimates a many-circuit job. Test: a fit of execution seconds
+  against circuits, shots and heralding over the retained Garnet jobs (the pilot, this job and the Grover and sedenion
+  jobs) before the remaining credits are sized.
 - hypothesis: the lag-two path through a buffer into a science circuit is smaller than the lag-one carryover the
   sentinel cells show, since it crosses a second reset. Test: a job that places two buffers before each science
   circuit.
