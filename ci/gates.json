@@ -3855,7 +3855,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/iqm_packed_pauli_case.py analyze results/iqm/runs/2026-11-21T220346Z-garnet-packed-pauli-response-garnet-packed --out results/iqm/packed_pauli_response_garnet_analysis.json --replay && \"$PYTHON\" -B -W error docs/evidence/iqm-garnet-packed-pauli-run/readout_split.py results/iqm/runs/2026-11-21T220346Z-garnet-packed-pauli-response-garnet-packed \"${TMPDIR:-/tmp}/packed-readout-split.json\" && cmp \"${TMPDIR:-/tmp}/packed-readout-split.json\" docs/evidence/iqm-garnet-packed-pauli-run/readout_split.json",
       "name": "core-iqm-packed-pauli-run-replay",
-      "seconds": 10.0,
+      "seconds": 1.7,
       "replays": [
         "results/iqm/packed_pauli_response_garnet_analysis.json",
         "docs/evidence/iqm-garnet-packed-pauli-run/readout_split.json"
