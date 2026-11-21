@@ -4004,6 +4004,13 @@
       "run": "results/iqm/runs/2026-11-21T172247Z-emerald_mock-idle-schedule-t1-emerald-probe",
       "family": "IQM idle schedule and train readout probe",
       "question": "Does the emerald:mock station accept the sixteen-circuit Emerald successor with IQM delay instructions, and what runtime does it estimate?"
+    },
+    {
+      "id": "iqm-emerald-idle-schedule-t1",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-21T205643Z-emerald-idle-schedule-t1-emerald-probe",
+      "family": "IQM idle schedule and train readout probe",
+      "question": "Does Emerald schedule ASAP, and is the decay of its pulse trains beyond the delay-measured T1 one per-pulse gap common to the qubits?"
     }
   ],
   "claims": [

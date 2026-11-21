@@ -632,6 +632,7 @@ differs from it only in the `cd_core.py` digest.
 | [quandela/quickstart.md](notes/quandela/quickstart.md) | Quandela Cloud quick start |
 | [quandela/roadmap-2026-03.md](notes/quandela/roadmap-2026-03.md) | Quandela March 2026 roadmap and the Welinq interconnect announcement: networking and modular-system statements with page and target year |
 | [iqm/python-stack.md](notes/iqm/python-stack.md) | Python stack for IQM Resonance |
+| [iqm/emerald-idle-schedule-t1-result.md](notes/iqm/emerald-idle-schedule-t1-result.md) | IQM Emerald idle schedule with delay-measured T1, run of 2026-11-21: H1 asap, H2 unidentifiable (QB44 excluded), descriptive gaps of 27 and 33 ns per pulse, layout split, cost, open hypotheses |
 
 ### Simulation
 
