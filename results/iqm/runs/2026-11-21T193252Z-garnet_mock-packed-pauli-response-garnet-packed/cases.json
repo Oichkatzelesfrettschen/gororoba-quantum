@@ -1,0 +1,174 @@
+{
+ "case": "packed-pauli-response-garnet",
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/circuit-000.json",
+     "sha256": "496829802bfd695ce2b1365e56fefbf233c551ce252a05ae368ecc50dde4104b"
+    },
+    {
+     "file": "circuits/circuit-001.json",
+     "sha256": "6e6f9cac0751aaf0639a983ca07c88b3fe814f7584c9ef68c7608b8bd1ba7e13"
+    },
+    {
+     "file": "circuits/circuit-002.json",
+     "sha256": "9e97853f589fa66c668111b5bb15455a3a12c1d13c7c59b1b74bf39d8e1c7689"
+    },
+    {
+     "file": "circuits/circuit-003.json",
+     "sha256": "1c49a9cf480cbad01ddc0fa09da5302cc2a99ca6faea254ac4cffa09ba3e4c56"
+    },
+    {
+     "file": "circuits/circuit-004.json",
+     "sha256": "d87258a39c6b85119695b9e67efb1d42cf8e285a422f1484f7e12e18196b32e0"
+    },
+    {
+     "file": "circuits/circuit-005.json",
+     "sha256": "eda2ad1d1e00efab1f8609f748e720b64f611a30bc7f6e8fb587fec96d2d1fbf"
+    },
+    {
+     "file": "circuits/circuit-006.json",
+     "sha256": "1a03af88e2ee8e957489a9c5e74ce9d9461256fc035e13b0e5dc5875c26fea42"
+    },
+    {
+     "file": "circuits/circuit-007.json",
+     "sha256": "be48edf5773debb7943b068c74b33509edad1f19b12d13fa29a9e8ffe9b76dab"
+    },
+    {
+     "file": "circuits/circuit-008.json",
+     "sha256": "19b2d75964c780aa3f9b82bcbf941ae0335938213a9533b0f6e7ee72d6f595cf"
+    },
+    {
+     "file": "circuits/circuit-009.json",
+     "sha256": "25e925d26d966383ac79a0525c1ee7b1f85b866a09e367bcaceff9cb4877da61"
+    },
+    {
+     "file": "circuits/circuit-010.json",
+     "sha256": "113bbfb9aaee974ecf4ba57769b1c9d17f792031f755a8f1adf5bbdbe420a643"
+    },
+    {
+     "file": "circuits/circuit-011.json",
+     "sha256": "bf925f20b5f0a9b427254a5ec8029c23fd0943bf21431bed76088b1c159e4155"
+    },
+    {
+     "file": "circuits/circuit-012.json",
+     "sha256": "e91379ef4d2e47adc1644c14843ae0a915fdf0208f5db13c0a4721daa7817637"
+    },
+    {
+     "file": "circuits/circuit-013.json",
+     "sha256": "9727d7c5bee00249be2e17cde5cc3c4e53ec639d76949839276f2537aa620724"
+    },
+    {
+     "file": "circuits/circuit-014.json",
+     "sha256": "a66afe921f8008b8d8ff483ac6659d6a9a6ecdf372eb3d02e1b3e1840caa6f08"
+    },
+    {
+     "file": "circuits/circuit-015.json",
+     "sha256": "40de9898084faff49dc481f632cdea91ca54e5c905c99ff85cd6953115dee7a6"
+    },
+    {
+     "file": "circuits/circuit-016.json",
+     "sha256": "bed19ab6d2dc07d021e966fdf9f7db85ff31334aef59c9239b884af121f415e1"
+    },
+    {
+     "file": "circuits/circuit-017.json",
+     "sha256": "0726ef84cef1409677e6a2e5fe8028c917a81fafb3c52db37d986e21a010bbea"
+    },
+    {
+     "file": "circuits/circuit-018.json",
+     "sha256": "14e51e5ef64a3f50809acae124746822b7eb2bede52d323a9ef7e7d7c8315d02"
+    },
+    {
+     "file": "circuits/circuit-019.json",
+     "sha256": "14051ac599e71261ef7822c3baf648cf0394c4577f245be6a893cda50187d77f"
+    },
+    {
+     "file": "circuits/circuit-020.json",
+     "sha256": "344dfc0801bd292aaca0f62bfcdf61c97d9ed12d200eb283571153693b303652"
+    },
+    {
+     "file": "circuits/circuit-021.json",
+     "sha256": "ab1232974221f7f1080a2291bbbf62ff829d66827f0c219fa42a74d25c24e77c"
+    },
+    {
+     "file": "circuits/circuit-022.json",
+     "sha256": "17bd3399985371d45b989b09b26b68409f0b7855b27d739764c14090b8e617ac"
+    },
+    {
+     "file": "circuits/circuit-023.json",
+     "sha256": "33a8be8231cb414c1f94eb6c4826cdd73ce3d934af90aa79fe5239f5562f6b83"
+    },
+    {
+     "file": "circuits/circuit-024.json",
+     "sha256": "af1b0b6acf5e6be944d10f00a8d13f84f0305858e007f7d31db0c7bb1cc64e52"
+    },
+    {
+     "file": "circuits/circuit-025.json",
+     "sha256": "93172f3ef14eff4f8881452705031abcc65cd353ac586bb4bf9d7184a746d3bd"
+    },
+    {
+     "file": "circuits/circuit-026.json",
+     "sha256": "9149b27228175d2f71d589bfcfeaaeda8c8d25785f798531e19d7b07b71dbcf0"
+    },
+    {
+     "file": "circuits/circuit-027.json",
+     "sha256": "92e08b1d6e8016f71e3b255b4a9e717073bdc98f1ac1feee55e421b17e86df2d"
+    },
+    {
+     "file": "circuits/circuit-028.json",
+     "sha256": "641799ac224322385dfcc17ad8aa970acba5c2b75dbbe30498c9b305afa68ccf"
+    },
+    {
+     "file": "circuits/circuit-029.json",
+     "sha256": "e524a25dda97990c7645e7c666eafb35af6b94b778a88384c50d9258cc497e2b"
+    },
+    {
+     "file": "circuits/circuit-030.json",
+     "sha256": "ddf0d4c3a0fb4798fd6738a5937af1dd77e77f734ce01b8bfea22ac651cbbff8"
+    },
+    {
+     "file": "circuits/circuit-031.json",
+     "sha256": "3e1613f67f9b802ecb2113120e8fa31474c84175d302f54206097c853d06da34"
+    },
+    {
+     "file": "circuits/circuit-032.json",
+     "sha256": "456ace5f3027c29fd4be103b8ccc9541c4180ba767aaabced821b49d0018c6f1"
+    },
+    {
+     "file": "circuits/circuit-033.json",
+     "sha256": "6111fb860e5c5704a7d5db300e4947a885c34d92fc5d6159c1ca000a12175ba1"
+    },
+    {
+     "file": "circuits/circuit-034.json",
+     "sha256": "0798ceb4b7a21a079efe05fedf826b1b2f42a4cd5df1f50a69ce640e43853b11"
+    },
+    {
+     "file": "circuits/circuit-035.json",
+     "sha256": "1f645e7ec437234a0f31444e4fb852770a3c0d68a3dab1eed6e92e6847611491"
+    }
+   ],
+   "expected_seconds": 2.711,
+   "job": "packed",
+   "max_credits": {
+    "garnet": 2.5,
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {
+     "garnet": "ea681de1-9661-41e5-bd6f-cb524fa056a6"
+    },
+    "heralding_mode": "none"
+   },
+   "shots": 2000
+  }
+ ],
+ "prediction_sha256": "7cf3f9451a8394321412b045aa19ac513d57562768277641efd2540c7ea4f8ca",
+ "qcs": [
+  "garnet:mock",
+  "garnet"
+ ],
+ "question": "Does preparing every cell of Garnet's five four-qubit cells, against only the four sentinel cells, change the sentinel Y-quadrature response B_Y - K_Y of 16 randomized dense/sparse pairs?",
+ "schema": "iqm-circuit-case-v1"
+}
