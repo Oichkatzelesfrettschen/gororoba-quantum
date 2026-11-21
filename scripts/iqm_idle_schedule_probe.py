@@ -42,7 +42,7 @@ Emerald successor. --qc emerald-t1 builds idle-schedule-t1-emerald: the Emerald 
 T1 calibration error (evaluate, "t1_delay" and "h2_gap"); --live reads the computer's current calibration.
 
 Usage: "$PYTHON" scripts/iqm_idle_schedule_probe.py (build DIR [--live] [--qc QC] | check DIR [--qc QC] |
-       analyze RUN_DIR --out FILE [--replay] | --self-test)
+       study CASE_DIR --out FILE | analyze RUN_DIR --out FILE [--replay] | --self-test)
 """
 
 from __future__ import annotations
@@ -93,6 +93,14 @@ TRAIN_P_MIN = 0.001
 # common-gap test rejects at this chi-square survival.
 T1_POINT_SE = 3.0
 GAP_P_REJECT = 0.01
+# A qubit enters H2 only when its parallel readout fit is linear and its delay fit's chi-square survival is at least
+# T1_FIT_P_MIN; the primary verdict needs every pulsed qubit of the case and reads unidentifiable otherwise.
+T1_FIT_P_MIN = 0.001
+# The successor's calibration study (study()) draws its binomial replicates from this seed: draw
+# docs/evidence/anu_qrng/draw-2026-11-21T184244Z.json, index 0.
+CALIBRATION_STUDY_SEED = 50182
+STUDY_REPLICATES = 400
+STUDY_TRUE_GAPS = (0.0, 14e-9)
 
 
 @dataclasses.dataclass(frozen=True)
@@ -163,7 +171,7 @@ EMERALD_T1 = dataclasses.replace(
         "schedule's prediction a per-pulse timing gap common to the qubits, read against each qubit's T1 measured "
         "by delay circuits in the same job?"
     ),
-    max_credits={"emerald": 9.0, "emerald:mock": 0.0},
+    max_credits={"emerald": 12.0, "emerald:mock": 0.0},
     delays=T1_DELAYS,
 )
 PROFILES = {"garnet": GARNET, "emerald": EMERALD, "emerald-t1": EMERALD_T1}
@@ -385,7 +393,8 @@ def build_from(calibration_dir: Path, profile: Profile = GARNET) -> tuple[dict[s
 
 
 def write(directory: Path, live: bool = False, profile: Profile = GARNET) -> None:
-    """Build the case; --live reads Garnet's current calibration, otherwise the retained snapshot's copy."""
+    """Build the case; --live reads the quantum computer's current calibration, otherwise the retained snapshot's
+    copy."""
     calibration_dir = directory / "calibration"
     calibration_dir.mkdir(parents=True, exist_ok=True)
     if live:
@@ -501,9 +510,25 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
     }
     if "t1_delays" in prediction:
         t1 = {q: t1_fit(counts, q, parallel[q], prediction["t1_delays"]) for q in qubits}
+        calibrated = {q: row["t1_seconds"] for rows in prediction["idle"].values() for q, row in rows.items()}
+        for qubit, fitted in t1.items():
+            if fitted.get("t1_seconds") is not None and qubit in calibrated:
+                # Descriptive: the delay-measured T1 per requested delay second over the calibration copy's T1.
+                fitted["over_calibrated"] = fitted["t1_seconds"] / calibrated[qubit]
         report["t1_delay"] = t1
-        report["h2_gap"] = gap_test(arms, t1, prediction["prx_seconds"], schedule)
+        valid = {q for q in qubits if parallel[q]["linear"] and usable_t1(t1[q])}
+        report["h2_gap"] = gap_test(arms, t1, prediction["prx_seconds"], schedule, set(calibrated), valid)
     return report
+
+
+def usable_t1(fitted: dict[str, Any]) -> bool:
+    """A delay fit that gives a rate and whose chi-square survival is at least T1_FIT_P_MIN."""
+    from scipy.stats import chi2 as chi2_law
+
+    if fitted.get("t1_seconds") is None:
+        return False
+    dof = fitted["dof"]
+    return dof < 1 or float(chi2_law.sf(fitted["chi2"], dof)) >= T1_FIT_P_MIN
 
 
 def t1_fit(
@@ -547,22 +572,37 @@ def t1_fit(
 
 
 def gap_test(
-    arms: dict[str, dict[str, list[dict[str, Any]]]], t1: dict[str, dict[str, Any]], prx_seconds: float, schedule: str
+    arms: dict[str, dict[str, list[dict[str, Any]]]],
+    t1: dict[str, dict[str, Any]],
+    prx_seconds: float,
+    schedule: str,
+    registered: set[str],
+    valid: set[str],
 ) -> dict[str, Any]:
     """H2 of the successor: the per-pulse gap g of each pulsed qubit from its longest train, g = d (k / k_T1 - 1)
     with k the train's decay rate per second of nominal pulse time and k_T1 the qubit's delay-measured rate; a common
     g is rejected when the chi-square of the qubits' g about their weighted mean has survival below GAP_P_REJECT.
     The shorter train repeats the estimate as a stationarity check. Under any schedule but asap the trains carry no
-    decay to read and the test reports unidentifiable."""
+    decay to read and the test reports unidentifiable; so does a case in which a registered pulsed qubit lacks a valid
+    readout fit, a usable delay fit or a decay rate on every train, since the preregistered test covers all of them.
+    T1 here is per requested delay second: a delay realized as a t + b with a != 1 scales it, and no reading of this
+    job detects a."""
     from scipy.stats import chi2 as chi2_law
 
     if schedule != "asap":
         return {"verdict": "unidentifiable", "schedule": schedule}
+    lengths = {arm["pulses"] for layout in arms.values() for row in layout.values() for arm in row}
+    rated = {
+        q
+        for q in valid
+        if all("apparent_rate_per_second" in arm for layout in arms.values() for arm in layout.get(q, []))
+        and any(q in layout for layout in arms.values())
+    }
+    excluded = sorted(registered - rated, key=lambda q: int(q[2:]))
     by_count: dict[int, dict[str, dict[str, float]]] = {}
     for layout in arms.values():
         for qubit, row in layout.items():
-            fit_ = t1[qubit]
-            if fit_.get("t1_seconds") is None:
+            if qubit not in rated:
                 continue
             for arm in row:
                 if "apparent_rate_per_second" not in arm:
@@ -594,16 +634,16 @@ def gap_test(
             "dof": dof,
             "survival": survival,
         }
-    longest = out.get(str(max(by_count))) if by_count else None
-    if longest is None or longest["survival"] is None:
-        return {"verdict": "unidentifiable", "schedule": schedule, "trains": out}
+    longest = out.get(str(max(lengths))) if by_count and lengths else None
+    if excluded or longest is None or longest["survival"] is None:
+        return {"verdict": "unidentifiable", "schedule": schedule, "excluded": excluded, "trains": out}
     verdict = "common" if longest["survival"] >= GAP_P_REJECT else "per-qubit"
-    report: dict[str, Any] = {"verdict": verdict, "schedule": schedule, "trains": out}
+    report: dict[str, Any] = {"verdict": verdict, "schedule": schedule, "excluded": excluded, "trains": out}
     counts = sorted(by_count)
     if len(counts) > 1:
         # The stationary gap model predicts one mean at every train length; a difference beyond Z_RESOLVE combined
-        # standard errors falsifies it. The two means share each qubit's T1, so the combined error overstates the
-        # difference's spread and the test is conservative.
+        # standard errors falsifies it. Both means cover the same qubits and share each qubit's T1 and readout, so
+        # the combined error is not the difference's; study() measures the test's false-alarm rate.
         short, long_ = out[str(counts[0])], out[str(counts[-1])]
         z = (long_["mean_seconds"] - short["mean_seconds"]) / math.hypot(
             long_["mean_se_seconds"], short["mean_se_seconds"]
@@ -666,6 +706,97 @@ def synthetic(
         e01, e10 = SYNTHETIC_READOUT.get(key.split("@")[1], SYNTHETIC_DEFAULT)
         counts[key] = (int(rng.binomial(profile.shots, (1 - read(value, e01, e10)) / 2)), profile.shots)
     return counts
+
+
+def expected_ones(
+    circuits: list[dict[str, Any]], calibration_dir: Path, method: str, eps: dict[str, float], prx_seconds: float
+) -> dict[str, float]:
+    """P(read 1) per name@qubit on the model device of synthetic(): its gate noise, relaxation and SYNTHETIC_READOUT."""
+    out = {}
+    for key, value in readings(circuits, calibration_dir, method, eps, prx_seconds).items():
+        e01, e10 = SYNTHETIC_READOUT.get(key.split("@")[1], SYNTHETIC_DEFAULT)
+        out[key] = (1 - read(value, e01, e10)) / 2
+    return out
+
+
+def study_replicate(item: tuple[dict[str, float], int, int, dict[str, Any], int]) -> dict[str, Any]:
+    """One binomial replicate of the model device, evaluated; seed is the replicate's spawned generator entropy."""
+    ones, shots, entropy, prediction, index = item
+    rng = np.random.default_rng(np.random.SeedSequence(entropy, spawn_key=(index,)))
+    keys = sorted(ones)
+    drawn = rng.binomial(shots, [ones[k] for k in keys])
+    return evaluate({k: (int(n), shots) for k, n in zip(keys, drawn, strict=True)}, prediction)
+
+
+def study(case_dir: Path) -> dict[str, Any]:
+    """Calibration study of the successor's H2 estimator on the case's own calibration and circuits. For a device
+    whose pulses last the prediction's d plus each gap of STUDY_TRUE_GAPS: the noise-free reading (every count at
+    its expected value, rounded, at the case's shots) and STUDY_REPLICATES binomial replicates at the case's shots,
+    drawn from CALIBRATION_STUDY_SEED. It records the mean gap's bias, the coverage of the mean +- one standard error,
+    the common-gap test's rejection rate at GAP_P_REJECT (every planted device has one common gap, so each rejection is
+    false), the stationarity test's false-alarm rate, and the spread of the per-qubit gap and T1 z-scores."""
+    calibration_dir = case_dir / "calibration"
+    calibration = iqm_sim.Calibration.from_directory(calibration_dir)
+    files, prediction = build_from(calibration_dir, EMERALD_T1)
+    circuits = [json.loads(text) for rel, text in files.items() if rel.startswith("circuits/")]
+    shots = EMERALD_T1.shots
+    rows = []
+    for number, gap in enumerate(STUDY_TRUE_GAPS):
+        ones = expected_ones(circuits, calibration_dir, "asap", {}, EMERALD_T1.prx_seconds + gap)
+        # Expected counts at the case's shots: the estimator's bias at the scale its gates and errors apply to.
+        exact = evaluate({k: (round(p * shots), shots) for k, p in ones.items()}, prediction)
+        entropy = CALIBRATION_STUDY_SEED * 1000 + number
+        reports = ordered_map(
+            study_replicate, [(ones, shots, entropy, prediction, i) for i in range(STUDY_REPLICATES)], min_items=2
+        )
+        longest = str(IDLE_PULSES[-1])
+        means, covered, rejected, alarms, gap_z, t1_z, unidentifiable = [], 0, 0, 0, [], [], 0
+        for report in reports:
+            h2 = report["h2_gap"]
+            if h2["verdict"] == "unidentifiable":
+                unidentifiable += 1
+                continue
+            train = h2["trains"][longest]
+            means.append(train["mean_seconds"])
+            covered += abs(train["mean_seconds"] - gap) <= train["mean_se_seconds"]
+            rejected += h2["verdict"] == "per-qubit"
+            alarms += h2.get("stationarity", {}).get("verdict") == "falsified"
+            gap_z += [(g["gap_seconds"] - gap) / g["se_seconds"] for g in train["gaps"].values()]
+            for qubit, fitted in report["t1_delay"].items():
+                if fitted.get("t1_seconds") is not None:
+                    t1 = calibration.values[f"characterization.model.{qubit}.t1_time"]
+                    t1_z.append((fitted["t1_seconds"] - t1) / fitted["t1_se_seconds"])
+        used = len(means)
+        rows.append(
+            {
+                "true_gap_ns": gap * 1e9,
+                "noise_free_mean_ns": exact["h2_gap"]["trains"].get(longest, {}).get("mean_seconds", math.nan) * 1e9,
+                "noise_free_excluded": exact["h2_gap"].get("excluded", []),
+                "noise_free_verdict": exact["h2_gap"]["verdict"],
+                "replicates": STUDY_REPLICATES,
+                "unidentifiable": unidentifiable,
+                "mean_of_means_ns": float(np.mean(means)) * 1e9 if used else None,
+                "spread_of_means_ns": float(np.std(means, ddof=1)) * 1e9 if used > 1 else None,
+                "coverage_one_se": covered / used if used else None,
+                "common_gap_rejection_rate": rejected / used if used else None,
+                "stationarity_false_alarm_rate": alarms / used if used else None,
+                "gap_z_sd": float(np.std(gap_z, ddof=1)) if len(gap_z) > 1 else None,
+                "t1_z_mean": float(np.mean(t1_z)) if t1_z else None,
+                "t1_z_sd": float(np.std(t1_z, ddof=1)) if len(t1_z) > 1 else None,
+            }
+        )
+    return {
+        "schema": "iqm-idle-schedule-t1-study-v1",
+        "case": EMERALD_T1.case,
+        "calibration_set": calibration.set_id,
+        "seed": {
+            "value": CALIBRATION_STUDY_SEED,
+            "draw": "docs/evidence/anu_qrng/draw-2026-11-21T184244Z.json",
+            "index": 0,
+        },
+        "shots": shots,
+        "devices": rows,
+    }
 
 
 def self_test() -> str:
@@ -746,7 +877,8 @@ def emerald_t1_self_test() -> None:
     """The successor: the Emerald circuits unchanged plus four delay circuits on all twelve qubits, inside its ceiling;
     a model device whose pulses last the prediction's 24 ns reads a common gap near zero and each qubit's calibrated
     T1, and one whose pulses last 14 ns longer reads that gap."""
-    calibration_dir = iqm_sim.EVIDENCE / EMERALD_T1.qc / "calibration"
+    committed = ROOT / "results/iqm/cases" / EMERALD_T1.case / "calibration"
+    calibration_dir = committed if committed.is_dir() else iqm_sim.EVIDENCE / EMERALD_T1.qc / "calibration"
     calibration = iqm_sim.Calibration.from_directory(calibration_dir)
     files, prediction = build_from(calibration_dir, EMERALD_T1)
     base, _ = build_from(calibration_dir, EMERALD)
@@ -764,28 +896,44 @@ def emerald_t1_self_test() -> None:
             raise RuntimeError(f"{delay_name(seconds)} is not prx(pi) on the twelve, one delay and one measure")
     if JOB_SECONDS + job["expected_seconds"] > EMERALD_T1.max_credits["emerald"] / 0.75 - PLAN_HEADROOM:
         raise RuntimeError(f"the successor's {job['expected_seconds']} s leave no headroom under its ceiling")
-    zero = evaluate(synthetic(circuits, calibration_dir, "asap", {}, SYNTHETIC_SEEDS[0], EMERALD_T1), prediction)
+
+    # Expected counts at the case's shots (no random draw): the sampled behavior is the calibration study's
+    # (study(), results/iqm/proposals/idle-schedule-t1-emerald/calibration-study.json).
+    def expected(method: str, gap: float) -> dict[str, Any]:
+        ones = expected_ones(circuits, calibration_dir, method, {}, EMERALD_T1.prx_seconds + gap)
+        return evaluate({k: (round(p * EMERALD_T1.shots), EMERALD_T1.shots) for k, p in ones.items()}, prediction)
+
+    zero = expected("asap", 0.0)
     if zero["h1_schedule"]["verdict"] != "asap" or zero["h2_gap"]["verdict"] != "common":
         read = (zero["h1_schedule"]["verdict"], zero["h2_gap"]["verdict"])
         raise RuntimeError(f"a gap-free ASAP device reads schedule {read[0]}, gap {read[1]}")
     for qubit, fitted in zero["t1_delay"].items():
         t1 = calibration.values[f"characterization.model.{qubit}.t1_time"]
-        if fitted["t1_seconds"] is None or abs(fitted["t1_seconds"] - t1) > 4 * fitted["t1_se_seconds"] + 0.05 * t1:
+        if fitted["t1_seconds"] is None or abs(fitted["t1_seconds"] / t1 - 1) > 0.01:
             raise RuntimeError(f"{qubit}: the delay fit reads {fitted.get('t1_seconds')} against the model's {t1}")
-    for device, seed, planted in ((EMERALD_T1, SYNTHETIC_SEEDS[0], 0.0), (None, SYNTHETIC_SEEDS[1], 14e-9)):
-        if device is None:
-            device = dataclasses.replace(EMERALD_T1, prx_seconds=EMERALD_T1.prx_seconds + planted)
-            got = evaluate(synthetic(circuits, calibration_dir, "asap", {}, seed, device), prediction)
-        else:
-            got = zero
+    for planted in (0.0, 14e-9):
+        got = zero if planted == 0.0 else expected("asap", planted)
         train = got["h2_gap"]["trains"][str(IDLE_PULSES[-1])]
-        if abs(train["mean_seconds"] - planted) > 4 * train["mean_se_seconds"] + 2e-9:
-            raise RuntimeError(f"a {planted * 1e9:.0f} ns gap reads {train['mean_seconds'] * 1e9:.2f} ns")
+        # The calibration study reads the estimator's bias at expected counts as 0.02 to 0.04 ns.
+        if abs(train["mean_seconds"] - planted) > 0.1e-9:
+            raise RuntimeError(f"a {planted * 1e9:.0f} ns gap reads {train['mean_seconds'] * 1e9:.3f} ns")
         if got["h2_gap"]["stationarity"]["verdict"] != "stationary":
             raise RuntimeError(f"a stationary {planted * 1e9:.0f} ns gap reads {got['h2_gap']['stationarity']}")
-    flat = evaluate(synthetic(circuits, calibration_dir, "alap", {}, SYNTHETIC_SEEDS[1], EMERALD_T1), prediction)
+    flat = expected("alap", 0.0)
     if flat["h2_gap"]["verdict"] != "unidentifiable":
         raise RuntimeError(f"an ALAP device's gap reads {flat['h2_gap']['verdict']}")
+    # The preregistered test covers every pulsed qubit: one qubit without a usable delay fit, or with a nonlinear
+    # readout fit, leaves H2 unidentifiable and names the qubit.
+    registered = {q for rows in prediction["idle"].values() for q in rows}
+    arms, t1 = zero["h1_schedule"]["arms"], zero["t1_delay"]
+    lost = sorted(registered)[0]
+    for broken in ({**t1, lost: {"t1_seconds": None, "points": 2}}, t1):
+        valid = {q for q in registered if usable_t1(broken[q]) and (broken is t1 or q != lost)}
+        if broken is t1:
+            valid.discard(lost)
+        got = gap_test(arms, broken, prediction["prx_seconds"], "asap", registered, valid)
+        if got["verdict"] != "unidentifiable" or got["excluded"] != [lost]:
+            raise RuntimeError(f"a case without {lost} reads {got['verdict']}, excluded {got['excluded']}")
 
 
 def emerald_self_test() -> None:
@@ -842,6 +990,9 @@ def main() -> int:
     ck.add_argument("directory", type=Path)
     for each in (bd, ck):
         each.add_argument("--qc", choices=sorted(PROFILES), default="garnet", help="the case profile to build")
+    sd = sub.add_parser("study", help="calibration study of the successor's H2 estimator (local, no provider)")
+    sd.add_argument("case_dir", type=Path)
+    sd.add_argument("--out", type=Path, required=True)
     an = sub.add_parser("analyze")
     an.add_argument("run_dir", type=Path)
     an.add_argument("--out", type=Path, required=True)
@@ -853,6 +1004,8 @@ def main() -> int:
         write(args.directory, args.live, PROFILES[args.qc])
     elif args.command == "check":
         check(args.directory, PROFILES[args.qc])
+    elif args.command == "study":
+        args.out.write_text(dump(study(args.case_dir)), encoding="utf-8")
     elif args.command == "analyze":
         text = dump(analyze(args.run_dir))
         if args.replay:

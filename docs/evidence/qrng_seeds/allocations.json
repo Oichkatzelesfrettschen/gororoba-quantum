@@ -1401,6 +1401,13 @@
    "value": 35685,
    "record": "docs/evidence/anu_qrng/draw-2026-11-16T041214Z.json",
    "index": 2
+  },
+  {
+   "path": "scripts/iqm_idle_schedule_probe.py",
+   "name": "CALIBRATION_STUDY_SEED",
+   "value": 50182,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-21T184244Z.json",
+   "index": 0
   }
  ],
  "runtime": [
