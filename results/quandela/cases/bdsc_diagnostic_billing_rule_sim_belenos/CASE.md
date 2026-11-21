@@ -28,7 +28,8 @@ reads six runs and does not run on three; no decision row of "Decision rules" ap
 service-variation contrasts stay unmeasured (one P1 replicate, two P2 replicates). Measured: the 12-iteration requests
 took 156 to 161 s, above half the retained 300 s. `hypothesis:` a 24-iteration b1 job needs about 320 s and does not
 fit the 300 s limit; the falsifier is a 24-iteration job that completes below 300 s, as `b1-j1` did once at 300 s.
-A resumed or packed successor needs its own written case and approval.
+A resumed or packed successor needs its own written case and approval; the packed qpu:belenos request is proposed in
+[`bdsc_diagnostic_packed_qpu_belenos/CASE.md`](../bdsc_diagnostic_packed_qpu_belenos/CASE.md).
 
 ## Retained records
 
