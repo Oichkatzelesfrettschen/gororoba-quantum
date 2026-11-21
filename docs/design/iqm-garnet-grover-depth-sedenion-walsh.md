@@ -25,34 +25,38 @@ lambda_k = (P_k - 1/8) / (P_k^ideal - 1/8). Two depths fit lambda_k = A r^k exac
 A = 1.00 +- 0.02 and 0.96 +- 0.03), so a third depth is the first test of the law: f = lambda_3 -
 lambda_2^2 / lambda_1 is zero under it.
 
-**Single-qubit load.** Four one-iteration arms form a two-by-two design. `fused` walks the retained generic
-compile (qiskit optimization level 3, seed `iqm_grover_line.TRANSPILER_SEED`, 18 CZ and 68 prx) and merges
+**Single-qubit load.** Four one-iteration arms form a two-by-two design. The generic arm is qiskit's
+optimization level 3 at the retained seed `iqm_grover_line.TRANSPILER_SEED` with the logical wires permuted by
+`GENERIC_PERMUTATION` = (2, 0, 1): of the six permutations, this one measures logical bit q on path position q,
+the line-native arm's mapping, at the retained compile's 18 CZ and 68 prx (the retained generic compile measured
+QB16, QB17, QB20 and is not rerun). `fused` walks that compile and merges
 each run of prx on one qubit between two CZ into one prx, carrying the residual Z rotation as a frame through
 the CZ, which commutes with it: the CZ list and loci stay identical, every computational-basis probability
 agrees to 4e-11, and the count falls to 38 prx (the native compiles drop their final Z frames, so the
 operators themselves differ by those frames). 38 is the floor of frame fusion at this CZ sequence, since every
 segment between CZ whose fused rotation is not diagonal keeps one prx; a resynthesis that moves the CZ list
-was not searched, so the requested 22-prx generic arm does not exist at the retained 18-CZ sequence. `padded`
-inserts 8 identity pairs prx(pi/2, 0) prx(pi/2, pi) into the line-native arm, bringing it from 22 to 38 prx at
-its own 14-CZ sequence and measurement mapping.
+was not searched. Fusing all six logical-wire permutations at the retained seed gives 37 or 38 prx, so the
+requested 22-prx generic arm does not exist on this route. `padded` inserts 8 identity pairs prx(pi/2, 0)
+prx(pi/2, pi) into the line-native arm, placed so that its per-qubit prx counts match the fused arm's within one
+(18, 11, 9 on QB16, QB17, QB20 against 18, 12, 8), bringing it from 22 to 38 prx at its own 14-CZ list.
 
 | Arm | CZ | prx | measurement locus | model P(101) |
 |---|---|---|---|---|
 | line (L) | 14 | 22 | QB20, QB16, QB17 | 0.678 |
 | padded line (P) | 14 | 38 | QB20, QB16, QB17 | 0.670 |
-| fused generic (F) | 18 | 38 | QB16, QB17, QB20 | 0.658 |
-| generic (G) | 18 | 68 | QB16, QB17, QB20 | 0.643 |
+| fused generic (F) | 18 | 38 | QB20, QB16, QB17 | 0.657 |
+| generic (G) | 18 | 68 | QB20, QB16, QB17 | 0.642 |
 
-L - P (16 prx) and F - G (30 prx) each change only the prx count at a fixed CZ sequence. P - F holds the prx
-count at 38 and changes the CZ list together with the logical-to-physical measurement mapping, so it does not
-separate the two.
+L - P (16 prx) and F - G (30 prx) each change only the prx count at a fixed CZ list. P - F holds the prx count
+at 38 (per qubit within one) and the measurement mapping, and changes only the CZ list.
 
 **Qubit or role.** The reversed path QB17-QB16-QB20 runs the same line-native circuits. Its measurement locus
 is QB17, QB16, QB20 against QB20, QB16, QB17 forward, so the two end qubits exchange logical roles while QB16
 keeps the middle. On mark 101 both end bits are ideally 1, so D = w(QB17) - w(QB20), the difference of their
 wrong-bit probabilities, compares the two qubits alone; on mark 011 the ends are ideally 0 and 1 and D mixes
 qubit quality with the asymmetry of e01 and e10. The retained run read, readout-corrected, D = +0.023 on
-m101-k1 (w = 0.154 on QB20, 0.178 on QB17) and D = -0.026 on m011-k1.
+m101-k1 (w = 0.154 on QB20, 0.178 on QB17) and D = -0.026 on m011-k1; from raw frequencies, with the paired per-shot variance, D = +0.0204 +- 0.0039 (z 5.3,
+13,688 kept shots) on m101-k1 and -0.019 +- 0.008 on m011-k1.
 
 **Sedenion sign rows.** `gororoba_quantum/sedenion_sign_oracle.py` writes the left row of e_m,
 diag(cd_sign(16, m, x)), as the phase pi h_m(x) = const + sum_S (pi/8) c_S [S.x], c_S = W(S)/2 from the Walsh
@@ -98,11 +102,11 @@ only the model's own prediction, which the decisions use as the reference.
 | Question | Hypothesis | Quantity | Falsifier | Model prediction, SE, z | Next step by result |
 |---|---|---|---|---|---|
 | Depth | lambda_k = A r^k through k = 3 | f = lambda_3 - lambda_2^2/lambda_1 from raw marked frequencies, per marked string | f beyond 3 SE of the model's f (raw frequencies carry readout, so the model's f is not zero) | +0.010 (101), +0.025 (011); SE 0.041 by the delta method over the three arms | inside: geometric budgets stand for 42 CZ; outside: per-iteration error depends on depth (coherent accumulation, leakage) |
-| prx load, generic | 30 extra prx cost marked probability at 18 CZ | P(101) fused minus generic, four copies each | a resolved negative difference | +0.015, SE 0.0058, z 2.60 | resolved: the generic loss includes prx error, and every compile fuses single-qubit runs |
+| prx load, generic | 30 extra prx cost marked probability at 18 CZ | P(101) fused minus generic, four copies each | a resolved negative difference | +0.015, SE 0.0058, z 2.64 | resolved: the generic loss includes prx error, and every compile fuses single-qubit runs |
 | prx load, line | 16 identity-pair prx cost marked probability at 14 CZ | P(101) line minus padded line | a resolved negative difference | +0.0085, SE 0.0057, z 1.50 | with the generic contrast, a per-prx cost on two CZ sequences |
-| CZ sequence and role | 14 CZ on the line mapping beat 18 CZ on the generic mapping at 38 prx | P(101) padded line minus fused generic | a resolved negative difference | +0.012, SE 0.0057, z 2.04 | resolved: the line-native gain survives equal prx; it does not say whether the CZ list or the mapping carries it |
-| Qubit or role | QB20's advantage belongs to the qubit | D = w(QB17) - w(QB20), raw, on m101-k1 forward and r-m101-k1 reversed (four copies each), paired per-shot SE | given a resolved forward D, a resolved reversed D of opposite sign | model D -0.010 forward and -0.009 reversed, paired SE 0.0038 each (z -2.66, -2.38); retained corrected forward D +0.023 | qubit: choose paths by per-qubit error; role: the network's position assigns error, and the exchanged network's end wire is the one to protect |
-| Sedenion peak | Garnet keeps the row's Walsh peak and the truncation removes it | P(row peak) of row minus truncation, per row; the row's null floor beside | a difference below 3 SE, or the row arms' most frequent string not the row peak | +0.283 (both rows; row 0.511, truncation 0.228, null 0.002 and 0.003), SE 0.016, z 17.97 | resolved: the eight-CZ sign oracle is a Garnet primitive and the next case composes rows into products; unresolved: the oracle's coherent phase error comes first |
+| CZ sequence | 14 line-native CZ beat 18 generic CZ at equal prx and mapping | P(101) padded line minus fused generic | a resolved negative difference | +0.013, SE 0.0057, z 2.24 | resolved: the CZ list carries the line-native gain on its own |
+| Qubit or role | QB20's advantage belongs to the qubit | D = w(QB17) - w(QB20), raw, on m101-k1 forward and r-m101-k1 reversed (four copies each), paired per-shot SE | given a resolved forward D, a resolved reversed D of opposite sign | model D -0.010 forward and -0.009 reversed, paired SE 0.0038 each (z -2.66, -2.38); retained raw forward D +0.020, paired SE 0.0039 (z 5.3) | qubit: choose paths by per-qubit error; role: the network's position assigns error, and the exchanged network's end wire is the one to protect |
+| Sedenion peak | Garnet keeps the row's Walsh peak and the truncation removes it | P(row peak) of row minus truncation, per row; row minus the row's null | a difference below 3 SE, a row peak within 3 SE of its null, or the row arms' most frequent string not the row peak | +0.283 (both rows; row 0.511, truncation 0.228, null 0.002 and 0.003), SE 0.016, z 17.97; row minus null z 42 | resolved: the eight-CZ sign oracle is a Garnet primitive and the next case composes rows into products; unresolved: the oracle's coherent phase error comes first |
 
 The SE are binomial (paired multinomial for D) at the planned shots and the retained run's heralded kept
 fraction, 85.6 %: 3424 kept shots per Grover circuit and 856 per sedenion circuit, each arm pooled over its
@@ -110,16 +114,16 @@ copies.
 
 Probability that each decision resolves (z > 3) when the true difference is the stated row value:
 
-| Scenario | prx load, generic | prx load, line | CZ sequence and role | sedenion |
+| Scenario | prx load, generic | prx load, line | CZ sequence | sedenion |
 |---|---|---|---|---|
-| model | 0.35 (z 2.60) | 0.07 (z 1.50) | 0.17 (z 2.04) | 1.00 (z 17.97) |
-| retained line-generic excess, x 2.0 on every Grover term | 0.99 (z 5.2) | 0.50 (z 3.0) | 0.86 (z 4.1) | not applicable |
-| contrast at 0.75 of the model (the [kernel cancellation](iqm-garnet-kernel-cancellation-probe.md) and [signed kernel](iqm-garnet-signed-kernel-probe.md) shortfalls) | 0.15 (z 1.95) | 0.03 (z 1.12) | 0.07 (z 1.53) | 1.00 (z 13.4) |
+| model | 0.36 (z 2.64) | 0.07 (z 1.50) | 0.22 (z 2.24) | 1.00 (z 17.97) |
+| retained line-generic excess, x 2.0 on every Grover term | 0.99 (z 5.3) | 0.50 (z 3.0) | 0.93 (z 4.5) | not applicable |
+| contrast at 0.75 of the model (the [kernel cancellation](iqm-garnet-kernel-cancellation-probe.md) and [signed kernel](iqm-garnet-signed-kernel-probe.md) shortfalls) | 0.15 (z 1.98) | 0.03 (z 1.12) | 0.09 (z 1.68) | 1.00 (z 13.4) |
 
 The single-qubit contrasts resolve only if the retained excess is real and splits as the model's terms do; an
 unresolved result does not separate "no effect" from "small effect", and the two prx contrasts together bound
-a per-prx cost. The role decision resolves the forward D at z about 6 if the retained +0.023 repeats (raw
-frequencies read slightly lower than corrected), and the reversed D at |D| > 0.011. The depth statistic
+a per-prx cost. The role decision resolves the forward D at z about 5.3 if the retained raw +0.020 repeats, and
+the reversed D at |D| > 0.011. The depth statistic
 resolves a deviation of f above 0.12; a second k = 3 copy or k = 5 (70 CZ, ideal 0.548, denominator 0.42
 against 0.21) lowers that, each for about 0.25 credits more.
 
@@ -176,8 +180,7 @@ nothing else:
 
 - prx load, generic: P(101) of fused minus generic, pooled over four copies each; resolves at z 3.
 - prx load, line: P(101) of line minus padded line.
-- CZ sequence and role: P(101) of padded line minus fused generic, read as the joint effect of CZ list and
-  measurement mapping.
+- CZ sequence: P(101) of padded line minus fused generic, at equal prx and one measurement mapping.
 - Depth law, per marked string: f from raw frequencies against the model's f; the readout-corrected f is
   reported beside. k0's corrected uniformity Wald statistic is the reference of the unmarked-uniformity test,
   as in the retained analysis.
@@ -185,9 +188,9 @@ nothing else:
   forward D resolves, a resolved reversed D of the same sign keeps the difference with the qubits, one of the
   opposite sign moves it with the roles, and anything else leaves the question open; the m011 arms are
   reported beside.
-- Sedenion, per row e_5 and e_10: P(row peak) of row minus truncation, two copies each; the row's null arm's
-  P(row peak) is reported as the floor, and the most frequent string of the row arms must equal the row's
-  ideal peak (1001 for e_5 and 0110 for e_10; `prediction.json`, `row_peak`).
+- Sedenion, per row e_5 and e_10: P(row peak) of row minus truncation, two copies each, resolved at z 3; the
+  row's P(row peak) must also exceed its null arm's by 3 SE, and the most frequent string of the row arms must
+  equal the row's ideal peak (1001 for e_5 and 0110 for e_10; `prediction.json`, `row_peak`).
 - The bit order of the Grover arms follows the retained run: the most frequent outcome of m011 arms is 011.
 - Binding: `cases.json` carries `prediction_sha256`, and `iqm_records.validate_job`, which submission, the
   run copy and the analysis reader all pass through, refuses a case whose `prediction.json` differs from it.
@@ -212,7 +215,13 @@ Zen 4 workstation; the generic and fused arms' gate sequences follow the qiskit 
 
 - The model omits coherent error; every Grover prediction is a reference, and the retained run measured twice
   the model's line-minus-generic gain.
-- The single-qubit contrasts resolve with probability 0.35 and 0.07 under the model.
+- The single-qubit contrasts resolve with probability 0.36 and 0.07 under the model.
+- The peak observable is a probability of a real Walsh amplitude: a pure diagonal phase error delta_x moves it
+  at second order (the first-order term of |W|^2 is 2 W Re(i sum_x s_x (-1)^(y.x) delta_x / 16) = 0), while prx
+  over-rotations enter at first order; `scripts/iqm_probe_audit.py`, which computes such responses for the
+  signed kernel probe, was not run on these circuits.
+- The generic arms use the mapped permutation, not the retained generic compile, so this job does not replicate
+  the retained line-minus-generic difference itself.
 - IQM's server compiler might merge adjacent prx; then the padded and generic arms would run fewer pulses than
   their files hold, and L - P and F - G would read zero. Hypothesis; the retained generic arm's loss argues
   against it.

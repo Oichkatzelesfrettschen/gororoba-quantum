@@ -6,12 +6,13 @@ answers in two jobs on one calibration set (the written case: docs/design/iqm-ga
 
 Job "grover" (three qubits, the retained path FORWARD_PATH and its reversal):
   m101-k1 one iteration four ways, four copies each in blocks L P F G and G F P L mirrored about the job's
-                     center: line-native (L, 14 CZ, 22 prx); padded (P, the line arm with PAD_PAIRS identity prx
-                     pairs, 38 prx at the line's CZ sequence); fused (F, the retained 18-CZ generic compile at
-                     grover.TRANSPILER_SEED with each run of prx between CZs fused, 38 prx); generic (G, that
-                     compile as emitted, 68 prx). L - P and F - G each change only the prx count at a fixed CZ
-                     sequence; P - F changes the CZ sequence and the logical-to-physical measurement mapping
-                     together at equal prx count.
+                     center: line-native (L, 14 CZ, 22 prx); padded (P, the line arm with identity prx pairs
+                     placed to match F's per-qubit prx counts within one, 38 prx at the line's CZ list); fused
+                     (F, the 18-CZ generic compile at grover.TRANSPILER_SEED with its logical wires permuted by
+                     GENERIC_PERMUTATION so that it measures the line's mapping, each run of prx between CZs
+                     fused, 38 prx); generic (G, that compile as emitted, 68 prx). L - P and F - G each change
+                     only the prx count at a fixed CZ list; P - F changes only the CZ list, at equal prx and one
+                     measurement mapping.
   m101-k2, m101-k3, k0, m011-k1, m011-k2, m011-k3   the depth series, grouped at the job's center (not mirrored):
                      three depths test the geometric retention law lambda_k = A r^k that two depths fit exactly;
                      k0 is the reference of the unmarked-uniformity test.
@@ -55,7 +56,8 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-from qiskit import transpile
+from qiskit import QuantumCircuit, transpile
+from qiskit.transpiler import CouplingMap
 from qiskit_aer import AerSimulator
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -79,8 +81,10 @@ FORWARD_PATH = ["QB20", "QB16", "QB17"]
 REVERSED_PATH = FORWARD_PATH[::-1]
 ROWS = (5, 10)
 COPIES = 4
-# Identity pairs that bring the line-native arm's 22 prx to the fused generic arm's 38.
-PAD_PAIRS = 8
+# Logical-wire permutation of the generic compile: of the six, at the retained seed, this one ends with the
+# line-native arm's measurement mapping (logical bit q on path position q), so line and generic arms differ in
+# their CZ list alone (18 CZ, 68 prx emitted, 38 fused); none of the six fuses below 37 prx.
+GENERIC_PERMUTATION = (2, 0, 1)
 # The square the selection rule chose on calibration set ea681de1 (score 0.5115; the next three within 0.004).
 # A rebuild on a later calibration keeps it, so the square is never re-selected on the predicting calibration.
 SQUARE = ["QB11", "QB12", "QB17", "QB16"]
@@ -132,27 +136,94 @@ def fused(circuit: dict[str, Any], path: list[str], name: str) -> dict[str, Any]
     return {"name": name, "instructions": out}
 
 
-def padded(circuit: dict[str, Any], pairs: int, name: str) -> dict[str, Any]:
-    """The circuit with an identity pair prx(pi/2, 0) prx(pi/2, pi) inserted on the first locus qubit before each
-    of its first `pairs` CZ: 2 * pairs more prx at the same CZ sequence, loci and measurement, and the same
-    unitary, since prx(theta, phi + pi) = prx(-theta, phi)."""
+def generic_mapped(marked: str, path: list[str], name: str) -> dict[str, Any]:
+    """One iteration through qiskit's optimization level 3 at the retained seed, with logical wire q placed on
+    circuit wire GENERIC_PERMUTATION[q]: the generic compile whose measurement reads logical bit q on path[q]."""
+    perm = GENERIC_PERMUTATION
+    logical = QuantumCircuit(3, 3)
+    for op in grover.grover_ops(marked, 1):
+        if op[0] == "h":
+            logical.h(perm[op[1]])
+        elif op[0] == "x":
+            logical.x(perm[op[1]])
+        else:
+            logical.ccz(0, 1, 2)
+    for q in range(3):
+        logical.measure(perm[q], q)
+    compiled = transpile(
+        logical,
+        basis_gates=["r", "cz"],
+        coupling_map=CouplingMap([[0, 1], [1, 0], [1, 2], [2, 1]]),
+        initial_layout=[0, 1, 2],
+        optimization_level=3,
+        seed_transpiler=grover.TRANSPILER_SEED,
+    )
     out: list[dict[str, Any]] = []
-    left = pairs
+    readout: dict[int, str] = {}
+    for item in compiled.data:
+        op = item.operation
+        locus = [path[compiled.find_bit(q).index] for q in item.qubits]
+        if op.name == "r":
+            theta, phi = (float(p) for p in op.params)
+            args = {"angle": grover.angle(theta), "phase": grover.angle(phi)}
+            out.append({"name": "prx", "locus": locus, "args": args})
+        elif op.name == "cz":
+            out.append({"name": "cz", "locus": locus, "args": {}})
+        elif op.name == "measure":
+            readout[compiled.find_bit(item.clbits[0]).index] = locus[0]
+        elif op.name != "barrier":
+            raise ValueError(f"{name}: {op.name} is not a Garnet native operation")
+    out.append({"name": "measure", "locus": [readout[q] for q in range(3)], "args": {"key": "m"}})
+    return {"name": name, "instructions": out}
+
+
+def prx_per_qubit(circuit: dict[str, Any]) -> dict[str, int]:
+    out: dict[str, int] = {}
     for op in circuit["instructions"]:
-        if op["name"] == "cz" and left:
-            qubit = op["locus"][0]
-            out.append({"name": "prx", "locus": [qubit], "args": {"angle": grover.angle(math.pi / 2), "phase": 0.0}})
-            out.append(
-                {
-                    "name": "prx",
-                    "locus": [qubit],
-                    "args": {"angle": grover.angle(math.pi / 2), "phase": grover.angle(math.pi)},
-                }
-            )
-            left -= 1
+        if op["name"] == "prx":
+            out[op["locus"][0]] = out.get(op["locus"][0], 0) + 1
+    return out
+
+
+def pad_pairs(base: dict[str, Any], target: dict[str, Any], path: list[str]) -> dict[str, int]:
+    """Identity pairs per qubit that bring base's prx count to target's: each qubit takes half its deficit,
+    rounded down, and the pairs left go to the qubits with an odd deficit in path order, so per-qubit counts
+    match to within one prx and the totals match exactly."""
+    have, want = prx_per_qubit(base), prx_per_qubit(target)
+    deficit = {q: want.get(q, 0) - have.get(q, 0) for q in path}
+    total = sum(deficit.values())
+    if total < 0 or total % 2:
+        raise ValueError(f"prx deficit {deficit} cannot be met by pairs")
+    pairs = {q: max(d, 0) // 2 for q, d in deficit.items()}
+    for q in path:
+        if sum(pairs.values()) == total // 2:
+            break
+        if deficit[q] > 0 and deficit[q] % 2:
+            pairs[q] += 1
+    if sum(pairs.values()) != total // 2:
+        raise ValueError(f"prx deficit {deficit} gives pairs {pairs}")
+    return pairs
+
+
+def padded(circuit: dict[str, Any], pairs: dict[str, int], name: str) -> dict[str, Any]:
+    """The circuit with identity pairs prx(pi/2, 0) prx(pi/2, pi) on each named qubit, one pair before each of
+    that qubit's first CZ until its count is met: the same CZ sequence, loci, measurement and unitary, since
+    prx(theta, phi + pi) = prx(-theta, phi)."""
+    out: list[dict[str, Any]] = []
+    left = dict(pairs)
+    half = grover.angle(math.pi / 2)
+    for op in circuit["instructions"]:
+        if op["name"] == "cz":
+            for qubit in op["locus"]:
+                if left.get(qubit, 0):
+                    out.append({"name": "prx", "locus": [qubit], "args": {"angle": half, "phase": 0.0}})
+                    out.append(
+                        {"name": "prx", "locus": [qubit], "args": {"angle": half, "phase": grover.angle(math.pi)}}
+                    )
+                    left[qubit] -= 1
         out.append(op)
-    if left:
-        raise ValueError(f"{name}: {pairs} pairs need {pairs} CZ")
+    if any(left.values()):
+        raise ValueError(f"{name}: pairs left over {left}")
     return {"name": name, "instructions": out}
 
 
@@ -337,10 +408,11 @@ def grover_arms() -> list[Arm]:
         name = "m101-k1" + ("" if kind == "line" else f"-{kind}") + f"-c{copy}"
         if kind == "line":
             return line("101", 1, path, name)
+        generic = generic_mapped("101", path, name)
         if kind == "padded":
             base = grover.line_arm("101", 1, path, name)[1]
-            return {"name": name, "circuit": padded(base, PAD_PAIRS, name), "path": path, "marked": "101", "k": 1}
-        generic = grover.generic("101", path, name)
+            pairs = pad_pairs(base, fused(generic, path, name), path)
+            return {"name": name, "circuit": padded(base, pairs, name), "path": path, "marked": "101", "k": 1}
         circuit = generic if kind == "generic" else fused(generic, path, name)
         return {"name": name, "circuit": circuit, "path": path, "marked": "101", "k": 1}
 
@@ -595,14 +667,14 @@ def decisions(arms: dict[str, Any]) -> dict[str, Any]:
             "101",
             "P(101) of line minus padded line, four copies each: 16 identity-pair prx at the fixed 14-CZ line sequence",
         ),
-        "cz_sequence_and_role": decision(
+        "cz_sequence": decision(
             arms,
             "m101-k1-padded",
             "m101-k1-fused",
             "101",
             (
-                "P(101) of padded line minus fused generic, both 38 prx: 14 against 18 CZ on different loci, with a "
-                "different logical-to-physical measurement mapping; it does not separate the CZ sequence from the role"
+                "P(101) of padded line minus fused generic: 14 against 18 CZ on one logical-to-physical measurement "
+                "mapping, at equal total prx and per-qubit prx counts within one"
             ),
         ),
         "k0_reference": (
@@ -643,7 +715,13 @@ def decisions(arms: dict[str, Any]) -> dict[str, Any]:
                 "string of the row arms must be the row peak"
             ),
         )
-        out[f"sedenion_{m}"]["null_floor"] = round(pooled(arms, f"s{m}-id", peak)[0], 4)
+        null_p, null_n = pooled(arms, f"s{m}-id", peak)
+        row_p, row_n = pooled(arms, f"s{m}-row", peak)
+        out[f"sedenion_{m}"]["null_floor"] = round(null_p, 4)
+        out[f"sedenion_{m}"]["row_minus_null_z"] = round(
+            (row_p - null_p) / se_difference(row_p, row_n, null_p, null_n), 2
+        )
+        out[f"sedenion_{m}"]["rule"] += "; and the row peak exceeds the null arm's P(row peak) by 3 SE"
     return out
 
 
@@ -690,9 +768,18 @@ def self_test() -> str:
         if abs(p - ideal_probability(k)) > 1e-9:
             raise AssertionError(f"line m{marked}-k{k}: P(marked) {p}")
     line_circuit = grover.line_arm("101", 1, path, "l")[1]
-    pad = padded(line_circuit, PAD_PAIRS, "p")
-    if count(pad, "prx") != count(merged, "prx") or count(pad, "cz") != count(line_circuit, "cz"):
-        raise AssertionError(f"padded line has {count(pad, 'prx')} prx and {count(pad, 'cz')} CZ")
+    mapped = generic_mapped("101", path, "m")
+    if mapped["instructions"][-1]["locus"] != line_circuit["instructions"][-1]["locus"]:
+        raise AssertionError("the mapped generic compile measures another logical-to-physical mapping")
+    mapped_fused = fused(mapped, path, "mf")
+    if float(np.max(np.abs(ideal(mapped_fused, path) - ideal(line_circuit, path)))) > 1e-9:
+        raise AssertionError("the mapped generic compile's distribution differs from the line-native one")
+    pad = padded(line_circuit, pad_pairs(line_circuit, mapped_fused, path), "p")
+    pad_prx, fused_prx = prx_per_qubit(pad), prx_per_qubit(mapped_fused)
+    if count(pad, "prx") != count(mapped_fused, "prx") or any(abs(pad_prx[q] - fused_prx.get(q, 0)) > 1 for q in path):
+        raise AssertionError(f"padded line prx per qubit {pad_prx}, fused generic {fused_prx}")
+    if count(pad, "cz") != count(line_circuit, "cz"):
+        raise AssertionError("the identity pairs change the padded line's CZ list")
     if float(np.max(np.abs(ideal(pad, path) - ideal(line_circuit, path)))) > 1e-9:
         raise AssertionError("the identity pairs change the padded line's distribution")
     reversed_line = grover.line_arm("101", 1, path[::-1], "r")[1]

@@ -92,3 +92,25 @@ def test_an_altered_prediction_fails_the_case_binding(tmp_path: Path) -> None:
     prediction.write_text(prediction.read_text().replace('"z_resolve": 3.0', '"z_resolve": 2.0'))
     with pytest.raises(iqm_records.RecordError, match="prediction.json"):
         iqm_records.load_job(case_dir, "grover")
+
+
+def test_a_bound_prediction_is_checked_on_a_synthetic_case(tmp_path: Path) -> None:
+    circuit = json.dumps({"name": "c", "instructions": []}).encode()
+    prediction = b'{"decisions": {}}\n'
+    case = {
+        "schema": iqm_records.CASE_SCHEMA,
+        "case": "synthetic",
+        "prediction_sha256": iqm_records.sha256(prediction),
+        "jobs": [{"job": "j", "circuits": [{"file": "circuits/c.json", "sha256": iqm_records.sha256(circuit)}]}],
+    }
+    (tmp_path / "circuits").mkdir()
+    (tmp_path / "circuits" / "c.json").write_bytes(circuit)
+    (tmp_path / "cases.json").write_text(json.dumps(case))
+    (tmp_path / "prediction.json").write_bytes(prediction)
+    iqm_records.load_job(tmp_path, "j")
+    (tmp_path / "prediction.json").write_bytes(b'{"decisions": {"z": 2}}\n')
+    with pytest.raises(iqm_records.RecordError, match="prediction.json"):
+        iqm_records.load_job(tmp_path, "j")
+    (tmp_path / "prediction.json").unlink()
+    with pytest.raises(iqm_records.RecordError, match="prediction.json"):
+        iqm_records.load_job(tmp_path, "j")

@@ -9,10 +9,11 @@ first appearance, realizes the row up to the final linear relabeling of the wire
 before and after, the oracle's output distribution is P(y) = W(y)^2 / 256, W the Walsh transform of the sign
 row: 9/16 on one string, 1/16 on seven, 0 on eight.
 
-The degree-two truncation of h_m (its F_2 polynomial with the cubic monomials removed) is a quadratic phase on
-four of the row's eight parities, so the same network with the other four phases set to zero realizes it:
-the same CZ sequence with changed virtual frames. The network with every phase zero is the identity oracle,
-whose output is the all-zeros string.
+The degree-two truncation of h_m (its F_2 polynomial with the cubic monomials removed) is a quadratic phase.
+For the ten rows of popcount one and two its parity expansion lies on four of the row's eight parities, with
+changed coefficients, so the row's network with the other four phases removed realizes it: the same CZ list,
+fewer prx after compilation. For the rows of popcount three and four it needs parities outside the row's. The
+network with every phase zero is the identity oracle, whose output is the all-zeros string.
 """
 
 from __future__ import annotations
