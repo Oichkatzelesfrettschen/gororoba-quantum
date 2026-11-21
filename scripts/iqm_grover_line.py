@@ -29,7 +29,8 @@ all-zeros herald the job's kept shots pass. Probabilities round to 9 digits and 
 line-native circuits and the prediction across numpy's CPU dispatch; the generic copies come from qiskit's
 seeded transpile, whose gate sequence follows the qiskit release, so the build runs under requirements.txt.
 
-Usage: "$PYTHON" scripts/iqm_grover_line.py (build DIR --calibration SRC | check DIR | --self-test)
+Usage: "$PYTHON" scripts/iqm_grover_line.py (build DIR --calibration SRC | check DIR | analyze RUN --out FILE [--replay]
+       | --self-test)
 """
 
 from __future__ import annotations
@@ -57,6 +58,8 @@ from iqm_jobs import CASE_SCHEMA, JOB_SECONDS, ceiling_credits, dump  # noqa: E4
 from iqm_platform import sha256  # noqa: E402
 from iqm_signed_probe import ACTIVE_SHOT_SECONDS, CALIBRATION_FILES, OPTIONS, relaxed, target_of  # noqa: E402
 
+from boolean_anf import anf_degree  # noqa: E402
+from cd_core import cd_sign  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 CASE = "grover-line-ccz"
@@ -537,7 +540,253 @@ def check(directory: Path) -> None:
     print(f"{directory}: matches the build from its retained calibration")
 
 
+WALSH = np.array([[(-1) ** bin(s & x).count("1") for x in range(8)] for s in range(8)], dtype=float)
+DECISION_ARMS = (("m101-k1", "101", 1), ("m101-k1-generic", "101", 1), ("m101-k2", "101", 2))
+GROVER_ARMS = (*DECISION_ARMS, ("m011-k1", "011", 1), ("m011-k2", "011", 2))
+
+
+def index_of(key: str) -> int:
+    """Basis index sum(b_q << q) of an outcome key whose character q is logical qubit q."""
+    return sum(int(key[q]) << q for q in range(3))
+
+
+def counts_vector(counts: dict[str, int]) -> np.ndarray:
+    out = np.zeros(8)
+    for key, n in counts.items():
+        out[index_of(key)] += n
+    return out
+
+
+def move_matrix(order: list[str], target: list[str]) -> np.ndarray:
+    """Permutation taking an outcome index read in measurement order `target` to the index of the same physical
+    outcome read in measurement order `order`."""
+    move = np.zeros((8, 8))
+    for x in range(8):
+        move[sum(((x >> j) & 1) << order.index(target[j]) for j in range(3)), x] = 1
+    return move
+
+
+def relabel(matrix: np.ndarray, order: list[str], target: list[str]) -> np.ndarray:
+    """An 8 x 8 matrix on outcomes read in measurement order `order`, re-expressed on outcomes read in `target`."""
+    move = move_matrix(order, target)
+    return move.T @ matrix @ move
+
+
+def walsh_ratios(q: np.ndarray, marked: str, k: int) -> list[float]:
+    """<Z_S> of q over its ideal value chi_S(marked) (8 P_k - 1) / 7, for S = 1 to 7: one global depolarizing
+    factor scales every parity alike, while independent bit flips damp a weight-w parity as f^w."""
+    scale = (8 * ideal_probability(k) - 1) / 7
+    m = index_of(marked)
+    spectrum = WALSH @ q
+    return [float(spectrum[s] / ((-1) ** bin(s & m).count("1") * scale)) for s in range(1, 8)]
+
+
+def hamming_profile(q: np.ndarray, marked: str) -> list[float]:
+    """Share of the unmarked mass at Hamming distance 1, 2, 3 from the marked string; uniform error gives
+    3/7, 3/7, 1/7."""
+    m = index_of(marked)
+    wrong = 1 - q[m]
+    return [float(sum(q[x] for x in range(8) if bin(x ^ m).count("1") == h) / wrong) for h in (1, 2, 3)]
+
+
+class Run:
+    """One retained run of the case: counts per circuit, the readout assignment matrix of its ro circuits, and
+    every circuit's measurement order."""
+
+    def __init__(self, run_dir: Path) -> None:
+        cases = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
+        self.prediction = json.loads((run_dir / "prediction.json").read_text(encoding="utf-8"))
+        files = [c["file"] for c in cases["jobs"][0]["circuits"]]
+        self.names = [Path(f).stem for f in files]
+        raw = json.loads((run_dir / "raw/measurement_counts.json").read_text(encoding="utf-8"))
+        if len(raw) != len(files):
+            raise ValueError(f"{run_dir}: {len(raw)} count records for {len(files)} circuits")
+        self.counts = {n: counts_vector(r["counts"]) for n, r in zip(self.names, raw, strict=True)}
+        self.order = {}
+        for name, rel in zip(self.names, files, strict=True):
+            circuit = json.loads((run_dir / rel).read_text(encoding="utf-8"))
+            self.order[name] = next(op["locus"] for op in circuit["instructions"] if op["name"] == "measure")
+        self.ro_order = self.order["ro-000"]
+        self.ro_shots = np.array([self.counts["ro-" + key_of(c)].sum() for c in range(8)])
+        self.assignment = np.column_stack([self.counts["ro-" + key_of(c)] / self.ro_shots[c] for c in range(8)])
+
+    def copies(self, base: str) -> list[str]:
+        return [n for n in self.names if n == base or n.startswith(base + "-c")]
+
+    def marked_terms(self, base: str, marked: str) -> tuple[float, float, dict[str, np.ndarray], np.ndarray]:
+        """Raw and readout-corrected pooled marked frequency of an arm, with the gradient of the corrected value
+        in every circuit's frequencies and in every column of the assignment matrix (delta method)."""
+        names = self.copies(base)
+        total = sum(self.counts[n].sum() for n in names)
+        m = index_of(marked)
+        raw = sum(self.counts[n][m] for n in names) / total
+        corrected = 0.0
+        grad_p: dict[str, np.ndarray] = {}
+        grad_a = np.zeros((8, 8))
+        for n in names:
+            weight = self.counts[n].sum() / total
+            move = move_matrix(self.ro_order, self.order[n])
+            local = move.T @ self.assignment @ move
+            p = self.counts[n] / self.counts[n].sum()
+            q = np.linalg.solve(local, p)
+            u = np.linalg.solve(local.T, np.eye(8)[m])
+            corrected += weight * q[m]
+            grad_p[n] = weight * u
+            grad_a -= weight * np.outer(move @ u, move @ q)
+        return float(raw), float(corrected), grad_p, grad_a
+
+    def variance(self, grad_p: dict[str, np.ndarray], grad_a: np.ndarray) -> float:
+        out = 0.0
+        for n, g in grad_p.items():
+            p = self.counts[n] / self.counts[n].sum()
+            out += float(g @ ((np.diag(p) - np.outer(p, p)) / self.counts[n].sum()) @ g)
+        for c in range(8):
+            a = self.assignment[:, c]
+            out += float(grad_a[:, c] @ ((np.diag(a) - np.outer(a, a)) / self.ro_shots[c]) @ grad_a[:, c])
+        return out
+
+    def corrected_distribution(self, base: str) -> np.ndarray:
+        names = self.copies(base)
+        total = sum(self.counts[n].sum() for n in names)
+        out = np.zeros(8)
+        for n in names:
+            local = relabel(self.assignment, self.ro_order, self.order[n])
+            out += np.linalg.solve(local, self.counts[n] / self.counts[n].sum()) * self.counts[n].sum() / total
+        return out
+
+    def model_distribution(self, base: str) -> np.ndarray:
+        predicted = self.prediction["arms"][base]["predicted"]
+        return np.array([predicted[key_of(x)] for x in range(8)])
+
+
+def r6(x: float) -> float:
+    return round(float(x), 6)
+
+
+def analyze(run_dir: Path) -> dict[str, Any]:
+    run = Run(run_dir)
+    arms: dict[str, Any] = {}
+    terms = {}
+    for base, marked, k in GROVER_ARMS:
+        raw, corrected, grad_p, grad_a = run.marked_terms(base, marked)
+        terms[base] = (raw, corrected, grad_p, grad_a)
+        names = run.copies(base)
+        kept = int(sum(run.counts[n].sum() for n in names))
+        pooled = sum(run.counts[n] for n in names) / kept
+        q = run.corrected_distribution(base)
+        model = run.model_distribution(base)
+        predicted = run.prediction["arms"][base]["predicted_marked"]
+        ratios = walsh_ratios(q, marked, k)
+        model_ratios = walsh_ratios(model, marked, k)
+        arms[base] = {
+            "copies": names,
+            "kept_shots": kept,
+            "raw_marked": r6(raw),
+            "corrected_marked": r6(corrected),
+            "corrected_marked_se": r6(math.sqrt(run.variance(grad_p, grad_a))),
+            "predicted_marked": predicted,
+            "ideal_marked": r6(ideal_probability(k)),
+            "raw_excess_over_predicted": r6((raw - 0.125) / (predicted - 0.125)),
+            "corrected_retention": r6((corrected - 0.125) / (ideal_probability(k) - 0.125)),
+            "tvd_raw_to_model": r6(0.5 * float(np.abs(pooled - model).sum())),
+            "hellinger_fidelity_raw_to_model": r6(float(np.sqrt(pooled * model).sum()) ** 2),
+            "most_frequent": key_of(int(np.argmax(pooled))),
+            "walsh_ratio": {key_of(s): r6(ratios[s - 1]) for s in range(1, 8)},
+            "walsh_ratio_by_weight": {
+                str(w): r6(np.mean([ratios[s - 1] for s in range(1, 8) if bin(s).count("1") == w])) for w in (1, 2, 3)
+            },
+            "model_walsh_ratio_by_weight": {
+                str(w): r6(np.mean([model_ratios[s - 1] for s in range(1, 8) if bin(s).count("1") == w]))
+                for w in (1, 2, 3)
+            },
+            "hamming_profile": [r6(x) for x in hamming_profile(q, marked)],
+            "logical_bit_error": [r6(sum(q[x] for x in range(8) if (x ^ index_of(marked)) >> b & 1)) for b in range(3)],
+            "measured_on": run.order[names[0]],
+        }
+        if len(names) > 1:
+            freqs = [run.counts[n][index_of(marked)] / run.counts[n].sum() for n in names]
+            chi2 = sum(
+                (f - raw) ** 2 / (raw * (1 - raw) / run.counts[n].sum()) for f, n in zip(freqs, names, strict=True)
+            )
+            positions = [run.names.index(n) for n in names]
+            arms[base]["copy_frequencies"] = [r6(f) for f in freqs]
+            arms[base]["copy_positions"] = positions
+            arms[base]["copy_chi2"] = r6(chi2)
+            arms[base]["copy_slope_per_position"] = r6(np.polyfit(positions, freqs, 1)[0])
+
+    def difference(first: str, second: str) -> dict[str, Any]:
+        a, b = arms[first], arms[second]
+        raw = a["raw_marked"] - b["raw_marked"]
+        se = math.sqrt(sum(x["raw_marked"] * (1 - x["raw_marked"]) / x["kept_shots"] for x in (a, b)))
+        _, ca, pa, ga = terms[first]
+        _, cb, pb, gb = terms[second]
+        grads = dict(pa)
+        for n, g in pb.items():
+            grads[n] = grads.get(n, np.zeros(8)) - g
+        corrected_se = math.sqrt(run.variance(grads, ga - gb))
+        z = raw / se
+        verdict = "positive" if z >= Z_RESOLVE else "negative" if z <= -Z_RESOLVE else "unresolved"
+        return {
+            "raw": r6(raw),
+            "se": r6(se),
+            "z": r6(z),
+            "verdict": verdict,
+            "corrected": r6(ca - cb),
+            "corrected_se": r6(corrected_se),
+        }
+
+    retention = {}
+    for m in MARKS:
+        one = arms[f"m{m}-k1"]["corrected_retention"]
+        two = arms[f"m{m}-k2"]["corrected_retention"]
+        retention[m] = {"k1": one, "k2": two, "per_iteration": r6(two / one)}
+    k0 = run.counts["k0"] / run.counts["k0"].sum()
+    k0_corrected = np.linalg.solve(relabel(run.assignment, run.ro_order, run.order["k0"]), k0)
+    return {
+        "run": run_dir.resolve().relative_to(ROOT).as_posix(),
+        "readout_assignment_diagonal": {key_of(c): r6(run.assignment[c, c]) for c in range(8)},
+        "arms": arms,
+        "decisions": {
+            "line_vs_generic": difference("m101-k1", "m101-k1-generic"),
+            "second_iteration": {m: difference(f"m{m}-k2", f"m{m}-k1") for m in MARKS},
+            "bit_order": {n: arms[n]["most_frequent"] for n in ("m011-k1", "m011-k2")},
+        },
+        "retention": retention,
+        "generic_retention_over_line": r6(
+            arms["m101-k1-generic"]["corrected_retention"] / arms["m101-k1"]["corrected_retention"]
+        ),
+        "k0": {
+            "raw": {key_of(x): r6(k0[x]) for x in range(8)},
+            "corrected": {key_of(x): r6(k0_corrected[x]) for x in range(8)},
+            "chi2_uniform_raw": r6(float(((k0 - 0.125) ** 2 / (0.125 * 0.875 / run.counts["k0"].sum())).sum())),
+        },
+    }
+
+
+def analysis_selftest() -> None:
+    for marked, k in (("101", 1), ("011", 2)):
+        ideal = np.full(8, (1 - ideal_probability(k)) / 7)
+        ideal[index_of(marked)] = ideal_probability(k)
+        if max(abs(r - 1) for r in walsh_ratios(ideal, marked, k)) > 1e-12:
+            raise AssertionError("the ideal Grover distribution has a Walsh ratio other than 1")
+        noisy = 0.8 * ideal + 0.2 / 8
+        if max(abs(r - 0.8) for r in walsh_ratios(noisy, marked, k)) > 1e-12:
+            raise AssertionError("global depolarizing noise does not scale every parity alike")
+        if max(abs(a - b) for a, b in zip(hamming_profile(noisy, marked), (3 / 7, 3 / 7, 1 / 7), strict=True)) > 1e-12:
+            raise AssertionError("uniform error does not spread 3/7, 3/7, 1/7 over the Hamming shells")
+    for n in (3, 4, 5):
+        degrees = {anf_degree([(1 - cd_sign(2**n, m, q)) // 2 for q in range(2**n)]) for m in range(1, 2**n)}
+        if degrees != {n - 1}:
+            raise AssertionError(f"left-multiplication signs of dimension {2**n} have degrees {degrees}, not {n - 1}")
+    flip = np.array([[0.9, 0.2], [0.1, 0.8]])
+    product = np.kron(np.kron(np.eye(2), flip), np.eye(2))
+    moved = relabel(product, ["A", "B", "C"], ["B", "C", "A"])
+    if not np.allclose(moved, np.kron(np.kron(np.eye(2), np.eye(2)), flip)):
+        raise AssertionError("relabel does not carry qubit B's readout to its new measurement position")
+
+
 def self_test() -> str:
+    analysis_selftest()
     networks = line_networks()
     if [len(networks["fixed"]), len(networks["exchanged"])] != [8, 7]:
         raise AssertionError(f"network lengths {[len(n) for n in networks.values()]}, expected fixed 8, exchanged 7")
@@ -599,6 +848,10 @@ def main() -> int:
         "--calibration", type=Path, required=True, help="folder of metrics.json and dynamic-quantum-architecture.json"
     )
     sub.add_parser("check").add_argument("directory", type=Path)
+    an = sub.add_parser("analyze")
+    an.add_argument("run_dir", type=Path)
+    an.add_argument("--out", type=Path, required=True)
+    an.add_argument("--replay", action="store_true", help="compare with the retained file instead of writing it")
     args = parser.parse_args()
     if args.self_test:
         print(self_test())
@@ -606,6 +859,14 @@ def main() -> int:
         write(args.directory, args.calibration)
     elif args.command == "check":
         check(args.directory)
+    elif args.command == "analyze":
+        text = dump(analyze(args.run_dir))
+        if args.replay:
+            if args.out.read_text(encoding="utf-8") != text:
+                raise ValueError(f"{args.out} differs from the analysis of {args.run_dir}")
+            print(f"{args.out}: matches the analysis of {args.run_dir}")
+        else:
+            args.out.write_text(text, encoding="utf-8")
     else:
         parser.error("a subcommand or --self-test is required")
     return 0

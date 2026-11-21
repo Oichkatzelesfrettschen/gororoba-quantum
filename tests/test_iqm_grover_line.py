@@ -32,6 +32,14 @@ def test_a_reversed_bit_order_would_peak_at_110() -> None:
 
 
 @pytest.mark.audit
+def test_retained_run_analysis_replays() -> None:
+    run = grover.ROOT / "results/iqm/runs/2026-11-20T230142Z-garnet-grover-line-ccz-grover"
+    retained = (grover.ROOT / "results/iqm/grover_line_ccz_analysis.json").read_text(encoding="utf-8")
+    if grover.dump(grover.analyze(run)) != retained:
+        raise AssertionError("the analysis of the retained Garnet run differs from its record")
+
+
+@pytest.mark.audit
 def test_retained_prediction_of_one_arm_replays() -> None:
     case = grover.ROOT / "results/iqm/cases" / grover.CASE
     prediction = json.loads((case / "prediction.json").read_text(encoding="utf-8"))
