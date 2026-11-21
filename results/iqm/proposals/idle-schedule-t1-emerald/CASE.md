@@ -25,9 +25,12 @@ QB10, QB14, QB18, QB20, QB24, QB26, QB30, QB34, QB37, QB42 and QB44.
   instruction on all twelve (IQM's circuit delay, duration in seconds, rounded up to the hardware's step; documented in
   the IQM client's instruction model), then the joint measure.
 
-A pulse train waits N (d + g) for the 24 ns prx length d and a per-pulse gap g. A delay waits its duration plus one
-offset shared by every delay circuit, which enters the fitted amplitude and not the slope, so the delay fit gives T1
-independently of g. The playlist repeats all sixteen circuits 4000 times, so the T1 and the trains are read over the
+A pulse train waits N (d + g) for the 24 ns prx length d and a per-pulse gap g. IQM documents a delay as at least its
+requested duration, rounded up to the hardware step, and possibly longer depending on the other operations. If a
+requested duration t is realized as a t + b, the offset b enters the fitted amplitude and not the slope, so the delay
+fit gives T1 independently of g; the scale a is assumed to be 1. A scale a != 1 makes the fit read T1 / a and moves g
+with it, and no reading of this job detects a, since the decay stays a single exponential and both train lengths see
+the same a. T1 below is therefore T1 per requested delay second, and H2 is conditional on a = 1. The playlist repeats all sixteen circuits 4000 times, so the T1 and the trains are read over the
 same minutes.
 
 ## Pre-flight
@@ -37,18 +40,30 @@ same minutes.
    `unidentifiable`.
 2. Quantity. Per qubit, T1 from a weighted log-linear fit of the readout-corrected excited population of the four
    delay circuits (points at least 3 standard errors above zero; at least 3 points). Per pulsed qubit, the train's decay
-   rate k from its 1000-pulse arm (layouts pooled by inverse variance), and g = d (k T1 - 1).
+   rate k from its 1000-pulse arm (layouts pooled by inverse variance), and g = d (k / k_T1 - 1) with k_T1 = 1 / T1. A
+   qubit enters H2 only when its parallel readout fit is linear (chi-square survival at least 0.001, as for the
+   predecessor's trains), its delay fit's chi-square survival is at least 0.001, and every train arm gives a decay
+   rate. The preregistered test covers all twelve pulsed qubits: one excluded qubit makes H2 `unidentifiable`, and the
+   analysis names it.
 3. Decision and falsifier. A common g is rejected when the chi-square of the qubits' g about their weighted mean has
-   survival below 0.01 (11 degrees of freedom, chi-square above 24.7): `per-qubit`. Otherwise `common`, reporting
-   the mean and its standard error. The 500-pulse arms repeat the estimate; a mean that differs from the 1000-pulse mean
-   by more than 3 combined standard errors falsifies the stationary gap model and is recorded as a finding. The ratio
-   T1_delay / T1_cal per qubit is descriptive: it reads the calibration copy's error directly.
-4. Predicted outcome and power (model device on this calibration, `scripts/iqm_idle_schedule_probe.py`): with no gap
-   the estimator reads -0.52 +- 0.22 ns (the model's own offset from the pulsed qubit's first prx and the measure
-   alignment), `common`; with a planted 14 ns gap it reads 13.74 +- 0.33 ns, `common`. Per-qubit g carries 0.7 to
-   1.5 ns of shot noise, and each T1 2 to 3 percent. The Garnet carry-over (r = 0.53 at 16 ns, g = 14 ns) would read
-   about 40 standard errors from zero; a pure T1 calibration bias reads g near zero with T1_delay / T1_cal near the
-   predecessor's r.
+   survival below 0.01 (11 degrees of freedom with all twelve qubits, chi-square above 24.7): `per-qubit`. Otherwise
+   `common`, reporting the mean and its standard error. The 500-pulse arms repeat the estimate on the same qubits; a
+   mean that differs from the 1000-pulse mean by more than 3 combined standard errors falsifies the stationary gap model
+   and is recorded as a finding. The combined error ignores the T1 and readout the two means share; the calibration
+   study below measures the test's false-alarm rate. The ratio T1_delay / T1_cal per qubit (`over_calibrated`) is
+   descriptive: it reads the calibration copy's error per requested delay second.
+4. Predicted outcome and power. The calibration study
+   ([calibration-study.json](calibration-study.json), `iqm_idle_schedule_probe.py study`, seed 50182 from
+   `docs/evidence/anu_qrng/draw-2026-11-21T184244Z.json` index 0) runs the estimator on a model device built from this
+   case's calibration and circuits, at expected counts and in 400 binomial replicates at 4000 shots per planted gap.
+   With no gap the expected counts read -0.02 ns and the replicates -0.06 ns on average (spread 0.23 ns); with a
+   planted 14 ns gap, 13.96 ns and 13.92 ns (spread 0.31 ns). The mean +- one standard error covers the truth in 0.67
+   and 0.69 of the replicates, the per-qubit gap and T1 z-scores have standard deviations 0.99 to 1.04, the common-gap
+   test rejects a true common gap in 0.25 and 0.76 percent of the replicates (nominal 1 percent), the stationarity test
+   raised no false alarm, and 1 to 1.5 percent of the replicates read `unidentifiable` through an excluded qubit. The
+   readout correction's own uncertainty is left out of the standard errors, and the replicates show it costs no
+   coverage at these shots. The Garnet carry-over (r = 0.53 at 16 ns, g = 14 ns) would read about 40 standard errors
+   from zero; a pure T1 calibration bias reads g near zero with T1_delay / T1_cal near the predecessor's r.
 5. What each result changes. `common` g: the effective pulse time d + g sets the pulse-count budgets of the pinching
    and QET cases on Emerald, now with a mechanism (timing) and a measured T1. g near zero with T1_delay below T1_cal:
    the excess is the calibration copy's T1, and later cases price with a fresh T1 read. `per-qubit`: the gap varies by
@@ -66,16 +81,21 @@ IQM bills a job's compilation plus execution seconds, rounded up to whole second
 charge per shot, circuit or job beyond those seconds (`scripts/iqm_jobs.py`, `ceiling_breach`). The mock estimate
 of this job is 3.12 s of execution (`raw/runtime_estimates.json`: sweep 3.121 s, QPU 1.521 s), against 2.50 s for the
 predecessor's twelve circuits. The predecessor's Emerald job (`01a1f811`, ceiling-cancelled at no charge) compiled for
-1.80 s and was still executing after 3.66 s, so Emerald's execution ran at least 1.46 times the mock estimate. Scaled
-the same way this job needs at least 4.6 s of execution and 6.4 s in all: at least 7 billed seconds, 5.25 credits,
-and about 6.75 credits at 9 s. Requested approval: backend `iqm:emerald`, 16 circuits x 4000 shots, active reset,
-ceiling 9.00 credits (12 billed seconds; `collect` cancels at 11.0 s of runtime). Balance read 2026-11-21: 29.00
-credits, expiring 2026-12-01.
+1.80 s and was still executing after 3.66 s, so its execution ran at least 1.46 times its mock estimate. If that factor
+repeats, this job needs about 4.6 s of execution and 6.4 s in all: 7 billed seconds, 5.25 credits; one unfinished run
+bounds the factor from below only. The builder's `expected_seconds` (3.168 s) prices shots with Garnet's 37.5 us per
+active-reset shot and is a planning figure; the mock estimate is the better one. Requested approval: backend
+`iqm:emerald`, 16 circuits x 4000 shots, active reset, ceiling 12.00 credits (16 billed seconds; `collect` cancels at
+15.0 s of runtime, which covers an execution of 4.2 times the mock estimate after 1.8 s of compilation). A cancelled
+job bills nothing, as `01a1f811` shows, and returns no data. Balance read 2026-11-21: 29.00 credits, expiring
+2026-12-01.
 
 ## Retained measurements
 
 - Predecessor Emerald job `01a1f811` (2026-11-20): ceiling-cancelled at 5.30 s of runtime under a 4.50-credit
   ceiling, billed 0 (`results/iqm/runs/2026-11-20T082726Z-emerald-idle-schedule-train-readout-emerald-probe`).
-- This case's mock job `01a1ff21` (2026-11-21): completed, `delay` accepted by the Emerald mock station
-  (station control 50.0.0, the version Emerald reports), random bits not analyzed.
+- This case's mock job `01a1ff21` (2026-11-21): completed all sixteen circuits at 4000 shots, so the mock station
+  accepted the `delay` instruction; the run record names no station-control version (the retained platform notes,
+  `docs/notes/iqm/os-4.7.md`, give 50.0.0, which the live computer listing also reports for Emerald). Its bits are
+  random and are not analyzed.
 - Garnet idle-schedule job `01a1707f`: all 68 pulsed arms ASAP, apparent T1 a median 0.53 of the calibrated value.

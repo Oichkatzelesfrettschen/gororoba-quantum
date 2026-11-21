@@ -1,0 +1,45 @@
+{
+ "calibration_set": "ecec1d0a-1529-4c90-9b02-d1b30ddaa2e3",
+ "case": "idle-schedule-t1-emerald",
+ "devices": [
+  {
+   "common_gap_rejection_rate": 0.0025252525252525255,
+   "coverage_one_se": 0.6666666666666666,
+   "gap_z_sd": 0.9984188427028402,
+   "mean_of_means_ns": -0.06313731614628758,
+   "noise_free_excluded": [],
+   "noise_free_mean_ns": -0.02303657202408848,
+   "noise_free_verdict": "common",
+   "replicates": 400,
+   "spread_of_means_ns": 0.2346046479330072,
+   "stationarity_false_alarm_rate": 0.0,
+   "t1_z_mean": -0.022259967273937552,
+   "t1_z_sd": 1.035908612322595,
+   "true_gap_ns": 0.0,
+   "unidentifiable": 4
+  },
+  {
+   "common_gap_rejection_rate": 0.007614213197969543,
+   "coverage_one_se": 0.6928934010152284,
+   "gap_z_sd": 0.9868110149718138,
+   "mean_of_means_ns": 13.916606359096109,
+   "noise_free_excluded": [],
+   "noise_free_mean_ns": 13.96304734488133,
+   "noise_free_verdict": "common",
+   "replicates": 400,
+   "spread_of_means_ns": 0.3142113837830013,
+   "stationarity_false_alarm_rate": 0.0,
+   "t1_z_mean": 0.005006201581861025,
+   "t1_z_sd": 1.0164188524649962,
+   "true_gap_ns": 14.0,
+   "unidentifiable": 6
+  }
+ ],
+ "schema": "iqm-idle-schedule-t1-study-v1",
+ "seed": {
+  "draw": "docs/evidence/anu_qrng/draw-2026-11-21T184244Z.json",
+  "index": 0,
+  "value": 50182
+ },
+ "shots": 4000
+}

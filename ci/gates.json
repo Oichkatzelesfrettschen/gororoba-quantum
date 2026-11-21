@@ -3803,6 +3803,18 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_idle_schedule_probe.py check results/iqm/cases/idle-schedule-t1-emerald --qc emerald-t1",
+      "name": "core-iqm-idle-schedule-t1-emerald-check",
+      "seconds": 60.0,
+      "replays": [
+        "results/iqm/cases/idle-schedule-t1-emerald/cases.json",
+        "results/iqm/cases/idle-schedule-t1-emerald/circuits",
+        "results/iqm/cases/idle-schedule-t1-emerald/prediction.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/n21_detuning_sign.py results/live/2026-10-27T173602.753176Z --check results/live/2026-10-27T173602.753176Z/detuning-sign-decisions.json",
       "name": "core-n21-detuning-sign-replay",
       "seconds": 3.0,
