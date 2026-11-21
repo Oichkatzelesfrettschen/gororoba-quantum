@@ -155,7 +155,7 @@ the live default at submission. Analysis: `results/iqm/packed_pauli_response_gar
   ea681de1 lists its readout errors as 0.018 and 0.014. QB12 sits in sentinel cell 1, outside cells 2 and 3 that form
   the primary statistic, so the primary test does not read it; cell 1's exploratory readings carry it. The Grover and
   sedenion jobs of the same hour show the same fault
-  ([their result](iqm-garnet-grover-depth-sedenion-walsh.md#result), once that change lands).
+  ([their written case](iqm-garnet-grover-depth-sedenion-walsh.md), whose result section lands with their retention).
 - Cost: compilation 0.196 s and execution 1.636 s, billed as 2 whole seconds, 1.0 credit (balance 25.75 afterwards);
   the case planned 5.111 s.
 
