@@ -1,0 +1,113 @@
+{
+ "case": "grover-line-ccz",
+ "ideal": {
+  "k0": 0.12499999999999997,
+  "m011-k1": 0.7812499999999999,
+  "m011-k2": 0.9453125000000001,
+  "m101-k1": 0.7812499999999999,
+  "m101-k1-c1": 0.7812499999999999,
+  "m101-k1-c2": 0.7812499999999999,
+  "m101-k1-generic": 0.7812499999999999,
+  "m101-k1-generic-c1": 0.7812499999999999,
+  "m101-k1-generic-c2": 0.7812499999999999,
+  "m101-k2": 0.9453125000000001
+ },
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/m101-k1.json",
+     "sha256": "055d930124388081fdc98777368d07e64b05ad446d8da4326abe41626ff3c953"
+    },
+    {
+     "file": "circuits/m101-k1-generic.json",
+     "sha256": "bef5fa82f95d435f30df14acdc418062671a052e194182ea6a572b9c97502f63"
+    },
+    {
+     "file": "circuits/k0.json",
+     "sha256": "ff784a424edb4604e64d5eb8469b871155f2082916e82485ea9bc7fd80216b8f"
+    },
+    {
+     "file": "circuits/m101-k2.json",
+     "sha256": "780c5afc3914fe92a7844c60e45e3fe32098e5f8b907e87a2f3722790f3a69c8"
+    },
+    {
+     "file": "circuits/m011-k1.json",
+     "sha256": "bd61561bd55eb5d522639a501912ecf2cfb4dac5ee59839b885f7dc1f141c525"
+    },
+    {
+     "file": "circuits/m011-k2.json",
+     "sha256": "66eb083cd1283f7bf6b0770ba9d13c7752e4a2390fa75c62ba1ac274f0609fba"
+    },
+    {
+     "file": "circuits/m101-k1-c1.json",
+     "sha256": "7f424c37aea32040fc7c1ff86896026da00d99ab7a4ad180fe2ed6d51aa457dd"
+    },
+    {
+     "file": "circuits/m101-k1-generic-c1.json",
+     "sha256": "29ba5f6e84fc46045731266895adf59eb48c8a5e06169860d30f12408ce5b010"
+    },
+    {
+     "file": "circuits/ro-000.json",
+     "sha256": "aff2bc4a580a777f6828893a40494eee070506df24c9f7c1d3332b6970dd2caf"
+    },
+    {
+     "file": "circuits/ro-001.json",
+     "sha256": "22ce79b86f6f0e7acd3bd66b193e9cec996f17444a805acbee0eeab8016949a5"
+    },
+    {
+     "file": "circuits/ro-010.json",
+     "sha256": "3fe3163ed4b77b16d91f6e471883634fe9f23c441f6c2fa5bd1d7c0e6544f1f0"
+    },
+    {
+     "file": "circuits/ro-011.json",
+     "sha256": "6a4772a0732f7a1e985f309c7336465ee07f587e92282c284125eae73b41ce3c"
+    },
+    {
+     "file": "circuits/m101-k1-c2.json",
+     "sha256": "f6a76f65242fde494d7bc485fb8c7a6f51b95f7cff390203a22f6d8c6bbfaf01"
+    },
+    {
+     "file": "circuits/m101-k1-generic-c2.json",
+     "sha256": "9e7882109d9944b58cbfd9651146a1b561c793368fab419689412fc984508526"
+    },
+    {
+     "file": "circuits/ro-100.json",
+     "sha256": "1cce38936803d903e0b633d200a86844c590f35e8443b73ec09c27607388b2ce"
+    },
+    {
+     "file": "circuits/ro-101.json",
+     "sha256": "71cce2b01077f056b26125cac78679a67a1f4893617716a9668bcdb92270540a"
+    },
+    {
+     "file": "circuits/ro-110.json",
+     "sha256": "1c054919ec5d440dca66e45f92ca77c66f892093bd2006d62a113814b3bace7c"
+    },
+    {
+     "file": "circuits/ro-111.json",
+     "sha256": "54e71dc3bc61b6cd18b57327af8be691c2df33ddf63b5011c163d2c9941be8c5"
+    }
+   ],
+   "expected_seconds": 2.7,
+   "job": "grover",
+   "max_credits": {
+    "garnet": 2.5,
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {
+     "garnet": "03975719-b1c2-4805-a212-877a026e1724"
+    },
+    "heralding_mode": "zeros"
+   },
+   "shots": 4000
+  }
+ ],
+ "qcs": [
+  "garnet:mock",
+  "garnet"
+ ],
+ "question": "Does three-qubit Grover search compiled with a seven-CZ line-native CCZ reach a higher marked-state probability on a Garnet path than the generic compile of the same search, and does a second iteration move it in the direction the calibration model predicts?",
+ "schema": "iqm-circuit-case-v1"
+}

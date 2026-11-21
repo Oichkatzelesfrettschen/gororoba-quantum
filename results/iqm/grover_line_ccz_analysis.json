@@ -1,0 +1,422 @@
+{
+ "arms": {
+  "m011-k1": {
+   "copies": [
+    "m011-k1"
+   ],
+   "corrected_marked": 0.669763,
+   "corrected_marked_se": 0.0086,
+   "corrected_retention": 0.830115,
+   "corrected_walsh_ratio": {
+    "001": 0.879344,
+    "010": 0.844559,
+    "011": 0.834992,
+    "100": 0.810288,
+    "101": 0.724729,
+    "110": 0.881828,
+    "111": 0.835066
+   },
+   "corrected_walsh_ratio_by_weight": {
+    "1": 0.844731,
+    "2": 0.81385,
+    "3": 0.835066
+   },
+   "hamming_profile": [
+    0.450655,
+    0.434193,
+    0.115152
+   ],
+   "hellinger_fidelity_raw_to_model": 0.992447,
+   "ideal_marked": 0.78125,
+   "kept_shots": 3412,
+   "logical_bit_error": [
+    0.196142,
+    0.18329,
+    0.170246
+   ],
+   "measured_on": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "model_before_readout_walsh_ratio_by_weight": {
+    "1": 0.900095,
+    "2": 0.889135,
+    "3": 0.881206
+   },
+   "model_walsh_ratio_by_weight": {
+    "1": 0.886736,
+    "2": 0.862691,
+    "3": 0.842177
+   },
+   "most_frequent": "011",
+   "predicted_marked": 0.695980222,
+   "predicted_marked_before_readout": 0.710834,
+   "raw_excess_over_predicted": 0.924707,
+   "raw_marked": 0.652989,
+   "raw_walsh_ratio_by_weight": {
+    "1": 0.828709,
+    "2": 0.784682,
+    "3": 0.791716
+   },
+   "tvd_raw_to_model": 0.06203
+  },
+  "m011-k2": {
+   "copies": [
+    "m011-k2"
+   ],
+   "corrected_marked": 0.714367,
+   "corrected_marked_se": 0.00831,
+   "corrected_retention": 0.718467,
+   "corrected_walsh_ratio": {
+    "001": 0.737924,
+    "010": 0.780569,
+    "011": 0.723354,
+    "100": 0.736618,
+    "101": 0.674553,
+    "110": 0.699801,
+    "111": 0.676449
+   },
+   "corrected_walsh_ratio_by_weight": {
+    "1": 0.751703,
+    "2": 0.699236,
+    "3": 0.676449
+   },
+   "hamming_profile": [
+    0.544866,
+    0.359617,
+    0.095518
+   ],
+   "hellinger_fidelity_raw_to_model": 0.990535,
+   "ideal_marked": 0.945313,
+   "kept_shots": 3449,
+   "logical_bit_error": [
+    0.15471,
+    0.134108,
+    0.154098
+   ],
+   "measured_on": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "model_before_readout_walsh_ratio_by_weight": {
+    "1": 0.814494,
+    "2": 0.799732,
+    "3": 0.790353
+   },
+   "model_walsh_ratio_by_weight": {
+    "1": 0.802387,
+    "2": 0.775994,
+    "3": 0.755376
+   },
+   "most_frequent": "011",
+   "predicted_marked": 0.768420208,
+   "predicted_marked_before_readout": 0.785121,
+   "raw_excess_over_predicted": 0.888119,
+   "raw_marked": 0.696434,
+   "raw_walsh_ratio_by_weight": {
+    "1": 0.737605,
+    "2": 0.674102,
+    "3": 0.641113
+   },
+   "tvd_raw_to_model": 0.071986
+  },
+  "m101-k1": {
+   "copies": [
+    "m101-k1",
+    "m101-k1-c1",
+    "m101-k1-c2",
+    "m101-k1-c3"
+   ],
+   "copy_chi2": 0.670574,
+   "copy_frequencies": [
+    0.672184,
+    0.672701,
+    0.680229,
+    0.673476
+   ],
+   "copy_positions": [
+    0,
+    7,
+    13,
+    18
+   ],
+   "copy_slope_per_position": 0.000209,
+   "corrected_marked": 0.69181,
+   "corrected_marked_se": 0.004546,
+   "corrected_retention": 0.86371,
+   "corrected_walsh_ratio": {
+    "001": 0.859871,
+    "010": 0.853432,
+    "011": 0.859464,
+    "100": 0.92215,
+    "101": 0.824023,
+    "110": 0.865319,
+    "111": 0.861709
+   },
+   "corrected_walsh_ratio_by_weight": {
+    "1": 0.878485,
+    "2": 0.849602,
+    "3": 0.861709
+   },
+   "hamming_profile": [
+    0.456755,
+    0.426136,
+    0.117108
+   ],
+   "hellinger_fidelity_raw_to_model": 0.997778,
+   "ideal_marked": 0.78125,
+   "kept_shots": 13688,
+   "logical_bit_error": [
+    0.154194,
+    0.179963,
+    0.177548
+   ],
+   "measured_on": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "model_before_readout_walsh_ratio_by_weight": {
+    "1": 0.900385,
+    "2": 0.889527,
+    "3": 0.881785
+   },
+   "model_walsh_ratio_by_weight": {
+    "1": 0.878867,
+    "2": 0.852259,
+    "3": 0.826804
+   },
+   "most_frequent": "101",
+   "predicted_marked": 0.689392059,
+   "predicted_marked_before_readout": 0.71108,
+   "raw_excess_over_predicted": 0.97393,
+   "raw_marked": 0.674679,
+   "raw_walsh_ratio_by_weight": {
+    "1": 0.861614,
+    "2": 0.820443,
+    "3": 0.817066
+   },
+   "tvd_raw_to_model": 0.030503
+  },
+  "m101-k1-generic": {
+   "copies": [
+    "m101-k1-generic",
+    "m101-k1-generic-c1",
+    "m101-k1-generic-c2",
+    "m101-k1-generic-c3"
+   ],
+   "copy_chi2": 5.026164,
+   "copy_frequencies": [
+    0.599417,
+    0.597748,
+    0.620365,
+    0.600819
+   ],
+   "copy_positions": [
+    1,
+    6,
+    12,
+    19
+   ],
+   "copy_slope_per_position": 0.000395,
+   "corrected_marked": 0.621195,
+   "corrected_marked_se": 0.004657,
+   "corrected_retention": 0.756107,
+   "corrected_walsh_ratio": {
+    "001": 0.810617,
+    "010": 0.744688,
+    "011": 0.710543,
+    "100": 0.787365,
+    "101": 0.735363,
+    "110": 0.780938,
+    "111": 0.723236
+   },
+   "corrected_walsh_ratio_by_weight": {
+    "1": 0.78089,
+    "2": 0.742281,
+    "3": 0.723236
+   },
+   "hamming_profile": [
+    0.481643,
+    0.39603,
+    0.122327
+   ],
+   "hellinger_fidelity_raw_to_model": 0.995242,
+   "ideal_marked": 0.78125,
+   "kept_shots": 13924,
+   "logical_bit_error": [
+    0.204738,
+    0.220742,
+    0.196019
+   ],
+   "measured_on": [
+    "QB16",
+    "QB17",
+    "QB20"
+   ],
+   "model_before_readout_walsh_ratio_by_weight": {
+    "1": 0.854517,
+    "2": 0.832711,
+    "3": 0.82387
+   },
+   "model_walsh_ratio_by_weight": {
+    "1": 0.832742,
+    "2": 0.796414,
+    "3": 0.770615
+   },
+   "most_frequent": "101",
+   "predicted_marked": 0.655445301,
+   "predicted_marked_before_readout": 0.676771,
+   "raw_excess_over_predicted": 0.904491,
+   "raw_marked": 0.604783,
+   "raw_walsh_ratio_by_weight": {
+    "1": 0.764404,
+    "2": 0.714099,
+    "3": 0.682179
+   },
+   "tvd_raw_to_model": 0.053567
+  },
+  "m101-k2": {
+   "copies": [
+    "m101-k2"
+   ],
+   "corrected_marked": 0.737127,
+   "corrected_marked_se": 0.008108,
+   "corrected_retention": 0.746212,
+   "corrected_walsh_ratio": {
+    "001": 0.777951,
+    "010": 0.732938,
+    "011": 0.736551,
+    "100": 0.765217,
+    "101": 0.745716,
+    "110": 0.734988,
+    "111": 0.730119
+   },
+   "corrected_walsh_ratio_by_weight": {
+    "1": 0.758702,
+    "2": 0.739085,
+    "3": 0.730119
+   },
+   "hamming_profile": [
+    0.476329,
+    0.399875,
+    0.123796
+   ],
+   "hellinger_fidelity_raw_to_model": 0.996154,
+   "ideal_marked": 0.945313,
+   "kept_shots": 3485,
+   "logical_bit_error": [
+    0.141305,
+    0.156435,
+    0.135335
+   ],
+   "measured_on": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "model_before_readout_walsh_ratio_by_weight": {
+    "1": 0.814727,
+    "2": 0.800088,
+    "3": 0.790875
+   },
+   "model_walsh_ratio_by_weight": {
+    "1": 0.796092,
+    "2": 0.766498,
+    "3": 0.741529
+   },
+   "most_frequent": "101",
+   "predicted_marked": 0.761246028,
+   "predicted_marked_before_readout": 0.785389,
+   "raw_excess_over_predicted": 0.933279,
+   "raw_marked": 0.718795,
+   "raw_walsh_ratio_by_weight": {
+    "1": 0.744473,
+    "2": 0.713662,
+    "3": 0.692645
+   },
+   "tvd_raw_to_model": 0.043705
+  }
+ },
+ "decisions": {
+  "bit_order": {
+   "m011-k1": "011",
+   "m011-k2": "011"
+  },
+  "line_vs_generic": {
+   "corrected": 0.070615,
+   "corrected_se": 0.006507,
+   "raw": 0.069896,
+   "se": 0.005762,
+   "verdict": "positive",
+   "z": 12.130428
+  },
+  "second_iteration": {
+   "011": {
+    "corrected": 0.044604,
+    "corrected_se": 0.011657,
+    "raw": 0.043445,
+    "se": 0.011301,
+    "verdict": "positive",
+    "z": 3.844418
+   },
+   "101": {
+    "corrected": 0.045317,
+    "corrected_se": 0.008868,
+    "raw": 0.044116,
+    "se": 0.008604,
+    "verdict": "positive",
+    "z": 5.12718
+   }
+  }
+ },
+ "generic_retention_over_line": 0.875418,
+ "k0": {
+  "corrected": {
+   "000": 0.124275,
+   "001": 0.136076,
+   "010": 0.126262,
+   "011": 0.126634,
+   "100": 0.127902,
+   "101": 0.122674,
+   "110": 0.109648,
+   "111": 0.126529
+  },
+  "pearson_chi2_uniform_raw": 11.542865,
+  "raw": {
+   "000": 0.126998,
+   "001": 0.136879,
+   "010": 0.127289,
+   "011": 0.125836,
+   "100": 0.12816,
+   "101": 0.122058,
+   "110": 0.109271,
+   "111": 0.123511
+  }
+ },
+ "readout_assignment_diagonal": {
+  "000": 0.98614,
+  "001": 0.980497,
+  "010": 0.978706,
+  "011": 0.973305,
+  "100": 0.980675,
+  "101": 0.973935,
+  "110": 0.971371,
+  "111": 0.963928
+ },
+ "retention": {
+  "011": {
+   "k1": 0.830115,
+   "k2": 0.718467,
+   "per_iteration": 0.865503
+  },
+  "101": {
+   "k1": 0.86371,
+   "k2": 0.746212,
+   "per_iteration": 0.863961
+  }
+ },
+ "run": "results/iqm/runs/2026-11-20T230142Z-garnet-grover-line-ccz-grover"
+}

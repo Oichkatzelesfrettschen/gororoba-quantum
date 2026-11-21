@@ -2221,6 +2221,27 @@
       "question": "Does the record-steered rotation of the two-qubit QET ladder, fed forward by cc_prx on IQM Garnet, lower Bob's local energy below every record-independent unitary (H1) and below the vacuum value (H2), is the non-pi conditional angle realized (H3), and does Bob carry a coherent window phase (H4)?"
     },
     {
+      "id": "iqm-garnet-mock-grover-line-ccz-accept-18",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-20T222747Z-garnet_mock-grover-line-ccz-grover",
+      "family": "IQM Grover line-native CCZ",
+      "question": "Does the garnet:mock station accept the 18-circuit line-native CCZ Grover case with active reset and zeros heralding, and what does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-mock-grover-line-ccz-accept",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-20T230110Z-garnet_mock-grover-line-ccz-grover",
+      "family": "IQM Grover line-native CCZ",
+      "question": "Does the garnet:mock station accept the 20-circuit line-native CCZ Grover case rebuilt under the pinned qiskit release, and what does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-grover-line-ccz",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-20T230142Z-garnet-grover-line-ccz-grover",
+      "family": "IQM Grover line-native CCZ",
+      "question": "Does three-qubit Grover search compiled with a seven-CZ line-native CCZ reach a higher marked-state probability on Garnet path QB20-QB16-QB17 than the 18-CZ generic compile of the same search, and does a second iteration raise it?"
+    },
+    {
       "id": "qd-qpu-belenos-teleportation-rehearsal-job-00",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00",

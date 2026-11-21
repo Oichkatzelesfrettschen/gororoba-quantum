@@ -3597,6 +3597,35 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_line.py --self-test",
+      "name": "core-772",
+      "seconds": 4.3
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_line.py check results/iqm/cases/grover-line-ccz",
+      "name": "core-773",
+      "seconds": 36.6,
+      "replays": [
+        "results/iqm/cases/grover-line-ccz/cases.json",
+        "results/iqm/cases/grover-line-ccz/circuits",
+        "results/iqm/cases/grover-line-ccz/prediction.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_line.py analyze results/iqm/runs/2026-11-20T230142Z-garnet-grover-line-ccz-grover --out results/iqm/grover_line_ccz_analysis.json --replay",
+      "name": "core-774",
+      "seconds": 2.0,
+      "replays": [
+        "results/iqm/grover_line_ccz_analysis.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --self-test",
       "name": "core-457",
       "seconds": 0.1

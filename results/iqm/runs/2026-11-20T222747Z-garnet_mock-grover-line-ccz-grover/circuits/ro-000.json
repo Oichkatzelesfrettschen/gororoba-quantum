@@ -1,0 +1,16 @@
+{
+ "instructions": [
+  {
+   "args": {
+    "key": "m"
+   },
+   "locus": [
+    "QB3",
+    "QB4",
+    "QB1"
+   ],
+   "name": "measure"
+  }
+ ],
+ "name": "ro-000"
+}
