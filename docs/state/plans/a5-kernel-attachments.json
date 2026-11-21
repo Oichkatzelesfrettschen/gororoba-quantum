@@ -8,12 +8,12 @@
   ],
   "state": "active",
   "reconciliation": {
-    "status": "unresolved",
-    "note": "Captured context; triage and evidence review pending."
+    "status": "verified",
+    "note": "Steps reconciled on 2026-11-20 against ledger rows 1 to 2w and the README; the program file's orchestrator note after 2w states each step's evidence and remainder."
   },
   "scope": "Evidence bundle docs/evidence/a5-kernel-attachments (scripts, records, README, ledger) and the program file docs/design/a5-kernel-attachments-program.md; the 33 incidences between the nullity-8, nullity-12 and nullity-16 orbits. Same-nullity incidences are recorded once by the constant-rank lemma. Nullity 4 and roadmap items 7-8 proper stay out of scope.",
   "owner": "repository maintainer",
-  "next_action": "Run the Codex program from the program file; review and commit each sub-step.",
+  "next_action": "Sub-step 3a of the program file: attaching_maps_resolved.py on the eight first-order-resolved incidences.",
   "related": [
     "a5-kernel-bundles",
     "a5-kernel-bundles-nullity8",
@@ -28,31 +28,52 @@
   "steps": [
     {
       "id": "incidence-census-real-complex",
-      "state": "doing",
+      "state": "done",
       "action": "Enumerate all 33 incidences with exact boundary points, moved points included, and decide per incidence whether the first-order effective form on the boundary kernel is complex-linear in the normal direction.",
-      "acceptance": "Fails if a declared incidence lacks an exact verified point or a second boundary point reverses a complex-linearity verdict without explanation."
+      "acceptance": "Fails if a declared incidence lacks an exact verified point or a second boundary point reverses a complex-linearity verdict without explanation.",
+      "receipts": [
+        {
+          "result": "The closure order gives 33 incidences (15 at 8 to 12, 8 at 12 to 16, 10 at 8 to 16); all 21 canonical, unipotently moved and boost-moved boundary points pass their orbit, source-closure, nullity, frame and first-order checks, and partner purity extends the complex-linearity verdict to every boundary point at first order.",
+          "observed_at": "2026-11-20T23:32:10Z",
+          "revision": "b67d19f60bf42817d820bc59559045412f60ea7a",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-kernel-attachments/incidence-census-result.json",
+              "sha256": "de8de7adb1de971c5b3abb4bad5edb94093bac4e28691e7e6f67cf63ade8ee3b"
+            },
+            {
+              "ref": "docs/evidence/a5-kernel-attachments/partner-purity-result.json",
+              "sha256": "193c38848163c56fdcfa84a3a8f9266c0eafb846866d4f2af51af8069213bfba"
+            }
+          ],
+          "scope_sha256": "1c53ce81cb33e5a12d13d4f828de2cfb4d8c8fea5598384163650dda0149e1ab"
+        }
+      ]
     },
     {
       "id": "limit-sets-8-to-12",
       "state": "todo",
       "action": "Compute the closed Gauss-graph fiber in Gr(4,6) for every 8 -> 12 incidence with an exact upper bound and filling exact real arcs, and its variation over the boundary moduli.",
-      "acceptance": "Fails if an exact arc limit escapes the upper bound, a point of the bound is reached by no certified arc, or a moved boundary point changes the set beyond the stated variation."
+      "acceptance": "Fails if an exact arc limit escapes the upper bound, a point of the bound is reached by no certified arc, or a moved boundary point changes the set beyond the stated variation.",
+      "reason": "Ledger rows 2i (eight) and 2j-c (six) compute 14 of 15 fibers at the selected basepoints, each equal to the real limit set on the slice germ by row 2l; E8-bar to VB imports its fiber (row 2q; A5-005, open in characteristic 0 by A5-315). Open: the E8-bar to VB real limit set, the variation along the boundary orbit beyond the sampled boost (rows 2r, 2w), and arcs leaving the slice on V and VB."
     },
     {
       "id": "limit-sets-into-nullity-16",
       "state": "todo",
       "action": "The same for the 8 incidences 12 -> 16 and the 10 incidences 8 -> 16, starting with a two-approach path-dependence test.",
-      "acceptance": "Fails on the same criteria as the 8 -> 12 step."
+      "acceptance": "Fails on the same criteria as the 8 -> 12 step.",
+      "reason": "Rows 2k-c and 2m give eight fibers and real limit sets; row 2q imports the ten 8-to-16 fibers and row 2t with the README decides their real limit sets as point sets (X: A5-270, A5-305; Iso: A5-446; W8: A5-448; E8-bar conditional, A5-425). Open: the header-slice characteristic-0 fibers (A5-293, A5-346), the non-reduced E8-bar scheme on the header slice (A5-449, A5-559), and the header-to-weight-slice coordinate identification (A5-583)."
     },
     {
       "id": "compatibility",
       "state": "todo",
       "action": "Compare limits composed through nullity 12 with the direct 8 -> 16 limit sets.",
-      "acceptance": "Fails if a composed limit lies outside the direct limit set or the reverse inclusion is claimed without arcs."
+      "acceptance": "Fails if a composed limit lies outside the direct limit set or the reverse inclusion is claimed without arcs.",
+      "reason": "Row 2s: 41 chains and 136 sections; a composed limit lies in a linear section of the direct fiber. Open: the hypothesis that through VB the composed limit set is the reduced section (needs a flat family over VB), and which planes of a section through B9 or V are composed limits."
     },
     {
       "id": "attaching-maps",
-      "state": "todo",
+      "state": "doing",
       "action": "Describe the link-to-limit-set maps and the sphere-union maps into the boundary partner sphere with their homotopy data in a form a global model can assemble.",
       "acceptance": "Fails if a stated homotopy datum is neither computed by a replayed producer nor labeled as an argument."
     }
