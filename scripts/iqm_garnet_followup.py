@@ -404,16 +404,21 @@ def grover_arms() -> list[Arm]:
         circuit = grover.line_arm(marked, k, p, name)[1]
         return {"name": name, "circuit": circuit, "path": p, "marked": marked, "k": k}
 
+    # The four one-iteration circuits are compiled once (one seeded transpile of the generic compile) and each
+    # copy takes them under its own name, so no compilation repeats per copy.
+    generic_once = generic_mapped("101", path, "m101-k1-generic")
+    line_once = grover.line_arm("101", 1, path, "m101-k1")[1]
+    fused_once = fused(generic_once, path, "m101-k1-fused")
+    one_iteration_circuits = {
+        "line": line_once,
+        "padded": padded(line_once, pad_pairs(line_once, fused_once, path), "m101-k1-padded"),
+        "fused": fused_once,
+        "generic": generic_once,
+    }
+
     def one_iteration(kind: str, copy: int) -> Arm:
         name = "m101-k1" + ("" if kind == "line" else f"-{kind}") + f"-c{copy}"
-        if kind == "line":
-            return line("101", 1, path, name)
-        generic = generic_mapped("101", path, name)
-        if kind == "padded":
-            base = grover.line_arm("101", 1, path, name)[1]
-            pairs = pad_pairs(base, fused(generic, path, name), path)
-            return {"name": name, "circuit": padded(base, pairs, name), "path": path, "marked": "101", "k": 1}
-        circuit = generic if kind == "generic" else fused(generic, path, name)
+        circuit = {**one_iteration_circuits[kind], "name": name}
         return {"name": name, "circuit": circuit, "path": path, "marked": "101", "k": 1}
 
     # Copy blocks sit at positions mirrored about the job's center, each block the reverse of its mirror, so
