@@ -414,14 +414,20 @@
  },
  "retention": {
   "011": {
+   "intercept": 0.959114,
+   "intercept_se": 0.032543,
    "k1": 0.830115,
    "k2": 0.718467,
-   "per_iteration": 0.865503
+   "per_iteration": 0.865503,
+   "per_iteration_se": 0.01786
   },
   "101": {
+   "intercept": 0.999709,
+   "intercept_se": 0.01969,
    "k1": 0.86371,
    "k2": 0.746212,
-   "per_iteration": 0.863961
+   "per_iteration": 0.863961,
+   "per_iteration_se": 0.012738
   }
  },
  "run": "results/iqm/runs/2026-11-20T230142Z-garnet-grover-line-ccz-grover"

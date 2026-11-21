@@ -289,9 +289,10 @@ visible and a second iteration mixes further.
 **Retention.** The corrected retention lambda_k = (P_k - 1/8) / (P_k^ideal
 - 1/8) is 0.864 and 0.746 at one and two iterations for 101 (0.830 and
 0.718 for 011). The second iteration multiplies the first by 0.864 (101)
-and 0.866 (011), with bootstrap standard errors near 0.013 and 0.018 from
-the review of this record. Two depths determine lambda_k = A r^k exactly:
-A = lambda_1^2 / lambda_2 is 1.00 +- 0.02 (101) and 0.96 +- 0.03 (011), so
+and 0.866 (011), with delta-method standard errors 0.013 and 0.018 through
+the shared readout (`retention` in the analysis record). Two depths
+determine lambda_k = A r^k exactly: A = lambda_1^2 / lambda_2 is
+1.00 +- 0.020 (101) and 0.96 +- 0.033 (011), so
 the data are consistent with, and do not establish, a geometric law with no
 preparation cost; a third depth tests it. The one-iteration retentions of
 the two marked strings differ, 0.864 against 0.830 (about 2.3 standard
@@ -330,10 +331,11 @@ gate. `sign_row_leading` (same file) states which top-degree monomials a
 row carries: a nonzero sedenion left row holds one to four cubic
 monomials, set by the bits of m, so its compiled cost follows those
 monomials and their shared parities, not the degree alone. The associator
-phases reach degree 3 first at dimension 32, 360 of 465 pairs, which
-`Tower.anfDegree_assocPhase` (`AssociatorPhase.lean`) and
-`card_anfDegree_assocPhase_eq` (`AssociatorCensus.lean`) prove for every
-level. Each doubling adds one control to the largest phase gate a left-row
+phases reach degree 3 first at dimension 32
+(`Tower.anfDegree_assocPhase`, `AssociatorPhase.lean`), and
+`card_anfDegree_assocPhase_eq` (`AssociatorCensus.lean`) counts 360 pairs of
+degree 3 at every level from dimension 32 on: 360 of the 465 pairs at
+dimension 32, 360 of 1953 at dimension 64. Each doubling adds one control to the largest phase gate a left-row
 oracle needs: CZ for the octonions, CCZ for the sedenions, CCCZ for the
 pathions.
 
@@ -376,8 +378,9 @@ estimate at no cost; its random bits enter no analysis.
 
 ## Residual risk
 
-- The model omits coherent error, leakage and crosstalk, which bound
-  neither an arm nor a difference between arms: the measured line-native
+- The model omits coherent error, leakage and crosstalk. In this run every
+  arm reads below its prediction (raw by 0.015 to 0.072), while a
+  difference between arms carries no such bound: the measured line-native
   gain, +0.070, is twice its prediction.
 - Heralding discards shots whose pre-circuit readout is not all zeros; the
   kept count, not 4000, sets each standard error, and the run returns only

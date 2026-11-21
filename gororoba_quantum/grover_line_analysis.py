@@ -308,9 +308,30 @@ def analyze(acquisition: Acquisition, model_readout: dict[str, tuple[float, floa
 
     retention = {}
     for m in MARKS:
-        one = arms[f"m{m}-k1"]["corrected_retention"]
-        two = arms[f"m{m}-k2"]["corrected_retention"]
-        retention[m] = {"k1": one, "k2": two, "per_iteration": r6(two / one)}
+        p1, g1p, g1a = readout.marked(f"m{m}-k1", m)
+        p2, g2p, g2a = readout.marked(f"m{m}-k2", m)
+        s1, s2 = ideal_probability(1) - 0.125, ideal_probability(2) - 0.125
+        one, two = (p1 - 0.125) / s1, (p2 - 0.125) / s2
+        # Delta method for r = lambda_2 / lambda_1 and A = lambda_1^2 / lambda_2, through the shared readout.
+        ratio_terms = ((1 / (s2 * one), g2p, g2a), (-two / (one**2 * s1), g1p, g1a))
+        intercept_terms = ((2 * one / (s1 * two), g1p, g1a), (-(one**2) / (two**2 * s2), g2p, g2a))
+        errors = []
+        for terms_ in (ratio_terms, intercept_terms):
+            ratio_p: dict[str, np.ndarray] = {}
+            ratio_a = np.zeros((8, 8))
+            for scale, gp, ga in terms_:
+                for n, g in gp.items():
+                    ratio_p[n] = ratio_p.get(n, np.zeros(8)) + scale * g
+                ratio_a = ratio_a + scale * ga
+            errors.append(math.sqrt(readout.variance(ratio_p, ratio_a)))
+        retention[m] = {
+            "k1": r6(one),
+            "k2": r6(two),
+            "per_iteration": r6(two / one),
+            "per_iteration_se": r6(errors[0]),
+            "intercept": r6(one**2 / two),
+            "intercept_se": r6(errors[1]),
+        }
     k0_counts = counts["k0"]
     k0 = k0_counts / k0_counts.sum()
     k0_corrected = np.linalg.solve(relabel(readout.matrix, readout.order, acquisition.orders["k0"]), k0)
@@ -337,6 +358,40 @@ def analyze(acquisition: Acquisition, model_readout: dict[str, tuple[float, floa
     }
 
 
+def covariance_selftest() -> None:
+    """corrected_covariance against central differences of corrected() on a synthetic acquisition whose arm
+    measures in another order than its readout preparations."""
+    order = ["A", "B", "C"]
+    channel = product_confusion(order, {"A": (0.02, 0.05), "B": (0.01, 0.04), "C": (0.03, 0.02)})
+    arm = np.array([0.05, 0.07, 0.04, 0.06, 0.09, 0.55, 0.08, 0.06])
+    counts = {"ro-" + key_of(c): channel[:, c] * 4000.0 for c in range(8)}
+    counts["arm"] = channel @ arm * 3000.0
+    counts["arm-c1"] = channel @ arm[[0, 2, 1, 3, 4, 6, 5, 7]] * 2000.0
+    orders = {name: list(order) for name in counts}
+    orders["arm-c1"] = ["A", "C", "B"]
+    names = list(counts)
+    base = Acquisition("synthetic", names, counts, orders, {})
+    _, cov = Readout(base).corrected_covariance("arm")
+    columns = []
+    for name in names:
+        n = counts[name].sum()
+        p = counts[name] / n
+        jac = np.zeros((8, 8))
+        for i in range(8):
+            shifted = []
+            for sign in (1, -1):
+                moved = dict(counts)
+                vector = p.copy()
+                vector[i] += sign * 1e-6
+                moved[name] = vector * n
+                shifted.append(Readout(Acquisition("synthetic", names, moved, orders, {})).corrected("arm"))
+            jac[:, i] = (shifted[0] - shifted[1]) / 2e-6
+        columns.append(jac @ ((np.diag(p) - np.outer(p, p)) / n) @ jac.T)
+    numeric = sum(columns)
+    if float(np.max(np.abs(numeric - cov))) > 1e-9:
+        raise AssertionError("corrected_covariance differs from the finite-difference covariance")
+
+
 def self_test() -> str:
     for marked, k in (("101", 1), ("011", 2)):
         ideal = np.full(8, (1 - ideal_probability(k)) / 7)
@@ -354,6 +409,7 @@ def self_test() -> str:
     flip = np.array([[0.9, 0.2], [0.1, 0.8]])
     if abs(uniformity_wald(np.full(8, 0.125), np.eye(8) * 1e-4, list(range(8)))) > 1e-12:
         raise AssertionError("a uniform distribution has a nonzero uniformity statistic")
+    covariance_selftest()
     product = np.kron(np.kron(np.eye(2), flip), np.eye(2))
     if not np.allclose(relabel(product, ["A", "B", "C"], ["B", "C", "A"]), np.kron(np.eye(4), flip)):
         raise AssertionError("relabel does not carry qubit B's readout to its new measurement position")

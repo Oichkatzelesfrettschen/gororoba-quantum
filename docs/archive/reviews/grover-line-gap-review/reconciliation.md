@@ -25,6 +25,27 @@ refuted (with the refuting source).
 | G15 | codex, agy | Heralding: the run returns only kept shots; per requested shot the line arm still wins (0.577 against 0.526) at lower acceptance (85.6 % against 87.0 %). | Confirmed; agy's proposal to compare discarded shots cannot run on this record. | Kept counts over 16000 requested. | Residual risk. |
 | G16 | codex | CLAIM_BOUNDARIES.md says the finite denominator is the evidence scope of the degree statements, which the all-level theorems exceed. | Confirmed for degree; the Walsh class census keeps its finite scope. | `gororoba_quantum/CLAIM_BOUNDARIES.md` degree lines. | Open: a claim-boundary edit in its own change. |
 
+## Review round of pull request 969
+
+grok (reviewer) and opencode on the free OpenCode Go model hy4-flash-free
+(red-teamer) read head 1df39d599. Both confirm the covariance (finite
+differences of `corrected()` match to 1e-10 and better; the marked-cell
+entry matches `Readout.variance` to 1e-20) and the Wald values to every
+stored digit. The red-team ran last in a fallback chain that also started
+longcat-2.5-free (refused: hosted outside the regions the account allows),
+beam-free, iceman-contributor-free and the opencode-provider beam-free; the
+chain read an error line from a reviewer's own scratch script as a model
+failure and discarded those four reports.
+
+| # | Reviewer | Finding | Verdict | Disposition |
+|---|---|---|---|---|
+| R1 | grok | The residual-risk sentence says the omitted errors bound no arm, while every arm reads below its prediction. | Confirmed (raw shortfalls 0.015 to 0.072). | Sentence corrected. |
+| R2 | grok | 360 degree-3 pairs hold at every level from dimension 32; "of 465" is the dimension-32 case only. | Confirmed (1953 pairs at dimension 64). | Sentence corrected. |
+| R3 | grok, opencode | The uniformity self-test passes a wrong Jacobian; no in-tree check pins the covariance. | Confirmed. | `covariance_selftest`: central differences of `corrected()` on a synthetic acquisition with a permuted copy. |
+| R4 | grok, opencode | The retention standard errors quoted in the design come from no committed computation. | Confirmed. | Delta-method `per_iteration_se` and `intercept_se` in the analysis record (0.0127, 0.0179; intercepts 1.00 +- 0.020, 0.96 +- 0.033), matching grok's independent values. |
+| R5 | opencode | The chi-squared reference is anti-conservative: a null bootstrap gives mean 21.8 on 6 degrees of freedom. | Refuted: a null simulation that redraws both the arm counts under an equal unmarked floor and all eight readout columns gives means 6.04 to 6.07, 95th percentiles 12.6 to 13.6 and false-rejection rates 5.2 to 7.0 % at 12.59 (600 draws per arm); grok's independent null (400 draws) agrees. | None. |
+| R6 | grok | Is the Wald test the right test? | Confirmed: the contrast covariance carries the cells' dependence, and the null sits on chi-squared. | None. |
+
 ## The quasi-Riemann-hypothesis formalization (math/ family 003)
 
 All three reviewers agree, and the sources confirm:
