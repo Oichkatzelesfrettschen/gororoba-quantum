@@ -25,7 +25,7 @@ Each job holds 24 iterations of 40000 samples under an 80000-shot cap (four grou
 
 The quantum processor runs this shape about twice as fast as the simulator. A sim:belenos job also failed twice with
 the provider error "Worker timeout" (`2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-def-e1` and slot 4 of the
-timing case), each without a bill.
+timing case); slot 4 billed nothing, and the earlier job's usage report does not separate its bill from its neighbors'.
 
 ## Shapes
 

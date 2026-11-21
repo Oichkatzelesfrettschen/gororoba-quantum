@@ -17,17 +17,21 @@ time with the token idle. The usage counter of sim:belenos (`free_credits` and `
 | 3 | P2 | 0c0e22c7 | `results/quandela/runs/2026-11-20T232631Z-sim_belenos-bdsc_timing-p2` | 156 s | completed | 1.0 credit (26.0 to 27.0) |
 | 4 | P1 | f141e80d | `results/quandela/runs/2026-11-20T233005Z-sim_belenos-bdsc_timing-p1` | 82 s | error, "Worker timeout" | none (27.0 to 27.0; `nb_jobs` 29 to 30) |
 
-Slot 4 reached progress 0.5007 at 23:32:02 UTC, 100 s after submission, and its status log (`status-log.jsonl`, one
-read every 10 s) shows that value and status `running` unchanged for 20 minutes until the job ended `error` with
-status message "Worker timeout" at about 23:52 UTC. The platform's 300 s limit did not end it, and its reported
-duration of 82 s counts compute time only, not the stalled interval. The stop condition on a failed job ended the case
+Slot 4 reached progress 0.5007 (stored 0.5006666666666667) at 23:32:02 UTC, 102 s after `submitted_utc` 23:30:20, and
+its status log (`status-log.jsonl`, one read every 10 s) shows that value and status `running` unchanged until the read
+of 23:52:32 UTC returned `error`; `results.json` holds the status message "Worker timeout" and a null `failure_code`.
+The platform's 300 s limit did not end it. Its reported duration of 82 s equals the sim:belenos `duration_seconds`
+delta (2607 to 2689) and excludes the stall of about 20 minutes; whether it counts queue or start-up stays unread. The stop condition on a failed job ended the case
 before slot 5: three jobs completed and 3.0 credits were spent of the 6.48 authorized.
 
-Each completed duration lies above 150 s, so each is a deviation under "Comparison with the retained runs". `analyze`
-reads six runs and does not run on three; no decision row of "Decision rules" applies, and the request-cost and
-service-variation contrasts stay unmeasured (one P1 replicate, two P2 replicates). Measured: the 12-iteration requests
+Each completed duration lies above 150 s, so each is a deviation under "Comparison with the retained runs". The
+failure row of "Decision rules" applies (a job failing: record the failure and rerun nothing without approval); the
+spread rows need three replicates of each request and do not apply, so the request-cost and service-variation
+contrasts stay unmeasured (one P1 replicate, two P2 replicates). `analyze` needs six admitted runs and does not run. Measured: the 12-iteration requests
 took 156 to 161 s, above half the retained 300 s. `hypothesis:` a 24-iteration b1 job needs about 320 s and does not
-fit the 300 s limit; the falsifier is a 24-iteration job that completes below 300 s, as `b1-j1` did once at 300 s.
+fit the 300 s limit; the falsifier is a later 24-iteration job that completes at or below 300 s. `b1-j1` already completed with
+a reported 300 s, so the doubled 156 to 161 s figure is an open scaling hypothesis, not a measurement of the
+24-iteration shape.
 A resumed or packed successor needs its own written case and approval; the packed qpu:belenos request is proposed in
 [`bdsc_diagnostic_packed_qpu_belenos/CASE.md`](../bdsc_diagnostic_packed_qpu_belenos/CASE.md).
 
