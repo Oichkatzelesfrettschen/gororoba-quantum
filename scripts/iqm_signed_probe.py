@@ -73,7 +73,7 @@ def law(t: float) -> float:
     return t / (2 + abs(t))
 
 
-def target_of(calibration: iqm_sim.Calibration) -> tuple[Target, CouplingMap]:
+def target_of(calibration: iqm_sim.Calibration, prx_seconds: float = DURATIONS["r"]) -> tuple[Target, CouplingMap]:
     index = {q: n for n, q in enumerate(calibration.qubits)}
     edges = [(index[a], index[b]) for pair in calibration.cz for a, b in [sorted(pair, key=calibration.qubits.index)]]
     coupling = CouplingMap([e for a, b in edges for e in ((a, b), (b, a))])
@@ -81,7 +81,7 @@ def target_of(calibration: iqm_sim.Calibration) -> tuple[Target, CouplingMap]:
     n = len(calibration.qubits)
     target.add_instruction(
         RGate(Parameter("angle"), Parameter("phase")),
-        {(q,): InstructionProperties(duration=DURATIONS["r"]) for q in range(n)},
+        {(q,): InstructionProperties(duration=prx_seconds) for q in range(n)},
     )
     target.add_instruction(CZGate(), {e: InstructionProperties(duration=DURATIONS["cz"]) for e in coupling.get_edges()})
     target.add_instruction(Measure(), {(q,): InstructionProperties(duration=DURATIONS["measure"]) for q in range(n)})

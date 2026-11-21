@@ -1,0 +1,44 @@
+{
+ "calibration_set": "ecec1d0a-1529-4c90-9b02-d1b30ddaa2e3",
+ "case": "idle-schedule-t1-emerald",
+ "devices": [
+  {
+   "common_gap_rejection_rate": 0.005025125628140704,
+   "coverage_one_se": 0.6683417085427136,
+   "gap_z_sd": 0.9985598465963947,
+   "mean_of_means_ns": -0.06450996507107182,
+   "noise_free_excluded": [],
+   "noise_free_mean_ns": -0.022888619028746837,
+   "noise_free_verdict": "common",
+   "replicates": 400,
+   "spread_of_means_ns": 0.2347386191506963,
+   "stationarity_false_alarm_rate": 0.0,
+   "t1_z_mean": -0.023386364679622705,
+   "t1_z_sd": 1.0353702617295926,
+   "true_gap_ns": 0.0,
+   "unidentifiable": 2
+  },
+  {
+   "common_gap_rejection_rate": 0.007537688442211055,
+   "coverage_one_se": 0.6909547738693468,
+   "gap_z_sd": 0.9879800472629858,
+   "mean_of_means_ns": 13.916932461320556,
+   "noise_free_excluded": [],
+   "noise_free_mean_ns": 13.9632049434306,
+   "noise_free_verdict": "common",
+   "replicates": 400,
+   "spread_of_means_ns": 0.31399686879104227,
+   "stationarity_false_alarm_rate": 0.0,
+   "t1_z_mean": 0.006485516654964848,
+   "t1_z_sd": 1.0185408962995963,
+   "true_gap_ns": 14.0,
+   "unidentifiable": 2
+  }
+ ],
+ "schema": "iqm-idle-schedule-t1-study-v1",
+ "seed": {
+  "constant": "scripts/iqm_idle_schedule_probe.py CALIBRATION_STUDY_SEED",
+  "value": 50182
+ },
+ "shots": 4000
+}

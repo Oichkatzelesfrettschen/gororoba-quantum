@@ -168,6 +168,13 @@ PHASE_ZERO_VERDICT = f"zero within {PHASE_NULL} rad"
 MIN_FRINGE_AMPLITUDE = 0.25
 # Backend statuses that admit an execution start, and the longest gap between status reads that still covers a start.
 START_STATUSES = ("idle", "executing")
+# Backend statuses that admit a submission: the device online and idle or running another user's job. submit_series
+# collects each batch before it submits the next, which keeps this series' batches apart; the own-queue read refuses a
+# submission behind a batch of the account that still waits (a running batch leaves that count). A batch may wait
+# behind other users' jobs, and each job's start is then checked against START_STATUSES. Owner decision of 2026-11-21
+# (docs/notes/quantum_inspire/tuna17-interleaved-submit-gate.md), which replaced the rule that the device read idle at
+# submit.
+SUBMIT_STATUSES = ("idle", "executing")
 MAX_TRACE_GAP_SECONDS = 45.0
 TRACE_POLL_SECONDS = 15.0
 JOB_SECONDS, SHOT_SECONDS = base.JOB_SECONDS, base.SHOT_SECONDS
@@ -1830,9 +1837,10 @@ def utc_now() -> datetime.datetime:
 def status_label(document: Any, backend_type_id: int) -> tuple[str, Any]:
     """(label, own queue length) of one backend type in a qi_status.account() document or a document that holds it.
 
-    The label is idle only when the backend type and every instance of it read exactly idle; the first other reading
-    names the label, and a document of another shape, a missing type, a type without instances or a non-text reading
-    gives unreadable. This is the fail-closed reading the admission rule applies.
+    The label is idle only when the backend type and every instance of it read exactly idle; otherwise the first
+    reading outside SUBMIT_STATUSES names it, or else the first reading that is not idle, so an executing type with a
+    calibrating instance reads calibrating. A document of another shape, a missing type, a type without instances or a
+    non-text reading gives unreadable. This is the fail-closed reading the admission rule applies.
     """
     account = document.get("account", document) if isinstance(document, dict) else None
     if not isinstance(account, dict) or not isinstance(account.get("backend_types"), list):
@@ -1847,12 +1855,13 @@ def status_label(document: Any, backend_type_id: int) -> tuple[str, Any]:
         if any(not isinstance(r, str) for r in readings):
             return "unreadable", None
         other = [r for r in readings if r != "idle"]
+        blocking = [r for r in other if r not in SUBMIT_STATUSES]
         queue = (
             (row.get("queue_own") or {}).get("number_of_jobs_in_queue")
             if isinstance(row.get("queue_own"), dict)
             else None
         )
-        label = str(other[0]) if other else "idle"
+        label = str(blocking[0]) if blocking else str(other[0]) if other else "idle"
         return label, queue
     return "unreadable", None
 
@@ -1861,8 +1870,8 @@ def admission(document: Any, backend_type_id: int) -> list[str]:
     """Reasons the series may not submit now; an empty list admits it."""
     label, queue = status_label(document, backend_type_id)
     reasons = []
-    if label != "idle":
-        reasons.append(f"the backend reads {label}, not idle")
+    if label not in SUBMIT_STATUSES:
+        reasons.append(f"the backend reads {label}, not one of {', '.join(SUBMIT_STATUSES)}")
     if queue != 0:
         reasons.append(f"the account's queue on the backend holds {queue!r}, not 0")
     return reasons
@@ -1951,8 +1960,8 @@ def whole_number(value: Any) -> bool:
 
 
 def admission_record_problems(document: Any, backend_type_id: int) -> list[str]:
-    """Fields of admission.json that submit_series writes: schema, the series' backend type, status idle, own queue 0,
-    a positive attempt number and a UTC stamp."""
+    """Fields of admission.json that submit_series writes: schema, the series' backend type, a status of
+    SUBMIT_STATUSES, own queue 0, a positive attempt number and a UTC stamp."""
     if not isinstance(document, dict):
         return ["the record is not an object"]
     found = []
@@ -1960,8 +1969,8 @@ def admission_record_problems(document: Any, backend_type_id: int) -> list[str]:
         found.append(f"schema is {document.get('schema')!r}, want 'qi-admission-v1'")
     if not whole_number(document.get("backend_type_id")) or document["backend_type_id"] != backend_type_id:
         found.append(f"backend_type_id is {document.get('backend_type_id')!r}, want {backend_type_id}")
-    if document.get("status") != "idle":
-        found.append(f"status is {document.get('status')!r}, want 'idle'")
+    if document.get("status") not in SUBMIT_STATUSES:
+        found.append(f"status is {document.get('status')!r}, want one of {SUBMIT_STATUSES}")
     if not whole_number(document.get("queue_own")) or document["queue_own"] != 0:
         found.append(f"queue_own is {document.get('queue_own')!r}, want 0")
     if not whole_number(document.get("attempt")) or document["attempt"] < 1:
@@ -2024,10 +2033,17 @@ def sanity(run: Path) -> list[str]:
         if len(wrong) > SANITY_WRONG_QUBITS:
             problems.append(f"{row['file']}: qubits {wrong} read the wrong side of 0.5")
     receipt = json.loads((run / "submission.json").read_text(encoding="utf-8"))
-    if receipt.get("backend_status_at_submit") != "idle":
+    if receipt.get("backend_status_at_submit") not in SUBMIT_STATUSES:
         problems.append(
             f"{run.name}: submission.json records backend status {receipt.get('backend_status_at_submit')!r} at submit"
         )
+    own = receipt.get("queue_at_submit")
+    if (
+        receipt.get("queue_user_only") is not True
+        or not isinstance(own, dict)
+        or own.get("number_of_jobs_in_queue") != 0
+    ):
+        problems.append(f"{run.name}: submission.json records no empty own queue at submit: {own!r}")
     for name, validate in (
         ("admission.json", lambda document: admission_record_problems(document, cases["backend_type_id"])),
         ("status-trace.json", trace_record_problems),
@@ -2375,9 +2391,14 @@ def self_test() -> list[str]:
     expect(qrng_values_needed("tuna_17") <= DRAW_LENGTH, "the request asks for fewer values than the order needs")
     # Admission: only an idle type with idle instances and an empty queue admits; everything else refuses.
     expect(admission(synthetic_status("idle"), 7) == [], "an idle backend was refused")
-    for label in ("calibrating", "executing", "offline"):
+    expect(admission(synthetic_status("executing"), 7) == [], "a backend running another user's job was refused")
+    for label in ("calibrating", "offline"):
         expect(bool(admission(synthetic_status(label), 7)), f"a {label} backend was admitted")
     expect(bool(admission(synthetic_status("idle", instance="calibrating"), 7)), "a calibrating instance was admitted")
+    expect(
+        bool(admission(synthetic_status("executing", instance="calibrating"), 7)),
+        "an executing type with a calibrating instance was admitted",
+    )
     expect(bool(admission(synthetic_status("idle", queue=1), 7)), "a queued account was admitted")
     broken_documents: tuple[Any, ...] = (
         {"error": "x"},
