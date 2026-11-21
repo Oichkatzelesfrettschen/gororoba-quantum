@@ -9,7 +9,7 @@
   ],
   "state": "active",
   "scope": "Packed Pauli response under current provider balances",
-  "next_action": "Review of the Garnet case (PR 972), then the owner's approval of the paid run.",
+  "next_action": "The Garnet run is retained with its analysis (docs/design/iqm-garnet-packed-pauli-response.md, Result); next, design the packed-versus-isolated equivalence and shared-shot covariance checks (reconcile-obligation-2).",
   "reconciliation": {
     "status": "unresolved",
     "note": "Logical cases remain unsubmitted; each provider retains its native budget unit and case-specific execution authority."

@@ -4018,6 +4018,13 @@
       "run": "results/iqm/runs/2026-11-21T205843Z-garnet_mock-packed-pauli-response-garnet-packed",
       "family": "IQM packed Pauli response",
       "question": "Does the garnet:mock station accept the 68-circuit packed Pauli body with measure-only buffer circuits, and what runtime does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-packed-pauli-response",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-21T220346Z-garnet-packed-pauli-response-garnet-packed",
+      "family": "IQM packed Pauli response",
+      "question": "On Garnet, does preparing every one of five four-qubit cells, against only the four sentinel cells, change the sentinel Y-quadrature response B_Y - K_Y of 16 randomized dense/sparse pairs, each circuit preceded by a measure-only buffer?"
     }
   ],
   "claims": [

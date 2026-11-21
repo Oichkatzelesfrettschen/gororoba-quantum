@@ -119,13 +119,42 @@ tests carry `audit` and the unmarked tests cover one pair circuit, one buffer an
 | Buffer circuits in the job body | closed on the mock | `garnet:mock` job `01a1ffe7` (owner AskUserQuestion 2026-11-21T20:53Z) completed the 68-circuit body (36 proposal circuits and 32 buffers) at 2000 shots, execution estimate 2.807 s (sweep) and 1.207 s (QPU); run record `results/iqm/runs/2026-11-21T205843Z-garnet_mock-packed-pauli-response-garnet-packed`; its bits are random and are not analyzed |
 | Served order of a job's circuits | closed by documentation | the repository's mirror of iqm-pulse "Concepts and classes" (`docs/notes/iqm/docs/iqm-pulse/concepts.md`, line 83) states that segments run in order and the whole sequence repeats once per shot; the mock estimate of the 36-circuit body reports `playlist_repeats` 2000. The circuits of one job therefore interleave shot by shot, and the buffers make each science circuit's predecessor a buffer |
 | Carryover | open, measured by the diagnostic | the buffer removes lag-one treatment-dependent carryover and leaves lag-two carryover through the buffer; `carryover_after_dense_minus_sparse` reads it per sentinel cell and for the register. The reset pilot measured initialization error after one active-reset cycle |
-| Execution timing and reset | open | the mock execution estimate of the 36-circuit body is 2.251 s (sweep) and 0.651 s (QPU); the real runtime of the 68-circuit job is unmeasured |
-| Enforceable cost | open, best effort | ceiling 5.00 credits against the 24-credit plan, cancel threshold 9.0 s against a 6.711 s plan; cancellation is best effort and bounds spending only while the job runs |
-| Server compilation of 68 twenty-qubit circuits | open | the retained 20-circuit job compiled in 0.098 s; this size is unmeasured and sits inside the 2.289 s of headroom |
+| Execution timing and reset | closed by the run | job `01a20023` executed the 68-circuit body in 1.636 s (mock estimates: 2.251 s sweep and 0.651 s QPU for the 36-circuit body); reset residue in "Result" |
+| Enforceable cost | closed by the run | ceiling 5.00 credits, cancel threshold 9.0 s; the job billed 2 s, 1.0 credit; cancellation stays best effort for later jobs |
+| Server compilation of 68 twenty-qubit circuits | closed by the run | 0.196 s |
 | Result identity and raw joint outcomes | closed for the record format | one 20-bit row per shot per circuit, read in locus order; the circuit order of `cases.json` and `prediction.json` is checked by the analysis |
 | Statistical assumptions | open | sharp null, randomization of the generator (seed 20261022, an identifier of the proposal) and carryover limited to the lag the diagnostic reads must hold; shot serial dependence is not tested by the primary test |
-| Current-head review | open | pull request review and resolution |
-| Owner approval | open | the written case above |
+| Current-head review | closed | PR 972: local reviewers, the Advisor and hosted Codex (no findings on 94fa284a2) |
+| Owner approval | closed | owner AskUserQuestion 2026-11-21T22:00Z, "Approve run" |
+
+## Result
+
+Run `results/iqm/runs/2026-11-21T220346Z-garnet-packed-pauli-response-garnet-packed`, job
+`01a20023-1aa1-7001-9806-28b92b115b96` (owner AskUserQuestion 2026-11-21T22:00Z, cases.json sha256
+12a17407ac83c02762c3cb90b6e3bfe5a80a8f59f50ca323ad109a78e13b153e), calibration set ea681de1, the set the case pins and
+the live default at submission. Analysis: `results/iqm/packed_pauli_response_garnet_analysis.json`
+(`scripts/iqm_packed_pauli_case.py analyze`, compute host).
+
+- Preregistered test: the sharp null stands. The 16 pair statistics 2(B_Y - K_Y), dense minus sparse, are -229, -74,
+  49, 64, 28, -9, 149, -60, -21, 85, 115, -51, 45, 116, -57 and 7; the exact paired p-value is 22553/32768 = 0.688,
+  above 0.05. Preparing the fifth cell moves the sentinel Y-quadrature response by 0.0025 (dense 0.6924, sparse 0.6900).
+- Descriptive, deciding nothing: both arms read about 0.69 against the independent-cell baseline of 0.823. The
+  shortfall of 0.13 is common to the two arms, so it comes from error the baseline omits (initialization under active
+  reset, relaxation, leakage, coherent error) rather than from the fifth cell. The X-quadrature response reads -0.110
+  dense and -0.120 sparse.
+- Carryover diagnostic, descriptive: the buffer's excited population after a dense predecessor minus after a sparse
+  one is 0.0010, 0.0028, 0.0006 and 0.0001 on the four sentinel cells (standard errors 0.0011 to 0.0017, each within
+  1.7 of zero) and 0.0033 +- 0.0009 on the whole register (16 buffers after dense, 15 after sparse). Since the register
+  holds the sentinel cells' 16 qubits and the fifth cell's 4, the register difference puts about 0.012 on the fifth
+  cell (computed from the two figures above), the cell the dense arm alone prepares: lag-one carryover reaches the
+  buffer on the qubits that were excited, and reaches the sentinel cells at most at the 0.003 level. The buffer after
+  the all-ones reference reads 0.102 on the register against 0.068 after a sparse predecessor, an initialization
+  residue of about 0.03 after one active-reset cycle.
+- Cost: compilation 0.196 s and execution 1.636 s, billed as 2 whole seconds, 1.0 credit (balance 25.75 afterwards);
+  the case planned 5.111 s.
+
+hypothesis: the lag-two path through the buffer into a science circuit is below the 0.003 that the sentinel cells
+show at lag one, since it crosses a second reset; a job that places two buffers before each science circuit tests it.
 
 ## Procedure
 
