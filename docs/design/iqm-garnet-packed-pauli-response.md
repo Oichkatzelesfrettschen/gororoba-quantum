@@ -150,6 +150,12 @@ the live default at submission. Analysis: `results/iqm/packed_pauli_response_gar
   buffer on the qubits that were excited, and reaches the sentinel cells at most at the 0.003 level. The buffer after
   the all-ones reference reads 0.102 on the register against 0.068 after a sparse predecessor, an initialization
   residue of about 0.03 after one active-reset cycle.
+- QB12, measured: in the reference circuits QB12 reads 1 in 36 and 39 percent of the all-zero shots and 55 and 52
+  percent of the all-ones shots, against 0.03 to 0.15 and 0.92 to 0.99 on the other nineteen qubits, while calibration
+  ea681de1 lists its readout errors as 0.018 and 0.014. QB12 sits in sentinel cell 1, outside cells 2 and 3 that form
+  the primary statistic, so the primary test does not read it; cell 1's exploratory readings carry it. The Grover and
+  sedenion jobs of the same hour show the same fault
+  ([their result](iqm-garnet-grover-depth-sedenion-walsh.md#result), once that change lands).
 - Cost: compilation 0.196 s and execution 1.636 s, billed as 2 whole seconds, 1.0 credit (balance 25.75 afterwards);
   the case planned 5.111 s.
 
