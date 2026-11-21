@@ -331,7 +331,11 @@ def grover_analysis(job: Job) -> tuple[dict[str, Any], dict[str, Any]]:
         z = z_of(f - model["predicted"], se)
         corrected_lam = {k: (fits[arm_of[k]]["corrected"] - 1 / 8) / scale[k] for k in arm_of}
         corrected_f = corrected_lam[3] - corrected_lam[2] ** 2 / corrected_lam[1]
-        corrected_gradient = {3: 1.0, 2: -2 * corrected_lam[2] / corrected_lam[1], 1: corrected_lam[2] ** 2 / corrected_lam[1] ** 2}
+        corrected_gradient = {
+            3: 1.0,
+            2: -2 * corrected_lam[2] / corrected_lam[1],
+            1: corrected_lam[2] ** 2 / corrected_lam[1] ** 2,
+        }
         corrected_weights = [(corrected_gradient[k] / scale[k], fits[arm_of[k]]) for k in (1, 2, 3)]
         _, corrected_se = combined(readout, corrected_weights)
         decisions[f"depth_law_{marked}"] = {
