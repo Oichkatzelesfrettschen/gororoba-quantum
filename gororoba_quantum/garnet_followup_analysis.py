@@ -383,7 +383,7 @@ def grover_analysis(job: Job) -> tuple[dict[str, Any], dict[str, Any]]:
         arms[stem] = entry
     m011 = {stem: arms[stem]["most_frequent"] for stem in stems if marks[stem] == "011"}
     decisions["bit_order"] = {
-        "rule": "the bit order of the Grover arms follows the retained run: the most frequent outcome of m011 arms is 011",
+        "rule": "the Grover arms keep the retained run's bit order: the most frequent outcome of m011 arms is 011",
         "m011_most_frequent": m011,
         "holds": all(value == "011" for value in m011.values()),
     }
