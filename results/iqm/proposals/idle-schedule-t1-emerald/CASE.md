@@ -31,7 +31,8 @@ requested duration t is realized as a t + b, the offset b enters the fitted ampl
 fit gives T1 independently of g; the scale a is assumed to be 1. A scale a != 1 makes the fit read T1 / a and moves g
 with it, and no reading of this job detects a, since the decay stays a single exponential and both train lengths see
 the same a. T1 below is therefore T1 per requested delay second, and H2 is conditional on a = 1. The playlist repeats all sixteen circuits 4000 times, so the T1 and the trains are read over the
-same minutes.
+same minutes (hypothesis: the mock's `playlist_repeats` 4000 reads as every repetition passing through all sixteen
+circuits; the served order is not documented).
 
 ## Pre-flight
 
@@ -41,9 +42,10 @@ same minutes.
 2. Quantity. Per qubit, T1 from a weighted log-linear fit of the readout-corrected excited population of the four
    delay circuits (points at least 3 standard errors above zero; at least 3 points). Per pulsed qubit, the train's decay
    rate k from its 1000-pulse arm (layouts pooled by inverse variance), and g = d (k / k_T1 - 1) with k_T1 = 1 / T1. A
-   qubit enters H2 only when its parallel readout fit is linear (chi-square survival at least 0.001, as for the
-   predecessor's trains), its delay fit's chi-square survival is at least 0.001, and every train arm gives a decay
-   rate. The preregistered test covers all twelve pulsed qubits: one excluded qubit makes H2 `unidentifiable`, and the
+   qubit enters H2 only when its delay fit's chi-square survival is at least 0.001, its bare readout pair
+   (par-ro0, par-ro1) leaves a positive contrast, and every train arm gives a decay rate. H2 corrects readout through
+   that pair and not through the parallel train fit, whose over-rotation model failed on 7 of 20 Garnet qubits
+   (`results/iqm/idle_schedule_probe_analysis.json`) without invalidating their readout. The preregistered test covers all twelve pulsed qubits: one excluded qubit makes H2 `unidentifiable`, and the
    analysis names it.
 3. Decision and falsifier. A common g is rejected when the chi-square of the qubits' g about their weighted mean has
    survival below 0.01 (11 degrees of freedom with all twelve qubits, chi-square above 24.7): `per-qubit`. Otherwise
@@ -59,10 +61,11 @@ same minutes.
    With no gap the expected counts read -0.02 ns and the replicates -0.06 ns on average (spread 0.23 ns); with a
    planted 14 ns gap, 13.96 ns and 13.92 ns (spread 0.31 ns). The mean +- one standard error covers the truth in 0.67
    and 0.69 of the replicates, the per-qubit gap and T1 z-scores have standard deviations 0.99 to 1.04, the common-gap
-   test rejects a true common gap in 0.25 and 0.76 percent of the replicates (nominal 1 percent), the stationarity test
-   raised no false alarm, and 1 to 1.5 percent of the replicates read `unidentifiable` through an excluded qubit. The
+   test rejects a true common gap in 0.50 and 0.75 percent of the replicates (nominal 1 percent), the stationarity test
+   raised no false alarm, and 0.5 percent of the replicates read `unidentifiable` through an excluded qubit. The
    readout correction's own uncertainty is left out of the standard errors, and the replicates show it costs no
-   coverage at these shots. The Garnet carry-over (r = 0.53 at 16 ns, g = 14 ns) would read about 40 standard errors
+   coverage at these shots. The model device draws each qubit's counts independently, so a correlation between the
+   twelve qubits of one joint shot (readout crosstalk) is outside the study. The Garnet carry-over (r = 0.53 at 16 ns, g = 14 ns) would read about 40 standard errors
    from zero; a pure T1 calibration bias reads g near zero with T1_delay / T1_cal near the predecessor's r.
 5. What each result changes. `common` g: the effective pulse time d + g sets the pulse-count budgets of the pinching
    and QET cases on Emerald, now with a mechanism (timing) and a measured T1. g near zero with T1_delay below T1_cal:
