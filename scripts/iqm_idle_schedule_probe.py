@@ -486,7 +486,7 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
                     # stands whether or not the over-rotation model fits the qubit's trains.
                     r01, r10 = readout_pair(counts, qubit)
                     pair = 1 - r01 - r10
-                    up, down = (((1 - value) / 2 - r01) / pair for value in (z0, z))
+                    up, down = (((1 - value) / 2 - r01) / pair for value in (z0, z)) if pair > 0 else (0.0, 0.0)
                     if pair > 0 and 0 < down < up:
                         arm["apparent_rate_per_second"] = math.log(up / down) / wait
                         arm["apparent_rate_se"] = math.hypot(se0 / (2 * pair) / up, se_z / (2 * pair) / down) / wait
@@ -554,6 +554,9 @@ def t1_fit(
     points and enters A only."""
     e01, e10 = readout["e01"], readout["e10"]
     scale = 1 - e01 - e10
+    if scale <= 0:
+        # A readout pair without contrast carries no population; the qubit is excluded from H2.
+        return {"t1_seconds": None, "points": 0}
     points = []
     for name, seconds in delays.items():
         z, se, _ = z_of(counts, f"{name}@{qubit}")

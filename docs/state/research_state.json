@@ -3724,6 +3724,27 @@
       "run": "results/quantum_inspire/runs/2026-11-16T0401Z-characterization_tuna_17-characterization_tuna_17-batch-05",
       "family": "Tuna-17 per-qubit readout assignment, T1 and X90 repetition ladder (17 qubits)",
       "question": "On Tuna-17, do the per-qubit readout pair, the single-exponential T1 and the X90 repetition ladder of 2026-10-16 and 2026-10-17 still describe each of the 17 qubits, with an opening and a closing readout pair?"
+    },
+    {
+      "id": "iqm-emerald-mock-idle-schedule-train-readout",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-20T082706Z-emerald_mock-idle-schedule-train-readout-emerald-probe",
+      "family": "IQM idle schedule and train readout probe",
+      "question": "Does the emerald:mock station accept the twelve-circuit Emerald idle-schedule probe, and what runtime does it estimate?"
+    },
+    {
+      "id": "iqm-emerald-idle-schedule-train-readout-ceiling-cancel",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-20T082726Z-emerald-idle-schedule-train-readout-emerald-probe",
+      "family": "IQM idle schedule and train readout probe",
+      "question": "Does Emerald schedule a circuit job as soon or as late as possible, and is its decay beyond prediction a common per-pulse gap (the run cancelled itself at its 4.50-credit ceiling and billed nothing)?"
+    },
+    {
+      "id": "iqm-emerald-mock-idle-schedule-t1",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-21T172247Z-emerald_mock-idle-schedule-t1-emerald-probe",
+      "family": "IQM idle schedule and train readout probe",
+      "question": "Does the emerald:mock station accept the sixteen-circuit Emerald successor with IQM delay instructions, and what runtime does it estimate?"
     }
   ],
   "claims": [
