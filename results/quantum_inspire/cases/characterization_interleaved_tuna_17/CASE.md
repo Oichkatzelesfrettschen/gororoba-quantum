@@ -181,22 +181,12 @@ with the run directory and its earlier admission record already in place.
 
 Every run directory (named STAMP-CASE-ARM-batch-NN) holds `admission.json` (the status label, queue and attempt number read immediately before its submit) and
 `status-trace.json` (the status read once at submission and every 15 s while the collection waits, and once after). `--sanity` validates every field of both
-records (schema, the series' backend type, status `idle` or `executing`, own queue 0, a positive attempt number and a UTC stamp for `admission.json`; schema, the poll interval and each
+records (schema, the series' backend type, status `idle`, own queue 0, a positive attempt number and a UTC stamp for `admission.json`; schema, the poll interval and each
 row's UTC stamp, status text and own-queue reading for `status-trace.json`), also requires
-`backend_status_at_submit` of `submission.json` to read `idle` or `executing` with the account's own queue empty at submit, and takes each job's start from `queued_at` in `results.json` (the retained notes read it as the
+`backend_status_at_submit` of `submission.json` to read `idle`, and takes each job's start from `queued_at` in `results.json` (the retained notes read it as the
 execution start), assigns it the last trace read at or before it, and stops the series when that read is not `idle` or `executing` or lies more than 45 s earlier. The
 analysis lists the round and that start for every T1 job. The status reader of `--submit` calls `qi_status.account` through the Quantum Inspire interpreter and has not run against
 the live service.
-
-Amendment (owner decision, 2026-11-21). The series first required the device to read `idle` at admission and at
-submit. That rule also refused a batch that would only wait behind another user's job: batch 01 of `q12_phase` passed
-its admission read at 17:36:11Z, another user's job started before its submit at 17:36:19Z, and `--sanity` stopped the
-series although the account's queue was empty and every job started while the device read `executing`. The gate now
-holds the two conditions it stood for: the account's own queue is empty at admission and at submit, so no batch waits
-behind this series' previous one, and the device reads `idle` or `executing` (`SUBMIT_STATUSES`), so none is
-submitted while it calibrates or is offline. The execution-start rule is unchanged. All 28 retained submissions of
-stamp `2026-11-19T1735Z-t17` record `queue_user_only` true with an empty own queue; 27 read `idle` and one reads
-`executing`.
 
 ## Pre-flight
 

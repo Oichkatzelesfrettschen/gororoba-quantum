@@ -168,10 +168,12 @@ PHASE_ZERO_VERDICT = f"zero within {PHASE_NULL} rad"
 MIN_FRINGE_AMPLITUDE = 0.25
 # Backend statuses that admit an execution start, and the longest gap between status reads that still covers a start.
 START_STATUSES = ("idle", "executing")
-# Backend statuses that admit a submission: the device online and idle or running another user's job. The account's
-# own queue is empty at the same read, so a batch never waits behind this series' previous batch (the queue rule of
-# docs/notes/quantum_inspire/usage.md); it may wait behind other users' jobs, and each job's start is then checked
-# against START_STATUSES. Owner decision of 2026-11-21, which replaced the rule that the device read idle at submit.
+# Backend statuses that admit a submission: the device online and idle or running another user's job. submit_series
+# collects each batch before it submits the next, which keeps this series' batches apart; the own-queue read refuses a
+# submission behind a batch of the account that still waits (a running batch leaves that count). A batch may wait
+# behind other users' jobs, and each job's start is then checked against START_STATUSES. Owner decision of 2026-11-21
+# (docs/notes/quantum_inspire/tuna17-interleaved-submit-gate.md), which replaced the rule that the device read idle at
+# submit.
 SUBMIT_STATUSES = ("idle", "executing")
 MAX_TRACE_GAP_SECONDS = 45.0
 TRACE_POLL_SECONDS = 15.0
