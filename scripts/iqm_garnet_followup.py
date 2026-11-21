@@ -858,11 +858,12 @@ def synthetic_run(
     plant: Plant | None = None,
     qc: str = "garnet",
     prediction_edit: str | None = None,
+    calibration: str | None = None,
 ) -> Path:
     """A run directory of a model device over the built case, in the layout iqm_records reads: every circuit's
     model distribution (plant may replace it) rounded to the kept shots by largest remainder, with no random
     generator. prediction_edit "unbound" changes prediction.json alone; "rebound" also rebinds cases.json to the
-    changed bytes, as a case built with another prediction would."""
+    changed bytes, as a case built with another prediction would. calibration replaces the compiled calibration set."""
     shutil.copytree(case_dir, run_dir, ignore=shutil.ignore_patterns("calibration"))
     prediction = json.loads((run_dir / "prediction.json").read_text(encoding="utf-8"))
     if prediction_edit:
@@ -898,7 +899,7 @@ def synthetic_run(
         "id": "job-1",
         "status": "completed",
         "metrics": {"billed_seconds": 3.0, "runtime_seconds": 2.5},
-        "compilation": {"calibration_set_id": prediction["calibration_set"]},
+        "compilation": {"calibration_set_id": calibration or prediction["calibration_set"]},
     }
     files = {
         "job.json": dump(job_record).encode(),
@@ -1051,11 +1052,15 @@ def analysis_checks() -> str:
             lambda: analysis.analyze([run("grover", prediction_edit="rebound")], case_dir), "another prediction digest"
         )
         analysis_refusal(lambda: analysis.analyze([run("grover"), run("grover")], case_dir), "second run of job grover")
+        analysis_refusal(
+            lambda: analysis.analyze([run("grover", calibration="another-calibration-set")], case_dir),
+            "another calibration set",
+        )
         record = base / "record.json"
         analysis.write_record(both, record)
         if json.loads(record.read_text(encoding="utf-8"))["decisions"].keys() != decisions.keys():
             raise AssertionError("the written record lost a decision")
-    return "analysis self-test passed: model device, 3 plants, 2 role readings, 2 sedenion nulls, 4 refusals"
+    return "analysis self-test passed: model device, 3 plants, 2 role readings, 2 sedenion nulls, 5 refusals"
 
 
 def main() -> int:

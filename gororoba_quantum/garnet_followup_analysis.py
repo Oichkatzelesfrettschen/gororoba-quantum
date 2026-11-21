@@ -3,8 +3,10 @@ scripts/iqm_garnet_followup.py (design: docs/design/iqm-garnet-grover-depth-sede
 decisions").
 
 analyze reads the run of job "grover" and the run of job "sedenion" through iqm_records.read_run and writes one
-record, schema SCHEMA. Its "decisions" apply the rules of the case's prediction.json (decisions) and nothing
-else; every other statistic sits under "exploratory" and decides nothing.
+record, schema SCHEMA. Its "decisions" apply the rules of the case's prediction.json (decisions) and the bit-order
+check of the design document's "Preregistered decisions"; each verdict follows one of those rules. Beside a verdict
+sit fields that decide nothing (readout-corrected values, per-qubit marginals, the uniformity statistics against k0),
+and every other statistic sits under "exploratory".
 
 Admission. A run enters the analysis only when it ran on the quantum computer QC (a mock run returns random bits),
 belongs to the case CASE, carries the prediction digest and the cases.json bytes of the retained case directory,
@@ -26,7 +28,8 @@ Variances (the design document names the binomial and the paired per-shot varian
   two bits read in one shot.
 
 Resolution. A contrast resolves at z >= Z_RESOLVE in the direction named; a negative resolved contrast falsifies
-its hypothesis. The role rule reads |z| > Z_RESOLVE, as the design document writes it. A sedenion row resolves when
+its hypothesis. The role rule reads |z| > Z_RESOLVE on the unrounded z, the strict form of prediction.json
+(decisions.role_or_qubit). A sedenion row resolves when
 row minus truncation and row minus null each reach Z_RESOLVE and the row arms' pooled counts have the row peak as
 their single most frequent string.
 
@@ -234,6 +237,7 @@ def end_difference(job: Job, stem: str, marked: str) -> dict[str, Any]:
         "D": r6(d),
         "se_paired": r6(se),
         "z": r6(z_of(d, se)),
+        "resolved": abs(z_of(d, se)) > Z_RESOLVE,
         "wrong_bit": {q: r6(float(w @ p)) for q, w in sorted(wrong.items())},
     }
 
@@ -241,8 +245,8 @@ def end_difference(job: Job, stem: str, marked: str) -> dict[str, Any]:
 def role_decision(job: Job) -> tuple[dict[str, Any], dict[str, Any]]:
     forward = end_difference(job, "m101-k1", "101")
     reverse = end_difference(job, "r-m101-k1", "101")
-    resolved = abs(forward["z"]) > Z_RESOLVE
-    reverse_resolved = abs(reverse["z"]) > Z_RESOLVE
+    resolved = bool(forward["resolved"])
+    reverse_resolved = bool(reverse["resolved"])
     if not resolved:
         reading = "open: the forward D does not resolve"
     elif not reverse_resolved:
@@ -325,10 +329,11 @@ def grover_analysis(job: Job) -> tuple[dict[str, Any], dict[str, Any]]:
         )
         model = prediction["decisions"][f"depth_law_{marked}"]
         z = z_of(f - model["predicted"], se)
-        weights = [(gradient[k] / scale[k], fits[arm_of[k]]) for k in (1, 2, 3)]
         corrected_lam = {k: (fits[arm_of[k]]["corrected"] - 1 / 8) / scale[k] for k in arm_of}
         corrected_f = corrected_lam[3] - corrected_lam[2] ** 2 / corrected_lam[1]
-        _, corrected_se = combined(readout, weights)
+        corrected_gradient = {3: 1.0, 2: -2 * corrected_lam[2] / corrected_lam[1], 1: corrected_lam[2] ** 2 / corrected_lam[1] ** 2}
+        corrected_weights = [(corrected_gradient[k] / scale[k], fits[arm_of[k]]) for k in (1, 2, 3)]
+        _, corrected_se = combined(readout, corrected_weights)
         decisions[f"depth_law_{marked}"] = {
             "lambda_raw": {str(k): r6(v) for k, v in lam.items()},
             "f_raw": r6(f),
