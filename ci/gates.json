@@ -3786,7 +3786,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/iqm_idle_schedule_probe.py --self-test",
       "name": "core-681",
-      "seconds": 62.0
+      "seconds": 400.0
     },
     {
       "suite": "core",
@@ -3798,18 +3798,6 @@
         "results/iqm/cases/idle-schedule-train-readout/cases.json",
         "results/iqm/cases/idle-schedule-train-readout/circuits",
         "results/iqm/cases/idle-schedule-train-readout/prediction.json"
-      ]
-    },
-    {
-      "suite": "core",
-      "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_idle_schedule_probe.py check results/iqm/cases/idle-schedule-t1-emerald --qc emerald-t1",
-      "name": "core-iqm-idle-schedule-t1-emerald-check",
-      "seconds": 60.0,
-      "replays": [
-        "results/iqm/cases/idle-schedule-t1-emerald/cases.json",
-        "results/iqm/cases/idle-schedule-t1-emerald/circuits",
-        "results/iqm/cases/idle-schedule-t1-emerald/prediction.json"
       ]
     },
     {

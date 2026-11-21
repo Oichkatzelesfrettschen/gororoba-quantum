@@ -93,8 +93,10 @@ TRAIN_P_MIN = 0.001
 # common-gap test rejects at this chi-square survival.
 T1_POINT_SE = 3.0
 GAP_P_REJECT = 0.01
-# A qubit enters H2 only when its parallel readout fit is linear and its delay fit's chi-square survival is at least
-# T1_FIT_P_MIN; the primary verdict needs every pulsed qubit of the case and reads unidentifiable otherwise.
+# A qubit enters H2 only when its delay fit's chi-square survival is at least T1_FIT_P_MIN and its readout pair leaves
+# a positive contrast; the primary verdict needs every pulsed qubit of the case and reads unidentifiable otherwise. H2
+# reads its readout correction from the bare pair par-ro0, par-ro1 and not from the train fit, which failed its
+# linearity test on 7 of 20 Garnet qubits (results/iqm/idle_schedule_probe_analysis.json).
 T1_FIT_P_MIN = 0.001
 # The successor's calibration study (study()) draws its binomial replicates from this seed: draw
 # docs/evidence/anu_qrng/draw-2026-11-21T184244Z.json, index 0.
@@ -479,11 +481,15 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
                 before, after = (((1 - value) / 2 - e01) / (1 - e01 - e10) for value in (z0, z))
                 wait = contrast["pulses"] * prediction["prx_seconds"]
                 arm["apparent_t1_seconds"] = wait / math.log(before / after) if 0 < after < before else None
-                if "t1_delays" in prediction and 0 < after < before:
-                    # The decay rate ln(before / after) / wait, with its shot-noise standard error.
-                    scale = 2 * (1 - e01 - e10)
-                    arm["apparent_rate_per_second"] = math.log(before / after) / wait
-                    arm["apparent_rate_se"] = math.hypot(se0 / scale / before, se_z / scale / after) / wait
+                if "t1_delays" in prediction:
+                    # The decay rate ln(before / after) / wait through the bare readout pair (readout_pair), which
+                    # stands whether or not the over-rotation model fits the qubit's trains.
+                    r01, r10 = readout_pair(counts, qubit)
+                    pair = 1 - r01 - r10
+                    up, down = (((1 - value) / 2 - r01) / pair for value in (z0, z))
+                    if pair > 0 and 0 < down < up:
+                        arm["apparent_rate_per_second"] = math.log(up / down) / wait
+                        arm["apparent_rate_se"] = math.hypot(se0 / (2 * pair) / up, se_z / (2 * pair) / down) / wait
                 arms[b][qubit].append(arm)
     readings_ = {arm["verdict"] for layout in arms.values() for rows in layout.values() for arm in rows}
     resolved = readings_ - {"unresolved"}
@@ -509,16 +515,24 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
         "parallel_trains": parallel,
     }
     if "t1_delays" in prediction:
-        t1 = {q: t1_fit(counts, q, parallel[q], prediction["t1_delays"]) for q in qubits}
+        pairs = {q: readout_pair(counts, q) for q in qubits}
+        t1 = {q: t1_fit(counts, q, {"e01": pairs[q][0], "e10": pairs[q][1]}, prediction["t1_delays"]) for q in qubits}
         calibrated = {q: row["t1_seconds"] for rows in prediction["idle"].values() for q, row in rows.items()}
         for qubit, fitted in t1.items():
             if fitted.get("t1_seconds") is not None and qubit in calibrated:
                 # Descriptive: the delay-measured T1 per requested delay second over the calibration copy's T1.
                 fitted["over_calibrated"] = fitted["t1_seconds"] / calibrated[qubit]
         report["t1_delay"] = t1
-        valid = {q for q in qubits if parallel[q]["linear"] and usable_t1(t1[q])}
+        valid = {q for q in qubits if 1 - sum(pairs[q]) > 0 and usable_t1(t1[q])}
         report["h2_gap"] = gap_test(arms, t1, prediction["prx_seconds"], schedule, set(calibrated), valid)
     return report
+
+
+def readout_pair(counts: dict[str, tuple[int, int]], qubit: str) -> tuple[float, float]:
+    """(P(1|0), P(0|1)) of one qubit from the bare readout pair par-ro0 and par-ro1 of the parallel block."""
+    z0, _, _ = z_of(counts, f"par-ro0@{qubit}")
+    z1, _, _ = z_of(counts, f"par-ro1@{qubit}")
+    return (1 - z0) / 2, (1 + z1) / 2
 
 
 def usable_t1(fitted: dict[str, Any]) -> bool:
@@ -889,6 +903,15 @@ def emerald_t1_self_test() -> None:
         raise RuntimeError(f"the successor is {case['case']} with {len(circuits)} circuits at {job['max_credits']}")
     if any(base[rel] != files[rel] for rel in base if rel.startswith("circuits/")):
         raise RuntimeError("the successor changes a circuit of the Emerald case")
+    if calibration_dir == committed:
+        # The committed case against this build, floats to 1e-12: its prediction bytes come from another numeric
+        # path than every host's, as the Garnet case's do.
+        for rel, text in files.items():
+            built, kept = json.loads(text), json.loads((committed.parent / rel).read_text(encoding="utf-8"))
+            if rel == "cases.json":
+                built.pop("prediction_sha256"), kept.pop("prediction_sha256")
+            if not same(built, kept):
+                raise RuntimeError(f"the successor build of {rel} differs from the committed case")
     every = ordered(EMERALD_T1.qubits or ())
     for seconds in T1_DELAYS:
         ops = json.loads(files[f"circuits/{delay_name(seconds)}.json"])["instructions"]
