@@ -306,9 +306,10 @@ def test_the_request_stays_generated_when_the_draw_is_set(tmp_path: Path, monkey
     "document",
     [
         cases.synthetic_status("calibrating"),
-        cases.synthetic_status("executing"),
         cases.synthetic_status("offline"),
         cases.synthetic_status("idle", instance="calibrating"),
+        cases.synthetic_status("executing", instance="calibrating"),
+        cases.synthetic_status("executing", queue=1),
         cases.synthetic_status("idle", queue=1),
         {"error": "x"},
         {},
@@ -323,7 +324,7 @@ def test_the_request_stays_generated_when_the_draw_is_set(tmp_path: Path, monkey
         },
     ],
 )
-def test_submit_path_refuses_every_status_but_idle(tmp_path: Path, document: Any) -> None:
+def test_submit_path_refuses_every_status_outside_the_submit_statuses(tmp_path: Path, document: Any) -> None:
     series, runs = tmp_path / "arm", tmp_path / "runs"
     (series / "batch-00").mkdir(parents=True)
     (series / "batch-00" / "cases.json").write_text("{}", encoding="utf-8")
@@ -616,6 +617,8 @@ def write_run(run: Path, rows: list[dict[str, Any]], p1: dict[str, list[float]],
         "schema": "qi-submission-v1",
         "approval": "fixture",
         "backend_status_at_submit": "idle",
+        "queue_at_submit": {"number_of_jobs_in_queue": 0},
+        "queue_user_only": True,
         "backend": "tuna_17",
         "backend_type_id": 7,
         "shots": shots,
@@ -672,7 +675,7 @@ ADMISSION_FAULTS = [
     ("schema", "qi-admission-v0"),
     ("backend_type_id", 1),
     ("backend_type_id", True),
-    ("status", "executing"),
+    ("status", "calibrating"),
     ("queue_own", 2),
     ("queue_own", None),
     ("attempt", 0),
@@ -726,6 +729,58 @@ def test_sanity_names_each_field_of_the_admission_record_and_the_trace(tmp_path:
     (run / "status-trace.json").write_text("[]", encoding="utf-8")
     if "status-trace.json: the record is not an object" not in "".join(cases.sanity(run)):
         raise AssertionError(cases.sanity(run))
+
+
+def test_a_backend_running_another_job_admits_one_submission(tmp_path: Path) -> None:
+    series, runs = tmp_path / "case" / "arm", tmp_path / "runs"
+    (series / "batch-00").mkdir(parents=True)
+    (series / "batch-00" / "cases.json").write_text("{}", encoding="utf-8")
+    called: list[list[str]] = []
+
+    def run_command(argv: list[str]) -> tuple[int, str]:
+        called.append(argv)
+        return 0, ""
+
+    cases.submit_series(
+        series,
+        runs,
+        "S",
+        "approval",
+        7,
+        command=["py", "platform"],
+        read_status=lambda: cases.synthetic_status("executing"),
+        run_command=run_command,
+        launch=lambda argv: cases.FakeProcess(),
+        sleep=lambda s: None,
+    )
+    admitted = json.loads((runs / "S-case-arm-batch-00" / "admission.json").read_text(encoding="utf-8"))
+    if len(called) != 1 or admitted["status"] != "executing" or admitted["queue_own"] != 0:
+        raise AssertionError((called, admitted))
+
+
+def test_sanity_admits_a_submit_beside_another_job_and_refuses_an_own_queue(tmp_path: Path) -> None:
+    rows: list[dict[str, Any]] = [
+        {"file": "readout-0.cq", "kind": "anchor0", "driven": []},
+        {"file": "t1-0.cq", "kind": "anchor1", "driven": [0, 1, 2, 3, 4]},
+    ]
+    good = {"readout-0.cq": [0.02] * 5, "t1-0.cq": [0.96] * 5}
+    run = tmp_path / "run"
+    write_run(run, rows, good, 200, "2026-01-01T00:01:10+00:00")
+    (run / "admission.json").write_text(json.dumps(valid_admission()), encoding="utf-8")
+    (run / "status-trace.json").write_text(json.dumps(valid_trace()), encoding="utf-8")
+    receipt = json.loads((run / "submission.json").read_text(encoding="utf-8"))
+    cases_of: list[tuple[dict[str, Any], str | None]] = [
+        ({"backend_status_at_submit": "executing"}, None),
+        ({"backend_status_at_submit": "calibrating"}, "records backend status 'calibrating' at submit"),
+        ({"queue_at_submit": {"number_of_jobs_in_queue": 1}}, "no empty own queue at submit"),
+        ({"queue_user_only": False}, "no empty own queue at submit"),
+        ({"queue_at_submit": None}, "no empty own queue at submit"),
+    ]
+    for change, expected in cases_of:
+        (run / "submission.json").write_text(json.dumps({**receipt, **change}), encoding="utf-8")
+        found = "".join(cases.sanity(run))
+        if (expected is None and found) or (expected is not None and expected not in found):
+            raise AssertionError((change, found))
 
 
 def test_sanity_demands_anchors_records_and_a_start_status(tmp_path: Path) -> None:
