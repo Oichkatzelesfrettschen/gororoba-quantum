@@ -3,7 +3,7 @@
 Status: proposed on 2026-11-20 at the owner's direction ("cram as much in per job as the guides allow"); nothing is
 built or submitted. The owner chooses a shape below; the chosen shape then needs its preregistration, a fresh QRNG
 draw, the full review course and the owner's approval before any job, as the
-[rehearsal record](../../../docs/design/quandela-successor-acquisition-rehearsal.md) requires for a change of the
+[rehearsal record](../../../../docs/design/quandela-successor-acquisition-rehearsal.md) requires for a change of the
 frozen diagnostic request.
 
 ## Billing and limit
@@ -27,7 +27,7 @@ Each job holds 24 iterations of 40000 samples under an 80000-shot cap: one block
 |---|---|---|---|
 | qpu:belenos | the four runs above | 164, 164, 164, 171 s | 6.83 to 7.13 |
 | sim:belenos | `2026-11-14T203218Z-...-b1-j1`, `2026-11-15T180000Z-...-b1-j2` | 300 s; 305 s canceled at the limit | about 12.5 |
-| sim:belenos, 12 iterations | the three completed jobs of the [timing case](../../../docs/design/quandela-successor-acquisition-rehearsal.md#measured-timing-case-of-the-b1-shape) | 156 to 161 s | 13.0 to 13.4 |
+| sim:belenos, 12 iterations | the three completed jobs of the [timing case](../../../../docs/design/quandela-successor-acquisition-rehearsal.md#measured-timing-case-of-the-b1-shape) | 156 to 161 s | 13.0 to 13.4 |
 
 The repository's QPU timing rule (`SECONDS_PER_ITERATION` 6.3 plus `SECONDS_PER_SAMPLE` 2.6e-5 per sample, in
 `scripts/bdsc_diagnostic.py`) gives 7.34 s per iteration at 40000 samples, above every measured qpu:belenos job. A

@@ -83,4 +83,5 @@ The Advisor reviewed last. The packed successor case (5493e2b2d) came after the 
 | Packing shape C (3 x 32) contradicts whole groups of six and the two-job block | Advisor | confirmed | Fixed: dropped; the case states why fewer jobs per block break `require_schedule` |
 | "Iterations added cost nothing" rests on the Ascella rule | Advisor | confirmed | Fixed: the four retained qpu:belenos diagnostic jobs billed 1.08 each for 960000 shots under an 80000 cap |
 | "The decision rules stand" asserted from `require_schedule` alone | Advisor | confirmed | Fixed: shape A is `SLOTS` 4 to 6, marked `hypothesis:`, with the analyzer and draw changes listed |
+| The packing case's two links to the rehearsal record climb three directories, not four; the Markdown checker skips `results/` | hosted Codex at 7b30b4276 | confirmed | Fixed: `../../../../docs/design/...`, both targets checked to exist |
 | The timing rule (7.34 s per iteration) is not cited and the margin overstated; QPU limit cancellations and the sample axis are missing | Advisor | confirmed | Fixed: 246 to 264 s, 36 s margin by the rule; the two canceled qpu:belenos jobs; shape D on samples |
