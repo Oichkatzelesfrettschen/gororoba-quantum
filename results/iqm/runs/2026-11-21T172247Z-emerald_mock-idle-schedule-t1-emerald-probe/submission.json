@@ -1,0 +1,17 @@
+{
+ "approval": "owner AskUserQuestion 2026-11-21T17:09Z: Build successor (Recommended), check against emerald:mock (free)",
+ "body_sha256": "e6cdc85d284af8aa5706d6a85e14e83b3b495c0037159bcf587b6b8fdd084551",
+ "cases_sha256": "720ffbad99f6f2d0386a411a8bc21bc6d26f3f1737d126a64c65d58cf16722f5",
+ "credit_before": {
+  "currentBalance": "29.00",
+  "expiresAt": "2026-12-01T00:00:00+00:00"
+ },
+ "expected_seconds": 3.168,
+ "job": "probe",
+ "job_id": "01a1ff21-d489-7284-98c6-ada55e96254a",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "emerald:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-11-21T17:22:49Z"
+}

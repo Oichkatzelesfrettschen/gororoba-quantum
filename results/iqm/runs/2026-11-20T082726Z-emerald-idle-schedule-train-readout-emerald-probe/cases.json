@@ -1,0 +1,78 @@
+{
+ "case": "idle-schedule-train-readout-emerald",
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/idle-QB20-0.json",
+     "sha256": "1679afd8c7acfe9bea27fe3abac20a18e0babffe7ade427071f491a331d7be8d"
+    },
+    {
+     "file": "circuits/idle-QB20-500.json",
+     "sha256": "a7fbf6a8e7263dc76e05ebf92fcaafea583d6108eb9ef1d48db79decea644267"
+    },
+    {
+     "file": "circuits/idle-QB20-1000.json",
+     "sha256": "ec128f5bb310acd57e884a2669654e4b8afe06d6bd3be41117a8c0b72d67fe99"
+    },
+    {
+     "file": "circuits/idle-QB26-0.json",
+     "sha256": "68fd2a67fa9087c0a8624d1883ee494b53989d593f379875b5b22d7d2ce468d3"
+    },
+    {
+     "file": "circuits/idle-QB26-500.json",
+     "sha256": "c118d152a088ba9e72ee26ab06d1f06c1f6efcf81779053f546507517df7f226"
+    },
+    {
+     "file": "circuits/idle-QB26-1000.json",
+     "sha256": "1937904def372034abf693020774c2b58fe8232550bca71a3f2a59821e8381b6"
+    },
+    {
+     "file": "circuits/par-ro0.json",
+     "sha256": "3a5b58dc3920cb04161b0ae9fab5cd8ab78af476bb44d5cb0d517cddbca8ef91"
+    },
+    {
+     "file": "circuits/par-ro1.json",
+     "sha256": "d535defb25eef8a72c8c957e5d1744d8e51379e4d08506e820ceb0891463a25b"
+    },
+    {
+     "file": "circuits/par-amp-0.json",
+     "sha256": "577f5cbd9b10f18c5b2a1ef5eb213584403b4f10e5db2cd6b19d59232aba8790"
+    },
+    {
+     "file": "circuits/par-amp-1.json",
+     "sha256": "169dabd346167c4645591a2ea8236fc4d5fa50c7ac20f412f7c49c075adcb78a"
+    },
+    {
+     "file": "circuits/par-amp-2.json",
+     "sha256": "c75bdde33e00a6fd539e2ff8797a7d952164690cf46309969bbd59c7b130b286"
+    },
+    {
+     "file": "circuits/par-amp-3.json",
+     "sha256": "0131ba93661eb5e9842b60b7f24a9a6d691cb1241545813c2147c74662531589"
+    }
+   ],
+   "expected_seconds": 2.088,
+   "job": "probe",
+   "max_credits": {
+    "emerald": 4.5,
+    "emerald:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {
+     "emerald": "3a1a9ad0-0c98-49db-8cf5-7623d13729f4"
+    },
+    "heralding_mode": "none"
+   },
+   "shots": 4000
+  }
+ ],
+ "prediction_sha256": "9c3964a7d4a66b41e668383fe41f63342130520a2122799f0144763ed750d672",
+ "qcs": [
+  "emerald:mock",
+  "emerald"
+ ],
+ "question": "Does Emerald schedule a circuit job's gates as soon or as late as possible, read by whether pulsed qubits relax while an uncoupled qubit runs an identity train, and is the decay beyond the schedule's prediction one common per-pulse gap or varies by qubit?",
+ "schema": "iqm-circuit-case-v1"
+}

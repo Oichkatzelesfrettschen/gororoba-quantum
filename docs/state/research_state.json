@@ -3983,6 +3983,27 @@
       "run": "results/quantum_inspire/runs/2026-11-19T1700Z-qx-characterization_interleaved_qx-q12_phase-batch-03",
       "family": "QX emulator rehearsal of the interleaved Tuna-17 characterization series (readout-bracketed T1 ladder, crosstalk contrasts and q12 phase arms)",
       "question": "On the QX emulator, does the interleaved Tuna-17 series run end to end and give the tail statistic, the crosstalk contrasts and the q12 phase estimate its analysis registers, before the series runs on Tuna-17?"
+    },
+    {
+      "id": "iqm-emerald-mock-idle-schedule-train-readout",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-20T082706Z-emerald_mock-idle-schedule-train-readout-emerald-probe",
+      "family": "IQM idle schedule and train readout probe",
+      "question": "Does the emerald:mock station accept the twelve-circuit Emerald idle-schedule probe, and what runtime does it estimate?"
+    },
+    {
+      "id": "iqm-emerald-idle-schedule-train-readout-ceiling-cancel",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-20T082726Z-emerald-idle-schedule-train-readout-emerald-probe",
+      "family": "IQM idle schedule and train readout probe",
+      "question": "Does Emerald schedule a circuit job as soon or as late as possible, and is its decay beyond prediction a common per-pulse gap (the run cancelled itself at its 4.50-credit ceiling and billed nothing)?"
+    },
+    {
+      "id": "iqm-emerald-mock-idle-schedule-t1",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-21T172247Z-emerald_mock-idle-schedule-t1-emerald-probe",
+      "family": "IQM idle schedule and train readout probe",
+      "question": "Does the emerald:mock station accept the sixteen-circuit Emerald successor with IQM delay instructions, and what runtime does it estimate?"
     }
   ],
   "claims": [

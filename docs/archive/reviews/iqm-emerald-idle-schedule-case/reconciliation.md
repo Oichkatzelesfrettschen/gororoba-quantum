@@ -17,3 +17,53 @@ Head read: 1ec3682569e9cfa4284698b21f831bf623a075b0 against origin/main f31df799
 | 10 | Hosted Codex thread: the common-r analysis needs a resolved ASAP schedule; H2 is unidentifiable under ALAP, mixed or unresolved schedules | hosted codex | CASE.md pre-flight items 1, 3 and 5: under ALAP the pulsed qubits do not wait, so the contrast carries no T1 information | Fixed in 88dc5f522daa5eda91a346e9d61278f062ea5f28: H2 is gated on H1 and the common-r outcomes apply only after ASAP on all arms |
 | 11 | Live account read replaces the expired-snapshot wording | coordinator | read-only credit query of scripts/iqm_jobs.py at 2026-11-19T23:17Z: currentBalance 30.00, expiresAt 2026-12-01 | Fixed in the commit that carries this row: the case cites the live reading and keeps the read at submission |
 | A1 | Advisor (parent) | Advisor | read after the fixes | Passes |
+
+## Successor round: delay-measured T1 (head 11c316a6b, fixes in c22070077 and 2d540f8db)
+
+Reviewers chosen by the owner (2026-11-21): codex (gpt-daybreak-blue-latest, high), grok and agy
+gemini-4-hydrogen-high on one brief; red-teamers agy gemini-3.8-flash-high and opencode (opencode-go/beam-free, first
+model, report accepted). vibe (mistral-medium-3.5) is `not run`: the first attempt stopped because its `grep` tool
+no longer exists and a headless run cannot approve bash, and the second ended with "Vibe budget exhausted". Every
+reviewer worked read-only from source and records; none ran Python. Each finding below was checked against the source.
+
+| # | Reviewers | Finding | Disposition |
+|---|---|---|---|
+| 1 | codex, agy, agy Flash, opencode, grok | H2 decides from a nonlinear readout fit, an unchecked delay-fit chi-square and an incomplete qubit set, against the preregistered twelve-qubit, 11-degree test | Fixed in c22070077 and the Advisor round: a qubit enters H2 only with a delay fit of chi-square survival at least `T1_FIT_P_MIN` (0.001), a bare readout pair (par-ro0, par-ro1) of positive contrast and a rate on every train; any excluded pulsed qubit makes H2 `unidentifiable` and is named; the self-test drops one qubit and requires that reading |
+| 2 | codex, grok, agy | Standard errors omit the readout correction's uncertainty and shared covariances; the chi-square and stationarity tests are uncalibrated | Fixed in c22070077 and 2d540f8db by measurement: `study()` runs 400 binomial replicates per planted gap on the case's calibration (`calibration-study.json`); one-SE coverage 0.67 and 0.69, gap and T1 z-score standard deviations 0.99 to 1.04, false common-gap rejections 0.25 and 0.76 percent, no stationarity false alarm. The omitted readout uncertainty costs no coverage at 4000 shots. The model draws qubits independently, so the joint-shot correlation codex raised stays unmodeled and is stated in CASE.md |
+| 3 | all | A delay realized as a t + b with a != 1 scales T1 and g and leaves no trace in this job | Boundary: CASE.md states T1 per requested delay second and H2 conditional on a = 1; detecting a needs a clock independent of the delay instruction, which this job lacks |
+| 4 | codex | The log transform and the 3-SE truncation may bias T1 | Measured: expected-count bias of the mean gap -0.02 ns (no gap) and -0.04 ns (14 ns); mean T1 z-scores -0.02 and +0.005; the shortest T1 on this calibration is 32.8 us, so the 64 us point stays far above the cut |
+| 5 | codex, grok, opencode | "At least 7 billed seconds" rests on one unfinished run | Fixed in 2d540f8db: the projection holds if the predecessor's factor repeats, and the factor is a lower bound only |
+| 6 | agy, agy Flash | The 9.00-credit ceiling cancels the job if execution exceeds about 2.7 to 2.9 times the mock estimate | Fixed in c22070077: ceiling 12.00 credits (16 billed seconds, cancel at 15.0 s, about 4.2 times the mock estimate after 1.8 s of compilation); a cancelled job bills nothing |
+| 7 | opencode | The 1.46 factor should use the real job's 2.5408 s compiled estimate | Refuted: the factor divides by the predecessor's mock estimate (2.5018 s, its mock run's `raw/runtime_estimates.json`), the same estimator as the successor's 3.12 s; 2.5408 s is the real job's compiled estimate, a different quantity |
+| 8 | agy, agy Flash, grok, codex | The -0.52 +- 0.22 ns zero-gap figure is attributed to model alignment and retained nowhere | Fixed in 2d540f8db: it was one random draw (-2.3 SE); expected counts read -0.023 ns, which is the pulsed qubit's own 24 ns over 1000 pulses, so agy Flash's -520 ns alignment offset is refuted; the study's numbers are retained in `calibration-study.json` |
+| 9 | codex, grok, agy | Station control 50.0.0 is not in the mock run record | Fixed in 2d540f8db: acceptance rests on the completed job; the version is cited to `docs/notes/iqm/os-4.7.md` and the live listing |
+| 10 | grok, agy | The self-test uses calibration set 3a1a9ad0 with a 2 ns tolerance, and no gate checks the case bytes | Fixed in the Advisor round: the self-test builds from the committed case calibration at expected counts with a 0.1 ns tolerance and compares the committed case with the build to 1e-12 (`same()`), as for the Garnet case, since prediction bytes differ between numeric paths; `core-681` records about 400 s |
+| 11 | agy | `T1_delay / T1_cal` is promised and not computed | Fixed in c22070077: `t1_delay[q].over_calibrated` |
+| 12 | agy | `expected_seconds` prices Emerald shots at Garnet's 37.5 us | Fixed in 2d540f8db: CASE.md names it a planning figure; the mock estimate is the better one |
+| 13 | codex, grok, agy | `--live` now fetches any profile's computer; `write()` still names Garnet | Fixed in c22070077 (docstring); the claim of unchanged builds is narrowed to the retained, non-live builds and analyses |
+| 14 | opencode, agy | `marginal()` breaks the timing-qubit tie of a delay circuit alphabetically | No change: the model is per qubit without coupling, so the extra spectator changes no reading |
+| 15 | agy | Replace `t1-16us` by a second `t1-64us` for 37 percent less T1 variance | Declined: the gate on the delay fit's chi-square needs distinct interior durations, and the T1 error does not limit H2 (study, row 2) |
+| 16 | agy Flash | CASE.md writes g = d (k T1 - 1) | Fixed in 2d540f8db: g = d (k / k_T1 - 1) with k_T1 = 1 / T1 |
+
+Open hypotheses the reviewers raised, each tested by this job's own data at no further cost: the two layouts read one
+gap per qubit (grok, agy); the gap grows with simultaneous drive load (codex); gaps cluster by control line (agy); the
+shared readout nuisance carries part of a common gap (codex); Emerald's execution-to-mock ratio is stable across jobs
+(agy).
+
+### Advisor (last), on 1df250773
+
+| # | Finding | Disposition |
+|---|---|---|
+| A1 | Requiring a linear parallel train fit on all twelve qubits makes H2 nearly unreachable: 7 of 20 Garnet qubits failed that fit | Confirmed (`results/iqm/idle_schedule_probe_analysis.json`: 13 of 20 linear). Fixed: H2 reads readout from the bare pair and drops the train-fit gate; study and self-test rerun |
+| A2 | A byte-for-byte check gate of the successor case is red on another numeric path | Fixed: the gate is dropped; the self-test compares with `same()` |
+| A3 | Prove the Garnet analysis unchanged, not only the builds | Measured: the retained Garnet run analyzed by the origin/main script and by the head script gives identical bytes, equal to `results/iqm/idle_schedule_probe_analysis.json` (compute host) |
+| A4 | The playlist interleaving is stated as fact | Fixed: marked hypothesis in CASE.md |
+| A5 | The PR body is stale | Fixed: body rewritten for the head |
+
+### Replacement red-teamer: opencode on opencode/nemotron-3.5-super-vl-free (owner choice, 2026-11-21)
+
+It reviewed the brief's head 11c316a6b. Its defects D1 (unretained model-device numbers), D2 (readout correction through
+the train fit), D3 (no per-qubit gate) and D4 (undocumented delay scale) are rows 8, A1, 1 and 3 above, fixed in
+c22070077, 2d540f8db and d2ed61f37. D5 (9.00-credit ceiling tight) is row 6. Its conjecture C1 (an independent T1 to
+detect a delay scale a) is the boundary of row 3: an inversion-recovery T1 on IQM also waits through `delay`, so the
+independent clock it needs is a pulse train of known length, which carries the gap g this job measures.
