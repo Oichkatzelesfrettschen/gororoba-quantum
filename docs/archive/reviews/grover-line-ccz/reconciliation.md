@@ -15,6 +15,17 @@ landed in 5f44c44195ba8e0bcb70aacf90b77e1e9e4b0a93; the Garnet run
 | O3 | opencode | The design attributed the 37.5 us shot time to `iqm_jobs.py`, which holds 8.7 us. | Fixed: attributed to `ACTIVE_SHOT_SECONDS` in `scripts/iqm_signed_probe.py`. | Design "Seconds and credits". |
 | O4 | opencode | The prediction used unheralded readout while the job heralds. | Fixed with C2. | As C2. |
 
+## Hosted Codex round
+
+Hosted Codex reviewed 6f6f7f1e589174f33f60a23bc104e549a753b045 (review
+6001333060); each thread was answered and resolved.
+
+| # | Finding | Disposition | Check |
+|---|---|---|---|
+| H1 | The run reader and analyzer sit in the case script, against the root `AGENTS.md` rule that reusable readers and analyzers live in `gororoba_quantum/` with explicit inputs. | Fixed in e25376ed5e93d6fc923a7a31b0ec5c0d7c4179ec: `gororoba_quantum/grover_line_analysis.py`, validating through `iqm_records.read_run` and reusing `walsh_counts.parity_numerators`; it imports no qiskit. | core-774 replay; self-test checks the parity numerators against the parity matrix. |
+| H2 | The k0 uniformity statistic divided by binomial variances, inflating Pearson's statistic by 8/7. | Fixed: Pearson's multinomial statistic, 11.54 on 7 degrees of freedom. | Analysis record `k0.pearson_chi2_uniform_raw`. |
+| H3 | Corrected Walsh ratios were set beside a model spectrum that still includes readout. | Fixed: the model's herald-conditioned product readout is inverted before its spectrum is compared with the corrected one; the raw spectrum is compared with the model with readout. The pre-readout model is nearly flat in weight, which changed the design record's reading. | Design "Analysis" table. |
+
 Claims both reviewers confirmed independently: the 8 and 7 CNOT minima
 (independent breadth-first searches; codex added that the seven parities'
 coefficients cannot vanish modulo 2 pi, so the search covers every

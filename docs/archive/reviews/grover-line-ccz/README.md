@@ -14,7 +14,8 @@ pull request:
 - Advisor: not run; the advisor tool returned "unavailable" when called
   after the fixes.
 
-Fixes landed in 5f44c4419 before any Garnet credit was spent; the hosted
-Codex round reads the head that carries this record.
+Fixes landed in 5f44c4419 before any Garnet credit was spent. Hosted
+Codex then reviewed 6f6f7f1e589174f33f60a23bc104e549a753b045 with three
+findings, fixed in e25376ed5e93d6fc923a7a31b0ec5c0d7c4179ec.
 [reconciliation.md](reconciliation.md) states every finding with its
 disposition and the check that closes it.
