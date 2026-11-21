@@ -193,6 +193,42 @@ is inverted.
 - Each Grover arm's measured value is reported against its prediction; the
   gap estimates the error budget the model omits.
 
+## Result
+
+Garnet job `01a1fb31-c2c2-72fc-a9b2-b7b028c37bc0` ran the 20-circuit case
+on 2026-11-20 against the pinned calibration set: 1.27 s runtime, 2 billed
+seconds, 1.00 credit. Heralding kept 3329 to 3746 shots per circuit (86 %).
+The readout preparations read back their state with probability 0.964 to
+0.986. Measured, raw frequencies, copies pooled
+(`results/iqm/runs/2026-11-20T230142Z-garnet-grover-line-ccz-grover`):
+
+| arm | kept shots | P(marked) | predicted | measured excess / predicted excess |
+|---|---|---|---|---|
+| `m101-k1` (4 copies) | 13688 | 0.6747 | 0.6894 | 0.97 |
+| `m101-k1-generic` (4 copies) | 13924 | 0.6048 | 0.6554 | 0.90 |
+| `m101-k2` | 3485 | 0.7188 | 0.7612 | 0.93 |
+| `m011-k1` | 3412 | 0.6530 | 0.6960 | 0.92 |
+| `m011-k2` | 3449 | 0.6964 | 0.7684 | 0.89 |
+
+| decision | measured | standard error | z | predicted |
+|---|---|---|---|---|
+| line - generic | +0.0699 | 0.0058 | 12.1 | +0.034 |
+| k2 - k1 (101) | +0.0441 | 0.0086 | 5.1 | +0.072 |
+| k2 - k1 (011) | +0.0434 | 0.0113 | 3.8 | +0.072 |
+
+Every preregistered decision resolves in the predicted direction, and the
+most frequent outcome of `m011-k1` and `m011-k2` is 011. The four copies
+of each decision arm agree within 0.023 (line 0.672 to 0.680, generic
+0.598 to 0.620). The line-native gain is twice the model's: the generic
+compile keeps 0.90 of its predicted excess against 0.97 for the line-native
+one, so its extra 4 CZ and 46 `prx` cost more than the depolarizing model
+carries (hypothesis: coherent single-qubit error accumulating over the
+68-`prx` sequence; falsifier: a generic compile re-synthesized to 22 `prx`
+at 18 CZ keeping the same 0.90 ratio). The second iteration gains less than
+predicted, 0.044 against 0.072, which measures the per-CZ loss the model
+omits at 28 CZ. Garnet's contrast reached 0.89 to 0.97 of the model here,
+above the 0.75 of the retained 199-CZ probes.
+
 ## Commands
 
 ```sh

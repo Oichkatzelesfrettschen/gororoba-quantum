@@ -1,0 +1,17 @@
+{
+ "approval": "Owner, 2026-11-20 22:26Z, answering the written case grover-line-ccz (garnet:mock, then garnet; ceiling 2.50 credits): \"resolve any finding issues and run approved.\" The review findings were resolved at commit 5f44c4419, which rebuilds the case to 20 circuits x 4000 shots, 3.0 s expected, the same 2.50-credit ceiling.",
+ "body_sha256": "13ea6aa83fe84a4827bcc8401c024ae4be63cb3341b2b963cef20fc7ed3bac0c",
+ "cases_sha256": "a3c0dff89aeb9dca01c17969b00af2b96d5a53c4918defc229f4397c83b30133",
+ "credit_before": {
+  "currentBalance": "30.00",
+  "expiresAt": "2026-12-01T00:00:00+00:00"
+ },
+ "expected_seconds": 3.0,
+ "job": "grover",
+ "job_id": "01a1fb31-46a6-717f-b8c1-3e3978ead4c4",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "garnet:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-11-20T23:01:13Z"
+}
