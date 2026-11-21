@@ -5,17 +5,23 @@ The logical programs of results/iqm/proposals/packed-pauli-response-garnet/
 four-qubit cells, four sentinel cells and one load cell, in a sparse arm that prepares the
 sentinels and a dense arm that prepares every cell. This script compiles each program onto
 Garnet's native basis (r, cz) with the proposal's physical map as a fixed initial layout and
-no routing, refuses a SWAP, a CZ off the calibration's loci and any layout drift, keeps the
-preparation/readout barrier over all twenty qubits, reads all twenty qubits in one joint
-measure in logical bit order, and writes one 36-circuit job in the iqm_jobs case format. The
+no routing, compiling the preparation half and the readout half of a program separately and
+joining them with one barrier over all twenty qubits, refuses a SWAP, a CZ off the calibration's
+loci, any layout drift and a gate that crosses the barrier, reads all twenty qubits in one joint
+measure in logical bit order, and inserts one fixed buffer circuit (a joint measure with no gate)
+before every science circuit, so the dense and the sparse circuit of a pair follow the same
+predecessor. The job holds 68 circuits in the iqm_jobs case format; the buffers' readings are the
+carryover diagnostic of the analysis. The
 prediction holds, per circuit and cell, the ideal outcome distribution of the logical cell and
-a noisy one from an exact four-qubit density matrix of the native cell under iqm_sim's
-calibration noise model (PRX and CZ depolarizing error, unheralded readout assignment; idle
-relaxation and crosstalk are outside the model, so the modeled dense-minus-sparse response is
-exactly zero). The analysis scores each shot's sentinel cells with packed_pauli_probe.score,
-forms the primary response B_Y - K_Y from the two Y-quadrature sentinel cells (2 and 3), takes
-each pair's integer numerator difference dense minus sparse in units of 2g, and applies the
-exact paired assignment test of packed_pauli_analysis. Mock outcomes never enter the analysis.
+an independent-cell gate and readout baseline from an exact four-qubit density matrix of the native
+cell under iqm_sim's calibration noise model (PRX and CZ depolarizing error, unheralded readout
+assignment). The baseline omits initialization error, relaxation, leakage, coherent error, cell
+coupling and carryover, so its dense-minus-sparse response is exactly zero. The analysis scores each shot's
+sentinel cells with packed_pauli_probe.score, forms the primary response B_Y - K_Y from the two Y-quadrature
+sentinel cells (2 and 3), takes each pair's integer numerator difference dense minus sparse in units of 2g,
+and applies the exact paired assignment test of packed_pauli_analysis. Mock outcomes never enter the
+analysis. The buffers' excited populations after a dense predecessor minus after a sparse one form the exploratory
+carryover_after_dense_minus_sparse.
 
 Usage: "$PYTHON" scripts/iqm_packed_pauli_case.py (build DIR --calibration SRC | check DIR | analyze RUN_DIR --out FILE
        [--replay] | --self-test)
@@ -24,6 +30,7 @@ Usage: "$PYTHON" scripts/iqm_packed_pauli_case.py (build DIR --calibration SRC |
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import math
@@ -38,6 +45,7 @@ import numpy as np
 from qiskit import QuantumCircuit, qasm2, transpile
 from qiskit.circuit.library import RGate
 from qiskit.quantum_info import Statevector
+from qiskit.transpiler import Layout
 from qiskit_aer import AerSimulator
 from qiskit_aer.noise import NoiseModel, depolarizing_error
 
@@ -46,7 +54,14 @@ sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
 import iqm_sim  # noqa: E402
 import packed_pauli_analysis  # noqa: E402
 import packed_pauli_probe  # noqa: E402
-from iqm_jobs import CASE_SCHEMA, JOB_SECONDS, ceiling_credits, dump  # noqa: E402
+from iqm_jobs import (  # noqa: E402
+    CANCEL_MARGIN,
+    CASE_SCHEMA,
+    JOB_SECONDS,
+    cancel_threshold_seconds,
+    ceiling_credits,
+    dump,
+)
 from iqm_signed_probe import ACTIVE_SHOT_SECONDS, DURATIONS, target_of  # noqa: E402
 
 import iqm_records  # noqa: E402
@@ -64,9 +79,23 @@ CALIBRATION_FILES = ("metrics.json", "dynamic-quantum-architecture.json")
 WIDTH = 20
 CELL = 4
 KERNEL_Y, BRIGHT_Y, KERNEL_X, BRIGHT_X = 2, 3, 0, 1
-NATIVE_OPS = frozenset({"r", "cz", "barrier", "measure"})
+NATIVE_OPS = frozenset({"r", "cz", "measure"})
 DISTRIBUTION_DIGITS = 9
-ANALYSIS_SCHEMA = "iqm-packed-pauli-garnet-analysis-v1"
+ANALYSIS_SCHEMA = "iqm-packed-pauli-garnet-analysis-v2"
+# IQM bills ceil(runtime) and iqm_jobs.collect cancels CANCEL_MARGIN seconds below the seconds the credit ceiling
+# buys, so the ceiling keeps the shot schedule plus JOB_SECONDS this far below that threshold (the retained Garnet
+# runtimes ran up to 1.5 s above their estimates).
+PLAN_HEADROOM = 2.0
+SENTINEL_CELLS = (0, 1, 2, 3)
+POPULATION = np.array([bin(label).count("1") / CELL for label in range(16)])
+BASELINE_OMISSIONS = [
+    "initialization error under one active-reset cycle (bare-zero P(1) 0.0065 to 0.0680 in the reset pilot)",
+    "relaxation during the circuit",
+    "leakage out of the computational states",
+    "coherent gate error",
+    "coupling between cells",
+    "carryover from the preceding circuit",
+]
 # Twice the bounded score g in {0, 1/2, 1}: the integer numerators the exact assignment test enumerates.
 SCORE2 = np.array([round(2 * packed_pauli_probe.score(label)) for label in range(16)], dtype=np.int64)
 SECTOR_BIT = np.array([(label >> 2) & 1 for label in range(16)], dtype=np.int64)
@@ -110,81 +139,105 @@ def layout_of(physical_map: dict[str, str], calibration: iqm_sim.Calibration) ->
     return [calibration.qubits.index(name) for name in names]
 
 
+def halves_of(source: QuantumCircuit) -> list[QuantumCircuit]:
+    """The logical program split at its one barrier into the preparation half and the readout half; a program
+    without a barrier is one half. Each half compiles on its own, so no gate crosses the barrier."""
+    cuts = [n for n, item in enumerate(source.data) if item.operation.name == "barrier"]
+    if len(cuts) > 1:
+        raise CaseError(f"{source.name}: {len(cuts)} barriers, the case admits one")
+    if not cuts:
+        return [source]
+    if len(source.data[cuts[0]].qubits) != WIDTH:
+        raise CaseError(f"{source.name}: the barrier spans fewer than the {WIDTH} qubits")
+    first, second = source.copy_empty_like(), source.copy_empty_like()
+    for n, item in enumerate(source.data):
+        if n != cuts[0]:
+            (first if n < cuts[0] else second).append(item.operation, item.qubits, item.clbits)
+    return [first, second]
+
+
 def verify_native(
-    compiled: QuantumCircuit, source: QuantumCircuit, physical_map: dict[str, str], calibration: iqm_sim.Calibration
+    compiled: QuantumCircuit, physical_map: dict[str, str], calibration: iqm_sim.Calibration, final: bool
 ) -> None:
-    """Refuse a compile that routed, left the native basis, used an uncalibrated pair or moved a qubit."""
+    """Refuse a compiled half that routed, left the native basis, used an uncalibrated pair or moved a qubit. The
+    final half alone measures, and its measured bits read the map's qubits in logical order."""
     layout = layout_of(physical_map, calibration)
     index = {q: n for n, q in enumerate(calibration.qubits)}
     for item in compiled.data:
         op = item.operation
         if op.name not in NATIVE_OPS:
-            raise CaseError(f"{compiled.name}: {op.name} is not native (a SWAP or a non-native gate)")
+            raise CaseError(f"{compiled.name}: {op.name} is not native (a SWAP, a barrier or a non-native gate)")
         qubits = [compiled.find_bit(q).index for q in item.qubits]
+        if len(qubits) == 2 and not set(qubits) <= set(layout):
+            raise CaseError(f"{compiled.name}: a two-qubit gate acts on a qubit the map does not use")
         if op.name == "cz" and frozenset(calibration.qubits[i] for i in qubits) not in calibration.cz:
             raise CaseError(f"{compiled.name}: cz on {[calibration.qubits[i] for i in qubits]} is off the CZ loci")
-        if op.name == "barrier" and sorted(qubits) != list(range(len(calibration.qubits))):
-            raise CaseError(f"{compiled.name}: a barrier spans {len(qubits)} qubits, not every qubit")
+        if op.name == "measure" and not final:
+            raise CaseError(f"{compiled.name}: a measure before the barrier")
     layout_object = compiled.layout
     if layout_object is None or layout_object.initial_index_layout(filter_ancillas=True) != layout:
         raise CaseError(f"{compiled.name}: the initial layout differs from the physical map")
-    final = layout_object.final_index_layout(filter_ancillas=True)
-    if final != list(range(len(final))) and layout_object.final_layout is not None:
-        raise CaseError(f"{compiled.name}: the final layout differs from the initial one (routing)")
-    wanted = {i: index[physical_map[str(i)]] for i in range(WIDTH)}
-    got = {
-        compiled.find_bit(item.clbits[0]).index: compiled.find_bit(item.qubits[0]).index
-        for item in compiled.data
-        if item.operation.name == "measure"
-    }
-    if got != wanted:
-        raise CaseError(f"{compiled.name}: a measured bit reads another physical qubit than the map's")
-    barriers = sum(item.operation.name == "barrier" for item in compiled.data)
-    if barriers != sum(item.operation.name == "barrier" for item in source.data):
-        raise CaseError(f"{compiled.name}: the compile changed the number of barriers")
+    if layout_object.final_layout is not None and layout_object.final_index_layout(filter_ancillas=True) != layout:
+        raise CaseError(f"{compiled.name}: the final layout differs from the fixed initial layout (routing)")
+    if final:
+        wanted = {i: index[physical_map[str(i)]] for i in range(WIDTH)}
+        got = {
+            compiled.find_bit(item.clbits[0]).index: compiled.find_bit(item.qubits[0]).index
+            for item in compiled.data
+            if item.operation.name == "measure"
+        }
+        if got != wanted:
+            raise CaseError(f"{compiled.name}: a measured bit reads another physical qubit than the map's")
 
 
 def compile_native(
     source: QuantumCircuit, name: str, physical_map: dict[str, str], calibration: iqm_sim.Calibration
-) -> QuantumCircuit:
-    """Transpile onto Garnet's target (r, cz) with the map as the fixed layout and no routing; a program that needs
-    routing fails here."""
+) -> list[QuantumCircuit]:
+    """Transpile each half of the program onto Garnet's target (r, cz) with the map as the fixed layout and no
+    routing; a program that needs routing fails here."""
     target, _ = target_of(calibration)
-    try:
-        compiled = transpile(
-            source,
-            target=target,
-            initial_layout=layout_of(physical_map, calibration),
-            routing_method="none",
-            optimization_level=1,
-        )
-    except Exception as error:
-        raise CaseError(f"{name}: compilation onto the mapped qubits without routing failed: {error}") from error
-    compiled.name = name
-    verify_native(compiled, source, physical_map, calibration)
-    return compiled
+    halves = halves_of(source)
+    parts = []
+    for number, half in enumerate(halves):
+        try:
+            compiled = transpile(
+                half,
+                target=target,
+                initial_layout=layout_of(physical_map, calibration),
+                routing_method="none",
+                optimization_level=1,
+            )
+        except Exception as error:
+            raise CaseError(f"{name}: compilation onto the mapped qubits without routing failed: {error}") from error
+        compiled.name = name
+        verify_native(compiled, physical_map, calibration, final=number == len(halves) - 1)
+        parts.append(compiled)
+    return parts
 
 
-def to_iqm_joint(compiled: QuantumCircuit, name: str, calibration: iqm_sim.Calibration) -> dict[str, Any]:
-    """A compiled circuit as an IQM circuit: prx and cz as iqm_signed_probe.to_iqm writes them, the preparation/readout
-    barrier kept as one barrier instruction over every qubit, and one joint measure in logical bit order."""
+def to_iqm_joint(parts: list[QuantumCircuit], name: str, calibration: iqm_sim.Calibration) -> dict[str, Any]:
+    """The compiled halves as one IQM circuit: prx and cz as iqm_signed_probe.to_iqm writes them, one barrier over
+    every qubit between the halves, and one joint measure in logical bit order."""
     names = calibration.qubits
     instructions: list[dict[str, Any]] = []
     measured: dict[int, str] = {}
-    for item in compiled.data:
-        op = item.operation
-        locus = [names[compiled.find_bit(q).index] for q in item.qubits]
-        if op.name == "r":
-            angle, phase = (float(p) for p in op.params)
-            instructions.append({"name": "prx", "locus": locus, "args": {"angle": angle, "phase": phase}})
-        elif op.name == "cz":
-            instructions.append({"name": "cz", "locus": locus, "args": {}})
-        elif op.name == "barrier":
-            instructions.append({"name": "barrier", "locus": ordered(locus), "args": {}})
-        elif op.name == "measure":
-            measured[compiled.find_bit(item.clbits[0]).index] = locus[0]
-        else:
-            raise CaseError(f"{name}: {op.name} is not a Garnet native operation")
+    for number, compiled in enumerate(parts):
+        if number:
+            instructions.append({"name": "barrier", "locus": ordered(names), "args": {}})
+        for item in compiled.data:
+            op = item.operation
+            locus = [names[compiled.find_bit(q).index] for q in item.qubits]
+            if op.name == "r":
+                angle, phase = (float(p) for p in op.params)
+                instructions.append({"name": "prx", "locus": locus, "args": {"angle": angle, "phase": phase}})
+            elif op.name == "cz":
+                instructions.append({"name": "cz", "locus": locus, "args": {}})
+            elif op.name == "measure":
+                measured[compiled.find_bit(item.clbits[0]).index] = locus[0]
+            else:
+                raise CaseError(f"{name}: {op.name} is not a Garnet native operation")
+    if sorted(measured) != list(range(WIDTH)):
+        raise CaseError(f"{name}: the joint measure does not read all {WIDTH} bits")
     instructions.append(
         {"name": "measure", "locus": [measured[bit] for bit in range(len(measured))], "args": {"key": "c"}}
     )
@@ -208,25 +261,36 @@ def cell_qubits(physical_map: dict[str, str], cell: int) -> list[str]:
     return [physical_map[str(CELL * cell + bit)] for bit in range(CELL)]
 
 
-def logical_cell_distribution(source: QuantumCircuit, cell: int) -> np.ndarray:
-    """The ideal outcome distribution of one cell of the logical program (label bit b is the cell's qubit b)."""
+def logical_cell_circuit(source: QuantumCircuit, cell: int, prefix: bool = False) -> QuantumCircuit:
+    """The gates of one cell of the logical program (label bit b is the cell's qubit b), up to the barrier when
+    prefix is set."""
     part = QuantumCircuit(CELL)
     low = CELL * cell
     for item in source.data:
         indices = [source.find_bit(q).index for q in item.qubits]
+        if item.operation.name == "barrier" and prefix:
+            break
         if item.operation.name in ("barrier", "measure"):
             continue
         if all(low <= i < low + CELL for i in indices):
             part.append(item.operation, [i - low for i in indices])
         elif any(low <= i < low + CELL for i in indices):
             raise CaseError(f"{source.name}: a gate couples cell {cell} to another cell")
-    return np.asarray(Statevector(part).probabilities(), dtype=float)
+    return part
 
 
-def native_cell_circuit(circuit: dict[str, Any], qubits: list[str]) -> QuantumCircuit:
+def logical_cell_distribution(source: QuantumCircuit, cell: int) -> np.ndarray:
+    """The ideal outcome distribution of one cell of the logical program."""
+    return np.asarray(Statevector(logical_cell_circuit(source, cell)).probabilities(), dtype=float)
+
+
+def native_cell_circuit(circuit: dict[str, Any], qubits: list[str], prefix: bool = False) -> QuantumCircuit:
+    """The native gates acting on one cell's qubits, up to the barrier when prefix is set."""
     part = QuantumCircuit(CELL)
     index = {q: b for b, q in enumerate(qubits)}
     for op in circuit["instructions"]:
+        if op["name"] == "barrier" and prefix:
+            break
         if op["name"] in ("barrier", "measure"):
             continue
         if all(q in index for q in op["locus"]):
@@ -238,6 +302,25 @@ def native_cell_circuit(circuit: dict[str, Any], qubits: list[str]) -> QuantumCi
         elif any(q in index for q in op["locus"]):
             raise CaseError(f"{circuit['name']}: an operation on {op['locus']} couples this cell to another")
     return part
+
+
+def verify_barrier_order(circuit: dict[str, Any], source: QuantumCircuit, physical_map: dict[str, str]) -> None:
+    """Refuse an IQM circuit whose barrier differs from the logical program's in number or in the state it
+    follows: every cell holds the logical preparation state (up to a global phase) when the barrier is reached, so
+    no preparation gate follows it and no readout rotation precedes it."""
+    barriers = [n for n, op in enumerate(circuit["instructions"]) if op["name"] == "barrier"]
+    wanted = sum(item.operation.name == "barrier" for item in source.data)
+    if len(barriers) != wanted:
+        raise CaseError(f"{circuit['name']}: {len(barriers)} barriers, the logical program has {wanted}")
+    if not barriers:
+        return
+    for cell in range(WIDTH // CELL):
+        logical = Statevector(logical_cell_circuit(source, cell, prefix=True)).data
+        native = Statevector(native_cell_circuit(circuit, cell_qubits(physical_map, cell), prefix=True)).data
+        if abs(np.vdot(logical, native)) < 1 - 1e-9:
+            raise CaseError(
+                f"{circuit['name']}: cell {cell} is not in its preparation state at the barrier (barrier order)"
+            )
 
 
 def cell_noise_model(calibration: iqm_sim.Calibration, qubits: list[str]) -> NoiseModel:
@@ -287,14 +370,18 @@ def means(distribution: np.ndarray) -> dict[str, float]:
 
 
 def circuit_task(item: tuple[int, dict[str, Any], str, dict[str, str], str]) -> dict[str, Any]:
-    """Compile one logical program and predict each of its five cells."""
+    """Compile one logical program (or the buffer, a joint measure with no gate) and predict each of its five cells."""
     number, row, text, physical_map, calibration_dir = item
     calibration = iqm_sim.Calibration.from_directory(Path(calibration_dir))
     name = Path(row["file"]).stem
-    source = qasm2.loads(text, custom_instructions=qasm2.LEGACY_CUSTOM_INSTRUCTIONS)
+    if row["kind"] == "buffer":
+        source = QuantumCircuit(WIDTH, WIDTH)
+        source.measure(range(WIDTH), range(WIDTH))
+    else:
+        source = qasm2.loads(text, custom_instructions=qasm2.LEGACY_CUSTOM_INSTRUCTIONS)
     source.name = name
-    compiled = compile_native(source, name, physical_map, calibration)
-    native = to_iqm_joint(compiled, name, calibration)
+    native = to_iqm_joint(compile_native(source, name, physical_map, calibration), name, calibration)
+    verify_barrier_order(native, source, physical_map)
     cells = []
     for cell in range(len(physical_map) // CELL):
         qubits = cell_qubits(physical_map, cell)
@@ -303,18 +390,18 @@ def circuit_task(item: tuple[int, dict[str, Any], str, dict[str, str], str]) -> 
         noiseless = np.asarray(Statevector(part).probabilities(), dtype=float)
         if float(np.abs(noiseless - ideal).max()) > 1e-9:
             raise CaseError(f"{name}: cell {cell} compiled to another distribution than the logical program's")
-        noisy = noisy_cell_distribution(part, calibration, qubits)
+        baseline = noisy_cell_distribution(part, calibration, qubits)
         cells.append(
             {
                 "cell": cell,
                 "qubits": qubits,
                 "ideal": means(ideal),
-                "noisy": means(noisy),
+                "baseline": means(baseline),
                 "ideal_distribution": [round(float(v), DISTRIBUTION_DIGITS) for v in ideal],
-                "noisy_distribution": [round(float(v), DISTRIBUTION_DIGITS) for v in noisy],
+                "baseline_distribution": [round(float(v), DISTRIBUTION_DIGITS) for v in baseline],
             }
         )
-    role = {k: row[k] for k in ("kind", "pair", "dense", "reference") if k in row}
+    role = {k: row[k] for k in ("kind", "pair", "dense", "reference", "before") if k in row}
     return {
         "number": number,
         "circuit": native,
@@ -332,17 +419,33 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
     proposal, texts = load_proposal()
     physical_map = proposal["physical_map_to_be_applied_by_native_compiler"]
     layout_of(physical_map, calibration)
+    # One buffer, a joint measure of the twenty qubits with no gate, precedes every science circuit, so the dense and
+    # the sparse circuit of a pair follow the same predecessor; the four reference circuits keep their places.
+    entries: list[tuple[dict[str, Any], str]] = []
+    for i, row in enumerate(proposal["circuits"]):
+        if row["kind"] == "science":
+            entries.append(({"file": f"buffer-{i:03d}", "kind": "buffer", "before": Path(row["file"]).stem}, ""))
+        entries.append((row, texts[i]))
     results = ordered_map(
         circuit_task,
-        [(i, row, texts[i], physical_map, str(calibration_dir)) for i, row in enumerate(proposal["circuits"])],
+        [(n, row, text, physical_map, str(calibration_dir)) for n, (row, text) in enumerate(entries)],
     )
     shots = proposal["shots_per_circuit"]
     files = {r["record"]["file"]: dump(r["circuit"]) for r in results}
     for r in results:
         if len(r["circuit"]["instructions"]) > 10000:
             raise CaseError(f"{r['record']['name']}: more than Garnet's 10000 instructions")
+    buffers = [r["circuit"]["instructions"] for r in results if r["record"]["kind"] == "buffer"]
+    if len(buffers) != 32 or any(b != buffers[0] for b in buffers):
+        raise CaseError("the 32 buffers are not one fixed circuit")
     expected = round(shots * sum(ACTIVE_SHOT_SECONDS + r["shot_path_seconds"] for r in results), 3)
-    ceilings = {qc: ceiling_credits(expected, PRICE[qc], JOB_SECONDS) for qc in QCS}
+    # The credits buy whole seconds; collect cancels CANCEL_MARGIN below them, and the plan keeps PLAN_HEADROOM under
+    # that threshold. Cancellation is best effort: collect polls, and an execution that has ended is never cancelled.
+    ceilings = {qc: ceiling_credits(expected + PLAN_HEADROOM + CANCEL_MARGIN, PRICE[qc], JOB_SECONDS) for qc in QCS}
+    if JOB_SECONDS + expected > cancel_threshold_seconds(ceilings[QC], PRICE[QC]) - PLAN_HEADROOM:
+        raise CaseError(
+            f"{expected} s of shots plus {JOB_SECONDS} s leave less than {PLAN_HEADROOM} s below the cancel threshold"
+        )
     if ceilings[QC] > proposal["budget"]["maximum_planned_credits"]:
         raise CaseError(f"{ceilings[QC]} credits exceed the proposal's {proposal['budget']['maximum_planned_credits']}")
     records = [r["record"] for r in results]
@@ -354,13 +457,18 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
         "primary": "B_Y - K_Y of sentinel cells 3 and 2; pair statistic dense minus sparse in units of 2g",
         "circuits": records,
         "predicted_primary": {
-            r["name"]: {"ideal": primary_of(r["cells"], "ideal"), "noisy": primary_of(r["cells"], "noisy")}
+            r["name"]: {"ideal": primary_of(r["cells"], "ideal"), "baseline": primary_of(r["cells"], "baseline")}
             for r in science
         },
         "predicted_pair_difference": 0,
         "model": (
-            "exact four-qubit density matrix per cell: iqm_sim depolarizing PRX and CZ, unheralded readout "
-            "assignment; cells independent, no idle relaxation, crosstalk, leakage or coherent error"
+            "independent-cell gate and readout baseline: exact four-qubit density matrix per cell under iqm_sim "
+            "depolarizing PRX and CZ error and unheralded readout assignment error"
+        ),
+        "baseline_omissions": BASELINE_OMISSIONS,
+        "buffers": (
+            "one fixed buffer circuit (a joint measure of the twenty qubits, no gate) precedes every science circuit; "
+            "its readings are the carryover diagnostic carryover_after_dense_minus_sparse"
         ),
     }
     files["prediction.json"] = dump(prediction)
@@ -379,7 +487,8 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
             "case": CASE,
             "question": (
                 "Does preparing every cell of Garnet's five four-qubit cells, against only the four sentinel cells, "
-                "change the sentinel Y-quadrature response B_Y - K_Y of 16 randomized dense/sparse pairs?"
+                "change the sentinel Y-quadrature response B_Y - K_Y of 16 randomized dense/sparse pairs, each "
+                "circuit preceded by one fixed buffer measure?"
             ),
             "qcs": QCS,
             "jobs": [job],
@@ -441,6 +550,45 @@ def cell_summary(labels: np.ndarray) -> dict[str, float]:
     }
 
 
+def carryover_contrast(roles: list[dict[str, Any]], cells_of: list[list[np.ndarray]]) -> dict[str, Any]:
+    """The buffers' excited population after a dense predecessor minus after a sparse one. A buffer's predecessor is
+    the circuit before it in the job (the first circuit's is the last circuit of the previous shot); a buffer after a
+    reference circuit joins neither arm. Per sentinel cell and for the whole register, each buffer contributes its
+    mean bit over its shots, and the standard error is Welch's over the buffers of each arm."""
+    keys = [*(str(cell) for cell in SENTINEL_CELLS), "register"]
+    arms: dict[bool, list[list[float]]] = {True: [], False: []}
+    after_reference: dict[str, Any] = {}
+    for number, role in enumerate(roles):
+        if role["kind"] != "buffer":
+            continue
+        predecessor = roles[number - 1]
+        cells = [float(POPULATION[labels].mean()) for labels in cells_of[number]]
+        row = [*(cells[cell] for cell in SENTINEL_CELLS), float(np.mean(cells))]
+        if predecessor["kind"] == "science":
+            arms[bool(predecessor["dense"])].append(row)
+        else:
+            after_reference[role["name"]] = {"predecessor": predecessor["name"], **dict(zip(keys, row, strict=True))}
+    if min(len(arms[True]), len(arms[False])) < 2:
+        raise CaseError("fewer than two buffers follow a dense or a sparse circuit")
+    dense, sparse = np.array(arms[True]), np.array(arms[False])
+    difference = {}
+    for column, key in enumerate(keys):
+        a, b = dense[:, column], sparse[:, column]
+        difference[key] = {
+            "dense_predecessor_mean": float(a.mean()),
+            "sparse_predecessor_mean": float(b.mean()),
+            "difference": float(a.mean() - b.mean()),
+            "standard_error": float(math.sqrt(a.var(ddof=1) / len(a) + b.var(ddof=1) / len(b))),
+        }
+    return {
+        "definition": "buffer excited population after a dense predecessor minus after a sparse one",
+        "buffers_after_dense": len(arms[True]),
+        "buffers_after_sparse": len(arms[False]),
+        "difference": difference,
+        "after_reference": after_reference,
+    }
+
+
 def analyze(run_dir: Path) -> dict[str, Any]:
     run = iqm_records.read_run(run_dir)
     # Mock outcomes are random bits and never enter the analysis.
@@ -488,8 +636,8 @@ def analyze(run_dir: Path) -> dict[str, Any]:
         "mean_difference": sum(differences) / (len(order) * scale),
         "dense_response": sum(pairs[p][True] for p in order) / (len(order) * scale),
         "sparse_response": sum(pairs[p][False] for p in order) / (len(order) * scale),
-        "predicted_noisy_response": float(
-            np.mean([predicted[r["name"]]["noisy"] for r in roles if r["kind"] == "science"])
+        "predicted_baseline_response": float(
+            np.mean([predicted[r["name"]]["baseline"] for r in roles if r["kind"] == "science"])
         ),
         "predicted_ideal_response": float(
             np.mean([predicted[r["name"]]["ideal"] for r in roles if r["kind"] == "science"])
@@ -529,6 +677,7 @@ def analyze(run_dir: Path) -> dict[str, Any]:
                 "assignment_error": float(np.mean(bits != role["reference"])),
             }
     exploratory["product_reference_assignment_error"] = references
+    exploratory["carryover_after_dense_minus_sparse"] = carryover_contrast(roles, cells_of)
     exploratory["drift_first_vs_last_reference_error"] = {
         str(value): [
             references[r["name"]]["assignment_error"]
@@ -560,18 +709,25 @@ def largest_remainder(distribution: list[float], total: int) -> list[int]:
 
 
 def synthetic_shots(prediction: dict[str, Any], shots: int, mode: str) -> list[dict[str, Any]]:
-    """Measurements of a model device without a random generator: every cell's noisy distribution rounded to whole
+    """Measurements of a model device without a random generator: every cell's baseline distribution rounded to whole
     shots and laid out by a fixed stride. null: the arms agree; alternating: one sentinel shot of the bright cell
     reads high in the dense arm of even pairs and in the sparse arm of odd pairs, so the pair differences cancel;
-    planted: the dense arm's bright Y cell repeats the kernel Y cell of the same shot in 30 % of shots."""
+    planted: the dense arm's bright Y cell repeats the kernel Y cell of the same shot in 30 % of shots; carryover:
+    a buffer that follows a dense circuit reads bit 0 of every sentinel cell high in 10 % of shots, and the science
+    circuits keep their null readings (lag-one carryover into the buffer alone)."""
     high = int(np.flatnonzero(SCORE2 == 2)[0])
     out = []
-    for role in prediction["circuits"]:
+    for number, role in enumerate(prediction["circuits"]):
         labels = []
         for cell in role["cells"]:
-            counts = largest_remainder(cell["noisy_distribution"], shots)
+            counts = largest_remainder(cell["baseline_distribution"], shots)
             flat = np.repeat(np.arange(16), counts)
             labels.append(np.roll(flat, 37 * cell["cell"]))
+        if mode == "carryover" and role["kind"] == "buffer":
+            before = prediction["circuits"][number - 1]
+            if before["kind"] == "science" and before["dense"]:
+                for cell in SENTINEL_CELLS:
+                    labels[cell][: shots // 10] |= 1
         if role["kind"] == "science":
             dense = bool(role["dense"])
             if mode == "planted" and dense:
@@ -650,16 +806,14 @@ def expect_refusal(action: Any, fragment: str) -> None:
 
 
 def refusal_checks(calibration: iqm_sim.Calibration, physical_map: dict[str, str]) -> None:
-    """A SWAP, a CZ off the loci and an off-map layout are refused by the verifier and the compiler."""
-    source = QuantumCircuit(WIDTH, WIDTH)
-    source.h(0)
-    source.measure(range(WIDTH), range(WIDTH))
+    """A SWAP, a CZ off the loci, a program that needs routing, an off-map initial layout, a drifted final layout and
+    a barrier that a gate crossed are refused."""
     layout = layout_of(physical_map, calibration)
     qiskit_names = calibration.qubits
     swapped = QuantumCircuit(len(qiskit_names), WIDTH, name="swap")
     swapped.swap(0, 1)
     swapped.measure(range(WIDTH), range(WIDTH))
-    expect_refusal(lambda: verify_native(swapped, source, physical_map, calibration), "not native")
+    expect_refusal(lambda: verify_native(swapped, physical_map, calibration, True), "not native")
     uncoupled = next(
         (a, b)
         for a in range(len(qiskit_names))
@@ -668,7 +822,7 @@ def refusal_checks(calibration: iqm_sim.Calibration, physical_map: dict[str, str
     )
     off = QuantumCircuit(len(qiskit_names), WIDTH, name="off-locus")
     off.cz(*uncoupled)
-    expect_refusal(lambda: verify_native(off, source, physical_map, calibration), "off the CZ loci")
+    expect_refusal(lambda: verify_native(off, physical_map, calibration, True), "off the CZ loci")
     # A program that needs a CZ between qubits the map places on uncoupled sites cannot compile without routing.
     far = QuantumCircuit(WIDTH, WIDTH, name="far")
     inverse = {name: i for i, name in enumerate(physical_map[str(i)] for i in range(WIDTH))}
@@ -676,14 +830,35 @@ def refusal_checks(calibration: iqm_sim.Calibration, physical_map: dict[str, str
     far.cx(inverse[a_name], inverse[b_name])
     far.measure(range(WIDTH), range(WIDTH))
     expect_refusal(lambda: compile_native(far, "far", physical_map, calibration), "without routing failed")
-    # An off-map layout: the compile of a circuit under one map checked against another.
-    rotated = {str(i): physical_map[str((i + 1) % WIDTH)] for i in range(WIDTH)}
     plain = QuantumCircuit(WIDTH, WIDTH, name="plain")
     plain.measure(range(WIDTH), range(WIDTH))
-    compiled = compile_native(plain, "plain", physical_map, calibration)
-    expect_refusal(lambda: verify_native(compiled, plain, rotated, calibration), "differs from the physical map")
+    (compiled,) = compile_native(plain, "plain", physical_map, calibration)
+    # An off-map layout: the compile of a circuit under one map checked against another.
+    rotated = {str(i): physical_map[str((i + 1) % WIDTH)] for i in range(WIDTH)}
+    expect_refusal(lambda: verify_native(compiled, rotated, calibration, True), "differs from the physical map")
+    # A final layout that moved qubits (a routed result) differs from the fixed initial layout.
+    drifted = copy.deepcopy(compiled)
+    if drifted.layout is None:
+        raise RuntimeError("the compiled circuit holds no layout")
+    permutation = Layout({q: n for n, q in enumerate(drifted.qubits)})
+    permutation.swap(0, 1)
+    drifted.layout.final_layout = permutation
+    expect_refusal(lambda: verify_native(drifted, physical_map, calibration, True), "final layout differs")
     if layout_of(physical_map, calibration) != layout:
         raise RuntimeError("layout_of is not deterministic")
+    # A gate that crossed the barrier: the barrier moved before every preparation gate or after every readout gate.
+    program = QuantumCircuit(WIDTH, WIDTH, name="order")
+    program.h(0)
+    program.barrier()
+    program.h(0)
+    program.measure(range(WIDTH), range(WIDTH))
+    circuit = to_iqm_joint(compile_native(program, "order", physical_map, calibration), "order", calibration)
+    verify_barrier_order(circuit, program, physical_map)
+    barrier = next(op for op in circuit["instructions"] if op["name"] == "barrier")
+    body = [op for op in circuit["instructions"] if op is not barrier]
+    for position in (0, len(body) - 1):
+        moved = {"name": "order", "instructions": [*body[:position], barrier, *body[position:]]}
+        expect_refusal(lambda moved=moved: verify_barrier_order(moved, program, physical_map), "barrier order")
 
 
 def self_test() -> str:
@@ -699,25 +874,48 @@ def self_test() -> str:
         prediction = json.loads((case_dir / "prediction.json").read_text(encoding="utf-8"))
         if case["prediction_sha256"] != sha256((case_dir / "prediction.json").read_bytes()):
             raise RuntimeError("cases.json does not bind the prediction it was built with")
-        circuits = [json.loads(p.read_text(encoding="utf-8")) for p in sorted((case_dir / "circuits").glob("*.json"))]
-        if len(circuits) != 36 or any(not c["instructions"][-1]["name"] == "measure" for c in circuits):
-            raise RuntimeError("the job is not 36 circuits ending in one joint measure")
+        job = case["jobs"][0]
+        kinds = [r["kind"] for r in prediction["circuits"]]
+        if len(job["circuits"]) != 68 or kinds.count("buffer") != 32 or kinds.count("science") != 32:
+            raise RuntimeError(f"the job is not 68 circuits of 32 science, 32 buffer and 4 reference ({len(kinds)})")
+        if any((kinds[n - 1] == "buffer") != (kind == "science") for n, kind in enumerate(kinds)):
+            raise RuntimeError("a science circuit does not follow its buffer")
+        circuits = [json.loads((case_dir / c["file"]).read_text(encoding="utf-8")) for c in job["circuits"]]
+        if any(
+            c["instructions"][-1]["name"] != "measure" or len(c["instructions"][-1]["locus"]) != WIDTH for c in circuits
+        ):
+            raise RuntimeError("a circuit does not end in one joint twenty-qubit measure")
         results = {}
-        for mode in ("null", "alternating", "planted"):
+        for mode in ("null", "alternating", "planted", "carryover"):
             run = synthetic_run(case_dir, Path(scratch) / mode, mode)
-            results[mode] = analyze(run)["primary"]
-        if Fraction(results["null"]["p_value"]) != 1 or results["null"]["reject_at_0.05"]:
-            raise RuntimeError(f"a null device reads {results['null']}")
-        if results["alternating"]["reject_at_0.05"]:
-            raise RuntimeError(f"balanced pair differences reject: {results['alternating']}")
-        if Fraction(results["planted"]["p_value"]) > Fraction(1, 128):
-            raise RuntimeError(f"a planted response reads {results['planted']}")
+            results[mode] = analyze(run)
+        primary = {mode: result["primary"] for mode, result in results.items()}
+        diagnostic = {
+            mode: result["exploratory"]["carryover_after_dense_minus_sparse"]["difference"]
+            for mode, result in results.items()
+        }
+        if Fraction(primary["null"]["p_value"]) != 1 or primary["null"]["reject_at_0.05"]:
+            raise RuntimeError(f"a null device reads {primary['null']}")
+        if primary["alternating"]["reject_at_0.05"]:
+            raise RuntimeError(f"balanced pair differences reject: {primary['alternating']}")
+        if Fraction(primary["planted"]["p_value"]) > Fraction(1, 128):
+            raise RuntimeError(f"a planted response reads {primary['planted']}")
+        if any(abs(row["difference"]) > 1e-12 for row in diagnostic["null"].values()):
+            raise RuntimeError(f"a null device reads a carryover {diagnostic['null']}")
+        if any(row["difference"] <= 0.01 for row in diagnostic["carryover"].values()):
+            raise RuntimeError(f"a planted lag-one carryover reads {diagnostic['carryover']}")
+        for key in ("p_value", "numerator_2g_dense_minus_sparse"):
+            if primary["carryover"][key] != primary["null"][key]:
+                raise RuntimeError(f"a carryover into the buffers moved the primary {key}")
         mock = synthetic_run(case_dir, Path(scratch) / "mock", "null", qc="garnet:mock")
         expect_refusal(lambda: analyze(mock), "not a")
     return (
-        f"packed Pauli Garnet case: 36 circuits, sparse arm cells {prediction['circuits'][2]['cells'][0]['qubits']}; "
-        f"null p = {results['null']['p_value']}, planted p = {results['planted']['p_value']}; "
-        "a SWAP, an off-locus CZ, a routed program, an off-map layout and a mock run are refused"
+        f"packed Pauli Garnet case: {len(kinds)} circuits ({job['expected_seconds']} s, "
+        f"ceiling {job['max_credits'][QC]} credits); null p = {primary['null']['p_value']}, "
+        f"planted p = {primary['planted']['p_value']}, planted "
+        f"carryover register difference {diagnostic['carryover']['register']['difference']:.4f} with primary p "
+        f"{primary['carryover']['p_value']}; a SWAP, an off-locus CZ, a routed program, an off-map or drifted layout, "
+        "a crossed barrier and a mock run are refused"
     )
 
 
