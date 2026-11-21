@@ -10376,6 +10376,6 @@
    "noisy": 0.822845854
   }
  },
- "primary": "B_Y - K_Y of sentinel cells 3 and 2, mean g per shot; pair statistic: dense minus sparse in units of 2g",
+ "primary": "B_Y - K_Y of sentinel cells 3 and 2; pair statistic dense minus sparse in units of 2g",
  "proposal_sha256": "aa93f70357e23e8d1f49ac9f1f041e59bdb6923d6741312a4294f14caba32c35"
 }

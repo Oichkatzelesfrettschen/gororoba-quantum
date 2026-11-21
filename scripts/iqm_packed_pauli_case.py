@@ -1,18 +1,21 @@
 """Packed Pauli response case for IQM Garnet: the 36 logical programs compiled natively, bound to a prediction.
 
-The logical programs of results/iqm/proposals/packed-pauli-response-garnet/ (docs/design/packed-pauli-response-current-balance.md)
-run twenty qubits as five disjoint four-qubit cells, four sentinel cells and one load cell, in a sparse arm that
-prepares the sentinels and a dense arm that prepares every cell. This script compiles each program onto Garnet's
-native basis (r, cz) with the proposal's physical map as a fixed initial layout and no routing, refuses a SWAP, a CZ
-off the calibration's loci and any layout drift, keeps the preparation/readout barrier over all twenty qubits, reads
-all twenty qubits in one joint measure in logical bit order, and writes one 36-circuit job in the iqm_jobs case
-format. The prediction holds, per circuit and cell, the ideal outcome distribution of the logical cell and a noisy one
-from an exact four-qubit density matrix of the native cell under iqm_sim's calibration noise model (PRX and CZ
-depolarizing error, unheralded readout assignment; idle relaxation and crosstalk are outside the model, so the
-modeled dense-minus-sparse response is exactly zero). The analysis scores each shot's sentinel cells with
-packed_pauli_probe.score, forms the primary response B_Y - K_Y from the two Y-quadrature sentinel cells (2 and 3),
-takes each pair's integer numerator difference dense minus sparse in units of 2g, and applies the exact
-paired assignment test of packed_pauli_analysis. Mock outcomes never enter the analysis.
+The logical programs of results/iqm/proposals/packed-pauli-response-garnet/
+(docs/design/packed-pauli-response-current-balance.md) run twenty qubits as five disjoint
+four-qubit cells, four sentinel cells and one load cell, in a sparse arm that prepares the
+sentinels and a dense arm that prepares every cell. This script compiles each program onto
+Garnet's native basis (r, cz) with the proposal's physical map as a fixed initial layout and
+no routing, refuses a SWAP, a CZ off the calibration's loci and any layout drift, keeps the
+preparation/readout barrier over all twenty qubits, reads all twenty qubits in one joint
+measure in logical bit order, and writes one 36-circuit job in the iqm_jobs case format. The
+prediction holds, per circuit and cell, the ideal outcome distribution of the logical cell and
+a noisy one from an exact four-qubit density matrix of the native cell under iqm_sim's
+calibration noise model (PRX and CZ depolarizing error, unheralded readout assignment; idle
+relaxation and crosstalk are outside the model, so the modeled dense-minus-sparse response is
+exactly zero). The analysis scores each shot's sentinel cells with packed_pauli_probe.score,
+forms the primary response B_Y - K_Y from the two Y-quadrature sentinel cells (2 and 3), takes
+each pair's integer numerator difference dense minus sparse in units of 2g, and applies the
+exact paired assignment test of packed_pauli_analysis. Mock outcomes never enter the analysis.
 
 Usage: "$PYTHON" scripts/iqm_packed_pauli_case.py (build DIR --calibration SRC | check DIR | analyze RUN_DIR --out FILE
        [--replay] | --self-test)
@@ -348,7 +351,7 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
         "calibration_set": calibration.set_id,
         "proposal_sha256": sha256((PROPOSAL / "proposal.json").read_bytes()),
         "physical_map": physical_map,
-        "primary": "B_Y - K_Y of sentinel cells 3 and 2, mean g per shot; pair statistic: dense minus sparse in units of 2g",
+        "primary": "B_Y - K_Y of sentinel cells 3 and 2; pair statistic dense minus sparse in units of 2g",
         "circuits": records,
         "predicted_primary": {
             r["name"]: {"ideal": primary_of(r["cells"], "ideal"), "noisy": primary_of(r["cells"], "noisy")}
@@ -363,9 +366,7 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
     files["prediction.json"] = dump(prediction)
     job = {
         "job": "packed",
-        "circuits": [
-            {"file": r["file"], "sha256": sha256(files[r["file"]].encode())} for r in records
-        ],
+        "circuits": [{"file": r["file"], "sha256": sha256(files[r["file"]].encode())} for r in records],
         "shots": shots,
         # The job compiles against the calibration set the prediction was made from, or fails if it is gone.
         "options": {**OPTIONS, "calibration_set_id": {QC: calibration.set_id}},
@@ -495,8 +496,8 @@ def analyze(run_dir: Path) -> dict[str, Any]:
         ),
     }
     exploratory: dict[str, Any] = {"note": "exploratory: no decision rests on these"}
-    dense_x = []
-    sparse_x = []
+    dense_x: list[float] = []
+    sparse_x: list[float] = []
     cell_gap: dict[int, list[float]] = {}
     for p in order:
         for dense, bucket in ((True, dense_x), (False, sparse_x)):
@@ -529,7 +530,11 @@ def analyze(run_dir: Path) -> dict[str, Any]:
             }
     exploratory["product_reference_assignment_error"] = references
     exploratory["drift_first_vs_last_reference_error"] = {
-        str(value): [references[r["name"]]["assignment_error"] for r in roles if r["kind"] == "reference" and r["reference"] == value]
+        str(value): [
+            references[r["name"]]["assignment_error"]
+            for r in roles
+            if r["kind"] == "reference" and r["reference"] == value
+        ]
         for value in (0, 1)
     }
     return {
@@ -573,7 +578,7 @@ def synthetic_shots(prediction: dict[str, Any], shots: int, mode: str) -> list[d
                 cut = (3 * shots) // 10
                 labels[BRIGHT_Y][:cut] = labels[KERNEL_Y][:cut]
             if mode == "alternating" and dense == (role["pair"] % 2 == 0):
-                labels[BRIGHT_Y][0] = high
+                labels[BRIGHT_Y][int(np.flatnonzero(SCORE2[labels[BRIGHT_Y]] != 2)[0])] = high
         bits = np.zeros((shots, WIDTH), dtype=np.int64)
         for cell, label in enumerate(labels):
             for bit in range(CELL):
