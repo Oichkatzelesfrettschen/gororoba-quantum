@@ -397,15 +397,16 @@ about a thousand generators.
 
 ## Orchestrator note after 2w: state of deliverables 1 to 4 and the first attaching-map sub-step
 
-The plan steps in `docs/state/plans/a5-kernel-attachments.json` lag the ledger. Read against the
-[ledger](../evidence/a5-kernel-attachments/ledger.md) rows 1 to 2w, the four deliverables stand as follows.
+Before this note the plan steps in `docs/state/plans/a5-kernel-attachments.json` stood at `doing` and `todo` while the
+[ledger](../evidence/a5-kernel-attachments/ledger.md) recorded rows 1 to 2w; read against those rows, the four
+deliverables stand as follows.
 
 | Plan step | Evidence | Plan state and what remains |
 | --- | --- | --- |
 | incidence census | rows 1 and 1b: 33 incidences, first-order complex linearity at all 21 points, partner purity at every point | done |
-| limit sets 8 to 12 | rows 2b to 2d, 2i, 2j-c and 2l: 14 of 15 holomorphic fibers at the selected basepoints, each equal to the real limit set on the slice germ; E8-bar to `VB` imports its fiber (2q, conditional on A5-009 through degree 7) | todo (the plan admits one active step); open: the E8-bar to `VB` real limit set, variation along the boundary orbit (2r and 2w sample the boost only), and arcs that leave the slice on `V` and `VB` |
-| limit sets into nullity 16 | rows 2k-a to 2m and 2q: eight 12-to-16 fibers computed, the ten 8-to-16 fibers imported from the exceptional-fiber record | todo; open: the real limit set for `Iso`, `W8` and E8-bar into `N+-` waits on a characteristic-0 fiber cone |
-| compatibility | row 2s: a composed limit lies in a linear section of the direct fiber | todo; open: `hypothesis:` through `VB` the composed limit set is the reduced section; which planes of a section through `B9` or `V` are composed limits stays open |
+| limit sets 8 to 12 | rows 2i (eight fibers) and 2j-c (six) at the selected basepoints, each equal to the real limit set on the slice germ by row 2l; rows 2c and 2d are the first-order upper bound and the arc lower bound; E8-bar to `VB` imports its fiber by row 2q, decided in every degree at 32009 and 32029 (`A5-005`) and open in characteristic 0 (`A5-315`) | todo (the plan admits one active step); open: the E8-bar to `VB` real limit set, the variation along the boundary orbit (rows 2r and 2w sample the boost only), and arcs that leave the slice on `V` and `VB` |
+| limit sets into nullity 16 | rows 2k-c (eight fibers) and 2m (their real limit sets); row 2q imports the ten 8-to-16 fibers, and row 2t with the README section "The ten blocked fibers into nullity 16 are the fiber cones of the exceptional-fiber record" decides each real limit set as a point set: `X` by `A5-270` and `A5-305`, `Iso` by `A5-446`, `W8` by `A5-448`, E8-bar conditional on `A5-421` and the slice premise of `A5-423` (`A5-425`) | todo; open: the header-slice characteristic-0 fibers (`A5-293`, `A5-346`), the non-reduced scheme structure of the E8-bar fiber on the header slice (`A5-449`, `A5-559`), and the identification of header-slice and weight-slice coordinates (`A5-583`) |
+| compatibility | row 2s: 41 chains and 136 sections, and a composed limit lies in a linear section of the direct fiber | todo; open: `hypothesis:` through `VB` the composed limit set is the reduced section, which needs a flat family over `VB`; which planes of a section through `B9` or `V` are composed limits |
 | attaching maps | none | doing: sub-step 3a below |
 
 ### Sub-step 3a: attaching maps of the eight first-order-resolved incidences
@@ -416,37 +417,49 @@ germ (2b), tangent cone and first-order image (2c), holomorphic Schur fiber (2i)
 
 Objects. The source closure is complex-algebraic (2l, consequence 2), so its transverse germ `(Z, 0)` of complex
 dimension `d` has a link `L = Z meet S_eps`, a real `(2d - 1)`-dimensional space. The Gauss map
-`kappa: Z minus 0 -> Gr(4, K_0)` extends continuously to the blow-up `Bl_0 Z` exactly when one blow-up resolves it,
-and on the exceptional divisor `E = P(C_0 Z)` it equals the projectivized first-order map `phi`. The attaching map
-is the composite `L -> E -> Lambda`, where `L -> E` is the circle bundle of the tautological line bundle of `E`
-(the boundary of a tubular neighbourhood of `E` in `Bl_0 Z`) and `E -> Lambda` is `phi`. The sphere-union map
-sends `(P, v)`, `P` in `Lambda` and `v` a unit vector of `P`, to `v` in `S(K_0)`: the unit sphere bundle of the
-tautological 4-plane bundle restricted to `Lambda`.
+`kappa: Z minus 0 -> Gr(4, K_0)` extends continuously to the blow-up `Bl_0 Z` when one blow-up resolves it, and on
+the exceptional divisor `E = P(C_0 Z)` it equals the projectivized first-order map `phi`. That extension fixes the map
+on `E` only. The link enters through a conical structure: where the germ is analytically equivalent to its tangent
+cone (certificate 1 below), that equivalence identifies `L` with the unit circle bundle `p: S(O_E(-1)) -> E` and makes
+`kappa` on `L` homotopic to `phi o p` through the radial deformation. The local attaching datum at the selected
+basepoint is that homotopy class `L -> Lambda`, together with the pullback along it of the unit sphere bundle of the
+tautological 4-plane bundle `S` on `Lambda`, which maps into the boundary partner sphere `S(K_0)` by
+`(x, v) -> v`. Conventions: `h = c_1(O_E(1))`, circle fibers oriented by the complex structure, and `H = c_1(det S*)`
+the Pluecker hyperplane class.
 
-`hypothesis:` the retained records predict, row by row:
+`hypothesis:` the retained records predict, row by row (the reviews of this note computed the quadric rank and the
+component factorizations from the recorded generators; the producer certifies them):
 
-| Incidence | Germ (2b) | Link `L` | `E -> Lambda` |
+| Incidence | Germ (2b) | Link `L` | `phi: E -> Lambda` and the composite |
 | --- | --- | --- | --- |
-| `Iso` to `B9` | smooth, dimension 2 | `S^3` | `P^1 -> P^1` of degree 1, so `L -> Lambda` is the Hopf map |
-| `W8` to `B9` | smooth, dimension 3 | `S^5` | `P^2 -> P^2` of degree 1, the Hopf circle bundle |
-| `X+-` to `B9` | smooth, dimension 1 | `S^1` | a point: the canonical plane |
-| E8-bar to `B9` | quadric cone, dimension 2, multiplicity 2 | `RP^3` | smooth conic `P^1 -> P^1` of degree 1 onto the image conic |
-| E8-bar to `V`, `X_+` to `V^a_+`, `X_-` to `V^a_-` | two components, dimension 3, multiplicity 2 | `S^5` disjoint union `S^5` | each component `P^2 -> P^2` of degree 1 onto one of two disjoint planes |
+| `Iso` to `B9` | smooth, dimension 2 | `S^3` | a linear isomorphism `P^1 -> P^1`; `L -> Lambda` is the Hopf map |
+| `W8` to `B9` | smooth, dimension 3 | `S^5` | a linear isomorphism `P^2 -> P^2`; `L -> Lambda` is the Hopf circle bundle `S^5 -> P^2` |
+| `X+-` to `B9` | smooth, dimension 1 | `S^1` | onto a point, the canonical plane |
+| E8-bar to `B9` | `A_1` quadric cone, dimension 2, multiplicity 2 | `RP^3` | an isomorphism of the smooth conic `E` onto the image conic (Pluecker degree 2) |
+| E8-bar to `V`, `X_+` to `V^a_+`, `X_-` to `V^a_-` | two smooth components, dimension 3, multiplicity 2 | `S^5` disjoint union `S^5` | each component a linear isomorphism `P^2 -> P^2` onto one of two disjoint planes |
 
 Producer `attaching_maps_resolved.py`, reading only the retained records 2b, 2c, 2i and 2l, certifies per row:
-1. the topological type of the germ from its tangent cone: multiplicity 1 (smooth); for E8-bar to `B9`, a
-   hypersurface in its 3-dimensional embedding space whose quadratic part has rank 3 over `Q(i)`, so the Morse lemma
-   makes the germ analytically the `A_1` cone; for the two-component rows, each component of multiplicity 1 and the
+1. the conical structure: multiplicity 1 with embedding dimension equal to dimension (smooth); for E8-bar to `B9`, a
+   hypersurface in its 3-dimensional embedding space whose quadratic part has rank 3 over `Q(i)`, so the holomorphic
+   Morse lemma makes the germ analytically the `A_1` cone; for the two-component rows, each component smooth and the
    two tangent spaces meeting only at 0;
-2. that `phi` is linear on each tangent-cone component and injective there (exact rank over `Q(i)` and modulo 32009),
-   so `E -> Lambda` is an isomorphism onto its image and the image invariants equal those of 2i;
-3. the homotopy data in the form item 7 reads: the Euler class of `L -> E` (minus the hyperplane class restricted to
-   `E`: `-1` on `P^1` and `P^2`, `-2` on the conic), the degree of `E -> Lambda` on `H_2`, and the first Chern
-   class of the tautological 4-plane bundle on `Lambda` (minus the Pluecker degree of `Lambda`).
+2. that `phi` is linear and injective on each tangent-cone component (exact rank over `Q(i)` and modulo 32009), so
+   `E -> Lambda` is an isomorphism onto its image and the image invariants equal those of 2i;
+3. the homotopy data, as classes: the Euler class of `p`, `-h` (`-1` times the generator on a line `P^1` or a plane
+   `P^2`, `-2` on the conic, where `O(1)` restricts to `O_{P^1}(2)`); the map `E -> Lambda` on `H_2`; and
+   `c_1(S restricted to Lambda) = -H restricted to Lambda`, componentwise, with its evaluation on `H_2` (minus the
+   Pluecker degree) recorded for curve components only.
 
-Mutation on a core input: replace `phi` on one row by a map of rank one less; the injectivity check must fail and a
-degeneracy point must appear. Falsifiers: a rank deficiency of `phi` on a tangent-cone component, a quadratic part of
-rank below 3 for E8-bar to `B9`, two components whose tangent spaces meet outside 0, or image invariants that differ
-from 2i. Cost: exact linear algebra on retained polynomials, predicted under 10 s and 200 MiB; it runs on the compute
-workstation, not on the build host. The seven higher-order rows and the eighteen rows into nullity 16 follow in later
-sub-steps, since their maps factor through iterated or weighted blow-ups.
+Controls. Two mutations on core inputs: lower the rank of `phi` restricted to one named tangent-cone component and
+require an explicit projective kernel point on that component; and replace the E8-bar to `B9` quadratic part by a rank-2
+form, which must fail the Morse certificate. Independent topology checks recompute the Euler number from the degree of
+`E` in its span, `H_1(L)` (`Z/2` for `RP^3`, 0 for the spheres) from the Gysin sequence, and `c_1 = -H` from the
+Pluecker coordinates of 2i. Falsifiers: a rank deficiency of `phi` on a tangent-cone component, a quadratic part of
+rank below 3, two components whose tangent spaces meet outside 0, image invariants that differ from 2i, or a link
+homology that differs from the table. Cost: exact linear algebra on retained polynomials, predicted under 10 s and
+200 MiB against 0.82 s for the 2i replay; it runs on the compute workstation, not on the build host.
+
+What sub-step 3a leaves to later sub-steps: the variation of the datum along the boundary orbit (its monodromy and the
+non-compact directions that do not act on the kernel), the seven higher-order rows of 2c, the eighteen rows into
+nullity 16, and the coherence of direct and composed specializations that a homotopy-coherent diagram for item 7
+needs; the higher-order rows need more than one blow-up, and their resolution is part of their own sub-step.

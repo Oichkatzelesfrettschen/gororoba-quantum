@@ -8,8 +8,8 @@
   ],
   "state": "active",
   "reconciliation": {
-    "status": "unresolved",
-    "note": "Captured context; triage and evidence review pending."
+    "status": "verified",
+    "note": "Steps reconciled on 2026-11-20 against ledger rows 1 to 2w and the README; the program file's orchestrator note after 2w states each step's evidence and remainder."
   },
   "scope": "Evidence bundle docs/evidence/a5-kernel-attachments (scripts, records, README, ledger) and the program file docs/design/a5-kernel-attachments-program.md; the 33 incidences between the nullity-8, nullity-12 and nullity-16 orbits. Same-nullity incidences are recorded once by the constant-rank lemma. Nullity 4 and roadmap items 7-8 proper stay out of scope.",
   "owner": "repository maintainer",
@@ -55,21 +55,21 @@
       "state": "todo",
       "action": "Compute the closed Gauss-graph fiber in Gr(4,6) for every 8 -> 12 incidence with an exact upper bound and filling exact real arcs, and its variation over the boundary moduli.",
       "acceptance": "Fails if an exact arc limit escapes the upper bound, a point of the bound is reached by no certified arc, or a moved boundary point changes the set beyond the stated variation.",
-      "reason": "14 of 15 fibers computed at the selected basepoints (ledger rows 2b-2d, 2i, 2j-c, 2l); open: the E8-bar to VB real limit set, the variation along the boundary orbit beyond the sampled boost, and arcs leaving the slice on V and VB."
+      "reason": "Ledger rows 2i (eight) and 2j-c (six) compute 14 of 15 fibers at the selected basepoints, each equal to the real limit set on the slice germ by row 2l; E8-bar to VB imports its fiber (row 2q; A5-005, open in characteristic 0 by A5-315). Open: the E8-bar to VB real limit set, the variation along the boundary orbit beyond the sampled boost (rows 2r, 2w), and arcs leaving the slice on V and VB."
     },
     {
       "id": "limit-sets-into-nullity-16",
       "state": "todo",
       "action": "The same for the 8 incidences 12 -> 16 and the 10 incidences 8 -> 16, starting with a two-approach path-dependence test.",
       "acceptance": "Fails on the same criteria as the 8 -> 12 step.",
-      "reason": "Eight 12-to-16 fibers computed and ten 8-to-16 fibers imported (ledger rows 2k-a to 2m, 2q); open: the real limit set for Iso, W8 and E8-bar into N+-, which waits on a characteristic-0 fiber cone."
+      "reason": "Rows 2k-c and 2m give eight fibers and real limit sets; row 2q imports the ten 8-to-16 fibers and row 2t with the README decides their real limit sets as point sets (X: A5-270, A5-305; Iso: A5-446; W8: A5-448; E8-bar conditional, A5-425). Open: the header-slice characteristic-0 fibers (A5-293, A5-346), the non-reduced E8-bar scheme on the header slice (A5-449, A5-559), and the header-to-weight-slice coordinate identification (A5-583)."
     },
     {
       "id": "compatibility",
       "state": "todo",
       "action": "Compare limits composed through nullity 12 with the direct 8 -> 16 limit sets.",
       "acceptance": "Fails if a composed limit lies outside the direct limit set or the reverse inclusion is claimed without arcs.",
-      "reason": "Ledger row 2s: a composed limit lies in a linear section of the direct fiber; open: whether the composed limit set equals the reduced section."
+      "reason": "Row 2s: 41 chains and 136 sections; a composed limit lies in a linear section of the direct fiber. Open: the hypothesis that through VB the composed limit set is the reduced section (needs a flat family over VB), and which planes of a section through B9 or V are composed limits."
     },
     {
       "id": "attaching-maps",
