@@ -26,7 +26,7 @@ fix lands in the commit that files this record; no job had been submitted.
 | F17 | grok | The sedenion decision does not decide against its null, and the first-order coherent-error response that the hardware-probes rule asks for was not computed. | Confirmed. | `decisions()`; `scripts/iqm_probe_audit.py` covers the signed kernel probe only. | The rule now also requires the row peak to exceed its null by 3 SE (model z 42). The residual risk states that a diagonal phase error moves the peak probability at second order and prx over-rotations at first order, and that the probe audit was not run on these circuits. |
 | F16 | ci (tests check) | The three replayed case paths of core-777 were neither bound nor exempt in `ci/runner_image_records.json`. | Confirmed. | `tests/ci/test_runner_image_records.py`. | Exempt entries beside the retained grover-line-ccz case's. |
 
-The Advisor's review of these dispositions added: compute the role power from raw retained counts (raw D
+The Advisor confirmed every finding F1 to F16 and its disposition as recorded, and added: compute the role power from raw retained counts (raw D
 +0.0204, paired SE 0.0039, z 5.3), match the padded arm's prx per qubit, run codex's six-permutation search for a
 cheaper generic compile (37 or 38 prx fused; none near 22; one permutation matches the line's measurement
 mapping and replaces the retained generic compile), test the binding on a synthetic case so CI runs it, and
