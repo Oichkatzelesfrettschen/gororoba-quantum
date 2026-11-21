@@ -213,3 +213,7 @@ of its [reviewer report](qi-pathion-qx-manifest/codex-report.md) on [the brief](
 `canonical_float` and, in its second round, `retained_b0` in `scripts/qi_pathion_one_cz_null_cases.py`.
 
 The [circuit_params unitary comparison review](circuit-params-unitary-comparison/README.md) (pull request 937) and the [workbench payload identity review](workbench-payload-identity/README.md) (pull request 843) are post-merge backfills. Each reconciles the Advisor and worker rounds of its pull request against the pull request's own threads and its merge commit.
+
+The [line-native CCZ Grover case review](grover-line-ccz/reconciliation.md) (pull request 966) reconciles
+the findings of one reviewer and one red-teamer on [the brief](grover-line-ccz/brief.md) for
+`scripts/iqm_grover_line.py` and its Garnet case, fixed before the case spent credits.
