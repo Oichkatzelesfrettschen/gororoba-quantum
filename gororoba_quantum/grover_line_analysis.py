@@ -35,6 +35,7 @@ import numpy as np
 from boolean_anf import anf_degree
 from cd_core import cd_sign
 from iqm_records import ROOT, read_run
+from parallel import ordered_map
 from walsh_counts import parity_numerators
 
 MARKS = ("101", "011")
@@ -185,6 +186,33 @@ class Readout:
             out += float(grad_a[:, col] @ ((np.diag(a) - np.outer(a, a)) / self.shots[col]) @ grad_a[:, col])
         return out
 
+    def corrected_covariance(self, base: str) -> tuple[np.ndarray, np.ndarray]:
+        """The corrected pooled distribution and its delta-method covariance over every circuit's counts and
+        every column of the assignment matrix."""
+        names = self.copies(base)
+        counts = self.acquisition.counts
+        total = sum(counts[n].sum() for n in names)
+        q_total = np.zeros(8)
+        cov = np.zeros((8, 8))
+        column_jacobians = [np.zeros((8, 8)) for _ in range(8)]
+        for n in names:
+            weight = counts[n].sum() / total
+            move = move_matrix(self.order, self.acquisition.orders[n])
+            inverse = np.linalg.inv(move.T @ self.matrix @ move)
+            p = counts[n] / counts[n].sum()
+            q = inverse @ p
+            q_total += weight * q
+            jacobian = weight * inverse
+            cov += jacobian @ ((np.diag(p) - np.outer(p, p)) / counts[n].sum()) @ jacobian.T
+            moved = move @ q
+            for c in range(8):
+                column_jacobians[c] -= weight * moved[c] * inverse @ move.T
+        for c in range(8):
+            a = self.matrix[:, c]
+            sigma = (np.diag(a) - np.outer(a, a)) / self.shots[c]
+            cov += column_jacobians[c] @ sigma @ column_jacobians[c].T
+        return q_total, cov
+
     def corrected(self, base: str) -> np.ndarray:
         names = self.copies(base)
         counts = self.acquisition.counts
@@ -194,6 +222,14 @@ class Readout:
             local = relabel(self.matrix, self.order, self.acquisition.orders[n])
             out += np.linalg.solve(local, counts[n] / counts[n].sum()) * counts[n].sum() / total
         return out
+
+
+def uniformity_wald(q: np.ndarray, cov: np.ndarray, cells: list[int]) -> float:
+    """Wald statistic of equal probability over `cells` (len(cells) - 1 degrees of freedom): global depolarizing
+    noise spreads the unmarked mass of a Grover output evenly."""
+    contrasts = np.diff(np.eye(len(cells)), axis=0)
+    d = contrasts @ q[cells]
+    return float(d @ np.linalg.solve(contrasts @ cov[np.ix_(cells, cells)] @ contrasts.T, d))
 
 
 def analyze(acquisition: Acquisition, model_readout: dict[str, tuple[float, float]]) -> dict[str, Any]:
@@ -238,6 +274,9 @@ def analyze(acquisition: Acquisition, model_readout: dict[str, tuple[float, floa
             "corrected_walsh_ratio_by_weight": by_weight(corrected_ratios),
             "model_before_readout_walsh_ratio_by_weight": by_weight(walsh_ratios(WALSH @ model_true, marked, k)),
             "hamming_profile": [r6(x) for x in hamming_profile(q, marked)],
+            "unmarked_uniformity_wald": r6(
+                uniformity_wald(*readout.corrected_covariance(base), [x for x in range(8) if x != index_of(marked)])
+            ),
             "logical_bit_error": [r6(sum(q[x] for x in range(8) if (x ^ index_of(marked)) >> b & 1)) for b in range(3)],
         }
         if len(names) > 1:
@@ -270,9 +309,30 @@ def analyze(acquisition: Acquisition, model_readout: dict[str, tuple[float, floa
 
     retention = {}
     for m in MARKS:
-        one = arms[f"m{m}-k1"]["corrected_retention"]
-        two = arms[f"m{m}-k2"]["corrected_retention"]
-        retention[m] = {"k1": one, "k2": two, "per_iteration": r6(two / one)}
+        p1, g1p, g1a = readout.marked(f"m{m}-k1", m)
+        p2, g2p, g2a = readout.marked(f"m{m}-k2", m)
+        s1, s2 = ideal_probability(1) - 0.125, ideal_probability(2) - 0.125
+        one, two = (p1 - 0.125) / s1, (p2 - 0.125) / s2
+        # Delta method for r = lambda_2 / lambda_1 and A = lambda_1^2 / lambda_2, through the shared readout.
+        ratio_terms = ((1 / (s2 * one), g2p, g2a), (-two / (one**2 * s1), g1p, g1a))
+        intercept_terms = ((2 * one / (s1 * two), g1p, g1a), (-(one**2) / (two**2 * s2), g2p, g2a))
+        errors = []
+        for terms_ in (ratio_terms, intercept_terms):
+            ratio_p: dict[str, np.ndarray] = {}
+            ratio_a = np.zeros((8, 8))
+            for scale, gp, ga in terms_:
+                for n, g in gp.items():
+                    ratio_p[n] = ratio_p.get(n, np.zeros(8)) + scale * g
+                ratio_a = ratio_a + scale * ga
+            errors.append(math.sqrt(readout.variance(ratio_p, ratio_a)))
+        retention[m] = {
+            "k1": r6(one),
+            "k2": r6(two),
+            "per_iteration": r6(two / one),
+            "per_iteration_se": r6(errors[0]),
+            "intercept": r6(one**2 / two),
+            "intercept_se": r6(errors[1]),
+        }
     k0_counts = counts["k0"]
     k0 = k0_counts / k0_counts.sum()
     k0_corrected = np.linalg.solve(relabel(readout.matrix, readout.order, acquisition.orders["k0"]), k0)
@@ -294,8 +354,46 @@ def analyze(acquisition: Acquisition, model_readout: dict[str, tuple[float, floa
             "corrected": {key_of(x): r6(k0_corrected[x]) for x in range(8)},
             # Pearson's multinomial statistic against 1/8 each, 7 degrees of freedom.
             "pearson_chi2_uniform_raw": r6(float(k0_counts.sum() * ((k0 - 0.125) ** 2 / 0.125).sum())),
+            "corrected_uniformity_wald": r6(uniformity_wald(*readout.corrected_covariance("k0"), list(range(8)))),
         },
     }
+
+
+def finite_difference_term(item: tuple[Acquisition, str]) -> np.ndarray:
+    """One circuit's multinomial contribution to the covariance of corrected("arm"), from central differences."""
+    base, name = item
+    n = base.counts[name].sum()
+    p = base.counts[name] / n
+    jacobian = np.zeros((8, 8))
+    for i in range(8):
+        shifted = []
+        for sign in (1, -1):
+            moved = dict(base.counts)
+            vector = p.copy()
+            vector[i] += sign * 1e-6
+            moved[name] = vector * n
+            shifted.append(Readout(Acquisition(base.run, base.names, moved, base.orders, {})).corrected("arm"))
+        jacobian[:, i] = (shifted[0] - shifted[1]) / 2e-6
+    return jacobian @ ((np.diag(p) - np.outer(p, p)) / n) @ jacobian.T
+
+
+def covariance_selftest() -> None:
+    """corrected_covariance against central differences of corrected() on a synthetic acquisition whose arm
+    measures in another order than its readout preparations."""
+    order = ["A", "B", "C"]
+    channel = product_confusion(order, {"A": (0.02, 0.05), "B": (0.01, 0.04), "C": (0.03, 0.02)})
+    arm = np.array([0.05, 0.07, 0.04, 0.06, 0.09, 0.55, 0.08, 0.06])
+    counts = {"ro-" + key_of(c): channel[:, c] * 4000.0 for c in range(8)}
+    counts["arm"] = channel @ arm * 3000.0
+    counts["arm-c1"] = channel @ arm[[0, 2, 1, 3, 4, 6, 5, 7]] * 2000.0
+    orders = {name: list(order) for name in counts}
+    orders["arm-c1"] = ["A", "C", "B"]
+    names = list(counts)
+    base = Acquisition("synthetic", names, counts, orders, {})
+    _, cov = Readout(base).corrected_covariance("arm")
+    numeric = np.sum(ordered_map(finite_difference_term, [(base, name) for name in names]), axis=0)
+    if float(np.max(np.abs(numeric - cov))) > 1e-9:
+        raise AssertionError("corrected_covariance differs from the finite-difference covariance")
 
 
 def self_test() -> str:
@@ -313,6 +411,9 @@ def self_test() -> str:
         if not np.allclose(parity_numerators(integer), WALSH @ integer):
             raise AssertionError("walsh_counts and the parity matrix disagree on one histogram")
     flip = np.array([[0.9, 0.2], [0.1, 0.8]])
+    if abs(uniformity_wald(np.full(8, 0.125), np.eye(8) * 1e-4, list(range(8)))) > 1e-12:
+        raise AssertionError("a uniform distribution has a nonzero uniformity statistic")
+    covariance_selftest()
     product = np.kron(np.kron(np.eye(2), flip), np.eye(2))
     if not np.allclose(relabel(product, ["A", "B", "C"], ["B", "C", "A"]), np.kron(np.eye(4), flip)):
         raise AssertionError("relabel does not carry qubit B's readout to its new measurement position")

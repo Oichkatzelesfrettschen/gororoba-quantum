@@ -59,7 +59,8 @@
     "2": 0.784682,
     "3": 0.791716
    },
-   "tvd_raw_to_model": 0.06203
+   "tvd_raw_to_model": 0.06203,
+   "unmarked_uniformity_wald": 75.204635
   },
   "m011-k2": {
    "copies": [
@@ -120,7 +121,8 @@
     "2": 0.674102,
     "3": 0.641113
    },
-   "tvd_raw_to_model": 0.071986
+   "tvd_raw_to_model": 0.071986,
+   "unmarked_uniformity_wald": 60.525201
   },
   "m101-k1": {
    "copies": [
@@ -198,7 +200,8 @@
     "2": 0.820443,
     "3": 0.817066
    },
-   "tvd_raw_to_model": 0.030503
+   "tvd_raw_to_model": 0.030503,
+   "unmarked_uniformity_wald": 95.689348
   },
   "m101-k1-generic": {
    "copies": [
@@ -276,7 +279,8 @@
     "2": 0.714099,
     "3": 0.682179
    },
-   "tvd_raw_to_model": 0.053567
+   "tvd_raw_to_model": 0.053567,
+   "unmarked_uniformity_wald": 130.546618
   },
   "m101-k2": {
    "copies": [
@@ -337,7 +341,8 @@
     "2": 0.713662,
     "3": 0.692645
    },
-   "tvd_raw_to_model": 0.043705
+   "tvd_raw_to_model": 0.043705,
+   "unmarked_uniformity_wald": 16.372382
   }
  },
  "decisions": {
@@ -384,6 +389,7 @@
    "110": 0.109648,
    "111": 0.126529
   },
+  "corrected_uniformity_wald": 10.345089,
   "pearson_chi2_uniform_raw": 11.542865,
   "raw": {
    "000": 0.126998,
@@ -408,14 +414,20 @@
  },
  "retention": {
   "011": {
+   "intercept": 0.959114,
+   "intercept_se": 0.032543,
    "k1": 0.830115,
    "k2": 0.718467,
-   "per_iteration": 0.865503
+   "per_iteration": 0.865503,
+   "per_iteration_se": 0.01786
   },
   "101": {
+   "intercept": 0.999709,
+   "intercept_se": 0.01969,
    "k1": 0.86371,
    "k2": 0.746212,
-   "per_iteration": 0.863961
+   "per_iteration": 0.863961,
+   "per_iteration_se": 0.012738
   }
  },
  "run": "results/iqm/runs/2026-11-20T230142Z-garnet-grover-line-ccz-grover"

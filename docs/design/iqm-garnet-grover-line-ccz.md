@@ -265,33 +265,48 @@ weight 1, 2, 3:
 | `m101-k2` | 0.759, 0.739, 0.730 | 0.815, 0.800, 0.791 | 0.93, 0.92, 0.92 |
 | `m011-k2` | 0.752, 0.699, 0.676 | 0.814, 0.800, 0.790 | 0.92, 0.87, 0.86 |
 
-The model's own spectrum is nearly flat in weight, and so is the measured
-one of both one-iteration line-native arms: independent flips at the
-measured weight-1 ratio would put the weight-3 ratio of `m101-k1` near its
-cube, 0.68, against 0.862 measured. The error the circuits carry reaches
-the output close to globally depolarized. The deeper arms (the 18-CZ,
+The model's own spectrum is nearly flat in weight, and so are the weight
+means of the measured one-iteration line-native arms: independent
+symmetric flips at the measured weight-1 ratio would put the weight-3
+ratio of `m101-k1` near its cube, 0.68, against 0.862 measured. The weight
+means hide anisotropy within a weight (the three weight-2 ratios of
+`m011-k1` run from 0.725 to 0.882), and the deeper arms (the 18-CZ,
 68-`prx` generic compile and the 28-CZ second iterations) lose 1 to 6
-points more at weight 3 than at weight 1 relative to the model, a small
-local component that grows with depth. The Hamming profile says the same
-in the outcome basis: the corrected unmarked mass sits 0.457, 0.426, 0.117
-at distance 1, 2, 3 from the marked string in `m101-k1`, against 3/7,
-3/7, 1/7 for uniform error. Grover's diffuser mixes a mid-circuit fault
-over all eight strings before measurement, so one number per circuit, its
-retention, carries most of its noise.
+points more at weight 3 than at weight 1 relative to the model. The
+Hamming profile of `m101-k1`, 0.457, 0.426, 0.117 at distance 1, 2, 3
+against 3/7, 3/7, 1/7, is close to uniform in absolute terms, and global
+depolarizing noise is still rejected: it spreads the unmarked mass evenly,
+and the delta-method Wald statistic of equal unmarked cells
+(`unmarked_uniformity_wald`, 6 degrees of freedom) reads 95.7 for
+`m101-k1`, 130.5 for the generic arm, 75.2 and 60.5 for the 011 arms, and
+16.4 for `m101-k2`, against 10.3 on 7 degrees of freedom for the uniform
+reference `k0`. The residual is local: in `m101-k1` the corrected
+probability of a wrong bit is 0.154 on QB20 against 0.180 and 0.178 on QB16
+and QB17. A scalar retention captures the marked-state contrast; the
+unmarked distribution carries per-qubit structure that one iteration leaves
+visible and a second iteration mixes further.
 
 **Retention.** The corrected retention lambda_k = (P_k - 1/8) / (P_k^ideal
 - 1/8) is 0.864 and 0.746 at one and two iterations for 101 (0.830 and
 0.718 for 011). The second iteration multiplies the first by 0.864 (101)
-and 0.866 (011): retention is multiplicative per 14-CZ iteration, with no
-extra preparation or measurement cost left after readout correction, and the
-same for both marked strings, as the oracle's X conjugation predicts. The
-generic iteration retains 0.756, 0.875 of the line-native one. Writing
--ln lambda = a n_CZ + b n_prx over the two one-iteration compiles gives
-a = 0.0069 per CZ and b = 0.0023 per `prx` including their idle time
-(computed from two equations, so a fit with no residual; hypothesis: the
-`prx` term exceeds randomized benchmarking's about 0.001 through coherent
-error, and the falsifier is a generic compile resynthesized to 22 `prx` at
-18 CZ that keeps 0.756).
+and 0.866 (011), with delta-method standard errors 0.013 and 0.018 through
+the shared readout (`retention` in the analysis record). Two depths
+determine lambda_k = A r^k exactly: A = lambda_1^2 / lambda_2 is
+1.00 +- 0.020 (101) and 0.96 +- 0.033 (011), so
+the data are consistent with, and do not establish, a geometric law with no
+preparation cost; a third depth tests it. The one-iteration retentions of
+the two marked strings differ, 0.864 against 0.830 (about 2.3 standard
+errors), so the same CZ count does not fix the retention. The generic
+iteration retains 0.756, 0.875 of the line-native one. Solving
+-ln lambda = a n_CZ + b n_prx on the two one-iteration compiles gives
+a = 0.0069 per CZ and b = 0.0023 per `prx` including their idle time: two
+equations, two unknowns, no degree of freedom left, and no intercept. The
+pair predicts 0.749 at the two-iteration counts (28 CZ, 42 `prx`), against
+0.746 for 101 and 0.718 for 011. Hypothesis: the `prx` term exceeds
+randomized benchmarking's about 0.001 through coherent error; idle
+exposure, wire placement and the generic compile's other routing remain
+open, and the falsifier is a generic compile resynthesized to 22 `prx` at
+18 CZ that keeps 0.756.
 
 **Stability.** The four ABBA copies of the line arm agree (chi-squared 0.67
 on 3 degrees of freedom, slope +0.0002 per circuit position); the generic
@@ -299,24 +314,49 @@ copies scatter more (chi-squared 5.0, p about 0.17, from copy c2 at 0.620).
 The uniform reference `k0` reads Pearson's chi-squared 11.5 on 7 degrees
 of freedom against 1/8 each (p about 0.12).
 
-**Consequence for the Cayley-Dickson oracles.** For the algebra of
-dimension 2^n, the sign cd_sign(2^n, m, q) as a phase on the n qubits of q
-has algebraic degree n - 1 for every m other than 0 (computed with
-`boolean_anf.anf_degree` through dimension 32: 2 for octonions, 3 for
-sedenions, 4 for pathions), and the associator phases of
-`predict.associator_phase` reach degree 3 first at dimension 32 (360 of
-465 pairs). Each doubling adds one control to the largest phase gate an
-oracle needs: CZ for the octonions, CCZ for the sedenion sign oracle, CCCZ
-for the pathions. On Garnet's triangle-free lattice the cubic rung costs 7
-CZ per monomial on a line, and this run calibrates it: about 0.99 retained
-per line-native CZ with its single-qubit gates, so a sedenion sign oracle
-keeps half its contrast at roughly 66 CZ. Because the output noise is close
-to global, a measured Walsh spectrum keeps its shape and loses one scalar,
-which is the assumption behind reading spectral classes from samples
-through the collision probability (`scripts/associator_walsh_classes.py`)
-and the depolarizing-shape test of the Tuna-17 Walsh exemplars
-(`scripts/qi_walsh_exemplar_analysis.py`); this run measures that
-assumption on Garnet at depths up to 28 CZ.
+**Consequence for the Cayley-Dickson oracles.** The left sign row of the
+algebra of dimension 2^n, cd_sign(2^n, m, q) as a phase on the n qubits of
+q, has algebraic degree n - 1 for every n >= 2 and every m other than 0:
+proved in gororoba-math as `Tower.anfDegree_negSign_left`
+(`lean/GororobaMath/CayleyDickson/BooleanAnf.lean`, sha256
+`7aac421d28a75817850699744b1f828afbab7536c8ce7852a73c105948231a87`) and
+`sign_row_degree` (`rocq/quantum/CdSignRowAnf.v`, sha256
+`bea8796c80b2b3ade99274d20156228a1ed5498f6139d0c957cc043880e760a0`), both at
+gororoba-math commit 7cf47d872e7361e9aea694208d55a20ac4b12f1b, with the
+proved small-width form max(1, n - 1) in `sign_row_degree_all`; the
+self-test rechecks dimensions 8 to 32 against `cd_core`. The right sign
+row of a power-of-two index has degree 1 (`right_row_degree`, same Rocq
+file), so the operand the oracle phases decides whether it needs the cubic
+gate. `sign_row_leading` (same file) states which top-degree monomials a
+row carries: a nonzero sedenion left row holds one to four cubic
+monomials, set by the bits of m, so its compiled cost follows those
+monomials and their shared parities, not the degree alone. The associator
+phases reach degree 3 first at dimension 32
+(`Tower.anfDegree_assocPhase`, `AssociatorPhase.lean`), and
+`card_anfDegree_assocPhase_eq` (`AssociatorCensus.lean`) counts 360 pairs of
+degree 3 at every level from dimension 32 on: 360 of the 465 pairs at
+dimension 32, 360 of 1953 at dimension 64. Each doubling adds one control to the largest phase gate a left-row
+oracle needs: CZ for the octonions, CCZ for the sedenions, CCCZ for the
+pathions.
+
+This run calibrates one rung of that ladder only within its own circuits:
+about 0.99 retained per line-native CZ with the single-qubit gates and idle
+time of a three-qubit Grover iteration. A sedenion sign oracle runs on four
+wires with another gate mix, so the half-contrast depth of about 66 CZ that
+the same rate gives is a hypothesis for that oracle. Tuna-17 already ran
+66-CZ dark and bright pairs and resolved their contrast in two of three
+regions (`results/quantum_inspire/secondary/zero_divisor_tuna_17.md`), on
+another device and observable. Nor does this run calibrate the readout of
+associator spectral classes: those circuits sample squared Walsh amplitudes
+of a phase function through a Hadamard layer, with no diffuser after the
+oracle, and the Tuna-17 Walsh exemplars kept their class order while their
+depolarizing-shape test rejected every tested combination
+(`results/quantum_inspire/walsh_exemplar_tuna_17_analysis.json`,
+`class_order_holds` and `shape_rejected`). The finding that transfers is
+narrower: in these Grover circuits a scalar retention carries the
+marked-state contrast while the unmarked distribution keeps per-qubit
+structure, so a classifier that relies on spectral shape needs its own
+noise test.
 
 ## Commands
 
@@ -338,10 +378,21 @@ estimate at no cost; its random bits enter no analysis.
 
 ## Residual risk
 
-- The model omits coherent error, leakage and crosstalk, so the predicted
-  differences are upper estimates of the measurable ones.
+- The model omits coherent error, leakage and crosstalk. In this run every
+  arm reads below its prediction (raw by 0.015 to 0.072), while a
+  difference between arms carries no such bound: the measured line-native
+  gain, +0.070, is twice its prediction.
 - Heralding discards shots whose pre-circuit readout is not all zeros; the
-  kept count, not 4000, sets each standard error.
+  kept count, not 4000, sets each standard error, and the run returns only
+  kept shots, so the outcome of a discarded shot is unknown. Per requested
+  shot, the line arm still yields more marked outcomes (0.577 against 0.526)
+  at a lower acceptance (85.6 % against 87.0 %).
+- ABBA balances the unweighted circuit positions; the kept-shot weights
+  leave mean positions 9.44 and 9.52, and the four copies share one job, so
+  the standard errors are shot errors within it.
+- The path was chosen to maximize the predicted line-native score on the
+  same calibration; the result holds on that path and leaves a typical path
+  and a seed-optimized generic compile open.
 - The generic arm is one seeded compile of the pinned qiskit release, not
   IQM's client-side transpiler and not the best of qiskit's seeds.
 - The idle term of the prediction rests on calibrated T1 and T2 over an
