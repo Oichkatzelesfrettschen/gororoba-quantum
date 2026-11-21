@@ -225,7 +225,7 @@ Preregistered decisions (z resolves at 3):
 
 QB12, measured in both jobs: in the sedenion job's sixteen readout preparations QB12 (logical qubit 1 of the
 square) reads 1 in 49 to 56 percent of shots when prepared in 1 and in 6 to 13 percent when prepared in 0, while the
-other three square qubits read 0.98 to 1.00 and below 0.01; in the e_5 null arm, ideal 0000, QB12 reads 1 in 47
+other three square qubits read 1 in 97.5 to 99.8 percent and at most 1.0 percent of shots; in the e_5 null arm, ideal 0000, QB12 reads 1 in 47
 percent of shots. In the packed Pauli job one minute earlier, QB12 reads 1 in 36 and 39 percent of the all-zero
 reference shots and 55 and 52 percent of the all-ones ones, against 0.03 to 0.15 and 0.92 to 0.99 on the other
 nineteen qubits. Calibration set ea681de1 (02:43 UTC) lists QB12's readout errors as 0.018 (0 to 1) and 0.014 (1 to 0).
