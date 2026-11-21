@@ -2,7 +2,7 @@
 
 Reviewers chosen by the owner (2026-11-21): grok as reviewer and opencode on the free NVIDIA Nemotron model
 (`opencode/nemotron-3.5-super-vl-free`, first attempt accepted) as red-teamer, on two briefs that share their claims. Both
-read head d3b8a3327. The Advisor reviewed last.
+read head d3b8a3327. The Advisor reviewed last and found two errors in the first round of fixes (rows 10 and the QB44 direction), corrected before the hosted round.
 
 | # | Reviewers | Finding | Disposition |
 |---|---|---|---|
@@ -15,9 +15,9 @@ read head d3b8a3327. The Advisor reviewed last.
 | 7 | Nemotron | QB44's calibrated-uncertainty sentence may read as the exclusion ground | Fixed: the delay fit is named the sole ground and the uncertainty context |
 | 8 | Nemotron | "wall clock equal to the billed execution" is loose: 2.641 s of runtime billed as 3 s | Fixed: the cost line gives runtime and whole-second billing |
 | 9 | grok | "T1 reads near or above the calibration copy" smooths QB42 (0.79) and QB34 (0.87) | Fixed: both named; the hypothesis cites the median |
-| 10 | grok | The unit-scale hypothesis has no falsifier; QB30 sits 4 and 8 standard errors above the means; the QB44 test cannot separate a stable defect from a static channel | Fixed: a delay-against-identity-train falsifier, a QB30 hypothesis with its falsifier, and the QB44 limit are stated |
+| 10 | grok | The unit-scale hypothesis has no falsifier; QB30 sits 4 and 8 standard errors above the means; the QB44 test cannot separate a stable defect from a static channel | Fixed in part: a QB30 hypothesis with its falsifier and the QB44 limit are stated. grok's proposed unit-scale falsifier (delay slope against identity-prx trains) is refuted by the Advisor as circular, since a train's duration is the unknown this run measures; the note keeps "no reading of this job tests it" and names an independent clock (a Ramsey fringe at a known detuning). grok's QB44 direction was inverted: a repeat that passes the gate supports the time-varying defect and falsifies a static channel, as the note now states |
 | 11 | grok | The first commit-body line runs 97 columns against the 72-column rule | Boundary: the pushed commit keeps its body, since rewriting it needs a force-push, which the workspace forbids; later commits wrap at 72 |
-| 12 | grok | `docs/evidence/iqm/account/credit.json` still reads 30.00 expiring 2026-11-01 | Boundary: the account snapshot is outside this retention; the run's own `results.json` carries the balance before and after |
+| 12 | grok | `docs/evidence/iqm/account/credit.json` still reads 30.00 expiring 2026-11-01 | Boundary: the file has one commit (8d77d00a1, 2026-10-18), and no IQM run retention since refreshes it (the Garnet grover-line retention e31ba697d among them), since `research_state.py` binds IQM runs to their own `results.json`, which carries the balance before and after; a refresh of the account snapshot is its own change |
 | 13 | Nemotron | Raw digests not recomputed on the read-only host | Refuted: grok recomputed all four `raw/*.json` sha256 values and the sixteen circuit hashes and found them equal to `results.json` and `cases.json` |
 
 Claims 1, 2, 3, 5 and 6 of the brief stand as stated; grok verified identities, the verdict fields, the exclusion

@@ -54,13 +54,13 @@ qubits named in each item.
   circuit whose pulsed qubits are measured alone against one measured jointly with the train qubit falsifies a
   joint-measure overhead.
 - hypothesis: the delay instruction realizes its duration at unit scale. A scale common to every delay cancels in the
-  shape of one exponential but rescales every T1 and gap above. Falsifier: the delay slope of one qubit differs, by more
-  than the combined standard error, from the slope of identity-prx trains of the same total durations (8, 16, 32 and
-  64 us) on that qubit.
+  shape of one exponential but rescales every T1 and gap above, and no reading of this job tests it. A pulse train
+  cannot serve as the clock, since its true duration is the unknown this run measures; a test needs an independent
+  clock, such as the period of a Ramsey fringe at a known detuning, read across delay durations.
 - hypothesis: QB30 carries an extra term beyond the cohort's gap (about 4 and 8 standard errors above the eleven-qubit
   means, with the highest delay-T1 ratio, 1.87). Falsifier: a repeat of the 500-pulse arms in which QB30 falls inside
   the other ten.
-- QB44: a time-varying defect such as a two-level system, or a static non-exponential decay channel. Repeating the same
-  delay circuits falsifies the time-varying reading if the fit later passes its gate; a repeat that still fails leaves
-  a stable defect and a static channel unseparated, since this case's instructions (prx, delay, measure) give no
-  frequency-resolved T1.
+- QB44: a time-varying defect such as a two-level system, or a static non-exponential decay channel. A repeat of the
+  same delay circuits whose fit passes its gate shows the decay changed over time, which supports the time-varying
+  defect and falsifies a static channel; a repeat that still fails leaves a stable defect and a static channel
+  unseparated, since this case's instructions (prx, delay, measure) give no frequency-resolved T1.
