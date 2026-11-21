@@ -20,6 +20,13 @@ read head d3b8a3327. The Advisor reviewed last and found two errors in the first
 | 12 | grok | `docs/evidence/iqm/account/credit.json` still reads 30.00 expiring 2026-11-01 | Boundary: the file has one commit (8d77d00a1, 2026-10-18), and no IQM run retention since refreshes it (the Garnet grover-line retention e31ba697d among them), since `research_state.py` binds IQM runs to their own `results.json`, which carries the balance before and after; a refresh of the account snapshot is its own change |
 | 13 | Nemotron | Raw digests not recomputed on the read-only host | Refuted: grok recomputed all four `raw/*.json` sha256 values and the sixteen circuit hashes and found them equal to `results.json` and `cases.json` |
 
+## Hosted Codex (head 49e4c5b48)
+
+| # | Finding | Disposition |
+|---|---|---|
+| 14 | `layout_split.py` adds the two layouts' marginal variances, counting the shared T1 error twice and shrinking z | Fixed in 127d31458: the difference d (k_a - k_b) / k_T1 is propagated jointly; the summary reads mean z 0.52, standard deviation 0.89 (was 0.37 and 0.64), the values Codex predicted, and the note carries them |
+| 15 | The per-comparison loop is serial against the `parallel.py` rule | Fixed in 127d31458: each comparison runs through `ordered_map` |
+
 Claims 1, 2, 3, 5 and 6 of the brief stand as stated; grok verified identities, the verdict fields, the exclusion
 arithmetic (QB44 survival 4.26e-8; next-largest chi-square QB5 11.98 under the 13.82 threshold) and the cost
 arithmetic from the retained files.

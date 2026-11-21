@@ -30,7 +30,7 @@ qubits named in each item.
   lengths. A model g(N) = a + b / N through the two means gives a = 21.4 ns per pulse beyond the nominal 24 ns and
   b = 5.84 us per train; two points determine it exactly, so a and b are fitted values, not measured constants.
 - Per layout: the eight qubits pulsed beside both train qubits, QB44 among them, read the same gap beside QB20 and
-  beside QB26 (16 comparisons, mean z 0.37, standard deviation 0.64;
+  beside QB26 (16 comparisons, mean z 0.52, standard deviation 0.89, with the shared T1 error counted once;
   `docs/evidence/iqm-emerald-idle-schedule-t1/layout_split.py` on the analysis record keeps every qubit with a positive
   delay rate). Relaxation driven by the particular train qubit
   would differ between layouts; this reading does not show it.
