@@ -232,8 +232,10 @@ above the 0.75 of the retained 199-CZ probes.
 ## Analysis
 
 `"$PYTHON" scripts/iqm_grover_line.py analyze RUN --out results/iqm/grover_line_ccz_analysis.json`
-(gate core-774 replays it) reads every arm three ways, all from the
-retained counts.
+(gate core-774 replays it) passes the run, validated by
+`gororoba_quantum/iqm_records.py`, and the prediction's herald-conditioned
+readout errors to `gororoba_quantum/grover_line_analysis.py`, which reads
+every arm three ways from the retained counts.
 
 **Readout correction.** Each circuit's distribution is corrected by the
 assignment matrix of the eight `ro` circuits, permuted into that
@@ -247,29 +249,35 @@ minus generic +0.0706 (standard error 0.0065), second iteration +0.0453
 over a uniform floor, so each of its seven parity correlators <Z_S>,
 S in F_2^3 \ {0}, equals chi_S(marked) (8 P_k - 1) / 7: one magnitude with
 the marked string's character as its sign. These seven characters are the
-seven parities of the CCZ phase polynomial. The ratio r_S of a measured
-(corrected) correlator to its ideal value separates two noise shapes:
-global depolarizing noise scales every r_S alike, and independent bit
-flips with retention f damp a weight-w parity as f^w. Measured mean r_S by
+seven parities of the CCZ phase polynomial. The ratio r_S of a correlator
+to its ideal value separates two noise shapes: global depolarizing noise
+scales every r_S alike, and independent bit flips with retention f damp a
+weight-w parity as f^w. The table sets the readout-corrected spectrum
+against the model's spectrum before its readout channel (the raw spectrum
+against the model with readout is in the analysis record); mean r_S by
 weight 1, 2, 3:
 
-| arm | w = 1 | w = 2 | w = 3 | model w = 1, 2, 3 |
-|---|---|---|---|---|
-| `m101-k1` | 0.878 | 0.850 | 0.862 | 0.879, 0.852, 0.827 |
-| `m101-k1-generic` | 0.781 | 0.742 | 0.723 | 0.833, 0.796, 0.771 |
-| `m101-k2` | 0.759 | 0.739 | 0.730 | 0.796, 0.766, 0.742 |
-| `m011-k1` | 0.845 | 0.814 | 0.835 | 0.887, 0.863, 0.842 |
-| `m011-k2` | 0.752 | 0.699 | 0.676 | 0.802, 0.776, 0.755 |
+| arm | measured, corrected | model before readout | measured / model |
+|---|---|---|---|
+| `m101-k1` | 0.878, 0.850, 0.862 | 0.900, 0.890, 0.882 | 0.98, 0.96, 0.98 |
+| `m011-k1` | 0.845, 0.814, 0.835 | 0.900, 0.889, 0.881 | 0.94, 0.92, 0.95 |
+| `m101-k1-generic` | 0.781, 0.742, 0.723 | 0.855, 0.833, 0.824 | 0.91, 0.89, 0.88 |
+| `m101-k2` | 0.759, 0.739, 0.730 | 0.815, 0.800, 0.791 | 0.93, 0.92, 0.92 |
+| `m011-k2` | 0.752, 0.699, 0.676 | 0.814, 0.800, 0.790 | 0.92, 0.87, 0.86 |
 
-The weight-3 ratio stays within 0.06 of the weight-1 ratio in every arm,
-where independent flips at the measured weight-1 retention would put it
-near its cube (0.68 for `m101-k1`, against 0.862 measured). The error the
-circuits carry reaches the output close to globally depolarized. The
-Hamming profile says the same in the outcome basis: the corrected unmarked
-mass sits 0.457, 0.426, 0.117 at distance 1, 2, 3 from the marked string in
-`m101-k1`, against 3/7, 3/7, 1/7 for uniform error. Grover's diffuser
-mixes a mid-circuit fault over all eight strings before measurement, so one
-number per circuit, its retention, carries nearly all of its noise.
+The model's own spectrum is nearly flat in weight, and so is the measured
+one of both one-iteration line-native arms: independent flips at the
+measured weight-1 ratio would put the weight-3 ratio of `m101-k1` near its
+cube, 0.68, against 0.862 measured. The error the circuits carry reaches
+the output close to globally depolarized. The deeper arms (the 18-CZ,
+68-`prx` generic compile and the 28-CZ second iterations) lose 1 to 6
+points more at weight 3 than at weight 1 relative to the model, a small
+local component that grows with depth. The Hamming profile says the same
+in the outcome basis: the corrected unmarked mass sits 0.457, 0.426, 0.117
+at distance 1, 2, 3 from the marked string in `m101-k1`, against 3/7,
+3/7, 1/7 for uniform error. Grover's diffuser mixes a mid-circuit fault
+over all eight strings before measurement, so one number per circuit, its
+retention, carries most of its noise.
 
 **Retention.** The corrected retention lambda_k = (P_k - 1/8) / (P_k^ideal
 - 1/8) is 0.864 and 0.746 at one and two iterations for 101 (0.830 and
@@ -288,8 +296,8 @@ error, and the falsifier is a generic compile resynthesized to 22 `prx` at
 **Stability.** The four ABBA copies of the line arm agree (chi-squared 0.67
 on 3 degrees of freedom, slope +0.0002 per circuit position); the generic
 copies scatter more (chi-squared 5.0, p about 0.17, from copy c2 at 0.620).
-The uniform reference `k0` reads chi-squared 13.2 on 7 degrees of freedom
-against 1/8 each.
+The uniform reference `k0` reads Pearson's chi-squared 11.5 on 7 degrees
+of freedom against 1/8 each (p about 0.12).
 
 **Consequence for the Cayley-Dickson oracles.** For the algebra of
 dimension 2^n, the sign cd_sign(2^n, m, q) as a phase on the n qubits of q
