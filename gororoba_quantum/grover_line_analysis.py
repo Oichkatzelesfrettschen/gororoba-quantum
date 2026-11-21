@@ -185,6 +185,33 @@ class Readout:
             out += float(grad_a[:, col] @ ((np.diag(a) - np.outer(a, a)) / self.shots[col]) @ grad_a[:, col])
         return out
 
+    def corrected_covariance(self, base: str) -> tuple[np.ndarray, np.ndarray]:
+        """The corrected pooled distribution and its delta-method covariance over every circuit's counts and
+        every column of the assignment matrix."""
+        names = self.copies(base)
+        counts = self.acquisition.counts
+        total = sum(counts[n].sum() for n in names)
+        q_total = np.zeros(8)
+        cov = np.zeros((8, 8))
+        column_jacobians = [np.zeros((8, 8)) for _ in range(8)]
+        for n in names:
+            weight = counts[n].sum() / total
+            move = move_matrix(self.order, self.acquisition.orders[n])
+            inverse = np.linalg.inv(move.T @ self.matrix @ move)
+            p = counts[n] / counts[n].sum()
+            q = inverse @ p
+            q_total += weight * q
+            jacobian = weight * inverse
+            cov += jacobian @ ((np.diag(p) - np.outer(p, p)) / counts[n].sum()) @ jacobian.T
+            moved = move @ q
+            for c in range(8):
+                column_jacobians[c] -= weight * moved[c] * inverse @ move.T
+        for c in range(8):
+            a = self.matrix[:, c]
+            sigma = (np.diag(a) - np.outer(a, a)) / self.shots[c]
+            cov += column_jacobians[c] @ sigma @ column_jacobians[c].T
+        return q_total, cov
+
     def corrected(self, base: str) -> np.ndarray:
         names = self.copies(base)
         counts = self.acquisition.counts
@@ -194,6 +221,14 @@ class Readout:
             local = relabel(self.matrix, self.order, self.acquisition.orders[n])
             out += np.linalg.solve(local, counts[n] / counts[n].sum()) * counts[n].sum() / total
         return out
+
+
+def uniformity_wald(q: np.ndarray, cov: np.ndarray, cells: list[int]) -> float:
+    """Wald statistic of equal probability over `cells` (len(cells) - 1 degrees of freedom): global depolarizing
+    noise spreads the unmarked mass of a Grover output evenly."""
+    contrasts = np.diff(np.eye(len(cells)), axis=0)
+    d = contrasts @ q[cells]
+    return float(d @ np.linalg.solve(contrasts @ cov[np.ix_(cells, cells)] @ contrasts.T, d))
 
 
 def analyze(acquisition: Acquisition, model_readout: dict[str, tuple[float, float]]) -> dict[str, Any]:
@@ -238,6 +273,9 @@ def analyze(acquisition: Acquisition, model_readout: dict[str, tuple[float, floa
             "corrected_walsh_ratio_by_weight": by_weight(corrected_ratios),
             "model_before_readout_walsh_ratio_by_weight": by_weight(walsh_ratios(WALSH @ model_true, marked, k)),
             "hamming_profile": [r6(x) for x in hamming_profile(q, marked)],
+            "unmarked_uniformity_wald": r6(
+                uniformity_wald(*readout.corrected_covariance(base), [x for x in range(8) if x != index_of(marked)])
+            ),
             "logical_bit_error": [r6(sum(q[x] for x in range(8) if (x ^ index_of(marked)) >> b & 1)) for b in range(3)],
         }
         if len(names) > 1:
@@ -294,6 +332,7 @@ def analyze(acquisition: Acquisition, model_readout: dict[str, tuple[float, floa
             "corrected": {key_of(x): r6(k0_corrected[x]) for x in range(8)},
             # Pearson's multinomial statistic against 1/8 each, 7 degrees of freedom.
             "pearson_chi2_uniform_raw": r6(float(k0_counts.sum() * ((k0 - 0.125) ** 2 / 0.125).sum())),
+            "corrected_uniformity_wald": r6(uniformity_wald(*readout.corrected_covariance("k0"), list(range(8)))),
         },
     }
 
@@ -313,6 +352,8 @@ def self_test() -> str:
         if not np.allclose(parity_numerators(integer), WALSH @ integer):
             raise AssertionError("walsh_counts and the parity matrix disagree on one histogram")
     flip = np.array([[0.9, 0.2], [0.1, 0.8]])
+    if abs(uniformity_wald(np.full(8, 0.125), np.eye(8) * 1e-4, list(range(8)))) > 1e-12:
+        raise AssertionError("a uniform distribution has a nonzero uniformity statistic")
     product = np.kron(np.kron(np.eye(2), flip), np.eye(2))
     if not np.allclose(relabel(product, ["A", "B", "C"], ["B", "C", "A"]), np.kron(np.eye(4), flip)):
         raise AssertionError("relabel does not carry qubit B's readout to its new measurement position")
