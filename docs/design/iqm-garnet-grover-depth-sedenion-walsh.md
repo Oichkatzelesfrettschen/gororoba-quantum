@@ -208,7 +208,9 @@ e4c71f05b25d28d2edc11e5fed0d3e5f768b8f06cad2e00376eb66a66e601f84, compiled on ca
 pins and the default the IQM service returned at 21:43 UTC. Analysis: `results/iqm/garnet_grover_depth_sedenion_walsh_analysis.json`
 (`scripts/iqm_garnet_followup.py analyze`); gate `core-iqm-garnet-followup-replay` reruns it and compares the bytes.
 The analyzer and its synthetic self-test were committed (db46b1277, 593c83adc, 56d947f75) before the runs entered the
-tree (3c81d9d74); the jobs had completed at 22:04 UTC, and git does not record when their counts were first read. The
+tree (3c81d9d74); the jobs had completed at 22:04 UTC, and git does not record when their counts were first read. After
+the counts were read, review amended the analyzer (604a8d18d: the corrected-f gradient at the corrected lambda, the
+role rule on the unrounded z); the retained record comes from the amended analyzer, and no verdict moved. The
 bit-order check comes from this document's decision list, not from `prediction.json` `decisions`, and entered the
 analyzer at 593c83adc. Cost: 3 and 1 billed seconds, 1.5 and 0.5 credits; balance 23.75 afterwards.
 
@@ -230,9 +232,9 @@ it decide nothing):
 Descriptive readings beside the decisions, deciding nothing:
 
 - The readout-corrected 101 depth statistic reads f = -0.121 +- 0.041, z -2.96 against zero, under 3. The depth arms
-  k = 2 and 3 are single circuits grouped at the job's center, while k = 1 pools four mirrored copies across the job,
-  so a drift across the 36 circuits enters f through the position of the arms (the case marks the depth arms as
-  centrally grouped).
+  k = 2 and 3 are single circuits at positions 15 and 16 of the 36, and k = 1 pools four copies at positions 0, 13, 22
+  and 35 (mean 17.5), so a drift linear in position cancels in f to first order; a curved drift does not (the four
+  k = 1 copies read 0.680, 0.662, 0.674 and 0.665).
 - The forward end-qubit difference D reads +0.0141 against the model's -0.0101, the opposite sign: QB17 reads its bit
   wrong more often than QB20 on the forward path.
 - QB12, measured in the sedenion job: across the sixteen readout preparations, QB12 (logical qubit 1 of the square,
@@ -243,19 +245,24 @@ Descriptive readings beside the decisions, deciding nothing:
   (0 to 1) and 0.0142 (1 to 0), and 0.0012 and 0.0093 conditioned on the herald these jobs use. The packed Pauli job
   one minute earlier shows the same fault in its references (its retention, PR 974,
   `docs/evidence/iqm-garnet-packed-pauli-run/readout_split.json`).
-- The e_10 row does not read as a QB12 readout fault alone. Its mode 1100 and its peak 0110 both set QB12, and differ
-  on QB11 and QB17; a QB12 readout or single-qubit fault scales both strings alike and keeps the ideal ratio of 9 to 1,
-  which the data invert (0.066 against 0.185). The e_10 null arm, ideal 0000, reads QB12 at 0.23 to 0.30 and QB11 and
-  QB17 at 0.13 to 0.17, where the e_5 null arm leaves QB11 and QB17 below 0.01. The e_10 network places all four of
-  its oracle phase gates on QB12 and runs CZs through it, while the e_5 network gives QB12 only its two Hadamard
-  layers.
+- The e_10 row does not read as a QB12 readout fault alone: its mode 1100 and its peak 0110 both set QB12, a fault
+  in QB12's readout scales both strings alike, and the data invert their ideal 9 to 1 ratio (0.066 against 0.185).
+  The two networks differ in where QB12 acts (`circuits/`, gates on each qubit in order). In e_10, QB11 and QB17 each
+  carry a Hadamard layer before and after their CZs with QB12 (QB11: prx, CZ QB12, CZ QB12, CZ QB16, CZ QB16, prx),
+  and QB12 carries the oracle's phase gates between its CZs (row arm) or no single-qubit gate at all (null arm). In
+  e_5, QB11 and QB17 carry no single-qubit gate in the null arm, and QB12 its two Hadamard layers. An excited or
+  mis-rotated QB12 applies a Z to its CZ partners; between Hadamard layers that Z flips the partner, and without them
+  it leaves the partner's computational state alone. That matches the null arms: e_10 reads QB11 and QB17 at 0.13 to
+  0.17 with QB12 at 0.23 to 0.30, though no gate drives QB12 there, while e_5 leaves QB11 and QB17 below 0.01.
 
 Open hypotheses:
 
-- hypothesis: QB12's drive or frequency moved between the calibration at 02:43 UTC and the jobs at 22:03 UTC, and
-  the e_10 network spreads the fault through its CZs into QB11 and QB17. Test: QB12's metrics in the next calibration
-  set, and a single-qubit Rabi and readout circuit on QB12 at the next job; the e_10 row reruns only after QB12 reads
-  within its calibration, and a healthy QB12 that leaves the e_10 null's QB11 and QB17 excited points at a second fault.
+- hypothesis: one fault on QB12 (its drive or frequency moved, or it is excited without a drive, between the
+  calibration at 02:43 UTC and the jobs at 22:03 UTC) accounts for both sedenion rows: the e_10 network turns QB12's
+  excitation into flips of QB11 and QB17 through CZ phase kickback, and the e_5 network does not. Test: a local
+  simulation of the four sedenion arms in the case's noise model with QB12 excited at the measured rate and its
+  pulses randomized, against the measured marginals; then QB12's metrics in the next calibration set and a
+  single-qubit Rabi and readout circuit on QB12, before the e_10 row reruns.
 - hypothesis: the bend of the 101 depth law is coherent error accumulating with iterations, which the model omits;
   the alternative is drift across the job's positions. Test: the per-copy and per-position frequencies already in
   the run, then a fourth depth with mirrored depth arms, where a coherent error predicts a non-monotone retention.
