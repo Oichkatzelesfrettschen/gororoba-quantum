@@ -350,17 +350,18 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
     return files, prediction
 
 
-def fetch_calibration(calibration_dir: Path) -> None:
-    """Garnet's current default calibration set: its architecture and metrics, read by the set's id."""
+def fetch_calibration(calibration_dir: Path, qc: str = QC) -> None:
+    """The quantum computer's current default calibration set (Garnet's by default): its architecture and metrics,
+    read by the set's id."""
     from iqm_platform import Client, calibration_paths, default_calibration_path, read_tokens, tokens_path
 
     client = Client(read_tokens(tokens_path())["access_token"])
-    status, body = client.get(default_calibration_path(QC))
+    status, body = client.get(default_calibration_path(qc))
     if status != 200:
         raise ValueError(f"GET the default calibration set answered {status}")
     identity = json.loads(body)["observation_set_id"]
     fetched = {}
-    for name, path in calibration_paths(QC, identity).items():
+    for name, path in calibration_paths(qc, identity).items():
         status, data = client.get(path)
         if status != 200:
             raise ValueError(f"GET {path} answered {status}")
