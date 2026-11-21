@@ -1,0 +1,25 @@
+{
+ "instructions": [
+  {
+   "args": {
+    "key": "c"
+   },
+   "locus": [
+    "QB5",
+    "QB10",
+    "QB14",
+    "QB18",
+    "QB20",
+    "QB24",
+    "QB26",
+    "QB30",
+    "QB34",
+    "QB37",
+    "QB42",
+    "QB44"
+   ],
+   "name": "measure"
+  }
+ ],
+ "name": "par-ro0"
+}
