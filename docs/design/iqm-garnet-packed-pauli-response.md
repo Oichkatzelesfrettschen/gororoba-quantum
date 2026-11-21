@@ -5,9 +5,9 @@ on Garnet as one 68-circuit job: the 36 circuits of the proposal and 32 buffer c
 [results/iqm/cases/packed-pauli-response-garnet](../../results/iqm/cases/packed-pauli-response-garnet/cases.json),
 built by `scripts/iqm_packed_pauli_case.py build DIR --calibration SRC` from Garnet's default calibration set
 `ea681de1-9661-41e5-bd6f-cb524fa056a6` (a live read on 2026-11-21, copied into the case's `calibration/`).
-`prediction.json`, bound by digest into `cases.json`, holds the per-circuit predictions. The only provider job so far is
-the `garnet:mock` job of the 36-circuit body (admission items below); the `garnet:mock` job `01a1ffe7` of the 68-circuit body; no paid job is submitted, and
-it waits for the owner's approval.
+`prediction.json`, bound by digest into `cases.json`, holds the per-circuit predictions. The provider jobs so far are two
+`garnet:mock` jobs, `01a1ff98` of the 36-circuit body and `01a1ffe7` of the 68-circuit body (admission items below);
+no paid job is submitted, and it waits for the owner's approval.
 
 ## Question
 
