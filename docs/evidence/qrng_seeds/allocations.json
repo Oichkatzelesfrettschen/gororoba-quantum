@@ -115,6 +115,13 @@
    "index": 1
   },
   {
+   "path": "scripts/iqm_grover_line.py",
+   "name": "TRANSPILER_SEED",
+   "value": 53987,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-16T041214Z.json",
+   "index": 3
+  },
+  {
    "path": "scripts/qd_teleportation_rehearsal.py",
    "name": "COMPILATION_SEEDS",
    "value": 42862,

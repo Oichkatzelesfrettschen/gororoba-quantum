@@ -10,7 +10,8 @@ which keeps its bytes.
 
 Replay. b0 is the coin series' own compile (region, transpiler seed and role map read from the retained batch-02
 cases.json, whose b0.cq and cases.json digests COIN_PINS pins); replay_text() regenerates its circuit bytes and
---replay refuses any difference from the retained file.
+--replay refuses any difference from the retained file. The build reads b0's gates from the pinned b0.cq
+(retained_b0) and takes only the layout from the compile, since the compile differs between platforms.
 
 Routing. The coin template of each low-CZ block (cosets 4, 8, 12) compiles on b0's region from each of the 120
 initial layouts of the five logical bits at SEEDS_PER_BLOCK transpiler seeds from the retained ANU QRNG draw
@@ -46,6 +47,7 @@ import hashlib
 import itertools
 import json
 import math
+import re
 import sys
 from functools import cache, partial
 from pathlib import Path
@@ -87,6 +89,19 @@ SEEDS_PER_BLOCK = 64
 # (template name, coset of the operand e1 + e17 on the basis (16, 1, 2)); b0 is coset 0 and replays the coin series.
 OPERAND = (1, 17, 1)
 BASIS_VECTORS = (16, 1, 2)
+
+
+def canonical_float(value: float, digits: int) -> float:
+    """The value rounded to digits decimals with the sign of zero cleared. A probability or contrast that is zero in
+    exact arithmetic leaves the state-vector product as a residue of 1e-17 to 1e-33, and json.dumps writes the rounded
+    residue as 0.0 or -0.0 by the residue's sign; adding 0.0 maps -0.0 to 0.0 (IEEE 754 round to nearest) and leaves
+    every finite value bit-identical. The change removes the signed-zero difference only: a last-bit difference
+    that carries a nonzero value across a rounding boundary is not addressed. The nearest such boundary among the
+    floats of the retained manifests lies 4e-14 of a unit away, measured on linux x86_64. hypothesis: the sign of the
+    residue follows the accumulation order of the probability computation on the platform."""
+    return round(float(value), digits) + 0.0
+
+
 LOW_CZ = (("k4", 4), ("k8", 8), ("k12", 12))
 TEMPLATES = ("b0", *(name for name, _ in LOW_CZ))
 BLOCKS = {"b0": pcb.Block("b0", OPERAND, BASIS_VECTORS, 0)} | {
@@ -243,6 +258,62 @@ def compile_b0() -> Any:
     ref = reference()
     index = next(i for i, t in enumerate(cc.TEMPLATES) if t[0] == "b0")
     return cc.compile_template(topology(), index, ref["region"], ref["seed"])
+
+
+# One gate line of the Tuna-17 emitter (kcc.emit): Rz on the pi/36 grid, X90, X or CZ on register qubits.
+TUNA_GATE = re.compile(r"(?:Rz\((?P<angle>[-0-9.e+]+)\)|(?P<gate>X90|X|CZ)) q\[(?P<a>\d+)\](?:, q\[(?P<b>\d+)\])?")
+
+
+def retained_b0() -> Any:
+    """b0 as the coin series executed it: the gates of the pinned b0.cq on the qubit layout of b0's compile.
+
+    The transpile of b0 depends on the platform: on darwin-arm64 (measured on the hosted macOS leg) its compile differs
+    from the pinned b0.cq, which the Linux replay reproduces byte for byte, at 13 of 115 gate positions: six rz angles
+    (the first, right after a CZ, by pi) and seven positions where two CZ move one slot later, over the same 21 CZ
+    pairs. The ideal law computed from that compile differs from the retained circuit's. hypothesis: the pi shift is an
+    Euler-branch choice of the one-qubit resynthesis under that platform's numeric identity; the moved CZ are not
+    explained. The pinned b0.cq is the circuit of record; the compile supplies only
+    the layout, which the role map of the coin manifest pins. The build refuses a compile whose final layout differs
+    from that role map, a gate line outside the emitter's vocabulary, a gate on a qubit outside the region or with the
+    wrong number of qubits, and a circuit that does not re-emit the pinned bytes. Of the initial layout the build
+    reads only the coin's start qubit (fixed_qubit), and coin_fixed refuses a start run that is not the Hadamard. The
+    global phase is set to 0, since the circuit file carries none."""
+    from qiskit.circuit.library import CZGate, RZGate, SXGate, XGate
+
+    ref = reference()
+    region = list(ref["region"])
+    compiled = compile_b0()
+    final = compiled.layout.final_index_layout()
+    if {k: int(region[final[v]]) for v, k in enumerate(KEYS)} != ref["roles"]:
+        raise ValueError("the compile of b0 places its logical bits off the retained role map")
+    out = compiled.copy_empty_like()
+    out._layout = compiled.layout
+    out.global_phase = 0.0
+    text = (COIN_BATCH / "b0.cq").read_text(encoding="utf-8")
+    note = ""
+    for line in text.splitlines():
+        if not line or line.startswith(("version ", "qubit[", "bit[")) or line in ("barrier q", "b = measure q"):
+            continue
+        if line.startswith("//"):
+            note = line
+            continue
+        match = TUNA_GATE.fullmatch(line)
+        if match is None:
+            raise ValueError(f"the retained b0.cq holds a line outside the emitter's vocabulary: {line!r}")
+        physical = [int(q) for q in (match["a"], match["b"]) if q is not None]
+        if any(q not in region for q in physical):
+            raise ValueError(f"the retained b0.cq acts on a qubit outside the region {region}: {line!r}")
+        qubits = [out.qubits[region.index(q)] for q in physical]
+        gate = match["gate"]
+        operation = (
+            RZGate(float(match["angle"])) if gate is None else {"X90": SXGate(), "X": XGate(), "CZ": CZGate()}[gate]
+        )
+        if len(qubits) != operation.num_qubits:
+            raise ValueError(f"the retained b0.cq gives {gate or 'Rz'} {len(qubits)} qubits: {line!r}")
+        out.append(operation, qubits)
+    if cc.circuit_text(out, dict(enumerate(region)), NQUBITS, note) != text:
+        raise ValueError("the circuit read from the retained b0.cq does not re-emit its bytes")
+    return out
 
 
 def entry_of(
@@ -410,9 +481,10 @@ def joint_text(nqubits: int, prep: tuple[int, ...]) -> str:
 
 @cache
 def series_plan() -> dict[str, Any]:
-    """b0 replayed and the 6-CZ blocks (selector q8 and coin q2 held, data qubits free) on b0's region."""
+    """b0 as retained (retained_b0) and the 6-CZ blocks (selector q8 and coin q2 held, data qubits free) on b0's
+    region."""
     region = reference()["region"]
-    templates = {"b0": entry_of("b0", compile_b0(), reference()["seed"], reference()["draw_index"], None)}
+    templates = {"b0": entry_of("b0", retained_b0(), reference()["seed"], reference()["draw_index"], None)}
     for name, _ in LOW_CZ:
         templates[name] = routed(SERIES_PIN, name)
     return {"region": region, "templates": templates}
@@ -675,8 +747,8 @@ def series(
                 "initial_layout": t["initial_layout"],
                 "cz": t["cz"],
                 "roles": {k: place[list(region).index(q)] for k, q in t["roles"].items()},
-                "ideal_selector_contrast": round(t["ideal_selector_contrast"], 9) + 0.0,
-                "ideal_c": [round(float(x), 6) for x in t["ideal_c"]],
+                "ideal_selector_contrast": canonical_float(t["ideal_selector_contrast"], 9),
+                "ideal_c": [canonical_float(x, 6) for x in t["ideal_c"]],
             }
             for name, t in plan["templates"].items()
         },
@@ -704,7 +776,7 @@ def series(
                 else:
                     t = twin_entry(name, spec["coin"])
                     texts[spec["file"]] = cc.circuit_text(t["circuit"], place, nqubits, twin_note(name, spec["coin"]))
-                record["ideal"] = [round(float(x), 12) for x in t["ideal"]]
+                record["ideal"] = [canonical_float(x, 12) for x in t["ideal"]]
             record["sha256"] = hashlib.sha256(texts[spec["file"]].encode()).hexdigest()
             circuits.append(record)
             files[f"{row['batch']}/{spec['file']}"] = texts[spec["file"]]

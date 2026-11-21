@@ -1,0 +1,55 @@
+{
+ "schema": "qi-tuna17-interleaved-cases-v1",
+ "arm": "q12_phase",
+ "meta": {
+  "wait_cycles": 25,
+  "triad": 0
+ },
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 1024,
+ "bit_order": "qubit 0 at the rightmost character",
+ "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-19T164737Z.json",
+ "circuits": [
+  {
+   "file": "ramsey-q9-w25-s48.cq",
+   "kind": "ramsey",
+   "qubit": 9,
+   "wait_cycles": 25,
+   "step": 48,
+   "angle": 4.1887902047863905,
+   "driven": [
+    9
+   ],
+   "expected_p1": 0.24999999999999978,
+   "sha256": "316763ee14992b820ceba9a5df6a491d8aac611ca4a39e37ba3768dda8b3c0d5"
+  },
+  {
+   "file": "ramsey-q9-w25-s00.cq",
+   "kind": "ramsey",
+   "qubit": 9,
+   "wait_cycles": 25,
+   "step": 0,
+   "angle": 0.0,
+   "driven": [
+    9
+   ],
+   "expected_p1": 1.0,
+   "sha256": "33b0f663fdcfe03e9e759a85f4008e911e740b606c0f4cd690596482d4f56d39"
+  },
+  {
+   "file": "ramsey-q9-w25-s24.cq",
+   "kind": "ramsey",
+   "qubit": 9,
+   "wait_cycles": 25,
+   "step": 24,
+   "angle": 2.0943951023931953,
+   "driven": [
+    9
+   ],
+   "expected_p1": 0.2500000000000001,
+   "sha256": "a78be24c0386b8755be02840913581a6f1e11d287b026ea5dabdcbba29e22322"
+  }
+ ]
+}

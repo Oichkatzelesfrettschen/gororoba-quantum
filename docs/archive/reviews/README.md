@@ -17,11 +17,13 @@ repository-relative; a branch name stands for its worktree.
 | [2026-10-30-quandela-run-audit.md](2026-10-30-quandela-run-audit.md) | Ascella and Belenos run inventory, repeats, simulation pairs, mode-swap replay, across-time claim gap and live processor state |
 | [kaggle-audit-2026-11-09/README.md](kaggle-audit-2026-11-09/README.md) | Audit of 32 pulled Kaggle kernel outputs and the unretained local run directories against the tracked records (2026-11-09): 10 carried, 3 new results, 19 failed runs, no disagreeing rank record; holds the one output no claim owns, the two-qubit null-epistemics battery |
 | [legacy-branch-mining/README.md](legacy-branch-mining/README.md) | Content check of the fourteen legacy archive branches against main at 4b144ee81: one unique receipt checker retained, per-branch verdict and delete-or-keep recommendation (2026-11-09) |
+| [a5-attaching-maps-scope/README.md](a5-attaching-maps-scope/README.md) | codex and grok review of the A5 kernel-attachments plan reconciliation and the sub-step 3a scope (PR 967): stale remainders, citations, the conical structure behind the link map, c_1 as a class, and the controls |
 | [a5-vb7-w8-char0/README.md](a5-vb7-w8-char0/README.md) | Codex audits of the E8-bar -> VB degree-7 and W8 characteristic-0 plan, the final direction review, the PR review and the Iso saturation trace, each finding reconciled against the source |
 | [ibm-wide-coset-and-tuna-6cz/README.md](ibm-wide-coset-and-tuna-6cz/README.md) | Review of the wide-coset nullity and Tuna-17 six-CZ claims: literature on drift and systematics, the setting comparison, the Codex review and its reconciliation |
 | [qi-null-phase-scan-case/reconciliation.md](qi-null-phase-scan-case/reconciliation.md) | Reconciliation of six review rounds on the Tuna-17 null phase scan case (PR 914): codex and the Advisor on the first design, codex and agy Flash on rule R1, codex on rules R2 to R6, the Advisor on the seed provenance, hosted Codex and hosted Copilot; the q8 world, scaled separation, readout-flip nuisance, JSON-safe unreachable fits, pooled flip fits, the engine-move boundary and the R5 and R6 record split; with the four briefs |
 | [backend-measurement-chain-gaps/reconciliation.md](backend-measurement-chain-gaps/reconciliation.md) | agy and Advisor review of the measurement-chain gaps note (PR 886): the twin-drift statistics, the Quantum Inspire rows at 91bdb304f, the scanned universal claims, the source-model row and the hypothesis markers; with the brief |
 | [qi-tuna17-characterization-record/reconciliation.md](qi-tuna17-characterization-record/reconciliation.md) | Advisor review of the Tuna-17 characterization record (PR 940): the batch-offset confound of the T1 delays and its anchor test, the main merge, the retained-context keys the dashboard reads, the self-test memory, the body figures, the pin sweep; with the brief |
+| [bdsc-diagnostic-timing/reconciliation.md](bdsc-diagnostic-timing/reconciliation.md) | Review packet of the sim:belenos timing requests P1 and P2 (PR 965): grok, codex, agy Hydrogen as reviewers, agy Flash, agy Neon and opencode on the OpenCode Go account as red team, vibe not run; the submit gate, run discovery, the cap and limit rules, the fixed-cadence recorder, exact decision ratios and the stated boundaries; the plan read before approval and the grok review of the run retention (PR 968) |
 | [findings-32d/brief.md](findings-32d/brief.md) | Brief for the adversarial synthesis of PRs #788, #789, #790 and the A_5 findings at main fb122e569: ledger audit, new conjectures, cross-program connections, remaining computations by host (2026-11-08) |
 | [findings-32d/review-codex-daybreak-blue.md](findings-32d/review-codex-daybreak-blue.md) | Codex gpt-daybreak-blue-latest review: within-PUB covariance in #788, the Iso equality overclaim, #790 ledger states, the A5 dependency-ledger audit and a costed host table |
 | [findings-32d/review-grok.md](findings-32d/review-grok.md) | Grok Build review: ledger audit, the maximum two-term nullity, N_hat saturation hiding a dead placement, single-site instrument faults, costs and PR defects |
@@ -80,6 +82,7 @@ repository-relative; a branch name stands for its worktree.
 | [tuna-readback-expiry-review.md](tuna-readback-expiry-review.md) | Review of receipt retention across the post-response expiry boundary |
 | [tuna-capture-commitment-review.md](tuna-capture-commitment-review.md) | Review of capture commitment encoding, substitution and admission boundaries |
 | [tuna-capture-commitment-followup-review.md](tuna-capture-commitment-followup-review.md) | Follow-up on coherent capture substitutions and scoring separation |
+| [qi-tuna17-interleaved-draw/reconciliation.md](qi-tuna17-interleaved-draw/reconciliation.md) | Local codex round on the retained draw, batch order and QX twin of the interleaved Tuna-17 case (PR 957): stale status lines, the timing record and the open research-state ledger row; with the brief |
 | [tuna-attempt-transport-review.md](tuna-attempt-transport-review.md) | Review of attempt retention, failure paths and admission boundaries |
 | [tuna-private-attempt-journal-review.md](tuna-private-attempt-journal-review.md) | Review of attempt journal replay, lifecycle and persistence boundaries |
 | [tuna-attempt-retention-followup-review.md](tuna-attempt-retention-followup-review.md) | Follow-up on attempt transport and journal repairs |
@@ -122,6 +125,7 @@ repository-relative; a branch name stands for its worktree.
 | [2026-10-26-belenos-teleportation-rehearsal-review-goal.md](2026-10-26-belenos-teleportation-rehearsal-review-goal.md) | standing brief of the Codex (gpt-daybreak-blue-latest, high) deep peer review of the Belenos teleportation rehearsal, job-00 evidence and the job-01 case of #560 |
 | [2026-10-26-belenos-teleportation-rehearsal-review.md](2026-10-26-belenos-teleportation-rehearsal-review.md) | Codex (gpt-daybreak-blue-latest, high) deep peer review of the Belenos teleportation rehearsal and job-01: fourteen findings, the fixes in #560 and the questions left to the owner |
 | [iqm-emerald-idle-schedule-case/reconciliation.md](iqm-emerald-idle-schedule-case/reconciliation.md) | Local codex round on the written case of one IQM Emerald idle-schedule job (PR 959): what H2 identifies, the chi-square model, the mock cutoff and the historical credit snapshot; with the brief |
+| [qi-interleaved-submit-gate/README.md](qi-interleaved-submit-gate/README.md) | Advisor review of the interleaved Tuna-17 submit gate (PR 971): the approved CASE.md kept byte for byte, sanity of the retained twin runs under the new rule, the start-check tightening and the collect-before-submit mechanism |
 | [2026-10-26-belenos-job-01-redesign-consult.md](2026-10-26-belenos-job-01-redesign-consult.md) | Codex (gpt-daybreak-blue-latest, high, web search) research consult on the job-01 redesign, with its [brief](2026-10-26-belenos-job-01-redesign-consult-goal.md) |
 | [2026-10-26-belenos-job-01-redesign-operator-research.md](2026-10-26-belenos-job-01-redesign-operator-research.md) | operator's parallel reading of the same questions, superseded in part |
 | [2026-10-26-belenos-job-01-redesign-disposition.md](2026-10-26-belenos-job-01-redesign-disposition.md) | how the consult, the operator reading and the source notes became the descriptive job-01 design |
@@ -207,4 +211,21 @@ The [Quantum Inspire status document review](qi-status-document/reconciliation.m
 of its [reviewer report](qi-status-document/codex-report.md) on [the brief](qi-status-document/brief.md) for
 `scripts/qi_status.py`.
 
+The [one-CZ null manifest serializer review](qi-pathion-qx-manifest/reconciliation.md) reconciles the five findings
+of its [reviewer report](qi-pathion-qx-manifest/codex-report.md) on [the brief](qi-pathion-qx-manifest/brief.md) for
+`canonical_float` and, in its second round, `retained_b0` in `scripts/qi_pathion_one_cz_null_cases.py`.
+
 The [circuit_params unitary comparison review](circuit-params-unitary-comparison/README.md) (pull request 937) and the [workbench payload identity review](workbench-payload-identity/README.md) (pull request 843) are post-merge backfills. Each reconciles the Advisor and worker rounds of its pull request against the pull request's own threads and its merge commit.
+
+The [line-native CCZ Grover case review](grover-line-ccz/reconciliation.md) (pull request 966) reconciles
+the findings of one reviewer and one red-teamer on [the brief](grover-line-ccz/brief.md) for
+`scripts/iqm_grover_line.py` and its Garnet case, fixed before the case spent credits.
+
+The [Grover results gap review](grover-line-gap-review/reconciliation.md) reconciles three low-effort
+reviewers' findings on the Garnet run, the gororoba-math degree theorems and the `math/` quasi-Riemann
+formalization, with the corrections they produced and the questions the records do not yet ask.
+
+The [Garnet follow-up case review](garnet-followup-case/reconciliation.md) (pull request 970) reconciles two
+reviewers' and one red-teamer's findings on [the brief](garnet-followup-case/brief.md) for
+`scripts/iqm_garnet_followup.py`, `gororoba_quantum/sedenion_sign_oracle.py` and the written case, fixed before
+the case spent credits.

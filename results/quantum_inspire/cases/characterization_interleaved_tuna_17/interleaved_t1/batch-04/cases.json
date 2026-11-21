@@ -1,0 +1,99 @@
+{
+ "schema": "qi-tuna17-interleaved-cases-v1",
+ "arm": "interleaved_t1",
+ "meta": {
+  "round": 0,
+  "multiplier": 0.5,
+  "chain_cycles": 726
+ },
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "shots": 8192,
+ "bit_order": "qubit 0 at the rightmost character",
+ "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-19T164737Z.json",
+ "circuits": [
+  {
+   "file": "t1-m0.5.cq",
+   "kind": "t1",
+   "multiplier": 0.5,
+   "wait_cycles": 726,
+   "driven": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "expected_p1": 1.0,
+   "delays_cycles": [
+    416,
+    481,
+    532,
+    313,
+    563,
+    499,
+    392,
+    664,
+    474,
+    512,
+    726,
+    555,
+    538,
+    584,
+    277,
+    450,
+    540
+   ],
+   "sha256": "2cac0545536ad9e631a6294e197894fdc6a77832ab8b5d21af2965ba4c9bec3f"
+  },
+  {
+   "file": "readout-0-m0.5.cq",
+   "kind": "anchor0",
+   "multiplier": 0.5,
+   "wait_cycles": 726,
+   "driven": [],
+   "expected_p1": 0.0,
+   "sha256": "e14b3ea618a17ea517252278eabd935a63177722441683d32e4c05dd03929d24"
+  },
+  {
+   "file": "t1-0-m0.5.cq",
+   "kind": "anchor1",
+   "multiplier": 0.5,
+   "wait_cycles": 726,
+   "driven": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "expected_p1": 1.0,
+   "sha256": "79284de25fea4b1b5afc5d95316975f9a5b2d60bed871a3836e622ecb0698dc9"
+  }
+ ]
+}

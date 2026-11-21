@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-11-19T17:14:08+00:00",
+ "approval": "owner chat 2026-11-19T16:42Z: ok those items are approved",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "3901919a59c61d54307833c1f4943bab29ead2c222a948fa1bf0cfae7207c3fe",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 5,
+ "batch_job": 960982,
+ "project": 861057,
+ "shots": 1024,
+ "jobs": [
+  {
+   "file": "xt-x90-128-all.cq",
+   "job": 1749544,
+   "sha256": "b4b0a13a31fd85b0af089180dcb7ef37077250bb9788728776a6302414b946fb"
+  },
+  {
+   "file": "xt-x90-128-q1.cq",
+   "job": 1749545,
+   "sha256": "25370e4138a86e94498992ec5d824cae22b828e05b00644e8390e46ab4534d33"
+  },
+  {
+   "file": "xt-x90-128-q2.cq",
+   "job": 1749546,
+   "sha256": "c0578ae79883a30533ec6b19471294281ba7d62a04f86a2dadee239afac31aff"
+  }
+ ],
+ "submitted_utc": "2026-11-19T17:14:08+00:00"
+}

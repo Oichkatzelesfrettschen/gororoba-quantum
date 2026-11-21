@@ -1,0 +1,20 @@
+{"utc": "2026-11-20T23:26:47Z", "status": "waiting", "progress": null, "progress_message": null}
+{"utc": "2026-11-20T23:26:57Z", "status": "waiting", "progress": null, "progress_message": null}
+{"utc": "2026-11-20T23:27:07Z", "status": "running", "progress": 0.0, "progress_message": null}
+{"utc": "2026-11-20T23:27:17Z", "status": "running", "progress": 0.0006666666666666666, "progress_message": "Computing phases to apply (step 2)"}
+{"utc": "2026-11-20T23:27:27Z", "status": "running", "progress": 0.0006666666666666666, "progress_message": "Computing phases to apply (step 2)"}
+{"utc": "2026-11-20T23:27:37Z", "status": "running", "progress": 0.0006666666666666666, "progress_message": "Computing phases to apply (step 2)"}
+{"utc": "2026-11-20T23:27:47Z", "status": "running", "progress": 0.16733333333333333, "progress_message": "Computing phases to apply (step 2)"}
+{"utc": "2026-11-20T23:27:57Z", "status": "running", "progress": 0.16733333333333333, "progress_message": "Computing phases to apply (step 2)"}
+{"utc": "2026-11-20T23:28:07Z", "status": "running", "progress": 0.334, "progress_message": "Computing phases to apply (step 2)"}
+{"utc": "2026-11-20T23:28:17Z", "status": "running", "progress": 0.334, "progress_message": "Computing phases to apply (step 2)"}
+{"utc": "2026-11-20T23:28:27Z", "status": "running", "progress": 0.334, "progress_message": "Computing phases to apply (step 2)"}
+{"utc": "2026-11-20T23:28:37Z", "status": "running", "progress": 0.5006666666666667, "progress_message": "Computing phases to apply (step 2)"}
+{"utc": "2026-11-20T23:28:47Z", "status": "running", "progress": 0.5006666666666667, "progress_message": "Computing phases to apply (step 2)"}
+{"utc": "2026-11-20T23:28:57Z", "status": "running", "progress": 0.584, "progress_message": "Computing phases to apply (step 2)"}
+{"utc": "2026-11-20T23:29:07Z", "status": "running", "progress": 0.584, "progress_message": "Computing phases to apply (step 2)"}
+{"utc": "2026-11-20T23:29:17Z", "status": "running", "progress": 0.584, "progress_message": "Computing phases to apply (step 2)"}
+{"utc": "2026-11-20T23:29:27Z", "status": "running", "progress": 0.7506666666666667, "progress_message": "Computing phases to apply (step 2)"}
+{"utc": "2026-11-20T23:29:37Z", "status": "running", "progress": 0.7506666666666667, "progress_message": "Computing phases to apply (step 2)"}
+{"utc": "2026-11-20T23:29:47Z", "status": "running", "progress": 0.9173333333333333, "progress_message": "Computing phases to apply (step 2)"}
+{"utc": "2026-11-20T23:29:57Z", "status": "completed", "progress": 1.0, "progress_message": "Computing phases to apply (step 2)"}

@@ -1,0 +1,99 @@
+{
+ "schema": "qi-tuna17-interleaved-cases-v1",
+ "arm": "interleaved_t1",
+ "meta": {
+  "round": 2,
+  "multiplier": 8,
+  "chain_cycles": 11615
+ },
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "shots": 8192,
+ "bit_order": "qubit 0 at the rightmost character",
+ "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-19T164737Z.json",
+ "circuits": [
+  {
+   "file": "t1-0-m8.cq",
+   "kind": "anchor1",
+   "multiplier": 8,
+   "wait_cycles": 11615,
+   "driven": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "expected_p1": 1.0,
+   "sha256": "9f2d2eb87bad2d27ecd178262985168afa5019893f98c6e700abc95e83414816"
+  },
+  {
+   "file": "t1-m8.cq",
+   "kind": "t1",
+   "multiplier": 8,
+   "wait_cycles": 11615,
+   "driven": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "expected_p1": 1.0,
+   "delays_cycles": [
+    6653,
+    7699,
+    8508,
+    5001,
+    9001,
+    7983,
+    6276,
+    10627,
+    7590,
+    8189,
+    11615,
+    8883,
+    8611,
+    9348,
+    4436,
+    7206,
+    8632
+   ],
+   "sha256": "60f9ca685e9a68b1fef353b93b9010fce224c812bd376e4560c262faf911f3ef"
+  },
+  {
+   "file": "readout-0-m8.cq",
+   "kind": "anchor0",
+   "multiplier": 8,
+   "wait_cycles": 11615,
+   "driven": [],
+   "expected_p1": 0.0,
+   "sha256": "721a1df5768baab342b8ffb5f4612c05cdd98de9ea3c324353f7ee4ab39a49f5"
+  }
+ ]
+}

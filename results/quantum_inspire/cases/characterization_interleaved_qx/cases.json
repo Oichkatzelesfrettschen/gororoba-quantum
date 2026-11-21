@@ -154,6 +154,6 @@
   "crosstalk": 8,
   "q12_phase": 4
  },
- "qrng_draw": null,
- "schedule": "pending: DRAW is None, see qrng_request.json"
+ "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-19T164737Z.json",
+ "schedule": "schedule.json"
 }

@@ -761,7 +761,7 @@
     {
       "suite": "sources",
       "cwd": ".",
-      "cmd": "rc=0; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases --exclude 'ibm-fez-actor-pilot/analyze[.]py$' --exclude 'a5-exceptional-fibers/working/' --exclude 'a5-exceptional-fibers/scratch-runs/' --exclude '^docs/evidence/a5-char0-transfer/kaggle/' --exclude '^docs/evidence/hardware-residuals/tuna-quandela/' --exclude '^docs/evidence/walk-control-scaffolding/' --exclude '^docs/evidence/vacuum_endpoint_information/' docs/verify_sources.py docs/check_verify_sources.py docs/evidence || rc=1; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/ibm-fez-actor-pilot/analyze.py || rc=1; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/a5-char0-transfer/kaggle || rc=1; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/hardware-residuals/tuna-quandela || rc=1; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/walk-control-scaffolding || rc=1; MYPYPATH=docs/evidence/vacuum_endpoint_information \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/vacuum_endpoint_information || rc=1; exit $rc",
+      "cmd": "rc=0; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases --exclude 'ibm-fez-actor-pilot/analyze[.]py$' --exclude 'a5-exceptional-fibers/working/' --exclude 'a5-exceptional-fibers/scratch-runs/' --exclude '^docs/evidence/a5-char0-transfer/kaggle/' --exclude '^docs/evidence/hardware-residuals/tuna-quandela/' --exclude '^docs/evidence/walk-control-scaffolding/' --exclude '^docs/evidence/vacuum_endpoint_information/' docs/verify_sources.py docs/check_verify_sources.py docs/evidence || rc=1; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/ibm-fez-actor-pilot/analyze.py || rc=1; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/a5-exceptional-fibers/scratch-runs/analysis || rc=1; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/a5-char0-transfer/kaggle || rc=1; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/hardware-residuals/tuna-quandela || rc=1; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/walk-control-scaffolding || rc=1; MYPYPATH=docs/evidence/vacuum_endpoint_information \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/vacuum_endpoint_information || rc=1; exit $rc",
       "name": "sources-122",
       "seconds": 11.5
     },
@@ -3592,6 +3592,61 @@
         "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00/raw/control_x.cq.json",
         "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00/raw/reset_phase.cq.json",
         "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00/reset_phase.cq"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_line.py --self-test",
+      "name": "core-772",
+      "seconds": 4.3
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_line.py check results/iqm/cases/grover-line-ccz",
+      "name": "core-773",
+      "seconds": 36.6,
+      "replays": [
+        "results/iqm/cases/grover-line-ccz/cases.json",
+        "results/iqm/cases/grover-line-ccz/circuits",
+        "results/iqm/cases/grover-line-ccz/prediction.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_line.py analyze results/iqm/runs/2026-11-20T230142Z-garnet-grover-line-ccz-grover --out results/iqm/grover_line_ccz_analysis.json --replay",
+      "name": "core-774",
+      "seconds": 2.0,
+      "replays": [
+        "results/iqm/grover_line_ccz_analysis.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/sedenion_sign_oracle.py",
+      "name": "core-775",
+      "seconds": 22.7
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_garnet_followup.py --self-test",
+      "name": "core-776",
+      "seconds": 13.3
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_garnet_followup.py check results/iqm/cases/grover-depth-sedenion-walsh",
+      "name": "core-777",
+      "seconds": 37.3,
+      "replays": [
+        "results/iqm/cases/grover-depth-sedenion-walsh/cases.json",
+        "results/iqm/cases/grover-depth-sedenion-walsh/circuits",
+        "results/iqm/cases/grover-depth-sedenion-walsh/prediction.json"
       ]
     },
     {

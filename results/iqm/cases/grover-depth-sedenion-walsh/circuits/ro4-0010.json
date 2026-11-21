@@ -1,0 +1,27 @@
+{
+ "instructions": [
+  {
+   "args": {
+    "angle": 3.1415926536,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB17"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m"
+   },
+   "locus": [
+    "QB11",
+    "QB12",
+    "QB17",
+    "QB16"
+   ],
+   "name": "measure"
+  }
+ ],
+ "name": "ro4-0010"
+}

@@ -1,0 +1,12 @@
+version 3.0
+
+qubit[17] q
+bit[17] b
+
+X90 q[12]
+wait(25) q[12]
+Rz(4.1887902047863905) q[12]
+X90 q[12]
+
+barrier q
+b = measure q

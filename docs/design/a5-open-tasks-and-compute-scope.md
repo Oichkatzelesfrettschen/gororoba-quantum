@@ -118,12 +118,15 @@ Done since the scope was first written:
 
 | task | plan step | state | depends on |
 |---|---|---|---|
-| 126 | incidence census, real versus complex, all 33 incidences | doing | |
-| 127 | limit sets 8 -> 12, 15 incidences, closed Gauss-graph fibers in Gr(4,6) with two-sided real certificates | todo | 126 |
-| 128 | limit sets 12 -> 16 (8) and 8 -> 16 (10), from a two-approach path-dependence test | todo | 126; the exceptional-fiber supports of task 5 |
-| 129 | compatibility of composed and direct limits | todo | 127, 128 |
-| 130 | attaching maps with homotopy data | todo | 129 |
+| 126 | incidence census, real versus complex, all 33 incidences | done (ledger rows 1 and 1b) | |
+| 127 | limit sets 8 -> 12, 15 incidences, closed Gauss-graph fibers in Gr(4,6) with two-sided real certificates | todo; 14 of 15 at the selected basepoints | 126 |
+| 128 | limit sets 12 -> 16 (8) and 8 -> 16 (10), from a two-approach path-dependence test | todo; eight computed, ten imported and decided as point sets | 126; the exceptional-fiber supports of task 5 |
+| 129 | compatibility of composed and direct limits | todo; linear sections (row 2s) | 127, 128 |
+| 130 | attaching maps with homotopy data | doing: sub-step 3a, the eight first-order-resolved incidences, ahead of the open remainders of 127 to 129 | 129 for the full poset; 3a uses only rows 2b, 2c, 2i and 2l |
 | 131 | ledger of questions not yet asked (program section 5) | standing | |
+
+States as of 2026-11-20, from the orchestrator note after 2w in the [program](a5-kernel-attachments-program.md) and the
+plan `docs/state/plans/a5-kernel-attachments.json`.
 
 Roadmap item 7 assembles the attaching maps of task 130 as a homotopy colimit over the incidence poset. Item 8 compares
 that model at n = 4 and n = 5. Neither can start on Hilbert functions alone, so item 6 stays open until tasks 126 to
