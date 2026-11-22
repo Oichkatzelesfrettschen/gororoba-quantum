@@ -2,10 +2,11 @@
 
 Rows 2c (first_order_normal_cones.py) and 2i (holomorphic_gauss_fibers.py) retain only a basis of the entry forms of
 the first-order Schur matrix: six or seven of the 15 entries of the 6 x 6 skew effective form of 2c and six or seven
-of the 21 entries of the 7 x 7 skew leading Schur form of 2i, as each incidence's retained basis records. This producer imports both modules, rebuilds each skew matrix at the
-retained basepoint and slice columns, and writes all 15 and all 21 entry forms of each incidence as coefficient rows
-over the slice variables t1, ..., tn: pairs of rational strings (real part, imaginary part) over Q(i), and residues
-modulo 32009 under i = 10754 (the residue of every Q(i) coefficient, each denominator a unit).
+of the 21 entries of the 7 x 7 skew leading Schur form of 2i, as each incidence's retained basis records. This
+producer imports both modules, rebuilds each skew matrix at the retained basepoint and slice columns, and writes all
+15 and all 21 entry forms of each incidence as coefficient rows over the slice variables t1, ..., tn: pairs of
+rational strings (real part, imaginary part) over Q(i), and residues modulo 32009 under i = 10754 (the residue of
+every Q(i) coefficient, each denominator a unit).
 
 Checks at build time: the 2i full matrix reproduces the retained coordinate_sha256 of its numerator coordinates, each
 retained basis (2i linear_coordinate_matrix, 2c coordinate_forms) reappears at its retained indices, both matrices
