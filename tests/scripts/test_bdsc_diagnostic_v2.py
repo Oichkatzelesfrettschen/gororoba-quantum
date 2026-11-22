@@ -95,7 +95,7 @@ def test_the_fork_leaves_the_frozen_module_at_four_slots_and_every_copy_reads_si
     scope = layout.SCOPE
     if (scope["SLOTS"], scope["DRAW_VALUES"]) != (6, 150):
         raise AssertionError("the fork does not hold six slots and 150 draw values")
-    replaced = {"case_record", "outward_slots"}
+    replaced = {"case_record", "outward_slots", "draw_values", "self_test"}
     functions = [n for n, v in vars(frozen).items() if getattr(v, "__module__", None) == frozen.__name__]
     shared = sorted(n for n in functions if scope[n] is vars(frozen)[n])
     if shared != sorted(layout.KEEP):
@@ -103,6 +103,9 @@ def test_the_fork_leaves_the_frozen_module_at_four_slots_and_every_copy_reads_si
     stale = [n for n in functions if n not in layout.KEEP | replaced and scope[n].__globals__ is not scope]
     if stale:
         raise AssertionError(f"functions that read the frozen globals: {stale}")
+    foreign = [n for n in replaced - {"case_record"} if scope[n].__globals__ is not vars(layout)]
+    if foreign:
+        raise AssertionError(f"replacements outside the successor module: {foreign}")
 
 
 def test_the_layout_holds_four_jobs_of_36_iterations_in_matched_blocks() -> None:

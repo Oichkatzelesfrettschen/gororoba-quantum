@@ -474,23 +474,26 @@ values from the keyed ANU service. The manifests cite indices 0 to 5 as the seed
 as the order of the 72 block-1 instances (a block-2 instance cites its block-1 match's index); the draw belongs to the
 tree's case record, and `draw_claims` refuses it to any other record.
 
-**Power.** Each seed test is a pooled chi-square of seed effects about their group mean. Independent seed effects of
-SD s over equal counting errors e scale its null distribution by 1 + k (s / e)^2, with k = 4 for `seed_common` (the
-offset is shared by the four superposition states, which averages their counting errors) and 1 otherwise, so the test
-at alpha 0.01 reads resolved with probability sf(isf(0.01, df) / (1 + k (s / e)^2), df). The table gives the seed SD,
-in units of e (about 0.0025 for one fraction at p = 1/2 and 40000 trials), at which the test reaches power 0.8 and
-0.95:
+**Power.** Each seed test is a pooled chi-square of seed effects about their group mean over both blocks. Block 2
+repeats block 1's returned circuits, so a seed's effect is common to its copies in the two blocks: under seed SD s
+over counting error e the statistic is (1 + 2 k (s / e)^2) X + Y, with X and Y independent central chi-squares of
+df / 2 degrees of freedom, k = 4 for `seed_common` (the offset is shared by the four superposition states, which
+averages their counting errors) and 1 otherwise, and the test rejects above isf(0.01, df) of the null chi-square. The
+table gives the seed SD, in units of e (about 0.0025 for one fraction at p = 1/2 and 40000 trials), at which the test
+reaches power 0.8 and 0.95:
 
 | Test | df at 4 slots | s / e at 0.8 | s / e at 0.95 | df at 6 slots | s / e at 0.8 | s / e at 0.95 |
 |---|---|---|---|---|---|---|
-| `seed_superposition` | 48 | 0.927 | 1.107 | 80 | 0.789 | 0.927 |
-| `seed_common` | 12 | 0.768 | 1.002 | 20 | 0.628 | 0.785 |
-| `seed_interaction` | 36 | 1.020 | 1.233 | 60 | 0.863 | 1.023 |
+| `seed_superposition` | 48 | 0.950 | 1.165 | 80 | 0.801 | 0.958 |
+| `seed_common` | 12 | 0.840 | 1.203 | 20 | 0.664 | 0.879 |
+| `seed_interaction` | 36 | 1.053 | 1.317 | 60 | 0.880 | 1.066 |
 
 The retained diagnostic stated no power for these tests. The numbers plan the design under the premises of
-independent Bernoulli counting errors, equal errors across the pooled cells and seed effects independent across
-seeds (and across states for two of the tests), which the provider contract does not establish, so they bound the
-design and do not certify a reading. The same statement sits in the case record under `analysis.power`, and
+independent Bernoulli counting errors, equal errors across the pooled cells, a seed's effect identical in both blocks
+and independent across seeds (and across states for two of the tests), which the provider contract does not
+establish, so they bound the design and do not certify a reading. A seed effect that changes between blocks moves each
+ratio toward the independent-block value, which an earlier version of this table gave (0.789 and 0.927 for
+`seed_superposition` at six slots). The same statement sits in the case record under `analysis.power`, and
 `scripts/bdsc_diagnostic_v2.py` computes it.
 
 **Order.** Run the steps of [the order of the diagnostic case](#order-of-the-diagnostic-case) with

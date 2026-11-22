@@ -25,7 +25,6 @@ mirror is refused.
 from __future__ import annotations
 
 import json
-import math
 import types
 from pathlib import Path
 from typing import Any
@@ -178,7 +177,7 @@ def draw_values(path: Path | None) -> tuple[list[int], list[int]] | None:
 
 
 def self_test() -> int:
-    """Refuses: the frozen self-test builds four-slot runs; tests/scripts/test_bdsc_diagnostic_v2.py reads six-slot ones."""
+    """Refuses: the frozen self-test builds four-slot runs; the module's pytest file reads six-slot ones."""
     raise SystemExit(
         "the six-slot fork carries no --self-test: the frozen one builds four-slot seed vectors; "
         "tests/scripts/test_bdsc_diagnostic_v2.py reads synthetic six-slot runs into their branches"
