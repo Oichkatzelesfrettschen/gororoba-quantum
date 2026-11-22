@@ -33,8 +33,10 @@ Test 1. Moving T1 against an additive level shift.
   U = sum w u / sum w with u = e / c and the fixed weight w = c^2 / vb^2 (the inverse null variance of u); its standard
   error is SE = sqrt(sum w^2 var(u)) / sum w with var(u) = (s2^2 / 2) / c^2 (s2^2 / 2 is the unbiased estimate of the
   variance of a two-degree-of-freedom sample variance). Z = U / SE.
-  Prediction. H_L: Z > 3 (excess at 8 and 12 positive). H_T: |Z| <= 3. Falsifiers: Z <= 3 falsifies H_L; Z > 3
-  falsifies H_T. Z < -3 means the binomial part over-subtracts and neither profile describes the data.
+  Prediction. H_L: Z > 3 (excess at 8 and 12 positive). H_T: |Z| <= 3. Decision: Z > 3 detects a level shift and
+  excludes a moving T1 as its sole source; |Z| <= 3 detects no level shift above the sensitivity 3 SE of tau^2 and
+  leaves H_T consistent, without excluding a smaller or mixed level shift. Z < -3 means the binomial part
+  over-subtracts and neither profile describes the data.
 
 Test 2. A disturbance common to all qubits of a batch.
 
@@ -48,7 +50,9 @@ Test 2. A disturbance common to all qubits of a batch.
   p-value is (1 + #[null >= observed]) / (1 + 10,000). The permutation seed is PERMUTATION_SEEDS (four values of one
   retained ANU QRNG draw, indices 0 to 3, combined big-endian to 64 bits); permutation k draws from
   random.Random(f"{seed}:{k}"), so the result does not depend on the worker count.
-  Prediction. H_C: p <= 0.01. H_0: p > 0.01. Falsifier of H_C: p > 0.01.
+  Prediction. H_C: p <= 0.01. H_0: p > 0.01. Decision: p <= 0.01 detects a common component; p > 0.01 detects none at
+  the power the self-test demonstrates (common term 0.03 against independent terms 0.01) and excludes no smaller one.
+  The residuals reach only round-varying structure that survives anchoring.
 
 Test 3. Ladder over-rotation identifiability.
 
@@ -64,7 +68,8 @@ Test 3. Ladder over-rotation identifiability.
   sum ((dP_N) / se_N)^2 < 5.99 (the 95% joint region of two parameters). f is the fraction of truths with a partner.
   Prediction. Identifiable: f <= 0.10 (the ladder is then fitted per qubit, context and drive condition on the grid).
   Not identifiable: f > 0.10, recorded as "not decidable from the retained data (issue 941)" with no fit. Falsifier of
-  identifiability: f > 0.10.
+  identifiability: f > 0.10. The fraction holds for this lattice, grid, distance cutoff and median contrast error; the
+  sign of dtheta and the shift by 2 pi / 32 are exact aliases outside the domain, separate from f.
 
 Self-test. Each test runs on synthetic series built from a SHA-256 stream (no random generator; the permutation test
 uses the QRNG seed): Test 1 a planted level shift and a planted T1 that moves between rounds, Test 2 a planted common
@@ -297,12 +302,21 @@ def pooled_level(rows: list[dict[str, Any]], indices: tuple[int, ...]) -> dict[s
     }
 
 
-def level_verdict(z: float) -> dict[str, str]:
+def level_verdict(pooled: dict[str, Any]) -> dict[str, Any]:
+    """A pooled excess above Z_DECISION standard errors at the long multipliers detects a level shift; one inside the
+    band detects none above the test's sensitivity (Z_DECISION standard errors of tau^2) and leaves a moving T1 as the
+    profile consistent with the record; neither reading excludes a smaller or mixed level shift."""
+    z, sensitivity = pooled["z"], Z_DECISION * pooled["se"]
     if z > Z_DECISION:
-        return {"level_shift": "survives", "moving_t1": "falsified", "reading": "excess above 3 SE at 8 and 12 T"}
+        return {"level_shift": "detected", "moving_t1": "not the sole source", "reading": "excess above 3 SE at 8 and 12 T"}
     if z >= -Z_DECISION:
-        return {"level_shift": "falsified", "moving_t1": "survives", "reading": "excess consistent with zero"}
-    return {"level_shift": "falsified", "moving_t1": "falsified", "reading": "variance below the binomial part"}
+        return {
+            "level_shift": "not detected above the sensitivity",
+            "moving_t1": "consistent",
+            "sensitivity_tau2": sensitivity,
+            "reading": "excess consistent with zero; a level shift with tau^2 below the sensitivity stays possible",
+        }
+    return {"level_shift": "not detected", "moving_t1": "not tested", "reading": "variance below the binomial part"}
 
 
 def run_test1(reps: list[Replicates]) -> dict[str, Any]:
@@ -312,7 +326,7 @@ def run_test1(reps: list[Replicates]) -> dict[str, Any]:
     return {
         "decision_multipliers": pooled["multipliers"],
         "pooled": pooled,
-        "verdict": level_verdict(pooled["z"]),
+        "verdict": level_verdict(pooled),
         "pooled_by_multiplier": by_multiplier,
         "qubits_where_neither_fits": [r["qubit"] for r in rows if r["neither_fits"]],
         "qubits": rows,
@@ -374,8 +388,11 @@ def run_test2(x: np.ndarray, permutations: int, qubits: list[int]) -> dict[str, 
         "null_maximum": float(null.max()),
         "p_value": p_value,
         "verdict": {
-            "common_disturbance": "survives" if p_value <= P_DECISION else "falsified",
-            "independent_residuals": "falsified" if p_value <= P_DECISION else "survives",
+            "common_disturbance": "detected" if p_value <= P_DECISION else "not detected",
+            "reading": "a leading component above the within-multiplier permutation null"
+            if p_value <= P_DECISION
+            else "no round-varying component common to the qubits is detected after anchoring; the self-test shows"
+            " power at a common term of 0.03 against independent terms of 0.01, and smaller common terms stay possible",
         },
         "leading_eigenvector": dict(zip(labels, [float(v) for v in leading], strict=True)),
         "seed_draw": DRAW,
@@ -558,13 +575,13 @@ def self_test() -> list[str]:
     level = run_test1(series_of(synthetic_batches(0.015, 0.0))[0])
     moving = run_test1(series_of(synthetic_batches(0.0, 0.15))[0])
     check(level["pooled"]["z"] > Z_DECISION, f"planted level shift: Z {level['pooled']['z']:.2f} <= 3", problems)
-    check(level["verdict"]["level_shift"] == "survives", "planted level shift: verdict not level shift", problems)
+    check(level["verdict"]["level_shift"] == "detected", "planted level shift: verdict not level shift", problems)
     check(
         abs(moving["pooled"]["z"]) <= Z_DECISION,
         f"planted moving T1: |Z| {abs(moving['pooled']['z']):.2f} > 3",
         problems,
     )
-    check(moving["verdict"]["moving_t1"] == "survives", "planted moving T1: verdict not moving T1", problems)
+    check(moving["verdict"]["moving_t1"] == "consistent", "planted moving T1: verdict not moving T1", problems)
     mean_level_tau = mean([q["level_shift"]["tau"] for q in level["qubits"]])
     check(0.008 < mean_level_tau < 0.03, f"planted tau 0.015 fitted as {mean_level_tau:.4f}", problems)
     mean_sigma_t = mean([q["moving_t1"]["sigma_t_over_t"] for q in moving["qubits"]])
