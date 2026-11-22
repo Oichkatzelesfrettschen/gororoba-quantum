@@ -119,7 +119,7 @@ Done since the scope was first written:
 | task | plan step | state | depends on |
 |---|---|---|---|
 | 126 | incidence census, real versus complex, all 33 incidences | done (ledger rows 1 and 1b) | |
-| 127 | limit sets 8 -> 12, 15 incidences, closed Gauss-graph fibers in Gr(4,6) with two-sided real certificates | todo; 14 of 15 at the selected basepoints; the variation over the boundary moduli beyond the boosts rows 2r and 2w sample (the boost-direction variation) is the step's open clause | 126 |
+| 127 | limit sets 8 -> 12, 15 incidences, closed Gauss-graph fibers in Gr(4,6) with two-sided real certificates | todo; 14 of 15 at the selected basepoints; open: the E8-bar to `VB` real limit set, the variation over the boundary moduli beyond the boosts rows 2r and 2w sample (the boost-direction variation), and arcs that leave the slice on `V` and `VB`; the variation of the attaching datum along the boundary orbit is also a remainder of task 130 | 126 |
 | 128 | limit sets 12 -> 16 (8) and 8 -> 16 (10), from a two-approach path-dependence test | todo; eight computed, ten imported and decided as point sets | 126; the exceptional-fiber supports of task 5 |
 | 129 | compatibility of composed and direct limits | todo; linear sections (row 2s) | 127, 128 |
 | 130 | attaching maps with homotopy data | doing: sub-step 3a, the eight first-order-resolved incidences, ahead of the open remainders of 127 to 129 | 129 for the full poset; 3a uses only rows 2b, 2c, 2i and 2l |
@@ -164,8 +164,10 @@ that model at n = 4 and n = 5. Neither can start on Hilbert functions alone, so 
   above, and its only output would be a check of the rank engine and the closing law. A later engine test would
   first need the multiplication matrix L streamed by degree, uint16 storage and engine v12's GPU echelon.
 - The Barrett-reduced successor of the fiber-rank engine (the Barrett tile measured in gororoba-infrastructure
-  `docs/compute/modp/`): closed on 2026-11-22 by the owner's decision, since task 113 above was its only recorded
-  consumer. The tile stays in that record.
+  `docs/compute/modp/`): closed on 2026-11-22 by the owner's decision. Task 113 above was its one named target; the
+  memory-bounded record (`docs/evidence/a5-exceptional-fibers/memory-bounded/README.md`) keeps the engine route useful
+  for falsifying the engine forecast and for unresolved E8 closure cells, and a case for either reopens the successor.
+  The tile stays in that record.
 
 ### Separate changes
 
