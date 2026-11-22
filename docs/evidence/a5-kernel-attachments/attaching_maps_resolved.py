@@ -652,14 +652,14 @@ def build_cone(field: Field, task: Task, generators: Sequence[str] | None = None
 
 def degree_in_span(field: Field, generators: Sequence[Poly], basis: Sequence[Vector]) -> int:
     """The degree of the zero set of GENERATORS inside the span of BASIS: 1 for the whole space, else the degree of the
-    single hypersurface the restricted generators define."""
+    single hypersurface the restricted generators define, and 0 when they define no single hypersurface."""
     restricted = [p for p in (restrict(field, g, basis) for g in generators) if p]
     if not restricted:
         return 1
     base = restricted[0]
-    _require(all(multiple_of(field, p, base) for p in restricted), "the restricted generators are not principal")
     degrees = poly_degrees(base)
-    _require(len(degrees) == 1, "the hypersurface equation is not homogeneous")
+    if not all(multiple_of(field, p, base) for p in restricted) or len(degrees) != 1:
+        return 0
     return next(iter(degrees))
 
 
