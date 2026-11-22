@@ -3,11 +3,13 @@
 scripts/iqm_measurement_sequence.py fits BILLING_MODELS["v2"], execution - schedule = fixed + per circuit-shot + per
 mid-circuit record, over twelve jobs of October 2026, where schedule is the server's compiled estimate less the
 1.6 s job term (JOB_SECONDS). This script scores v2 on every retained active-reset Garnet QPU job, the later ones
-included, refits the same three terms over all of them, and fits two candidate fourth terms: one per heralded
-circuit-shot and one per squared circuit-shot (a curvature in job size). A term earns its place only when it lowers
-the largest leave-one-out residual over the jobs other than the one with the most mid-circuit records, whose
-removal leaves the per-record term to extrapolation. It also reports runtime minus execution, which sets the margin
-a ceiling needs. Passive-reset jobs run a different shot loop and stay out. It decides nothing: BILLING_MODELS changes in the change
+included, refits the same three terms over all of them, and fits five candidate fourth terms: per heralded
+circuit-shot, per squared circuit-shot (a curvature in job size), an indicator of the jobs after the v2 fit (a cohort term), per
+circuit and per second of compiled schedule. It reports two leave-one-out criteria, over all jobs and over the jobs
+other than the one with the most mid-circuit records (whose removal leaves the per-record term to extrapolation),
+because no selection rule was fixed before the refit; it adopts no term. It also reports runtime minus execution,
+which sets the margin a ceiling needs, beside the job's compilation seconds. Passive-reset jobs run a different shot
+loop and stay out. It decides nothing: BILLING_MODELS changes in the change
 that first sizes a case from a refit.
 
 Usage: "$PYTHON" docs/evidence/iqm-garnet-billing-v3/billing_v3.py OUT.json
@@ -32,6 +34,9 @@ TERMS = {
     "v3": ["fixed", "per_circuit_shot", "per_mid_record"],
     "v3_herald": ["fixed", "per_circuit_shot", "per_mid_record", "per_heralded_circuit_shot"],
     "v3_curvature": ["fixed", "per_circuit_shot", "per_mid_record", "per_squared_circuit_shot"],
+    "v3_cohort": ["fixed", "per_circuit_shot", "per_mid_record", "later_cohort"],
+    "v3_circuits": ["fixed", "per_circuit_shot", "per_mid_record", "per_circuit"],
+    "v3_schedule": ["fixed", "per_circuit_shot", "per_mid_record", "per_schedule_second"],
 }
 
 
@@ -69,6 +74,7 @@ def jobs() -> list[dict[str, Any]]:
                 "circuit_shots": circuit_shots,
                 "mid_records": job["shots"] * sum(ms.mid_measures(c) for c in circuits),
                 "heralded_circuit_shots": circuit_shots if options.get("heralding_mode", "none") != "none" else 0,
+                "compilation": metrics.get("compilation_seconds"),
             }
         )
     return rows
@@ -81,6 +87,9 @@ def design(rows: list[dict[str, Any]], terms: list[str]) -> np.ndarray:
         "per_mid_record": lambda r: float(r["mid_records"]),
         "per_heralded_circuit_shot": lambda r: float(r["heralded_circuit_shots"]),
         "per_squared_circuit_shot": lambda r: float(r["circuit_shots"]) ** 2,
+        "later_cohort": lambda r: 0.0 if r["in_v2_fit"] else 1.0,
+        "per_circuit": lambda r: float(r["circuits"]),
+        "per_schedule_second": lambda r: float(r["schedule"]),
     }
     return np.array([[column[t](r) for t in terms] for r in rows])
 
@@ -130,6 +139,9 @@ def main(out: Path) -> None:
         predicted += v2["per_mid_record"] * r["mid_records"]
         r["v2_residual"] = r["execution"] - predicted
         r["runtime_over_execution"] = r["runtime"] - r["execution"]
+        r["runtime_over_execution_minus_compilation"] = (
+            None if r["compilation"] is None else r["runtime_over_execution"] - r["compilation"]
+        )
     record = {
         "definition": (
             "schedule = execution_runtime_estimate_seconds - JOB_SECONDS; residual = execution - schedule - model; "
