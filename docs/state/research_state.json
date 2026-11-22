@@ -16788,6 +16788,303 @@
       ],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "iqm-emerald-idle-schedule-t1-verdicts",
+      "statement": "On IQM Emerald (calibration set ecec1d0a; job 01a1ffe5, twelve pulsed qubits with delay-measured T1, 2.25 credits), the preregistered schedule test reads asap on every pulsed arm (H1), and the common-gap test (H2) returns unidentifiable: the delay fit of QB44 fails its gate (chi-square 33.9 on 2 degrees of freedom against a survival limit of 0.001), and the test covers all twelve pulsed qubits, so it neither supports nor refutes a common per-pulse gap.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration and one job; every gap reading assumes a unit delay scale. Descriptive readings that decide nothing: over the eleven qubits that pass the delay-fit gate the per-pulse gap reads 27.21 +- 0.47 ns at 1000 pulses and 33.06 +- 0.58 ns at 500 with a common gap rejected at both lengths (per-qubit 23.5 to 36.8 and 26.1 to 58.6 ns), and the two-point line g(N) = 21.4 ns + 5.84 us / N is a fit, not a measured constant; the delay T1 over the calibration copy reads 0.79 to 1.87 (median 1.15). The emerald:mock runs return random bits and enter no endpoint; the predecessor job 01a1f811 of 2026-11-20 was cancelled at its ceiling, billed nothing and returned no data.",
+      "evidence": [
+        {
+          "path": "results/iqm/idle_schedule_t1_emerald_analysis.json",
+          "sha256": "f69b9c1da8e1b4bc566fa991ab58533d08946591eeed781d0c16b406313cb210"
+        },
+        {
+          "path": "results/iqm/runs/2026-11-21T205643Z-emerald-idle-schedule-t1-emerald-probe/results.json",
+          "sha256": "f566c31f368c41db0df891a46580bb999c2be8bf253725e79c0329d332742d85"
+        }
+      ],
+      "documents": [
+        "docs/notes/iqm/emerald-idle-schedule-t1-result.md"
+      ],
+      "acquisitions": [
+        "iqm-emerald-mock-idle-schedule-train-readout",
+        "iqm-emerald-idle-schedule-train-readout-ceiling-cancel",
+        "iqm-emerald-mock-idle-schedule-t1",
+        "iqm-emerald-idle-schedule-t1"
+      ],
+      "related_claims": []
+    },
+    {
+      "id": "iqm-garnet-packed-pauli-response-null",
+      "statement": "On IQM Garnet (calibration set ea681de1; job 01a20023-1aa1, 68 circuits x 2000 shots, active reset, no heralding, 1.0 credit), the preregistered paired test of the packed Pauli response does not reject the sharp null: the 16 dense-minus-sparse pair statistics give an exact p-value of 22553/32768 = 0.688, with arm responses 0.6924 (dense) and 0.6900 (sparse). The non-rejection is not evidence that the response is unchanged.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration and one job. Descriptive readings: both arms read about 0.69 against the independent-cell baseline of 0.823, a shortfall the record does not apportion; lag-one buffer carryover is resolved on the load cell (0.0118 +- 0.0016) and lies within 1.7 standard errors of zero on the sentinel cells; QB12 read faulty in the same hour (1 in 36 to 39 percent of all-zero reference shots) but sits outside cells 2 and 3 that form the primary statistic. The two garnet:mock runs return random bits and enter no endpoint.",
+      "evidence": [
+        {
+          "path": "results/iqm/packed_pauli_response_garnet_analysis.json",
+          "sha256": "e4c73509b686b0b87683706f1108b3ac3336bb14884b17675c355f54e83442dc"
+        },
+        {
+          "path": "docs/evidence/iqm-garnet-packed-pauli-run/readout_split.json",
+          "sha256": "7184474f267c2e35a4c0df00bf7d1a5e75bc0fdd00a149d70a9c858ea37f4c50"
+        },
+        {
+          "path": "results/iqm/runs/2026-11-21T220346Z-garnet-packed-pauli-response-garnet-packed/results.json",
+          "sha256": "aae7ccebb370b5536ceea5ac215b029097d9fd4e231b117cdb12648c510b8da0"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-packed-pauli-response.md"
+      ],
+      "acquisitions": [
+        "iqm-garnet-mock-packed-pauli-36",
+        "iqm-garnet-mock-packed-pauli-68",
+        "iqm-garnet-packed-pauli-response"
+      ],
+      "related_claims": []
+    },
+    {
+      "id": "iqm-garnet-grover-depth-sedenion-walsh-decisions",
+      "statement": "On IQM Garnet (calibration set ea681de1; jobs 01a20023-427c, 36 circuits x 4000 shots, and 01a20023-5ea3, 28 circuits x 1000 shots, heralded, 2.0 credits), the preregistered decisions read: fusing the generic compile's single-qubit gates raises P(101) by +0.0327 +- 0.0058 (z 5.6, model +0.0152); the line-native prx-load and CZ-sequence contrasts are unresolved (z 1.6 and -1.6); the 101 depth law f = lambda_3 - lambda_2^2 / lambda_1 reads -0.122 +- 0.039, outside the model's 0.010 (z -3.4), while the 011 law reads 0.061 +- 0.041, inside; the qubit-or-role contrast is open (forward z 3.6, reversed z 0.7); the sedenion e_5 row imprints its Walsh peak 1001 (row 0.183 against truncation 0.128 and null 0.0008, z 3.7 and 16.2), and the e_10 row peak 0110 is unresolved (row 0.066, truncation 0.043, null 0.059).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration, two jobs of one hour; z resolves at 3 on raw counts and readout-corrected values decide nothing. QB12 of the sedenion square read faulty in that hour (QB12 reads 1 in 47 percent of the e_5 null arm's shots), so the e_10 verdict is unresolved without an attributed mechanism; no claim here states one. The depth arms are centrally grouped, not mirrored.",
+      "evidence": [
+        {
+          "path": "results/iqm/garnet_grover_depth_sedenion_walsh_analysis.json",
+          "sha256": "986a6bd1a2fc1eb949e3a84ba6145a4ef1e84f497840528fcdda325b7cf1f0eb"
+        },
+        {
+          "path": "results/iqm/runs/2026-11-21T220358Z-garnet-grover-depth-sedenion-walsh-grover/results.json",
+          "sha256": "90e67ffa905696491d77199ce7c130296f09e5a5970f4d53adb5f857654a4695"
+        },
+        {
+          "path": "results/iqm/runs/2026-11-21T220406Z-garnet-grover-depth-sedenion-walsh-sedenion/results.json",
+          "sha256": "cd24c0bbeb8086a8b234bbd66e0ad74245de25c771e244267426dc18ad3bd53e"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-grover-depth-sedenion-walsh.md"
+      ],
+      "acquisitions": [
+        "iqm-garnet-grover-depth-sedenion-walsh-grover",
+        "iqm-garnet-grover-depth-sedenion-walsh-sedenion"
+      ],
+      "related_claims": []
+    },
+    {
+      "id": "iqm-garnet-grover-line-ccz-decisions",
+      "statement": "On IQM Garnet (job 01a1fb31, 20 circuits, heralded, 1.00 credit, 2026-11-20), every preregistered decision of the line-native CCZ Grover case resolves in its predicted direction: line minus generic compile +0.0699 +- 0.0058 (z 12.1, model +0.034); second minus first iteration +0.0441 +- 0.0086 (z 5.1) for marked state 101 and +0.0434 +- 0.0113 (z 3.8) for 011, against a model gain of +0.072; the most frequent outcome of the 011 arms is 011.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration and one job; raw frequencies with copies pooled. Descriptive: the line-native gain is twice the model's (the generic compile keeps 0.90 of its predicted excess against 0.97), and the second iteration gains less than predicted, a per-CZ loss the depolarizing model omits. The garnet:mock acceptance runs return random bits and enter no endpoint.",
+      "evidence": [
+        {
+          "path": "results/iqm/grover_line_ccz_analysis.json",
+          "sha256": "42f27f29f6efd05e782819abf59f2cea02e466dff231264d75465f8659c3165f"
+        },
+        {
+          "path": "results/iqm/runs/2026-11-20T230142Z-garnet-grover-line-ccz-grover/results.json",
+          "sha256": "e959bd47b96a737ba2a00da8f2e3a4c9ad9454ba0821cf27ab6f92d96a2e7ac3"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-grover-line-ccz.md"
+      ],
+      "acquisitions": [
+        "iqm-garnet-mock-grover-line-ccz-accept-18",
+        "iqm-garnet-mock-grover-line-ccz-accept",
+        "iqm-garnet-grover-line-ccz"
+      ],
+      "related_claims": []
+    },
+    {
+      "id": "qi-tuna17-characterization-2026-11-16-verdicts",
+      "statement": "In the Tuna-17 characterization series of 2026-11-16 (14 circuits on all 17 qubits, six batches, after a QX twin that returned the noiseless outcome of every circuit), the X90 repetition ladder clears (corrected P(0) at least 0.5 after 32, 128 and 256 pulses) on qubits 3, 6, 8, 12, 13 and 15 only, and agrees with 4 of the 9 retained predictions; the T1 readout-floor hypothesis is refuted (chi-square / dof at most 3 on 2 of 17 qubits), and no 2- or 3-parameter decay shape fits the six delays on most qubits.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One series, all 17 qubits driven together, so every figure is a qubit in the context of its neighbors. The T1 shape results come from a refit of the retained counts (scripts/qi_tuna17_t1_shape.py) whose hypotheses were registered before it. The ladder bounds no single-pulse error, since P(0) is periodic in a coherent over-rotation. The single-qubit follow-up the case's rule opens is proposed in issue 941 and not run.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/characterization_tuna_17_analysis.json",
+          "sha256": "f54809ac302c9df77388cefa6a4a9e3b8f3eb8050c09157b45a6a5d9bfa3e398"
+        },
+        {
+          "path": "results/quantum_inspire/characterization_qx_analysis.json",
+          "sha256": "a67587ba3c1072a154b38e1493f5123832a58fcd13ce386e3cea80c724b9ef9d"
+        },
+        {
+          "path": "results/quantum_inspire/characterization_tuna_17_t1_shape_analysis.json",
+          "sha256": "9d5e9538c7da2d5fc44934dd0abec8723d2d016527876ceab7119edb05035118"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/tuna17-characterization-2026-11-16.md"
+      ],
+      "acquisitions": [
+        "qi-characterization-qx-2026-11-16t0355-batch-00",
+        "qi-characterization-qx-2026-11-16t0355-batch-01",
+        "qi-characterization-qx-2026-11-16t0355-batch-02",
+        "qi-characterization-qx-2026-11-16t0355-batch-03",
+        "qi-characterization-qx-2026-11-16t0355-batch-04",
+        "qi-characterization-qx-2026-11-16t0355-batch-05",
+        "qi-characterization-tuna-17-2026-11-16t0401-batch-00",
+        "qi-characterization-tuna-17-2026-11-16t0401-batch-01",
+        "qi-characterization-tuna-17-2026-11-16t0401-batch-02",
+        "qi-characterization-tuna-17-2026-11-16t0401-batch-03",
+        "qi-characterization-tuna-17-2026-11-16t0401-batch-04",
+        "qi-characterization-tuna-17-2026-11-16t0401-batch-05"
+      ],
+      "related_claims": []
+    },
+    {
+      "id": "qi-tuna17-interleaved-characterization-verdicts",
+      "statement": "In the interleaved Tuna-17 series of 2026-11-20 and 2026-11-21 (30 batches, 90 jobs, 0 credits), the pooled interleaved T1 verdict is not_confirmed (tail statistic 0 against 200), because on 16 of 17 qubits the rounds disagree beyond their variance and every plateau and two-rate fit is rejected; 29 of 98 crosstalk contrasts flag at |z| > 3.49 on 15 distinct qubits, a drive-and-readout context dependence; and the q12 fringe offset reads +0.027 +- 0.008 rad at 0 cycles and +0.025 +- 0.010 rad at 25 cycles, null under the registered band, which falsifies the -0.15 rad prediction of the null-rotation scan refit.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "not_confirmed records that the rule found no admissible tail, not evidence against a tail. The crosstalk threshold assumes independent contrasts, while the contrasts of one batch share one all-17 job. The q12 wait-0 offset lies 3.2 binomial standard errors from zero; null is the band's verdict, not zero rotation, and its two batches ran 20.6 hours apart. Post-hoc round fits, batch split and hypothesis tests are descriptive. The QX twin batches are station controls.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/characterization_interleaved_tuna_17_analysis.json",
+          "sha256": "3e393204f880db67db0ebc03052303c9e8a37233a948ecc12b237c0b714846c9"
+        },
+        {
+          "path": "docs/evidence/qi-tuna17-interleaved-rounds/hypothesis_tests.json",
+          "sha256": "b31ca1b61c485e6949ef13fcbd6ccf913bd5eb2952a80d686ebb7e9c3ea8af1d"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/tuna17-interleaved-characterization-2026-11-20.md"
+      ],
+      "acquisitions": [
+        "qi-interleaved-qx-2026-11-19t1700-crosstalk-batch-00",
+        "qi-interleaved-qx-2026-11-19t1700-crosstalk-batch-01",
+        "qi-interleaved-qx-2026-11-19t1700-crosstalk-batch-02",
+        "qi-interleaved-qx-2026-11-19t1700-crosstalk-batch-03",
+        "qi-interleaved-qx-2026-11-19t1700-crosstalk-batch-04",
+        "qi-interleaved-qx-2026-11-19t1700-crosstalk-batch-05",
+        "qi-interleaved-qx-2026-11-19t1700-crosstalk-batch-06",
+        "qi-interleaved-qx-2026-11-19t1700-crosstalk-batch-07",
+        "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-00",
+        "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-01",
+        "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-02",
+        "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-03",
+        "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-04",
+        "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-05",
+        "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-06",
+        "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-07",
+        "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-08",
+        "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-09",
+        "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-10",
+        "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-11",
+        "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-12",
+        "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-13",
+        "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-14",
+        "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-15",
+        "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-16",
+        "qi-interleaved-qx-2026-11-19t1700-interleaved-t1-batch-17",
+        "qi-interleaved-qx-2026-11-19t1700-q12-phase-batch-00",
+        "qi-interleaved-qx-2026-11-19t1700-q12-phase-batch-01",
+        "qi-interleaved-qx-2026-11-19t1700-q12-phase-batch-02",
+        "qi-interleaved-qx-2026-11-19t1700-q12-phase-batch-03",
+        "qi-interleaved-tuna-17-2026-11-19t1735-crosstalk-batch-00",
+        "qi-interleaved-tuna-17-2026-11-19t1735-crosstalk-batch-01",
+        "qi-interleaved-tuna-17-2026-11-19t1735-crosstalk-batch-02",
+        "qi-interleaved-tuna-17-2026-11-19t1735-crosstalk-batch-03",
+        "qi-interleaved-tuna-17-2026-11-19t1735-crosstalk-batch-04",
+        "qi-interleaved-tuna-17-2026-11-19t1735-crosstalk-batch-05",
+        "qi-interleaved-tuna-17-2026-11-19t1735-crosstalk-batch-06",
+        "qi-interleaved-tuna-17-2026-11-19t1735-crosstalk-batch-07",
+        "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-00",
+        "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-01",
+        "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-02",
+        "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-03",
+        "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-04",
+        "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-05",
+        "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-06",
+        "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-07",
+        "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-08",
+        "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-09",
+        "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-10",
+        "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-11",
+        "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-12",
+        "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-13",
+        "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-14",
+        "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-15",
+        "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-16",
+        "qi-interleaved-tuna-17-2026-11-19t1735-interleaved-t1-batch-17",
+        "qi-interleaved-tuna-17-2026-11-19t1735-q12-phase-batch-00",
+        "qi-interleaved-tuna-17-2026-11-19t1735-q12-phase-batch-01",
+        "qi-interleaved-tuna-17-2026-11-19t1735-q12-phase-batch-02",
+        "qi-interleaved-tuna-17-2026-11-19t1735-q12-phase-batch-03"
+      ],
+      "related_claims": []
+    },
+    {
+      "id": "qi-tuna17-null-phase-scan-none-adequate",
+      "statement": "In the Tuna-17 null phase scan of 2026-11-21 (29 batches, 72 jobs, 6,488,064 shots, 0 credits; 14 of 14 data batches admitted, center contrast 0.014623 +- 0.000739), the preregistered decision is none_adequate: every candidate world exceeds its adequacy limit (exact gates 1685.1 against 70.7; q12 phase 232.1, coupler 8-12 phase 156.3 and q8 phase at the coupler 276.7, each against 59.7), so ledger row A5-186 stays unchanged; the QX control passes on all 12 circuits.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The ordering of rejected worlds carries no physical attribution to coupler 8-12. Single batches already exceed a kind limit (batch-09 reads 44.00 against 26.124). The reported block (bridge, parabolas, q4 line) is descriptive; the q4 slope differs from the retained series by 9.8 standard errors, so the q4 points are not pooled across series.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/pathion_null_phase_scan_tuna_17_analysis.json",
+          "sha256": "9c8fec37664f5eaef93f5e4881a0dfe5cd021a0b929f393e2792b135f707a1be"
+        },
+        {
+          "path": "results/quantum_inspire/pathion_null_phase_scan_qx_analysis.json",
+          "sha256": "5b29f8ab4de27d26cf0d921640701f590b35feae8aff758dc7ed1119f6e5c5bf"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/tuna17-null-phase-scan-2026-11-21.md"
+      ],
+      "acquisitions": [
+        "qi-pathion-null-phase-scan-qx-2026-11-21t1650-batch-00",
+        "qi-pathion-null-phase-scan-qx-2026-11-21t1650-batch-01",
+        "qi-pathion-null-phase-scan-qx-2026-11-21t1650-batch-02",
+        "qi-pathion-null-phase-scan-qx-2026-11-21t1650-batch-03",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-00",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-01",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-02",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-03",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-04",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-05",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-06",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-07",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-08",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-09",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-10",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-11",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-12",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-13",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-14",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-15",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-16",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-17",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-18",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-19",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-20",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-21",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-22",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-23",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-24",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-25",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-26",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-27",
+        "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-28"
+      ],
+      "related_claims": []
     }
   ]
 }
