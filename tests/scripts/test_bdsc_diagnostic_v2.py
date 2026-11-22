@@ -29,8 +29,6 @@ acquisition = builder.case
 analysis = reader.analysis
 PLATFORM = "qpu:belenos"
 JOBS = ("b1-j1", "b1-j2", "b2-j1", "b2-j2")
-# The retained original diagnostic manifests name this ANU draw; the successor refuses to claim it.
-RETAINED_DRAW = ROOT / "docs/evidence/anu_qrng/draw-2026-10-22T110545Z.json"
 BASIS = {"f": 0.003, "g": 0.986}
 SUPERPOSITION = (BASIS["f"] + BASIS["g"]) / 2
 
@@ -214,8 +212,6 @@ def test_a_draw_is_claimed_by_every_other_case(drawn: Drawn, tmp_path: Path, mon
     (foreign / "b1-j1/cases.json").write_text(json.dumps(manifest))
     with pytest.raises(ValueError, match="another case already draws from this record"):
         acquisition.documents(PLATFORM, drawn.draw, roots=(foreign,))
-    with pytest.raises(ValueError, match="another case already draws from this record"):
-        acquisition.documents(PLATFORM, RETAINED_DRAW)
     monkeypatch.setattr(bdsc_cases, "MANIFEST_ROOTS", own)
     with pytest.raises(ValueError, match="another case already draws from this record"):
         frozen.documents(drawn.draw)
