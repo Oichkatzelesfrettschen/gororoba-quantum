@@ -25,8 +25,10 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import iqm_measurement_sequence as ms  # noqa: E402
+from parallel import ordered_map  # noqa: E402
 
 ROUND = 6
 TERMS = {
@@ -93,16 +95,20 @@ def design(rows: list[dict[str, Any]], terms: list[str]) -> np.ndarray:
     return np.array([[column[t](r) for t in terms] for r in rows])
 
 
+def leave_one_out_residual(item: tuple[np.ndarray, np.ndarray, int]) -> float:
+    """The residual of job i under the least-squares fit of the other jobs."""
+    x, target, i = item
+    keep = [j for j in range(len(target)) if j != i]
+    c = np.linalg.lstsq(x[keep], target[keep], rcond=None)[0]
+    return float(target[i] - x[i] @ c)
+
+
 def fit(rows: list[dict[str, Any]], terms: list[str]) -> dict[str, Any]:
     target = np.array([r["execution"] - r["schedule"] for r in rows])
     x = design(rows, terms)
     coefficients = np.linalg.lstsq(x, target, rcond=None)[0]
     residuals = target - x @ coefficients
-    leave_one_out = []
-    for i in range(len(rows)):
-        keep = [j for j in range(len(rows)) if j != i]
-        c = np.linalg.lstsq(x[keep], target[keep], rcond=None)[0]
-        leave_one_out.append(float(target[i] - x[i] @ c))
+    leave_one_out = ordered_map(leave_one_out_residual, [(x, target, i) for i in range(len(rows))])
     # The per-record term rests on the one job with many mid-circuit records; leaving it out extrapolates that term,
     # so the comparison of terms reads the largest leave-one-out residual over the other jobs.
     anchor = max(range(len(rows)), key=lambda i: rows[i]["mid_records"])
