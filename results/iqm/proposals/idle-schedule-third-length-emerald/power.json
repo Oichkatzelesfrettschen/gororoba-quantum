@@ -129,7 +129,7 @@
   }
  },
  "schema": "iqm-idle-schedule-third-length-power-v2",
- "statistic": "within-job deviation of the gap at a tested length from the line through the same job's gaps at the anchors",
+ "statistic": "within-job deviation of the gap at a tested length from the line through the job's gaps at the anchors",
  "unidentifiable": {
   "cohort_qubits": 11,
   "delay_fit_pass": {
