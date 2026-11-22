@@ -135,8 +135,8 @@ def power_rows(slots: int) -> dict[str, Any]:
 def power_statement() -> dict[str, Any]:
     """The preregistered power of the six-slot design against the frozen four-slot design."""
     return {
-        "model": "each seed test is a pooled chi-square of seed effects about their group mean over both blocks; block 2 "
-        "repeats block 1's returned circuits, so a seed's effect is common to its copies in the two blocks, and under "
+        "model": "each seed test is a pooled chi-square of seed effects about their group mean over both blocks; "
+        "block 2 repeats block 1's returned circuits, so a seed's effect is common to its copies in the two blocks, and under "
         "seed SD s over counting error e the statistic is (1 + 2 k (s / e)^2) X + Y with X and Y independent central "
         "chi-squares of df / 2 degrees of freedom (k = 4 for seed_common, whose seed offset is shared by the 4 "
         "superposition states and so averages their counting errors, and 1 otherwise); the test at alpha rejects above "
