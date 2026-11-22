@@ -1,0 +1,9 @@
+proc pfa(matrix A){ int n=nrows(A); if(n==2){return(A[1,2]);} poly s=0; int j; int q; int c; intvec idx=1..(n-2);
+  for(j=2;j<=n;j++){ if(A[1,j]!=0){ c=0; for(q=2;q<=n;q++){ if(q!=j){c++; idx[c]=q;} } s=s+(-1)^j*A[1,j]*pfa(submat(A,idx,idx)); } } return(s); }
+proc pq(matrix A,int a,int b,int c,int d){ return(A[a,b]*A[c,d]-A[a,c]*A[b,d]+A[a,d]*A[b,c]); }
+poly pB=pfa(B); "PfB",pB; "PfB_squared_equals_detB",(pB^2-dB)==0; "PfB factors",factorize(pB);
+int bad=0; int ctl=0; int nz=0; int cnt=0; int a;int b;int c;int d; intvec I; poly P10; poly lhs;
+for(a=1;a<=6;a++){for(b=a+1;b<=7;b++){for(c=b+1;c<=8;c++){for(d=c+1;d<=9;d++){ cnt++; I=1,2,3,4,5,6,6+a,6+b,6+c,6+d; P10=pfa(submat(T,I,I)); lhs=pq(W,a,b,c,d);
+  if(lhs!=0){nz++;} if(lhs-pB^3*P10!=0){bad++;} if(lhs!=0 and lhs-pB^2*P10==0){ctl++;} }}}}
+"PFAFF RESULT cell nm field Q(i) checked",cnt,"nonzero",nz,"failures",bad,"control_exponent2_equal",ctl;
+"EXIT 0"; quit;

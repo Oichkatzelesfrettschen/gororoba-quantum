@@ -1,0 +1,180 @@
+Singular for aarch64-Linux version 4.4.1 (44105, 64 bit) Dec  6 2025 11:10:58
+15bffa21e9de751cc59aacf122453a240ef087e8717f801f166cbbe6d917fb36  docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing
+4e88035959ed486dc7fe168dafcc97ca4314a0624616d039535bb071f6294cc2  docs/evidence/a5-exceptional-fibers/working/runs/e8-rees-fibers-v2-p32009/e8-nm-p.v2-u-full.sing
+ee9318b04ec8dcb9e8c09858abc9eeb072da91235d5ac64ec0704633599c43ee  docs/evidence/a5-exceptional-fibers/working/runs/e8-rees-fibers-v2-p32009/e8-np-p.v2-u-full.sing
+detB -1024*s2^6+2000*s2^5+3072*s2^4-4000*s2^3-3072*s2^2+2000*s2+1024
+WEIGHTS [1, 0, 3, 2, 2, 1, 4, 4, 3]
+J dim mult size 5 10 13
+// ** redefining sat1 (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining sat2 (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minSat (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining quotMin (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining factor (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining idealsEqual (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining idealsEqual (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining specialIdealsEqual (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining stdIdealsEqual (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining primaryTest (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining primaryTest (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining gcdTest (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining gcdTest (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining splitPrimary (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining splitCharp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining zero_decomp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining zero_decomp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining extF (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining zeroSp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining zeroSepClos (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining insepDecomp_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining clearSB (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining clearSBNeu (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining teilt (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining independSet (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining maxIndependSet (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining prepareQuotientring (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining cleanPrimary (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssPrimesoldE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssPrimesold (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssPrimesold_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining primT (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssPrimesE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssPrimes (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssPrimes_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining union (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining equidim (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining equidim (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining equidimMax (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining equidimMax (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining islp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining algeDecoE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining algeDeco (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining algeDeco_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining prepare_absprimdec (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining decompE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining decomp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining decomp_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining powerCoeffs (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining sep (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining sep (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining zeroRad (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining zeroRad (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining algeRad (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining radicalEHV (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining radicalEHV (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining Ann (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining Ann (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining int_ass_primary_e (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining AnnExt_R (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining analyze (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining simplifyIdeal (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining ini_mod (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining min_ass_prim_charsets_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining min_ass_prim_charsets0_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining min_ass_prim_charsets1_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining prim_dec_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining pseudo_prim_dec_charsets_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining pseudo_prim_dec_special_charsets_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining pseudo_prim_dec_i_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining extraction (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minsat (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minsat_ppd (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minquot (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining special_ideals_equal (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining convList (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining reconvList (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining primdecGTZE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining primdecGTZE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining primdecGTZ (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining primdecGTZ (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining primdecGTZ_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining absPrimdecGTZE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining absPrimdecGTZE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining absPrimdecGTZ (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining absPrimdecGTZ (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining absPrimdecGTZ_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining primdecSYE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining primdecSYE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining primdecSY (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining primdecSY (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining primdecSY_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssGTZE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssGTZE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssGTZ (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssGTZ (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssGTZ_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssCharE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssCharE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssChar (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssChar (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssChar_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssChar_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining equiRadical (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining equiRadical (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining radical (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining radical (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining radicalKL (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining radicalSL (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining radicalReduction (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining radicalSLIteration (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining newMaxIndependSetDp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining newMaxIndependSetDp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining prepareAss (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining prepareAss (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining equidimMaxEHV (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining equidimMaxEHV (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining testPrimaryE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining testPrimaryE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining testPrimary (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining testPrimary (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining testPrimary_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining zerodec (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining zerodec (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining newDecompStepE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining newDecompStep (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining newDecompStep_i (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining newReduction (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssE (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssSL (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAssSLIteration (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining newMaxIndependSetLp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining newZero_decomp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining check_variables (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining prep_decomp (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAss (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining minAss (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining primdec (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+// ** redefining primdec (ntersect(JJ,Lk);} } J=std(JJ); "J local dim mult size",dim(J),mult(J),size(J);) docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing:160
+COMPONENT 1 dim 5 mult 10 through origin 1
+J local dim mult size 5 10 13
+PfB 7971*s2^3-32*s2^2-7971*s2+32
+PfB factors [1]:
+   _[1]=7971
+   _[2]=s2+1
+   _[3]=s2-10754
+   _[4]=s2-1
+[2]:
+   1,1,1,1
+GEN 1 pf 12 quad 1 2 5 6 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 2 pf 15 quad 1 2 5 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 3 pf 16 quad 1 2 6 7 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 4 pf 18 quad 1 2 6 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 5 pf 20 quad 1 2 7 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 6 pf 30 quad 1 3 5 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 7 pf 35 quad 1 3 7 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 8 pf 47 quad 1 5 6 7 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 9 pf 49 quad 1 5 6 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 10 pf 51 quad 1 5 7 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 1 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 11 pf 52 quad 1 5 8 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 12 pf 54 quad 1 6 7 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 13 pf 55 quad 1 6 8 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 14 pf 84 quad 2 5 6 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 15 pf 86 quad 2 5 7 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 16 pf 87 quad 2 5 8 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 1 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 17 pf 89 quad 2 6 7 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 18 pf 123 quad 5 6 7 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 19 pf 124 quad 5 6 8 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 20 pf 125 quad 5 7 8 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+GEN 21 pf 126 quad 6 7 8 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0
+PFAFF MODP cell nm selected 21 identity_failures 0
+EXIT 0
+RC 0

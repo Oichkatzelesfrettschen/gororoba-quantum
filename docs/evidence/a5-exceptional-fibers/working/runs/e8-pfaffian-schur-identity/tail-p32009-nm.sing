@@ -1,0 +1,12 @@
+proc pfa(matrix A){ int n=nrows(A); if(n==2){return(A[1,2]);} poly s=0; int j; int q; int c; intvec idx=1..(n-2);
+  for(j=2;j<=n;j++){ if(A[1,j]!=0){ c=0; for(q=2;q<=n;q++){ if(q!=j){c++; idx[c]=q;} } s=s+(-1)^j*A[1,j]*pfa(submat(A,idx,idx)); } } return(s); }
+proc pq(matrix A,int a,int b,int c,int d){ return(A[a,b]*A[c,d]-A[a,c]*A[b,d]+A[a,d]*A[b,c]); }
+poly pB=pfa(B); "PfB",pB; "PfB factors",factorize(pB);
+intvec sel=12,15,16,18,20,30,35,47,49,51,52,54,55,84,86,87,89,123,124,125,126;
+ideal sA=std(J+ideal(s2^2-1)); ideal sB=std(J+ideal(s2-i)); ideal sC=std(J+ideal(s2+i));
+int cnt=0; int a;int b;int c;int d; intvec I; poly P10; int g; int bad=0;
+for(a=1;a<=6;a++){for(b=a+1;b<=7;b++){for(c=b+1;c<=8;c++){for(d=c+1;d<=9;d++){ cnt++; for(g=1;g<=21;g++){ if(sel[g]==cnt){ I=1,2,3,4,5,6,6+a,6+b,6+c,6+d; P10=pfa(submat(T,I,I));
+  if(reduce(pq(W,a,b,c,d)-pB^3*P10,J)!=0){bad++;}
+  "GEN",g,"pf",cnt,"quad",a,b,c,d,"Pf10_zero_mod_J",reduce(P10,J)==0,"in_J_plus_s2sq_minus_1",reduce(P10,sA)==0,"in_J_plus_s2_minus_i",reduce(P10,sB)==0,"in_J_plus_s2_plus_i",reduce(P10,sC)==0; } } }}}}
+"PFAFF MODP cell nm selected 21 identity_failures",bad;
+"EXIT 0"; quit;
