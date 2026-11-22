@@ -41,7 +41,7 @@ the closest entry and say what changed.
   dimension 5 and l0(z) = 1 in the chart.
 - Formulation: one chart in place of the Rees algebra (K2 prime without linear forms, so one chart meets V(K2)
   densely); arc searches failed to reach rank 5 and decide nothing.
-- Host and tool versions: lab-a1 (aarch64, 11 GB, apt Singular 4.4.1) first; then Azure Standard_FX4mds_v2 in
+- Host and tool versions: the OCI A1 lab host (aarch64, 11 GB, apt Singular 4.4.1) first; then Azure Standard_FX4mds_v2 in
   westus3 (2 cores, 4 threads, 84 GB) with passagemath-singular 10.8.13 (Singular 4.4.1).
 - Launch line: `timeout 28800 Singular -q --no-rc chart-iso-pP-METHOD.sing < /dev/null` under `/usr/bin/time -v`;
   inside, `option(noredTail)` and `option(prot)`; l0(z) - 1 added before saturating.
@@ -52,7 +52,7 @@ the closest entry and say what changed.
 - Parallelism: four single-threaded processes ({32009, 32029} x {sat, Rabinowitsch elimination}) on 2 physical
   cores and 4 threads, so each shares a core; the portfolio trades per-process speed for two independent
   algorithms per prime.
-- Memory and time limits: lab-a1 runs under `prlimit --as` 5 GB and 10 GB stopped with "Singular error: no more
+- Memory and time limits: the OCI A1 lab host's runs under `prlimit --as` 5 GB and 10 GB stopped with "Singular error: no more
   memory" (p = 32029 at 5.2 GB after 57 min, p = 32009 at 10.5 GB after 3 h 26 min); Azure: none per process,
   8 h each; at 1 h 47 min the p = 32009 processes held 25.5 GB each (about 14 GB/h) and the p = 32029 processes
   7.8 GB each.
@@ -94,7 +94,7 @@ the closest entry and say what changed.
 - Formulation: a coordinate chart decides equally (K2 contains no linear form, so y_j lies outside K2 and a
   4-dimensional E0 meets D+(y_j) densely). G_16 and G_17 have 41 terms and G_2, G_4 49, against 665 for the dense
   a0, so every a0 z_i is about 16 times sparser.
-- Host and tool versions: lab-a1 (aarch64, 2 cores, 11 GB), apt Singular 4.4.1; p = 32009 only until a result.
+- Host and tool versions: the OCI A1 lab host (aarch64, 2 cores, 11 GB), apt Singular 4.4.1; p = 32009 only until a result.
 - Launch line: `prlimit --as=5368709120 timeout 21600 nice -n 5 Singular -q --no-rc chart-iso-p32009-coordJ.sing
   < /dev/null` under `/usr/bin/time -v`, j = 16 and j = 2, launched with `setsid nohup`.
 - Departures from the foundations: `sat` only, no Rabinowitsch twin (it grew 3.4 times faster in memory on the dense
@@ -117,7 +117,7 @@ the closest entry and say what changed.
   slice) until a second slice and an arc family upgrade it.
 - Formulation: the cheapest decisive chart; the K2 cut by the same forms is checked generic first (vdim 23, squarefree
   eliminant of z(2) of degree 23, factors 1, 2, 3, 5, 12).
-- Host and tool versions: lab-a1 (aarch64, 2 cores, 11 GB), apt Singular 4.4.1, p = 32009.
+- Host and tool versions: the OCI A1 lab host (aarch64, 2 cores, 11 GB), apt Singular 4.4.1, p = 32009.
 - Launch line: `prlimit --as=9663676416 timeout 21600 nice -n 5 Singular -q --no-rc chart-iso-p32009-slice.sing
   < /dev/null` under `/usr/bin/time -v`, one process, `setsid nohup`.
 - Departures from the foundations: an address-space cap of 9 GB on the 11 GB host (one process).
@@ -588,7 +588,7 @@ the closest entry and say what changed.
   `option(prot)`: workstation, `ulimit -v` 16 GB for `h-iso-nm-q`, `h-e8-nm-q`, `h-w8-nm-q` (Q(i), N-) and 12 GB
   for `h-e8-nm-p2`, `h-w8-nm-p2` (p = 32029, i = 9115, N-) and `h-e8-np-p`, `h-w8-np-p` (p = 32009, N+), eleven
   single-thread jobs on 16 cores; MacBook Air (Homebrew Singular 4.4.1, `caffeinate -i`, `nohup`, two of four
-  performance cores, the owner's interactive session keeps the rest): `h-iso-nm-p2` and `h-iso-np-p`; lab-a1
+  performance cores, the owner's interactive session keeps the rest): `h-iso-nm-p2` and `h-iso-np-p`; the OCI A1 lab host
   (apt Singular, one of two cores, `ulimit -v` 8 GB): `h-iso-np-p2`. The build host keeps `r-e8-nm-p` and
   `r-w8-nm-p` under their 7 GiB caps. A cloud machine enters when a Q(i) run's resident set projects past the
   workstation's 52.5 GB budget; no core is short. `watch.sh` polls the four hosts.
@@ -599,7 +599,7 @@ the closest entry and say what changed.
   started after that result. The other runs are open: at 1 h 20 min every run has printed `STAGE rees_start` and no later stage; resident sets: Iso
   0.33 GB (mod p, `sat`), 0.52 GB (Q(i)); E8-bar 2.6 GB (mod p), 11.8 GB (Q(i)); W8 1.7 GB (mod p), 4.8 GB (Q(i));
   variable form at 16 min 0.30, 0.87 and 0.67 GB.
-- Outcome: Iso at N+ modulo 32029 in the variable form (`h-iso-np-p2`, lab-a1): FIBER dimension 5, multiplicity
+- Outcome: Iso at N+ modulo 32029 in the variable form (`h-iso-np-p2`, OCI A1 lab host): FIBER dimension 5, multiplicity
   23, 68 minimal generators, all of degree 2; 2,558 s, 576 MB peak, exit 0. At 11:05 PST on 2026-11-13 the laptop
   runs had printed no stage after `STAGE rees_start`: the two modular runs of 09:42 at 1.4 and 1.6 GB after
   1 h 23 min, the eight runs of 10:21 between 1.0 and 5.7 GB after 43 min, the `sat` W8 run over Q(i) at 4.7 GB

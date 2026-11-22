@@ -1,7 +1,7 @@
 # A_5 partner-sphere attachments across the closure incidences: program goal
 
-This file is the goal objective of the Codex program on branch `geometry/a5-kernel-attachments`, worktree
-`~/worktrees/IBMQuantum/a5-kernel-attachments`. The orchestrator (a Claude Code session) updates it in place. Re-read
+This file is the goal objective of the Codex program on branch `geometry/a5-kernel-attachments`. The
+orchestrator (a Claude Code session) updates it in place. Re-read
 it at every item boundary and after every context compaction. The ledger
 [docs/evidence/a5-kernel-attachments/ledger.md](../evidence/a5-kernel-attachments/ledger.md) records state, and this
 file sets the order.

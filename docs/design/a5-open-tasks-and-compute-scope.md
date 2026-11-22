@@ -85,14 +85,14 @@ Kaggle first, then the Windows compute laptop.
 
 | substrate | CPU, RAM, GPU | job budget | limit and cost |
 |---|---|---|---|
-| Windows workstation laptop (`ALIENWARE`, WSL) | 32 threads, 54 GiB visible, RTX 4090 Laptop 16 GiB | 52.5 GB RAM + 13.4 GiB GPU | free; Singular 4.4.1 from passagemath, engines v11 to v13 |
+| Windows workstation laptop (WSL) | 32 threads, 54 GiB visible, RTX 4090 Laptop 16 GiB | 52.5 GB RAM + 13.4 GiB GPU | free; Singular 4.4.1 from passagemath, engines v11 to v13 |
 | build host | 12 threads, 47 GiB visible, RTX 4070 Ti 12 GiB | 38.6 GiB + 10.1 GiB | free; heavy runs stay off it while Windows is in use |
-| OCI `lab-a1` | A1.Flex, 2 OCPU aarch64, 12 GB | 9.5 GiB | free |
+| OCI A1 lab host | A1.Flex, 2 OCPU aarch64, 12 GB | 9.5 GiB | free |
 | Kaggle CPU session | 4 cores, 30 GB | 0.82 x RAM | 12 h; 5 batch sessions at once; free |
 | Kaggle GPU session | 4 cores, 29 GB, 2 x T4 15 GiB or P100 | 0.84 x GPU + 0.82 x RAM | 12 h; 2 at once; 30 GPU-hours a week |
 | Azure (pay-as-you-go) | `Standard_FX4ms_v2`, 4 vCPU, 84 GB, for jobs above the laptop's RAM; 8-vCPU D-series for CPU batches; 10 vCPUs per region (14 in westus3); no GPU quota | 0.82 x RAM | sign-up credit lapses 2026-11-23, hourly billing after; sizes, prices and the selection rule in gororoba-infrastructure `clouds/azure/README.md`; Singular 1.63 times slower than the laptop on one std (`forecasts/std13-bench/` under the A5 evidence) |
 | GCP trial | 12 vCPU across all regions, no GPU, no Spot | 0.82 x RAM | 300 USD credit to 2027-01-30; e.g. one n2-highmem-8 (8 vCPU, 64 GB) |
-| AWS free plan | 2 vCPU, 8 GiB largest eligible type (`m7i-flex.large`; `aws-avx512` host) | 6.6 GiB | 199.77 USD credit to 2027-04-24 |
+| AWS free plan | 2 vCPU, 8 GiB largest eligible type (`m7i-flex.large`) | 6.6 GiB | 199.77 USD credit to 2027-04-24 |
 
 The Kaggle CPU and GPU pools are independent, so up to five CPU sessions and two GPU sessions run at once, seven in
 all.
