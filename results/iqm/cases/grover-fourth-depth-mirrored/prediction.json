@@ -36,7 +36,107 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 13,
+   "position": 5,
+   "predicted": {
+    "000": 0.040448533,
+    "001": 0.054881442,
+    "010": 0.040261702,
+    "011": 0.041602485,
+    "100": 0.052216918,
+    "101": 0.686938143,
+    "110": 0.039690217,
+    "111": 0.043960559
+   },
+   "predicted_marked": 0.686938143,
+   "prx": 22
+  },
+  "m101-k1-c10": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 46,
+   "predicted": {
+    "000": 0.040448533,
+    "001": 0.054881442,
+    "010": 0.040261702,
+    "011": 0.041602485,
+    "100": 0.052216918,
+    "101": 0.686938143,
+    "110": 0.039690217,
+    "111": 0.043960559
+   },
+   "predicted_marked": 0.686938143,
+   "prx": 22
+  },
+  "m101-k1-c11": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 50,
+   "predicted": {
+    "000": 0.040448533,
+    "001": 0.054881442,
+    "010": 0.040261702,
+    "011": 0.041602485,
+    "100": 0.052216918,
+    "101": 0.686938143,
+    "110": 0.039690217,
+    "111": 0.043960559
+   },
+   "predicted_marked": 0.686938143,
+   "prx": 22
+  },
+  "m101-k1-c12": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 56,
+   "predicted": {
+    "000": 0.040448533,
+    "001": 0.054881442,
+    "010": 0.040261702,
+    "011": 0.041602485,
+    "100": 0.052216918,
+    "101": 0.686938143,
+    "110": 0.039690217,
+    "111": 0.043960559
+   },
+   "predicted_marked": 0.686938143,
+   "prx": 22
+  },
+  "m101-k1-c13": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 59,
    "predicted": {
     "000": 0.040448533,
     "001": 0.054881442,
@@ -61,7 +161,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 24,
+   "position": 11,
    "predicted": {
     "000": 0.040448533,
     "001": 0.054881442,
@@ -86,7 +186,157 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 35,
+   "position": 15,
+   "predicted": {
+    "000": 0.040448533,
+    "001": 0.054881442,
+    "010": 0.040261702,
+    "011": 0.041602485,
+    "100": 0.052216918,
+    "101": 0.686938143,
+    "110": 0.039690217,
+    "111": 0.043960559
+   },
+   "predicted_marked": 0.686938143,
+   "prx": 22
+  },
+  "m101-k1-c4": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 20,
+   "predicted": {
+    "000": 0.040448533,
+    "001": 0.054881442,
+    "010": 0.040261702,
+    "011": 0.041602485,
+    "100": 0.052216918,
+    "101": 0.686938143,
+    "110": 0.039690217,
+    "111": 0.043960559
+   },
+   "predicted_marked": 0.686938143,
+   "prx": 22
+  },
+  "m101-k1-c5": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 24,
+   "predicted": {
+    "000": 0.040448533,
+    "001": 0.054881442,
+    "010": 0.040261702,
+    "011": 0.041602485,
+    "100": 0.052216918,
+    "101": 0.686938143,
+    "110": 0.039690217,
+    "111": 0.043960559
+   },
+   "predicted_marked": 0.686938143,
+   "prx": 22
+  },
+  "m101-k1-c6": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 28,
+   "predicted": {
+    "000": 0.040448533,
+    "001": 0.054881442,
+    "010": 0.040261702,
+    "011": 0.041602485,
+    "100": 0.052216918,
+    "101": 0.686938143,
+    "110": 0.039690217,
+    "111": 0.043960559
+   },
+   "predicted_marked": 0.686938143,
+   "prx": 22
+  },
+  "m101-k1-c7": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 33,
+   "predicted": {
+    "000": 0.040448533,
+    "001": 0.054881442,
+    "010": 0.040261702,
+    "011": 0.041602485,
+    "100": 0.052216918,
+    "101": 0.686938143,
+    "110": 0.039690217,
+    "111": 0.043960559
+   },
+   "predicted_marked": 0.686938143,
+   "prx": 22
+  },
+  "m101-k1-c8": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 37,
+   "predicted": {
+    "000": 0.040448533,
+    "001": 0.054881442,
+    "010": 0.040261702,
+    "011": 0.041602485,
+    "100": 0.052216918,
+    "101": 0.686938143,
+    "110": 0.039690217,
+    "111": 0.043960559
+   },
+   "predicted_marked": 0.686938143,
+   "prx": 22
+  },
+  "m101-k1-c9": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 41,
    "predicted": {
     "000": 0.040448533,
     "001": 0.054881442,
@@ -111,7 +361,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 3,
+   "position": 7,
    "predicted": {
     "000": 0.029297447,
     "001": 0.047783145,
@@ -136,7 +386,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 11,
+   "position": 21,
    "predicted": {
     "000": 0.029297447,
     "001": 0.047783145,
@@ -161,7 +411,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 26,
+   "position": 40,
    "predicted": {
     "000": 0.029297447,
     "001": 0.047783145,
@@ -186,7 +436,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 34,
+   "position": 54,
    "predicted": {
     "000": 0.029297447,
     "001": 0.047783145,
@@ -211,7 +461,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 4,
+   "position": 8,
    "predicted": {
     "000": 0.104936,
     "001": 0.111933775,
@@ -236,7 +486,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 9,
+   "position": 19,
    "predicted": {
     "000": 0.104936,
     "001": 0.111933775,
@@ -261,7 +511,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 28,
+   "position": 42,
    "predicted": {
     "000": 0.104936,
     "001": 0.111933775,
@@ -286,7 +536,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 33,
+   "position": 53,
    "predicted": {
     "000": 0.104936,
     "001": 0.111933775,
@@ -336,7 +586,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 1,
+   "position": 3,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -361,7 +611,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 25,
+   "position": 27,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -386,7 +636,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 27,
+   "position": 30,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -411,7 +661,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 29,
+   "position": 31,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -436,7 +686,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 30,
+   "position": 34,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -461,7 +711,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 31,
+   "position": 36,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -486,7 +736,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 32,
+   "position": 39,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -511,7 +761,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 36,
+   "position": 43,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -536,7 +786,57 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 37,
+   "position": 45,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c18": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 47,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c19": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 49,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -561,7 +861,107 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 5,
+   "position": 6,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c20": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 52,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c21": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 55,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c22": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 58,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c23": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 61,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -586,7 +986,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 6,
+   "position": 9,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -611,7 +1011,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 7,
+   "position": 12,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -636,7 +1036,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 8,
+   "position": 14,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -661,7 +1061,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 10,
+   "position": 16,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -686,7 +1086,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 12,
+   "position": 18,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -711,7 +1111,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 14,
+   "position": 22,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -736,7 +1136,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 23,
+   "position": 25,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -758,7 +1158,28 @@
     "QB16",
     "QB17"
    ],
-   "position": 15,
+   "position": 1,
+   "predicted": {
+    "000": 0.994457786,
+    "001": 0.001829168,
+    "010": 0.002889066,
+    "011": 5.314e-06,
+    "100": 0.000814795,
+    "101": 1.499e-06,
+    "110": 2.367e-06,
+    "111": 4e-09
+   },
+   "prx": 0
+  },
+  "ro-000-m": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 60,
    "predicted": {
     "000": 0.994457786,
     "001": 0.001829168,
@@ -779,7 +1200,28 @@
     "QB16",
     "QB17"
    ],
-   "position": 16,
+   "position": 4,
+   "predicted": {
+    "000": 0.01192302,
+    "001": 0.984363934,
+    "010": 3.4638e-05,
+    "011": 0.002859742,
+    "100": 9.769e-06,
+    "101": 0.000806525,
+    "110": 2.8e-08,
+    "111": 2.343e-06
+   },
+   "prx": 1
+  },
+  "ro-001-m": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 57,
    "predicted": {
     "000": 0.01192302,
     "001": 0.984363934,
@@ -800,7 +1242,28 @@
     "QB16",
     "QB17"
    ],
-   "position": 17,
+   "position": 10,
+   "predicted": {
+    "000": 0.012655804,
+    "001": 2.3279e-05,
+    "010": 0.984691048,
+    "011": 0.001811204,
+    "100": 1.0369e-05,
+    "101": 1.9e-08,
+    "110": 0.000806793,
+    "111": 1.484e-06
+   },
+   "prx": 1
+  },
+  "ro-010-m": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 51,
    "predicted": {
     "000": 0.012655804,
     "001": 2.3279e-05,
@@ -821,7 +1284,28 @@
     "QB16",
     "QB17"
    ],
-   "position": 18,
+   "position": 13,
+   "predicted": {
+    "000": 0.000151736,
+    "001": 0.012527346,
+    "010": 0.011805922,
+    "011": 0.97469633,
+    "100": 1.24e-07,
+    "101": 1.0264e-05,
+    "110": 9.673e-06,
+    "111": 0.000798604
+   },
+   "prx": 2
+  },
+  "ro-011-m": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 48,
    "predicted": {
     "000": 0.000151736,
     "001": 0.012527346,
@@ -842,7 +1326,28 @@
     "QB16",
     "QB17"
    ],
-   "position": 19,
+   "position": 17,
+   "predicted": {
+    "000": 0.016472415,
+    "001": 3.0299e-05,
+    "010": 4.7855e-05,
+    "011": 8.8e-08,
+    "100": 0.978800166,
+    "101": 0.001800368,
+    "110": 0.002843578,
+    "111": 5.23e-06
+   },
+   "prx": 1
+  },
+  "ro-100-m": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 44,
    "predicted": {
     "000": 0.016472415,
     "001": 3.0299e-05,
@@ -863,7 +1368,28 @@
     "QB16",
     "QB17"
    ],
-   "position": 20,
+   "position": 23,
+   "predicted": {
+    "000": 0.000197496,
+    "001": 0.016305219,
+    "010": 5.74e-07,
+    "011": 4.7369e-05,
+    "100": 0.011735294,
+    "101": 0.968865241,
+    "110": 3.4093e-05,
+    "111": 0.002814715
+   },
+   "prx": 2
+  },
+  "ro-101-m": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 38,
    "predicted": {
     "000": 0.000197496,
     "001": 0.016305219,
@@ -884,7 +1410,28 @@
     "QB16",
     "QB17"
    ],
-   "position": 21,
+   "position": 26,
+   "predicted": {
+    "000": 0.000209633,
+    "001": 3.86e-07,
+    "010": 0.016310637,
+    "011": 3.0001e-05,
+    "100": 0.01245654,
+    "101": 2.2912e-05,
+    "110": 0.969187204,
+    "111": 0.001782686
+   },
+   "prx": 2
+  },
+  "ro-110-m": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 35,
    "predicted": {
     "000": 0.000209633,
     "001": 3.86e-07,
@@ -905,7 +1452,28 @@
     "QB16",
     "QB17"
    ],
-   "position": 22,
+   "position": 29,
+   "predicted": {
+    "000": 2.513e-06,
+    "001": 0.000207506,
+    "010": 0.000195556,
+    "011": 0.016145082,
+    "100": 0.000149347,
+    "101": 0.012330105,
+    "110": 0.011620039,
+    "111": 0.959349851
+   },
+   "prx": 3
+  },
+  "ro-111-m": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 32,
    "predicted": {
     "000": 2.513e-06,
     "001": 0.000207506,
@@ -921,10 +1489,10 @@
  },
  "calibration_set": "a0e725eb-a020-43d3-8aaf-072b926e425a",
  "copies": {
-  "1": 4,
+  "1": 14,
   "2": 4,
   "3": 4,
-  "4": 18
+  "4": 24
  },
  "decisions": {
   "calibration": {
@@ -992,10 +1560,10 @@
    ],
    "influence_power": {
     "coherent": {
-     "bend_power_pooled": 1.0,
-     "bend_power_pooled_first_half": 1.0,
-     "bend_power_with_every_leave_one_out": 1.0,
-     "bend_power_with_every_leave_one_out_first_half": 1.0,
+     "bend_power_pooled": 0.995605,
+     "bend_power_pooled_first_half": 0.995117,
+     "bend_power_with_every_leave_one_out": 0.995605,
+     "bend_power_with_every_leave_one_out_first_half": 0.995117,
      "bend_refits_that_differ": {
       "1": 0.0,
       "2": 0.0,
@@ -1004,62 +1572,63 @@
      },
      "expected_bend": "beyond",
      "expected_family": "coherent",
-     "family_power_pooled": 0.993652,
-     "family_power_pooled_first_half": 0.994141,
-     "family_power_with_every_leave_one_out": 0.969727,
-     "family_power_with_every_leave_one_out_first_half": 0.973633,
+     "family_power_pooled": 0.989258,
+     "family_power_pooled_first_half": 0.990234,
+     "family_power_with_every_leave_one_out": 0.964844,
+     "family_power_with_every_leave_one_out_first_half": 0.96582,
      "family_refits_that_differ": {
-      "1": 0.009277,
-      "2": 0.007324,
-      "3": 0.003418,
-      "4": 0.010254
+      "1": 0.013184,
+      "2": 0.008301,
+      "3": 0.009277,
+      "4": 0.01123
      }
     },
-    "dimension": 15,
+    "dimension": 23,
     "geometric": {
-     "bend_power_pooled": 0.99707,
-     "bend_power_pooled_first_half": 0.99707,
-     "bend_power_with_every_leave_one_out": 0.990723,
-     "bend_power_with_every_leave_one_out_first_half": 0.994141,
+     "bend_power_pooled": 0.993164,
+     "bend_power_pooled_first_half": 0.993164,
+     "bend_power_with_every_leave_one_out": 0.989746,
+     "bend_power_with_every_leave_one_out_first_half": 0.989258,
      "bend_refits_that_differ": {
-      "1": 0.000977,
-      "2": 0.002441,
-      "3": 0.004883,
+      "1": 0.000488,
+      "2": 0.001465,
+      "3": 0.002441,
       "4": 0.0
      },
      "expected_bend": "none",
      "expected_family": "geometric",
-     "family_power_pooled": 0.90625,
-     "family_power_pooled_first_half": 0.907227,
-     "family_power_with_every_leave_one_out": 0.634766,
-     "family_power_with_every_leave_one_out_first_half": 0.633789,
+     "family_power_pooled": 0.988281,
+     "family_power_pooled_first_half": 0.990234,
+     "family_power_with_every_leave_one_out": 0.966797,
+     "family_power_with_every_leave_one_out_first_half": 0.96875,
      "family_refits_that_differ": {
-      "1": 0.260254,
-      "2": 0.005859,
-      "3": 0.040527,
-      "4": 0.061035
+      "1": 0.006348,
+      "2": 0.006348,
+      "3": 0.010254,
+      "4": 0.009766
      }
     },
+    "heterogeneity_gate": 36.190869,
     "model": {
-     "bend_power_pooled": 0.998535,
-     "bend_power_pooled_first_half": 1.0,
-     "bend_power_with_every_leave_one_out": 0.993164,
-     "bend_power_with_every_leave_one_out_first_half": 0.996094,
+     "bend_power_pooled": 0.994141,
+     "bend_power_pooled_first_half": 0.995117,
+     "bend_power_with_every_leave_one_out": 0.988281,
+     "bend_power_with_every_leave_one_out_first_half": 0.988281,
      "bend_refits_that_differ": {
-      "1": 0.000488,
-      "2": 0.001953,
-      "3": 0.004395,
+      "1": 0.000977,
+      "2": 0.001465,
+      "3": 0.003906,
       "4": 0.0
      },
      "expected_bend": "none",
      "expected_family": "unresolved",
-     "family_power_pooled": 0.987305,
-     "family_power_pooled_first_half": 0.989258,
-     "family_power_with_every_leave_one_out": 0.95459,
-     "family_power_with_every_leave_one_out_first_half": 0.960938,
+     "family_power_pooled": 0.98291,
+     "family_power_pooled_first_half": 0.983398,
+     "family_power_with_every_leave_one_out": 0.955566,
+     "family_power_with_every_leave_one_out_first_half": 0.956055,
      "family_refits_that_differ": {
-      "1": 0.01416,
-      "2": 0.006348,
+      "1": 0.015625,
+      "2": 0.004883,
       "3": 0.007812,
       "4": 0.013184
      }
@@ -1073,9 +1642,9 @@
    "truths": {
     "coherent": {
      "at_delta_resolve": {
-      "coherent": 0.991333,
+      "coherent": 0.991943,
       "geometric": 0.0,
-      "neither family fits": 0.008667,
+      "neither family fits": 0.008057,
       "not evaluated": 0.0,
       "out of domain": 0.0,
       "unresolved": 0.0
@@ -1087,9 +1656,9 @@
       "upward": 0.0
      },
      "first_half_at_delta_resolve": {
-      "coherent": 0.993408,
+      "coherent": 0.993896,
       "geometric": 0.0,
-      "neither family fits": 0.006592,
+      "neither family fits": 0.006104,
       "not evaluated": 0.0,
       "out of domain": 0.0,
       "unresolved": 0.0
@@ -1232,33 +1801,33 @@
     "geometric": {
      "at_delta_resolve": {
       "coherent": 0.0,
-      "geometric": 0.908081,
-      "neither family fits": 0.009277,
+      "geometric": 0.990234,
+      "neither family fits": 0.009521,
       "not evaluated": 0.0,
       "out of domain": 0.0,
-      "unresolved": 0.082642
+      "unresolved": 0.000244
      },
      "bend_at_planned_shots": {
-      "beyond": 0.002441,
-      "none": 0.99707,
+      "beyond": 0.001953,
+      "none": 0.997559,
       "not evaluated": 0.0,
       "upward": 0.000488
      },
      "first_half_at_delta_resolve": {
       "coherent": 0.0,
-      "geometric": 0.90918,
-      "neither family fits": 0.008057,
+      "geometric": 0.992432,
+      "neither family fits": 0.007568,
       "not evaluated": 0.0,
       "out of domain": 0.0,
-      "unresolved": 0.082764
+      "unresolved": 0.0
      },
      "first_half_wrong_family_by_grid": [
-      0.001953,
-      0.001465,
-      0.001221,
-      0.001221,
-      0.000732,
-      0.000244,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
       0.0,
       0.0,
       0.0,
@@ -1326,13 +1895,13 @@
       0.883764
      ],
      "wrong_family_by_grid": [
-      0.002808,
-      0.002441,
-      0.001831,
-      0.001221,
-      0.000854,
-      0.000366,
-      0.000122,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
       0.0,
       0.0,
       0.0,
@@ -1390,51 +1959,51 @@
     "model": {
      "at_delta_resolve": {
       "coherent": 0.002075,
-      "geometric": 0.006592,
-      "neither family fits": 0.006348,
+      "geometric": 0.007568,
+      "neither family fits": 0.006226,
       "not evaluated": 0.0,
       "out of domain": 0.0,
-      "unresolved": 0.984985
+      "unresolved": 0.984131
      },
      "bend_at_planned_shots": {
-      "beyond": 0.001221,
-      "none": 0.997681,
+      "beyond": 0.001465,
+      "none": 0.997559,
       "not evaluated": 0.0,
-      "upward": 0.001099
+      "upward": 0.000977
      },
      "first_half_at_delta_resolve": {
       "coherent": 0.001953,
-      "geometric": 0.006836,
+      "geometric": 0.00708,
       "neither family fits": 0.005127,
       "not evaluated": 0.0,
       "out of domain": 0.0,
-      "unresolved": 0.986084
+      "unresolved": 0.98584
      },
      "first_half_wrong_family_by_grid": [
-      0.364502,
-      0.251709,
-      0.181885,
-      0.131104,
-      0.095215,
-      0.067627,
-      0.048828,
-      0.037354,
-      0.0271,
-      0.02002,
-      0.016113,
-      0.012939,
-      0.008789,
-      0.005371,
-      0.00415,
-      0.003418,
-      0.002441,
-      0.001953,
+      0.435059,
+      0.293945,
+      0.20752,
+      0.148682,
+      0.105713,
+      0.077148,
+      0.05542,
+      0.04248,
+      0.030029,
+      0.021484,
+      0.015381,
+      0.01123,
+      0.009033,
+      0.006836,
+      0.005127,
+      0.003662,
+      0.003174,
+      0.002197,
       0.000977,
       0.000732,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
+      0.000488,
+      0.000488,
+      0.000244,
+      0.000244,
       0.0,
       0.0,
       0.0,
@@ -1484,35 +2053,35 @@
       1.0
      ],
      "wrong_family_by_grid": [
-      0.366821,
-      0.251953,
-      0.180054,
-      0.130859,
-      0.095459,
-      0.068848,
-      0.050293,
-      0.036743,
-      0.027588,
-      0.019409,
-      0.015137,
-      0.012451,
-      0.008667,
-      0.005981,
-      0.005005,
-      0.00354,
-      0.002808,
-      0.002319,
-      0.001465,
+      0.436646,
+      0.294556,
+      0.206665,
+      0.146484,
+      0.10437,
+      0.076294,
+      0.054443,
+      0.041992,
+      0.030518,
+      0.022461,
+      0.016479,
+      0.012817,
+      0.009644,
+      0.007202,
+      0.005615,
+      0.003662,
+      0.00293,
+      0.001953,
+      0.001221,
       0.001099,
+      0.000854,
       0.00061,
-      0.00061,
-      0.000244,
-      0.000244,
+      0.000488,
+      0.000366,
       0.000244,
       0.000122,
-      0.0,
-      0.0,
-      0.0,
+      0.000122,
+      0.000122,
+      0.000122,
       0.0,
       0.0,
       0.0,
@@ -1548,39 +2117,39 @@
    }
   },
   "continuation": {
-   "chi2_coherent_fit_to_geometric_values": 18.058949,
-   "chi2_geometric_fit_to_coherent_values": 175.768888,
+   "chi2_coherent_fit_to_geometric_values": 41.687247,
+   "chi2_geometric_fit_to_coherent_values": 181.959043,
    "coherent_lambda_4": 0.526171,
    "delta_resolve": 7.0,
    "geometric_lambda_4": 0.512995,
    "lambda_4_difference": -0.013177,
    "model_lambda_4": 0.580466,
    "rule": "the retained ratios rho = lambda / model lambda at depths 1 to 3 fitted by each family and continued to depth 4, scaled by this calibration's model lambda_4; z is their difference over the standard error of rho_4 from the planned kept shots (binomial and the readout preparations' covariance), the larger of the two; each chi-square is what the other family leaves when the four depths equal one family's values at the planned shots, to be compared with the calibrated delta_resolve",
-   "se_rho_4_at_planned_shots": 0.007341,
-   "z": -3.09226,
-   "z_binomial_only": -3.265788
+   "se_rho_4_at_planned_shots": 0.006247,
+   "z": -3.633836,
+   "z_binomial_only": -3.771007
   },
   "heterogeneity": {
    "alpha": 0.01,
    "copy_floor": 0.5,
-   "planned_dof": 11,
+   "planned_dof": 19,
    "planned_kept_per_copy": 16800.0,
-   "planned_threshold": 24.72497,
+   "planned_threshold": 36.190869,
    "power": {
     "false_not_evaluated_probability": 0.01,
-    "one_copy_of_depth_1_shift_at_half_power": 0.027377,
-    "one_copy_of_depth_1_shift_at_nine_tenths_power": 0.037727,
-    "probability_at_one_standard_error_above_in_marked_frequency": 0.493656,
-    "probability_at_one_standard_error_above_in_retention": 0.039015,
-    "probability_at_the_retained_curvature_in_marked_frequency": 0.01186,
-    "probability_at_the_retained_curvature_in_retention": 0.010294,
-    "probability_for_one_copy_of_depth_1_raised_by_0.04": 0.941873,
+    "one_copy_of_depth_1_shift_at_half_power": 0.023237,
+    "one_copy_of_depth_1_shift_at_nine_tenths_power": 0.031519,
+    "probability_at_one_standard_error_above_in_marked_frequency": 1.0,
+    "probability_at_one_standard_error_above_in_retention": 0.847304,
+    "probability_at_the_retained_curvature_in_marked_frequency": 0.031339,
+    "probability_at_the_retained_curvature_in_retention": 0.012849,
+    "probability_for_one_copy_of_depth_1_raised_by_0.04": 0.99612,
     "probability_under_linear_drift_in_marked_frequency_at_the_retained_slope": 0.01,
     "probability_under_linear_drift_in_retention_at_the_retained_slope": 0.01,
-    "quadratic_drift_of_marked_frequency_per_position2_at_half_power": 1.5e-05,
-    "quadratic_drift_of_marked_frequency_per_position2_at_nine_tenths_power": 2e-05,
-    "quadratic_drift_of_retention_per_position2_at_half_power": 5.5e-05,
-    "quadratic_drift_of_retention_per_position2_at_nine_tenths_power": 7.6e-05,
+    "quadratic_drift_of_marked_frequency_per_position2_at_half_power": 5e-06,
+    "quadratic_drift_of_marked_frequency_per_position2_at_nine_tenths_power": 7e-06,
+    "quadratic_drift_of_retention_per_position2_at_half_power": 1.7e-05,
+    "quadratic_drift_of_retention_per_position2_at_nine_tenths_power": 2.3e-05,
     "retained_curvature_of_marked_frequency_per_position2": 2e-06,
     "retained_curvature_standard_error": 1.3e-05,
     "retained_slope_of_marked_frequency_per_position": 0.000303
@@ -1590,6 +2159,14 @@
     "1": 6.634897,
     "10": 23.209251,
     "11": 24.72497,
+    "12": 26.216967,
+    "13": 27.68825,
+    "14": 29.141238,
+    "15": 30.577914,
+    "16": 31.999927,
+    "17": 33.408664,
+    "18": 34.805306,
+    "19": 36.190869,
     "2": 9.21034,
     "3": 11.344867,
     "4": 13.276704,
@@ -1601,23 +2178,23 @@
    }
   },
   "mirror_pair_loss": {
-   "bend_se_all_copies": 0.009404,
-   "bend_se_one_pair_lost_from_depth_1": 0.009657,
-   "bend_se_one_pair_lost_from_depth_2": 0.010079,
-   "bend_se_one_pair_lost_from_depth_3": 0.012576,
-   "bend_se_one_pair_lost_from_depth_4": 0.009404,
-   "depth_4_pairs_lost_0": -3.09226,
-   "depth_4_pairs_lost_1": -2.932312,
-   "depth_4_pairs_lost_2": -2.759014,
-   "depth_4_pairs_lost_3": -2.56951,
-   "separation_z_one_pair_lost_from_depth_1": -3.09226,
-   "separation_z_one_pair_lost_from_depth_2": -3.09226,
-   "separation_z_one_pair_lost_from_depth_3": -3.09226,
-   "separation_z_one_pair_lost_from_depth_4": -2.932312
+   "bend_se_all_copies": 0.009199,
+   "bend_se_one_pair_lost_from_depth_1": 0.009212,
+   "bend_se_one_pair_lost_from_depth_2": 0.009889,
+   "bend_se_one_pair_lost_from_depth_3": 0.012425,
+   "bend_se_one_pair_lost_from_depth_4": 0.009199,
+   "depth_4_pairs_lost_0": -3.633836,
+   "depth_4_pairs_lost_1": -3.489534,
+   "depth_4_pairs_lost_2": -3.337146,
+   "depth_4_pairs_lost_3": -3.175474,
+   "separation_z_one_pair_lost_from_depth_1": -3.633836,
+   "separation_z_one_pair_lost_from_depth_2": -3.633836,
+   "separation_z_one_pair_lost_from_depth_3": -3.633836,
+   "separation_z_one_pair_lost_from_depth_4": -3.489534
   },
   "model": {
    "f": 0.016597,
-   "f_se_at_planned_shots": 0.009404,
+   "f_se_at_planned_shots": 0.009199,
    "lambda": {
     "1": 0.856287,
     "2": 0.76889,
@@ -1626,48 +2203,48 @@
    },
    "verdict_on_the_model_at_planned_shots": {
     "bend": {
-     "f": 0.016559,
+     "f": 0.016564,
      "reading": "no bend beyond the model resolved at mirrored positions",
-     "se": 0.009404,
-     "z_against_model": -0.004
+     "se": 0.009199,
+     "z_against_model": -0.0035
     },
     "beside": {
      "fits_on_a_rate_bound": [],
      "retention_decreases_with_depth": true,
-     "rho4_against_retained_coherent_z": 13.3957,
-     "rho4_against_retained_geometric_z": 16.6464
+     "rho4_against_retained_coherent_z": 15.7736,
+     "rho4_against_retained_geometric_z": 19.601
     },
     "coherent": {
      "at_bound": false,
-     "chi2": 1.4e-05,
-     "eps": -0.00255,
-     "r": 1.0
+     "chi2": 0.196487,
+     "eps": 0.051028,
+     "r": 1.000912
     },
-    "delta_chi2": 0.0,
+    "delta_chi2": -0.1965,
     "family": "unresolved",
     "geometric": {
-     "A": 0.999994,
+     "A": 1.0,
      "at_bound": false,
-     "chi2": 1.8e-05,
+     "chi2": 2.8e-05,
      "r": 1.000001
     },
     "lambda": {
-     "1": 0.856281,
+     "1": 0.856288,
      "2": 0.768889,
      "3": 0.706975,
-     "4": 0.58047
+     "4": 0.580477
     },
     "rho": [
-     0.999994,
+     1.000001,
      0.999998,
      0.999949,
-     1.000006
+     1.000019
     ],
     "se": {
-     "1": 0.003087,
-     "2": 0.002389,
-     "3": 0.008559,
-     "4": 0.004053
+     "1": 0.001781,
+     "2": 0.002212,
+     "3": 0.008455,
+     "4": 0.003443
     },
     "usable_depths": [
      1,
@@ -1678,20 +2255,21 @@
    }
   },
   "planned_kept_shots": {
-   "1": 67200.0,
+   "1": 235200.0,
    "2": 67200.0,
    "3": 67200.0,
-   "4": 302400.0
+   "4": 403200.0
   },
   "readout": {
+   "heterogeneity_threshold": 20.090235,
    "marked_index": 5,
    "planned_frequency_sd": [
-    0.00095,
-    0.001045,
-    0.000384,
-    0.000155
+    0.000672,
+    0.000739,
+    0.000272,
+    0.000109
    ],
-   "planned_kept_per_preparation": 16800.0,
+   "planned_kept_per_preparation": 33600.0,
    "q": [
     [
      0.03876,
@@ -1745,14 +2323,15 @@
     1e-05,
     0.01233
    ],
-   "statistic": "the marked frequency of depth k, p_k, is corrected to the model's readout by y_k = p_k - sum_j q_kj (r_j - r_j model) with r_j the marked fraction of readout preparation j; the covariance of the four corrected frequencies is the binomial diagonal plus sum_j q_kj q_lj r_j (1 - r_j) / n_j"
+   "statistic": "the marked frequency of depth k, p_k, is corrected to the model's readout by y_k = p_k - sum_j q_kj (r_j - r_j model) with r_j the marked fraction of readout preparation j; the covariance of the four corrected frequencies is the binomial diagonal plus sum_j q_kj q_lj r_j (1 - r_j) / n_j, each preparation pooled over its two copies at mirrored positions; the job reads 'not evaluated' when the two sides of the readout block differ by more than their binomial scatter (heterogeneity_threshold, the 0.99 chi-square quantile at 8 degrees of freedom), when a preparation keeps under half its planned shots, or when a corrected frequency moves by more than tolerance",
+   "tolerance": 0.05
   },
   "retained": {
    "coherent_fit": {
     "at_bound": false,
     "chi2": 0.850932,
     "eps": 0.304302,
-    "r": 1.013413
+    "r": 1.013412
    },
    "coherent_rho_4": 0.906464,
    "f_raw": -0.122238,
@@ -1789,7 +2368,7 @@
    "analyzer": "grover_depth_analysis.analyze",
    "bend": "f = lambda_3 - lambda_2^2 / lambda_1 from the pooled marked frequencies of the depth arms (copies pooled after the mirror-pair and heterogeneity gates below), each corrected to the model's readout by the eight readout preparations (decisions.readout), with the binomial variances at the observed frequencies and the readout covariance, delta method over the three arms; z = (f - model.f) / SE; z <= -3 reads 'the retention law bends beyond the model at mirrored positions', which excludes positional drift linear in position as the cause; z >= 3 reads 'bends upward of the model'; otherwise 'no bend beyond the model resolved at mirrored positions'",
    "beside": "rho_4 against the retained fits' continuations in standard errors, the fits that end on a rate bound, and whether the retention decreases with depth; none decides",
-   "family": "generalized least squares (the full covariance of the four corrected frequencies) of the geometric family a s^k and the coherent family s^k (Q_k(eps) - 1/8) / (P_k - 1/8) to rho_k = lambda_k / model.lambda_k at k = 1 to 4 (gororoba_quantum/grover_depth_families.py), over the rate domains geometric s in [0.30, 1.20] and coherent s in [0.50, 1.10] (eps is searched over a half period, the family being even in eps; the amplitude a is free); 'neither family fits' when both chi-squares exceed their 0.99 quantile (9.21 at four usable depths, 6.63 at three); else 'coherent' when chi2_geometric - chi2_coherent >= delta_resolve, 'geometric' when it is <= -delta_resolve, else 'unresolved'; delta_resolve is the smallest threshold at which the geometric truth read as coherent, the coherent truth read as geometric and the model read as either family each have probability at most 0.01 (decisions.calibration). A rate bound blocks a reading only when the bound-limited fit is what the reading rests on: 'out of domain' when the selected family's fit sits on its bound, or when no family is selected ('neither family fits', 'unresolved') while a fit sits on a bound; a bound-limited fit that loses to an adequate interior fit is named beside the reading. Gating: a copy below half its planned kept shots leaves its depth together with the copy at its mirrored position, a depth without kept shots is unusable, the bend needs depths 1 to 3, the family comparison any three depths, and a decision whose depths are unusable reads 'not evaluated' without blocking the other",
+   "family": "generalized least squares (the full covariance of the four corrected frequencies) of the geometric family a s^k and the coherent family s^k (Q_k(eps) - 1/8) / (P_k - 1/8) to rho_k = lambda_k / model.lambda_k at k = 1 to 4 (gororoba_quantum/grover_depth_families.py), over the rate domains s in [0.30, 1.20] for both families (eps is searched over a half period, the family being even in eps; the amplitude a is free); 'neither family fits' when both chi-squares exceed their 0.99 quantile (9.21 at four usable depths, 6.63 at three); else 'coherent' when chi2_geometric - chi2_coherent >= delta_resolve, 'geometric' when it is <= -delta_resolve, else 'unresolved'; delta_resolve is the smallest threshold at which the geometric truth read as coherent, the coherent truth read as geometric and the model read as either family each have probability at most 0.01 (decisions.calibration). A rate bound blocks a reading only when the bound-limited fit is what the reading rests on: 'out of domain' when the selected family's fit sits on its bound, or when no family is selected ('neither family fits', 'unresolved') while a fit sits on a bound; a bound-limited fit that loses to an adequate interior fit is named beside the reading. Gating: a copy below half its planned kept shots leaves its depth together with the copy at its mirrored position, a depth without kept shots is unusable, the bend needs depths 1 to 3, the family comparison any three depths, and a decision whose depths are unusable reads 'not evaluated' without blocking the other",
    "function": "grover_depth_families.read_copies",
    "heterogeneity": "after the mirror-pair gate, the chi-square of the surviving mirror pairs of each depth (a copy and its image about the job's center, pooled) about that depth's pooled marked frequency, summed over depths, is compared with the 1 - alpha chi-square quantile at its degrees of freedom (decisions.heterogeneity.threshold_by_dof); a drift linear in position leaves every pair unmoved; above the quantile the bend and family decisions both read 'not evaluated', since a depth's pooled frequency no longer describes pairs that differ beyond binomial scatter",
    "influence": "each of the bend and family readings stands only when every leave-one-mirror-pair-out refit (the same verdict on the pooled counts without one surviving pair, with the same readout correction) reads the same category: the family category of the rule, and the bend's resolved direction or none; a reading that changes reads 'not evaluated: the reading depends on one mirror pair'"

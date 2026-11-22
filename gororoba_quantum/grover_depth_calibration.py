@@ -99,13 +99,15 @@ class Joint:
     pair_kept: float
     mean: np.ndarray
     factor: np.ndarray
+    gate: float
 
-    def __call__(self, z: np.ndarray) -> tuple[list[int], list[int]]:
+    def __call__(self, z: np.ndarray) -> tuple[list[int], list[int], bool]:
         from scipy import linalg
 
         y = self.mean + self.factor @ z[:4]
         at = 4
         bend, family = [], []
+        heterogeneity = 0.0
         full = self.scan.readings(y, self.scan.kept)
         bend.append(full[0])
         family.append(full[1][0])
@@ -114,6 +116,7 @@ class Joint:
                 continue
             f = self.mean[depth - 1]
             scatter = math.sqrt(f * (1 - f) / self.pair_kept) * (linalg.helmert(n).T @ z[at : at + n - 1])
+            heterogeneity += float(np.sum(z[at : at + n - 1] ** 2))
             at += n - 1
             kept = list(self.scan.kept)
             kept[depth - 1] -= self.pair_kept
@@ -123,7 +126,7 @@ class Joint:
                 part = self.scan.readings(refit, kept)
                 bend.append(part[0])
                 family.append(part[1][0])
-        return bend, family
+        return bend, family, heterogeneity <= self.gate
 
 
 def calibrate(
@@ -215,21 +218,24 @@ def influence_power(
     threshold: float,
     log2n: int = 13,
 ) -> dict[str, Any]:
-    """Power of the pooled rule at the threshold, and with the influence check (the reading stands only when every
-    leave-one-pair-out refit agrees), for each truth. The reading a truth names is the one the noise-free data read
-    (geometric, coherent and unresolved for the two retained continuations and the model; the bend likewise). The
-    pairs of every depth are iid at the planned shots, so one Sobol' set of dimension 4 + sum(n_d - 1) carries the
-    full data and all its refits together; the first half of the points is reported beside as the quadrature's
-    own check."""
+    """Power of the pooled rule at the threshold behind the pair-heterogeneity gate (a run whose pair chi-square
+    exceeds its 0.99 quantile reads "not evaluated"), and with the influence check as well (the reading stands only
+    when every leave-one-pair-out refit agrees), for each truth. The reading a truth names is the one the noise-free
+    data read (geometric, coherent and unresolved for the two retained continuations and the model; the bend
+    likewise). The pairs of every depth are iid at the planned shots, so one Sobol' set of dimension
+    4 + sum(n_d - 1) carries the full data and all its refits together; the first half of the
+    points is reported beside as the quadrature's own check."""
     dim = 4 + sum(n - 1 for n in pairs if n >= 2)
     points = sobol_normals(dim, log2n)
     scan = Scan(model, retained, kept, readout, (threshold,))
-    out: dict[str, Any] = {"points": 2**log2n, "dimension": dim, "threshold": threshold}
+    gate = families.heterogeneity_threshold(sum(n - 1 for n in pairs if n >= 2))
+    out: dict[str, Any] = {"points": 2**log2n, "dimension": dim, "threshold": threshold, "heterogeneity_gate": gate}
     for name, ratios in truths.items():
         mean = truth_frequencies(ratios, model)
         factor = np.linalg.cholesky(frequency_covariance(mean, kept, readout))
         expected_bend, expected_family = scan.readings(mean, kept)
-        rows = ordered_map(Joint(scan, pairs, pair_kept, mean, factor), list(points), min_items=1)
+        rows = ordered_map(Joint(scan, pairs, pair_kept, mean, factor, gate), list(points), min_items=1)
+        passed = np.array([r[2] for r in rows])
         bend = np.array([r[0] for r in rows])
         family = np.array([r[1] for r in rows])
         entry: dict[str, Any] = {
@@ -239,12 +245,12 @@ def influence_power(
         for label, readings, want in (("family", family, expected_family[0]), ("bend", bend, expected_bend)):
             hit = readings == want
             for tag, sel in (("", slice(None)), ("_first_half", slice(0, len(readings) // 2))):
-                pooled = hit[sel, 0]
+                pooled = hit[sel, 0] & passed[sel]
                 every = pooled & hit[sel].all(axis=1)
                 entry[f"{label}_power_pooled{tag}"] = float(np.mean(pooled))
                 entry[f"{label}_power_with_every_leave_one_out{tag}"] = float(np.mean(every))
             entry[f"{label}_refits_that_differ"] = {
-                str(d): float(np.mean(hit[:, 0] & ~hit[:, lo:hi].all(axis=1)))
+                str(d): float(np.mean(hit[:, 0] & passed & ~hit[:, lo:hi].all(axis=1)))
                 for d, (lo, hi) in zip(
                     (d for d, n in zip(families.DEPTHS, pairs, strict=True) if n >= 2), spans(pairs), strict=True
                 )

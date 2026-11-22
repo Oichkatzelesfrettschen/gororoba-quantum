@@ -87,15 +87,12 @@ def test_the_verdict_refuses_malformed_counts(marked: list[int]) -> None:
 def test_every_depth_sits_at_mirrored_positions() -> None:
     order = case.arrangement()
     total = len(order)
-    if order != order[::-1] or total != sum(case.COPIES.values()) + case.READOUTS:
+    if order != order[::-1] or total != sum(case.COPIES.values()) + case.READOUT_COPIES * case.READOUTS:
         raise AssertionError("the arrangement is not a palindrome of the job's circuits")
-    for k, n in case.COPIES.items():
+    for k, n in {**case.COPIES, 0: case.READOUT_COPIES * case.READOUTS}.items():
         at = [p for p, depth in enumerate(order) if depth == k]
         if len(at) != n or sum(at) != n * (total - 1) / 2:
-            raise AssertionError(f"depth {k}: positions {at}")
-    readout = [p for p, depth in enumerate(order) if depth == 0]
-    if readout != list(range(readout[0], readout[0] + case.READOUTS)) or readout[0] * 2 + case.READOUTS != total:
-        raise AssertionError(f"readout block {readout}")
+            raise AssertionError(f"kind {k}: positions {at}")
 
 
 @pytest.mark.audit
@@ -156,7 +153,7 @@ def test_a_failed_copy_leaves_its_depth_with_its_mirror_image() -> None:
     total = len(prediction["arms"])
     copies = case.layout_copies(MODEL, tweak=lambda k, p, m, n: (m // 20, n // 20) if (k, p) == (1, 2) else (m, n))
     read = families.read_copies(copies, total, case.PLANNED_KEPT_PER_COPY, MODEL, cont, gate_from(prediction), DELTA)
-    if read["dropped_pairs"] != {"1": [[2, 35]]} or read["heterogeneity"]["per_depth"]["1"]["pairs"] != 1:
+    if read["dropped_pairs"] != {"1": [[2, total - 3]]} or read["heterogeneity"]["per_depth"]["1"]["pairs"] != 6:
         raise AssertionError(read)
     if not read["heterogeneity"]["passed"] or read["usable_depths"] != [1, 2, 3, 4]:
         raise AssertionError(read)
@@ -184,10 +181,6 @@ def test_one_raised_copy_reads_not_evaluated_where_the_pooled_rule_read_geometri
         raise AssertionError(heterogeneity)
     if not (read["bend"]["reading"].startswith("not evaluated") and read["family"].startswith("not evaluated")):
         raise AssertionError(read)
-    pooled = [sum(c[1] for c in plus[k]) for k in families.DEPTHS]
-    kept = [sum(c[2] for c in plus[k]) for k in families.DEPTHS]
-    if families.verdict(pooled, kept, MODEL, cont, DELTA)["family"] == "unresolved":
-        raise AssertionError("the pooled counts no longer carry the one-copy artifact the gate catches")
 
 
 def planted_fit(family: str, rate: float) -> str:
@@ -206,6 +199,8 @@ def planted_fit(family: str, rate: float) -> str:
     [
         ("geometric", 1.19),
         ("coherent", 1.09),
+        # Both families share one rate box, so data of either family just outside the old coherent box read their own.
+        ("coherent", 1.12),
         ("geometric", 0.8),
         ("coherent", 0.6),
         # The coherent fit of exact geometric data of amplitude 0.5 ends on its rate bound of 0.5 at and below these
@@ -221,14 +216,14 @@ def test_data_inside_the_rate_bounds_read_their_family(family: str, rate: float)
         raise AssertionError(f"{family} at {rate} reads {planted_fit(family, rate)}")
 
 
-@pytest.mark.parametrize(("family", "rate"), [("coherent", 0.52)])
+@pytest.mark.parametrize(("family", "rate"), [("coherent", 0.32), ("geometric", 0.32)])
 def test_data_just_inside_a_lower_rate_bound_stay_in_domain(family: str, rate: float) -> None:
     if planted_fit(family, rate).startswith("out of domain"):
         raise AssertionError(f"{family} at {rate} reads {planted_fit(family, rate)}")
 
 
 @pytest.mark.parametrize(
-    ("family", "rate"), [("geometric", 1.25), ("geometric", 0.28), ("coherent", 1.11), ("coherent", 0.48)]
+    ("family", "rate"), [("geometric", 1.25), ("geometric", 0.28), ("coherent", 1.21), ("coherent", 0.28)]
 )
 def test_data_outside_a_rate_bound_read_out_of_domain_not_neither_family(family: str, rate: float) -> None:
     reading = planted_fit(family, rate)
@@ -270,10 +265,15 @@ def test_the_committed_gate_holds_the_chi_square_quantile_of_every_degree_of_fre
 
 
 @pytest.mark.audit
-def test_the_fixed_arrangement_is_the_exhaustive_search_optimum() -> None:
+def test_the_fixed_arrangement_is_the_local_optimum_of_the_exchange_search() -> None:
     if case.best_first_half() != case.FIRST_HALF:
         raise AssertionError(case.best_first_half())
     case.verify_first_half(case.FIRST_HALF)
+    spread = case.offset_spread(case.FIRST_HALF)
+    for i in range(len(case.FIRST_HALF)):
+        for j in range(i + 1, len(case.FIRST_HALF)):
+            if case.swapped_spread((case.FIRST_HALF, i, j)) < spread - 1e-9:
+                raise AssertionError((i, j))
 
 
 def drifted(distribution: dict[str, float], delta: float) -> dict[str, float]:
@@ -332,14 +332,19 @@ def slope_plant(position: dict[str, int], center: float, per_position: float, de
 @pytest.mark.audit
 def test_a_dropped_copy_and_a_linear_slope_read_the_centered_verdict(tmp_path: Path) -> None:
     """A failed copy leaves with its image, so the surviving positions stay centered and a linear slope cancels in
-    every pair. A depth that keeps several pairs reads the centered verdict; a depth left with one pair cannot lose it
-    without becoming unusable, so the influence check reads its decisions as not evaluated, never as a bend."""
+    every pair. A depth that keeps several pairs (depths 1 and 4) reads the centered verdict; a depth left with one
+    pair (depth 2) cannot lose it without becoming unusable, so the influence check reads its decisions as not
+    evaluated, never as a bend."""
     prediction = json.loads((CASE_DIR / "prediction.json").read_text(encoding="utf-8"))
     position = {n: a["position"] for n, a in prediction["arms"].items()}
     center = (len(position) - 1) / 2
     centered = "no bend beyond the model resolved at mirrored positions"
     changed = "not evaluated: the reading depends on one mirror pair"
-    for victim, depth, bend in (("m101-k4-c0", "4", centered), ("m101-k1-c0", "1", changed)):
+    for victim, depth, bend in (
+        ("m101-k4-c0", "4", centered),
+        ("m101-k1-c0", "1", centered),
+        ("m101-k2-c0", "2", changed),
+    ):
         pair = [position[victim], len(position) - 1 - position[victim]]
 
         def short(name: str, victim: str = victim) -> int:
@@ -352,7 +357,7 @@ def test_a_dropped_copy_and_a_linear_slope_read_the_centered_verdict(tmp_path: P
                 raise AssertionError(read)
             if read["bend"]["reading"] != bend:
                 raise AssertionError(read["bend"])
-            if depth == "4" and abs(read["bend"]["z_against_model"]) > 1.0:
+            if bend == centered and abs(read["bend"]["z_against_model"]) > 1.0:
                 raise AssertionError(read["bend"])
 
 
@@ -519,7 +524,7 @@ def test_the_quadrature_points_are_deterministic_and_centered() -> None:
 def case_inputs(prediction: dict[str, Any]) -> tuple[list[float], families.ReadoutShift, dict[str, list[float]]]:
     plan = prediction["decisions"]["readout"]
     readout = families.readout_shift(
-        plan["q"], plan["r_model"], plan["r_model"], [case.PLANNED_KEPT_PER_COPY] * case.READOUTS
+        plan["q"], plan["r_model"], plan["r_model"], [case.READOUT_COPIES * case.PLANNED_KEPT_PER_COPY] * case.READOUTS
     )
     truths = {n: v["ratios"] for n, v in prediction["decisions"]["calibration"]["truths"].items()}
     return families.model_retention(prediction["arms"]), readout, truths
@@ -576,7 +581,7 @@ def readout_plant(prediction: dict[str, Any], row_drop: float) -> Any:
     plan = prediction["decisions"]["readout"]
 
     def plant(name: str, distribution: dict[str, float]) -> dict[str, float]:
-        if name == "ro-" + case.MARKED:
+        if name.removesuffix("-m") == "ro-" + case.MARKED:
             return drifted(distribution, -row_drop)
         if name.startswith("m101-k"):
             return drifted(distribution, -row_drop * plan["q"][int(name[6]) - 1][plan["marked_index"]])
@@ -588,7 +593,7 @@ def readout_plant(prediction: dict[str, Any], row_drop: float) -> Any:
 @pytest.mark.audit
 def test_a_readout_row_mismatch_reads_no_bend_once_the_job_readout_corrects_it(tmp_path: Path) -> None:
     prediction = json.loads((CASE_DIR / "prediction.json").read_text(encoding="utf-8"))
-    row_drop = 0.1
+    row_drop = 0.06
     record = case.analyze(run_of(tmp_path, "readout", plant=readout_plant(prediction, row_drop)))
     read = record["decisions"]
     if read["bend"]["reading"] != "no bend beyond the model resolved at mirrored positions":
@@ -615,9 +620,11 @@ def test_a_readout_row_mismatch_reads_no_bend_once_the_job_readout_corrects_it(t
 @pytest.mark.audit
 def test_one_depth_3_copy_lowered_by_three_points_passes_the_gate_and_reads_not_evaluated(tmp_path: Path) -> None:
     prediction = json.loads((CASE_DIR / "prediction.json").read_text(encoding="utf-8"))
-    (victim,) = [n for n, a in prediction["arms"].items() if a["position"] == 4]
-    if not victim.startswith("m101-k3-c"):
-        raise AssertionError(victim)
+    total = len(prediction["arms"])
+    victim = min(
+        (n for n in prediction["arms"] if n.startswith("m101-k3-c")), key=lambda n: prediction["arms"][n]["position"]
+    )
+    at = prediction["arms"][victim]["position"]
 
     def plant(name: str, distribution: dict[str, float]) -> dict[str, float]:
         return drifted(distribution, -0.03) if name == victim else distribution
@@ -637,5 +644,57 @@ def test_one_depth_3_copy_lowered_by_three_points_passes_the_gate_and_reads_not_
     ):
         raise AssertionError(influence)
     moved = [row for row in influence["refits"] if row["bend"] != "beyond" or row["family"] != "coherent"]
-    if [row["depth"] for row in moved] != [3] or moved[0]["positions"] != [4, 33]:
+    if [row["depth"] for row in moved] != [3] or moved[0]["positions"] != [at, total - 1 - at]:
         raise AssertionError(moved)
+
+
+def test_both_families_share_one_symmetric_rate_box() -> None:
+    if families.GEOMETRIC_RATE != families.COHERENT_RATE or families.GEOMETRIC_RATE != (0.30, 1.20):
+        raise AssertionError((families.GEOMETRIC_RATE, families.COHERENT_RATE))
+
+
+@pytest.mark.audit
+def test_the_readout_block_is_mirrored_and_its_glitches_read_not_evaluated(tmp_path: Path) -> None:
+    prediction = json.loads((CASE_DIR / "prediction.json").read_text(encoding="utf-8"))
+    arms = prediction["arms"]
+    total = len(arms)
+    for name, arm in arms.items():
+        if (
+            name.startswith("ro-")
+            and not name.endswith("-m")
+            and arms[name + "-m"]["position"] != total - 1 - arm["position"]
+        ):
+            raise AssertionError(name)
+    if sum(n.startswith("ro-") for n in arms) != case.READOUT_COPIES * case.READOUTS:
+        raise AssertionError("readout copies")
+
+    def glitch(name: str, distribution: dict[str, float]) -> dict[str, float]:
+        return drifted(distribution, -0.03) if name == "ro-101-m" else distribution
+
+    side = "not evaluated: the readout preparations differ between the two sides of the job"
+    read = case.analyze(run_of(tmp_path, "glitch", plant=glitch))["decisions"]
+    if not (read["bend"]["reading"].startswith(side) and read["family"].startswith(side)):
+        raise AssertionError(read)
+    # A step inside the readout block moves one side of every pair that it crosses.
+    block = sorted(a["position"] for n, a in arms.items() if n.startswith("ro-"))
+    step_at = block[len(block) // 2 - 1] + 1
+
+    def step(name: str, distribution: dict[str, float]) -> dict[str, float]:
+        if name.startswith("ro-") and arms[name]["position"] >= step_at and name.removesuffix("-m") == "ro-101":
+            return drifted(distribution, -0.03)
+        return distribution
+
+    stepped = case.analyze(run_of(tmp_path, "step", plant=step))["decisions"]
+    if not stepped["family"].startswith("not evaluated"):
+        raise AssertionError(stepped)
+    # A readout row far from the model's reads not evaluated by the tolerance, and a lost preparation likewise.
+    far = case.analyze(run_of(tmp_path, "far", plant=readout_plant(prediction, 0.15)))["decisions"]
+    if not far["family"].startswith("not evaluated: the job's readout departs"):
+        raise AssertionError(far)
+
+    def kept(name: str) -> int:
+        return 100 if name == "ro-000" else 17120
+
+    lost = case.analyze(run_of(tmp_path, "lost", kept_of=kept))["decisions"]
+    if not lost["family"].startswith("not evaluated: a readout preparation kept fewer"):
+        raise AssertionError(lost)

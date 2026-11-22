@@ -50,7 +50,7 @@ ADEQUACY_BY_DOF = {1: 6.634897, 2: ADEQUACY}
 # sits on a rate bound is the box's best, not the family's, so it blocks a reading only when it would be the reading
 # (select_family). The offset eps of the coherent family is periodic over (-pi, pi], so its grid ends are no bound.
 GEOMETRIC_RATE = (0.30, 1.20)
-COHERENT_RATE = (0.50, 1.10)
+COHERENT_RATE = GEOMETRIC_RATE
 BOUND_TOLERANCE = 1e-9
 # A copy that keeps fewer than this fraction of its planned kept shots, and the copy at its mirrored position,
 # leave the pooled depth together.

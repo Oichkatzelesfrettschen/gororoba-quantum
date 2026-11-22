@@ -3671,7 +3671,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_fourth_depth.py check results/iqm/cases/grover-fourth-depth-mirrored",
       "name": "core-iqm-grover-fourth-depth-case",
-      "seconds": 330.0
+      "seconds": 520.0
     },
     {
       "suite": "core",

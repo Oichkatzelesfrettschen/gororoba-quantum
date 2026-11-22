@@ -44,7 +44,7 @@ CASE_DIR = iqm_records.ROOT / "results" / "iqm" / "cases" / CASE
 MARKED = "101"
 CZ_PER_ITERATION = 14
 ARM = re.compile(r"m101-k([1-4])-c(\d+)")
-READOUT = re.compile(r"ro-[01]{3}")
+READOUT = re.compile(r"ro-[01]{3}(-m)?")
 
 
 def normalized_sha256(circuit: dict[str, Any]) -> str:
@@ -65,7 +65,7 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
     table: list[dict[str, Any]] = []
     digests: dict[int, set[str]] = {k: set() for k in families.DEPTHS}
     kinds: list[str] = []
-    readouts: dict[int, np.ndarray] = {}
+    readouts: dict[int, list[tuple[int, np.ndarray]]] = {}
     for position, name in enumerate(job.names):
         if arms[name]["position"] != position:
             raise AnalysisError(
@@ -78,7 +78,8 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
             if READOUT.fullmatch(name) is None:
                 raise AnalysisError(f"{run_dir}: circuit {name} is neither a depth copy nor a readout preparation")
             kinds.append("readout")
-            readouts[followup.outcome_index(name.removeprefix("ro-"))] = job.counts[name]
+            prepared = followup.outcome_index(name.removeprefix("ro-").removesuffix("-m"))
+            readouts.setdefault(prepared, []).append((position, job.counts[name]))
             table.append(row)
             continue
         k = int(arm[1])
@@ -101,13 +102,43 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
     retained = job.prediction["decisions"]["retained"]
     model = families.model_retention(arms)
     plan = job.prediction["decisions"]["readout"]
-    if sorted(readouts) != list(range(8)):
-        raise AnalysisError(f"{run_dir}: the job holds readout preparations {sorted(readouts)}, not all eight")
-    shots = np.array([readouts[j].sum() for j in range(8)], dtype=float)
-    r_hat = np.array([readouts[j][plan["marked_index"]] for j in range(8)]) / shots
-    shift = families.readout_shift(plan["q"], plan["r_model"], r_hat, shots)
+    if sorted(readouts) != list(range(8)) or any(
+        len(v) != 2 or v[0][0] + v[1][0] != total - 1 for v in readouts.values()
+    ):
+        raise AnalysisError(f"{run_dir}: the readout preparations are not all eight, each at mirrored positions")
+    marked_at = plan["marked_index"]
+    first = [min(readouts[j])[1] for j in range(8)]
+    second = [max(readouts[j])[1] for j in range(8)]
+    n_a = np.array([c.sum() for c in first], dtype=float)
+    n_b = np.array([c.sum() for c in second], dtype=float)
+    m_a = np.array([c[marked_at] for c in first], dtype=float)
+    m_b = np.array([c[marked_at] for c in second], dtype=float)
+    floor = float(gate["copy_floor"]) * float(gate["planned_kept_per_copy"])
     r_model = np.asarray(plan["r_model"], dtype=float)
-    spread = np.maximum(r_model * (1 - r_model), 1 / shots) / shots
+    lost = bool(np.any(n_a < floor) or np.any(n_b < floor))
+    shots = n_a + n_b
+    r_hat = (m_a + m_b) / np.maximum(shots, 1.0) if not lost else r_model
+    shift = families.readout_shift(plan["q"], r_model, r_hat, np.maximum(shots, 1.0))
+    if lost:
+        shift = families.ReadoutShift()
+    pooled = np.maximum(r_hat * (1 - r_hat), 1 / np.maximum(shots, 1.0))
+    sides = (m_a / np.maximum(n_a, 1.0) - m_b / np.maximum(n_b, 1.0)) ** 2 / (
+        pooled * (1 / np.maximum(n_a, 1.0) + 1 / np.maximum(n_b, 1.0))
+    )
+    sides_chi2 = float(np.sum(sides))
+    spread = np.maximum(r_model * (1 - r_model), 1 / np.maximum(shots, 1.0)) / np.maximum(shots, 1.0)
+    reason = ""
+    if lost:
+        reason = "not evaluated: a readout preparation kept fewer than half its planned shots"
+    elif sides_chi2 > float(plan["heterogeneity_threshold"]):
+        reason = (
+            "not evaluated: the readout preparations differ between the two sides of the job by more than their "
+            "binomial scatter"
+        )
+    elif float(np.max(np.abs(shift.shift))) > float(plan["tolerance"]):
+        reason = (
+            "not evaluated: the job's readout departs from the case model's by more than the preregistered tolerance"
+        )
     decisions = families.read_copies(
         copies,
         total,
@@ -118,6 +149,9 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
         float(job.prediction["decisions"]["calibration"]["delta_resolve"]),
         shift,
     )
+    if reason:
+        decisions["bend"] = {"reading": reason}
+        decisions["family"] = reason
     return {
         "schema": SCHEMA,
         "case": CASE,
@@ -133,6 +167,10 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
             "marked_row": [round(float(x), 6) for x in r_hat],
             "model_marked_row": [round(float(x), 6) for x in r_model],
             "kept_shots": [int(x) for x in shots],
+            "mirrored_sides_chi2": round(sides_chi2, 4),
+            "mirrored_sides_threshold": plan["heterogeneity_threshold"],
+            "tolerance": plan["tolerance"],
+            "passed": not reason,
             "frequency_shift": [round(float(x), 6) for x in shift.shift],
             "frequency_sd": [round(float(x), 6) for x in np.sqrt(np.diag(shift.cov))],
             "chi2_against_model_rows": round(float(np.sum((r_hat - r_model) ** 2 / spread)), 4),

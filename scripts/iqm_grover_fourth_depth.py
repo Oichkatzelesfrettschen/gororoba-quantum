@@ -45,7 +45,7 @@ import json
 import re
 import shutil
 import sys
-from collections.abc import Callable, Iterator
+from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Any
 
@@ -73,11 +73,19 @@ PATH = followup.FORWARD_PATH
 MARKED = "101"
 SHOTS = 20000
 # Copies per depth; each is even so that every copy has a mirror image.
-COPIES = {1: 4, 2: 4, 3: 4, 4: 18}
-# Depths of the first half of the job's circuits: of the 450,450 orderings of half the copies of every depth, the one
-# whose depths have the most nearly equal mean squared offset from the job's center (best_first_half() recomputes it).
-FIRST_HALF = (4, 4, 1, 2, 3, 4, 4, 4, 4, 3, 4, 2, 4, 1, 4)
+COPIES = {1: 14, 2: 4, 3: 4, 4: 24}
+# Kinds of the first half of the job's circuits (0 a readout preparation, k a copy of depth k): the local optimum of
+# single exchanges, from an even spread, of the mean squared offsets of the kinds from the job's center
+# (best_first_half() recomputes it; the orderings are too many to list).
+FIRST_HALF = (4, 0, 1, 4, 0, 1, 4, 2, 3, 4, 0, 1, 4, 0, 4, 1, 4, 0, 4, 3, 1, 2, 4, 0, 1, 4, 0, 4, 1, 0, 4)
 READOUTS = 8
+# Every readout preparation runs on both sides of the job's center (ro-xyz and ro-xyz-m at mirrored positions), so a
+# step or a glitch of the readout block shows as a difference between its two sides.
+READOUT_COPIES = 2
+# A job whose readout moves a depth's marked frequency by more than this from the case model's reads "not evaluated":
+# 50 times the planned standard error of the shift, the size at which the first-order correction stops being the
+# small adjustment it is derived for.
+READOUT_TOLERANCE = 0.05
 # Sobol' points of the threshold calibration (2^13 per truth) and of the influence-power quadrature (2^11): the
 # fits cost milliseconds each, and a build repeats both.
 CALIBRATION_LOG2N = 13
@@ -96,109 +104,110 @@ SELF_TEST_DELTA = 9.0
 RETAINED_ANALYSIS = ROOT / "results" / "iqm" / "garnet_grover_depth_sedenion_walsh_analysis.json"
 
 
-def distinct_orders(remaining: dict[int, int], prefix: tuple[int, ...] = ()) -> Iterator[tuple[int, ...]]:
-    """Every distinct ordering of the multiset remaining (depth -> count), in sorted order."""
-    if not any(remaining.values()):
-        yield prefix
-        return
-    for k in sorted(remaining):
-        if remaining[k]:
-            yield from distinct_orders({**remaining, k: remaining[k] - 1}, (*prefix, k))
-
-
-def distinct_prefixes(
-    remaining: dict[int, int], length: int, prefix: tuple[int, ...] = ()
-) -> Iterator[tuple[tuple[int, ...], dict[int, int]]]:
-    """Every distinct first length depths of an ordering of the multiset, with the depths left, in sorted order."""
-    if len(prefix) == length:
-        yield prefix, remaining
-        return
-    for k in sorted(remaining):
-        if remaining[k]:
-            yield from distinct_prefixes({**remaining, k: remaining[k] - 1}, length, (*prefix, k))
-
-
 def half_counts() -> dict[int, int]:
-    return {k: n // 2 for k, n in COPIES.items()}
+    """Circuits of the first half of the job by kind: the readout preparations (kind 0, each prepared state once) and
+    half the copies of every depth."""
+    return {0: READOUTS, **{k: n // 2 for k, n in COPIES.items()}}
 
 
-def offset_spread(order: tuple[int, ...]) -> float:
-    """Largest minus smallest over the depths of the mean squared offset of their positions in order from the job's
-    center, the spread of the squared offsets that mirroring leaves."""
-    half = half_counts()
-    center = (2 * len(order) + READOUTS - 1) / 2
-    sums = dict.fromkeys(half, 0.0)
+def offset_spread(order: Sequence[int]) -> float:
+    """Largest minus smallest over the kinds of the mean squared offset of their positions in order (the first half
+    of a palindromic job of twice its length) from the job's center, the spread of the squared offsets that
+    mirroring leaves."""
+    center = len(order) - 0.5
+    sums: dict[int, float] = {}
+    counts: dict[int, int] = {}
     for p, k in enumerate(order):
-        sums[k] += (p - center) ** 2
-    means = [sums[k] / half[k] for k in half]
+        sums[k] = sums.get(k, 0.0) + (p - center) ** 2
+        counts[k] = counts.get(k, 0) + 1
+    means = [sums[k] / counts[k] for k in sums]
     return max(means) - min(means)
 
 
-def shard_best(item: tuple[tuple[int, ...], dict[int, int]]) -> tuple[float, tuple[int, ...]] | None:
-    """The first ordering in sorted order of the least offset spread among the completions of one prefix."""
-    prefix, remaining = item
-    best: tuple[float, tuple[int, ...]] | None = None
-    for order in distinct_orders(remaining, prefix):
-        score = offset_spread(order)
-        if best is None or score < best[0] - 1e-9:
-            best = (score, order)
-    return best
+def swapped_spread(item: tuple[tuple[int, ...], int, int]) -> float:
+    """offset_spread of an order with the circuits at two positions exchanged."""
+    order, i, j = item
+    trial = list(order)
+    trial[i], trial[j] = trial[j], trial[i]
+    return offset_spread(trial)
+
+
+def spread_order() -> tuple[int, ...]:
+    """The deterministic start of the arrangement search: each kind's circuits at evenly spaced ideal positions."""
+    counts = half_counts()
+    length = sum(counts.values())
+    ideal = sorted(((i + 0.5) * length / n, k) for k, n in counts.items() for i in range(n))
+    return tuple(k for _, k in ideal)
 
 
 def best_first_half() -> tuple[int, ...]:
-    """The exhaustive search that fixed FIRST_HALF: the orderings of half the copies of every depth, sharded by
-    their first three depths over parallel.ordered_map; among equal spreads the first in sorted order. The case does
-    not run it on a build (tests/test_iqm_grover_fourth_depth.py does)."""
-    shards = ordered_map(shard_best, list(distinct_prefixes(half_counts(), 3)), min_items=1)
-    best: tuple[float, tuple[int, ...]] | None = None
-    for found in shards:
-        if found is not None and (best is None or found[0] < best[0] - 1e-9):
-            best = found
-    if best is None:
-        raise ValueError("no arrangement")
-    return best[1]
+    """The search that fixed FIRST_HALF: from spread_order(), the exchange of two circuits of different kinds that
+    lowers offset_spread most (the first in position order among equals) until none lowers it, every round's exchanges
+    scored through parallel.ordered_map. The orderings are too many to list (about 10^15), so the result is a
+    local optimum of single exchanges, not the global one. The case does not run it on a build
+    (tests/test_iqm_grover_fourth_depth.py does)."""
+    order = spread_order()
+    while True:
+        moves = [(order, i, j) for i in range(len(order)) for j in range(i + 1, len(order)) if order[i] != order[j]]
+        scores = ordered_map(swapped_spread, moves, min_items=1)
+        best = min(range(len(moves)), key=lambda n: (scores[n], n))
+        if scores[best] >= offset_spread(order) - 1e-9:
+            return order
+        _, i, j = moves[best]
+        trial = list(order)
+        trial[i], trial[j] = trial[j], trial[i]
+        order = tuple(trial)
 
 
 def verify_first_half(order: tuple[int, ...]) -> None:
-    """The invariants the search established for FIRST_HALF: it holds half the copies of every depth, and the
-    depths' mean squared offsets from the center differ by under a quarter of the smallest."""
+    """The invariants FIRST_HALF holds: half the circuits of every kind, and the kinds' mean squared offsets from the
+    center differ by under a quarter of the smallest."""
     if sorted(order) != sorted(k for k, n in half_counts().items() for _ in range(n)):
-        raise AssertionError(f"first half {order} is not half the copies of every depth")
-    center = (2 * len(order) + READOUTS - 1) / 2
-    means = {k: float(np.mean([(p - center) ** 2 for p, d in enumerate(order) if d == k])) for k in COPIES}
+        raise AssertionError(f"first half {order} is not half the circuits of every kind")
+    center = len(order) - 0.5
+    means = {k: float(np.mean([(p - center) ** 2 for p, d in enumerate(order) if d == k])) for k in half_counts()}
     if offset_spread(order) >= 0.25 * min(means.values()):
         raise AssertionError(f"first half {order} leaves squared offsets {means}")
 
 
 def arrangement() -> list[int]:
-    """Depths of the job's circuits in order: FIRST_HALF, the readout block (depth 0), FIRST_HALF reversed, so the
-    positions of every depth are mirror images about the job's center."""
+    """Kinds of the job's circuits in order (0 is a readout preparation): FIRST_HALF then FIRST_HALF reversed, so the
+    positions of every kind are mirror images about the job's center."""
     verify_first_half(FIRST_HALF)
-    return [*FIRST_HALF, *([0] * READOUTS), *FIRST_HALF[::-1]]
+    return [*FIRST_HALF, *FIRST_HALF[::-1]]
 
 
 def depth_arms() -> list[dict[str, Any]]:
     order = arrangement()
+    total = len(order)
     seen = {k: 0 for k in COPIES}
     out: list[dict[str, Any]] = []
     bits = ["".join(b) for b in itertools.product("01", repeat=3)]
     readout = 0
-    for k in order:
+    for position, k in enumerate(order):
         if k == 0:
-            circuit = followup.readout_circuit(bits[readout], PATH, "ro")
+            if position < total // 2:
+                prefix = "ro"
+                name_bits = bits[readout]
+                readout += 1
+            else:
+                prefix = "ro"
+                name_bits = out[total - 1 - position]["name"].removeprefix("ro-")
+            circuit = followup.readout_circuit(name_bits, PATH, prefix)
+            if position >= total // 2:
+                circuit = {**circuit, "name": f"{circuit['name']}-m"}
             out.append({"name": circuit["name"], "circuit": circuit, "marked": None, "k": None})
-            readout += 1
             continue
         name = f"m{MARKED}-k{k}-c{seen[k]}"
         seen[k] += 1
         out.append({"name": name, "circuit": grover.line_arm(MARKED, k, PATH, name)[1], "marked": MARKED, "k": k})
     if seen != COPIES or readout != READOUTS:
         raise AssertionError(f"arrangement holds {seen} and {readout} readouts")
-    total = len(out)
-    for k in COPIES:
-        at = [n for n, a in enumerate(out) if a["k"] == k]
-        if sum(at) != len(at) * (total - 1) / 2 or any(out[total - 1 - n]["k"] != k for n in at):
-            raise AssertionError(f"depth {k} copies are not mirrored: positions {at}")
+    kinds: list[int | None] = [*COPIES, None]
+    for kind in kinds:
+        at = [n for n, a in enumerate(out) if a["k"] == kind]
+        if sum(at) != len(at) * (total - 1) / 2 or any(out[total - 1 - n]["k"] != kind for n in at):
+            raise AssertionError(f"kind {kind} circuits are not mirrored: positions {at}")
     return out
 
 
@@ -367,10 +376,16 @@ def readout_plan(arm_records: dict[str, Any]) -> dict[str, Any]:
         "r_model": [float(x) for x in matrix[marked]],
         "q": [[float(x) for x in row] for row in q],
         "q_minimum": float(np.min(q)),
+        "tolerance": READOUT_TOLERANCE,
+        "heterogeneity_threshold": families.heterogeneity_threshold(READOUTS),
         "statistic": (
             "the marked frequency of depth k, p_k, is corrected to the model's readout by y_k = p_k - sum_j q_kj "
             "(r_j - r_j model) with r_j the marked fraction of readout preparation j; the covariance of the four "
-            "corrected frequencies is the binomial diagonal plus sum_j q_kj q_lj r_j (1 - r_j) / n_j"
+            "corrected frequencies is the binomial diagonal plus sum_j q_kj q_lj r_j (1 - r_j) / n_j, each "
+            "preparation pooled over its two copies at mirrored positions; the job reads 'not evaluated' when the two "
+            "sides of the readout block differ by more than their binomial scatter (heterogeneity_threshold, the "
+            "0.99 chi-square quantile at 8 degrees of freedom), when a preparation keeps under half its planned "
+            "shots, or when a corrected frequency moves by more than tolerance"
         ),
     }
 
@@ -406,7 +421,7 @@ def decisions(arm_records: dict[str, Any]) -> dict[str, Any]:
     model = families.model_retention(arm_records)
     plan = readout_plan(arm_records)
     planned_readout = families.readout_shift(
-        plan["q"], plan["r_model"], plan["r_model"], [PLANNED_KEPT_PER_COPY] * READOUTS
+        plan["q"], plan["r_model"], plan["r_model"], [READOUT_COPIES * PLANNED_KEPT_PER_COPY] * READOUTS
     )
     # The retained ratios continued to depth 4 and scaled by this calibration's model retention are the two
     # continuations of lambda_4; the data the rule would see if one family held exactly sit at those values.
@@ -469,7 +484,7 @@ def decisions(arm_records: dict[str, Any]) -> dict[str, Any]:
             "readout": plan
             | {
                 "planned_frequency_sd": [float(x) for x in np.sqrt(np.diag(planned_readout.cov))],
-                "planned_kept_per_preparation": PLANNED_KEPT_PER_COPY,
+                "planned_kept_per_preparation": READOUT_COPIES * PLANNED_KEPT_PER_COPY,
             },
             "calibration": calibrated,
             "heterogeneity": gate,
@@ -495,7 +510,7 @@ def decisions(arm_records: dict[str, Any]) -> dict[str, Any]:
                     "generalized least squares (the full covariance of the four corrected frequencies) of the "
                     "geometric family a s^k and the coherent family s^k (Q_k(eps) - 1/8) / (P_k - 1/8) to rho_k = "
                     "lambda_k / model.lambda_k at k = 1 to 4 (gororoba_quantum/grover_depth_families.py), over "
-                    "the rate domains geometric s in [0.30, 1.20] and coherent s in [0.50, 1.10] (eps is "
+                    "the rate domains s in [0.30, 1.20] for both families (eps is "
                     "searched over a half period, the family being even in eps; the amplitude a is free); "
                     "'neither family fits' when both chi-squares exceed "
                     "their 0.99 quantile (9.21 at four usable depths, 6.63 at three); else 'coherent' when "
@@ -700,7 +715,7 @@ def self_test() -> str:
         p = followup.ideal(circuit, path)[int(MARKED[::-1], 2)]
         require(abs(p - families.ideal_marked(arm["k"])) < 1e-9, f"depth {arm['k']}: P(marked) {p}")
         require(followup.count(circuit, "cz") == 14 * arm["k"], f"depth {arm['k']}: CZ count")
-    require(len(arms) == sum(COPIES.values()) + READOUTS and len(arms) <= 100, "circuits per job")
+    require(len(arms) == sum(COPIES.values()) + READOUT_COPIES * READOUTS and len(arms) <= 100, "circuits per job")
     require(len(arms) * SHOTS <= 2_000_000 and SHOTS <= 20_000, "Garnet job limits")
     total = len(arms)
     center = (total - 1) / 2
@@ -758,7 +773,8 @@ def self_test() -> str:
         ("geometric", families.geometric_values, {"A": 0.5, "r": 1.19}, "geometric"),
         ("geometric", families.geometric_values, {"A": 0.5, "r": 1.25}, "out of domain"),
         ("coherent", families.coherent_values, {"eps": 0.3, "r": 1.09}, "coherent"),
-        ("coherent", families.coherent_values, {"eps": 0.3, "r": 1.11}, "out of domain"),
+        ("coherent", families.coherent_values, {"eps": 0.3, "r": 1.11}, "coherent"),
+        ("coherent", families.coherent_values, {"eps": 0.3, "r": 1.21}, "out of domain"),
     )
     for family, values, parameters, want in planted:
         domain_lam = [r * m for r, m in zip(values(parameters, families.DEPTHS), model, strict=True)]
@@ -767,7 +783,7 @@ def self_test() -> str:
     # Mirror pairs and the heterogeneity gate on the arrangement's copies.
     gate = {
         "copy_floor": families.COPY_FLOOR,
-        "threshold_by_dof": {str(d): families.heterogeneity_threshold(d) for d in range(1, 12)},
+        "threshold_by_dof": {str(d): families.heterogeneity_threshold(d) for d in range(1, 30)},
     }
     per_copy = PLANNED_KEPT_PER_COPY
     clean = families.read_copies(layout_copies(model), total, per_copy, model, cont, gate, SELF_TEST_DELTA)
@@ -781,7 +797,7 @@ def self_test() -> str:
     )
     short = layout_copies(model, tweak=lambda k, p, m, n: (m // 20, n // 20) if (k, p) == (1, 2) else (m, n))
     kept_pairs = families.read_copies(short, total, per_copy, model, cont, gate, SELF_TEST_DELTA)
-    require(kept_pairs["dropped_pairs"] == {"1": [[2, 35]]}, f"a short copy leaves with its image: {kept_pairs}")
+    require(kept_pairs["dropped_pairs"] == {"1": [[2, total - 3]]}, f"a short copy leaves with its image: {kept_pairs}")
     require(kept_pairs["usable_depths"] == [1, 2, 3, 4], "the other pair of depth 1 stays")
     try:
         families.read_copies(
@@ -793,7 +809,9 @@ def self_test() -> str:
         raise AssertionError("an unpaired copy was accepted")
     # Influence: one depth-3 copy at position 4 lowered by 0.03 passes the pair-heterogeneity gate and moves the pooled
     # depth; the leave-one-pair-out refits read the family and bend the clean copies read, so neither reads a finding.
-    lowered = layout_copies(model, tweak=lambda k, p, m, n: (m - round(0.03 * n), n) if (k, p) == (3, 4) else (m, n))
+    lowered = layout_copies(
+        model, tweak=lambda k, p, m, n: (m - round(0.03 * n), n) if (k, p) == (3, FIRST_HALF.index(3)) else (m, n)
+    )
     pooled = [sum(c[1] for c in lowered[k]) for k in families.DEPTHS]
     pooled_kept = [sum(c[2] for c in lowered[k]) for k in families.DEPTHS]
     require(
@@ -825,7 +843,7 @@ def self_test() -> str:
     require(ceiling_credits(expected, PRICE["garnet"], JOB_SECONDS) < garnet_max, "ceiling below max_credits")
     return (
         "self-test passed: 3 depth circuits against ideal, mirror invariants, families, 5 planted verdicts, "
-        "2 refusals, 6 domain plants, 3 copy gates, 1 influence plant, readout shift"
+        "2 refusals, 7 domain plants, 3 copy gates, 1 influence plant, readout shift"
     )
 
 
