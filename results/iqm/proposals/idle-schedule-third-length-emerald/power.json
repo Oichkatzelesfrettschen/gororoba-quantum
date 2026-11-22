@@ -1,185 +1,254 @@
 {
+ "calibration_arms": {
+  "arms_below_the_gate": [],
+  "weakest_arm": "QB30-2000",
+  "weakest_arm_se": 3.2822695330470886
+ },
  "case": "idle-schedule-third-length-emerald",
- "correlation_of_the_decision_deviations": [
+ "correlation_of_the_decision_statistics": [
   [
-   1.0000000000000002,
-   -0.6226351565136409,
-   0.3485624195377797,
-   -0.21774409043036821
-  ],
-  [
-   -0.6226351565136409,
-   1.0000000000000002,
-   -0.21702721664367888,
-   0.34971377403357057
-  ],
-  [
-   0.3485624195377797,
-   -0.21702721664367888,
    1.0,
-   -0.6163425810574082
+   -0.37431458991180594,
+   0.34657195777041017,
+   -0.12530634268886906,
+   -0.14853710115301294,
+   0.024900614403632015
   ],
   [
-   -0.21774409043036821,
-   0.34971377403357057,
-   -0.6163425810574082,
-   1.0000000000000002
+   -0.37431458991180594,
+   1.0,
+   -0.12890114013009296,
+   0.3381804158850931,
+   -0.01276669203285723,
+   -0.15269936305952092
+  ],
+  [
+   0.34657195777041017,
+   -0.12890114013009296,
+   1.0,
+   -0.4037632767736057,
+   -0.43906443339155515,
+   0.0913079417244118
+  ],
+  [
+   -0.12530634268886906,
+   0.3381804158850931,
+   -0.4037632767736057,
+   1.0,
+   -0.01314681470158669,
+   -0.4664229677734132
+  ],
+  [
+   -0.14853710115301294,
+   -0.01276669203285723,
+   -0.43906443339155515,
+   -0.01314681470158669,
+   1.0,
+   0.5873539438653389
+  ],
+  [
+   0.024900614403632015,
+   -0.15269936305952092,
+   0.0913079417244118,
+   -0.4664229677734132,
+   0.5873539438653389,
+   1.0
   ]
  ],
- "decision_deviations": [
+ "decision_statistics": [
   "QB24-250",
   "QB24-2000",
   "cohort-250",
-  "cohort-2000"
+  "cohort-2000",
+  "cohort-anchor-500",
+  "cohort-anchor-1000"
  ],
- "false_alarm_of_the_decision_deviations_together": 0.010028472140174216,
+ "false_alarm_not_on_line": 0.015323343617763552,
+ "false_alarm_off_line": 0.010482521076210505,
+ "retained_curvature": {
+  "p_off_line_with_correction": 0.010483646455755613,
+  "p_off_line_without_correction": 0.9978697964685238,
+  "statistics": [
+   "QB24-250",
+   "QB24-2000",
+   "cohort-250",
+   "cohort-2000"
+  ],
+  "z_with_curvature_correction": {
+   "QB24-2000": -0.00850254090760454,
+   "QB24-250": -0.0037251550781995384,
+   "cohort-2000": -2.2253423869105505e-14,
+   "cohort-250": -1.0893273833726874e-14
+  },
+  "z_without_curvature_correction": {
+   "QB24-2000": -0.6647073144444996,
+   "QB24-250": -0.25049194151068593,
+   "cohort-2000": -5.353794790569623,
+   "cohort-250": -1.9149860153707923
+  }
+ },
  "rows": {
   "QB24-2000": {
    "predicted_ns": 23.398940820600753,
    "x1": {
+    "cohort_gate": null,
     "layout_se_ns": {
-     "QB20": 2.1043421909967277,
-     "QB26": 2.1309860929317037
+     "QB20": 2.3146943221894722,
+     "QB26": 2.3374754786872813
     },
     "qubits": 1,
-    "qubits_passing_the_delay_fit_gate": 1,
-    "resolvable_deviation_ns": 4.4945675507846765,
-    "resolvable_fraction": 0.1920842308737153,
-    "se_ns": 1.498189183594892,
+    "resolvable_deviation_ns": 5.359498831991892,
+    "resolvable_fraction": 0.22904877930514334,
+    "se_ns": 1.7864996106639637,
     "shots": 4000,
     "smallest_cohort_qubits": 1,
-    "smallest_cohort_resolvable_deviation_ns": 4.4945675507846765
+    "smallest_cohort_resolvable_deviation_ns": 5.359498831991892
    },
    "x2": {
+    "cohort_gate": null,
     "layout_se_ns": {
-     "QB20": 1.487994633190743,
-     "QB26": 1.506834716926234
+     "QB20": 1.6367360515941731,
+     "QB26": 1.6528447618370459
     },
     "qubits": 1,
-    "qubits_passing_the_delay_fit_gate": 1,
-    "resolvable_deviation_ns": 3.1781391936608574,
-    "resolvable_fraction": 0.1358240622098065,
-    "se_ns": 1.0593797312202857,
+    "resolvable_deviation_ns": 3.7897379678628424,
+    "resolvable_fraction": 0.1619619450691676,
+    "se_ns": 1.2632459892876142,
     "shots": 8000,
     "smallest_cohort_qubits": 1,
-    "smallest_cohort_resolvable_deviation_ns": 3.1781391936608574
+    "smallest_cohort_resolvable_deviation_ns": 3.7897379678628424
    }
   },
   "QB24-250": {
    "predicted_ns": 40.04107545256453,
    "x1": {
+    "cohort_gate": null,
     "layout_se_ns": {
-     "QB20": 5.744046637233257,
-     "QB26": 5.4724427990061155
+     "QB20": 5.820297502184331,
+     "QB26": 5.552777567605534
     },
     "qubits": 1,
-    "qubits_passing_the_delay_fit_gate": 1,
-    "resolvable_deviation_ns": 11.886832837206185,
-    "resolvable_fraction": 0.29686597332502124,
-    "se_ns": 3.962277612402062,
+    "resolvable_deviation_ns": 12.232875439180681,
+    "resolvable_fraction": 0.30550816382723295,
+    "se_ns": 4.07762514639356,
     "shots": 4000,
     "smallest_cohort_qubits": 1,
-    "smallest_cohort_resolvable_deviation_ns": 11.886832837206185
+    "smallest_cohort_resolvable_deviation_ns": 12.232875439180681
    },
    "x2": {
+    "cohort_gate": null,
     "layout_se_ns": {
-     "QB20": 4.06165432863942,
-     "QB26": 3.869601412832715
+     "QB20": 4.115571832317661,
+     "QB26": 3.9264066724744136
     },
     "qubits": 1,
-    "qubits_passing_the_delay_fit_gate": 1,
-    "resolvable_deviation_ns": 8.405260106019423,
-    "resolvable_fraction": 0.20991594284166729,
-    "se_ns": 2.801753368673141,
+    "resolvable_deviation_ns": 8.64994917645502,
+    "resolvable_fraction": 0.216026894350087,
+    "se_ns": 2.8833163921516736,
     "shots": 8000,
     "smallest_cohort_qubits": 1,
-    "smallest_cohort_resolvable_deviation_ns": 8.405260106019423
+    "smallest_cohort_resolvable_deviation_ns": 8.64994917645502
    }
   },
   "cohort-2000": {
    "predicted_ns": 24.291642608002253,
    "x1": {
+    "cohort_gate": {
+     "expected_qubits_passing_the_gate": 10.819717218341362,
+     "probability_fewer_pass_the_gate_than_the_minimum": 3.51575354179194e-09
+    },
     "layout_se_ns": {
-     "QB20": 0.7033454109699201,
-     "QB26": 0.7836249198135242
+     "QB20": 0.7657581913517747,
+     "QB26": 0.8583103002342789
     },
     "qubits": 11,
-    "qubits_passing_the_delay_fit_gate": 11,
-    "resolvable_deviation_ns": 1.5718121808337306,
-    "resolvable_fraction": 0.06470588285025805,
-    "se_ns": 0.5239373936112435,
+    "resolvable_deviation_ns": 1.821045209548879,
+    "resolvable_fraction": 0.07496591477716631,
+    "se_ns": 0.6070150698496263,
     "shots": 4000,
     "smallest_cohort_qubits": 7,
-    "smallest_cohort_resolvable_deviation_ns": 2.1669637296671724
+    "smallest_cohort_resolvable_deviation_ns": 2.4511366503064864
    },
    "x2": {
+    "cohort_gate": {
+     "expected_qubits_passing_the_gate": 10.381094835815759,
+     "probability_fewer_pass_the_gate_than_the_minimum": 1.5407756644818533e-07
+    },
     "layout_se_ns": {
-     "QB20": 0.4973403096132697,
-     "QB26": 0.5541064947069075
+     "QB20": 0.5414728098539857,
+     "QB26": 0.6069170336579202
     },
     "qubits": 11,
-    "qubits_passing_the_delay_fit_gate": 5,
-    "resolvable_deviation_ns": 1.1114390518191468,
-    "resolvable_fraction": 0.0457539685460798,
-    "se_ns": 0.37047968393971564,
+    "resolvable_deviation_ns": 1.2876734165192893,
+    "resolvable_fraction": 0.053008906696787095,
+    "se_ns": 0.42922447217309645,
     "shots": 8000,
     "smallest_cohort_qubits": 7,
-    "smallest_cohort_resolvable_deviation_ns": 1.5322747478329504
+    "smallest_cohort_resolvable_deviation_ns": 1.733215347046596
    }
   },
   "cohort-250": {
    "predicted_ns": 44.73969383436427,
    "x1": {
+    "cohort_gate": {
+     "expected_qubits_passing_the_gate": 10.819717218341362,
+     "probability_fewer_pass_the_gate_than_the_minimum": 3.51575354179194e-09
+    },
     "layout_se_ns": {
-     "QB20": 1.8750560531848106,
-     "QB26": 2.0417071305964996
+     "QB20": 1.8960874460849921,
+     "QB26": 2.0709079445919194
     },
     "qubits": 11,
-    "qubits_passing_the_delay_fit_gate": 11,
-    "resolvable_deviation_ns": 4.143303214377721,
-    "resolvable_fraction": 0.0926091097028312,
-    "se_ns": 1.3811010714592402,
+    "resolvable_deviation_ns": 4.243437423333667,
+    "resolvable_fraction": 0.09484726111545963,
+    "se_ns": 1.414479141111222,
     "shots": 4000,
     "smallest_cohort_qubits": 7,
-    "smallest_cohort_resolvable_deviation_ns": 5.901737161507803
+    "smallest_cohort_resolvable_deviation_ns": 5.997074983214327
    },
    "x2": {
+    "cohort_gate": {
+     "expected_qubits_passing_the_gate": 10.381094835815759,
+     "probability_fewer_pass_the_gate_than_the_minimum": 1.5407756644818533e-07
+    },
     "layout_se_ns": {
-     "QB20": 1.3258648503118635,
-     "QB26": 1.4437049572417124
+     "QB20": 1.34073629084938,
+     "QB26": 1.464353050834041
     },
     "qubits": 11,
-    "qubits_passing_the_delay_fit_gate": 5,
-    "resolvable_deviation_ns": 2.929757799398506,
-    "resolvable_fraction": 0.06548452947052083,
-    "se_ns": 0.9765859331328353,
+    "resolvable_deviation_ns": 3.0005633775800056,
+    "resolvable_fraction": 0.06706714151171264,
+    "se_ns": 1.0001877925266687,
     "shots": 8000,
     "smallest_cohort_qubits": 7,
-    "smallest_cohort_resolvable_deviation_ns": 4.173158367682812
+    "smallest_cohort_resolvable_deviation_ns": 4.240572387915051
    }
   }
  },
- "schema": "iqm-idle-schedule-third-length-power-v2",
- "statistic": "within-job deviation of the gap at a tested length from the line through the job's gaps at the anchors",
+ "schema": "iqm-idle-schedule-third-length-power-v3",
+ "statistic": "within-job deviation of the gap at a tested length from the line through the job's gaps at the anchors, corrected for the curvature of the delay decay",
  "unidentifiable": {
   "cohort_qubits": 11,
   "delay_fit_pass": {
-   "QB10": 0.999,
-   "QB14": 0.7616,
-   "QB18": 0.8372,
-   "QB20": 0.8663,
+   "QB10": 0.9987,
+   "QB14": 0.9611,
+   "QB18": 0.999,
+   "QB20": 0.891,
    "QB24": 0.999,
-   "QB26": 0.7487,
-   "QB30": 0.9861,
-   "QB34": 0.7155,
+   "QB26": 0.999,
+   "QB30": 0.999,
+   "QB34": 0.999,
    "QB37": 0.999,
    "QB42": 0.999,
-   "QB5": 0.6592
+   "QB5": 0.9759
   },
+  "expected_qubits_passing_the_gate": 10.819717218341362,
   "minimum_qubits": 7,
-  "model": "noncentral chi-square delay-fit gate, normal arm populations, independent qubits and arms",
-  "unidentifiable": 0.0033944747315990775,
-  "unidentifiable_if_every_qubit_were_needed": 0.8084268201244622,
-  "weakest_arm_pass": 1.0
+  "model": "noncentral chi-square quadratic delay-fit gate, normal arm populations",
+  "probability_fewer_pass_the_gate_than_the_minimum": 3.51575354179194e-09,
+  "shots_factor": 1,
+  "unidentifiable_comonotone": 0.0010000000000000009,
+  "unidentifiable_independent": 3.51575354179194e-09,
+  "unidentifiable_markov_bound": 0.03605655633172766
  }
 }

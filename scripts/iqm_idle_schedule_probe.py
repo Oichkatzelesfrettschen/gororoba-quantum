@@ -63,6 +63,7 @@ import json
 import math
 import shutil
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -117,13 +118,17 @@ T1_FIT_P_MIN = 0.001
 # arm enters only when its population lies this many standard errors above zero.
 LINE_MIN_COHORT = 7
 LINE_ARM_SE = T1_POINT_SE
-# Gauss-Legendre nodes per dimension of the case-level false-alarm integral (family_false_alarm).
-FAMILY_NODES = 128
+# A qubit's readout contrast s - r must reach this and ten of its own standard errors.
+READOUT_CONTRAST_MIN = 0.5
+# Unscrambled Sobol points (2^m, deterministic, no seed) of the case-level false-alarm integral (family_false_alarm).
+FAMILY_LOG2_POINTS = 20
 # The delta method holds the delay fit's weights and the pooling weights fixed. Central differences of the production
 # estimators, whose weights follow the data, read the error of a delay-fit rate and of a pooled anchor gap within this
 # fraction of it (decision_self_test measures the model device); the within-job deviation vanishes under the line,
 # where a change of weights moves nothing, and its derivatives match to 1e-3.
 FIXED_WEIGHT_TOLERANCE = 0.10
+# The retained delay curvature moves the uncorrected deviation of the model device by at least this many errors.
+CURVATURE_SPURIOUS_Z_MIN = 1.0
 # The successor's calibration study (study()) draws its binomial replicates from this seed: draw
 # docs/evidence/anu_qrng/draw-2026-11-21T184244Z.json, index 0.
 CALIBRATION_STUDY_SEED = 50182
@@ -146,6 +151,8 @@ class Profile:
     price: dict[str, float]
     isolated: bool
     delays: tuple[float, ...] = ()
+    # Delay circuits read only for the curvature of the delay decay (they stay out of the T1 rate's fit).
+    long_delays: tuple[float, ...] = ()
     # Train lengths of every idle layout; 0 is the baseline each other length is read against.
     pulses: tuple[int, ...] = IDLE_PULSES
     # A retained analysis and its run directory, whose counts fix the line g(N) = a + b / N through the gaps at the
@@ -224,6 +231,7 @@ EMERALD_THIRD = dataclasses.replace(
     ),
     max_credits={"emerald": 9.0, "emerald:mock": 0.0},
     pulses=THIRD_LENGTHS,
+    long_delays=(96e-6,),
     line_source="results/iqm/idle_schedule_t1_emerald_analysis.json",
     line_run="results/iqm/runs/2026-11-21T205643Z-emerald-idle-schedule-t1-emerald-probe",
     line_subjects=(("cohort", (), LINE_MIN_COHORT), ("QB24", ("QB24",), 1)),
@@ -290,7 +298,7 @@ def circuits_of(calibration: iqm_sim.Calibration, profile: Profile = GARNET) -> 
         for k in AMPLIFY_K:
             pulses = [prx(qubit, math.pi / 2) for _ in range(train_pulses(k))]
             circuits.append({"name": f"amp-{qubit}-{k}", "instructions": [*pulses, measure([qubit])]})
-    for seconds in profile.delays:
+    for seconds in (*profile.delays, *profile.long_delays):
         instructions = [*(prx(q, math.pi) for q in every), delay(every, seconds), measure(every)]
         circuits.append({"name": delay_name(seconds), "instructions": instructions})
     return circuits
@@ -403,8 +411,7 @@ def build_from(calibration_dir: Path, profile: Profile = GARNET) -> tuple[dict[s
     shot = len(circuits) * ACTIVE_SHOT_SECONDS + sum(
         n * profile.prx_seconds for _ in profile.train for n in profile.pulses
     )
-    if profile.delays:
-        shot += sum(profile.delays)
+    shot += sum(profile.delays) + sum(profile.long_delays)
     expected = round(shots * shot, 3)
     budget = profile.max_credits[qc] / profile.price[qc]
     if JOB_SECONDS + expected > budget - PLAN_HEADROOM:
@@ -431,6 +438,8 @@ def build_from(calibration_dir: Path, profile: Profile = GARNET) -> tuple[dict[s
     }
     if profile.delays:
         prediction["t1_delays"] = {delay_name(s): s for s in profile.delays}
+    if profile.long_delays:
+        prediction["t1_long"] = {delay_name(s): s for s in profile.long_delays}
     if profile.line_source:
         prediction["line"] = line_of(profile)
     files["prediction.json"] = dump(prediction)
@@ -846,6 +855,10 @@ class Prep:
     usable: bool
     cells: dict[str, dict[int, Dual | None]]
     asap: dict[str, dict[int, bool]]
+    # c2 of ln(p - r) = c0 + c1 t + c2 t^2 over the delay circuits (per second squared), None without a long delay.
+    curvature: Dual | None = None
+    # Per layout: the population falls from the shortest to the longest tested length by LINE_ARM_SE of its errors.
+    decay: dict[str, bool] = dataclasses.field(default_factory=dict)
 
 
 def rate_dual(counts: Counts, qubit: str, delays: dict[str, float]) -> Dual | None:
@@ -874,21 +887,72 @@ def rate_dual(counts: Counts, qubit: str, delays: dict[str, float]) -> Dual | No
     return rate if rate.value > 0 else None
 
 
+def delay_fit(counts: Counts, qubit: str, delays: dict[str, float], degree: int) -> dict[str, Any] | None:
+    """The weighted least-squares polynomial of ln((p_j - r) / (s - r)) in the delay (microseconds) over the points
+    t1_fit keeps, with the fit's weights held: its coefficients as Duals (per second to the power k after scaling), the
+    chi-square of the residuals and its degrees of freedom. None without degree + 2 points or without a positive readout
+    contrast s - r (at least READOUT_CONTRAST_MIN and ten of its standard errors)."""
+    r, s = proportion(counts, f"par-ro0@{qubit}"), proportion(counts, f"par-ro1@{qubit}")
+    scale = s - r
+    if scale.value < READOUT_CONTRAST_MIN or scale.value <= 10 * math.sqrt(variance(scale, counts)):
+        return None
+    times, logs, weights = [], [], []
+    for name, delay_seconds in delays.items():
+        key = f"{name}@{qubit}"
+        if key not in counts:
+            continue
+        population = (proportion(counts, key) - r) / scale
+        se = math.sqrt(shot_variance(counts, key)) / scale.value
+        if population.value > T1_POINT_SE * se:
+            times.append(delay_seconds * 1e6)
+            logs.append(dlog(population))
+            weights.append((population.value / se) ** 2)
+    if len(logs) < degree + 2:
+        return None
+    t, w = np.array(times), np.array(weights)
+    design = np.stack([t**k for k in range(degree + 1)], axis=1)
+    rows = np.linalg.inv(design.T @ (design * w[:, None])) @ design.T * w
+    coefficients = [
+        combo([(float(c) * 1e6**k, y) for c, y in zip(rows[k], logs, strict=True)]) for k in range(degree + 1)
+    ]
+    fitted = design @ (rows @ np.array([y.value for y in logs]))
+    chi2 = float(np.sum(w * (np.array([y.value for y in logs]) - fitted) ** 2))
+    return {"coefficients": coefficients, "chi2": chi2, "dof": len(logs) - degree - 1, "points": len(logs)}
+
+
 def prepare_all(
     counts: Counts,
     prediction: dict[str, Any],
     arms: dict[str, dict[str, list[dict[str, Any]]]] | None,
     t1: dict[str, dict[str, Any]] | None,
 ) -> dict[str, Prep]:
-    """Every pulsed qubit's Prep. A qubit is usable when its delay fit passes usable_t1 (when t1 is given) and gives a
-    rate; an arm is gated out unless its population exceeds LINE_ARM_SE standard errors of itself and r (the logarithm
-    has no first-order error otherwise) and, when arms are given, its own schedule verdict is asap."""
+    """Every pulsed qubit's Prep. A qubit is usable when its delay fit gives a rate and its readout contrast s - r
+    is at least READOUT_CONTRAST_MIN and ten standard errors. Where the case carries a long delay circuit the delay
+    decay is also fitted with a quadratic (curvature) and the qubit needs that fit's chi-square survival of at least
+    T1_FIT_P_MIN; otherwise it needs t1's fit to pass usable_t1. An arm is gated out unless its population exceeds
+    LINE_ARM_SE standard errors of itself and r (the logarithm has no first-order error otherwise) and, when arms are
+    given, its own schedule verdict is asap; a layout needs the population to fall from the shortest to the longest
+    length by LINE_ARM_SE of its errors."""
+    from scipy.stats import chi2 as chi2_law
+
     out: dict[str, Prep] = {}
     for qubit in ordered({q for rows in prediction["idle"].values() for q in rows}):
         k1 = rate_dual(counts, qubit, prediction["t1_delays"])
-        usable = k1 is not None and (t1 is None or usable_t1(t1[qubit]))
+        contrast = proportion(counts, f"par-ro1@{qubit}") - proportion(counts, f"par-ro0@{qubit}")
+        usable = k1 is not None and contrast.value >= READOUT_CONTRAST_MIN
+        usable = usable and contrast.value > 10 * math.sqrt(variance(contrast, counts))
+        curvature = None
+        if "t1_long" in prediction:
+            quadratic = delay_fit(counts, qubit, {**prediction["t1_delays"], **prediction["t1_long"]}, 2)
+            usable = usable and quadratic is not None
+            if quadratic is not None:
+                curvature = quadratic["coefficients"][2]
+                usable = usable and float(chi2_law.sf(quadratic["chi2"], quadratic["dof"])) >= T1_FIT_P_MIN
+        else:
+            usable = usable and (t1 is None or usable_t1(t1[qubit]))
         cells: dict[str, dict[int, Dual | None]] = {}
         asap: dict[str, dict[int, bool]] = {}
+        decay: dict[str, bool] = {}
         r = proportion(counts, f"par-ro0@{qubit}")
         for b, rows in prediction["idle"].items():
             if qubit not in rows:
@@ -906,7 +970,10 @@ def prepare_all(
                 cells[b][n] = None if gated or population is None else dlog(population)
                 verdicts = {a["pulses"]: a["verdict"] for a in (arms or {}).get(b, {}).get(qubit, [])}
                 asap[b][n] = arms is None or n == 0 or verdicts.get(n) == "asap"
-        out[qubit] = Prep(k1, usable, cells, asap)
+            short, long_ = cells[b].get(min(lengths[1:])), cells[b].get(max(lengths[1:]))
+            fall = short - long_ if short is not None and long_ is not None else None
+            decay[b] = fall is not None and fall.value > LINE_ARM_SE * math.sqrt(variance(fall, counts))
+        out[qubit] = Prep(k1, usable, cells, asap, curvature, decay)
     return out
 
 
@@ -977,6 +1044,7 @@ def contrast_reading(
     qubits: list[str],
     coefficients: dict[int, float],
     layouts: tuple[str, ...] | None = None,
+    tau: float | None = None,
 ) -> dict[str, Any] | None:
     """The contrast of coefficients c over the qubits' layouts: L = sum c_i g(N_i) = -(1 / k1) sum c_i ln(p_i - r) / N_i
     per (qubit, layout) cell, where the baseline arm and the readout contrast s - r cancel because sum c_i / N_i = 0
@@ -989,7 +1057,13 @@ def contrast_reading(
     and dk1/dp_j, dk1/dr, dk1/ds from the weighted least-squares slope of ln((p_j - r) / (s - r)) against minus the
     delay (rate_dual); Var(L) = sum_k (dL/dk)^2 Var(k), and Cov(L, L') sums the products over the counts two contrasts
     share (the arms at 500 and 1000 pulses, r, k1). Cells pool by inverse variance within a qubit and qubits by inverse
-    variance of the qubit's value, with the weights held fixed; the Duals carry these sums. None without a cell."""
+    variance of the qubit's value, with the weights held fixed; the Duals carry these sums. None without a cell.
+
+    Curvature. When the delay decay is curved, ln(p - r) = c0 - k1 T + c2 T^2 at the train time T = tau N + b, the
+    measured gap is g_true - c2 T^2 / (k1 N), and a contrast reads L_true - (c2 / k1) tau^2 sum c_i N_i (the terms in b
+    and in sum c_i cancel). With tau (the pulse length plus the line's gap) given, the cell carries the correction
+    +(c2 / k1) tau^2 sum c_i N_i, with c2 from the quadratic fit of the delay circuits (delay_fit) and its covariance
+    through the delay counts, r and s; a qubit without that fit then leaves the reading."""
     members, values = [], []
     for q in qubits:
         prep = preps.get(q)
@@ -1002,7 +1076,12 @@ def contrast_reading(
             terms = [(c / n, cell.get(n)) for n, c in coefficients.items()]
             if any(log is None for _, log in terms) or not all(prep.asap[b].get(n, True) for n in coefficients):
                 continue
-            cells.append(-combo([(w, log) for w, log in terms if log is not None]) / prep.k1)
+            if not prep.decay.get(b, True) or (tau is not None and prep.curvature is None):
+                continue
+            value = -combo([(w, log) for w, log in terms if log is not None]) / prep.k1
+            if tau is not None and prep.curvature is not None:
+                value = value + prep.curvature * (tau * tau * sum(c * n for n, c in coefficients.items())) / prep.k1
+            cells.append(value)
         if cells:
             weights = [1 / variance(c, counts) for c in cells]
             values.append(combo([(w / sum(weights), c) for w, c in zip(weights, cells, strict=True)]))
@@ -1116,6 +1195,11 @@ def compare(mine: Dual, counts: Counts, theirs: Dual, other: Counts, z_reject: f
     }
 
 
+def subject_tau(prediction: dict[str, Any], name: str) -> float:
+    """The train time per pulse of the curvature correction: the pulse length plus the subject's retained gap offset."""
+    return float(prediction["prx_seconds"] + prediction["line"]["subjects"][name]["offset_seconds"])
+
+
 def line_decision(
     counts: Counts,
     prediction: dict[str, Any],
@@ -1135,9 +1219,11 @@ def line_decision(
     run's (anchors), at the tested lengths against the retained line (retained_line), and the per-pulse gap between the
     first and last tested lengths against the retained run's between its anchors (nonzero_gap).
 
-    Subject verdict: unidentifiable when a tested length has fewer than the subject's min_qubits qubits (a qubit
-    drops out on its own delay fit, readout pair, arm population or arm schedule verdict, and no other qubit's reading
-    enters); off-line when a contrast lies more than z_reject standard errors from zero; anchors-moved when an anchor
+    Subject verdict: unidentifiable when fewer than the subject's min_qubits qubits pass at every tested length (a
+    qubit drops out on its own delay fits, readout contrast, arm populations, fall of the population from the shortest
+    to the longest length or arm schedule verdict, and no other qubit's reading enters; the cohort is the qubits that
+    pass at all tested lengths); off-line when a contrast lies more than z_reject standard errors from zero;
+    anchors-moved when an anchor
     gap lies more than z_reject combined standard errors from the retained value; on-line otherwise. The case verdict
     is off-line when any subject is off-line, otherwise the cohort's."""
     line = prediction["line"]
@@ -1149,18 +1235,27 @@ def line_decision(
     subjects: dict[str, Any] = {}
     for name, spec in line["subjects"].items():
         rows: dict[str, Any] = {}
+        tau = subject_tau(prediction, name) if "t1_long" in prediction else None
+        # Every tested length reads the qubits that pass at all of them, so the cohort is one set.
+        shared = set(spec["qubits"])
+        for n in line["tested"]:
+            first_pass = contrast_reading(counts, preps, spec["qubits"], contrast_of(n, anchors), tau=tau)
+            shared &= set(first_pass["qubits"]) if first_pass is not None else set()
+        members = [q for q in spec["qubits"] if q in shared]
         for n in line["tested"]:
             coefficients = contrast_of(n, anchors)
-            reading = contrast_reading(counts, preps, spec["qubits"], coefficients)
+            reading = contrast_reading(counts, preps, members, coefficients, tau=tau) if members else None
             row: dict[str, Any] = {"qubits": [], "enough": False}
             if reading is not None:
                 reading.pop("_dual")
                 row = {**reading, "enough": len(reading["qubits"]) >= spec["min_qubits"]}
                 row["outside"] = abs(reading["z"]) > z_reject
+                plain = contrast_reading(counts, preps, members, coefficients)
+                row["z_without_curvature"] = plain["z"] if plain is not None else None
                 row["by_layout"] = {
                     b: {k: v for k, v in alt.items() if k != "_dual"}
                     for b in prediction["idle"]
-                    if (alt := contrast_reading(counts, preps, spec["qubits"], coefficients, (b,))) is not None
+                    if (alt := contrast_reading(counts, preps, members, coefficients, (b,), tau)) is not None
                 }
             rows[str(n)] = row
         secondary: dict[str, Any] = {}
@@ -1366,33 +1461,51 @@ def planted_counts(
     shift: dict[int, float] | None = None,
     only: set[str] | None = None,
     drop: float = 1.0,
+    curved: bool = True,
 ) -> Counts:
-    """Expected counts of a model device that is the retained run at every circuit but the idle trains of the tested
-    lengths, and on which each qubit's trains lie on that qubit's own line: ln(p - r) linear in N through its two anchor
-    arms in each layout, so every contrast is zero, with the gap of length n raised by shift[n] seconds (the population
+    """Expected counts of a model device built from the retained run, with no random draw and no pulse-length
+    rounding (the counts are fractional; shots are the retained run's times factor).
+
+    Each qubit's delay circuits, the case's four and its long one, read the polynomial that the retained delay arms fit
+    (quadratic with curved, whose curvature c2 the retained run measured, or the exponential of their linear fit
+    otherwise) with the retained readout pair. Its idle trains of every tested length lie on that qubit's own line
+    through the retained anchor arms with the curvature the delay decay implies, ln(p - r) = c0 - k1 T + c2 T^2 at
+    T = tau N + b, so every corrected contrast is zero. The gap of length n is raised by shift[n] seconds (the
+    population
     after n pulses falls by exp(-k1 n shift[n])) for the qubits in only (every qubit by default), and the population of
-    every nonzero length multiplied by drop, a fixed loss between N = 0 and N > 0. Shots are the retained run's times
-    factor, and the counts are fractional, so no random draw and no pulse-length rounding enters."""
+    every nonzero length is multiplied by drop, a fixed loss between N = 0 and N > 0."""
     line = prediction["line"]
     ref_counts, ref_preps, _ = reference_of(line["run"])
+    ref_prediction = reference_report(line["run"])[1]
     a, b = line["anchors"]
+    tau = prediction["prx_seconds"] + line["subjects"]["cohort"]["offset_seconds"]
     out = {name: (ones * factor, shots * factor) for name, (ones, shots) in ref_counts.items()}
-    for layout, rows in prediction["idle"].items():
-        for qubit in rows:
-            prep = ref_preps.get(qubit)
-            if prep is None or prep.k1 is None or layout not in prep.cells:
+    delays = {**prediction["t1_delays"], **prediction.get("t1_long", {})}
+    for qubit in ordered({q for rows in prediction["idle"].values() for q in rows}):
+        fit = delay_fit(ref_counts, qubit, ref_prediction["t1_delays"], 2 if curved else 1)
+        prep = ref_preps.get(qubit)
+        if fit is None or prep is None or prep.k1 is None:
+            continue
+        coefficients = [c.value / 1e6**k for k, c in enumerate(fit["coefficients"])]
+        curvature = fit["coefficients"][2].value if curved else 0.0
+        r = ref_counts[f"par-ro0@{qubit}"][0] / ref_counts[f"par-ro0@{qubit}"][1]
+        s = ref_counts[f"par-ro1@{qubit}"][0] / ref_counts[f"par-ro1@{qubit}"][1]
+        shots = ref_counts[f"par-ro0@{qubit}"][1] * factor
+        for name, seconds in delays.items():
+            log_population = sum(c * (seconds * 1e6) ** k for k, c in enumerate(coefficients))
+            out[f"{name}@{qubit}"] = ((r + (s - r) * math.exp(log_population)) * shots, shots)
+        quadratic = curvature * tau * tau
+        for layout, rows in prediction["idle"].items():
+            cell = prep.cells.get(layout) if qubit in rows else None
+            if cell is None or cell[a] is None or cell[b] is None:
                 continue
-            cell = prep.cells[layout]
-            r = ref_counts[f"par-ro0@{qubit}"][0] / ref_counts[f"par-ro0@{qubit}"][1]
+            la, lb = cell[a].value, cell[b].value  # type: ignore[union-attr]
+            slope = (lb - la - quadratic * (b * b - a * a)) / (b - a)
             for n in (*line["tested"], a, b):
-                la, lb = cell[a], cell[b]
-                if la is None or lb is None:
-                    continue
-                log_population = la.value + (lb.value - la.value) * (n - a) / (b - a)
+                log_population = la + slope * (n - a) + quadratic * (n * n - a * a)
                 if only is None or qubit in only:
                     log_population -= prep.k1.value * n * (shift or {}).get(n, 0.0)
                 log_population += math.log(drop)
-                shots = ref_counts[f"idle-{layout}-{a}@{qubit}"][1] * factor
                 out[f"idle-{layout}-{n}@{qubit}"] = ((r + math.exp(log_population)) * shots, shots)
     return out
 
@@ -1407,30 +1520,44 @@ def arm_pass_probability(counts: Counts, prep_name: str, r_name: str) -> float:
     return float(norm.cdf((p - r) / se - LINE_ARM_SE))
 
 
-def unidentifiable_probability(prediction: dict[str, Any], counts: Counts) -> dict[str, Any]:
-    """The probability that a repeat of the retained run leaves the cohort below its minimum, and under the
-    retained run's rule (every cohort qubit needed) for comparison.
+def poisson_binomial(probabilities: list[float]) -> np.ndarray:
+    """The distribution of the number of successes among independent events of the given probabilities."""
+    table = np.zeros(len(probabilities) + 1)
+    table[0] = 1.0
+    for p in probabilities:
+        grown = table * (1 - p)
+        grown[1:] += table[:-1] * p
+        table = grown
+    return table
 
-    Model. A cohort qubit passes the delay-fit gate (usable_t1) with the probability that a noncentral chi-square
-    law (dof of its fit, noncentrality max(chi2 - dof, 0) of the retained fit) stays below the gate's critical value; a
-    cell passes an arm with arm_pass_probability at the planted expected counts; qubits and arms are independent. The
-    minimum is read per tested length, and the two lengths share the qubit's delay fit and its 500 and 1000 pulse arms.
-    The retained fits' excess chi-square is the model's one input, taken from a single run."""
+
+def unidentifiable_probability(prediction: dict[str, Any], counts: Counts, factor: int = 1) -> dict[str, Any]:
+    """The probability that a repeat of the retained run leaves the cohort below its minimum.
+
+    A cohort qubit counts when it passes the quadratic delay fit's gate (chi-square survival at least T1_FIT_P_MIN, two
+    degrees of freedom with five delay points) and the arms of at least one layout pass arm_pass_probability at both
+    tested lengths. The gate passes with the probability that a noncentral chi-square variable (two degrees of
+    freedom, noncentrality factor times the retained four-point quadratic fit's chi-square less its one degree of
+    freedom) stays below the critical value. Independent qubits give the exact distribution of the number that count.
+    The retained residuals share one chip-wide sign pattern, so independence is not assumed to hold: the comonotone
+    case (the qubits fail in order of their failure probabilities, so the cohort falls short with the probability of
+    the weakest qubit that makes the difference) and Markov's bound (the sum of the failure probabilities over the
+    failures that suffice) bracket every dependence. Per-arm schedule verdicts and the fall of the population are taken
+    as certain at the model device's size."""
     from scipy.stats import chi2 as chi2_law
 
     line = prediction["line"]
     cohort = line["subjects"]["cohort"]
     minimum = cohort["min_qubits"]
-    _, _, report = reference_report(line["run"])
+    ref_counts, ref_prediction, _ = reference_report(line["run"])
     a, b = line["anchors"]
     first, last = min(line["tested"]), max(line["tested"])
-    states: dict[str, dict[tuple[bool, bool], float]] = {}
+    fail: dict[str, float] = {}
     gate: dict[str, float] = {}
     for qubit in cohort["qubits"]:
-        fit_row = report["t1_delay"][qubit]
-        dof = fit_row["dof"]
-        critical = float(chi2_law.isf(T1_FIT_P_MIN, dof))
-        gate[qubit] = float(ncx2.cdf(critical, dof, max(fit_row["chi2"] - dof, 0.0)))
+        fit_row = required(delay_fit(ref_counts, qubit, ref_prediction["t1_delays"], 2), qubit)
+        critical = float(chi2_law.isf(T1_FIT_P_MIN, 2))
+        gate[qubit] = float(ncx2.cdf(critical, 2, factor * max(fit_row["chi2"] - fit_row["dof"], 0.0)))
         layouts = [layout for layout, rows in prediction["idle"].items() if qubit in rows]
         cells = [
             {
@@ -1439,7 +1566,7 @@ def unidentifiable_probability(prediction: dict[str, Any], counts: Counts) -> di
             }
             for layout in layouts
         ]
-        joint = {(False, False): 0.0, (True, False): 0.0, (False, True): 0.0, (True, True): 0.0}
+        both = 0.0
         for outcome in itertools.product((False, True), repeat=4 * len(cells)):
             weight, ok_first, ok_last = 1.0, False, False
             for k, cell in enumerate(cells):
@@ -1448,156 +1575,215 @@ def unidentifiable_probability(prediction: dict[str, Any], counts: Counts) -> di
                     weight *= cell[n] if ok else 1 - cell[n]
                 ok_first |= arms_ok[first] and arms_ok[a] and arms_ok[b]
                 ok_last |= arms_ok[last] and arms_ok[a] and arms_ok[b]
-            joint[(ok_first, ok_last)] += weight
-        states[qubit] = joint
-    # Distribution of the number of qubits that pass at each tested length, by dynamic programming over qubits.
-    table: dict[tuple[int, int], float] = {(0, 0): 1.0}
-    for qubit in cohort["qubits"]:
-        grown: dict[tuple[int, int], float] = {}
-        outcomes = {(False, False): 1 - gate[qubit]}
-        for (ok_first, ok_last), p in states[qubit].items():
-            outcomes[(ok_first, ok_last)] = outcomes.get((ok_first, ok_last), 0.0) + gate[qubit] * p
-        for (n_first, n_last), weight in table.items():
-            for (ok_first, ok_last), p in outcomes.items():
-                key = (n_first + ok_first, n_last + ok_last)
-                grown[key] = grown.get(key, 0.0) + weight * p
-        table = grown
-    short = sum(w for (n_first, n_last), w in table.items() if n_first < minimum or n_last < minimum)
-    every = float(np.prod([gate[q] for q in cohort["qubits"]]))
+            both += weight if ok_first and ok_last else 0.0
+        fail[qubit] = 1 - gate[qubit] * both
+    short = float(poisson_binomial([1 - p for p in fail.values()])[:minimum].sum())
+    failures_needed = len(fail) - minimum + 1
+    ranked = sorted(fail.values(), reverse=True)
     return {
-        "model": "noncentral chi-square delay-fit gate, normal arm populations, independent qubits and arms",
-        "cohort_qubits": len(cohort["qubits"]),
+        "model": "noncentral chi-square quadratic delay-fit gate, normal arm populations",
+        "shots_factor": factor,
+        "cohort_qubits": len(fail),
         "minimum_qubits": minimum,
         "delay_fit_pass": {q: round(gate[q], 4) for q in cohort["qubits"]},
-        "weakest_arm_pass": round(
-            min(
-                arm_pass_probability(counts, f"idle-{layout}-{n}@{q}", f"par-ro0@{q}")
-                for q in cohort["qubits"]
-                for layout, rows in prediction["idle"].items()
-                if q in rows
-                for n in (first, a, b, last)
-            ),
-            6,
+        "expected_qubits_passing_the_gate": float(sum(gate.values())),
+        "probability_fewer_pass_the_gate_than_the_minimum": float(
+            poisson_binomial(list(gate.values()))[:minimum].sum()
         ),
-        "unidentifiable": short,
-        "unidentifiable_if_every_qubit_were_needed": 1 - every,
+        "unidentifiable_independent": short,
+        "unidentifiable_comonotone": ranked[failures_needed - 1],
+        "unidentifiable_markov_bound": min(1.0, sum(fail.values()) / failures_needed),
     }
 
 
-def family_false_alarm(correlation: np.ndarray, z_reject: float) -> float:
-    """P(any |Z_i| > z_reject) for standard normals of the given correlation matrix: one minus the box probability,
-    by Genz's transformation of the box integral to the unit cube and a Gauss-Legendre product rule over its first
-    k - 1 variables (the last integrates in closed form), so the value is deterministic."""
+def calibration_arm_snr(prediction: dict[str, Any], case_dir: Path) -> dict[str, Any]:
+    """The population of each cohort arm that the case's calibration set predicts (its T1 and readout errors with the
+    train time n (d + a) + b of the retained line), in standard errors at the case's shots, and the arms below
+    LINE_ARM_SE."""
+    calibration = iqm_sim.Calibration.from_directory(case_dir / "calibration")
+    line = prediction["line"]
+    cohort = line["subjects"]["cohort"]
+    shots = EMERALD_THIRD.shots
+    arms = {}
+    for qubit in line["subjects"]["cohort"]["qubits"]:
+        e01, e10 = calibration.readout(qubit)
+        t1_seconds = calibration.values[f"characterization.model.{qubit}.t1_time"]
+        for n in (*line["tested"], *line["anchors"]):
+            # The train lasts n (d + g(n)) = n d + n a + b for the line g(n) = a + b / n.
+            train = n * (prediction["prx_seconds"] + cohort["offset_seconds"]) + cohort["per_train_seconds"]
+            p = e01 + (1 - e01 - e10) * math.exp(-train / t1_seconds)
+            se = math.sqrt(p * (1 - p) / shots + e01 * (1 - e01) / shots)
+            arms[f"{qubit}-{n}"] = (p - e01) / se
+    weakest = min(arms, key=lambda k: arms[k])
+    return {
+        "weakest_arm": weakest,
+        "weakest_arm_se": arms[weakest],
+        "arms_below_the_gate": sorted(k for k, v in arms.items() if v < LINE_ARM_SE),
+    }
+
+
+def family_false_alarm(correlation: np.ndarray, z_reject: float, mean: np.ndarray | None = None) -> float:
+    """P(any |Z_i| > z_reject) for normals of unit variance, the given correlation matrix and mean: one minus the box
+    probability, by Genz's transformation of the box integral to the unit cube and the first 2^FAMILY_LOG2_POINTS
+    points of an unscrambled Sobol sequence over its first k - 1 variables (the last integrates in closed form). The
+    sequence is deterministic, so the value is too."""
+    from scipy.stats import qmc
+
     k = len(correlation)
+    centre = np.zeros(k) if mean is None else np.asarray(mean, dtype=float)
     chol = np.linalg.cholesky(correlation)
-    nodes, weights = np.polynomial.legendre.leggauss(FAMILY_NODES)
-    nodes, weights = (nodes + 1) / 2, weights / 2
-    grid = np.stack(np.meshgrid(*([nodes] * (k - 1)), indexing="ij"), axis=-1).reshape(-1, k - 1)
-    mass = np.prod(np.stack(np.meshgrid(*([weights] * (k - 1)), indexing="ij"), axis=-1).reshape(-1, k - 1), axis=1)
+    grid = qmc.Sobol(d=k - 1, scramble=False).random_base2(FAMILY_LOG2_POINTS)
     y = np.zeros((len(grid), k))
     total = np.ones(len(grid))
     for i in range(k):
         shift = y[:, :i] @ chol[i, :i]
-        low = norm.cdf((-z_reject - shift) / chol[i, i])
-        high = norm.cdf((z_reject - shift) / chol[i, i])
+        low = norm.cdf((-z_reject - centre[i] - shift) / chol[i, i])
+        high = norm.cdf((z_reject - centre[i] - shift) / chol[i, i])
         total *= high - low
         if i < k - 1:
             y[:, i] = norm.ppf(low + grid[:, i] * (high - low))
-    return 1 - float(np.sum(mass * total))
+    return 1 - float(np.mean(total))
 
 
 def decision_correlation(
-    counts: Counts, preps: dict[str, Prep], prediction: dict[str, Any]
-) -> tuple[list[str], np.ndarray]:
-    """The labels and correlation matrix of every deviation L that can make the case off-line: each subject at each
-    tested length. Two deviations covary through the counts they share (the anchor arms, the subjects' common qubits,
-    the readout pair and the delay fit), summed over the Duals."""
+    counts: Counts, preps: dict[str, Prep], prediction: dict[str, Any], corrected: bool = True
+) -> tuple[list[str], np.ndarray, np.ndarray]:
+    """The labels, correlation matrix and z values of every statistic that can stop the case from reading on-line: the
+    deviation L of each subject at each tested length (off-line), then the cohort's gap at each anchor against the
+    retained run's (anchors-moved). A statistic is (new - reference) / scale with independent runs, so two statistics
+    covary through the new run's shared counts and the retained run's, summed over the Duals; the deviations carry no
+    reference. corrected = False reads the deviations without the curvature correction."""
     line = prediction["line"]
-    labels, duals, errors = [], [], []
+    ref_counts, ref_preps, ref_d = reference_of(line["run"])
+    d = prediction["prx_seconds"]
+    labels: list[str] = []
+    new: list[Dual] = []
+    ref: list[Dual | None] = []
+    scales: list[float] = []
+    values: list[float] = []
+    members: list[str] = []
     for name, subject in line["subjects"].items():
+        tau = subject_tau(prediction, name) if corrected and "t1_long" in prediction else None
         for n in line["tested"]:
             reading = required(
-                contrast_reading(counts, preps, subject["qubits"], contrast_of(n, line["anchors"])), f"{name}-{n}"
+                contrast_reading(counts, preps, subject["qubits"], contrast_of(n, line["anchors"]), tau=tau),
+                f"{name}-{n}",
             )
             labels.append(f"{name}-{n}")
-            duals.append(reading["_dual"])
-            errors.append(reading["se_seconds"])
-    matrix = np.array(
-        [
-            [covariance(a, b, counts) / (ea * eb) for b, eb in zip(duals, errors, strict=True)]
-            for a, ea in zip(duals, errors, strict=True)
-        ]
-    )
-    return labels, matrix
+            new.append(reading["_dual"])
+            ref.append(None)
+            scales.append(reading["se_seconds"])
+            values.append(reading["value_seconds"])
+            if name == "cohort":
+                members = reading["qubits"] if not members else [q for q in members if q in reading["qubits"]]
+    for n in line["anchors"]:
+        mine = required(cohort_gap(counts, preps, members, 0, n, d)[0], f"cohort at {n}")
+        theirs = required(cohort_gap(ref_counts, ref_preps, members, 0, n, ref_d)[0], f"retained cohort at {n}")
+        labels.append(f"cohort-anchor-{n}")
+        new.append(mine)
+        ref.append(theirs)
+        scales.append(math.sqrt(variance(mine, counts) + variance(theirs, ref_counts)))
+        values.append(mine.value - theirs.value)
+    size = len(labels)
+    matrix = np.eye(size)
+    for i in range(size):
+        for j in range(i + 1, size):
+            shared = covariance(new[i], new[j], counts)
+            left, right = ref[i], ref[j]
+            if left is not None and right is not None:
+                shared += covariance(left, right, ref_counts)
+            matrix[i, j] = matrix[j, i] = shared / (scales[i] * scales[j])
+    return labels, matrix, np.array(values) / np.array(scales)
 
 
 def power(case_dir: Path) -> dict[str, Any]:
     """What the case resolves, at expected counts and no random draw: the model device of planted_counts (the retained
-    run's readout, delay and anchor arms, every qubit's tested lengths on its own line) at the case's shots and at
-    twice them. For each subject and tested length it records the error of the within-job deviation L and the deviation
-    that sits z_reject errors out, for every qubit of the subject and for the smallest cohort the decision accepts (the
-    qubits of least weight), plus the probability of an unidentifiable verdict and the false-alarm rate of every
-    deviation that can reject the case (each subject at each tested length) taken together, from their full
-    covariance (decision_correlation)."""
+    run's readout and delay curvature and anchor arms, every qubit's tested lengths on its own line) at the case's shots
+    and at twice them. For each subject and tested length it records the error of the curvature-corrected within-job
+    deviation L and the deviation that sits z_reject errors out, for every qubit of the subject and for the smallest
+    cohort the decision accepts (the qubits of least weight); the case-level false-alarm rates (off-line over the four
+    deviations, not-on-line over those and the two cohort anchors, from their full covariance); the false alarm of the
+    uncorrected and corrected deviations on the retained curvature; the probability of an unidentifiable verdict; and
+    the arms the case's calibration set predicts below the population gate."""
     profile = EMERALD_THIRD
     prediction = json.loads((case_dir / "prediction.json").read_text(encoding="utf-8"))
     line = prediction["line"]
+    z = line["z_reject"]
     rows: dict[str, Any] = {}
-    family: float | None = None
     usable_at_case_shots: set[str] = set()
+    report_extra: dict[str, Any] = {}
     for factor in (1, 2):
         counts = planted_counts(prediction, factor)
         report = evaluate(counts, prediction)
         preps = prepare_all(counts, prediction, report["h1_schedule"]["arms"], report["t1_delay"])
-        passing = {q for q, prep in preps.items() if prep.usable}
         if factor == 1:
-            usable_at_case_shots = passing
+            usable_at_case_shots = {q for q, prep in preps.items() if prep.usable}
         for q, prep in preps.items():
-            # The doubled shots keep the case's cohort so the two errors compare the same qubits; the delay-fit gate
-            # failures that the doubled counts add (the fit's excess chi-square grows with the shots) are recorded.
+            # The doubled shots keep the case's cohort so the two errors compare the same qubits; the gate failures
+            # that the doubled counts add are the probability model's (unidentifiable_probability).
             prep.usable = q in usable_at_case_shots
+        gate = unidentifiable_probability(prediction, counts, factor)
         for name, subject in line["subjects"].items():
+            tau = subject_tau(prediction, name)
             for n in line["tested"]:
                 coefficients = contrast_of(n, line["anchors"])
-                full = contrast_reading(counts, preps, subject["qubits"], coefficients)
-                if full is None:
-                    raise ValueError(f"{name}-{n}: the model device has no reading")
+                full = required(
+                    contrast_reading(counts, preps, subject["qubits"], coefficients, tau=tau), f"{name}-{n}"
+                )
                 keep = sorted(full["weights"], key=lambda q: full["weights"][q])[: subject["min_qubits"]]
-                smallest = contrast_reading(counts, preps, keep, coefficients)
+                smallest = contrast_reading(counts, preps, keep, coefficients, tau=tau)
                 predicted = subject["predicted"][str(n)]["gap_seconds"]
                 held = rows.setdefault(f"{name}-{n}", {"predicted_ns": predicted * 1e9})
                 held[f"x{factor}"] = {
                     "shots": profile.shots * factor,
                     "qubits": len(full["qubits"]),
-                    "qubits_passing_the_delay_fit_gate": len(passing & set(subject["qubits"])),
                     "se_ns": full["se_seconds"] * 1e9,
-                    "resolvable_deviation_ns": line["z_reject"] * full["se_seconds"] * 1e9,
-                    "resolvable_fraction": line["z_reject"] * full["se_seconds"] / predicted,
+                    "resolvable_deviation_ns": z * full["se_seconds"] * 1e9,
+                    "resolvable_fraction": z * full["se_seconds"] / predicted,
                     "smallest_cohort_qubits": len(smallest["qubits"]) if smallest else 0,
-                    "smallest_cohort_resolvable_deviation_ns": (
-                        line["z_reject"] * smallest["se_seconds"] * 1e9 if smallest else None
-                    ),
+                    "smallest_cohort_resolvable_deviation_ns": z * smallest["se_seconds"] * 1e9 if smallest else None,
                     "layout_se_ns": {
                         b: alt["se_seconds"] * 1e9
                         for b in prediction["idle"]
-                        if (alt := contrast_reading(counts, preps, subject["qubits"], coefficients, (b,))) is not None
+                        if (alt := contrast_reading(counts, preps, subject["qubits"], coefficients, (b,), tau))
+                        is not None
                     },
                 }
+        held_gate = {
+            "expected_qubits_passing_the_gate": gate["expected_qubits_passing_the_gate"],
+            "probability_fewer_pass_the_gate_than_the_minimum": gate[
+                "probability_fewer_pass_the_gate_than_the_minimum"
+            ],
+        }
+        for name in line["subjects"]:
+            for n in line["tested"]:
+                rows[f"{name}-{n}"][f"x{factor}"]["cohort_gate"] = held_gate if name == "cohort" else None
         if factor == 1:
-            labels, correlation = decision_correlation(counts, preps, prediction)
-            family = family_false_alarm(correlation, line["z_reject"])
-            probability = unidentifiable_probability(prediction, counts)
+            labels, matrix, zs = decision_correlation(counts, preps, prediction)
+            off = len(line["subjects"]) * len(line["tested"])
+            report_extra["decision_statistics"] = labels
+            report_extra["correlation_of_the_decision_statistics"] = matrix.tolist()
+            report_extra["false_alarm_off_line"] = family_false_alarm(matrix[:off, :off], z)
+            report_extra["false_alarm_not_on_line"] = family_false_alarm(matrix, z)
+            report_extra["unidentifiable"] = gate
+            plain_labels, plain_matrix, plain_zs = decision_correlation(counts, preps, prediction, corrected=False)
+            report_extra["retained_curvature"] = {
+                "statistics": labels[:off],
+                "z_with_curvature_correction": dict(zip(labels[:off], zs[:off].tolist(), strict=True)),
+                "z_without_curvature_correction": dict(zip(plain_labels[:off], plain_zs[:off].tolist(), strict=True)),
+                "p_off_line_with_correction": family_false_alarm(matrix[:off, :off], z, zs[:off]),
+                "p_off_line_without_correction": family_false_alarm(plain_matrix[:off, :off], z, plain_zs[:off]),
+            }
+    report_extra["calibration_arms"] = calibration_arm_snr(prediction, case_dir)
     return {
-        "schema": "iqm-idle-schedule-third-length-power-v2",
+        "schema": "iqm-idle-schedule-third-length-power-v3",
         "case": profile.case,
         "statistic": (
-            "within-job deviation of the gap at a tested length from the line through the job's gaps at the anchors"
+            "within-job deviation of the gap at a tested length from the line through the job's gaps at the anchors, "
+            "corrected for the curvature of the delay decay"
         ),
         "rows": rows,
-        "decision_deviations": labels,
-        "correlation_of_the_decision_deviations": correlation.tolist(),
-        "false_alarm_of_the_decision_deviations_together": family,
-        "unidentifiable": probability,
+        **report_extra,
     }
 
 
@@ -1639,23 +1825,38 @@ def decision_self_test(prediction: dict[str, Any]) -> None:
     )
     if abs(family_false_alarm(np.array([[1.0, rho], [rho, 1.0]]), z) - exact) > 1e-6:
         raise RuntimeError("the false alarm of two correlated deviations differs from quadrature")
+    from scipy.stats import multivariate_normal
+
     base = planted_counts(prediction)
     base_report = evaluate(base, prediction)
-    labels, matrix = decision_correlation(
+    labels, matrix, _ = decision_correlation(
         base, prepare_all(base, prediction, base_report["h1_schedule"]["arms"], base_report["t1_delay"]), prediction
     )
-    if (
-        sorted(labels) != ["QB24-2000", "QB24-250", "cohort-2000", "cohort-250"]
-        or abs(family_false_alarm(matrix, z) - 0.0100285) > 2e-6
-    ):
-        raise RuntimeError(f"the case-level false alarm is {family_false_alarm(matrix, z)} for {labels}")
+    off = len(line["subjects"]) * len(line["tested"])
+    if labels[off:] != ["cohort-anchor-500", "cohort-anchor-1000"]:
+        raise RuntimeError(f"the decision statistics are {labels}")
+    for size in (off, len(labels)):
+        box = multivariate_normal(mean=np.zeros(size), cov=matrix[:size, :size]).cdf(
+            np.full(size, z), lower_limit=np.full(size, -z)
+        )
+        if abs(family_false_alarm(matrix[:size, :size], z) - (1 - box)) > 3e-4:
+            raise RuntimeError(f"the false alarm of {size} statistics is {family_false_alarm(matrix[:size, :size], z)}")
     if good["verdict"] != "on-line" or any(abs(contrast(good, "cohort", n)["z"]) > 1e-6 for n in line["tested"]):
         raise RuntimeError(f"a device on its own lines reads {good['verdict']}")
+    if any(abs(contrast(good, "QB24", n)["z"]) > 0.2 for n in line["tested"]):
+        raise RuntimeError("a device on its own lines leaves a QB24 deviation")
+    flat = read(curved=False)
+    if flat["verdict"] != "on-line" or any(abs(contrast(flat, "cohort", n)["z"]) > 1e-6 for n in line["tested"]):
+        raise RuntimeError(f"a single-exponential device reads {flat['verdict']}")
+    curved = max(abs(contrast(good, "cohort", n)["z_without_curvature"]) for n in line["tested"])
+    if curved < CURVATURE_SPURIOUS_Z_MIN:
+        raise RuntimeError(f"the retained curvature moves the uncorrected deviation by only {curved} errors")
+    se = {n: contrast(good, "cohort", n)["se_seconds"] for n in line["tested"]}
     for shift, want in (
-        ({250: 3.0e-9}, "on-line"),
-        ({250: 5.0e-9}, "off-line"),
-        ({2000: -2.5e-9}, "off-line"),
-        ({250: 5.0e-9, 2000: 5.0e-9}, "off-line"),
+        ({250: 2.0 * se[250]}, "on-line"),
+        ({250: 4.5 * se[250]}, "off-line"),
+        ({2000: -4.5 * se[2000]}, "off-line"),
+        ({250: 3.5 * se[250], 2000: 3.5 * se[2000]}, "off-line"),
         ({n: 8.0e-9 for n in (250, 500, 1000, 2000)}, "anchors-moved"),
     ):
         got = read(shift=shift)
@@ -1674,12 +1875,14 @@ def decision_self_test(prediction: dict[str, Any]) -> None:
     # A fixed population loss between N = 0 and N > 0 has the form a + b / N: the deviations and the gap between nonzero
     # lengths stay at the retained value while the anchors move.
     lost = read(drop=0.9)
-    if lost["verdict"] != "anchors-moved" or abs(lost["subjects"]["cohort"]["nonzero_gap"]["z"]) > 1.0:
+    kept_gap = good["subjects"]["cohort"]["nonzero_gap"]
+    moved_gap = lost["subjects"]["cohort"]["nonzero_gap"]["observed_seconds"] - kept_gap["observed_seconds"]
+    if lost["verdict"] != "anchors-moved" or abs(moved_gap) > 0.25 * kept_gap["se_seconds"]:
         raise RuntimeError(f"a fixed population loss reads {lost['verdict']}")
     if any(abs(contrast(lost, "cohort", n)["z"]) > 1e-6 for n in line["tested"]):
         raise RuntimeError("a fixed population loss leaves a deviation")
-    # Gates: a corrupted delay point fails usable_t1 and the qubit leaves the cohort; below the minimum the verdict is
-    # unidentifiable; a qubit outside the cohort changes no reading.
+    # Gates: a corrupted delay point fails the delay fit and the qubit leaves the cohort; below the minimum the verdict
+    # is unidentifiable; a qubit outside the cohort changes no reading.
     counts = planted_counts(prediction)
     for broken, want in (
         (cohort["qubits"][:1], "on-line"),
@@ -1693,6 +1896,35 @@ def decision_self_test(prediction: dict[str, Any]) -> None:
         members = len(got["subjects"]["cohort"]["contrasts"]["250"]["qubits"])
         if got["verdict"] != want or members != len(cohort["qubits"]) - len(broken):
             raise RuntimeError(f"{len(broken)} qubits without a delay fit leave {members} and read {got['verdict']}")
+    # A qubit whose population does not fall, one whose readout contrast is lost and a cohort that is strong at one
+    # length only each leave the reading with the other qubits intact.
+    ones24, shots24 = counts["par-ro0@QB24"]
+    flat_floor = dict(counts)
+    for layout in prediction["idle"]:
+        for n in (*line["tested"], *line["anchors"]):
+            if f"idle-{layout}-{n}@QB24" in flat_floor:
+                flat_floor[f"idle-{layout}-{n}@QB24"] = ((ones24 / shots24 + 0.04) * shots24, shots24)
+    weak_readout = {**counts, "par-ro1@QB24": (0.10 * shots24, shots24)}
+    for damaged, label in ((flat_floor, "a flat floor"), (weak_readout, "a weak readout contrast")):
+        got = evaluate(damaged, prediction)["h3_line"]
+        members = got["subjects"]["cohort"]["contrasts"]["250"]["qubits"]
+        if (
+            "QB24" in members
+            or len(members) != len(cohort["qubits"]) - 1
+            or got["subjects"]["QB24"]["verdict"] != "unidentifiable"
+            or got["verdict"] != "on-line"
+        ):
+            raise RuntimeError(f"{label} on QB24 leaves {members} and reads {got['verdict']}")
+    split = dict(counts)
+    for qubits, length in ((cohort["qubits"][:4], 2000), (cohort["qubits"][4:8], 250)):
+        for qubit in qubits:
+            for layout in prediction["idle"]:
+                key = f"idle-{layout}-{length}@{qubit}"
+                if key in split:
+                    split[key] = (split["par-ro0@" + qubit][0], split[key][1])
+    got = evaluate(split, prediction)["h3_line"]
+    if got["verdict"] != "unidentifiable" or len(got["subjects"]["cohort"]["contrasts"]["250"]["qubits"]) != 3:
+        raise RuntimeError(f"disjoint cohorts at 250 and 2000 pulses read {got['verdict']}")
     other = dict(counts)
     for key in counts:
         if key.endswith("@QB44"):
@@ -1719,12 +1951,15 @@ def decision_self_test(prediction: dict[str, Any]) -> None:
         error = math.sqrt(variance(dual, counts))
         return error, math.sqrt(total), worst / error
 
+    tau = subject_tau(prediction, "cohort")
+
     def contrast_value(moved: Counts) -> float:
         trial = prepare_all(moved, prediction, arms, t1)
-        return required(contrast_reading(moved, trial, cohort["qubits"], coefficients), "the cohort")["value_seconds"]
+        reading = contrast_reading(moved, trial, cohort["qubits"], coefficients, tau=tau)
+        return required(reading, "the cohort")["value_seconds"]
 
     coefficients = contrast_of(250, line["anchors"])
-    reading = required(contrast_reading(counts, preps, cohort["qubits"], coefficients), "the cohort")
+    reading = required(contrast_reading(counts, preps, cohort["qubits"], coefficients, tau=tau), "the cohort")
     error, numeric, worst = finite_difference(contrast_value, reading["_dual"])
     if abs(numeric / error - 1) > 1e-3 or worst > 1e-3:
         raise RuntimeError(f"the deviation's error {error} against {numeric} by finite differences, worst {worst}")
@@ -1795,7 +2030,7 @@ def third_length_self_test() -> None:
     case = json.loads(files["cases.json"])
     job = case["jobs"][0]
     circuits = [json.loads(text) for rel, text in files.items() if rel.startswith("circuits/")]
-    if case["case"] != profile.case or len(circuits) != 20 or job["shots"] != 4000:
+    if case["case"] != profile.case or len(circuits) != 21 or job["shots"] != 4000:
         raise RuntimeError(f"the third-length case is {case['case']}, {len(circuits)} circuits at {job['shots']} shots")
     kept_circuits = sorted(retained.glob("*.json"))
     if len(kept_circuits) != 16 or any(
@@ -1803,7 +2038,7 @@ def third_length_self_test() -> None:
     ):
         raise RuntimeError("the third-length case changes a circuit of the successor")
     names = {c["name"] for c in circuits} - {p.stem for p in kept_circuits}
-    if names != {f"idle-{b}-{n}" for b in profile.train for n in (250, 2000)}:
+    if names != {*(f"idle-{b}-{n}" for b in profile.train for n in (250, 2000)), "t1-96us"}:
         raise RuntimeError(f"the third-length case adds {sorted(names)}")
     if JOB_SECONDS + job["expected_seconds"] > profile.max_credits["emerald"] / 0.75 - PLAN_HEADROOM:
         raise RuntimeError(f"the third-length case's {job['expected_seconds']} s leave no headroom under its ceiling")
@@ -1821,7 +2056,38 @@ def third_length_self_test() -> None:
         raise RuntimeError(f"the cohort is {cohort['qubits']}")
     if abs(cohort["offset_seconds"] - 21.4e-9) > 0.05e-9 or abs(cohort["per_train_seconds"] - 5.84e-6) > 0.005e-6:
         raise RuntimeError(f"the cohort line reads {cohort['offset_seconds']} + {cohort['per_train_seconds']} / N")
+    calibration_key_self_test(calibration_dir)
     decision_self_test(prediction)
+
+
+def calibration_key_self_test(calibration_dir: Path) -> None:
+    """The calibration reader checks that the metrics describe the architecture's set under either key, and an explicit
+    null in the first key does not bypass the check."""
+    metrics = json.loads((calibration_dir / "metrics.json").read_text(encoding="utf-8"))
+    set_id = json.loads((calibration_dir / "dynamic-quantum-architecture.json").read_text(encoding="utf-8"))[
+        "calibration_set_id"
+    ]
+    with tempfile.TemporaryDirectory() as scratch:
+        folder = Path(scratch)
+        shutil.copyfile(
+            calibration_dir / "dynamic-quantum-architecture.json", folder / "dynamic-quantum-architecture.json"
+        )
+        for described, named, accepted in (
+            (None, "another-set", False),
+            (None, set_id, True),
+            ("another-set", set_id, False),
+            (set_id, "another-set", True),
+        ):
+            changed = {k: v for k, v in metrics.items() if k not in ("describes_id", "calibration_set_id")}
+            changed["describes_id"], changed["calibration_set_id"] = described, named
+            (folder / "metrics.json").write_text(json.dumps(changed), encoding="utf-8")
+            try:
+                iqm_sim.Calibration.from_directory(folder)
+                loaded = True
+            except ValueError:
+                loaded = False
+            if loaded != accepted:
+                raise RuntimeError(f"metrics describing {described!r} and naming {named!r}: loaded {loaded}")
 
 
 def self_test() -> str:

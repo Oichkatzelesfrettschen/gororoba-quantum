@@ -82,9 +82,13 @@
     {
      "file": "circuits/t1-64us.json",
      "sha256": "ab292433c172cf4adf4b85a6875fc1a445d4a5b812371024f214290500a3ce42"
+    },
+    {
+     "file": "circuits/t1-96us.json",
+     "sha256": "f94eeae0e755ebfafd9ba193fa1904e92a37054397b39ff61fc12c868cbbf132"
     }
    ],
-   "expected_seconds": 4.2,
+   "expected_seconds": 4.734,
    "job": "probe",
    "max_credits": {
     "emerald": 9.0,
@@ -100,7 +104,7 @@
    "shots": 4000
   }
  ],
- "prediction_sha256": "8d6d0bd8278fde475f0e6873dcbf4500b2be2a5d5eaee83a09999b6dfd788d4e",
+ "prediction_sha256": "080093bea569bd4611da3459928030cc63747a498d3dfffca2619a69e22c9194",
  "qcs": [
   "emerald:mock",
   "emerald"
