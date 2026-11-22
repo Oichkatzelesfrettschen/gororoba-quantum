@@ -252,6 +252,7 @@ def summary(root: Path = ROOT) -> dict[str, Any]:
     text = source.read_bytes()
     context = json.loads(text)
     series = characterization(root)
+    interleaved_record = root / INTERLEAVED
     return {
         "schema": SCHEMA,
         "profile": context.get("profile"),
@@ -266,11 +267,18 @@ def summary(root: Path = ROOT) -> dict[str, Any]:
             "characterization_analysis_sha256": hashlib.sha256((root / CHARACTERIZATION).read_bytes()).hexdigest()
             if series
             else None,
+            "interleaved_analysis": INTERLEAVED if interleaved_record.is_file() else None,
+            "interleaved_analysis_sha256": hashlib.sha256(interleaved_record.read_bytes()).hexdigest()
+            if interleaved_record.is_file()
+            else None,
         },
         "implied_t1_assumption": "the whole P(1|1) drop between the no-wait and the wait run is T1 decay during the"
         " wait, and readout fidelity is unchanged between the two runs",
         "fitted_t1_assumption": "an implied_t1 row with fit_points is a single-exponential fit of a series' own delays;"
         " single_exponential, chi_square_per_dof and us_se_scaled say whether the fit describes the decay",
+        "interleaved_t1_assumption": "an interleaved_t1 row is the single-exponential parameter of three interleaved"
+        " rounds; verdict, lack_of_fit_probability and replicate_probability say whether one exponential describes the"
+        " decay, and us_se is null because the analysis record carries no error on T",
         "qubits": qubits(context, root),
         "jobs": jobs(root / RUNS),
     }
