@@ -1462,6 +1462,7 @@ def planted_counts(
     only: set[str] | None = None,
     drop: float = 1.0,
     curved: bool = True,
+    physical: bool = True,
 ) -> Counts:
     """Expected counts of a model device built from the retained run, with no random draw and no pulse-length
     rounding (the counts are fractional; shots are the retained run's times factor).
@@ -1471,9 +1472,11 @@ def planted_counts(
     otherwise) with the retained readout pair. Its idle trains of every tested length lie on that qubit's own line
     through the retained anchor arms with the curvature the delay decay implies, ln(p - r) = c0 - k1 T + c2 T^2 at
     T = tau N + b, so every corrected contrast is zero. The gap of length n is raised by shift[n] seconds (the
-    population
-    after n pulses falls by exp(-k1 n shift[n])) for the qubits in only (every qubit by default), and the population of
-    every nonzero length is multiplied by drop, a fixed loss between N = 0 and N > 0."""
+    population after n pulses is that of the delay decay's polynomial at the shifted train time T + n shift[n], so
+    ln p moves by (c1 + 2 c2 T) n shift[n] + c2 (n shift[n])^2 with T = n (d + a) + b the line's train time; with
+    physical = False it falls by exp(-k1 n shift[n]) instead, a population perturbation laid on the nominal curve)
+    for the qubits in only (every qubit by default), and the population of every nonzero length is multiplied by
+    drop, a fixed loss between N = 0 and N > 0."""
     line = prediction["line"]
     ref_counts, ref_preps, _ = reference_of(line["run"])
     ref_prediction = reference_report(line["run"])[1]
@@ -1488,6 +1491,7 @@ def planted_counts(
             continue
         coefficients = [c.value / 1e6**k for k, c in enumerate(fit["coefficients"])]
         curvature = fit["coefficients"][2].value if curved else 0.0
+        linear_term = fit["coefficients"][1].value
         r = ref_counts[f"par-ro0@{qubit}"][0] / ref_counts[f"par-ro0@{qubit}"][1]
         s = ref_counts[f"par-ro1@{qubit}"][0] / ref_counts[f"par-ro1@{qubit}"][1]
         shots = ref_counts[f"par-ro0@{qubit}"][1] * factor
@@ -1503,8 +1507,13 @@ def planted_counts(
             slope = (lb - la - quadratic * (b * b - a * a)) / (b - a)
             for n in (*line["tested"], a, b):
                 log_population = la + slope * (n - a) + quadratic * (n * n - a * a)
-                if only is None or qubit in only:
-                    log_population -= prep.k1.value * n * (shift or {}).get(n, 0.0)
+                delta = (shift or {}).get(n, 0.0)
+                if (only is None or qubit in only) and physical:
+                    train = n * (prediction["prx_seconds"] + line["subjects"]["cohort"]["offset_seconds"])
+                    train += line["subjects"]["cohort"]["per_train_seconds"]
+                    log_population += (linear_term + 2 * curvature * train) * n * delta + curvature * (n * delta) ** 2
+                elif only is None or qubit in only:
+                    log_population -= prep.k1.value * n * delta
                 log_population += math.log(drop)
                 out[f"idle-{layout}-{n}@{qubit}"] = ((r + math.exp(log_population)) * shots, shots)
     return out
@@ -1749,6 +1758,36 @@ def power(case_dir: Path) -> dict[str, Any]:
                         is not None
                     },
                 }
+        if factor == 1:
+            for name, subject in line["subjects"].items():
+                tau = subject_tau(prediction, name)
+                for n in line["tested"]:
+                    coefficients = contrast_of(n, line["anchors"])
+                    held = rows[f"{name}-{n}"]["x1"]
+                    target = z * held["se_ns"] * 1e-9
+
+                    def shifted_reading(
+                        delta: float,
+                        subject: dict[str, Any] = subject,
+                        coefficients: dict[int, float] = coefficients,
+                        tau: float = tau,
+                        name: str = name,
+                        n: int = n,
+                    ) -> float:
+                        moved = planted_counts(
+                            prediction, 1, {n: delta}, None if name == "cohort" else set(subject["qubits"])
+                        )
+                        moved_preps = prepare_all(moved, prediction, None, None)
+                        reading = required(
+                            contrast_reading(moved, moved_preps, subject["qubits"], coefficients, tau=tau), name
+                        )
+                        return float(reading["value_seconds"])
+
+                    delta = target
+                    for _ in range(4):
+                        delta *= target / shifted_reading(delta)
+                    held["physical_resolvable_deviation_ns"] = delta * 1e9
+                    held["physical_reading_over_deviation"] = shifted_reading(target) / target
         held_gate = {
             "expected_qubits_passing_the_gate": gate["expected_qubits_passing_the_gate"],
             "probability_fewer_pass_the_gate_than_the_minimum": gate[
@@ -1764,8 +1803,11 @@ def power(case_dir: Path) -> dict[str, Any]:
             report_extra["decision_statistics"] = labels
             report_extra["correlation_of_the_decision_statistics"] = matrix.tolist()
             report_extra["false_alarm_off_line"] = family_false_alarm(matrix[:off, :off], z)
-            report_extra["false_alarm_not_on_line"] = family_false_alarm(matrix, z)
+            report_extra["six_statistic_rejection_rate_given_membership"] = family_false_alarm(matrix, z)
             report_extra["unidentifiable"] = gate
+            report_extra["verdict_not_on_line_union_bound"] = (
+                report_extra["six_statistic_rejection_rate_given_membership"] + gate["unidentifiable_markov_bound"]
+            )
             plain_labels, plain_matrix, plain_zs = decision_correlation(counts, preps, prediction, corrected=False)
             report_extra["retained_curvature"] = {
                 "statistics": labels[:off],
@@ -1856,7 +1898,7 @@ def decision_self_test(prediction: dict[str, Any]) -> None:
         ({250: 2.0 * se[250]}, "on-line"),
         ({250: 4.5 * se[250]}, "off-line"),
         ({2000: -4.5 * se[2000]}, "off-line"),
-        ({250: 3.5 * se[250], 2000: 3.5 * se[2000]}, "off-line"),
+        ({250: 4.0 * se[250], 2000: 4.0 * se[2000]}, "off-line"),
         ({n: 8.0e-9 for n in (250, 500, 1000, 2000)}, "anchors-moved"),
     ):
         got = read(shift=shift)
@@ -1864,10 +1906,31 @@ def decision_self_test(prediction: dict[str, Any]) -> None:
             raise RuntimeError(f"a device shifted by {shift} reads {got['verdict']}, not {want}")
         if len(shift) == 1:
             ((n, delta),) = shift.items()
-            if not 0.97 < contrast(got, "cohort", n)["value_seconds"] / delta < 1.03:
+            if not 0.7 < contrast(got, "cohort", n)["value_seconds"] / delta < 1.3:
                 raise RuntimeError(
                     f"a {delta * 1e9} ns shift at {n} reads {contrast(got, 'cohort', n)['value_seconds']}"
                 )
+    # A timing shift acts through the decay law at the shifted train time T + n delta: QB24's deviation moves by
+    # -((c1 + 2 c2 T) delta + c2 n delta^2) / k1, not by delta.
+    ref_counts, _, _ = reference_of(line["run"])
+    ref_prediction = reference_report(line["run"])[1]
+    fit = required(delay_fit(ref_counts, "QB24", ref_prediction["t1_delays"], 2), "QB24")
+    c1, c2 = fit["coefficients"][1].value, fit["coefficients"][2].value
+    base_counts = planted_counts(prediction)
+    k1_model = required(prepare_all(base_counts, prediction, None, None)["QB24"].k1, "QB24 rate").value
+    for n, delta in ((250, 5.8e-9), (2000, 5.8e-9)):
+        train = n * (prediction["prx_seconds"] + cohort["offset_seconds"]) + cohort["per_train_seconds"]
+        moved = (
+            contrast(read(shift={n: delta}, only={"QB24"}), "QB24", n)["value_seconds"]
+            - contrast(good, "QB24", n)["value_seconds"]
+        )
+        expected = -((c1 + 2 * c2 * train) * delta + c2 * n * delta**2) / k1_model
+        if abs(moved / expected - 1) > 1e-3:
+            raise RuntimeError(
+                f"a {delta * 1e9} ns QB24 shift at {n} pulses reads {moved}, the decay law gives {expected}"
+            )
+        if not 0.5 < expected / delta < 1.5:
+            raise RuntimeError(f"the decay law moves a {delta * 1e9} ns shift by {expected}")
     # A drift of QB24 alone moves its anchors and no one else's: its subject reads anchors-moved, the cohort stays.
     drift = read(shift={n: 20.0e-9 for n in (250, 500, 1000, 2000)}, only={"QB24"})
     if drift["verdict"] != "on-line" or drift["subjects"]["QB24"]["verdict"] != "anchors-moved":

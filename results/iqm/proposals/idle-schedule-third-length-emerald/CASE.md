@@ -134,11 +134,14 @@ a functional form across train lengths on the physical device.
      proved.
 
    The case verdict is `off-line` when any subject is off-line, and otherwise the cohort's verdict; a QB24 that drifts reads
-   `anchors-moved` in its own row without blocking the cohort. Six statistics can stop the case reading on-line: the cohort
+   `anchors-moved` in its own row without blocking the cohort. Six statistics can reject the case: the cohort
    and QB24 deviations at 250 and 2000 pulses, and the cohort's gap at 500 and at 1000 pulses against the retained
-   value. The case-level rates under no deviation come from their full covariance (`decision_correlation`,
+   value. Their rates under no deviation come from their full covariance (`decision_correlation`,
    `family_false_alarm`, a deterministic quasi-random integration; `power.json`): **0.0105 for `off-line` over the four
-   deviations and 0.0153 for any verdict but `on-line` over all six** (the anchors correlate +0.59 with each other and
+   deviations and 0.0153 for the six-statistic rejection (`off-line` or `anchors-moved`) given the modeled membership**,
+   the cohort of eleven and QB24 as built. That rate excludes `unidentifiable`, which has its own bound (item 10: at most
+   0.036 under any dependence, 3.5e-9 for independent qubits), so the probability of a verdict other than `on-line` is at
+   most 0.0153 + 0.036 = 0.051 under no deviation (the anchors correlate +0.59 with each other and
    -0.44 and -0.47 with the cohort deviations). QB24 stays decision-producing, since it is the one subject that tests a
    single tightly fitted qubit. Secondary readings decide nothing but `anchors-moved`: the gap at the tested lengths against
    the retained line (`retained_line`), the per-pulse gap between 250 and 2000 pulses against the retained run's between
@@ -170,7 +173,16 @@ a functional form across train lengths on the physical device.
     a standard error of 1.41 ns at 250 pulses and 0.61 ns at 2000, so a deviation of 4.2 ns (9.5 percent of the 44.7 ns
     prediction) at 250 and 1.8 ns (7.5 percent of 24.3 ns) at 2000 sits three errors out. With the smallest accepted
     cohort (seven qubits, the ones of least weight) the figures are 6.0 and 2.5 ns. QB24 alone resolves 12.2 ns at 250
-    and 5.4 ns at 2000. Doubling the shots lowers the errors by about 1.4 times (1.00 and 0.43 ns) and doubles the cost;
+    and 5.4 ns at 2000. These figures perturb the population of an arm by exp(-k1 N delta) on the nominal curve. A
+    physical timing deviation acts through the decay law at the shifted train time T + N delta, ln p moving by
+    (c1 + 2 c2 T) N delta + c2 N^2 delta^2, so the statistic responds with the local decay rate and not k1. Under that
+    alternative (`power.json`, `physical_resolvable_deviation_ns`; the self-test's recovery check uses it and matches
+    the decay law to 1e-3) a reading of three errors needs a true shift of 4.0 ns at 250 pulses (reading 1.05 of the
+    shift) and **2.4 ns at 2000 pulses** (reading 0.75 of the shift) for the cohort, and 12.0 and **5.9 ns** for QB24
+    (readings 1.02 and 0.91). The cohort's 2000-pulse sensitivity is a third worse than the population figure and the
+    QB24 one a tenth; 2.4 ns is 10 percent of the 24.3 ns prediction and 5.9 ns is 25 percent of QB24's 23.4 ns, which
+    serves the stated purpose of a three-error test of the line at two lengths. More shots are therefore not needed:
+    8000 shots lower the errors by 1.4 times and double the cost, and the 4000 shots stay. Doubling the shots lowers the errors by about 1.4 times (1.00 and 0.43 ns) and doubles the cost;
     the expected number of cohort qubits passing the quadratic gate is 10.4 of 11 at 8000 shots (the probability of fewer
     than seven is 1.5e-7), so the gate leaves the doubled counts usable, and 4000 shots stay for the cost.
 12. Limits. The decision treats the twelve qubits' counts as independent although one joint shot reads them together;

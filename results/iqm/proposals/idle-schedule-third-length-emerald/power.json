@@ -63,7 +63,6 @@
   "cohort-anchor-500",
   "cohort-anchor-1000"
  ],
- "false_alarm_not_on_line": 0.015323343617763552,
  "false_alarm_off_line": 0.010482521076210505,
  "retained_curvature": {
   "p_off_line_with_correction": 0.010483646455755613,
@@ -96,6 +95,8 @@
      "QB20": 2.3146943221894722,
      "QB26": 2.3374754786872813
     },
+    "physical_reading_over_deviation": 0.9072334247647521,
+    "physical_resolvable_deviation_ns": 5.910406448514109,
     "qubits": 1,
     "resolvable_deviation_ns": 5.359498831991892,
     "resolvable_fraction": 0.22904877930514334,
@@ -127,6 +128,8 @@
      "QB20": 5.820297502184331,
      "QB26": 5.552777567605534
     },
+    "physical_reading_over_deviation": 1.015691784698526,
+    "physical_resolvable_deviation_ns": 12.0437566633601,
     "qubits": 1,
     "resolvable_deviation_ns": 12.232875439180681,
     "resolvable_fraction": 0.30550816382723295,
@@ -161,6 +164,8 @@
      "QB20": 0.7657581913517747,
      "QB26": 0.8583103002342789
     },
+    "physical_reading_over_deviation": 0.7511515421339064,
+    "physical_resolvable_deviation_ns": 2.432368465691812,
     "qubits": 11,
     "resolvable_deviation_ns": 1.821045209548879,
     "resolvable_fraction": 0.07496591477716631,
@@ -198,6 +203,8 @@
      "QB20": 1.8960874460849921,
      "QB26": 2.0709079445919194
     },
+    "physical_reading_over_deviation": 1.0504040928308713,
+    "physical_resolvable_deviation_ns": 4.039467987598046,
     "qubits": 11,
     "resolvable_deviation_ns": 4.243437423333667,
     "resolvable_fraction": 0.09484726111545963,
@@ -226,6 +233,7 @@
   }
  },
  "schema": "iqm-idle-schedule-third-length-power-v3",
+ "six_statistic_rejection_rate_given_membership": 0.015323343617763552,
  "statistic": "within-job deviation of the gap at a tested length from the line through the job's gaps at the anchors, corrected for the curvature of the delay decay",
  "unidentifiable": {
   "cohort_qubits": 11,
@@ -250,5 +258,6 @@
   "unidentifiable_comonotone": 0.0010000000000000009,
   "unidentifiable_independent": 3.51575354179194e-09,
   "unidentifiable_markov_bound": 0.03605655633172766
- }
+ },
+ "verdict_not_on_line_union_bound": 0.051379899949491215
 }
