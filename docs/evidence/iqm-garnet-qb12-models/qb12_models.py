@@ -49,6 +49,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
+import iqm_records  # noqa: E402
 import iqm_sim  # noqa: E402
 
 from parallel import ordered_map  # noqa: E402
@@ -149,7 +150,8 @@ def pair_depolarizing(p: float, a: int, b: int) -> list[np.ndarray]:
 def read_case() -> tuple[list[dict[str, Any]], iqm_sim.Calibration]:
     cases = json.loads((RUN / "cases.json").read_text(encoding="utf-8"))
     job = next(j for j in cases["jobs"] if j["job"] == "sedenion")
-    shots = json.loads((RUN / "raw/measurements.json").read_text(encoding="utf-8"))
+    # The shared reader checks the receipt, the circuit and raw digests and the shot counts before any fit.
+    shots = iqm_records.read_run(RUN).completed_measurements()
     if len(shots) != len(job["circuits"]):
         raise SystemExit("the retained shots do not match the circuits of the sedenion job")
     circuits = []

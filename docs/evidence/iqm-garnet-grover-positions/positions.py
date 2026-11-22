@@ -29,6 +29,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
+import iqm_records  # noqa: E402
 from grover_line_analysis import ideal_probability  # noqa: E402
 
 RUN = ROOT / "results/iqm/runs/2026-11-21T220358Z-garnet-grover-depth-sedenion-walsh-grover"
@@ -40,7 +41,8 @@ ROUND = 5
 def read() -> dict[str, dict[str, Any]]:
     cases = json.loads((RUN / "cases.json").read_text(encoding="utf-8"))
     job = next(j for j in cases["jobs"] if j["job"] == "grover")
-    shots = json.loads((RUN / "raw/measurements.json").read_text(encoding="utf-8"))
+    # The shared reader checks the receipt, the circuit and raw digests and the shot counts before any reading.
+    shots = iqm_records.read_run(RUN).completed_measurements()
     if len(shots) != len(job["circuits"]):
         raise SystemExit("the retained shots do not match the circuits of the grover job")
     out = {}
