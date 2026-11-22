@@ -19,8 +19,10 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import qi_tuna17_interleaved_cases as case  # noqa: E402
+from parallel import ordered_map  # noqa: E402
 
 RUNS = "results/quantum_inspire/runs"
 PATTERN = "2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-q12_phase-batch-*"
@@ -45,7 +47,7 @@ def main(out: Path) -> None:
     runs = sorted((ROOT / RUNS).glob(PATTERN))
     if len(runs) != 4:
         raise SystemExit(f"want 4 q12_phase runs, found {len(runs)}")
-    fits = [batch_fit(b) for b in case.read_batches(runs)]
+    fits = ordered_map(batch_fit, case.read_batches(runs))
     comparisons = []
     for wait in sorted({f["wait_cycles"] for f in fits}):
         a, b = (f for f in fits if f["wait_cycles"] == wait)
