@@ -4137,6 +4137,13 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_diagnostic_v2_case.py --check results/quandela/cases/bdsc_diagnostic_v2_qpu_belenos --draw docs/evidence/anu_qrng/draw-2026-11-22T083730Z.json",
+      "name": "core-bdsc-diagnostic-v2-case",
+      "seconds": 15.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/qi_bdsc_pauli_cases.py --check results/quantum_inspire/cases",
       "name": "core-626",
       "seconds": 1.5,
