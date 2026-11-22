@@ -1,0 +1,169 @@
+{
+ "carryover_per_cell": {
+  "0": {
+   "dense_predecessor_mean": 0.05078125,
+   "difference": 0.001022916666666665,
+   "sparse_predecessor_mean": 0.049758333333333335,
+   "standard_error": 0.001128559459387504
+  },
+  "1": {
+   "dense_predecessor_mean": 0.1334453125,
+   "difference": 0.00283697916666667,
+   "sparse_predecessor_mean": 0.13060833333333333,
+   "standard_error": 0.0016851489055176591
+  },
+  "2": {
+   "dense_predecessor_mean": 0.059398437500000005,
+   "difference": 0.0006234375000000042,
+   "sparse_predecessor_mean": 0.058775,
+   "standard_error": 0.0014043547496394285
+  },
+  "3": {
+   "dense_predecessor_mean": 0.06586718750000001,
+   "difference": 0.00010052083333333961,
+   "sparse_predecessor_mean": 0.06576666666666667,
+   "standard_error": 0.0011492525924562283
+  },
+  "4": {
+   "dense_predecessor_mean": 0.047734375,
+   "difference": 0.011826041666666669,
+   "sparse_predecessor_mean": 0.035908333333333334,
+   "standard_error": 0.001573496177934413
+  }
+ },
+ "carryover_qb12": {
+  "dense_predecessor_mean": 0.3954375,
+  "difference": 0.004604166666666576,
+  "sparse_predecessor_mean": 0.3908333333333334,
+  "standard_error": 0.005097952971925913
+ },
+ "circuit_shots": 136000,
+ "execution_seconds": 1.636471,
+ "execution_seconds_per_circuit_shot": 1.2032875e-05,
+ "locus": [
+  "QB8",
+  "QB4",
+  "QB1",
+  "QB3",
+  "QB12",
+  "QB10",
+  "QB17",
+  "QB11",
+  "QB15",
+  "QB13",
+  "QB9",
+  "QB14",
+  "QB20",
+  "QB18",
+  "QB16",
+  "QB19",
+  "QB6",
+  "QB2",
+  "QB7",
+  "QB5"
+ ],
+ "references": {
+  "circuit-000": {
+   "excited_fraction": {
+    "QB1": 0.066,
+    "QB10": 0.0685,
+    "QB11": 0.0555,
+    "QB12": 0.3615,
+    "QB13": 0.1185,
+    "QB14": 0.1255,
+    "QB15": 0.0565,
+    "QB16": 0.085,
+    "QB17": 0.0705,
+    "QB18": 0.0675,
+    "QB19": 0.153,
+    "QB2": 0.0415,
+    "QB20": 0.0985,
+    "QB3": 0.055,
+    "QB4": 0.11,
+    "QB5": 0.0665,
+    "QB6": 0.121,
+    "QB7": 0.0675,
+    "QB8": 0.0585,
+    "QB9": 0.058
+   },
+   "reference": 0
+  },
+  "circuit-001": {
+   "excited_fraction": {
+    "QB1": 0.9725,
+    "QB10": 0.975,
+    "QB11": 0.9595,
+    "QB12": 0.5475,
+    "QB13": 0.925,
+    "QB14": 0.9525,
+    "QB15": 0.9405,
+    "QB16": 0.987,
+    "QB17": 0.9655,
+    "QB18": 0.9695,
+    "QB19": 0.9585,
+    "QB2": 0.9855,
+    "QB20": 0.9765,
+    "QB3": 0.9775,
+    "QB4": 0.983,
+    "QB5": 0.931,
+    "QB6": 0.929,
+    "QB7": 0.9195,
+    "QB8": 0.976,
+    "QB9": 0.9535
+   },
+   "reference": 1
+  },
+  "circuit-034": {
+   "excited_fraction": {
+    "QB1": 0.0615,
+    "QB10": 0.045,
+    "QB11": 0.031,
+    "QB12": 0.388,
+    "QB13": 0.0735,
+    "QB14": 0.0685,
+    "QB15": 0.028,
+    "QB16": 0.0745,
+    "QB17": 0.0615,
+    "QB18": 0.038,
+    "QB19": 0.11,
+    "QB2": 0.0265,
+    "QB20": 0.044,
+    "QB3": 0.041,
+    "QB4": 0.07,
+    "QB5": 0.0375,
+    "QB6": 0.063,
+    "QB7": 0.0255,
+    "QB8": 0.0405,
+    "QB9": 0.061
+   },
+   "reference": 0
+  },
+  "circuit-035": {
+   "excited_fraction": {
+    "QB1": 0.9775,
+    "QB10": 0.9745,
+    "QB11": 0.968,
+    "QB12": 0.5245,
+    "QB13": 0.935,
+    "QB14": 0.967,
+    "QB15": 0.95,
+    "QB16": 0.9835,
+    "QB17": 0.9645,
+    "QB18": 0.9775,
+    "QB19": 0.961,
+    "QB2": 0.9875,
+    "QB20": 0.9745,
+    "QB3": 0.978,
+    "QB4": 0.9835,
+    "QB5": 0.9185,
+    "QB6": 0.9385,
+    "QB7": 0.9465,
+    "QB8": 0.979,
+    "QB9": 0.9605
+   },
+   "reference": 1
+  }
+ },
+ "run": "2026-11-21T220346Z-garnet-packed-pauli-response-garnet-packed",
+ "schema": "iqm-packed-pauli-readout-split-v1"
+}
