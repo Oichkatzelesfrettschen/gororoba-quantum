@@ -105,8 +105,8 @@ def main(out: Path) -> None:
         "run": str(RUN.relative_to(ROOT)),
         "definition": (
             "response = mean over shots of (score(bright Y cell) - score(kernel Y cell)) / 2; residual = response "
-            "minus the mean response of its dense or sparse arm; science_since_all_ones = 1 for the first science circuit "
-            "after the all-ones reference, counted across the wrap from one shot to the next"
+            "minus the mean response of its dense or sparse arm; science_since_all_ones = 1 for the first "
+            "science circuit after the all-ones reference, counted across the wrap from one shot to the next"
         ),
         "arm_mean_response": {"dense": round(arm_mean[True], ROUND), "sparse": round(arm_mean[False], ROUND)},
         "by_science_since_all_ones": by_since,
