@@ -6,8 +6,8 @@ mid-circuit record, over twelve jobs of October 2026, where schedule is the serv
 included, refits the same three terms over all of them, and fits two candidate fourth terms: one per heralded
 circuit-shot and one per squared circuit-shot (a curvature in job size). A term earns its place only when it lowers
 the largest leave-one-out residual over the jobs other than the one with the most mid-circuit records, whose
-removal leaves the per-record term to extrapolation. It also reports runtime minus execution, which sets the margin a ceiling needs.
-Passive-reset jobs run a different shot loop and stay out. It decides nothing: BILLING_MODELS changes in the change
+removal leaves the per-record term to extrapolation. It also reports runtime minus execution, which sets the margin
+a ceiling needs. Passive-reset jobs run a different shot loop and stay out. It decides nothing: BILLING_MODELS changes in the change
 that first sizes a case from a refit.
 
 Usage: "$PYTHON" docs/evidence/iqm-garnet-billing-v3/billing_v3.py OUT.json
