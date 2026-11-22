@@ -93,14 +93,14 @@
    "options": {
     "active_reset_cycles": 1,
     "calibration_set_id": {
-     "emerald": "ecec1d0a-1529-4c90-9b02-d1b30ddaa2e3"
+     "emerald": "7d7ebe74-3674-4b32-baa2-fa0117ecbef9"
     },
     "heralding_mode": "none"
    },
    "shots": 4000
   }
  ],
- "prediction_sha256": "7425f5fce55333dd307866b56ce801b3a2ac27d62fcf72e38fc88a896ac16e88",
+ "prediction_sha256": "8d6d0bd8278fde475f0e6873dcbf4500b2be2a5d5eaee83a09999b6dfd788d4e",
  "qcs": [
   "emerald:mock",
   "emerald"

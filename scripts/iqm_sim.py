@@ -65,7 +65,7 @@ class Calibration:
         self.set_id: str = architecture["calibration_set_id"]
         # The metrics must describe the architecture's calibration set; a pair from two sets (an interrupted
         # refresh) would predict from one set while the job pins the other.
-        described = metrics.get("describes_id")
+        described = metrics.get("describes_id", metrics.get("calibration_set_id"))
         if described is not None and described != self.set_id:
             raise ValueError(f"{folder}: metrics describe set {described}, the architecture is set {self.set_id}")
         self.prx: dict[str, float] = {}
