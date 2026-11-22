@@ -49,9 +49,9 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
-import iqm_records  # noqa: E402
 import iqm_sim  # noqa: E402
 
+import iqm_records  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 RUN = ROOT / "results/iqm/runs/2026-11-21T220406Z-garnet-grover-depth-sedenion-walsh-sedenion"
