@@ -40,6 +40,14 @@ workstation, one process pool of the fit starts).
   UTC and the job at 22:03 UTC; the next calibration set's QB12 frequency and T2, and a QB12 Ramsey with a CZ-phase
   echo, test it.
 
+## The next calibration set
+
+`calibration-a0e725eb-QB12.json` retains a free calibration read of 2026-11-22T04:38Z. Garnet's set a0e725eb (created
+2026-11-22T03:02Z) lists QB12 in no prx, cz, measure or reset_wait locus, only under measure_fidelity, and carries PRX
+benchmarks for the other 19 qubits only. Its QB12 readout reads fidelity 0.802 (errors 0.313 from 1 to 0 and 0.083 from
+0 to 1) against 0.985 (0.019 and 0.010) in ea681de1. The provider has taken QB12 out of the gate set: the fault the
+retained jobs show persists into the next calibration, and no case can address QB12 until a later set restores it.
+
 ## Command
 
 ```sh

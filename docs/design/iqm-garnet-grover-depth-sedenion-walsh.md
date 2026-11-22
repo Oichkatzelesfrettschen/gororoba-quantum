@@ -268,8 +268,10 @@ Open hypotheses:
   ([qb12-models](../evidence/iqm-garnet-qb12-models/README.md)) ranks a frequency-shift model first: an excited
   population the herald keeps, a detuned QB12 prx, a QB12 phase after each of its CZs and a conditional-phase error on
   them, deviance 1901 on 414 degrees of freedom, against leakage 2858, a mid-sequence QB12 transition 4317 and readout
-  or static excitation 8159. No model fits absolutely. Test: QB12's frequency and T2 in the next calibration set
-  against ea681de1, then a QB12 Ramsey with a CZ-phase echo on QB11-QB12 and QB17-QB12 before the e_10 row reruns.
+  or static excitation 8159. No model fits absolutely. The next calibration set, a0e725eb (2026-11-22T03:02Z), takes
+  QB12 out of every gate locus and reads its readout fidelity at 0.802, so the fault persists and no case can address
+  QB12 until a later set restores it. Test, once it does: QB12's frequency and T2 against ea681de1, then a QB12 Ramsey
+  with a CZ-phase echo on QB11-QB12 and QB17-QB12 before the e_10 row reruns.
 - hypothesis: the bend of the 101 depth law is coherent error accumulating with iterations, which the model omits.
   The alternative, drift with position or time in the job, is closed on the retained bytes
   ([grover-positions](../evidence/iqm-garnet-grover-positions/README.md)): the k = 1 copies give a slope of

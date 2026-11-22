@@ -1,0 +1,80 @@
+{
+ "read_utc": "2026-11-22T04:38:56.763480+00:00",
+ "calibration_set_id": "a0e725eb-a020-43d3-8aaf-072b926e425a",
+ "created_timestamp": "2026-11-22T03:02:20.301254Z",
+ "previous_set": "ea681de1-9661-41e5-bd6f-cb524fa056a6",
+ "qb12_gate_loci": {
+  "measure": {
+   "constant": []
+  },
+  "measure_fidelity": {
+   "constant": [
+    [
+     "QB12"
+    ]
+   ]
+  },
+  "measure_012": {
+   "constant": []
+  },
+  "prx": {
+   "drag_crf_sx": []
+  },
+  "prx_12": {
+   "modulated_drag_crf": []
+  },
+  "cz": {
+   "slepian_crf": []
+  },
+  "reset_wait": {
+   "reset_wait": []
+  },
+  "cc_prx": {
+   "prx_composite": []
+  }
+ },
+ "qubits_with_prx_benchmark": 19,
+ "qb12_metrics": [
+  {
+   "field": "metrics.ssro.measure.constant.QB12.error_1_to_0",
+   "value": 0.3126,
+   "uncertainty": 0.006518278947204359
+  },
+  {
+   "field": "metrics.ssro.measure.constant.QB12.fidelity",
+   "value": 0.802,
+   "uncertainty": 0.0037953952835760984
+  },
+  {
+   "field": "metrics.ssro.measure.constant.QB12.error_0_to_1",
+   "value": 0.0834,
+   "uncertainty": 0.0038900052700220344
+  },
+  {
+   "field": "metrics.ssro.measure.constant.QB12.assignment_error",
+   "value": 0.19799999999999995,
+   "uncertainty": 0.0037953952835760984
+  },
+  {
+   "field": "metrics.ssro.measure_fidelity.constant.QB12.error_0_to_1",
+   "value": 0.0562,
+   "uncertainty": 0.003241544835410764
+  },
+  {
+   "field": "metrics.ssro.measure_fidelity.constant.QB12.assignment_error",
+   "value": 0.18490000000000006,
+   "uncertainty": 0.0036424386798817186
+  },
+  {
+   "field": "metrics.ssro.measure_fidelity.constant.QB12.error_1_to_0",
+   "value": 0.3136,
+   "uncertainty": 0.006523942460415766
+  },
+  {
+   "field": "metrics.ssro.measure_fidelity.constant.QB12.fidelity",
+   "value": 0.8150999999999999,
+   "uncertainty": 0.0036424386798817186
+  }
+ ],
+ "source": "IQM Server api/v1/calibration-sets/garnet/a0e725eb-a020-43d3-8aaf-072b926e425a (architecture and metrics), read through the iqm MCP tools; a free calibration read"
+}
