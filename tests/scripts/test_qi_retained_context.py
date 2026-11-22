@@ -253,3 +253,58 @@ def test_an_older_series_leaves_the_device_context_rows(tmp_path: Path) -> None:
     first = retained.summary(tmp_path)["qubits"][0]
     if first["readout"]["p1_given_1"] != 0.84 or "baseline_readout" in first or first["implied_t1"]["us"] != 14.1847:
         raise AssertionError(first)
+
+
+INTERLEAVED_RUN = "2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-interleaved_t1-batch-00"
+
+
+def interleaved(root: Path) -> None:
+    """A minimal interleaved analysis row for qubit 2 and the directory of its first interleaved_t1 run."""
+    directory = root / retained.RUNS / INTERLEAVED_RUN
+    directory.mkdir(parents=True)
+    (directory / "results.json").write_text(
+        json.dumps({"jobs": [job("2026-11-20T22:30:00Z", "2026-11-20T22:31:00Z", 8.0)]}), encoding="utf-8"
+    )
+    single = {"chi_square": 34.0, "dof": 17, "params": [16.5549715], "probability": 3.1621717651693645e-208}
+    analysis = {
+        "runs": ["2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-crosstalk-batch-00", INTERLEAVED_RUN],
+        "interleaved_t1": {
+            "qubits": [
+                {
+                    "qubit": 2,
+                    "fits": {"single": single},
+                    "replicate_probability": 3.20359190444536e-140,
+                    "verdict": "level_shift",
+                }
+            ]
+        },
+    }
+    (root / retained.INTERLEAVED).write_text(json.dumps(analysis), encoding="utf-8")
+
+
+def test_the_interleaved_series_adds_one_key_and_leaves_the_existing_ones(tmp_path: Path) -> None:
+    tree(tmp_path)
+    before = retained.summary(tmp_path)["qubits"]
+    interleaved(tmp_path)
+    found = retained.summary(tmp_path)["qubits"]
+    want = {
+        "utc": "2026-11-20T22:31:00+00:00",
+        "us": 16.5550,
+        "us_se": None,
+        "lack_of_fit_probability": 3.16217e-208,
+        "replicate_probability": 3.2036e-140,
+        "verdict": "level_shift",
+        "chi_square_per_dof": 2.0,
+        "rounds": 3,
+    }
+    if found[0].pop("interleaved_t1") != want:
+        raise AssertionError(found[0])
+    if found != before:
+        raise AssertionError(found)
+
+
+def test_a_qubit_without_an_interleaved_row_gets_no_key(tmp_path: Path) -> None:
+    tree(tmp_path)
+    interleaved(tmp_path)
+    if retained.summary(tmp_path)["qubits"][1] != {"qubit": 10}:
+        raise AssertionError(retained.summary(tmp_path)["qubits"][1])
