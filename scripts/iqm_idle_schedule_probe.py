@@ -462,7 +462,7 @@ def calibration_set_of(folder: Path) -> str:
     sets, or whose metrics name none, is refused."""
     architecture = json.loads((folder / "dynamic-quantum-architecture.json").read_text(encoding="utf-8"))
     metrics = json.loads((folder / "metrics.json").read_text(encoding="utf-8"))
-    described = metrics.get("describes_id", metrics.get("calibration_set_id"))
+    described = metrics.get("describes_id") or metrics.get("calibration_set_id")
     if described is None or described != architecture["calibration_set_id"]:
         raise ValueError(
             f"{folder}: metrics describe set {described}, the architecture is {architecture['calibration_set_id']}"
@@ -1829,6 +1829,65 @@ def power(case_dir: Path) -> dict[str, Any]:
     }
 
 
+@dataclasses.dataclass(frozen=True)
+class Estimator:
+    """One estimator of decision_self_test's finite-difference checks as a picklable value: kind is "contrast" (the
+    cohort deviation with the curvature correction at tau), "rate" (the delay fit's rate of qubit through t1_fit) or
+    "anchor" (the cohort's pooled gap at length pulses). Called on a counts mapping it returns the estimate."""
+
+    kind: str
+    prediction: dict[str, Any]
+    arms: dict[str, Any]
+    t1: dict[str, Any]
+    qubits: tuple[str, ...]
+    coefficients: tuple[tuple[int, float], ...] = ()
+    tau: float | None = None
+    qubit: str = ""
+    length: int = 0
+
+    def __call__(self, moved: Counts) -> float:
+        if self.kind == "rate":
+            pair = readout_pair(moved, self.qubit)
+            fit_row = t1_fit(moved, self.qubit, {"e01": pair[0], "e10": pair[1]}, self.prediction["t1_delays"])
+            return float(fit_row["rate_per_second"])
+        trial = prepare_all(moved, self.prediction, self.arms, self.t1)
+        if self.kind == "contrast":
+            reading = contrast_reading(moved, trial, list(self.qubits), dict(self.coefficients), tau=self.tau)
+            return float(required(reading, "the cohort")["value_seconds"])
+        gap = cohort_gap(moved, trial, list(self.qubits), 0, self.length, self.prediction["prx_seconds"])[0]
+        return float(required(gap, "the cohort").value)
+
+
+@dataclasses.dataclass(frozen=True)
+class Perturbation:
+    """The estimator on counts with one count's ones moved by a change: the item of a central difference."""
+
+    estimator: Estimator
+    counts: Counts
+
+    def __call__(self, item: tuple[str, float]) -> float:
+        key, change = item
+        ones, shots = self.counts[key]
+        return self.estimator({**self.counts, key: (ones + change, shots)})
+
+
+def central_differences(estimator: Estimator, counts: Counts, dual: Dual) -> tuple[float, float, float]:
+    """The delta method's error of dual, the error from central differences of the estimator over the same counts and
+    the largest difference of one derivative from the delta method's, in units of the delta method's error. The
+    perturbations are independent, so they map through parallel.ordered_map and reduce afterwards."""
+    keys = list(dual.grad)
+    steps = [1e-3 * counts[key][1] for key in keys]
+    items = [(key, sign * step) for key, step in zip(keys, steps, strict=True) for sign in (1, -1)]
+    values = ordered_map(Perturbation(estimator, counts), items, min_items=2)
+    total, worst = 0.0, 0.0
+    for index, (key, step) in enumerate(zip(keys, steps, strict=True)):
+        numeric = (values[2 * index] - values[2 * index + 1]) / (2 * step / counts[key][1])
+        total += numeric**2 * shot_variance(counts, key)
+        worst = max(worst, abs(numeric - dual.grad[key]) * math.sqrt(shot_variance(counts, key)))
+    error = math.sqrt(variance(dual, counts))
+    return error, math.sqrt(total), worst / error
+
+
 def decision_self_test(prediction: dict[str, Any]) -> None:
     """The third-length decision on model devices (expected counts, no random draw): known-good devices read on-line,
     known-bad devices read off-line or anchors-moved with the deviation recovered, a qubit that fails its gate drops
@@ -1999,53 +2058,35 @@ def decision_self_test(prediction: dict[str, Any]) -> None:
     arms, t1 = report["h1_schedule"]["arms"], report["t1_delay"]
     preps = prepare_all(counts, prediction, arms, t1)
     d = prediction["prx_seconds"]
-
-    def finite_difference(function: Any, dual: Dual) -> tuple[float, float, float]:
-        """The delta method's error of dual, the error from central differences of function over the same counts and
-        the largest difference of one derivative from the delta method's, in units of the delta method's error."""
-        total, worst = 0.0, 0.0
-        for key, derivative in dual.grad.items():
-            ones, shots = counts[key]
-            step = 1e-3 * shots
-            values = [function({**counts, key: (ones + sign * step, shots)}) for sign in (1, -1)]
-            numeric = (values[0] - values[1]) / (2 * step / shots)
-            total += numeric**2 * shot_variance(counts, key)
-            worst = max(worst, abs(numeric - derivative) * math.sqrt(shot_variance(counts, key)))
-        error = math.sqrt(variance(dual, counts))
-        return error, math.sqrt(total), worst / error
-
-    tau = subject_tau(prediction, "cohort")
-
-    def contrast_value(moved: Counts) -> float:
-        trial = prepare_all(moved, prediction, arms, t1)
-        reading = contrast_reading(moved, trial, cohort["qubits"], coefficients, tau=tau)
-        return required(reading, "the cohort")["value_seconds"]
-
+    cohort_members = tuple(cohort["qubits"])
     coefficients = contrast_of(250, line["anchors"])
-    reading = required(contrast_reading(counts, preps, cohort["qubits"], coefficients, tau=tau), "the cohort")
-    error, numeric, worst = finite_difference(contrast_value, reading["_dual"])
+    contrast_estimator = Estimator(
+        "contrast",
+        prediction,
+        arms,
+        t1,
+        cohort_members,
+        tuple(coefficients.items()),
+        subject_tau(prediction, "cohort"),
+    )
+    reading = required(
+        contrast_reading(counts, preps, cohort["qubits"], coefficients, tau=contrast_estimator.tau), "the cohort"
+    )
+    error, numeric, worst = central_differences(contrast_estimator, counts, reading["_dual"])
     if abs(numeric / error - 1) > 1e-3 or worst > 1e-3:
         raise RuntimeError(f"the deviation's error {error} against {numeric} by finite differences, worst {worst}")
     # The delay fit's rate against t1_fit's, qubit by qubit, with the fit's weights held in the delta method.
     for qubit in cohort["qubits"]:
-
-        def rate_of(moved: Counts, qubit: str = qubit) -> float:
-            pair = readout_pair(moved, qubit)
-            fit_row = t1_fit(moved, qubit, {"e01": pair[0], "e10": pair[1]}, prediction["t1_delays"])
-            return float(fit_row["rate_per_second"])
-
-        error, numeric, _ = finite_difference(rate_of, required(preps[qubit].k1, qubit))
+        rate_estimator = Estimator("rate", prediction, arms, t1, cohort_members, qubit=qubit)
+        error, numeric, _ = central_differences(rate_estimator, counts, required(preps[qubit].k1, qubit))
         if abs(numeric / error - 1.0) > FIXED_WEIGHT_TOLERANCE:
             raise RuntimeError(f"{qubit}: the rate's error {error} against {numeric} by finite differences")
     # The anchors' pooled gaps hold their pooling weights fixed, with the tolerance stated at FIXED_WEIGHT_TOLERANCE.
     for n in line["anchors"]:
         anchor = required(cohort_gap(counts, preps, cohort["qubits"], 0, n, d)[0], f"the cohort at {n}")
-
-        def anchor_value(moved: Counts, n: int = n) -> float:
-            trial = prepare_all(moved, prediction, arms, t1)
-            return required(cohort_gap(moved, trial, cohort["qubits"], 0, n, d)[0], "the cohort").value
-
-        error, numeric, _ = finite_difference(anchor_value, anchor)
+        error, numeric, _ = central_differences(
+            Estimator("anchor", prediction, arms, t1, cohort_members, length=n), counts, anchor
+        )
         if abs(numeric / error - 1.0) > FIXED_WEIGHT_TOLERANCE:
             raise RuntimeError(f"the anchor gap at {n} pulses has error {error}, {numeric} by finite differences")
     # The cell identity behind the closed form: the contrast of the gaps to the baseline equals the closed form.
@@ -2124,8 +2165,9 @@ def third_length_self_test() -> None:
 
 
 def calibration_key_self_test(calibration_dir: Path) -> None:
-    """The calibration reader checks that the metrics describe the architecture's set under either key, and an explicit
-    null in the first key does not bypass the check."""
+    """The calibration reader and the build's calibration_set_of (the guard of build --calibration-from) check that the
+    metrics describe the architecture's set under either key, and an explicit null in the first key does not bypass
+    the check."""
     metrics = json.loads((calibration_dir / "metrics.json").read_text(encoding="utf-8"))
     set_id = json.loads((calibration_dir / "dynamic-quantum-architecture.json").read_text(encoding="utf-8"))[
         "calibration_set_id"
@@ -2144,13 +2186,16 @@ def calibration_key_self_test(calibration_dir: Path) -> None:
             changed = {k: v for k, v in metrics.items() if k not in ("describes_id", "calibration_set_id")}
             changed["describes_id"], changed["calibration_set_id"] = described, named
             (folder / "metrics.json").write_text(json.dumps(changed), encoding="utf-8")
-            try:
-                iqm_sim.Calibration.from_directory(folder)
-                loaded = True
-            except ValueError:
-                loaded = False
-            if loaded != accepted:
-                raise RuntimeError(f"metrics describing {described!r} and naming {named!r}: loaded {loaded}")
+            for reader in (iqm_sim.Calibration.from_directory, calibration_set_of):
+                try:
+                    reader(folder)
+                    loaded = True
+                except ValueError:
+                    loaded = False
+                if loaded != accepted:
+                    raise RuntimeError(
+                        f"metrics describing {described!r} and naming {named!r}: {reader} loaded {loaded}"
+                    )
 
 
 def self_test() -> str:
