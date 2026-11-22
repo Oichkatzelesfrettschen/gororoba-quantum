@@ -235,3 +235,5 @@ The [Garnet follow-up case review](garnet-followup-case/reconciliation.md) (pull
 reviewers' and one red-teamer's findings on [the brief](garnet-followup-case/brief.md) for
 `scripts/iqm_garnet_followup.py`, `gororoba_quantum/sedenion_sign_oracle.py` and the written case, fixed before
 the case spent credits.
+
+The [Belenos six-slot diagnostic review](bdsc-diagnostic-shape-a/README.md) (pull request 983) records four reviewers' findings on the power statement under repeated blocks and the forked four-slot functions.

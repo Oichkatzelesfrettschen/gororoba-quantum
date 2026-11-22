@@ -129,8 +129,8 @@
   },
   "margin": 0.02,
   "power": {
-   "model": "each seed test is a pooled chi-square of seed effects about their group mean; independent seed effects of SD s over equal counting errors e scale its null distribution by 1 + k (s / e)^2 (k = 4 for seed_common, whose seed offset is shared by the 4 superposition states and so averages their counting errors, and 1 otherwise), so the test at alpha reads resolved with probability sf(isf(alpha, df) / (1 + k (s / e)^2), df)",
-   "premises": "reference standard errors under independent Bernoulli trials, equal across the pooled cells, seed effects independent across seeds and (for seed_superposition and seed_interaction) across states; the provider contract establishes none of these, so the numbers plan the design and do not certify a reading",
+   "model": "each seed test is a pooled chi-square of seed effects about their group mean over both blocks; block 2 repeats block 1's returned circuits, so a seed's effect is common to its copies in the two blocks, and under seed SD s over counting error e the statistic is (1 + 2 k (s / e)^2) X + Y with X and Y independent central chi-squares of df / 2 degrees of freedom (k = 4 for seed_common, whose seed offset is shared by the 4 superposition states and so averages their counting errors, and 1 otherwise); the test at alpha rejects above isf(alpha, df) of the null chi-square",
+   "premises": "reference standard errors under independent Bernoulli trials, equal across the pooled cells, a seed's effect identical in both blocks and independent across seeds and (for seed_superposition and seed_interaction) across states; a seed effect that changes between blocks lowers the detectable ratio toward the independent-block value; the provider contract establishes none of these, so the numbers plan the design and do not certify a reading",
    "alpha": 0.01,
    "unit": "s / e, with e the counting error of one fraction (about 0.0025 at p = 1/2 and 40000 trials)",
    "seed_slots": 6,
@@ -138,22 +138,22 @@
     "seed_superposition": {
      "df": 80,
      "detectable_seed_sd_over_se": {
-      "power_0.8": 0.789,
-      "power_0.95": 0.927
+      "power_0.8": 0.801,
+      "power_0.95": 0.958
      }
     },
     "seed_common": {
      "df": 20,
      "detectable_seed_sd_over_se": {
-      "power_0.8": 0.628,
-      "power_0.95": 0.785
+      "power_0.8": 0.664,
+      "power_0.95": 0.879
      }
     },
     "seed_interaction": {
      "df": 60,
      "detectable_seed_sd_over_se": {
-      "power_0.8": 0.863,
-      "power_0.95": 1.023
+      "power_0.8": 0.88,
+      "power_0.95": 1.066
      }
     }
    },
@@ -161,22 +161,22 @@
     "seed_superposition": {
      "df": 48,
      "detectable_seed_sd_over_se": {
-      "power_0.8": 0.927,
-      "power_0.95": 1.107
+      "power_0.8": 0.95,
+      "power_0.95": 1.165
      }
     },
     "seed_common": {
      "df": 12,
      "detectable_seed_sd_over_se": {
-      "power_0.8": 0.768,
-      "power_0.95": 1.002
+      "power_0.8": 0.84,
+      "power_0.95": 1.203
      }
     },
     "seed_interaction": {
      "df": 36,
      "detectable_seed_sd_over_se": {
-      "power_0.8": 1.02,
-      "power_0.95": 1.233
+      "power_0.8": 1.053,
+      "power_0.95": 1.317
      }
     }
    }

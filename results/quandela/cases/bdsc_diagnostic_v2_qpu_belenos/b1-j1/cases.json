@@ -6876,7 +6876,7 @@
   7
  ],
  "eligibility": "exactly one click among the 24 outputs; selected when that click is on a selected output",
- "diagnostic_case_sha256": "c3773a3c3db0092c8f70338e675e5671ab4fbdd353f2516e463e39d30365021e",
+ "diagnostic_case_sha256": "872b3c529844b4e77814597ba917e0bb39ff4a56475a73cfb112282eda876131",
  "target_sha256": "0a4b00e121c2a64f4cbed7c117e898578d0ecfbcdecf83a4e0b74951163b1794",
  "circuit": {
   "file": "circuit.json",
@@ -6902,7 +6902,7 @@
   "scripts/bdsc_diagnostic.py": "321f1fd8162bc233256db4a66fbc59271adf141440880f4aa8701438684d38c8",
   "scripts/bdsc_diagnostic_acquisition_analysis.py": "7a47640dc930c0a5a96af16142633e557f1705c0bb682dc96342ca0aa815d66d",
   "scripts/bdsc_diagnostic_acquisition_case.py": "12159f027beb9e4a2c7437788cbe5c815dbcc8c05f32d410f17e3b1a86904e55",
-  "scripts/bdsc_diagnostic_v2.py": "3611ff574cfcca999412db43de18199f17594ae546eee52097fccec4c4fd6d9a",
+  "scripts/bdsc_diagnostic_v2.py": "60ddd8efbb62a918bf55cc047a99878c72296a213a0703ffc6b2c3c482b46493",
   "scripts/bdsc_diagnostic_v2_analysis.py": "cbe1cefc75148d02a8941de8f5b3e87207ca0ed1bba89073506ef737c0f4cc34",
   "scripts/bdsc_diagnostic_v2_case.py": "1ef1c76fc82ee35071e501730c6fc7c746c2a24519894446c99210e761f278ee",
   "scripts/bdsc_forensics.py": "380a535d8f6c19de168cd06ca5c43b315ffa29bd6fb1708c73eca7d89eeac4cd",
