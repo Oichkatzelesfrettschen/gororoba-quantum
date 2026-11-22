@@ -468,3 +468,40 @@ Result for E8-bar -> VB (ledger A5-315): `quadric_lift.py --slug e8-vb` finished
 h_2 = 34, with largest denominator 25 and a nonzero imaginary part; no denominator is divisible by 32029, its
 reduced row echelon form reduces to the retained K2 at (32029, i = 9115), and the mutation arm is detected. The
 comparison at 32009 is not run: that relation file is retained outside the directory the driver reads.
+
+## E8-bar -> VB over Q(i): both components of V(K2) lie in the fiber, and L = K2 (ledger A5-597)
+
+The arc certificate of [../a5-exceptional-fibers/arcs-vb](../a5-exceptional-fibers/arcs-vb/README.md) holds over F_32009
+and F_32029 and leaves characteristic 0 unaddressed. `arcs_vb_qi.py` writes one Singular script, `arcs-vb-qi.sing`,
+that repeats it on the J and G of the Q(i) producer (`reduction_check._script`, slug `e8-vb`; 8 slice variables, 17
+generators of J, 10 generators G):
+
+1. The degree-2 relations {q : q(G) in J + m I^2} over Q(i), by the Singular stage of `quadric_lift.py`: 21
+   quadrics on 55 products (the count of A5-315, whose run retained no quadrics). Their ideal K2 in Q(i)[y(1..10)]
+   has dimension 4 and multiplicity 7. Each relation lies in the ideal L of the fiber cone.
+2. `minAssGTZ` returns two minimal primes, P1 of dimension 4 and degree 3 (7 generators) and P2 of dimension 4 and
+   degree 4 (12 generators), and K2 = P1 n P2 by mutual reduction, so K2 is radical. Control: K2 without its first
+   quadric does not contain the intersection.
+3. The two arc families of the modular certificate, with rational coefficients and the arc parameters as ring
+   variables over Q(i):
+
+| Family | J on the arc | Order of G | K2 nonzero on the limit | P1 nonzero | P2 nonzero | Rank of [dF, F] at two points |
+|---|---|---|---|---|---|---|
+| generic point of the line (w, rho, sig of order 1, k constant) | 0 of 17 on Phi | 2 | 0 of 21 | 7 of 7 | 0 of 12 | 4, 4 |
+| the point k = -9 (k + 9, rho, sig of order 1, w of order 2) | 0 through order 12 | 4 | 0 of 21 | 0 of 7 | 8 of 12 | 4, 4 |
+| generic, mutated (t7 doubled) | 6 of 17 | 2 | 12 | 7 of 7 | 8 of 12 | control |
+| special, mutated (t8 doubled) | 16 through order 12 | 4 | 17 | 5 of 7 | 11 of 12 | control |
+
+The limit vector of an arc of V(J) through the origin is a point of V(L). The generic family has limits in V(P2) and
+rank 4 = dim V(P2), so it is dominant onto V(P2); the special family has limits in V(P1) and outside V(P2) with rank
+4 = dim V(P1), so it is dominant onto V(P1). Hence V(L) = V(K2), L lies in the radical of K2, which is K2, and with K2
+inside L the fiber cone is Q(i)[y] / K2 in every degree: dimension 4, multiplicity 7, two components of degrees 3 and
+4. The numbers of the table are those of the modular certificate except the generator count of P2 (12 here, 9 there:
+another generating set of a prime of the same dimension and degree). The mutated arcs leave V(J).
+
+Scope: the retained VB basepoint and its slice; the boost direction of the VB orbit (A5-419, A5-428) is not covered.
+The script names its series variable x and the arc parameter kpar because the producer script holds a ring s and an
+integer k. Run: Singular 4.4.1 on an aarch64 Linux host, 6 min 26 s at 1.40 GB (`arcs-vb-qi.log`, `arcs-vb-qi.time`;
+the log holds the producer's J and G as `RESULT reduced_j_*` and `reduced_g_*` lines).
+
+    "$PYTHON" docs/evidence/a5-char0-transfer/arcs_vb_qi.py OUT.sing && Singular -q --no-warn OUT.sing
