@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-11-21T17:39:11+00:00",
+ "approval": "owner AskUserQuestion 2026-11-21T16:43Z: Finish, then scan (Recommended)",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "9dbadbf47172287e9d335ae96a274c7e5a75651a570f6794e8a49de009ef4485",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 5,
+ "batch_job": 963047,
+ "project": 864201,
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "b0-rxz-q4-m5.cq",
+   "job": 1754630,
+   "sha256": "c49c6c97663191472d01ce328dad3af48468a8316d938854bf99cec72fe4f8b5"
+  },
+  {
+   "file": "b0-rxz-q4-p5.cq",
+   "job": 1754631,
+   "sha256": "fbb1ef74442666191ec3f475b3105090fcf585c134ef9f5125506a4b8921b5cc"
+  },
+  {
+   "file": "b0-rxz-q4-p10.cq",
+   "job": 1754632,
+   "sha256": "e2773702d59f36480d1d5bd4ad50502dcac35e6943041282b29e4614db5237a8"
+  }
+ ],
+ "submitted_utc": "2026-11-21T17:39:12+00:00"
+}
