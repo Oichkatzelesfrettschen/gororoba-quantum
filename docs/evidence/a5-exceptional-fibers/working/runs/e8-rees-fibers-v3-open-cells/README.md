@@ -54,6 +54,15 @@ line are unchanged.
   the fiber script is the v3 script with the satstd and colon section replaced by a read of that basis and the line
   `CERT H_outside_HS 0`.
 
+## Conjugation between the two signs (A5-591, A5-592)
+
+`conjugation/conjugation_map.sing` holds the matrix C, the frame F and the ideal J of the N- and N+ scripts with i as
+a ring variable modulo i^2 + 1, and checks the substitution Phi (i -> -i, s4 -> -s5, s5 -> s4, s7 <-> s8): the log
+prints zero nonzero entries for D Phi(C_N-) D + C_N+ and D Phi(F_N-) E - F_N+, mutual containment of Phi(J_N-) and
+J_N+, and the factored form of detB for both signs. This is the mechanism behind the equal relation lines of a sign
+pair. `conjugation/closed_forms.py` compares the detB line and the 21 UNIT lines of the eight logs with the products
+of A5-592; `closed_forms.log` reads a match on all eight.
+
 ## Second-host replay of the retained v2 full runs (A5-578)
 
 `replay-v2-full/` holds the logs of `e8-nm-p.v2-u-full.sing` and `e8-np-p.v2-u-full.sing` (retained bytes) run on a

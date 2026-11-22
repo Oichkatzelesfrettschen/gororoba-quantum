@@ -1,0 +1,18 @@
+Singular for aarch64-Linux version 4.4.1 (44105, 64 bit) Dec  6 2025 11:10:58
+a1d7278b251e39c907641276ddee0d94919ffefa8613ad9863a2ff4e262d01ed  conjugation_map.sing
+J dim mult size 5 28 82
+J dim mult size 5 28 80
+CHECK C nonzero entries of D*Phi(C-)*D + C+: 0
+CHECK C alt nonzero entries of D*Phi(C-)*D - C+: 210
+CHECK F nonzero entries of D*Phi(F-)*E - F+: 0
+CHECK F plain nonzero entries of Phi(F-) - F+: 14
+CHECK detB N- minus -1024(s2^2-1)^2(s2-i)^2: 1
+CHECK detB N+ minus -1024(s2^2-1)^2(s2+i)^2: 1
+CHECK detB Phi(N-) equals N+: 1
+J sizes 82 80
+CHECK J generators of Phi(J-) absent from the generator list of J+ (up to scalar): 10
+STAGE std start
+CHECK J Phi(J-) outside J+: 0
+CHECK J J+ outside Phi(J-): 0
+DONE
+EXIT 0

@@ -40,6 +40,6 @@ adds this record.
 
 ## Conjectures recorded as open rows
 
-- A5-591: an explicit conjugation substitution with two sign diagonals carries the N- script data onto the N+ data (Neon). Not computed here.
-- A5-592: closed forms of the pivot determinant and the unit polynomials (Neon). Not recomputed here.
+- A5-591: an explicit conjugation substitution with two sign diagonals carries the N- script data onto the N+ data (Neon). Computed after the round in exact arithmetic (`conjugation/conjugation_map.log`): the identities hold, and the row is certified.
+- A5-592: closed forms of the pivot determinant and the unit polynomials (Neon). Computed after the round (`conjugation/closed_forms.log`): every detB and UNIT line of the eight logs matches, and the row is certified at the two primes.
 - grok: the Rees-stage size depends on the sign alone (5955 and 6139) and the numbered unit lines agree inside each pair; both are read from the logs and are consistent with A5-591.

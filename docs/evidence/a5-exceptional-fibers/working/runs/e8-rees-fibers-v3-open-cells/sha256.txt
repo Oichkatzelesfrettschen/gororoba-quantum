@@ -44,7 +44,7 @@ c068a0994e66d09977d160707f97a30c9be40843418e164849c0545e87e64a25  ./modulo-colon
 059b2d4097f73ce128a0142ee5d97ab4db603aac1629796ad45bfd6c401b5e06  ./modulo-colon/y2-base.sing
 c2ae6dcf08150f2f5b3e155a2fcafa02b2f561b98089d54947fbce6b91075654  ./modulo-colon/y2-modstd.log
 6db0b33c5f6b5b5d00a8821750f4a926aee47821682e51965dee56795f1720ac  ./modulo-colon/y2-modstd.sing
-249eebb1c44592774f73aafce06f3bb73902d7a43dc802721641600ef8c87286  ./README.md
+ad86f64ac412a4bd7ba6c4ed9acb1afb17148f3ab55a3beb3c8dd823582e4357  ./README.md
 7b1e88ee0666349ab373dc571c41828ad273b78d9586a7b08b785387d7149ceb  ./render_cells.py
 dc879adb5ddc1996d32e7d219b7e7fdf241f9c978c3b5a8a50d477cdd5ef4f08  ./replay-v2-full/bases.sha256
 b70be68d9de1857a469f287b2dac7f5ae39f5424c334c00ffe5f3815057a8977  ./replay-v2-full/e8-nm-p.v2-u-full.log
@@ -52,3 +52,7 @@ ccb50c97105967cb0e415de2d01af25fb1d28fbbda94f75cfee3fd04a64ff30e  ./replay-v2-fu
 956db1bf1facc7564c1978b5e3aa72b72a60257c1f6bcae57e61e8cf1a5e1290  ./replay-v2-full/e8-np-p.v2-u-full.log
 e0942f1945cbd64ab02e47448e89e7b50fbd031e3b66f9ffcce53bfe5158dc90  ./replay-v2-full/e8-np-p.v2-u-full.time
 9e94ced4d94d133e2bb9c3b0d7440e2fe00bf3f139333949824c2f1e5eac9b66  ./run2.sh
+c1ed7e3c91ee9f3b1742cd817e030c5a5b31b431423f9e66824180d131691852  ./conjugation/closed_forms.log
+290ef9a435fe78de8e72a4569a9c0bdea77332e1343276a304a2558c80515b93  ./conjugation/closed_forms.py
+2416e4f92265d7d0763b905b42dff80dc9a317a92d583c3aee929638c978c9c6  ./conjugation/conjugation_map.log
+a1d7278b251e39c907641276ddee0d94919ffefa8613ad9863a2ff4e262d01ed  ./conjugation/conjugation_map.sing
