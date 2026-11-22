@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import shutil
 import subprocess
 import sys
@@ -13,6 +14,7 @@ from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import Any
 
+import anu_qrng
 import bdsc_cases
 import bdsc_certificate as cert
 import bdsc_diagnostic as frozen
@@ -21,6 +23,7 @@ import bdsc_diagnostic_v2_analysis as reader
 import bdsc_diagnostic_v2_case as builder
 import pytest
 import qd_platform as qd
+from scipy.integrate import quad
 from scipy.stats import chi2
 
 ROOT = builder.ROOT
@@ -158,6 +161,17 @@ def test_the_case_record_differs_from_the_frozen_one_only_in_counts_and_wording(
         raise AssertionError("the new degrees of freedom and residual count are absent")
 
 
+def rejection_over_the_common_part(ratio: float, df: int, scale: int) -> float:
+    """P((1 + 2 scale ratio^2) X + Y > isf(alpha, df)), integrated over X rather than Y as the module does."""
+    half = df // 2
+    critical = float(chi2.isf(frozen.ALPHA, df))
+    weight = 1 + 2 * scale * ratio**2
+    inside, _ = quad(
+        lambda x: float(chi2.pdf(x, half) * chi2.sf(critical - weight * x, half)), 0.0, critical / weight, limit=400
+    )
+    return inside + float(chi2.sf(critical / weight, half))
+
+
 def test_the_power_statement_matches_the_chi_square_it_inverts() -> None:
     statement = diag.case_record()["analysis"]["power"]
     for key, slots in (("six_slots", 6), ("frozen_four_slots", 4)):
@@ -167,8 +181,7 @@ def test_the_power_statement_matches_the_chi_square_it_inverts() -> None:
         for name, row in rows.items():
             scale = layout.STATE_COUNT if name == "seed_common" else 1
             for power, ratio in zip(layout.POWERS, row["detectable_seed_sd_over_se"].values(), strict=True):
-                shift = 1 + scale * ratio**2
-                got = float(chi2.sf(chi2.isf(frozen.ALPHA, row["df"]) / shift, row["df"]))
+                got = rejection_over_the_common_part(ratio, row["df"], scale)
                 if abs(got - power) > 0.01:
                     raise AssertionError(f"{key}/{name}: power {got} at the ratio {ratio}, expected {power}")
     for name, row in statement["six_slots"].items():
@@ -245,6 +258,39 @@ def test_a_draw_of_fewer_than_150_values_is_refused(tmp_path: Path) -> None:
         short = bdsc_cases.synthetic_draw(Path(directory), 50)
         with pytest.raises(ValueError, match="need 150"):
             acquisition.documents(PLATFORM, short)
+
+
+def test_repeated_blocks_need_a_larger_seed_effect_than_independent_ones() -> None:
+    """Shared seed effects across blocks keep the mean of the statistic and widen it, so power falls at each ratio."""
+    for name, row in layout.power_rows(layout.SLOTS).items():
+        scale = layout.STATE_COUNT if name == "seed_common" else 1
+        for power, ratio in zip(layout.POWERS, row["detectable_seed_sd_over_se"].values(), strict=True):
+            independent = math.sqrt((chi2.isf(frozen.ALPHA, row["df"]) / chi2.isf(power, row["df"]) - 1) / scale)
+            if not ratio > independent:
+                raise AssertionError(f"{name}: {ratio} at power {power} is not above the independent {independent}")
+    if abs(layout.rejection(0.0, 20, 4) - frozen.ALPHA) > 1e-9:
+        raise AssertionError("the test does not hold its size at a zero seed effect")
+
+
+def test_a_draw_whose_six_seeds_repeat_is_refused() -> None:
+    scratch = ROOT / "docs/local"
+    scratch.mkdir(exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=scratch) as directory:
+        values = list(range(1000, 1150))
+        values[5] = values[0]
+        raw = json.dumps({"success": True, "type": "uint16", "length": str(len(values)), "data": values})
+        url = f"{anu_qrng.ENDPOINTS['aqn']}?length={len(values)}&type=uint16"
+        draw = Path(directory) / "draw.json"
+        draw.write_text(json.dumps(anu_qrng.record_from(url, "self-test", raw)), encoding="utf-8")
+        with pytest.raises(ValueError, match="the case needs 6 distinct seeds"):
+            layout.diag.draw_values(draw)
+
+
+def test_the_fork_refuses_the_four_slot_self_test() -> None:
+    if layout.SCOPE["self_test"] is not layout.self_test:
+        raise AssertionError("the fork runs the frozen self-test")
+    with pytest.raises(SystemExit, match="carries no --self-test"):
+        layout.diag.self_test()
 
 
 def test_check_round_trips_and_refuses_a_changed_record_or_a_tree_under_the_original(
