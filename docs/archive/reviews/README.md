@@ -235,3 +235,5 @@ The [Garnet follow-up case review](garnet-followup-case/reconciliation.md) (pull
 reviewers' and one red-teamer's findings on [the brief](garnet-followup-case/brief.md) for
 `scripts/iqm_garnet_followup.py`, `gororoba_quantum/sedenion_sign_oracle.py` and the written case, fixed before
 the case spent credits.
+
+The [sub-step 3a attaching-maps review](a5-attaching-maps-3a/README.md) (pull request 984) records four reviewers' findings on the certificates of `attaching_maps_resolved.py` and ledger row 3a, and the predicate the retained records cannot decide.
