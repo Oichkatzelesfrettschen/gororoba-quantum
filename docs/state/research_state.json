@@ -4048,6 +4048,237 @@
       "question": "On Garnet, does a sedenion left sign row on a four-qubit square imprint its exact Walsh peak against its degree-two truncation on the same CZ sequence and against a null arm?"
     },
     {
+      "id": "qi-pathion-null-phase-scan-qx-2026-11-21t1650-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_qx-batch-00",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On the QX emulator, do the twelve circuits of the Tuna-17 phase scan reproduce their ideal laws, as the control the Tuna-17 series requires?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-qx-2026-11-21t1650-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_qx-batch-01",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On the QX emulator, do the twelve circuits of the Tuna-17 phase scan reproduce their ideal laws, as the control the Tuna-17 series requires?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-qx-2026-11-21t1650-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_qx-batch-02",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On the QX emulator, do the twelve circuits of the Tuna-17 phase scan reproduce their ideal laws, as the control the Tuna-17 series requires?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-qx-2026-11-21t1650-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_qx-batch-03",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On the QX emulator, do the twelve circuits of the Tuna-17 phase scan reproduce their ideal laws, as the control the Tuna-17 series requires?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-00",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-01",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-02",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-03",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-04",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-05",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-06",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-07",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-08",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-08",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-09",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-09",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-10",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-10",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-11",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-11",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-12",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-12",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-13",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-13",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-14",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-14",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-15",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-15",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-16",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-16",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-17",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-17",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-18",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-18",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-19",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-19",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-20",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-20",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-21",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-21",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-22",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-22",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-23",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-23",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-24",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-24",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-25",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-25",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-26",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-26",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-27",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-27",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-phase-scan-tuna-17-2026-11-21t1650-batch-28",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-28",
+      "family": "pathion coset-block null offset, injected-phase scan of b0 at coupler 8-12 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to injected Rz phases before q12's pulses, after q8's CZ gates of coupler 8-12 and to q4 pulse angles as a q12 phase, a coupler phase, a q8 phase or none of them predicts, with a padded center in every data batch, an Rx-to-X90 bridge and readout brackets?"
+    },
+    {
       "id": "qi-interleaved-tuna-17-2026-11-19t1735-crosstalk-batch-00",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-crosstalk-batch-00",
