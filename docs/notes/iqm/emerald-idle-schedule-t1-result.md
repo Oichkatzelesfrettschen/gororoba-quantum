@@ -47,7 +47,8 @@ qubits named in each item.
   calibration error. Support: the gap is common to both layouts and the median delay T1 reads above the calibration
   copy. Falsifier: a train of a third length (250 or 2000 pulses) off the line 21.4 ns + 5.84 us / N by more than three
   combined standard errors, or a gap that tracks the train qubit. Cheapest test: both lengths on one tightly fitted
-  qubit (QB24), same estimator.
+  qubit (QB24), same estimator. Written case:
+  [idle-schedule-third-length-emerald](../../../results/iqm/proposals/idle-schedule-third-length-emerald/CASE.md).
 - hypothesis: the fixed per-train wait of about 5.8 us belongs to the terminal measurement. These circuits end in one
   joint `measure` over all twelve qubits, so iqm-pulla's multiplexed-probe merge pass, which postpones sequential
   measurements (docs/notes/iqm/docs/iqm-pulla), has nothing to merge here and does not explain the term. Test: a train

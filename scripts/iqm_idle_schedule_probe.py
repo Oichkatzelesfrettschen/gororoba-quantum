@@ -436,7 +436,11 @@ def write(directory: Path, live: bool = False, profile: Profile = GARNET) -> Non
     if live:
         fetch_calibration(calibration_dir, profile.qc)
     else:
-        source = ROOT / profile.calibration_from if profile.calibration_from else iqm_sim.EVIDENCE / profile.qc / "calibration"
+        source = (
+            ROOT / profile.calibration_from
+            if profile.calibration_from
+            else iqm_sim.EVIDENCE / profile.qc / "calibration"
+        )
         for name in CALIBRATION_FILES:
             shutil.copyfile(source / name, calibration_dir / name)
     files, prediction = build_from(calibration_dir, profile)
@@ -726,7 +730,12 @@ def line_of(profile: Profile) -> dict[str, Any]:
     subjects: dict[str, Any] = {}
     for name, qubits in profile.line_subjects:
         named = ordered(qubits or set(trains[str(a)]["gaps"]) & set(trains[str(b)]["gaps"]))
-        held = {str(n): dict(zip(("gap_seconds", "se_seconds"), pooled([trains[str(n)]["gaps"][q] for q in named]), strict=True)) for n in (a, b)}
+        held = {
+            str(n): dict(
+                zip(("gap_seconds", "se_seconds"), pooled([trains[str(n)]["gaps"][q] for q in named]), strict=True)
+            )
+            for n in (a, b)
+        }
         ga, gb = held[str(a)], held[str(b)]
         per_train = (ga["gap_seconds"] - gb["gap_seconds"]) / (1 / a - 1 / b)
         predicted = {}
@@ -951,15 +960,21 @@ def planted_counts(
 ) -> dict[str, tuple[int, int]]:
     """Expected counts at the given shots of a model device whose idle train of N pulses lasts N (d + gaps[N]); every
     other circuit reads the device at the gap of the longest listed length (the readout pair, the parallel trains and
-    the delay circuits carry no idle train)."""
-    runs = {n: expected_ones(circuits, calibration_dir, "asap", {}, profile.prx_seconds + g) for n, g in gaps.items()}
-    rest = runs[max(gaps)]
-    counts = {}
-    for key in rest:
-        name = key.split("@")[0]
+    the delay circuits carry no idle train). Each circuit is simulated once, at its own length's gap."""
+
+    def length(circuit: dict[str, Any]) -> int | None:
+        name = circuit["name"]
         n = int(name.rsplit("-", 1)[1]) if name.startswith("idle-") else None
-        source = runs[n] if n in runs else rest
-        counts[key] = (round(source[key] * shots), shots)
+        return n if n in gaps else None
+
+    counts: dict[str, tuple[int, int]] = {}
+    for n in {length(c) for c in circuits}:
+        # The model's circuit grid is 1 ns (a pulse of other length is rounded, with a warning), so each planted
+        # pulse length is its nearest whole nanosecond.
+        gap = gaps[n if n is not None else max(gaps)]
+        pulse = round((profile.prx_seconds + gap) * 1e9) * 1e-9
+        ones = expected_ones([c for c in circuits if length(c) == n], calibration_dir, "asap", {}, pulse)
+        counts |= {key: (round(p * shots), shots) for key, p in ones.items()}
     return counts
 
 
@@ -975,7 +990,9 @@ def power(case_dir: Path) -> dict[str, Any]:
     line = prediction["line"]
     tested = [n for n in profile.pulses if n > 0 and n not in line["anchors"]]
     planted = {
-        n: line["subjects"]["cohort"]["predicted"][str(n)]["gap_seconds"] if n in tested else line["subjects"]["cohort"]["retained"][str(n)]["gap_seconds"]
+        n: line["subjects"]["cohort"]["predicted"][str(n)]["gap_seconds"]
+        if n in tested
+        else line["subjects"]["cohort"]["retained"][str(n)]["gap_seconds"]
         for n in (*tested, *line["anchors"])
     }
     rows: dict[str, Any] = {}
@@ -988,9 +1005,10 @@ def power(case_dir: Path) -> dict[str, Any]:
                 gaps = [report["h2_gap"]["trains"][str(n)]["gaps"][q] for q in subject["qubits"]]
                 mean, se = pooled(gaps)
                 combined = math.hypot(se, reference["se_seconds"])
-                rows.setdefault(f"{name}-{n}", {"predicted_ns": reference["gap_seconds"] * 1e9, "line_se_ns": reference["se_seconds"] * 1e9})[
-                    f"x{factor}"
-                ] = {
+                rows.setdefault(
+                    f"{name}-{n}",
+                    {"predicted_ns": reference["gap_seconds"] * 1e9, "line_se_ns": reference["se_seconds"] * 1e9},
+                )[f"x{factor}"] = {
                     "shots": profile.shots * factor,
                     "model_mean_ns": mean * 1e9,
                     "observed_se_ns": se * 1e9,
@@ -1008,19 +1026,31 @@ def third_length_self_test() -> None:
     profile = EMERALD_THIRD
     calibration_dir = ROOT / (profile.calibration_from or "")
     files, prediction = build_from(calibration_dir, profile)
-    base, _ = build_from(calibration_dir, EMERALD_T1)
+    retained = ROOT / "results/iqm/cases" / EMERALD_T1.case / "circuits"
     case = json.loads(files["cases.json"])
     job = case["jobs"][0]
     circuits = [json.loads(text) for rel, text in files.items() if rel.startswith("circuits/")]
     if case["case"] != profile.case or len(circuits) != 20 or job["shots"] != 4000:
         raise RuntimeError(f"the third-length case is {case['case']}, {len(circuits)} circuits at {job['shots']} shots")
-    if any(files[rel] != text for rel, text in base.items() if rel.startswith("circuits/")):
+    kept_circuits = sorted(retained.glob("*.json"))
+    if len(kept_circuits) != 16 or any(
+        files[f"circuits/{p.name}"] != p.read_text(encoding="utf-8") for p in kept_circuits
+    ):
         raise RuntimeError("the third-length case changes a circuit of the successor")
-    names = {c["name"] for c in circuits} - {Path(rel).stem for rel in base if rel.startswith("circuits/")}
+    names = {c["name"] for c in circuits} - {p.stem for p in kept_circuits}
     if names != {f"idle-{b}-{n}" for b in profile.train for n in (250, 2000)}:
         raise RuntimeError(f"the third-length case adds {sorted(names)}")
     if JOB_SECONDS + job["expected_seconds"] > profile.max_credits["emerald"] / 0.75 - PLAN_HEADROOM:
         raise RuntimeError(f"the third-length case's {job['expected_seconds']} s leave no headroom under its ceiling")
+    committed = ROOT / "results/iqm/cases" / profile.case
+    if committed.is_dir():
+        # The committed case against this build, floats to 1e-12, as the successor's.
+        for rel, text in files.items():
+            built, kept = json.loads(text), json.loads((committed / rel).read_text(encoding="utf-8"))
+            if rel == "cases.json":
+                built.pop("prediction_sha256"), kept.pop("prediction_sha256")
+            if not same(built, kept):
+                raise RuntimeError(f"the third-length build of {rel} differs from the committed case")
     line = prediction["line"]
     cohort = line["subjects"]["cohort"]
     if len(cohort["qubits"]) != 11 or "QB44" in cohort["qubits"]:
@@ -1031,7 +1061,10 @@ def third_length_self_test() -> None:
     # The decision on constructed readings: qubits A and B, the subject "cohort" of both and "solo" of B.
     def reading(shift: dict[str, float]) -> dict[str, Any]:
         gaps = {"250": 44.0e-9, "500": 33.0e-9, "1000": 27.0e-9, "2000": 24.0e-9}
-        return {n: {"gaps": {q: {"gap_seconds": g + shift.get(n, 0.0), "se_seconds": 1.0e-9} for q in "AB"}} for n, g in gaps.items()}
+        return {
+            n: {"gaps": {q: {"gap_seconds": g + shift.get(n, 0.0), "se_seconds": 1.0e-9} for q in "AB"}}
+            for n, g in gaps.items()
+        }
 
     ref = {"se_seconds": 1.0e-9}
     toy = {
@@ -1060,14 +1093,19 @@ def third_length_self_test() -> None:
     if line_test(lost, toy)["verdict"] != "unidentifiable" or line_test(None, toy)["verdict"] != "unidentifiable":
         raise RuntimeError("a record without a named qubit or without trains is not unidentifiable")
 
-    # The whole estimator on expected counts: a device on the line is on-line, one 8 ns above it at 250 pulses is not.
+    # The whole estimator on expected counts: a device on the line is on-line, one 12 ns above it at 250 pulses is not.
     planted = {n: cohort["predicted"][str(n)]["gap_seconds"] for n in (250, 2000)}
     planted |= {n: cohort["retained"][str(n)]["gap_seconds"] for n in line["anchors"]}
-    for bump, want in ((0.0, "on-line"), (12e-9, "off-line")):
-        counts = planted_counts(circuits, calibration_dir, profile, {**planted, 250: planted[250] + bump}, profile.shots)
+    on_line = planted_counts(circuits, calibration_dir, profile, planted, profile.shots)
+    short = [c for c in circuits if c["name"].endswith("-250")]
+    bumped = {250: planted[250] + 12e-9}
+    off_line = {**on_line, **planted_counts(short, calibration_dir, profile, bumped, profile.shots)}
+    for bump, counts, want in ((0.0, on_line, "on-line"), (12e-9, off_line, "off-line")):
         got = evaluate(counts, prediction)["h3_line"]["verdict"]
         if got != want:
-            raise RuntimeError(f"a model device {bump * 1e9:.0f} ns above the line at 250 pulses reads {got}, not {want}")
+            raise RuntimeError(
+                f"a model device {bump * 1e9:.0f} ns above the line at 250 pulses reads {got}, not {want}"
+            )
 
 
 def self_test() -> str:

@@ -1,0 +1,86 @@
+{
+ "case": "idle-schedule-third-length-emerald",
+ "rows": {
+  "QB24-2000": {
+   "line_se_ns": 2.3027334444534313,
+   "predicted_ns": 23.39894082060076,
+   "x1": {
+    "combined_se_ns": 2.649933144269589,
+    "model_mean_ns": 23.95499481988153,
+    "observed_se_ns": 1.311321605440156,
+    "resolvable_deviation_ns": 7.949799432808768,
+    "resolvable_fraction": 0.33975039698419385,
+    "shots": 4000
+   },
+   "x2": {
+    "combined_se_ns": 2.482752259290566,
+    "model_mean_ns": 23.986822304783725,
+    "observed_se_ns": 0.9281581033466478,
+    "resolvable_deviation_ns": 7.448256777871698,
+    "resolvable_fraction": 0.31831597998291217,
+    "shots": 8000
+   }
+  },
+  "QB24-250": {
+   "line_se_ns": 5.8273127785094,
+   "predicted_ns": 40.04107545256456,
+   "x1": {
+    "combined_se_ns": 6.263536224168868,
+    "model_mean_ns": 44.66628369259782,
+    "observed_se_ns": 2.2965869922336153,
+    "resolvable_deviation_ns": 18.790608672506604,
+    "resolvable_fraction": 0.46928331619781943,
+    "shots": 4000
+   },
+   "x2": {
+    "combined_se_ns": 6.049911821045027,
+    "model_mean_ns": 44.750120916271335,
+    "observed_se_ns": 1.6259947182698362,
+    "resolvable_deviation_ns": 18.14973546313508,
+    "resolvable_fraction": 0.4532779216841096,
+    "shots": 8000
+   }
+  },
+  "cohort-2000": {
+   "line_se_ns": 0.7680388790335031,
+   "predicted_ns": 24.291642608002263,
+   "x1": {
+    "combined_se_ns": 0.8776707704155244,
+    "model_mean_ns": 23.973203617858292,
+    "observed_se_ns": 0.4247614171917456,
+    "resolvable_deviation_ns": 2.6330123112465733,
+    "resolvable_fraction": 0.10839169477897696,
+    "shots": 4000
+   },
+   "x2": {
+    "combined_se_ns": 0.8246966056036731,
+    "model_mean_ns": 23.978447356449426,
+    "observed_se_ns": 0.3004010179529697,
+    "resolvable_deviation_ns": 2.4740898168110195,
+    "resolvable_fraction": 0.10184942437758382,
+    "shots": 8000
+   }
+  },
+  "cohort-250": {
+   "line_se_ns": 1.971277156256145,
+   "predicted_ns": 44.7396938343643,
+   "x1": {
+    "combined_se_ns": 2.1093209394498618,
+    "model_mean_ns": 44.73374036389714,
+    "observed_se_ns": 0.7505339424865038,
+    "resolvable_deviation_ns": 6.327962818349586,
+    "resolvable_fraction": 0.14143956464648655,
+    "shots": 4000
+   },
+   "x2": {
+    "combined_se_ns": 2.0414709862321936,
+    "model_mean_ns": 44.73006014089144,
+    "observed_se_ns": 0.5307260695034037,
+    "resolvable_deviation_ns": 6.124412958696581,
+    "resolvable_fraction": 0.13688991662237202,
+    "shots": 8000
+   }
+  }
+ },
+ "schema": "iqm-idle-schedule-third-length-power-v1"
+}
