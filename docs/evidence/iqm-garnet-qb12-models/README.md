@@ -4,7 +4,7 @@
 (`results/iqm/runs/2026-11-21T220406Z-garnet-grover-depth-sedenion-walsh-sedenion`, calibration set ea681de1) and
 writes `qb12_models.json`. It is a descriptive comparison written after the analysis of the job and decides nothing;
 the design's Result ([iqm-garnet-grover-depth-sedenion-walsh](../../design/iqm-garnet-grover-depth-sedenion-walsh.md))
-states the reading. Gate `core-iqm-garnet-qb12-models-replay` reruns it and compares the bytes (about 10 minutes on
+states the reading. Gate `core-iqm-garnet-qb12-models-replay` reruns it and compares the bytes (about 27 minutes on
 the compute workstation).
 
 ## Mechanism
@@ -27,18 +27,22 @@ the compute workstation).
 
 | model | parameters (radians for phases) | deviance | nominal df | AIC |
 |---|---|---|---|---|
-| hybrid | delta -0.4932, e01 0, e10 0.2425, eta 0.5322, l 0.3206, p 0.1225, phi -2.0554, q 0.0569, theta2 -0.1971 | 1182.3 | 411 | 43500.2 |
+| hybrid | delta -0.7986, e01 0.0785, e10 0.2774, eta 0.6094, l 0.416, p 0.0119, phi -1.9134, q 0.0656, theta2 -2.5301 | 1102.8 | 411 | 43420.7 |
 | transition | e01 0.0876, e10 0.0908, eta 0.7855, p 0, phi 0.8383, q 0.1106 | 1420.1 | 414 | 43732 |
-| leakage | e01 0.0016, e10 0.2843, eta 0.3769, l 0.3111, p 0.1757, phi 1.7002, theta2 -0.6016 | 1442.7 | 413 | 43756.6 |
-| cz_phase | delta 0.9713, e01 0.0606, e10 0.1044, eta 0.7592, p 0.1066, phi 0.9327 | 2186.4 | 414 | 44498.3 |
+| leakage | e01 0.0016, e10 0.2843, eta -0.377, l 0.3111, p 0.1757, phi -1.7002, theta2 0.6016 | 1442.7 | 413 | 43756.6 |
+| cz_phase | delta -0.7974, e01 0.0348, e10 0.221, eta 0.5914, p 0.1457, phi -2.4546 | 1971.3 | 414 | 44283.2 |
 | single | e01 0.1142, e10 0.2416, eta 0.5997, p 0, phi 1.6567 | 3172.7 | 415 | 45482.6 |
 | readout | e01 0.216, e10 0.4556 | 8834.4 | 418 | 51138.3 |
 
 - A QB12 state change during the CZ sequence ranks first: transition and leakage each lower the deviance by about
-  1750 below the shared single-qubit terms, a conditional-phase error alone by about 990, and the hybrid of all three
-  lowers it by about 240 more. Every optimizer run converged; the hybrid's 0 to 1 readout error and the
-  single and transition models' excited population p sit at the bound 0, which the record lists (`at_bound`).
-- No model fits absolutely (the hybrid's deviance is 1182 on a nominal 411 degrees of freedom). The likelihood
+  1740 below the shared single-qubit terms, a conditional-phase error alone by about 1201, and the hybrid of all three
+  lowers it by about 317 more. Each model's chosen optimum converged; the single and transition models' excited
+  population p sits at the bound 0, which the record lists (`at_bound`).
+- Every fault model searches its own full grid of starting points and its nested parents' optima (the hybrid its
+  parents' only). A first version that seeded each model from its parent alone found the same order but higher
+  deviances for the conditional-phase model (2186) and the hybrid (1182), so the ranking is not an artifact of one
+  basin; the gate's replay takes about 27 minutes.
+- No model fits absolutely (the hybrid's deviance is 1102.8 on a nominal 411 degrees of freedom). The likelihood
   multiplies the 28 circuits as independent multinomials while one playlist runs every circuit once per shot, so it
   is a composite likelihood: the deviances rank the models, and their degrees of freedom and information criteria lack
   the usual calibration.

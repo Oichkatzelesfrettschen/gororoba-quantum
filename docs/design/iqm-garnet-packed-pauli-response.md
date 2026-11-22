@@ -181,7 +181,7 @@ Open hypotheses:
   circuit.
 - The low response of the first science circuit after the all-ones reference (`circuit-002`, pair 0's -229) is fixed
   across the shots. The post-hoc [settling reading](../evidence/iqm-garnet-packed-pauli-run/settling.json)
-  (`settling.py` beside it) puts circuit-002 -0.09112 below the mean of its arm's other circuits (z -6.86), alike in
+  (`settling.py` beside it) puts circuit-002 0.091 below the mean of its arm's other circuits (z -6.86), alike in
   the first and the second half of the shots (z -5.22 and -4.55); the next five science circuits read
   -0.02743, -0.01677, -0.03912, -0.02418, -0.03463, not monotone, and from the seventh on the residuals scatter about
   zero. Each place after the reference holds one circuit, so place, circuit identity and pair are confounded in this

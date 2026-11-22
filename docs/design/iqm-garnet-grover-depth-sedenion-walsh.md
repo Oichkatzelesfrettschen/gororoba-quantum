@@ -260,15 +260,16 @@ Descriptive readings beside the decisions, deciding nothing:
   such a coupling: in the e_10 null arm QB11 reads 1 in 0.30 and 0.42 of the shots where QB12 reads 1 against 0.09
   and 0.05 where it reads 0, and QB17 in 0.41 and 0.44 against 0.07 and 0.05 (copies c0 and c1), while e_5 leaves
   QB11 and QB17 below 0.015. QB12's two prx in the e_5 null arm are exact inverses, so an amplitude error cancels
-  there and its 0.47 to 0.48 needs a phase, frequency or dephasing fault.
+  there and its 0.47 to 0.48 needs a phase, frequency or dephasing fault, or a population that leaves the qubit subspace
+  between the two prx.
 
 Open hypotheses:
 
 - hypothesis: QB12's state changes during the CZ sequence, by excitation, relaxation or leakage to level 2. A post-hoc
   comparison of QB12 fault models on the job's twelve sedenion circuits and sixteen readout preparations
   ([qb12-models](../evidence/iqm-garnet-qb12-models/README.md)), every fault model sharing QB12's single-qubit terms,
-  ranks a hybrid of leakage, a mid-sequence QB12 transition and a CZ conditional-phase error first (deviance 1182),
-  then transition (1420) and leakage (1443), with a conditional-phase error alone at 2186 and the single-qubit terms
+  ranks a hybrid of leakage, a mid-sequence QB12 transition and a CZ conditional-phase error first (deviance 1102.8),
+  then transition (1420) and leakage (1443), with a conditional-phase error alone at 1971.3 and the single-qubit terms
   alone at 3173. The likelihood is composite and no model fits absolutely, so the order ranks hypotheses; the job's
   readout preparations also show QB12's excitation carrying from one circuit to the next, which every model omits. The
   next calibration set, a0e725eb (2026-11-22T03:02Z), lists QB12 in no gate locus but measure_fidelity and reads its
