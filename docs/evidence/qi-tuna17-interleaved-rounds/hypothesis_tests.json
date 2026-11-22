@@ -20,9 +20,10 @@
    "z": 1.12251234411
   },
   "verdict": {
-   "level_shift": "falsified",
-   "moving_t1": "survives",
-   "reading": "excess consistent with zero"
+   "level_shift": "not detected above the sensitivity",
+   "moving_t1": "consistent",
+   "sensitivity_tau2": 1.51880633334e-06,
+   "reading": "excess consistent with zero; a level shift with tau^2 below the sensitivity stays possible"
   },
   "pooled_by_multiplier": [
    {
@@ -1512,8 +1513,8 @@
   "null_maximum": 0.416428302326,
   "p_value": 0.6300369963,
   "verdict": {
-   "common_disturbance": "falsified",
-   "independent_residuals": "survives"
+   "common_disturbance": "not detected",
+   "reading": "no round-varying component common to the qubits is detected after anchoring; the self-test shows power at a common term of 0.03 against independent terms of 0.01, and smaller common terms stay possible"
   },
   "leading_eigenvector": {
    "m0.5-r0": -0.527226806535,

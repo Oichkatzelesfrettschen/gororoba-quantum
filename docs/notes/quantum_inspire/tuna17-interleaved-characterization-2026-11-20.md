@@ -77,26 +77,32 @@ retained series through the analysis's own functions (output `hypothesis_tests.j
 the case's registered verdicts.
 
 - Moving T1 against an additive level shift. Through `anchored_point`, a per-job level shift tau adds replicate variance
-  in proportion to 1 + (1 - x)^2 + x^2, nonzero at every multiplier, while a T1 that moves between rounds adds
-  (dx/dT)^2 sigma_T^2, which vanishes at 8 and 12 T where x is near 0. Pooled over qubits, the replicate excess at 8 and
-  12 T reads Z 1.12 (34 terms): the level shift is falsified at its threshold of 3 and the moving T1 survives. By
-  multiplier the excess reads Z 2.96, 1.52, 3.73, 2.79, 0.43 and 1.04 at 0.5, 1, 2, 4, 8 and 12 T, present at the short
-  waits and absent at the long ones. Neither profile fits q1.
+  in proportion to 1 + (1 - x)^2 + x^2, at least 1.5 / span^2 at every multiplier, while a T1 that moves between rounds
+  adds (dx/dT)^2 sigma_T^2, which vanishes at 8 and 12 T where x is near 0. Pooled over qubits, the replicate excess at
+  8 and 12 T reads Z 1.12 (34 terms): no level shift is detected above the test's sensitivity (tau^2 of 1.5e-6, three
+  standard errors), and the moving-T1 profile is consistent with the record. A smaller or mixed level shift stays
+  possible. By multiplier the excess reads Z 2.96, 1.52, 3.73, 2.79, 0.43 and 1.04 at 0.5, 1, 2, 4, 8 and 12 T, present
+  at the short waits and absent at the long ones. The per-qubit profile fits have little power to separate the two
+  shapes: both profiles are accepted on 9 of 17 qubits, and q1 rejects both.
 - A disturbance common to all qubits of a batch. The leading eigenvalue fraction of the batch covariance of the
   replicate residuals across the 17 qubits reads 0.276 against a permutation null (rounds permuted independently per
   qubit within each multiplier, 10,000 permutations, seed from `docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json`
-  indices 0 to 3) with mean 0.287 and 99th percentile 0.363: p 0.63, so a batch-common disturbance is falsified.
-- Ladder over-rotation. With three pulse counts in ratio 1:4:8 at the record's standard errors, 18 percent of model
-  truths have an indistinguishable partner (the sign of the rotation and a shift by 2 pi / 32 leave the readings
-  unchanged), above the identifiability threshold of 10 percent: not decidable from the retained data. The single-qubit
-  arm of [issue 941](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/941) remains the test.
+  indices 0 to 3) with mean 0.287 and 99th percentile 0.363: p 0.63, so no round-varying component common to the
+  qubits is detected after anchoring. The self-test shows power at a common term of 0.03 against independent terms of
+  0.01; a smaller common term stays possible, and anchoring cancels a disturbance shared by a batch's three jobs.
+- Ladder over-rotation. With three pulse counts in ratio 1:4:8 at the record's median contrast errors, 20 of 112
+  truths on the scanned lattice (18 percent, all at strong damping) have a distinct partner within the joint 95 percent
+  region, above the identifiability threshold of 10 percent: not decidable from the retained data. Separately, the sign
+  of the rotation and a shift by 2 pi / 32 are exact aliases outside the scanned domain. The single-qubit arm of
+  [issue 941](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/941) remains the test.
 
-What survives: the replicate failure reads as a T1 that moves between the rounds of the series, qubit by qubit and not
-as one disturbance across the chip, with the round split's three-qubit list (q0, q4, q14) a weaker reading of the same
-effect.
+What the tests leave standing: the replicate excess sits at the short waits and vanishes at the long ones, the profile
+a population-proportional effect predicts; a T1 that moves between rounds is one such effect, and a decay-dependent
+readout or preparation error is another. No chip-wide disturbance is detected.
 
-hypothesis: two-level-system defects that switch on a scale of minutes set each qubit's T1. Test: repeated
-single-delay circuits near t ~ T1 on a few qubits over an hour, read as a time series of the excited population.
+hypothesis: two-level-system defects that switch on a scale of minutes set each qubit's T1 and produce the short-wait
+excess. Test: repeated single-delay circuits near t ~ T1 on q0, q4 and q14 over an hour beside an independently
+measured T at each point; an excess that stays large while the measured T holds points at readout or preparation.
 
 ## Open
 

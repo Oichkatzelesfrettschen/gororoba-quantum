@@ -308,7 +308,11 @@ def level_verdict(pooled: dict[str, Any]) -> dict[str, Any]:
     profile consistent with the record; neither reading excludes a smaller or mixed level shift."""
     z, sensitivity = pooled["z"], Z_DECISION * pooled["se"]
     if z > Z_DECISION:
-        return {"level_shift": "detected", "moving_t1": "not the sole source", "reading": "excess above 3 SE at 8 and 12 T"}
+        return {
+            "level_shift": "detected",
+            "moving_t1": "not the sole source",
+            "reading": "excess above 3 SE at 8 and 12 T",
+        }
     if z >= -Z_DECISION:
         return {
             "level_shift": "not detected above the sensitivity",
