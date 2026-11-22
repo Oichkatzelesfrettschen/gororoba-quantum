@@ -14,8 +14,13 @@ these raises AnalysisError (or iqm_records.RecordError for a run directory whose
 a mock outcome never enters the analysis.
 
 Decisions. The copies of each depth enter as (position, marked count, kept shots) with the marked count read at the
-outcome of the case's mark in the prediction's measurement order. Mirror pairs, the heterogeneity gate and the
-verdict follow grover_depth_families.read_copies.
+outcome of the case's mark in the prediction's measurement order. The eight readout preparations give the marked row
+of the job's assignment matrix; with the case model's row and its depth distributions (prediction.json,
+decisions.readout) they correct the four marked frequencies to the model's readout and supply the common-mode
+covariance (grover_depth_families.readout_shift). Mirror pairs, the heterogeneity gate, the verdict at the calibrated
+threshold (decisions.calibration.delta_resolve) and the leave-one-pair-out influence check follow
+grover_depth_families.read_copies. The record lists the readout rows beside, with their chi-square against the
+model's rows, which decides nothing.
 """
 
 from __future__ import annotations
@@ -24,6 +29,8 @@ import json
 import re
 from pathlib import Path
 from typing import Any
+
+import numpy as np
 
 import garnet_followup_analysis as followup
 import grover_depth_families as families
@@ -58,6 +65,7 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
     table: list[dict[str, Any]] = []
     digests: dict[int, set[str]] = {k: set() for k in families.DEPTHS}
     kinds: list[str] = []
+    readouts: dict[int, np.ndarray] = {}
     for position, name in enumerate(job.names):
         if arms[name]["position"] != position:
             raise AnalysisError(
@@ -70,6 +78,7 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
             if READOUT.fullmatch(name) is None:
                 raise AnalysisError(f"{run_dir}: circuit {name} is neither a depth copy nor a readout preparation")
             kinds.append("readout")
+            readouts[followup.outcome_index(name.removeprefix("ro-"))] = job.counts[name]
             table.append(row)
             continue
         k = int(arm[1])
@@ -91,6 +100,14 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
     gate = job.prediction["decisions"]["heterogeneity"]
     retained = job.prediction["decisions"]["retained"]
     model = families.model_retention(arms)
+    plan = job.prediction["decisions"]["readout"]
+    if sorted(readouts) != list(range(8)):
+        raise AnalysisError(f"{run_dir}: the job holds readout preparations {sorted(readouts)}, not all eight")
+    shots = np.array([readouts[j].sum() for j in range(8)], dtype=float)
+    r_hat = np.array([readouts[j][plan["marked_index"]] for j in range(8)]) / shots
+    shift = families.readout_shift(plan["q"], plan["r_model"], r_hat, shots)
+    r_model = np.asarray(plan["r_model"], dtype=float)
+    spread = np.maximum(r_model * (1 - r_model), 1 / shots) / shots
     decisions = families.read_copies(
         copies,
         total,
@@ -98,6 +115,8 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
         model,
         {"geometric_next": retained["geometric_rho_4"], "coherent_next": retained["coherent_rho_4"]},
         gate,
+        float(job.prediction["decisions"]["calibration"]["delta_resolve"]),
+        shift,
     )
     return {
         "schema": SCHEMA,
@@ -110,6 +129,15 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
             "calibration_set": job.prediction["calibration_set"],
         },
         "model_lambda": {str(k): round(x, 6) for k, x in zip(families.DEPTHS, model, strict=True)},
+        "readout": {
+            "marked_row": [round(float(x), 6) for x in r_hat],
+            "model_marked_row": [round(float(x), 6) for x in r_model],
+            "kept_shots": [int(x) for x in shots],
+            "frequency_shift": [round(float(x), 6) for x in shift.shift],
+            "frequency_sd": [round(float(x), 6) for x in np.sqrt(np.diag(shift.cov))],
+            "chi2_against_model_rows": round(float(np.sum((r_hat - r_model) ** 2 / spread)), 4),
+            "dof": 8,
+        },
         "circuits": table,
         "decisions": decisions,
     }

@@ -1,7 +1,9 @@
 # IQM Garnet fourth Grover depth at mirrored positions
 
 Status: written case awaiting the owner's approval; nothing submitted, the `garnet:mock` twin included, and no IQM call made in
-the repair that added the analyzer, the mirror-pair and heterogeneity gates and the rate domains.
+the repairs that added the analyzer, the mirror-pair and heterogeneity gates, the rate domains, the leave-one-pair-out
+influence check, the readout correction and the calibrated family threshold. **Open design decision: the influence check
+leaves the geometric continuation a resolution probability of 0.63 at the planned copies (see "Power and its cost").**
 
 Backend `iqm:garnet` (20 qubits, pay-as-you-go 0.50 credits per second; limits 20,000 shots per circuit, 100 circuits and
 2,000,000 executions per job, [limits](../../../../docs/evidence/iqm/qc/garnet/limits.json)). The case directory
@@ -53,17 +55,22 @@ random number and takes no seed.
 - Continued to depth 4 and scaled by this calibration's model lambda_4 = 0.5805: geometric lambda_4 = 0.5130, coherent
   0.5262 (difference 0.0132). Both continuations decrease from their depth-3 values (lambda_3 is 0.547 coherent and 0.649 geometric on this
   calibration, so lambda_4 is 0.526 and 0.513), so monotonicity does not separate them; the separation is 0.0132 in lambda, 0.0228 in rho.
-- Kept shots at 0.84 of requested (retained 0.841 to 0.846): 67,200 at depths 1 to 3 and 302,400 at depth 4. The binomial
-  standard error of rho_4 is 0.00695, so the continuations separate by 3.27 standard errors; they resolve at 3 down to a
-  kept fraction of 0.71 at depth 4 (z scales with the root of the kept shots: 0.84 x (3 / 3.27)^2).
-- Pairs leave the pooled depths together (see "Gates"): with one of the nine depth-4 mirror pairs gone the separation z falls
-  from 3.27 to 3.08, with two to 2.88 and with three to 2.67; one pair gone from each of depths 1 to 3 (two of their copies
-  each) raises the bend's standard error from 0.0094 to 0.0132, still 10 standard errors from the retained deviation of
-  0.133. The family comparison below does not use the retained continuations.
-- Over four depths, if the data equal the coherent values the geometric fit leaves chi2 = 183.2, and if they equal the
-  geometric values the coherent fit leaves chi2 = 24.9; both exceed the preregistered difference of 9.
-- The bend uses three independent arms: its standard error at the planned shots is 0.0094 against the retained
+- Kept shots at 0.84 of requested (retained 0.841 to 0.846): 67,200 at depths 1 to 3 and 302,400 at depth 4. The standard
+  error of rho_4 is 0.00734 with the binomial scatter and the eight readout preparations' covariance (0.00695 binomial
+  alone), so the continuations separate by 3.09 standard errors (3.27 before the readout covariance); they resolve at 3
+  down to a kept fraction of 0.79 at depth 4 (z scales with the root of the kept shots: 0.84 x (3 / 3.09)^2).
+- Pairs leave the pooled depths together (see "Gates"), and the influence check refits without each pair in turn: with one of
+  the nine depth-4 mirror pairs gone the separation z falls from 3.09 to 2.93, with two to 2.76 and with three to 2.57; the
+  bend's standard error is 0.0094 with all copies and 0.0097, 0.0101 and 0.0126 with one pair gone from depth 1, 2 and 3,
+  still 10 standard errors from the retained deviation of 0.133. The family comparison below does not use the retained
+  continuations.
+- Over four depths, if the data equal the coherent values the geometric fit leaves chi2 = 175.8 (183.2 binomial only), and
+  if they equal the geometric values the coherent fit leaves chi2 = 18.1 (24.9); both exceed the calibrated threshold of 7.
+- The bend uses three arms: its standard error at the planned shots is 0.0094 against the retained
   f of -0.122 against the model's +0.010 (a deviation of 0.133, about 14 standard errors if the bend repeats).
+- The eight readout preparations ro-xyz measure the marked row of the job's assignment matrix at 16,800 kept shots each;
+  the four corrected depth frequencies carry a common-mode standard error of 0.00095, 0.00105, 0.00038 and 0.00016
+  (`decisions.readout.planned_frequency_sd`), against binomial 0.0018, 0.0017, 0.0017 and 0.0004.
 - Limit of the arithmetic: the continuations come from fits of three retained points whose own uncertainty is not
   propagated, so the z of 3.27 is a sizing number. The decisions below compare the new run's four depths with the model, a
   within-job contrast that needs no retained covariance.
@@ -73,14 +80,20 @@ random number and takes no seed.
 Fixed in `results/iqm/cases/grover-fourth-depth-mirrored/prediction.json` (`decisions.rule`, `decisions.heterogeneity`, bound by
 `cases.json.prediction_sha256`) and implemented by `grover_depth_families.read_copies` and `verdict`:
 
-- Pooled marked counts per depth over the surviving mirror pairs; lambda_k = (p - 1/8) / (P_k - 1/8) from raw frequencies; binomial
-  standard errors at the observed frequencies.
+- Pooled marked counts per depth over the surviving mirror pairs, each frequency corrected to the model's readout by the
+  eight readout preparations (see "Readout"); lambda_k = (y - 1/8) / (P_k - 1/8) from the corrected frequencies y; binomial
+  variances at the observed frequencies plus the readout covariance, which ties the four depths together; every statistic
+  below takes the full 4 x 4 covariance.
 - bend: z = (f - model f) / SE over depths 1 to 3; z <= -3 reads "bends beyond the model at mirrored positions" (drift
   linear in position is excluded as the cause); z >= 3 "bends upward of the model"; otherwise "no bend resolved".
-- family: chi2 of each family's fit to rho_1..rho_4 (two degrees of freedom) over the rate domains of "Gates"; "out of domain"
-  when a fit sits on its rate bound; else "neither family fits" when both exceed 9.21;
-  "coherent" when chi2_geometric - chi2_coherent >= 9; "geometric" when <= -9; otherwise "unresolved". The two fits read
-  one data set, so the difference is taken on those data and no cross-job quantity enters the decision.
+- family: chi2 of each family's fit to rho_1..rho_4 (two degrees of freedom, generalized least squares) over the rate
+  domains of "Gates"; "neither family fits" when both exceed 9.21; "coherent" when chi2_geometric - chi2_coherent >= delta;
+  "geometric" when <= -delta; otherwise "unresolved"; a rate bound turns a reading into "out of domain" only when the
+  bound-limited fit is what it rests on ("Gates", "Domains"). delta is 7.0, the smallest threshold whose calibrated
+  misclassification probabilities are all at most 0.01 ("Calibration"). The two fits read one data set, so the difference
+  is taken on those data and no cross-job quantity enters the decision.
+- influence: each of the bend and family readings stands only when every leave-one-mirror-pair-out refit reads the same
+  category; otherwise it reads "not evaluated: the reading depends on one mirror pair" ("Gates").
 - Reported beside and deciding nothing: rho_4 against the retained fits' continuations, and whether lambda decreases with
   depth.
 - The model's own expected counts read "no bend resolved" and "unresolved" (`decisions.model.verdict_on_the_model_at_planned_shots`).
@@ -106,13 +119,40 @@ describes pairs that differ beyond binomial scatter. An earlier version of the g
 fired on exactly the linear drift the mirroring cancels (probability 0.30 or 0.99999 at the retained slope, depending on how
 the drift reaches the depths), and the pair statistic replaced it.
 
-The reviewer's two counterexamples: one depth-1 copy 0.04 above its siblings (read "geometric" at delta chi2 -18.5 under the
+The first reviewer's counterexamples: one depth-1 copy 0.04 above its siblings (read "geometric" at delta chi2 -18.5 under the
 earlier pooling) reads "not evaluated" (statistic 31.2 on 11 degrees of freedom against 24.72, test
-`test_a_copy_raised_by_four_points_reads_not_evaluated_on_raw_counts`); a dropped depth-1 copy with a slope of -0.005 per
-position (which read a bend at z -3.68) now leaves with its image, the surviving positions stay centered, the linear slope
-cancels in every pair, and the run reads the centered verdict "no bend resolved" with the gate passed (test
-`test_a_dropped_copy_and_a_linear_slope_read_the_centered_verdict`, which also plants -0.00003 per position). A symmetric
-quadratic drift reads "not evaluated" (`test_a_symmetric_quadratic_drift_reads_not_evaluated`).
+`test_a_copy_raised_by_four_points_reads_not_evaluated_on_raw_counts`); a dropped copy with a slope of -0.005 per
+position (which read a bend at z -3.68 when the surviving positions were off center) leaves with its image, the surviving
+positions stay centered and the linear slope cancels in every pair (test
+`test_a_dropped_copy_and_a_linear_slope_read_the_centered_verdict`, which also plants -0.00003 per position): a depth-4 pair
+that leaves reads the centered verdict "no bend resolved", and a depth-1 pair that leaves reads "not evaluated: the reading
+depends on one mirror pair", because the one pair left at depth 1 cannot be refit without its depth. A symmetric quadratic
+drift reads "not evaluated" (`test_a_symmetric_quadratic_drift_reads_not_evaluated`).
+
+Influence. The heterogeneity statistic sums over depths and over pairs, so one defective copy can stay under its
+threshold while it moves a decision: the second reviewer's depth-3 copy at position 4, lowered by 0.03, gives a statistic of
+19.9 against 24.72, the family reading "coherent" (delta chi2 17.0) and a bend at z -3.96. Each reading therefore also needs
+every leave-one-mirror-pair-out refit: the verdict on the pooled counts without one surviving pair (15 refits at the planned
+design: 2, 2, 2 and 9 pairs at depths 1 to 4, run through `parallel.ordered_map`), each with the same readout correction,
+must read the same category, the family's category of the rule and the bend's direction or none. A reading that changes
+reads "not evaluated: the reading depends on one mirror pair", and the full reading stays beside it in
+`decisions.influence`. The lowered copy now reads "not evaluated" for both decisions with the gate passed (test
+`test_one_depth_3_copy_lowered_by_three_points_passes_the_gate_and_reads_not_evaluated`, whose refit without the pair at
+positions 4 and 33 reads "unresolved" and no bend); the pooled counts of the same run read "coherent" and a bend, so the
+plant is not vacuous. A depth with one surviving pair cannot lose it without becoming unusable, so its decisions need
+that pair and read "not evaluated" there.
+
+Readout. The eight preparations `ro-xyz` sit at the center of the job, where the mirrored depth arms average a drift
+linear in position. Their marked fractions r'_j, the model's r_j and the model's distribution of each depth over the
+prepared states (q_kj, from A^-1 applied to the depth's predicted distribution, A being the eight predicted preparations
+as columns; `decisions.readout`) correct each depth's marked frequency to the model's readout by
+y_k = p_k - sum_j q_kj (r'_j - r_j), and the shared rows give the four frequencies the common-mode covariance
+sum_j q_kj q_lj r'_j (1 - r'_j) / n_j beside the binomial diagonal. A readout row 0.1 below the model's at the marked
+preparation lowers the depths by 0.071, 0.078, 0.028 and 0.006; the raw counts read a bend (z -5.6), the corrected ones read
+"no bend resolved" (test `test_a_readout_row_mismatch_reads_no_bend_once_the_job_readout_corrects_it`). The record lists
+each row, its shift, its standard error and its chi-square against the model's rows beside, which decides nothing.
+A marked-frequency offset that the preparations do not share, such as a common -0.01 on every depth arm alone, is
+indistinguishable from a retention loss and is outside what any readout analysis removes.
 
 Power cost of the gate (`decisions.heterogeneity.power`, noncentral chi-square at the planned shots):
 
@@ -134,11 +174,15 @@ Power cost of the gate (`decisions.heterogeneity.power`, noncentral chi-square a
   differently it enters them).
 
 Domains. The geometric family's rate s is searched over [0.30, 1.20] and the coherent family's over [0.50, 1.10] (its offset
-eps over a full period, the geometric amplitude without bound). A fit whose rate sits on a bound reads "out of domain: the
-... fit ends on its rate bound" and decides nothing, because the bound, not the data, ended its search and the other
-chi-square comparison would then favor the other family. The retained fits (s 0.963 and 1.013) lie inside by at least 0.24 and 0.09;
-planted data at s 1.25 (geometric) and 1.11 (coherent), and at 0.28 and 0.48, read "out of domain" where the hidden box had
-read "neither family fits"; data at 1.19 and 1.09 read their family and data at 0.52 stay in domain.
+eps over a half period, since the family is even in eps; the geometric amplitude without bound). A bound blocks a reading
+only when the bound-limited fit is what the reading rests on: the selected family's own fit sits on its bound, or no
+family is selected ("neither family fits", "unresolved") while a fit sits on a bound; the reading is then "out of domain: the
+... fit ends on its rate bound", because the bound, not the data, may have ended that fit's search. A bound-limited fit
+that loses to an adequate interior fit by delta does not block and is named beside the reading
+(`beside.fits_on_a_rate_bound`). Exact geometric data of amplitude 0.5 at s 0.7, 0.6, 0.5 and 0.4 read "geometric" although
+the coherent fit ends on its bound of 0.5 (chi2 1,822 at s 0.7 where the geometric fit leaves 0), and coherent data
+(eps 1.5, s 0.9) read "coherent" although the geometric fit ends on 0.30; planted data at s 1.25 (geometric) and 0.28, and
+at s 1.11 (coherent), read "out of domain". The retained fits (s 0.963 and 1.013) lie inside by at least 0.24 and 0.09.
 
 Analyzer. `"$PYTHON" scripts/iqm_grover_fourth_depth.py analyze RUN_DIR --out OUT.json` reads one collected run through
 `garnet_followup_analysis.read_job` (record checks, case and prediction digests, calibration set, measurement order, one run
@@ -146,6 +190,57 @@ of job `grover` on `garnet`; a `garnet:mock` run is refused), binds each circuit
 position and mirror image to its counts, and applies the gates and the rule above (`gororoba_quantum/grover_depth_analysis.py`,
 `grover_depth_families.read_copies`). It is tested on planted raw records (the model device; the two counterexamples; mock,
 foreign-prediction and wrong-calibration runs; a mislabeled position, depth and circuit).
+
+## Calibration
+
+The difference of two non-nested chi-squares has no textbook null law, and the bounds, the readout covariance and the
+influence check change it, so its threshold is computed (`gororoba_quantum/grover_depth_calibration.py`, recorded in
+`decisions.calibration`). The method is quadrature, not simulation, and draws nothing at random: at these shots the four
+corrected marked frequencies are Gaussian (3,000 or more kept shots per pair), with the binomial-plus-readout covariance at
+the truth, so the probability of every reading is an integral over a four-dimensional standard normal vector, evaluated at
+the 8,192 points of the unscrambled Sobol' sequence (`scipy.stats.qmc`, scrambling off, points 1 to 8,192) mapped through
+the normal quantile; the case takes no seed. Agreement of the first 4,096 points with all 8,192 reads the quadrature's
+own error (a test replays the first half). Truths: the retained geometric and coherent continuations and the model itself
+(rho = 1, which both families contain, so either family named there is an error). Threshold: the smallest of 1.0, 1.5, ... 30
+at which, on the first half and on all points, the geometric truth read as coherent, the coherent truth read as geometric
+and the model read as either family each have probability at most 0.01. The result is delta = 7.0 (the earlier 9 was the
+square of 3 sigma, a normal-theory number): at 7.0 the model reads a family with probability 0.0087 (0.0088 on the first
+half; 0.0125 at 6.5), the geometric truth reads coherent and the coherent truth geometric with probability 0 in both
+halves, and at 9 the model reads a family with probability 0.0028. Readings at 7.0:
+
+| truth | named correctly | unresolved | neither family fits | the other family |
+|---|---|---|---|---|
+| geometric | 0.908 | 0.083 | 0.009 | 0 |
+| coherent | 0.991 | 0 | 0.009 | 0 |
+| model | 0.985 (unresolved) | , | 0.006 | 0.009 (coherent 0.002, geometric 0.007) |
+
+The bend reads "beyond the model" with probability 1.00 under the coherent continuation and "no bend resolved" with 0.997
+under the geometric one and under the model. The gates (bounds, heterogeneity, influence) only turn a reading into "out of
+domain" or "not evaluated", so these probabilities bound the misclassification of the gated rule from above. They hold at
+the three truths named, not at every parameter pair of the two families.
+
+## Power and its cost
+
+The influence check refits without each of the 15 surviving mirror pairs and requires the reading to stand
+(`decisions.calibration.influence_power`, a Sobol' set of 2,048 points in 15 dimensions: the four pooled frequencies and the
+pairs' deviations from them, since the pairs of a depth are iid at the planned shots; the first half of the points sits beside
+as the quadrature's check). Probability that the reading names the truth:
+
+| truth | pooled rule | with every leave-one-pair-out refit |
+|---|---|---|
+| geometric continuation | 0.906 | **0.635** (refits that differ: depth 1 0.260, depth 4 0.061, depth 3 0.041, depth 2 0.006) |
+| coherent continuation | 0.994 | 0.970 |
+| model | 0.987 | 0.955 |
+| bend, any of the three truths | 0.997 to 1.000 | 0.991 to 1.000 |
+
+The geometric continuation loses most because depths 1 to 3 hold two mirror pairs each: a refit without one halves that
+depth's data, and depth 1 anchors the amplitude of the geometric fit. The separation z at depth 4 is 3.09 with all nine
+pairs there and 2.93 with eight, below the resolution of 3 that the case was sized for (3.27 before the readout covariance).
+Arithmetic of the repair, from the same quadrature (not run on hardware): eight depth-1 copies (four mirror pairs, 4 more
+circuits) raise the geometric continuation's probability with the influence check from 0.635 to 0.893 (pooled 0.973), and eight
+copies at each of depths 1 to 3 to 0.900; two more depth-4 copies (ten pairs) restore z = 3.09 after a pair leaves.
+Six more circuits make 44 circuits, 12.76 expected seconds at the 14.5 us bound, ceiling credits 7.5 and max_credits 9.0
+(now 38, 11.02, 6.5 and 8.0), a change of the approved spend that waits for the owner.
 
 ## Falsifier
 
@@ -155,7 +250,8 @@ supported within this family (an oracle phase error); the positional-drift cause
 reading is unsupported. "Geometric" wins with the bend present: an incoherent depth-dependent loss the model omits.
 "Not evaluated" (a failed heterogeneity gate): the mirror pairs of a depth differ by more than binomial scatter, a copy-specific or
 non-linear positional effect that the mirroring does not cancel; neither decision is read, and the run shows the drift instead
-of deciding the question. "Out of domain": a rate outside the stated box, reported as such. "Neither family fits": another mechanism (for example a ZZ phase or leakage) remains, and the oracle-phase family is refuted
+of deciding the question. "Not evaluated: the reading depends on one mirror pair": the decision changes when one mirror pair
+leaves, so a single pair, not the retention law, carries it. "Out of domain": a rate outside the stated box, reported as such. "Neither family fits": another mechanism (for example a ZZ phase or leakage) remains, and the oracle-phase family is refuted
 as the sole cause.
 
 ## Cost
@@ -167,9 +263,9 @@ PR 980, gives 0.1347 s + 7.62e-6 s per circuit-shot = 5.9 s plus the compiler's 
 `garnet:mock` compile reads and which was not read). Billed ceiling credits = ceil(1.6 + 11.02) x 0.50 = 6.5. max_credits 8.0
 (16 billed seconds; `cancel_threshold_seconds` 15.0 s, 3.7 s above the expected run). Expected spend about 6 credits. The
 case rule of `scripts/iqm_jobs.py` cancels a job that reaches the threshold, and IQM can bill a failed or cancelled job, so
-the ceiling bounds the spend and is not a guarantee of zero cost on a cancellation. The repair of the analyzer and the gates
-leaves the circuits, shots, expected seconds and credits as they were; `cases.json` binds the regenerated prediction and has
-sha256 `0208b8ed2e9eaddf0126e0005854915ad0e5a591f02c283b0320258d0682d63d` on calibration set `a0e725eb` (a live rebuild may change
+the ceiling bounds the spend and is not a guarantee of zero cost on a cancellation. The repairs of the analyzer, the gates, the readout correction and the threshold
+leave the circuits, shots, expected seconds and credits as they were; `cases.json` binds the regenerated prediction and has
+sha256 `5abaec9abe1a88d9968cc65ae4ab20d93b597cbc5e7decca738d10b3162f9e9d` on calibration set `a0e725eb` (a live rebuild may change
 it, and the approvals name the digest after that rebuild).
 
 ## Steps before a submission (owner approval needed for each paid or provider step)
@@ -204,6 +300,13 @@ take no part.
 - The pair-heterogeneity gate detects a copy displaced by 0.04 with probability 0.94 and a displacement of 0.027 half the time;
   smaller single-copy displacements and symmetric drifts under its detection enter the pooled depths unflagged, and the
   data's curvature estimate (1.9e-6 +- 1.3e-5 per squared position) leaves a gate-detectable curvature within one standard error.
-- The coherent fit's rate bound at 0.50 makes strongly lossy data read "out of domain" rather than "geometric", since the
-  coherent fit is cut off by its bound (planted geometric data with amplitude 0.5 read "out of domain" for s of 0.7 and
-  below and "geometric" at 0.8; the threshold depends on the amplitude and the plant).
+- A rate bound still blocks a reading that rests on a bound-limited fit (the selected family's own fit, "neither family
+  fits", "unresolved"), so data whose true rate lies outside a box read "out of domain" and no verdict.
+- The threshold's misclassification probabilities are computed at three truths (the two retained continuations and the
+  model) on a Gaussian approximation of the four frequencies; other parameter pairs of the families and the tails beyond
+  the normal limit are not covered, and the quadrature's own error is about 0.001 (first half against all points).
+- The influence check costs the geometric continuation about 0.27 of resolution probability at the planned copies
+  ("Power and its cost"); the copies that remove most of it add circuits and spend, and wait for the owner.
+- The readout correction is first-order linear in the marked row and takes the model's depth distributions q as exact;
+  a readout change that is not a change of the marked row (a changed row of another outcome that leaks into the mark
+  through the depth's state) enters through q alone.
