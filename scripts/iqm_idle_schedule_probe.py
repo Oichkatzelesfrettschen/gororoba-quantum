@@ -41,8 +41,13 @@ Emerald successor. --qc emerald-t1 builds idle-schedule-t1-emerald: the Emerald 
 (T1_DELAYS) that read every measured qubit's T1 in the same job, so H2 separates a per-pulse timing gap from a
 T1 calibration error (evaluate, "t1_delay" and "h2_gap"); --live reads the computer's current calibration.
 
+Third length. --qc emerald-third builds idle-schedule-third-length-emerald from the successor's retained calibration:
+the successor's circuits plus idle trains of 250 and 2000 pulses. Its prediction carries the line g(N) = a + b / N
+through the retained analysis's 500 and 1000 pulse gaps (line_of) and the analysis reports the decision "h3_line"
+(line_test): on-line, off-line, anchors-moved or unidentifiable. "power" records what the case resolves.
+
 Usage: "$PYTHON" scripts/iqm_idle_schedule_probe.py (build DIR [--live] [--qc QC] | check DIR [--qc QC] |
-       study CASE_DIR --out FILE | analyze RUN_DIR --out FILE [--replay] | --self-test)
+       study CASE_DIR --out FILE | power CASE_DIR --out FILE | analyze RUN_DIR --out FILE [--replay] | --self-test)
 """
 
 from __future__ import annotations
@@ -120,6 +125,16 @@ class Profile:
     price: dict[str, float]
     isolated: bool
     delays: tuple[float, ...] = ()
+    # Train lengths of every idle layout; 0 is the baseline each other length is read against.
+    pulses: tuple[int, ...] = IDLE_PULSES
+    # A directory of retained calibration files to build from, relative to the repository, in place of the shared
+    # evidence copy.
+    calibration_from: str | None = None
+    # A retained analysis whose per-qubit gaps at the two anchor lengths fix the line g(N) = a + b / N, and the
+    # subjects (name, qubits; no qubits means every qubit with a gap at both anchors) the third lengths test it on.
+    line_source: str | None = None
+    line_anchors: tuple[int, int] = (500, 1000)
+    line_subjects: tuple[tuple[str, tuple[str, ...]], ...] = ()
 
     @property
     def qcs(self) -> list[str]:
@@ -176,7 +191,24 @@ EMERALD_T1 = dataclasses.replace(
     max_credits={"emerald": 12.0, "emerald:mock": 0.0},
     delays=T1_DELAYS,
 )
-PROFILES = {"garnet": GARNET, "emerald": EMERALD, "emerald-t1": EMERALD_T1}
+# The third-length case tests the line the retained Emerald run's 500 and 1000 pulse means fix: trains of 250 and 2000
+# pulses, with the anchor lengths repeated in the same job. The circuits keep the successor's structure: both layouts,
+# the readout pair, the parallel trains and the four delay circuits.
+THIRD_LENGTHS = (0, 250, 500, 1000, 2000)
+EMERALD_THIRD = dataclasses.replace(
+    EMERALD_T1,
+    case="idle-schedule-third-length-emerald",
+    question=(
+        "Does the per-pulse gap of Emerald's idle trains follow g(N) = a + b / N, the line through the 500 and 1000 "
+        "pulse gaps of the retained run, at train lengths of 250 and 2000 pulses?"
+    ),
+    max_credits={"emerald": 9.0, "emerald:mock": 0.0},
+    pulses=THIRD_LENGTHS,
+    calibration_from="results/iqm/cases/idle-schedule-t1-emerald/calibration",
+    line_source="results/iqm/idle_schedule_t1_emerald_analysis.json",
+    line_subjects=(("cohort", ()), ("QB24", ("QB24",))),
+)
+PROFILES = {"garnet": GARNET, "emerald": EMERALD, "emerald-t1": EMERALD_T1, "emerald-third": EMERALD_THIRD}
 # Draw docs/evidence/anu_qrng/draw-2026-10-25T001615Z.json, indices 0 and 1 (allocations.json).
 SYNTHETIC_SEEDS = (36215, 40623)
 # The model device's readout per qubit, (P(1|0), P(0|1)), unlike every qubit's calibrated readout.
@@ -224,7 +256,7 @@ def circuits_of(calibration: iqm_sim.Calibration, profile: Profile = GARNET) -> 
     circuits: list[dict[str, Any]] = []
     for b in profile.train:
         pulsed = pulsed_qubits(b, calibration, profile.qubits)
-        for n in IDLE_PULSES:
+        for n in profile.pulses:
             instructions = [*(prx(q, math.pi) for q in pulsed), *(prx(b, math.pi) for _ in range(n))]
             circuits.append({"name": f"idle-{b}-{n}", "instructions": [*instructions, measure(every)]})
     circuits.append({"name": "par-ro0", "instructions": [measure(every)]})
@@ -337,7 +369,7 @@ def build_from(calibration_dir: Path, profile: Profile = GARNET) -> tuple[dict[s
         rows = {}
         for qubit in pulsed_qubits(b, calibration, profile.qubits):
             contrasts = []
-            for n in IDLE_PULSES[1:]:
+            for n in profile.pulses[1:]:
                 name, base = f"idle-{b}-{n}@{qubit}", f"idle-{b}-0@{qubit}"
                 asap = z["asap"][name] - z["asap"][base]
                 alap = z["alap"][name] - z["alap"][base]
@@ -349,7 +381,7 @@ def build_from(calibration_dir: Path, profile: Profile = GARNET) -> tuple[dict[s
             }
         idle[b] = rows
     shot = len(circuits) * ACTIVE_SHOT_SECONDS + sum(
-        n * profile.prx_seconds for _ in profile.train for n in IDLE_PULSES
+        n * profile.prx_seconds for _ in profile.train for n in profile.pulses
     )
     if profile.delays:
         shot += sum(profile.delays)
@@ -379,6 +411,8 @@ def build_from(calibration_dir: Path, profile: Profile = GARNET) -> tuple[dict[s
     }
     if profile.delays:
         prediction["t1_delays"] = {delay_name(s): s for s in profile.delays}
+    if profile.line_source:
+        prediction["line"] = line_of(profile)
     files["prediction.json"] = dump(prediction)
     files["cases.json"] = dump(
         {
@@ -402,7 +436,7 @@ def write(directory: Path, live: bool = False, profile: Profile = GARNET) -> Non
     if live:
         fetch_calibration(calibration_dir, profile.qc)
     else:
-        source = iqm_sim.EVIDENCE / profile.qc / "calibration"
+        source = ROOT / profile.calibration_from if profile.calibration_from else iqm_sim.EVIDENCE / profile.qc / "calibration"
         for name in CALIBRATION_FILES:
             shutil.copyfile(source / name, calibration_dir / name)
     files, prediction = build_from(calibration_dir, profile)
@@ -525,6 +559,8 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
         report["t1_delay"] = t1
         valid = {q for q in qubits if 1 - sum(pairs[q]) > 0 and usable_t1(t1[q])}
         report["h2_gap"] = gap_test(arms, t1, prediction["prx_seconds"], schedule, set(calibrated), valid)
+        if "line" in prediction:
+            report["h3_line"] = line_test(report["h2_gap"].get("trains"), prediction["line"])
     return report
 
 
@@ -667,6 +703,95 @@ def gap_test(
         )
         report["stationarity"] = {"z": z, "verdict": "stationary" if abs(z) <= Z_RESOLVE else "falsified"}
     return report
+
+
+def pooled(gaps: list[dict[str, float]]) -> tuple[float, float]:
+    """The inverse-variance mean of per-qubit gaps and its standard error, as gap_test pools them."""
+    weights = [1 / g["se_seconds"] ** 2 for g in gaps]
+    return (
+        sum(w * g["gap_seconds"] for w, g in zip(weights, gaps, strict=True)) / sum(weights),
+        1 / math.sqrt(sum(weights)),
+    )
+
+
+def line_of(profile: Profile) -> dict[str, Any]:
+    """The line g(N) = a + b / N through the two anchor lengths of a retained analysis, for each subject: the gaps it
+    reads at the anchors and the gaps it predicts at every other nonzero train length of the profile, each with the
+    standard error that the anchors' standard errors carry. The two points fix a and b exactly, so the line's own
+    uncertainty is part of every decision."""
+    path = ROOT / (profile.line_source or "")
+    trains = json.loads(path.read_bytes())["h2_gap"]["trains"]
+    a, b = profile.line_anchors
+    tested = [n for n in profile.pulses if n > 0 and n not in (a, b)]
+    subjects: dict[str, Any] = {}
+    for name, qubits in profile.line_subjects:
+        named = ordered(qubits or set(trains[str(a)]["gaps"]) & set(trains[str(b)]["gaps"]))
+        held = {str(n): dict(zip(("gap_seconds", "se_seconds"), pooled([trains[str(n)]["gaps"][q] for q in named]), strict=True)) for n in (a, b)}
+        ga, gb = held[str(a)], held[str(b)]
+        per_train = (ga["gap_seconds"] - gb["gap_seconds"]) / (1 / a - 1 / b)
+        predicted = {}
+        for n in tested:
+            alpha = (1 / n - 1 / b) / (1 / a - 1 / b)
+            predicted[str(n)] = {
+                "gap_seconds": alpha * ga["gap_seconds"] + (1 - alpha) * gb["gap_seconds"],
+                "se_seconds": math.hypot(alpha * ga["se_seconds"], (1 - alpha) * gb["se_seconds"]),
+            }
+        subjects[name] = {
+            "qubits": named,
+            "retained": held,
+            "offset_seconds": gb["gap_seconds"] - per_train / b,
+            "per_train_seconds": per_train,
+            "predicted": predicted,
+        }
+    return {
+        "source": profile.line_source,
+        "source_sha256": sha256(path.read_bytes()),
+        "anchors": [a, b],
+        "z_reject": Z_RESOLVE,
+        "subjects": subjects,
+    }
+
+
+def line_test(trains: dict[str, Any] | None, line: dict[str, Any]) -> dict[str, Any]:
+    """The decision of the third-length case. Each subject's observed gap (the inverse-variance mean over its named
+    qubits) at an anchor length is compared with the retained value and at every other length with the line's
+    prediction, in standard errors of the combined observed and reference uncertainty (independent runs). Verdict
+    unidentifiable: a trains record without every named qubit at every length (a schedule that is not asap leaves
+    none); anchors-moved: the cohort's gap at an anchor length differs from its retained value by more than z_reject,
+    so the line's two points are not this run's device; off-line: a subject lies more than z_reject from the line at
+    a third length; on-line otherwise."""
+    z_reject = line["z_reject"]
+    subjects: dict[str, Any] = {}
+    for name, subject in line["subjects"].items():
+        rows: dict[str, Any] = {}
+        for kind, table in (("anchor", subject["retained"]), ("line", subject["predicted"])):
+            for n, ref in table.items():
+                gaps = [((trains or {}).get(n, {}).get("gaps", {})).get(q) for q in subject["qubits"]]
+                if any(g is None for g in gaps):
+                    rows[n] = {"kind": kind, "verdict": "unidentifiable"}
+                    continue
+                mean, se = pooled([g for g in gaps if g is not None])
+                z = (mean - ref["gap_seconds"]) / math.hypot(se, ref["se_seconds"])
+                rows[n] = {
+                    "kind": kind,
+                    "observed_seconds": mean,
+                    "observed_se_seconds": se,
+                    "reference_seconds": ref["gap_seconds"],
+                    "reference_se_seconds": ref["se_seconds"],
+                    "z": z,
+                    "outside": abs(z) > z_reject,
+                }
+        subjects[name] = rows
+    flat = [row for rows in subjects.values() for row in rows.values()]
+    if any(row["verdict"] == "unidentifiable" for row in flat if "verdict" in row):
+        verdict = "unidentifiable"
+    elif any(row["outside"] for row in subjects["cohort"].values() if row["kind"] == "anchor"):
+        verdict = "anchors-moved"
+    elif any(row["outside"] for row in flat if row["kind"] == "line"):
+        verdict = "off-line"
+    else:
+        verdict = "on-line"
+    return {"verdict": verdict, "z_reject": z_reject, "subjects": subjects}
 
 
 def analyze(run_dir: Path) -> dict[str, Any]:
@@ -817,6 +942,134 @@ def study(case_dir: Path) -> dict[str, Any]:
     }
 
 
+def planted_counts(
+    circuits: list[dict[str, Any]],
+    calibration_dir: Path,
+    profile: Profile,
+    gaps: dict[int, float],
+    shots: int,
+) -> dict[str, tuple[int, int]]:
+    """Expected counts at the given shots of a model device whose idle train of N pulses lasts N (d + gaps[N]); every
+    other circuit reads the device at the gap of the longest listed length (the readout pair, the parallel trains and
+    the delay circuits carry no idle train)."""
+    runs = {n: expected_ones(circuits, calibration_dir, "asap", {}, profile.prx_seconds + g) for n, g in gaps.items()}
+    rest = runs[max(gaps)]
+    counts = {}
+    for key in rest:
+        name = key.split("@")[0]
+        n = int(name.rsplit("-", 1)[1]) if name.startswith("idle-") else None
+        source = runs[n] if n in runs else rest
+        counts[key] = (round(source[key] * shots), shots)
+    return counts
+
+
+def power(case_dir: Path) -> dict[str, Any]:
+    """What the case resolves, at expected counts and no random draw: for each third length N, a model device whose
+    gap at every length is the line's cohort prediction. It records the standard error the case's mean gap carries at
+    the case's shots and at twice them, the line's own standard error, their combination and the deviation that sits
+    z_reject combined standard errors from the line (the smallest the decision separates from it)."""
+    profile = EMERALD_THIRD
+    calibration_dir = case_dir / "calibration"
+    files, prediction = build_from(calibration_dir, profile)
+    circuits = [json.loads(text) for rel, text in files.items() if rel.startswith("circuits/")]
+    line = prediction["line"]
+    tested = [n for n in profile.pulses if n > 0 and n not in line["anchors"]]
+    planted = {
+        n: line["subjects"]["cohort"]["predicted"][str(n)]["gap_seconds"] if n in tested else line["subjects"]["cohort"]["retained"][str(n)]["gap_seconds"]
+        for n in (*tested, *line["anchors"])
+    }
+    rows: dict[str, Any] = {}
+    for factor in (1, 2):
+        counts = planted_counts(circuits, calibration_dir, profile, planted, profile.shots * factor)
+        report = evaluate(counts, prediction)
+        for n in tested:
+            for name, subject in line["subjects"].items():
+                reference = subject["predicted"][str(n)]
+                gaps = [report["h2_gap"]["trains"][str(n)]["gaps"][q] for q in subject["qubits"]]
+                mean, se = pooled(gaps)
+                combined = math.hypot(se, reference["se_seconds"])
+                rows.setdefault(f"{name}-{n}", {"predicted_ns": reference["gap_seconds"] * 1e9, "line_se_ns": reference["se_seconds"] * 1e9})[
+                    f"x{factor}"
+                ] = {
+                    "shots": profile.shots * factor,
+                    "model_mean_ns": mean * 1e9,
+                    "observed_se_ns": se * 1e9,
+                    "combined_se_ns": combined * 1e9,
+                    "resolvable_deviation_ns": line["z_reject"] * combined * 1e9,
+                    "resolvable_fraction": line["z_reject"] * combined / reference["gap_seconds"],
+                }
+    return {"schema": "iqm-idle-schedule-third-length-power-v1", "case": profile.case, "rows": rows}
+
+
+def third_length_self_test() -> None:
+    """The third-length case: the successor's circuits plus the added train lengths, the line read from the retained
+    analysis, the decision on known-good and known-bad device readings, and the whole estimator on a model device
+    that follows the line and one that leaves it."""
+    profile = EMERALD_THIRD
+    calibration_dir = ROOT / (profile.calibration_from or "")
+    files, prediction = build_from(calibration_dir, profile)
+    base, _ = build_from(calibration_dir, EMERALD_T1)
+    case = json.loads(files["cases.json"])
+    job = case["jobs"][0]
+    circuits = [json.loads(text) for rel, text in files.items() if rel.startswith("circuits/")]
+    if case["case"] != profile.case or len(circuits) != 20 or job["shots"] != 4000:
+        raise RuntimeError(f"the third-length case is {case['case']}, {len(circuits)} circuits at {job['shots']} shots")
+    if any(files[rel] != text for rel, text in base.items() if rel.startswith("circuits/")):
+        raise RuntimeError("the third-length case changes a circuit of the successor")
+    names = {c["name"] for c in circuits} - {Path(rel).stem for rel in base if rel.startswith("circuits/")}
+    if names != {f"idle-{b}-{n}" for b in profile.train for n in (250, 2000)}:
+        raise RuntimeError(f"the third-length case adds {sorted(names)}")
+    if JOB_SECONDS + job["expected_seconds"] > profile.max_credits["emerald"] / 0.75 - PLAN_HEADROOM:
+        raise RuntimeError(f"the third-length case's {job['expected_seconds']} s leave no headroom under its ceiling")
+    line = prediction["line"]
+    cohort = line["subjects"]["cohort"]
+    if len(cohort["qubits"]) != 11 or "QB44" in cohort["qubits"]:
+        raise RuntimeError(f"the cohort is {cohort['qubits']}")
+    if abs(cohort["offset_seconds"] - 21.4e-9) > 0.05e-9 or abs(cohort["per_train_seconds"] - 5.84e-6) > 0.005e-6:
+        raise RuntimeError(f"the cohort line reads {cohort['offset_seconds']} + {cohort['per_train_seconds']} / N")
+
+    # The decision on constructed readings: qubits A and B, the subject "cohort" of both and "solo" of B.
+    def reading(shift: dict[str, float]) -> dict[str, Any]:
+        gaps = {"250": 44.0e-9, "500": 33.0e-9, "1000": 27.0e-9, "2000": 24.0e-9}
+        return {n: {"gaps": {q: {"gap_seconds": g + shift.get(n, 0.0), "se_seconds": 1.0e-9} for q in "AB"}} for n, g in gaps.items()}
+
+    ref = {"se_seconds": 1.0e-9}
+    toy = {
+        "z_reject": Z_RESOLVE,
+        "subjects": {
+            name: {
+                "qubits": qubits,
+                "retained": {"500": {"gap_seconds": 33.0e-9, **ref}, "1000": {"gap_seconds": 27.0e-9, **ref}},
+                "predicted": {"250": {"gap_seconds": 44.0e-9, **ref}, "2000": {"gap_seconds": 24.0e-9, **ref}},
+            }
+            for name, qubits in (("cohort", ["A", "B"]), ("solo", ["B"]))
+        },
+    }
+    lost = reading({})
+    del lost["250"]["gaps"]["B"]
+    for shift, want in (
+        ({}, "on-line"),
+        ({"250": 2.0e-9, "2000": -2.0e-9}, "on-line"),
+        ({"250": 9.0e-9}, "off-line"),
+        ({"2000": -6.0e-9}, "off-line"),
+        ({"500": 6.0e-9, "250": 18.0e-9}, "anchors-moved"),
+    ):
+        got = line_test(reading(shift), toy)["verdict"]
+        if got != want:
+            raise RuntimeError(f"a device shifted by {shift} reads {got}, not {want}")
+    if line_test(lost, toy)["verdict"] != "unidentifiable" or line_test(None, toy)["verdict"] != "unidentifiable":
+        raise RuntimeError("a record without a named qubit or without trains is not unidentifiable")
+
+    # The whole estimator on expected counts: a device on the line is on-line, one 8 ns above it at 250 pulses is not.
+    planted = {n: cohort["predicted"][str(n)]["gap_seconds"] for n in (250, 2000)}
+    planted |= {n: cohort["retained"][str(n)]["gap_seconds"] for n in line["anchors"]}
+    for bump, want in ((0.0, "on-line"), (12e-9, "off-line")):
+        counts = planted_counts(circuits, calibration_dir, profile, {**planted, 250: planted[250] + bump}, profile.shots)
+        got = evaluate(counts, prediction)["h3_line"]["verdict"]
+        if got != want:
+            raise RuntimeError(f"a model device {bump * 1e9:.0f} ns above the line at 250 pulses reads {got}, not {want}")
+
+
 def self_test() -> str:
     calibration_dir = iqm_sim.EVIDENCE / QC / "calibration"
     calibration = iqm_sim.Calibration.from_directory(calibration_dir)
@@ -872,6 +1125,7 @@ def self_test() -> str:
             raise RuntimeError(f"the Garnet build of {rel} differs from the committed case")
     emerald_self_test()
     emerald_t1_self_test()
+    third_length_self_test()
     return (
         f"idle schedule probe: {len(circuits)} circuits, {pulsed} pulsed-qubit layouts; an ASAP and an ALAP model "
         "device read their own schedule, and injected over-rotations come back through unlike readouts; the Garnet "
@@ -1020,6 +1274,9 @@ def main() -> int:
     sd = sub.add_parser("study", help="calibration study of the successor's H2 estimator (local, no provider)")
     sd.add_argument("case_dir", type=Path)
     sd.add_argument("--out", type=Path, required=True)
+    pw = sub.add_parser("power", help="what the third-length case resolves, at expected counts (local, no provider)")
+    pw.add_argument("case_dir", type=Path)
+    pw.add_argument("--out", type=Path, required=True)
     an = sub.add_parser("analyze")
     an.add_argument("run_dir", type=Path)
     an.add_argument("--out", type=Path, required=True)
@@ -1033,6 +1290,8 @@ def main() -> int:
         check(args.directory, PROFILES[args.qc])
     elif args.command == "study":
         args.out.write_text(dump(study(args.case_dir)), encoding="utf-8")
+    elif args.command == "power":
+        args.out.write_text(dump(power(args.case_dir)), encoding="utf-8")
     elif args.command == "analyze":
         text = dump(analyze(args.run_dir))
         if args.replay:
