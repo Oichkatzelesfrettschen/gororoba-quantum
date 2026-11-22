@@ -79,14 +79,20 @@ def main(out: Path) -> None:
     arm_mean = {d: float(np.mean([r["all"]["mean"] for r in rows if r["dense"] == d])) for d in (True, False)}
     for row in rows:
         for part in ("all", "first_half", "second_half"):
-            row[part]["residual"] = row[part]["mean"] - arm_mean[row["dense"]]
-            row[part]["z"] = row[part]["residual"] / row[part]["se"]
+            # The reference is the mean of the same arm's other circuits over the same shots, so the residual is not
+            # shrunk by the circuit's own weight in its arm mean.
+            others = [r[part]["mean"] for r in rows if r["dense"] == row["dense"] and r is not row]
+            reference = float(np.mean(others))
+            se = math.sqrt(row[part]["se"] ** 2 + float(np.var(others, ddof=1)) / len(others))
+            row[part]["residual"] = row[part]["mean"] - reference
+            row[part]["residual_se"] = se
+            row[part]["z"] = row[part]["residual"] / se
     by_since: dict[str, Any] = {}
     for since_value in sorted({r["science_since_all_ones"] for r in rows}):
         group = [r for r in rows if r["science_since_all_ones"] == since_value]
         for part in ("all", "first_half", "second_half"):
             residual = float(np.mean([r[part]["residual"] for r in group]))
-            se = math.sqrt(sum(r[part]["se"] ** 2 for r in group)) / len(group)
+            se = math.sqrt(sum(r[part]["residual_se"] ** 2 for r in group)) / len(group)
             by_since.setdefault(str(since_value), {})[part] = {
                 "circuits": len(group),
                 "mean_residual": round(residual, ROUND),
@@ -105,8 +111,9 @@ def main(out: Path) -> None:
         "run": str(RUN.relative_to(ROOT)),
         "definition": (
             "response = mean over shots of (score(bright Y cell) - score(kernel Y cell)) / 2; residual = response "
-            "minus the mean response of its dense or sparse arm; science_since_all_ones = 1 for the first "
-            "science circuit after the all-ones reference, counted across the wrap from one shot to the next"
+            "minus the mean response of the other circuits of its arm over the same shots, z against the combined "
+            "error; science_since_all_ones = 1 for the first science circuit after the all-ones reference, counted "
+            "across the wrap from one shot to the next"
         ),
         "arm_mean_response": {"dense": round(arm_mean[True], ROUND), "sparse": round(arm_mean[False], ROUND)},
         "by_science_since_all_ones": by_since,

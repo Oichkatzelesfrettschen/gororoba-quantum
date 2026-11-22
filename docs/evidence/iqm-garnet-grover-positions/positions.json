@@ -1,5 +1,36 @@
 {
  "definition": "p = raw marked frequency over kept shots; f = lambda_3 - lambda_2^2 / lambda_1 with lambda_k = (p - 1/8) / (ideal_k - 1/8), raw, without the readout correction; moved: the k = 2 and 3 arms shifted along a line in position to the k = 1 copies' mean position; block_chi2_df3: Pearson statistic of the four shot blocks against their pooled frequency",
+ "inner_minus_outer": {
+  "arms": [
+   {
+    "arm": "m101-k1",
+    "inner_minus_outer": -0.00467,
+    "se": 0.00811
+   },
+   {
+    "arm": "m101-k1-fused",
+    "inner_minus_outer": 0.00492,
+    "se": 0.00807
+   },
+   {
+    "arm": "m101-k1-generic",
+    "inner_minus_outer": -0.00648,
+    "se": 0.00829
+   },
+   {
+    "arm": "m101-k1-padded",
+    "inner_minus_outer": 0.01075,
+    "se": 0.00817
+   },
+   {
+    "arm": "r-m101-k1",
+    "inner_minus_outer": -0.00716,
+    "se": 0.00802
+   }
+  ],
+  "pooled": -0.00053,
+  "pooled_se": 0.00364
+ },
  "marks": {
   "011": {
    "arms": {

@@ -8,21 +8,27 @@ and sixteen readout preparations by multinomial likelihood. It reports each mode
 fit, its Akaike and Bayesian criteria, and its prediction of the s10-id table of QB11 and QB17 given QB12. It decides
 nothing: the comparison is descriptive, written after the analysis of the job.
 
-Every model carries the calibration's depolarizing PRX and CZ error (iqm_sim.Calibration on the job's retained set)
-and its herald-conditioned readout of QB11, QB17 and QB16. A CZ's two-qubit depolarizing error enters as the same
-parameter on each of its qubits, a stated approximation. QB12 is a three-level system so that leakage can be
-represented: a prx acts on its {0, 1} subspace and level 2 reads as 1. QB12's two readout errors are free in every
-model.
+Every model carries the calibration's depolarizing PRX error and two-qubit depolarizing CZ error (iqm_sim.Calibration
+on the job's retained set; the CZ channel is the sixteen-Pauli channel of parameter 4(1 - F)/3 on the pair, with
+QB12's Paulis acting as the identity on its level 2) and the herald-conditioned readout of QB11, QB17 and QB16. QB12 is
+a three-level system so that leakage can be represented: a prx acts on its {0, 1} subspace and level 2 reads as 1.
+QB12's two readout errors are free in every model.
 
-- readout: QB12 readout alone.
-- static: a QB12 excited population p that the zeros herald keeps.
-- frequency: p, a detuning eta that tilts the axis of each QB12 prx toward Z, a QB12 phase phi after each of its CZs,
-  and a conditional-phase error delta on its CZs.
-- transition: p and a QB12 bit flip of probability q after each of its CZs.
-- leakage: p, a transfer 1 -> 2 of probability l after each QB12 CZ, and the phase theta2 that a partner in 1 takes
-  against QB12 in 2 under a CZ.
+- readout: QB12 readout alone. A static excited population p only re-labels QB12's readout, since both null arms are
+  the identity, so it is not a separate model.
+- single: the QB12 single-qubit terms every fault model below shares: an excited population p that the zeros herald
+  keeps, a detuning eta that tilts the axis of each QB12 prx toward Z, and a QB12 phase phi after each of its CZs.
+- cz_phase: single and a conditional-phase error delta on QB12's CZs.
+- transition: single and a QB12 bit flip of probability q after each of its CZs.
+- leakage: single, a transfer 1 -> 2 of probability l after each QB12 CZ, and the phase theta2 that a partner in 1
+  takes against QB12 in 2 under a CZ.
+- hybrid: single with delta, q, l and theta2 together.
 
-Starting points form a fixed grid, so the fit draws no random number.
+The likelihood multiplies the 28 circuits' outcome distributions as independent multinomials, while one playlist runs
+every circuit once per shot; it is a composite likelihood, so the deviances rank the models and their nominal degrees
+of freedom and information criteria lack the usual calibration. The models also hold QB12's starting state fixed
+across the job, which the per-circuit listing of the record (`job_order`) contradicts. Starting points come from a
+fixed grid and from each model's nested parent, so the fit draws no random number.
 
 Usage: "$PYTHON" docs/evidence/iqm-garnet-qb12-models/qb12_models.py OUT.json
 """
@@ -52,13 +58,26 @@ QUBITS = ["QB11", "QB12", "QB17", "QB16"]
 DIMS = [2, 3, 2, 2]
 FAULT = 1
 SIZE = math.prod(DIMS)
-ARMS = ["s5-id", "s5-row", "s5-trunc", "s10-id", "s10-row", "s10-trunc"]
+SINGLE = [("p", 0.0, 0.6), ("eta", -1.5, 1.5), ("phi", -math.pi, math.pi)]
+DELTA = [("delta", -math.pi, math.pi)]
+FLIP = [("q", 0.0, 0.5)]
+LEAK = [("l", 0.0, 1.0), ("theta2", -math.pi, math.pi)]
 SPACE: dict[str, list[tuple[str, float, float]]] = {
     "readout": [],
-    "static": [("p", 0.0, 0.6)],
-    "frequency": [("p", 0.0, 0.6), ("eta", -1.5, 1.5), ("phi", -math.pi, math.pi), ("delta", -math.pi, math.pi)],
-    "transition": [("p", 0.0, 0.6), ("q", 0.0, 0.5)],
-    "leakage": [("p", 0.0, 0.6), ("l", 0.0, 0.5), ("theta2", -math.pi, math.pi)],
+    "single": SINGLE,
+    "cz_phase": SINGLE + DELTA,
+    "transition": SINGLE + FLIP,
+    "leakage": SINGLE + LEAK,
+    "hybrid": SINGLE + DELTA + FLIP + LEAK,
+}
+# Each model starts from its nested parents' optima, extended over the grid of its added terms.
+PARENTS = {
+    "readout": [],
+    "single": [],
+    "cz_phase": ["single"],
+    "transition": ["single"],
+    "leakage": ["single"],
+    "hybrid": ["cz_phase", "transition", "leakage"],
 }
 READOUT = [("e01", 0.0, 0.6), ("e10", 0.0, 0.6)]
 ROUND = 4
@@ -115,6 +134,18 @@ def depolarizing(p: float, position: int) -> list[np.ndarray]:
     ]
 
 
+def pair_depolarizing(p: float, a: int, b: int) -> list[np.ndarray]:
+    """rho -> (1 - p) rho + p I/4 on the qubit subspace of the pair: the identity with weight 1 - 15 p / 16 and each
+    of the fifteen other two-qubit Paulis with weight p / 16."""
+    single = [np.eye(2, dtype=complex), *PAULI]
+    kraus = []
+    for i, s in enumerate(single):
+        for j, t in enumerate(single):
+            weight = 1 - 15 * p / 16 if i == j == 0 else p / 16
+            kraus.append(math.sqrt(weight) * embed(lift(s, a), a) @ embed(lift(t, b), b))
+    return kraus
+
+
 def read_case() -> tuple[list[dict[str, Any]], iqm_sim.Calibration]:
     cases = json.loads((RUN / "cases.json").read_text(encoding="utf-8"))
     job = next(j for j in cases["jobs"] if j["job"] == "sedenion")
@@ -157,9 +188,12 @@ class Model:
         self.bounds = [(lo, hi) for _, lo, hi in SPACE[kind] + READOUT]
         self.circuits = circuits
         self.prx_noise = {q: depolarizing(calibration.prx_p(q), QUBITS.index(q)) for q in QUBITS}
-        self.cz_p = {pair: 4 * (1 - f) / 3 for pair, f in calibration.cz.items()}
+        self.cz_noise = {
+            pair: pair_depolarizing(4 * (1 - f) / 3, *sorted(QUBITS.index(q) for q in pair))
+            for pair, f in calibration.cz.items()
+            if pair <= set(QUBITS)
+        }
         self.readout = {q: calibration.readout(q, heralded=True) for q in QUBITS}
-        self.positions = list(range(SIZE))
 
     def probabilities(self, values: dict[str, float], ops: list[dict[str, Any]]) -> np.ndarray:
         p = values.get("p", 0.0)
@@ -177,9 +211,7 @@ class Model:
             elif op["name"] == "cz":
                 phases = cz_phases(where[0], where[1], values.get("delta", 0.0), values.get("theta2", 0.0))
                 rho = phases[:, None] * rho * phases.conj()[None, :]
-                pp = self.cz_p[frozenset(op["locus"])]
-                for position in where:
-                    rho = sum(k @ rho @ k.conj().T for k in depolarizing(pp, position))
+                rho = sum(k @ rho @ k.conj().T for k in self.cz_noise[frozenset(op["locus"])])
                 if FAULT in where:
                     rho = self.fault_channel(values, rho)
         populations = np.real(np.diag(rho))
@@ -193,19 +225,19 @@ class Model:
         return np.clip(out, 1e-12, None)
 
     def fault_channel(self, values: dict[str, float], rho: np.ndarray) -> np.ndarray:
-        if self.kind == "frequency":
+        if "phi" in values:
             gate = embed(np.diag([1, np.exp(1j * values["phi"]), 1]), FAULT)
-            return gate @ rho @ gate.conj().T
-        if self.kind == "transition":
+            rho = gate @ rho @ gate.conj().T
+        if "q" in values:
             q = values["q"]
             flip = embed(lift(PAULI[0], FAULT), FAULT)
-            return (1 - q) * rho + q * flip @ rho @ flip.conj().T
-        if self.kind == "leakage":
+            rho = (1 - q) * rho + q * flip @ rho @ flip.conj().T
+        if "l" in values:
             keep = embed(np.diag([1, math.sqrt(1 - values["l"]), 1]), FAULT)
             jump = np.zeros((3, 3), dtype=complex)
             jump[2, 1] = math.sqrt(values["l"])
             leak = embed(jump, FAULT)
-            return keep @ rho @ keep.conj().T + leak @ rho @ leak.conj().T
+            rho = keep @ rho @ keep.conj().T + leak @ rho @ leak.conj().T
         return rho
 
     def loglik(self, vector: np.ndarray) -> float:
@@ -217,13 +249,34 @@ def fit(item: tuple[str, tuple[float, ...]]) -> dict[str, Any]:
     kind, start = item
     model = Model(kind, *read_case())
     result = minimize(lambda v: -model.loglik(v), np.array(start), method="L-BFGS-B", bounds=model.bounds)
-    return {"kind": kind, "loglik": -float(result.fun), "x": [float(v) for v in result.x]}
+    return {
+        "kind": kind,
+        "loglik": -float(result.fun),
+        "x": [float(v) for v in result.x],
+        "converged": bool(result.success),
+        "iterations": int(result.nit),
+        "message": str(result.message),
+    }
 
 
-def starts(kind: str) -> list[tuple[str, tuple[float, ...]]]:
-    grid = [(lo + (hi - lo) / 4, lo + 3 * (hi - lo) / 4) for _, lo, hi in SPACE[kind]]
-    readout = (0.05, 0.25)
-    return [(kind, point + readout) for point in itertools.product(*grid)]
+def grid(terms: list[tuple[str, float, float]]) -> list[tuple[float, ...]]:
+    return list(itertools.product(*[(lo + (hi - lo) / 4, lo + 3 * (hi - lo) / 4) for _, lo, hi in terms]))
+
+
+def starts(kind: str, best: dict[str, dict[str, float]]) -> list[tuple[str, tuple[float, ...]]]:
+    """A fixed grid for a model without parents; otherwise each parent's optimum, its absent terms taken from the
+    grid of the terms the model adds."""
+    names = [n for n, _, _ in SPACE[kind] + READOUT]
+    if not PARENTS[kind]:
+        readout = (0.05, 0.25)
+        return [(kind, point + readout) for point in grid(SPACE[kind])]
+    out = []
+    for parent in PARENTS[kind]:
+        added = [t for t in SPACE[kind] if t[0] not in best[parent]]
+        for point in grid(added):
+            fill = dict(zip((n for n, _, _ in added), point, strict=True))
+            out.append((kind, tuple(best[parent].get(n, fill.get(n, 0.0)) for n in names)))
+    return out
 
 
 def marginals(probabilities: np.ndarray) -> list[float]:
@@ -235,7 +288,10 @@ def table(probabilities: np.ndarray) -> dict[str, list[float]]:
     """P(QB11, QB17 = 00, 01, 10, 11 | QB12 = 0 or 1)."""
     out = {}
     for fault in (0, 1):
-        cells = [probabilities[a | fault << 1 | b << 2] for a, b in ((0, 0), (0, 1), (1, 0), (1, 1))]
+        cells = [
+            sum(probabilities[a | fault << 1 | b << 2 | c << 3] for c in (0, 1))
+            for a, b in ((0, 0), (0, 1), (1, 0), (1, 1))
+        ]
         out[f"qb12={fault}"] = [round(float(c / sum(cells)), ROUND) for c in cells]
     return out
 
@@ -250,16 +306,29 @@ def main(out: Path) -> None:
     )
     shots = int(sum(c["counts"].sum() for c in circuits))
     cells = 15 * len(circuits)
-    fits = ordered_map(fit, [s for kind in SPACE for s in starts(kind)])
+    optimum: dict[str, dict[str, float]] = {}
+    chosen: dict[str, dict[str, Any]] = {}
+    for kind in SPACE:
+        fits = ordered_map(fit, starts(kind, optimum))
+        chosen[kind] = max(fits, key=lambda f: f["loglik"])
+        names = [n for n, _, _ in SPACE[kind] + READOUT]
+        optimum[kind] = dict(zip(names, chosen[kind]["x"], strict=True))
     report: dict[str, Any] = {}
     for kind in SPACE:
-        best = max((f for f in fits if f["kind"] == kind), key=lambda f: f["loglik"])
+        best = chosen[kind]
         model = Model(kind, circuits, calibration)
-        values = dict(zip(model.names, best["x"], strict=True))
+        values = optimum[kind]
         k = len(model.names)
         predictions = {c["name"]: model.probabilities(values, c["ops"]) for c in circuits}
         report[kind] = {
             "parameters": {n: round(v, ROUND) for n, v in values.items()},
+            "converged": best["converged"],
+            "iterations": best["iterations"],
+            "at_bound": sorted(
+                n
+                for n, (lo, hi) in zip(model.names, model.bounds, strict=True)
+                if min(values[n] - lo, hi - values[n]) < 1e-6
+            ),
             "deviance": round(2 * (saturated - best["loglik"]), 1),
             "df": cells - k,
             "aic": round(2 * k - 2 * best["loglik"], 1),
@@ -269,8 +338,19 @@ def main(out: Path) -> None:
         }
     observed = {c["name"]: marginals(c["counts"]) for c in circuits}
     tables = {c["name"]: table(c["counts"]) for c in circuits if c["name"].startswith("s10-id")}
+    job_order = [
+        {
+            "circuit": c["name"],
+            "kept_shots": int(c["counts"].sum()),
+            "qb12_reads_1": round(
+                float(sum(c["counts"][i] for i in range(16) if (i >> FAULT) & 1) / c["counts"].sum()), ROUND
+            ),
+        }
+        for c in circuits
+    ]
     record = {
         "run": str(RUN.relative_to(ROOT)),
+        "job_order": job_order,
         "qubits": QUBITS,
         "calibration_set": calibration.set_id,
         "null_arm_identity_error": {n: float(f"{v:.1e}") for n, v in sorted(identity.items())},

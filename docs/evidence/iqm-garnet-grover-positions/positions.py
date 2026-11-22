@@ -1,12 +1,15 @@
 """Positional and shot-block reading of the Grover depth arms of the retained Garnet follow-up run.
 
-The readout-corrected 101 depth statistic f = lambda_3 - lambda_2^2 / lambda_1 read -0.121 +- 0.041 against zero
-(docs/design/iqm-garnet-grover-depth-sedenion-walsh.md, "Result"). The depth arms k = 2 and 3 are single circuits at
+The preregistered 101 depth statistic f = lambda_3 - lambda_2^2 / lambda_1 read -0.122 +- 0.039 from raw frequencies
+against the model's 0.010 (z -3.4; the readout-corrected f reads -0.121 +- 0.041; docs/design/
+iqm-garnet-grover-depth-sedenion-walsh.md, "Result"). The depth arms k = 2 and 3 are single circuits at
 positions 15 and 16 of the 36, and k = 1 pools four copies at 0, 13, 22 and 35, so a response that changes with
 position or with time in the job enters f. This script reads, for each Grover arm of both marked states, the raw
 marked frequency over its kept shots and over four shot blocks; fits a line in position to the k = 1 copies; recomputes
 the raw f with every arm moved to the k = 1 copies' mean position along that line and along the line at three
-standard errors of its slope; and tests each depth arm's four shot blocks for equality. It decides nothing: it is
+standard errors of its slope; tests each depth arm's four shot blocks for equality; and compares the inner copies
+(positions 13 and 22) with the outer ones (0 and 35) over every four-copy arm of both marks, a check of a drift
+symmetric about the job's center that the line cannot see. It decides nothing: it is
 written after the analysis of the run.
 
 Usage: "$PYTHON" docs/evidence/iqm-garnet-grover-positions/positions.py OUT.json
@@ -16,6 +19,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -126,7 +130,30 @@ def main(out: Path) -> None:
             "raw_f_moved_at_slope_plus_3se": round(f_of(moved(p_raw, positions, xm, slope + 3 * slope_se)), ROUND),
             "raw_f_moved_at_slope_minus_3se": round(f_of(moved(p_raw, positions, xm, slope - 3 * slope_se)), ROUND),
         }
+    # Inner (c1, c2) minus outer (c0, c3) copies over every four-copy arm, raw marked frequencies; each arm's marked
+    # outcome comes from the run's prediction, in that arm's measurement order.
+    prediction = json.loads((RUN / "prediction.json").read_text(encoding="utf-8"))
+    arms_marked = {name: arm["marked"] for name, arm in prediction["arms"].items() if "marked" in arm}
+    inner_outer = []
+    for stem in sorted({name.rsplit("-c", 1)[0] for name in circuits if re.search(r"-c[0-3]$", name)}):
+        copies = [circuits.get(f"{stem}-c{i}") for i in range(4)]
+        if any(c is None for c in copies):
+            continue
+        target = marked_index(arms_marked[f"{stem}-c0"])
+        p = [float((c["index"] == target).mean()) for c in copies if c is not None]
+        n = [len(c["index"]) for c in copies if c is not None]
+        diff = (p[1] + p[2] - p[0] - p[3]) / 2
+        se = math.sqrt(sum(pi * (1 - pi) / ni for pi, ni in zip(p, n, strict=True))) / 2
+        inner_outer.append({"arm": stem, "inner_minus_outer": round(diff, ROUND), "se": round(se, ROUND)})
+    weights = [1 / r["se"] ** 2 for r in inner_outer]
+    pooled = sum(w * r["inner_minus_outer"] for w, r in zip(weights, inner_outer, strict=True)) / sum(weights)
+    pooled_se = 1 / math.sqrt(sum(weights))
     record = {
+        "inner_minus_outer": {
+            "arms": inner_outer,
+            "pooled": round(pooled, ROUND),
+            "pooled_se": round(pooled_se, ROUND),
+        },
         "run": str(RUN.relative_to(ROOT)),
         "definition": (
             "p = raw marked frequency over kept shots; f = lambda_3 - lambda_2^2 / lambda_1 with "
