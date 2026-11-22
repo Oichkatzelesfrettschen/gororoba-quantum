@@ -25,7 +25,11 @@ Every prediction is the exact density matrix of iqm_grover_line.predicted's mode
 iqm_garnet_followup.predicted: depolarizing PRX and CZ, idle T1 and T2 over the ASAP schedule, herald-conditioned
 readout; no coherent error. The case draws no random number, so it takes no seed.
 
-Usage: "$PYTHON" scripts/iqm_grover_fourth_depth.py (build DIR --calibration SRC | check DIR | --self-test)
+Usage: "$PYTHON" scripts/iqm_grover_fourth_depth.py (build DIR (--calibration SRC | --live) | check DIR | --self-test)
+
+build --live reads Garnet's current default calibration set into DIR/calibration (a free read) and rebuilds
+the circuits, the prediction and the digest cases.json binds; a submission follows such a build, so the approved
+digest names the calibration the job runs on.
 """
 
 from __future__ import annotations
@@ -33,9 +37,10 @@ from __future__ import annotations
 import argparse
 import itertools
 import json
-import math
+import re
 import shutil
 import sys
+from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
 
@@ -60,7 +65,7 @@ PATH = followup.FORWARD_PATH
 MARKED = "101"
 SHOTS = 20000
 # Copies per depth; each is even so that every copy has a mirror image.
-COPIES = {1: 4, 2: 4, 3: 4, 4: 6}
+COPIES = {1: 4, 2: 4, 3: 4, 4: 18}
 READOUTS = 8
 # Kept fraction of the retained depth arms: 13,450 of 16,000, 3,377 and 3,383 of 4,000 (0.841, 0.844, 0.846).
 KEPT_PLAN = 0.84
@@ -73,22 +78,33 @@ CEILING_MARGIN_SECONDS = 3
 RETAINED_ANALYSIS = ROOT / "results" / "iqm" / "garnet_grover_depth_sedenion_walsh_analysis.json"
 
 
+def distinct_orders(remaining: dict[int, int], prefix: tuple[int, ...] = ()) -> Iterator[tuple[int, ...]]:
+    """Every distinct ordering of the multiset remaining (depth -> count), in sorted order."""
+    if not any(remaining.values()):
+        yield prefix
+        return
+    for k in sorted(remaining):
+        if remaining[k]:
+            yield from distinct_orders({**remaining, k: remaining[k] - 1}, (*prefix, k))
+
+
 def arrangement() -> list[int]:
-    """Depths of the job's circuits in order: half of every depth's copies, the readout block, the first half
-    reversed. Of the orderings of the first half, the one whose depths have the most nearly equal mean squared
+    """Depths of the job's circuits in order: half of every depth's copies, the readout block (depth 0), the first
+    half reversed. Of the orderings of the first half, the one whose depths have the most nearly equal mean squared
     offset from the job's center (the first in sorted order among ties), so a drift quadratic in position also
-    enters every depth equally to the first order the multiset allows."""
-    half = [k for k in sorted(COPIES) for _ in range(COPIES[k] // 2)]
-    total = 2 * len(half) + READOUTS
+    enters every depth with the least spread the multiset allows."""
+    half = {k: n // 2 for k, n in COPIES.items()}
+    length = sum(half.values())
+    total = 2 * length + READOUTS
     center = (total - 1) / 2
     best: tuple[float, tuple[int, ...]] | None = None
-    for order in sorted(set(itertools.permutations(half))):
-        positions = {k: [] for k in COPIES}
+    for order in distinct_orders(half):
+        sums = dict.fromkeys(half, 0.0)
         for p, k in enumerate(order):
-            positions[k] += [p, total - 1 - p]
-        spread = [sum((p - center) ** 2 for p in positions[k]) / len(positions[k]) for k in COPIES]
-        score = max(spread) - min(spread)
-        if best is None or score < best[0] - 1e-12:
+            sums[k] += (p - center) ** 2
+        means = [sums[k] / half[k] for k in half]
+        score = max(means) - min(means)
+        if best is None or score < best[0] - 1e-9:
             best = (score, order)
     if best is None:
         raise ValueError("no arrangement")
@@ -121,13 +137,23 @@ def depth_arms() -> list[dict[str, Any]]:
 
 
 def retained_inputs() -> dict[str, Any]:
-    """The retained job's raw retention at depths 1 to 3 and its kept shots, read from the retained analysis."""
+    """The retained job's raw retention at depths 1 to 3, its kept shots and the model's retention at the retained
+    calibration, read from the retained analysis and the retained case's prediction."""
     record = json.loads(RETAINED_ANALYSIS.read_text(encoding="utf-8"))
     lam = record["decisions"]["depth_law_101"]["lambda_raw"]
     arms = record["exploratory"]["grover"]["arms"]
+    prediction = json.loads(
+        (followup.RETAINED_CASE.parent / followup.CASE / "prediction.json").read_text(encoding="utf-8")
+    )
+    model = []
+    for k in (1, 2, 3):
+        pattern = re.compile(rf"m101-k{k}(-c\d+)?")
+        marked = [a["predicted_marked"] for name, a in prediction["arms"].items() if pattern.fullmatch(name)]
+        model.append(families.retention(float(np.mean(marked)), k))
     return {
         "lambda": [float(lam[str(k)]) for k in (1, 2, 3)],
         "kept": [int(arms[f"m101-k{k}"]["kept_shots"]) for k in (1, 2, 3)],
+        "model": model,
         "f_raw": record["decisions"]["depth_law_101"]["f_raw"],
     }
 
@@ -144,23 +170,29 @@ def rounded(x: Any) -> Any:
     return round(x, 6) if isinstance(x, float) else x
 
 
-def decisions(arm_records: dict[str, Any]) -> dict[str, Any]:
-    retained = retained_inputs()
-    cont = families.continuations(retained["lambda"], retained["kept"])
-    # Each family's values at depths 1 to 4 are the data the rule would see if that family held exactly.
-    kept = planned_kept()
-    sep = families.separation(cont["geometric"], cont["coherent"], kept)
-    model_lam = [
+def model_retention(arm_records: dict[str, Any]) -> list[float]:
+    """The model's retention at depths 1 to 4, from the mean predicted marked probability of each depth's copies."""
+    return [
         families.retention(
             float(np.mean([a["predicted_marked"] for n, a in arm_records.items() if n.startswith(f"m101-k{k}-c")])), k
         )
         for k in families.DEPTHS
     ]
-    model_f, model_f_se = families.bend(model_lam, kept)
-    model_se = [families.standard_error(x, k, n) for x, k, n in zip(model_lam, families.DEPTHS, kept, strict=True)]
-    model_geo = families.fit_geometric(model_lam, model_se, families.DEPTHS)
-    model_coh = families.fit_coherent(model_lam, model_se, families.DEPTHS)
-    last_se = families.standard_error(cont["geometric_next"], 4, kept[3])
+
+
+def decisions(arm_records: dict[str, Any]) -> dict[str, Any]:
+    retained = retained_inputs()
+    cont = families.continuations(retained["lambda"], retained["kept"], retained["model"])
+    kept = planned_kept()
+    model = model_retention(arm_records)
+    # The retained ratios continued to depth 4 and scaled by this calibration's model retention are the two
+    # continuations of lambda_4; the data the rule would see if one family held exactly sit at those values.
+    sep = families.separation(cont["geometric"], cont["coherent"], kept, model)
+    model_f, model_f_se = families.bend(model, kept)
+    model_counts = [
+        round(families.probability_of(m, k) * n) for m, k, n in zip(model, families.DEPTHS, kept, strict=True)
+    ]
+    model_reading = families.verdict(model_counts, [round(n) for n in kept], model, cont)
     return rounded(
         {
             "z_resolve": families.Z_RESOLVE,
@@ -169,50 +201,60 @@ def decisions(arm_records: dict[str, Any]) -> dict[str, Any]:
                 "source": RETAINED_ANALYSIS.relative_to(ROOT).as_posix(),
                 "lambda_raw": dict(zip(("1", "2", "3"), retained["lambda"], strict=True)),
                 "kept_shots": dict(zip(("1", "2", "3"), retained["kept"], strict=True)),
+                "model_lambda": dict(zip(("1", "2", "3"), retained["model"], strict=True)),
+                "rho": dict(zip(("1", "2", "3"), cont["rho"], strict=True)),
                 "f_raw": retained["f_raw"],
                 "geometric_fit": cont["geometric"],
                 "coherent_fit": cont["coherent"],
-                "geometric_lambda_4": cont["geometric_next"],
-                "coherent_lambda_4": cont["coherent_next"],
+                "geometric_rho_4": cont["geometric_next"],
+                "coherent_rho_4": cont["coherent_next"],
             },
-            "resolution": {
-                "lambda_4_difference": sep["last_depth_difference"],
-                "se_lambda_4_at_planned_shots": last_se,
+            "continuation": {
+                "model_lambda_4": model[3],
+                "geometric_lambda_4": cont["geometric_next"] * model[3],
+                "coherent_lambda_4": cont["coherent_next"] * model[3],
+                "lambda_4_difference": sep["last_depth_difference"] * model[3],
+                "se_rho_4_at_planned_shots": sep["last_depth_difference"] / sep["last_depth_z"],
                 "z": sep["last_depth_z"],
                 "chi2_geometric_fit_to_coherent_values": sep["chi2_geometric_on_coherent_data"],
                 "chi2_coherent_fit_to_geometric_values": sep["chi2_coherent_on_geometric_data"],
-                "rule": (
-                    "the retained geometric and coherent fits continued to depth 4 differ by lambda_4_difference; "
-                    "z is that difference over the binomial standard error of lambda_4 from the planned kept shots "
-                    "of the larger-error value; each chi-square is what the other family leaves when the four "
-                    "depths equal one family's values at the planned shots, to be compared with delta_resolve"
-                ),
                 "delta_resolve": families.DELTA_RESOLVE,
+                "rule": (
+                    "the retained ratios rho = lambda / model lambda at depths 1 to 3 fitted by each family and "
+                    "continued to depth 4, scaled by this calibration's model lambda_4; z is their difference over "
+                    "the binomial standard error of rho_4 from the planned kept shots, the larger of the two; each "
+                    "chi-square is what the other family leaves when the four depths equal one family's values at "
+                    "the planned shots, to be compared with delta_resolve"
+                ),
             },
             "model": {
-                "lambda": dict(zip(("1", "2", "3", "4"), model_lam, strict=True)),
+                "lambda": dict(zip(("1", "2", "3", "4"), model, strict=True)),
                 "f": model_f,
                 "f_se_at_planned_shots": model_f_se,
-                "geometric_fit": model_geo,
-                "coherent_fit": model_coh,
+                "verdict_on_the_model_at_planned_shots": model_reading,
             },
             "rule": {
                 "bend": (
                     "f = lambda_3 - lambda_2^2 / lambda_1 from raw pooled marked frequencies of the depth arms "
                     "(copies pooled, binomial variances at the observed frequencies, delta method over the three "
-                    "arms), z = (f - model.f) / SE; z <= -3 reads 'the retention law bends at mirrored positions', "
-                    "which excludes positional drift linear in position as the cause of the retained bend; z >= 3 "
-                    "reads 'bends upward'; otherwise 'no bend resolved at mirrored positions'"
+                    "arms), z = (f - model.f) / SE; z <= -3 reads 'the retention law bends beyond the model at "
+                    "mirrored positions', which excludes positional drift linear in position as the cause of the "
+                    "retained bend; z >= 3 reads 'bends upward of the model'; otherwise 'no bend beyond the model "
+                    "resolved at mirrored positions'"
                 ),
                 "family": (
-                    "weighted least squares of the geometric family A r^k and the coherent family "
-                    "r^k (Q_k(eps) - 1/8) / (P_k - 1/8) to lambda_1 to lambda_4 (gororoba_quantum/"
-                    "grover_depth_families.py); with chi2 of each fit (two degrees of freedom): 'neither family "
-                    "fits' when both exceed 9.21; else 'coherent' when chi2_geometric - chi2_coherent >= 9, "
-                    "'geometric' when it is <= -9, else 'unresolved'"
+                    "weighted least squares of the geometric family a s^k and the coherent family s^k (Q_k(eps) - "
+                    "1/8) / (P_k - 1/8) to rho_k = lambda_k / model.lambda_k at k = 1 to 4 "
+                    "(gororoba_quantum/grover_depth_families.py), binomial standard errors at the observed "
+                    "frequencies; with chi2 of each fit (two degrees of freedom): 'neither family fits' when both "
+                    "exceed their 0.99 chi2 quantile (9.21 at four usable depths, 6.63 at three); else 'coherent' when "
+                    "chi2_geometric - chi2_coherent >= 9, 'geometric' when it is <= -9, else 'unresolved'; gating: "
+                    "a copy below half its planned kept shots is dropped from its depth, a depth without kept "
+                    "shots is unusable, the bend needs depths 1 to 3, the family comparison any three depths, and "
+                    "a decision whose depths are unusable reads 'not evaluated' without blocking the other"
                 ),
                 "beside": (
-                    "lambda_4 against the retained fits' continuations in standard errors, and whether the "
+                    "rho_4 against the retained fits' continuations in standard errors, and whether the "
                     "retention decreases with depth; neither decides"
                 ),
                 "function": "grover_depth_families.verdict",
@@ -300,12 +342,29 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
     return files, prediction
 
 
-def write(directory: Path, source: Path) -> None:
+def fetch_live(calibration_dir: Path) -> None:
+    """Garnet's current default calibration set, a free read-only call (IQM_TOKENS_FILE), into calibration_dir."""
+    from iqm_cancellation_probe import fetch_calibration
+
+    fetch_calibration(calibration_dir)
+
+
+def write(directory: Path, source: Path | None, live: bool = False) -> None:
+    """Build the case from a calibration directory, or with live from the set Garnet serves now; a rebuild drops
+    the circuits the new build does not emit."""
+    if live == (source is not None):
+        raise ValueError("build takes exactly one of --calibration and --live")
     calibration_dir = directory / "calibration"
     calibration_dir.mkdir(parents=True, exist_ok=True)
-    for name in CALIBRATION_FILES:
-        shutil.copyfile(source / name, calibration_dir / name)
+    if live:
+        fetch_live(calibration_dir)
+    elif source is not None:
+        for name in CALIBRATION_FILES:
+            shutil.copyfile(source / name, calibration_dir / name)
     files, prediction = build_from(calibration_dir)
+    for stale in (directory / "circuits").glob("*.json"):
+        if stale.relative_to(directory).as_posix() not in files:
+            stale.unlink()
     for rel, text in files.items():
         path = directory / rel
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -349,10 +408,8 @@ def self_test() -> str:
     require(len(arms) * SHOTS <= 2_000_000 and SHOTS <= 20_000, "Garnet job limits")
     total = len(arms)
     center = (total - 1) / 2
-    means = {
-        k: float(np.mean([(n - center) ** 2 for n, a in enumerate(arms) if a["k"] == k])) for k in COPIES
-    }
-    require(max(means.values()) - min(means.values()) < 0.2 * min(means.values()), f"squared offsets {means}")
+    means = {k: float(np.mean([(n - center) ** 2 for n, a in enumerate(arms) if a["k"] == k])) for k in COPIES}
+    require(max(means.values()) - min(means.values()) < 0.25 * min(means.values()), f"squared offsets {means}")
     require(
         all(arms[n]["name"][:7] == arms[total - 1 - n]["name"][:7] for n in range(total) if arms[n]["k"]),
         "mirror images carry the same depth",
@@ -363,31 +420,49 @@ def self_test() -> str:
         require(abs(float(families.oracle_phase_probability(k, zero)[0]) - families.ideal_marked(k)) < 1e-12, "eps 0")
     # Planted recovery: noise-free values of each family return their own parameters with chi2 near zero.
     kept = [int(n) for n in planned_kept()]
-    geo_truth = {"A": 0.97, "r": 0.86}
-    coh_truth = {"eps": 0.19, "r": 0.85}
-    geo_lam = families.geometric_values(geo_truth, families.DEPTHS)
-    coh_lam = families.coherent_values(coh_truth, families.DEPTHS)
-    for lam, want in ((geo_lam, "geometric"), (coh_lam, "coherent")):
-        read = families.verdict(counts_of(lam, kept), kept, 0.0, {"geometric_next": geo_lam[3], "coherent_next": coh_lam[3]})
+    model = [0.85, 0.77, 0.70, 0.58]
+    # The retained ratios' two fits (decisions.retained of the case's prediction).
+    geo_truth = {"A": 1.025983, "r": 0.963383}
+    coh_truth = {"eps": 0.304302, "r": 1.013413}
+    geo_rho = families.geometric_values(geo_truth, families.DEPTHS)
+    coh_rho = families.coherent_values(coh_truth, families.DEPTHS)
+    cont = {"geometric_next": geo_rho[3], "coherent_next": coh_rho[3]}
+    for rho, want in ((geo_rho, "geometric"), (coh_rho, "coherent")):
+        lam = [r * m for r, m in zip(rho, model, strict=True)]
+        read = families.verdict(counts_of(lam, kept), kept, model, cont)
         require(read["family"] == want, f"planted {want}: {read['family']} (delta {read['delta_chi2']})")
-    # Planted bend: lambda_3 below the geometric value at the retained size reads as a bend.
-    bent = [0.85, 0.72, 0.52, 0.45]
-    read = families.verdict(counts_of(bent, kept), kept, 0.0, {"geometric_next": 0.5, "coherent_next": 0.5})
-    require(read["bend"]["reading"] == "the retention law bends at mirrored positions", f"bend {read['bend']}")
+    flat = families.verdict(counts_of(model, kept), kept, model, cont)
+    require(flat["family"] == "unresolved", f"the model's own retention reads {flat['family']}")
+    require(
+        flat["bend"]["reading"] == "no bend beyond the model resolved at mirrored positions", f"flat {flat['bend']}"
+    )
+    # Planted bend: lambda_3 well below the model's reads as a bend beyond the model, and no family fits it.
+    bent = [0.85, 0.77, 0.55, 0.58]
+    read = families.verdict(counts_of(bent, kept), kept, model, cont)
+    require(
+        read["bend"]["reading"] == "the retention law bends beyond the model at mirrored positions",
+        f"bend {read['bend']}",
+    )
     require(read["family"] == "neither family fits", f"bent data: {read['family']}")
-    flat = families.verdict(counts_of(geo_lam, kept), kept, 0.0, {"geometric_next": 0.5, "coherent_next": 0.5})
-    require(flat["bend"]["reading"] == "no bend resolved at mirrored positions", f"flat {flat['bend']}")
+    gated = families.verdict([*counts_of(model, kept)[:3], 0], [*kept[:3], 0], model, cont)
+    require(gated["usable_depths"] == [1, 2, 3] and gated["family"] == "unresolved", f"one unusable depth: {gated}")
+    require("z_against_model" in gated["bend"], "the bend needs depths 1 to 3 only")
     for bad in ([1, 2, 3], [-1, 0, 0, 0]):
         try:
-            families.verdict(bad, [10, 10, 10, 10][: len(bad)], 0.0, {})
+            families.verdict(bad, [10, 10, 10, 10][: len(bad)], [0.5] * 4, {})
         except ValueError:
             continue
         raise AssertionError(f"verdict accepted counts {bad}")
     # Billing arithmetic: the job's ceiling lies below max_credits, whose cancel threshold exceeds the expected run.
     expected = round(total * SHOTS * CIRCUIT_SHOT_SECONDS, 3)
-    garnet_max = (ceiling_seconds(ceiling_credits(expected, PRICE["garnet"], JOB_SECONDS), PRICE["garnet"]) + CEILING_MARGIN_SECONDS) * PRICE["garnet"]
+    garnet_max = (
+        ceiling_seconds(ceiling_credits(expected, PRICE["garnet"], JOB_SECONDS), PRICE["garnet"])
+        + CEILING_MARGIN_SECONDS
+    ) * PRICE["garnet"]
     require(ceiling_credits(expected, PRICE["garnet"], JOB_SECONDS) < garnet_max, "ceiling below max_credits")
-    return "self-test passed: 3 depth circuits against ideal, mirror invariants, families, 4 planted verdicts, 2 refusals"
+    return (
+        "self-test passed: 3 depth circuits against ideal, mirror invariants, families, 5 planted verdicts, 2 refusals"
+    )
 
 
 def main() -> int:
@@ -396,13 +471,14 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command")
     b = sub.add_parser("build")
     b.add_argument("directory", type=Path)
-    b.add_argument("--calibration", type=Path, required=True)
+    b.add_argument("--calibration", type=Path)
+    b.add_argument("--live", action="store_true", help="read Garnet's current calibration (network, read-only)")
     sub.add_parser("check").add_argument("directory", type=Path)
     args = parser.parse_args()
     if args.self_test:
         print(self_test())
     elif args.command == "build":
-        write(args.directory, args.calibration)
+        write(args.directory, args.calibration, args.live)
     elif args.command == "check":
         check(args.directory)
     else:

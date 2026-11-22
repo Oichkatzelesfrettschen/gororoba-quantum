@@ -3662,6 +3662,20 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_fourth_depth.py --self-test",
+      "name": "core-iqm-grover-fourth-depth-selftest",
+      "seconds": 7.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_fourth_depth.py check results/iqm/cases/grover-fourth-depth-mirrored",
+      "name": "core-iqm-grover-fourth-depth-case",
+      "seconds": 13.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --self-test",
       "name": "core-457",
       "seconds": 0.1

@@ -1,0 +1,1057 @@
+{
+ "arms": {
+  "m101-k1-c0": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 2,
+   "predicted": {
+    "000": 0.040448533,
+    "001": 0.054881442,
+    "010": 0.040261702,
+    "011": 0.041602485,
+    "100": 0.052216918,
+    "101": 0.686938143,
+    "110": 0.039690217,
+    "111": 0.043960559
+   },
+   "predicted_marked": 0.686938143,
+   "prx": 22
+  },
+  "m101-k1-c1": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 13,
+   "predicted": {
+    "000": 0.040448533,
+    "001": 0.054881442,
+    "010": 0.040261702,
+    "011": 0.041602485,
+    "100": 0.052216918,
+    "101": 0.686938143,
+    "110": 0.039690217,
+    "111": 0.043960559
+   },
+   "predicted_marked": 0.686938143,
+   "prx": 22
+  },
+  "m101-k1-c2": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 24,
+   "predicted": {
+    "000": 0.040448533,
+    "001": 0.054881442,
+    "010": 0.040261702,
+    "011": 0.041602485,
+    "100": 0.052216918,
+    "101": 0.686938143,
+    "110": 0.039690217,
+    "111": 0.043960559
+   },
+   "predicted_marked": 0.686938143,
+   "prx": 22
+  },
+  "m101-k1-c3": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 35,
+   "predicted": {
+    "000": 0.040448533,
+    "001": 0.054881442,
+    "010": 0.040261702,
+    "011": 0.041602485,
+    "100": 0.052216918,
+    "101": 0.686938143,
+    "110": 0.039690217,
+    "111": 0.043960559
+   },
+   "predicted_marked": 0.686938143,
+   "prx": 22
+  },
+  "m101-k2-c0": {
+   "cz": 28,
+   "ideal_marked": 0.9453125000000001,
+   "iterations": 2,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 3,
+   "predicted": {
+    "000": 0.029297447,
+    "001": 0.047783145,
+    "010": 0.028392102,
+    "011": 0.030609496,
+    "100": 0.043619309,
+    "101": 0.755730452,
+    "110": 0.028745424,
+    "111": 0.035822624
+   },
+   "predicted_marked": 0.755730452,
+   "prx": 42
+  },
+  "m101-k2-c1": {
+   "cz": 28,
+   "ideal_marked": 0.9453125000000001,
+   "iterations": 2,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 11,
+   "predicted": {
+    "000": 0.029297447,
+    "001": 0.047783145,
+    "010": 0.028392102,
+    "011": 0.030609496,
+    "100": 0.043619309,
+    "101": 0.755730452,
+    "110": 0.028745424,
+    "111": 0.035822624
+   },
+   "predicted_marked": 0.755730452,
+   "prx": 42
+  },
+  "m101-k2-c2": {
+   "cz": 28,
+   "ideal_marked": 0.9453125000000001,
+   "iterations": 2,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 26,
+   "predicted": {
+    "000": 0.029297447,
+    "001": 0.047783145,
+    "010": 0.028392102,
+    "011": 0.030609496,
+    "100": 0.043619309,
+    "101": 0.755730452,
+    "110": 0.028745424,
+    "111": 0.035822624
+   },
+   "predicted_marked": 0.755730452,
+   "prx": 42
+  },
+  "m101-k2-c3": {
+   "cz": 28,
+   "ideal_marked": 0.9453125000000001,
+   "iterations": 2,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 34,
+   "predicted": {
+    "000": 0.029297447,
+    "001": 0.047783145,
+    "010": 0.028392102,
+    "011": 0.030609496,
+    "100": 0.043619309,
+    "101": 0.755730452,
+    "110": 0.028745424,
+    "111": 0.035822624
+   },
+   "predicted_marked": 0.755730452,
+   "prx": 42
+  },
+  "m101-k3-c0": {
+   "cz": 42,
+   "ideal_marked": 0.330078125,
+   "iterations": 3,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 4,
+   "predicted": {
+    "000": 0.104936,
+    "001": 0.111933775,
+    "010": 0.098814424,
+    "011": 0.099782972,
+    "100": 0.11233987,
+    "101": 0.269992529,
+    "110": 0.099763265,
+    "111": 0.102437164
+   },
+   "predicted_marked": 0.269992529,
+   "prx": 62
+  },
+  "m101-k3-c1": {
+   "cz": 42,
+   "ideal_marked": 0.330078125,
+   "iterations": 3,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 9,
+   "predicted": {
+    "000": 0.104936,
+    "001": 0.111933775,
+    "010": 0.098814424,
+    "011": 0.099782972,
+    "100": 0.11233987,
+    "101": 0.269992529,
+    "110": 0.099763265,
+    "111": 0.102437164
+   },
+   "predicted_marked": 0.269992529,
+   "prx": 62
+  },
+  "m101-k3-c2": {
+   "cz": 42,
+   "ideal_marked": 0.330078125,
+   "iterations": 3,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 28,
+   "predicted": {
+    "000": 0.104936,
+    "001": 0.111933775,
+    "010": 0.098814424,
+    "011": 0.099782972,
+    "100": 0.11233987,
+    "101": 0.269992529,
+    "110": 0.099763265,
+    "111": 0.102437164
+   },
+   "predicted_marked": 0.269992529,
+   "prx": 62
+  },
+  "m101-k3-c3": {
+   "cz": 42,
+   "ideal_marked": 0.330078125,
+   "iterations": 3,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 33,
+   "predicted": {
+    "000": 0.104936,
+    "001": 0.111933775,
+    "010": 0.098814424,
+    "011": 0.099782972,
+    "100": 0.11233987,
+    "101": 0.269992529,
+    "110": 0.099763265,
+    "111": 0.102437164
+   },
+   "predicted_marked": 0.269992529,
+   "prx": 62
+  },
+  "m101-k4-c0": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 0,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c1": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 1,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c10": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 25,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c11": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 27,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c12": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 29,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c13": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 30,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c14": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 31,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c15": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 32,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c16": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 36,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c17": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 37,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c2": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 5,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c3": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 6,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c4": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 7,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c5": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 8,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c6": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 10,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c7": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 12,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c8": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 14,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c9": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 23,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "ro-000": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 15,
+   "predicted": {
+    "000": 0.994457786,
+    "001": 0.001829168,
+    "010": 0.002889066,
+    "011": 5.314e-06,
+    "100": 0.000814795,
+    "101": 1.499e-06,
+    "110": 2.367e-06,
+    "111": 4e-09
+   },
+   "prx": 0
+  },
+  "ro-001": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 16,
+   "predicted": {
+    "000": 0.01192302,
+    "001": 0.984363934,
+    "010": 3.4638e-05,
+    "011": 0.002859742,
+    "100": 9.769e-06,
+    "101": 0.000806525,
+    "110": 2.8e-08,
+    "111": 2.343e-06
+   },
+   "prx": 1
+  },
+  "ro-010": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 17,
+   "predicted": {
+    "000": 0.012655804,
+    "001": 2.3279e-05,
+    "010": 0.984691048,
+    "011": 0.001811204,
+    "100": 1.0369e-05,
+    "101": 1.9e-08,
+    "110": 0.000806793,
+    "111": 1.484e-06
+   },
+   "prx": 1
+  },
+  "ro-011": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 18,
+   "predicted": {
+    "000": 0.000151736,
+    "001": 0.012527346,
+    "010": 0.011805922,
+    "011": 0.97469633,
+    "100": 1.24e-07,
+    "101": 1.0264e-05,
+    "110": 9.673e-06,
+    "111": 0.000798604
+   },
+   "prx": 2
+  },
+  "ro-100": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 19,
+   "predicted": {
+    "000": 0.016472415,
+    "001": 3.0299e-05,
+    "010": 4.7855e-05,
+    "011": 8.8e-08,
+    "100": 0.978800166,
+    "101": 0.001800368,
+    "110": 0.002843578,
+    "111": 5.23e-06
+   },
+   "prx": 1
+  },
+  "ro-101": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 20,
+   "predicted": {
+    "000": 0.000197496,
+    "001": 0.016305219,
+    "010": 5.74e-07,
+    "011": 4.7369e-05,
+    "100": 0.011735294,
+    "101": 0.968865241,
+    "110": 3.4093e-05,
+    "111": 0.002814715
+   },
+   "prx": 2
+  },
+  "ro-110": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 21,
+   "predicted": {
+    "000": 0.000209633,
+    "001": 3.86e-07,
+    "010": 0.016310637,
+    "011": 3.0001e-05,
+    "100": 0.01245654,
+    "101": 2.2912e-05,
+    "110": 0.969187204,
+    "111": 0.001782686
+   },
+   "prx": 2
+  },
+  "ro-111": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 22,
+   "predicted": {
+    "000": 2.513e-06,
+    "001": 0.000207506,
+    "010": 0.000195556,
+    "011": 0.016145082,
+    "100": 0.000149347,
+    "101": 0.012330105,
+    "110": 0.011620039,
+    "111": 0.959349851
+   },
+   "prx": 3
+  }
+ },
+ "calibration_set": "a0e725eb-a020-43d3-8aaf-072b926e425a",
+ "copies": {
+  "1": 4,
+  "2": 4,
+  "3": 4,
+  "4": 18
+ },
+ "decisions": {
+  "continuation": {
+   "chi2_coherent_fit_to_geometric_values": 24.867371,
+   "chi2_geometric_fit_to_coherent_values": 183.179216,
+   "coherent_lambda_4": 0.526171,
+   "delta_resolve": 9.0,
+   "geometric_lambda_4": 0.512995,
+   "lambda_4_difference": -0.013177,
+   "model_lambda_4": 0.580466,
+   "rule": "the retained ratios rho = lambda / model lambda at depths 1 to 3 fitted by each family and continued to depth 4, scaled by this calibration's model lambda_4; z is their difference over the binomial standard error of rho_4 from the planned kept shots, the larger of the two; each chi-square is what the other family leaves when the four depths equal one family's values at the planned shots, to be compared with delta_resolve",
+   "se_rho_4_at_planned_shots": 0.006951,
+   "z": -3.265788
+  },
+  "model": {
+   "f": 0.016597,
+   "f_se_at_planned_shots": 0.009367,
+   "lambda": {
+    "1": 0.856287,
+    "2": 0.76889,
+    "3": 0.707011,
+    "4": 0.580466
+   },
+   "verdict_on_the_model_at_planned_shots": {
+    "bend": {
+     "f": 0.016559,
+     "reading": "no bend beyond the model resolved at mirrored positions",
+     "se": 0.009367,
+     "z_against_model": -0.004
+    },
+    "beside": {
+     "retention_decreases_with_depth": true,
+     "rho4_against_retained_coherent_z": 14.234,
+     "rho4_against_retained_geometric_z": 17.6882
+    },
+    "coherent": {
+     "chi2": 1.5e-05,
+     "eps": 0.002675,
+     "r": 1.0
+    },
+    "delta_chi2": 0.0,
+    "family": "unresolved",
+    "geometric": {
+     "A": 0.999992,
+     "chi2": 1.9e-05,
+     "r": 1.000002
+    },
+    "lambda": {
+     "1": 0.856281,
+     "2": 0.768889,
+     "3": 0.706975,
+     "4": 0.58047
+    },
+    "rho": [
+     0.999994,
+     0.999998,
+     0.999949,
+     1.000006
+    ],
+    "se": {
+     "1": 0.002726,
+     "2": 0.00202,
+     "3": 0.008351,
+     "4": 0.003815
+    },
+    "usable_depths": [
+     1,
+     2,
+     3,
+     4
+    ]
+   }
+  },
+  "planned_kept_shots": {
+   "1": 67200.0,
+   "2": 67200.0,
+   "3": 67200.0,
+   "4": 302400.0
+  },
+  "retained": {
+   "coherent_fit": {
+    "chi2": 0.850932,
+    "eps": 0.304302,
+    "r": 1.013413
+   },
+   "coherent_rho_4": 0.906464,
+   "f_raw": -0.122238,
+   "geometric_fit": {
+    "A": 1.025983,
+    "chi2": 11.294602,
+    "r": 0.963383
+   },
+   "geometric_rho_4": 0.883764,
+   "kept_shots": {
+    "1": 13450,
+    "2": 3377,
+    "3": 3383
+   },
+   "lambda_raw": {
+    "1": 0.830646,
+    "2": 0.729867,
+    "3": 0.519077
+   },
+   "model_lambda": {
+    "1": 0.842867,
+    "2": 0.752663,
+    "3": 0.682541
+   },
+   "rho": {
+    "1": 0.9855,
+    "2": 0.969712,
+    "3": 0.760506
+   },
+   "source": "results/iqm/garnet_grover_depth_sedenion_walsh_analysis.json"
+  },
+  "rule": {
+   "bend": "f = lambda_3 - lambda_2^2 / lambda_1 from raw pooled marked frequencies of the depth arms (copies pooled, binomial variances at the observed frequencies, delta method over the three arms), z = (f - model.f) / SE; z <= -3 reads 'the retention law bends beyond the model at mirrored positions', which excludes positional drift linear in position as the cause of the retained bend; z >= 3 reads 'bends upward of the model'; otherwise 'no bend beyond the model resolved at mirrored positions'",
+   "beside": "rho_4 against the retained fits' continuations in standard errors, and whether the retention decreases with depth; neither decides",
+   "family": "weighted least squares of the geometric family a s^k and the coherent family s^k (Q_k(eps) - 1/8) / (P_k - 1/8) to rho_k = lambda_k / model.lambda_k at k = 1 to 4 (gororoba_quantum/grover_depth_families.py), binomial standard errors at the observed frequencies; with chi2 of each fit (two degrees of freedom): 'neither family fits' when both exceed their 0.99 chi2 quantile (9.21 at four usable depths, 6.63 at three); else 'coherent' when chi2_geometric - chi2_coherent >= 9, 'geometric' when it is <= -9, else 'unresolved'; gating: a copy below half its planned kept shots is dropped from its depth, a depth without kept shots is unusable, the bend needs depths 1 to 3, the family comparison any three depths, and a decision whose depths are unusable reads 'not evaluated' without blocking the other",
+   "function": "grover_depth_families.verdict"
+  },
+  "z_resolve": 3.0
+ },
+ "forward_path": [
+  "QB20",
+  "QB16",
+  "QB17"
+ ],
+ "model": "exact density matrix: iqm_sim depolarizing PRX and CZ, ASAP idle T1/T2, herald-conditioned readout assignment; no coherent error, leakage or crosstalk"
+}

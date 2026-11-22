@@ -1,0 +1,182 @@
+{
+ "case": "grover-fourth-depth-mirrored",
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/m101-k4-c0.json",
+     "sha256": "e46edbd41c64aed72e3fa7009038fa2312dcda9b4767adfacef0edabb9a027b3"
+    },
+    {
+     "file": "circuits/m101-k4-c1.json",
+     "sha256": "43fbb99cfaa1f641830aa359aee52b60b969c2eb4d338946b5e364f87f8356ea"
+    },
+    {
+     "file": "circuits/m101-k1-c0.json",
+     "sha256": "00505a1abae71ae9faf7bbdc7c32f316aed91ede306fa2e5e1a9e6c5c9d16472"
+    },
+    {
+     "file": "circuits/m101-k2-c0.json",
+     "sha256": "de19795da985e92986beb251341c80d14956befdc4e1def8193d9ce6527e1f74"
+    },
+    {
+     "file": "circuits/m101-k3-c0.json",
+     "sha256": "548eeed02d832884b1bee58a2bd84446028df88ef9c50172ef8f4bbe289e83ef"
+    },
+    {
+     "file": "circuits/m101-k4-c2.json",
+     "sha256": "3631911beb40abf329cd4ebe9126bb426ee3c229faa8f8fdb5bcb98a5b8f2a23"
+    },
+    {
+     "file": "circuits/m101-k4-c3.json",
+     "sha256": "11f38f8cc3fb28668e31e49460f997ea205dd5707599ad30c4293f8ede35ba5d"
+    },
+    {
+     "file": "circuits/m101-k4-c4.json",
+     "sha256": "4d6034ef86ad6d85f1038711b40fb711148dd1dd52ca7d456c302d491b8126b5"
+    },
+    {
+     "file": "circuits/m101-k4-c5.json",
+     "sha256": "cd8e1cb57f239552fa87ef771dc2f567681c7955cc432d4bf9546f72f5ae463f"
+    },
+    {
+     "file": "circuits/m101-k3-c1.json",
+     "sha256": "9bf47b47951e901a8951a633e4127b6331f4f6b3834d40d24c989c832912295f"
+    },
+    {
+     "file": "circuits/m101-k4-c6.json",
+     "sha256": "ce6ecada0112beef12b81e715c09a830b0337c3b27577da661147bc167d32320"
+    },
+    {
+     "file": "circuits/m101-k2-c1.json",
+     "sha256": "d6cfa2281bc0e960f767196978c865234e65b8f957c52cda563299a81e79a41f"
+    },
+    {
+     "file": "circuits/m101-k4-c7.json",
+     "sha256": "a802184a308cdc9dc0548b1096add041995e0229cbe40bb8130743769bb742c4"
+    },
+    {
+     "file": "circuits/m101-k1-c1.json",
+     "sha256": "d08481609ac14388996385d54b7e6200b65aee3ce6906deebe08c6ff305bd168"
+    },
+    {
+     "file": "circuits/m101-k4-c8.json",
+     "sha256": "d691ddd160cc747bc074ab334eead2d66b2ef3bbb7d6ce7e772b2880a2111075"
+    },
+    {
+     "file": "circuits/ro-000.json",
+     "sha256": "7ac9de616b24f6af14641628c32ad019a75859b3f12788b4c4c054d57c164d36"
+    },
+    {
+     "file": "circuits/ro-001.json",
+     "sha256": "c2a17c2693360c4fdee94203d5c2f50373d8921cbd5c1bea8dab4f7583324028"
+    },
+    {
+     "file": "circuits/ro-010.json",
+     "sha256": "92277bb113396cb15a709db7aedfa17cb012f371c11806c94e4c7b7f2cab6deb"
+    },
+    {
+     "file": "circuits/ro-011.json",
+     "sha256": "866eb9ea2655c8c8e37d1f58a9e527c243a74226ec424b37e74ebfce4f74ce3e"
+    },
+    {
+     "file": "circuits/ro-100.json",
+     "sha256": "996685eb52fd9647e666c5455ae5e7c9950acfe4539f952d5ae64e5439cafec3"
+    },
+    {
+     "file": "circuits/ro-101.json",
+     "sha256": "8a9d6ffa51aa18e89b45618ecd7d07ee73e115dcc564085f382255a9da7e7bf5"
+    },
+    {
+     "file": "circuits/ro-110.json",
+     "sha256": "0638d660cc1d913bf4aa1927a78f8a14373e2dbe0d854b1c8fc4c8ebab13df68"
+    },
+    {
+     "file": "circuits/ro-111.json",
+     "sha256": "b44cbd475f7630d157fcaf5fad3aa7e9aebc9a8ce2c4e3974235b263854c3ee0"
+    },
+    {
+     "file": "circuits/m101-k4-c9.json",
+     "sha256": "ac62e557985b88593c6c424b476bb3f4278cb0fbb7a1f88eb30cf8cbd6a75cf4"
+    },
+    {
+     "file": "circuits/m101-k1-c2.json",
+     "sha256": "84d9794e0e2e9454e13a297a63aba011725ab86da92c70b0af138e45f3fd839d"
+    },
+    {
+     "file": "circuits/m101-k4-c10.json",
+     "sha256": "a31197fa636e18f7459a2fe90451edcde319753e7eea2e33ff41a090cc756209"
+    },
+    {
+     "file": "circuits/m101-k2-c2.json",
+     "sha256": "7c3145482f3d3de810a7c7de35e4ea3b27912bd8ee55a5e0b0dc8b3466fbff56"
+    },
+    {
+     "file": "circuits/m101-k4-c11.json",
+     "sha256": "30ffe99dda33c2e3d6c522c72e0a6af0c5d189f31fdcde5405fabcbc7d8de156"
+    },
+    {
+     "file": "circuits/m101-k3-c2.json",
+     "sha256": "91e5a0f4e582b5e6289971cae0f72d7e8964ea106ed501b96648aa4439e25549"
+    },
+    {
+     "file": "circuits/m101-k4-c12.json",
+     "sha256": "830742fe9004f2771708f0952813ce60700c4dc5ca122bfe5a3da5c17aaa8711"
+    },
+    {
+     "file": "circuits/m101-k4-c13.json",
+     "sha256": "ab015356418abfc2acec86780fa938286cba433d5347634281ff19dccd31f050"
+    },
+    {
+     "file": "circuits/m101-k4-c14.json",
+     "sha256": "7f96a832feacf016fb04d46c2d4d030ffef1b99ac31625abd1297f964c521c3a"
+    },
+    {
+     "file": "circuits/m101-k4-c15.json",
+     "sha256": "74c1469e67d05975994b812981aa286996af1c06c89caa6f9e67b1f93d97599f"
+    },
+    {
+     "file": "circuits/m101-k3-c3.json",
+     "sha256": "741025dd1b8582dc5f29bba81388ed5b1b07c01dfb884cc3e9faa5471e72ff77"
+    },
+    {
+     "file": "circuits/m101-k2-c3.json",
+     "sha256": "adb8ab258f34d4ae0cecfb70b5508dfbbf3b7405bd8171ce2d36015002622cc3"
+    },
+    {
+     "file": "circuits/m101-k1-c3.json",
+     "sha256": "c08fc85e35466d417c23654046a12cacce0ff5281b0081194c2b3bf9550cc1b2"
+    },
+    {
+     "file": "circuits/m101-k4-c16.json",
+     "sha256": "c0d0c18e9f93c78f2ce8f82e0095cb4db7c985cdafbcbb9514204a371fe5ec89"
+    },
+    {
+     "file": "circuits/m101-k4-c17.json",
+     "sha256": "e35f6e60c4b959db86259e2f75d0ac6a28b37f21396d2695056f54166339769d"
+    }
+   ],
+   "expected_seconds": 11.02,
+   "job": "grover",
+   "max_credits": {
+    "garnet": 8.0,
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {
+     "garnet": "a0e725eb-a020-43d3-8aaf-072b926e425a"
+    },
+    "heralding_mode": "zeros"
+   },
+   "shots": 20000
+  }
+ ],
+ "prediction_sha256": "2c3e7cd5795ed8f50b05cd07274a9f9305d66267e303e4a0a5cdbaedaf63ce40",
+ "qcs": [
+  "garnet:mock",
+  "garnet"
+ ],
+ "question": "With the line-native Grover of mark 101 at depths 1 to 4 placed at positions mirrored about the job's center on one Garnet calibration, does the retention law still bend at depth 3, and do the four retentions follow a geometric law or an oracle-phase coherent error that accumulates with iterations?",
+ "schema": "iqm-circuit-case-v1"
+}
