@@ -1,0 +1,377 @@
+{
+ "calibration": {
+  "characteristic": 32009,
+  "components": [
+   {
+    "dimension": 5,
+    "multiplicity": 10,
+    "through_origin": true
+   }
+  ],
+  "control_without_first_relation_differs": true,
+  "digest_equal": true,
+  "digest_in_weight_slice_record": true,
+  "expected_digest_origin": "weight-slice record cell",
+  "expected_relations_sha256": "42b1d8ff03d4c505597b39fe303c52ac45fcdc4d35bbf01d0b8e7e23a97367d0",
+  "field": "GF(32009), i = 10754",
+  "generator_count": 21,
+  "generator_weights": [
+   5,
+   4,
+   7,
+   5,
+   6,
+   5,
+   7,
+   5,
+   3,
+   4,
+   4,
+   5,
+   5,
+   3,
+   4,
+   4,
+   5,
+   3,
+   3,
+   4,
+   5
+  ],
+  "germ_after": {
+   "dimension": 5,
+   "generators": 13,
+   "multiplicity": 10
+  },
+  "germ_before": {
+   "dimension": 5,
+   "generators": 13,
+   "multiplicity": 10
+  },
+  "germ_inhomogeneous_generators": 0,
+  "hilbert": {
+   "affine_dimension": 5,
+   "first_numerator": [
+    1,
+    0,
+    -148,
+    1562,
+    -8745,
+    32753,
+    -89936,
+    190224,
+    -319606,
+    435500,
+    -488280,
+    454948,
+    -354354,
+    231126,
+    -125840,
+    56672,
+    -20763,
+    6028,
+    -1332,
+    210,
+    -21,
+    1
+   ],
+   "minimal_primes": [
+    [
+     4,
+     4,
+     14
+    ],
+    [
+     5,
+     11,
+     9
+    ]
+   ],
+   "multiplicity": 11,
+   "radical": false,
+   "relation_count": 148,
+   "saturated": true
+  },
+  "i_root": 10754,
+  "incidence": "E8bar->N-",
+  "orbit": "N-",
+  "pfaffian_max_weight": 10,
+  "pfaffians_inhomogeneous": [],
+  "pfaffians_nonzero": 111,
+  "product_count": 231,
+  "product_max_weight": 14,
+  "relation_count": 148,
+  "relation_lines": 148,
+  "relations_sha256": "42b1d8ff03d4c505597b39fe303c52ac45fcdc4d35bbf01d0b8e7e23a97367d0",
+  "selected_pfaffians_one_based": [
+   12,
+   15,
+   16,
+   18,
+   20,
+   30,
+   35,
+   47,
+   49,
+   51,
+   52,
+   54,
+   55,
+   84,
+   86,
+   87,
+   89,
+   123,
+   124,
+   125,
+   126
+  ],
+  "source": "e8"
+ },
+ "cells": [
+  {
+   "characteristic": 32009,
+   "components": [
+    {
+     "dimension": 5,
+     "multiplicity": 10,
+     "through_origin": true
+    }
+   ],
+   "control_without_first_relation_differs": true,
+   "digest_equal": true,
+   "expected_digest_origin": "REL lines of the run of A5-573",
+   "expected_relations_sha256": "b9b7372bce35e7ce286aa572f9b1ebf656d1ac04ba0e63349c640efed88658ee",
+   "field": "GF(32009), i = 10754",
+   "generator_count": 21,
+   "generator_weights": [
+    5,
+    4,
+    7,
+    5,
+    6,
+    5,
+    7,
+    5,
+    3,
+    4,
+    4,
+    5,
+    5,
+    3,
+    4,
+    4,
+    5,
+    3,
+    3,
+    4,
+    5
+   ],
+   "germ_after": {
+    "dimension": 5,
+    "generators": 13,
+    "multiplicity": 10
+   },
+   "germ_before": {
+    "dimension": 5,
+    "generators": 13,
+    "multiplicity": 10
+   },
+   "germ_inhomogeneous_generators": 0,
+   "hilbert": {
+    "affine_dimension": 5,
+    "first_numerator": [
+     1,
+     0,
+     -148,
+     1562,
+     -8745,
+     32753,
+     -89936,
+     190224,
+     -319606,
+     435500,
+     -488280,
+     454948,
+     -354354,
+     231126,
+     -125840,
+     56672,
+     -20763,
+     6028,
+     -1332,
+     210,
+     -21,
+     1
+    ],
+    "minimal_primes": [
+     [
+      4,
+      4,
+      14
+     ],
+     [
+      5,
+      11,
+      9
+     ]
+    ],
+    "multiplicity": 11,
+    "radical": false,
+    "relation_count": 148,
+    "saturated": true
+   },
+   "i_root": 10754,
+   "incidence": "E8bar->N+",
+   "orbit": "N+",
+   "pfaffian_max_weight": 10,
+   "pfaffians_inhomogeneous": [],
+   "pfaffians_nonzero": 111,
+   "product_count": 231,
+   "product_max_weight": 14,
+   "relation_count": 148,
+   "relation_lines": 148,
+   "relations_sha256": "b9b7372bce35e7ce286aa572f9b1ebf656d1ac04ba0e63349c640efed88658ee",
+   "selected_pfaffians_one_based": [
+    12,
+    15,
+    16,
+    18,
+    20,
+    30,
+    35,
+    47,
+    49,
+    51,
+    52,
+    54,
+    55,
+    84,
+    86,
+    87,
+    89,
+    123,
+    124,
+    125,
+    126
+   ],
+   "source": "e8"
+  },
+  {
+   "characteristic": 32009,
+   "components": [
+    {
+     "dimension": 5,
+     "multiplicity": 2,
+     "through_origin": true
+    }
+   ],
+   "control_without_first_relation_differs": true,
+   "digest_equal": true,
+   "expected_digest_origin": "REL lines of the run of A5-574",
+   "expected_relations_sha256": "4b9f84948f9ffa00f5e735ccc8943b6be0b7afc4a932f8a3c600b92b6e3e99c5",
+   "field": "GF(32009), i = 10754",
+   "generator_count": 17,
+   "generator_weights": [
+    5,
+    4,
+    5,
+    6,
+    5,
+    6,
+    3,
+    4,
+    4,
+    5,
+    5,
+    3,
+    6,
+    3,
+    3,
+    4,
+    5
+   ],
+   "germ_after": {
+    "dimension": 5,
+    "generators": 4,
+    "multiplicity": 2
+   },
+   "germ_before": {
+    "dimension": 5,
+    "generators": 4,
+    "multiplicity": 2
+   },
+   "germ_inhomogeneous_generators": 0,
+   "hilbert": {
+    "affine_dimension": 5,
+    "first_numerator": [
+     1,
+     0,
+     -68,
+     452,
+     -1485,
+     2948,
+     -3630,
+     2376,
+     231,
+     -2200,
+     2376,
+     -1420,
+     517,
+     -108,
+     10
+    ],
+    "minimal_primes": [
+     [
+      5,
+      23,
+      0
+     ]
+    ],
+    "multiplicity": 23,
+    "radical": true,
+    "relation_count": 68,
+    "saturated": true
+   },
+   "i_root": 10754,
+   "incidence": "Iso->N-",
+   "orbit": "N-",
+   "pfaffian_max_weight": 8,
+   "pfaffians_inhomogeneous": [],
+   "pfaffians_nonzero": 84,
+   "product_count": 153,
+   "product_max_weight": 12,
+   "relation_count": 68,
+   "relation_lines": 68,
+   "relations_sha256": "4b9f84948f9ffa00f5e735ccc8943b6be0b7afc4a932f8a3c600b92b6e3e99c5",
+   "selected_pfaffians_one_based": [
+    12,
+    15,
+    18,
+    27,
+    30,
+    33,
+    49,
+    51,
+    52,
+    54,
+    55,
+    84,
+    109,
+    123,
+    124,
+    125,
+    126
+   ],
+   "source": "iso"
+  }
+ ],
+ "i_root": 10754,
+ "pass": true,
+ "prime": 32009,
+ "schema": "weight-slice-modular-cells-v1",
+ "singular_version": [
+  "Singular for aarch64-Linux version 4.4.1 (44105, 64 bit) Dec  6 2025 11:10:58",
+  "4.4.1"
+ ]
+}

@@ -1151,6 +1151,27 @@ numerator, minimal primes or reduction ranks, a weight-inhomogeneous Pfaffian, o
 untruncated membership falsifies the table; a prime at which the saturated lattice of `K` reduces off `K2`
 falsifies the `Iso` statement.
 
+## The modular weight-slice cells of E8bar->N+ and Iso->N-
+
+`weight_slice_fiber_relations.py` writes modular cells for W8 and E8bar at N- only, so the relation lines that the
+Rees runs of A5-573 (E8bar->N+) and A5-574 (Iso->N-) print were bound to no tracked producer output (A5-577).
+`weight_slice_modular_cells.py` is the successor record for those two cells at (32009, i = 10754): it calls the
+producer's own functions (`orbit_task`, `fiber_script`, `run_singular`, `summarize_fiber_run`, `hilbert_script`),
+regenerates E8bar->N- first as the known-good calibration, and requires the digests of the runs.
+
+| Cell | Generators | Relations | Relation digest | Required digest | Dimension, multiplicity |
+|---|---|---|---|---|---|
+| E8bar->N- (calibration) | 21 | 148 | `42b1d8ff03d4...` | the weight-slice record cell | 5, 11 |
+| E8bar->N+ | 21 | 148 | `b9b7372bce35...` | REL lines of the run of A5-573 | 5, 11 |
+| Iso->N- | 17 | 68 | `4b9f84948f9f...` | REL lines of the run of A5-574 | 5, 23 |
+
+All three digests agree, and the relation lines of each cell without their first line read another digest (the
+known-bad control). [weight-slice-modular-cells-result.json](weight-slice-modular-cells-result.json) holds the cells
+with their selections, generator weights and Hilbert data, and `weight-slice-modular-cells.log` the run (Python
+3.14.4, sympy 1.14.0, python-flint 0.9.0, Singular 4.4.1, aarch64 Linux, 70 s at 90 MB). A5-577 is certified.
+
+    "$PYTHON" docs/evidence/a5-kernel-attachments/weight_slice_modular_cells.py OUT.json
+
 ## Over Q(i) the linear symmetries of the fiber-cone quadrics are sl2 over a solvable radical with a torus of rank 4 to 6
 
 [`symmetry_algebra_qi.py`](symmetry_algebra_qi.py) regenerates the quadrics `K` of the
