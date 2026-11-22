@@ -4,8 +4,8 @@ scripts/iqm_measurement_sequence.py fits BILLING_MODELS["v2"], execution - sched
 mid-circuit record, over twelve jobs of October 2026, where schedule is the server's compiled estimate less the
 1.6 s job term (JOB_SECONDS). This script scores v2 on every retained active-reset Garnet QPU job, the later ones
 included, refits the same three terms over all of them, and fits five candidate fourth terms: per heralded
-circuit-shot, per squared circuit-shot (a curvature in job size), an indicator of the jobs after the v2 fit (a cohort term), per
-circuit and per second of compiled schedule. It reports two leave-one-out criteria, over all jobs and over the jobs
+circuit-shot, per squared circuit-shot (a curvature in job size), an indicator of the jobs after the v2 fit (a
+cohort term), per circuit and per second of compiled schedule. It reports two leave-one-out criteria, over all jobs and over the jobs
 other than the one with the most mid-circuit records (whose removal leaves the per-record term to extrapolation),
 because no selection rule was fixed before the refit; it adopts no term. It also reports runtime minus execution,
 which sets the margin a ceiling needs, beside the job's compilation seconds. Passive-reset jobs run a different shot
