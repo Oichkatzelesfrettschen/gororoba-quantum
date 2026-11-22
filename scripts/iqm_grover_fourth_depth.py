@@ -25,7 +25,12 @@ Every prediction is the exact density matrix of iqm_grover_line.predicted's mode
 iqm_garnet_followup.predicted: depolarizing PRX and CZ, idle T1 and T2 over the ASAP schedule, herald-conditioned
 readout; no coherent error. The case draws no random number, so it takes no seed.
 
-Usage: "$PYTHON" scripts/iqm_grover_fourth_depth.py (build DIR (--calibration SRC | --live) | check DIR | --self-test)
+analyze RUN_DIR --out OUT.json reads one collected run of the case (gororoba_quantum/grover_depth_analysis.py): the
+circuit digests and positions bound to the counts, copies dropped in mirror pairs, the copy-heterogeneity gate and
+the preregistered verdict. A run on garnet:mock is refused.
+
+Usage: "$PYTHON" scripts/iqm_grover_fourth_depth.py (build DIR (--calibration SRC | --live) | check DIR |
+       analyze RUN_DIR --out OUT.json | --self-test)
 
 build --live reads Garnet's current default calibration set into DIR/calibration (a free read) and rebuilds
 the circuits, the prediction and the digest cases.json binds; a submission follows such a build, so the approved
@@ -55,6 +60,7 @@ from iqm_jobs import CASE_SCHEMA, JOB_SECONDS, ceiling_credits, ceiling_seconds,
 from iqm_platform import sha256  # noqa: E402
 from iqm_signed_probe import CALIBRATION_FILES, OPTIONS  # noqa: E402
 
+import grover_depth_analysis as run_analysis  # noqa: E402
 import grover_depth_families as families  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
@@ -66,9 +72,13 @@ MARKED = "101"
 SHOTS = 20000
 # Copies per depth; each is even so that every copy has a mirror image.
 COPIES = {1: 4, 2: 4, 3: 4, 4: 18}
+# Depths of the first half of the job's circuits: of the 450,450 orderings of half the copies of every depth, the one
+# whose depths have the most nearly equal mean squared offset from the job's center (best_first_half() recomputes it).
+FIRST_HALF = (4, 4, 1, 2, 3, 4, 4, 4, 4, 3, 4, 2, 4, 1, 4)
 READOUTS = 8
 # Kept fraction of the retained depth arms: 13,450 of 16,000, 3,377 and 3,383 of 4,000 (0.841, 0.844, 0.846).
 KEPT_PLAN = 0.84
+PLANNED_KEPT_PER_COPY = SHOTS * KEPT_PLAN
 # Seconds per circuit-shot of the retained Grover depth job: 1.99852 s of execution over 144,000 circuit-shots is
 # 13.9 us, which carries the job's fixed 0.13 s; the depth-4 circuits add about 14 CZ (40 ns each) to the retained
 # depth-3 schedule, and 14.5 us bounds the job's mean.
@@ -88,27 +98,75 @@ def distinct_orders(remaining: dict[int, int], prefix: tuple[int, ...] = ()) -> 
             yield from distinct_orders({**remaining, k: remaining[k] - 1}, (*prefix, k))
 
 
-def arrangement() -> list[int]:
-    """Depths of the job's circuits in order: half of every depth's copies, the readout block (depth 0), the first
-    half reversed. Of the orderings of the first half, the one whose depths have the most nearly equal mean squared
-    offset from the job's center (the first in sorted order among ties), so a drift quadratic in position also
-    enters every depth with the least spread the multiset allows."""
-    half = {k: n // 2 for k, n in COPIES.items()}
-    length = sum(half.values())
-    total = 2 * length + READOUTS
-    center = (total - 1) / 2
+def distinct_prefixes(
+    remaining: dict[int, int], length: int, prefix: tuple[int, ...] = ()
+) -> Iterator[tuple[tuple[int, ...], dict[int, int]]]:
+    """Every distinct first length depths of an ordering of the multiset, with the depths left, in sorted order."""
+    if len(prefix) == length:
+        yield prefix, remaining
+        return
+    for k in sorted(remaining):
+        if remaining[k]:
+            yield from distinct_prefixes({**remaining, k: remaining[k] - 1}, length, (*prefix, k))
+
+
+def half_counts() -> dict[int, int]:
+    return {k: n // 2 for k, n in COPIES.items()}
+
+
+def offset_spread(order: tuple[int, ...]) -> float:
+    """Largest minus smallest over the depths of the mean squared offset of their positions in order from the job's
+    center, the spread of the squared offsets that mirroring leaves."""
+    half = half_counts()
+    center = (2 * len(order) + READOUTS - 1) / 2
+    sums = dict.fromkeys(half, 0.0)
+    for p, k in enumerate(order):
+        sums[k] += (p - center) ** 2
+    means = [sums[k] / half[k] for k in half]
+    return max(means) - min(means)
+
+
+def shard_best(item: tuple[tuple[int, ...], dict[int, int]]) -> tuple[float, tuple[int, ...]] | None:
+    """The first ordering in sorted order of the least offset spread among the completions of one prefix."""
+    prefix, remaining = item
     best: tuple[float, tuple[int, ...]] | None = None
-    for order in distinct_orders(half):
-        sums = dict.fromkeys(half, 0.0)
-        for p, k in enumerate(order):
-            sums[k] += (p - center) ** 2
-        means = [sums[k] / half[k] for k in half]
-        score = max(means) - min(means)
+    for order in distinct_orders(remaining, prefix):
+        score = offset_spread(order)
         if best is None or score < best[0] - 1e-9:
             best = (score, order)
+    return best
+
+
+def best_first_half() -> tuple[int, ...]:
+    """The exhaustive search that fixed FIRST_HALF: the orderings of half the copies of every depth, sharded by
+    their first three depths over parallel.ordered_map; among equal spreads the first in sorted order. The case does
+    not run it on a build (tests/test_iqm_grover_fourth_depth.py does)."""
+    shards = ordered_map(shard_best, list(distinct_prefixes(half_counts(), 3)), min_items=1)
+    best: tuple[float, tuple[int, ...]] | None = None
+    for found in shards:
+        if found is not None and (best is None or found[0] < best[0] - 1e-9):
+            best = found
     if best is None:
         raise ValueError("no arrangement")
-    return [*best[1], *([0] * READOUTS), *best[1][::-1]]
+    return best[1]
+
+
+def verify_first_half(order: tuple[int, ...]) -> None:
+    """The invariants the search established for FIRST_HALF: it holds half the copies of every depth, and the
+    depths' mean squared offsets from the center differ by under a quarter of the smallest."""
+    if sorted(order) != sorted(k for k, n in half_counts().items() for _ in range(n)):
+        raise AssertionError(f"first half {order} is not half the copies of every depth")
+    center = (2 * len(order) + READOUTS - 1) / 2
+    means = {k: float(np.mean([(p - center) ** 2 for p, d in enumerate(order) if d == k])) for k in COPIES}
+    if offset_spread(order) >= 0.25 * min(means.values()):
+        raise AssertionError(f"first half {order} leaves squared offsets {means}")
+
+
+def arrangement() -> list[int]:
+    """Depths of the job's circuits in order: FIRST_HALF, the readout block (depth 0), FIRST_HALF reversed, so the
+    positions of every depth are mirror images about the job's center."""
+    verify_first_half(FIRST_HALF)
+    return [*FIRST_HALF, *([0] * READOUTS), *FIRST_HALF[::-1]]
 
 
 def depth_arms() -> list[dict[str, Any]]:
@@ -159,7 +217,7 @@ def retained_inputs() -> dict[str, Any]:
 
 
 def planned_kept() -> list[float]:
-    return [COPIES[k] * SHOTS * KEPT_PLAN for k in families.DEPTHS]
+    return [COPIES[k] * PLANNED_KEPT_PER_COPY for k in families.DEPTHS]
 
 
 def rounded(x: Any) -> Any:
@@ -170,21 +228,98 @@ def rounded(x: Any) -> Any:
     return round(x, 6) if isinstance(x, float) else x
 
 
-def model_retention(arm_records: dict[str, Any]) -> list[float]:
-    """The model's retention at depths 1 to 4, from the mean predicted marked probability of each depth's copies."""
-    return [
-        families.retention(
-            float(np.mean([a["predicted_marked"] for n, a in arm_records.items() if n.startswith(f"m101-k{k}-c")])), k
-        )
+def depth_positions(arm_records: dict[str, Any]) -> dict[int, list[int]]:
+    return {
+        k: sorted(a["position"] for n, a in arm_records.items() if n.startswith(f"m101-k{k}-c"))
         for k in families.DEPTHS
-    ]
+    }
+
+
+def drift_noncentrality(model: list[float], positions: dict[int, list[int]], slope: float) -> float:
+    """Noncentrality of the heterogeneity statistic when the retention of every copy drifts linearly in position by
+    slope per position: a depth's marked frequency then moves by slope times its retention scale P_k - 1/8, the
+    copies' frequencies scatter about their mean by that amount times their offset from the depth's mean position,
+    and each depth adds kept shots per copy times the squared scatter over p (1 - p)."""
+    total = 0.0
+    for k, m in zip(families.DEPTHS, model, strict=True):
+        p = families.probability_of(m, k)
+        x = np.asarray(positions[k], dtype=float)
+        shift = slope * families.retention_scale(k) * (x - x.mean())
+        total += float(np.sum(shift**2)) * PLANNED_KEPT_PER_COPY / (p * (1 - p))
+    return total
+
+
+def heterogeneity_gate(arm_records: dict[str, Any], model: list[float]) -> dict[str, Any]:
+    """The copy-heterogeneity gate fixed in prediction.json: the mirror-pair floor, the chi-square quantile for every
+    degree of freedom the surviving copies can leave, and what the gate costs the design (its false-alarm
+    probability, the linear retention drift that trips it half and nine tenths of the time, its probability at the
+    retained drift, and the sizing after pairs leave)."""
+    from scipy import stats
+
+    positions = depth_positions(arm_records)
+    dof = sum(len(x) - 1 for x in positions.values())
+    threshold = families.heterogeneity_threshold(dof)
+
+    def fires(slope: float) -> float:
+        return float(stats.ncx2.sf(threshold, dof, drift_noncentrality(model, positions, slope)))
+
+    def slope_at(power: float) -> float:
+        low, high = 0.0, 0.05
+        for _ in range(100):
+            mid = (low + high) / 2
+            low, high = (mid, high) if fires(mid) < power else (low, mid)
+        return high
+
+    # The retained job's k = 1 copies, positions 0, 13, 22 and 35, gave a raw marked-frequency slope of -0.000303
+    # +- 0.000317 per position (docs/evidence/iqm-garnet-grover-positions on branch iqm-qb12-fault-models), which is
+    # slope / (P_1 - 1/8) in retention.
+    retained_slope = 0.000303 / families.retention_scale(1)
+    return {
+        "statistic": (
+            "sum over depths of the chi-square of the surviving copies' marked counts about the depth's pooled "
+            "marked frequency, sum (m - n p)^2 / (n p (1 - p)), with copies - 1 degrees of freedom per depth"
+        ),
+        "alpha": families.HETEROGENEITY_ALPHA,
+        "copy_floor": families.COPY_FLOOR,
+        "planned_kept_per_copy": PLANNED_KEPT_PER_COPY,
+        "planned_dof": dof,
+        "planned_threshold": threshold,
+        "threshold_by_dof": {str(d): families.heterogeneity_threshold(d) for d in range(1, dof + 1)},
+        "power": {
+            "false_not_evaluated_probability": families.HETEROGENEITY_ALPHA,
+            "linear_drift_of_retention_per_position_at_half_power": slope_at(0.5),
+            "linear_drift_of_retention_per_position_at_nine_tenths_power": slope_at(0.9),
+            "retained_slope_of_retention_per_position": retained_slope,
+            "probability_at_the_retained_slope": fires(retained_slope),
+            "probability_at_half_the_retained_slope": fires(retained_slope / 2),
+        },
+    }
+
+
+def pair_loss_sizing(cont: dict[str, Any], model: list[float]) -> dict[str, Any]:
+    """The sizing numbers when mirror pairs leave: the depth-4 separation z with 0 to 3 of its 9 pairs gone, and
+    the bend's standard error with one pair gone from each of depths 1 to 3."""
+    pair = 2 * PLANNED_KEPT_PER_COPY
+    out: dict[str, Any] = {}
+    for lost in range(4):
+        kept = planned_kept()
+        kept[3] -= lost * pair
+        out[f"depth_4_pairs_lost_{lost}"] = families.separation(cont["geometric"], cont["coherent"], kept, model)[
+            "last_depth_z"
+        ]
+    full = planned_kept()
+    out["bend_se_all_copies"] = families.bend(model, full)[1]
+    out["bend_se_one_pair_lost_from_each_of_depths_1_to_3"] = families.bend(
+        model, [full[0] - pair, full[1] - pair, full[2] - pair, full[3]]
+    )[1]
+    return out
 
 
 def decisions(arm_records: dict[str, Any]) -> dict[str, Any]:
     retained = retained_inputs()
     cont = families.continuations(retained["lambda"], retained["kept"], retained["model"])
     kept = planned_kept()
-    model = model_retention(arm_records)
+    model = families.model_retention(arm_records)
     # The retained ratios continued to depth 4 and scaled by this calibration's model retention are the two
     # continuations of lambda_4; the data the rule would see if one family held exactly sit at those values.
     sep = families.separation(cont["geometric"], cont["coherent"], kept, model)
@@ -193,6 +328,7 @@ def decisions(arm_records: dict[str, Any]) -> dict[str, Any]:
         round(families.probability_of(m, k) * n) for m, k, n in zip(model, families.DEPTHS, kept, strict=True)
     ]
     model_reading = families.verdict(model_counts, [round(n) for n in kept], model, cont)
+    gate = heterogeneity_gate(arm_records, model)
     return rounded(
         {
             "z_resolve": families.Z_RESOLVE,
@@ -227,6 +363,8 @@ def decisions(arm_records: dict[str, Any]) -> dict[str, Any]:
                     "the planned shots, to be compared with delta_resolve"
                 ),
             },
+            "heterogeneity": gate,
+            "mirror_pair_loss": pair_loss_sizing(cont, model),
             "model": {
                 "lambda": dict(zip(("1", "2", "3", "4"), model, strict=True)),
                 "f": model_f,
@@ -236,28 +374,40 @@ def decisions(arm_records: dict[str, Any]) -> dict[str, Any]:
             "rule": {
                 "bend": (
                     "f = lambda_3 - lambda_2^2 / lambda_1 from raw pooled marked frequencies of the depth arms "
-                    "(copies pooled, binomial variances at the observed frequencies, delta method over the three "
-                    "arms), z = (f - model.f) / SE; z <= -3 reads 'the retention law bends beyond the model at "
-                    "mirrored positions', which excludes positional drift linear in position as the cause of the "
-                    "retained bend; z >= 3 reads 'bends upward of the model'; otherwise 'no bend beyond the model "
-                    "resolved at mirrored positions'"
+                    "(copies pooled after the mirror-pair and heterogeneity gates below, binomial variances at the "
+                    "observed frequencies, delta method over the three arms), z = (f - model.f) / SE; z <= -3 "
+                    "reads 'the retention law bends beyond the model at mirrored positions', which excludes positional "
+                    "drift linear in position as the cause of the retained bend; z >= 3 reads 'bends upward of the "
+                    "model'; otherwise 'no bend beyond the model resolved at mirrored positions'"
                 ),
                 "family": (
                     "weighted least squares of the geometric family a s^k and the coherent family s^k (Q_k(eps) - "
                     "1/8) / (P_k - 1/8) to rho_k = lambda_k / model.lambda_k at k = 1 to 4 "
                     "(gororoba_quantum/grover_depth_families.py), binomial standard errors at the observed "
-                    "frequencies; with chi2 of each fit (two degrees of freedom): 'neither family fits' when both "
+                    "frequencies, over the rate domains geometric s in [0.30, 1.20] and coherent s in [0.50, 1.10] "
+                    "(eps ranges over a full period, the amplitude a is free); with chi2 of each fit (two degrees of "
+                    "freedom): 'out of domain' when either fit's rate sits on its bound, the bound rather than the "
+                    "data having ended its search; else 'neither family fits' when both "
                     "exceed their 0.99 chi2 quantile (9.21 at four usable depths, 6.63 at three); else 'coherent' when "
                     "chi2_geometric - chi2_coherent >= 9, 'geometric' when it is <= -9, else 'unresolved'; gating: "
-                    "a copy below half its planned kept shots is dropped from its depth, a depth without kept "
-                    "shots is unusable, the bend needs depths 1 to 3, the family comparison any three depths, and "
-                    "a decision whose depths are unusable reads 'not evaluated' without blocking the other"
+                    "a copy below half its planned kept shots leaves its depth together with the copy at its mirrored "
+                    "position, a depth without kept shots is unusable, the bend needs depths 1 to 3, the family "
+                    "comparison any three depths, and a decision whose depths are unusable reads 'not evaluated' "
+                    "without blocking the other"
+                ),
+                "heterogeneity": (
+                    "after the mirror-pair gate, the chi-square of the surviving copies of each depth about that "
+                    "depth's pooled marked frequency, summed over depths, is compared with the 1 - alpha chi-square "
+                    "quantile at its degrees of freedom (decisions.heterogeneity.threshold_by_dof); above it the "
+                    "bend and family decisions both read 'not evaluated', since a depth's pooled frequency no longer "
+                    "describes copies that differ beyond binomial scatter"
                 ),
                 "beside": (
                     "rho_4 against the retained fits' continuations in standard errors, and whether the "
                     "retention decreases with depth; neither decides"
                 ),
-                "function": "grover_depth_families.verdict",
+                "function": "grover_depth_families.read_copies",
+                "analyzer": "grover_depth_analysis.analyze",
             },
         }
     )
@@ -392,6 +542,27 @@ def counts_of(lam: list[float], kept: list[int]) -> list[int]:
     return [round(families.probability_of(x, k) * n) for x, k, n in zip(lam, families.DEPTHS, kept, strict=True)]
 
 
+def analyze(run_dir: Path, case_dir: Path | None = None) -> dict[str, Any]:
+    """The record of one collected run: circuit digests and positions bound to the counts, mirror-pair gating, the
+    copy-heterogeneity gate and the verdict (gororoba_quantum/grover_depth_analysis.py)."""
+    return run_analysis.analyze(run_dir, run_analysis.CASE_DIR if case_dir is None else case_dir)
+
+
+def layout_copies(
+    lam: list[float], kept: int = int(PLANNED_KEPT_PER_COPY), tweak: Any = None
+) -> dict[int, list[families.Copy]]:
+    """The copies of the arrangement at the planned kept shots, each marked count the model value of lam at its depth;
+    tweak(depth, position, marked, kept) may return another (marked, kept)."""
+    order = arrangement()
+    out: dict[int, list[families.Copy]] = {k: [] for k in COPIES}
+    for position, k in enumerate(order):
+        if k:
+            marked = round(families.probability_of(lam[k - 1], k) * kept)
+            m, n = tweak(k, position, marked, kept) if tweak else (marked, kept)
+            out[k].append((position, m, n))
+    return out
+
+
 def self_test() -> str:
     """Circuits against their exact ideal, the arrangement's mirror invariants, the families, and the verdict on
     planted data."""
@@ -453,6 +624,42 @@ def self_test() -> str:
         except ValueError:
             continue
         raise AssertionError(f"verdict accepted counts {bad}")
+    # Parameter domains: data of each family one step outside its rate bound read "out of domain", one inside read the
+    # family; the retained geometric amplitude would push the outside values past probability 1.
+    planted = (
+        ("geometric", families.geometric_values, {"A": 0.5, "r": 1.19}, "geometric"),
+        ("geometric", families.geometric_values, {"A": 0.5, "r": 1.25}, "out of domain"),
+        ("coherent", families.coherent_values, {"eps": 0.3, "r": 1.09}, "coherent"),
+        ("coherent", families.coherent_values, {"eps": 0.3, "r": 1.11}, "out of domain"),
+    )
+    for family, values, parameters, want in planted:
+        domain_lam = [r * m for r, m in zip(values(parameters, families.DEPTHS), model, strict=True)]
+        domain_read = families.verdict(counts_of(domain_lam, kept), kept, model, cont)
+        require(domain_read["family"].startswith(want), f"planted {family} {parameters}: {domain_read['family']}")
+    # Mirror pairs and the heterogeneity gate on the arrangement's copies.
+    gate = {
+        "copy_floor": families.COPY_FLOOR,
+        "threshold_by_dof": {str(d): families.heterogeneity_threshold(d) for d in range(1, 27)},
+    }
+    per_copy = PLANNED_KEPT_PER_COPY
+    clean = families.read_copies(layout_copies(model), total, per_copy, model, cont, gate)
+    require(clean["heterogeneity"]["passed"] and clean["family"] == "unresolved", f"clean copies read {clean}")
+    raised = layout_copies(model, tweak=lambda k, p, m, n: (m + round(0.04 * n), n) if (k, p) == (1, 2) else (m, n))
+    raised_read = families.read_copies(raised, total, per_copy, model, cont, gate)
+    require(
+        raised_read["bend"]["reading"].startswith("not evaluated") and raised_read["family"].startswith("not evaluated"),
+        f"one copy of depth 1 raised by 0.04 reads {raised_read['bend']} and {raised_read['family']}",
+    )
+    short = layout_copies(model, tweak=lambda k, p, m, n: (m // 20, n // 20) if (k, p) == (1, 2) else (m, n))
+    kept_pairs = families.read_copies(short, total, per_copy, model, cont, gate)
+    require(kept_pairs["dropped_pairs"] == {"1": [[2, 35]]}, f"a short copy leaves with its image: {kept_pairs}")
+    require(kept_pairs["usable_depths"] == [1, 2, 3, 4], "the other pair of depth 1 stays")
+    try:
+        families.read_copies({**layout_copies(model), 1: [(2, 100, 200)]}, total, per_copy, model, cont, gate)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("an unpaired copy was accepted")
     # Billing arithmetic: the job's ceiling lies below max_credits, whose cancel threshold exceeds the expected run.
     expected = round(total * SHOTS * CIRCUIT_SHOT_SECONDS, 3)
     garnet_max = (
@@ -461,7 +668,8 @@ def self_test() -> str:
     ) * PRICE["garnet"]
     require(ceiling_credits(expected, PRICE["garnet"], JOB_SECONDS) < garnet_max, "ceiling below max_credits")
     return (
-        "self-test passed: 3 depth circuits against ideal, mirror invariants, families, 5 planted verdicts, 2 refusals"
+        "self-test passed: 3 depth circuits against ideal, mirror invariants, families, 5 planted verdicts, "
+        "2 refusals, 4 domain plants, 3 copy gates"
     )
 
 
@@ -474,6 +682,9 @@ def main() -> int:
     b.add_argument("--calibration", type=Path)
     b.add_argument("--live", action="store_true", help="read Garnet's current calibration (network, read-only)")
     sub.add_parser("check").add_argument("directory", type=Path)
+    a = sub.add_parser("analyze")
+    a.add_argument("run_dir", type=Path)
+    a.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
     if args.self_test:
         print(self_test())
@@ -481,8 +692,10 @@ def main() -> int:
         write(args.directory, args.calibration, args.live)
     elif args.command == "check":
         check(args.directory)
+    elif args.command == "analyze":
+        run_analysis.write_record(analyze(args.run_dir), args.out)
     else:
-        parser.error("choose build, check or --self-test")
+        parser.error("choose build, check, analyze or --self-test")
     return 0
 
 
