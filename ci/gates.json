@@ -3640,16 +3640,6 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error docs/evidence/iqm-garnet-billing-v3/billing_v3.py \"${TMPDIR:-/tmp}/garnet-billing-v3.json\" && cmp \"${TMPDIR:-/tmp}/garnet-billing-v3.json\" docs/evidence/iqm-garnet-billing-v3/billing_v3.json",
-      "name": "core-iqm-billing-v3-replay",
-      "seconds": 1.5,
-      "replays": [
-        "docs/evidence/iqm-garnet-billing-v3/billing_v3.json"
-      ]
-    },
-    {
-      "suite": "core",
-      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/iqm_garnet_followup.py analyze results/iqm/runs/2026-11-21T220358Z-garnet-grover-depth-sedenion-walsh-grover results/iqm/runs/2026-11-21T220406Z-garnet-grover-depth-sedenion-walsh-sedenion --out \"${TMPDIR:-/tmp}/garnet-followup-analysis.json\" && cmp \"${TMPDIR:-/tmp}/garnet-followup-analysis.json\" results/iqm/garnet_grover_depth_sedenion_walsh_analysis.json",
       "name": "core-iqm-garnet-followup-replay",
       "seconds": 0.6,
@@ -3942,6 +3932,16 @@
       "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py --self-test",
       "name": "core-700",
       "seconds": 8.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/iqm-garnet-billing-v3/billing_v3.py \"${TMPDIR:-/tmp}/garnet-billing-v3.json\" && cmp \"${TMPDIR:-/tmp}/garnet-billing-v3.json\" docs/evidence/iqm-garnet-billing-v3/billing_v3.json",
+      "name": "core-iqm-billing-v3-replay",
+      "seconds": 1.5,
+      "replays": [
+        "docs/evidence/iqm-garnet-billing-v3/billing_v3.json"
+      ]
     },
     {
       "suite": "core",
