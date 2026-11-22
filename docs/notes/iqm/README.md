@@ -245,10 +245,10 @@ Pay-as-you-go jobs cost `billed_seconds` times the QC's price per second:
 Emerald 0.75, Garnet 0.50, Sirius 0.30 credits/s. A one-hour timeslot costs
 2400.00 (Emerald), 1800.00 (Garnet) or 1080.00 (Sirius) credits. The facts
 block above is the capture of 2026-10-22 (30.00 credits expiring
-2026-11-01). The account read of 2026-11-22T04:38Z holds 23.75 credits
-expiring 2026-12-01T00:00Z, the balance the last retained job records
-(`results.json` of the 2026-11-21 sedenion run); they buy about 31 s on
-Emerald, 47 s on Garnet or 79 s on Sirius.
+2026-11-01). The last retained job records 23.75 credits expiring
+2026-12-01T00:00Z (`credit_after` in `results.json` of the 2026-11-21
+sedenion run); they buy about 31 s on Emerald, 47 s on Garnet or 79 s on
+Sirius.
 
 Execution time of an active-reset Garnet job follows the compiled schedule plus a cost per circuit-shot, and each
 executed mid-circuit measure record adds more. Over twelve retained QPU jobs (the seven active-reset jobs
@@ -280,13 +280,15 @@ The four later active-reset Garnet jobs test v2 out of sample ([billing-v3](../.
 it over-predicts every one of them, by 0.039 to 0.289 s, and the packed Pauli job (0.226 s) and the Grover depth job
 (0.289 s) fall outside its 0.17 s band; runtime exceeded execution by up to 0.437 s, above its 0.42 s margin. A refit of
 the same three terms over all sixteen jobs gives 0.135 s + 7.620 us per circuit-shot + 6.462 us per mid-circuit
-record, largest residual 0.227 s; neither a heralding term nor a curvature in job size lowers the largest leave-one-out
-residual over the jobs other than the main pinching run (0.252 s for three terms, 0.293 s and 0.564 s with either), and
-leaving that run out moves its own prediction by 4.0 s, so the per-record term still rests on it. `BILLING_MODELS`
-gains the refit in the change that first sizes a Garnet case from it.
+record, largest residual 0.227 s. Leaving the main pinching run out mispredicts it by 4.0 s, so the per-record term
+still rests on that run. Of five candidate fourth terms, a cohort term (the four later jobs run 0.173 s faster), a
+per-circuit term and a per-schedule-second term lower the largest leave-one-out residual over the other jobs from
+0.252 s to 0.18 to 0.19 s, and the heralding and curvature terms raise it; no selection rule was fixed in advance, so
+the refit adopts none. Runtime exceeds execution by exactly the compilation seconds on all sixteen jobs.
+`BILLING_MODELS` gains a refit in the change that first sizes a Garnet case from it.
 
-The [read-only API audit](../../evidence/provider-api-audit/README.md) refreshes those rates and balances
-on 22 October 2026. `runtime_seconds` includes compilation plus execution; `billed_seconds` rounds that
+The [read-only API audit](../../evidence/provider-api-audit/README.md) of 22 October 2026 retains the rates
+and the balance of that date. `runtime_seconds` includes compilation plus execution; `billed_seconds` rounds that
 sum upward separately for each job. The balance therefore buys billed runtime, not pure pulse execution.
 Client-side transpilation does not establish zero server compilation. Circuit batching can amortize
 compilation and rounding, but reset/readout/repetition time, failure exposure and acquisition ordering
