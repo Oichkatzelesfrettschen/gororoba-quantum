@@ -3936,6 +3936,16 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/iqm-garnet-billing-v3/billing_v3.py \"${TMPDIR:-/tmp}/garnet-billing-v3.json\" && cmp \"${TMPDIR:-/tmp}/garnet-billing-v3.json\" docs/evidence/iqm-garnet-billing-v3/billing_v3.json",
+      "name": "core-iqm-billing-v3-replay",
+      "seconds": 1.5,
+      "replays": [
+        "docs/evidence/iqm-garnet-billing-v3/billing_v3.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py check results/iqm/cases/measurement-sequence-pinching",
       "name": "core-701",
       "seconds": 2.0,
