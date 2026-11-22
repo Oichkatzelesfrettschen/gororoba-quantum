@@ -134,14 +134,15 @@ def main(out: Path) -> None:
     # outcome comes from the run's prediction, in that arm's measurement order.
     prediction = json.loads((RUN / "prediction.json").read_text(encoding="utf-8"))
     arms_marked = {name: arm["marked"] for name, arm in prediction["arms"].items() if "marked" in arm}
-    inner_outer = []
+    inner_outer: list[dict[str, Any]] = []
     for stem in sorted({name.rsplit("-c", 1)[0] for name in circuits if re.search(r"-c[0-3]$", name)}):
-        copies = [circuits.get(f"{stem}-c{i}") for i in range(4)]
-        if any(c is None for c in copies):
+        quad = [circuits.get(f"{stem}-c{i}") for i in range(4)]
+        present = [c for c in quad if c is not None]
+        if len(present) != 4:
             continue
         target = marked_index(arms_marked[f"{stem}-c0"])
-        p = [float((c["index"] == target).mean()) for c in copies if c is not None]
-        n = [len(c["index"]) for c in copies if c is not None]
+        p = [float((c["index"] == target).mean()) for c in present]
+        n = [len(c["index"]) for c in present]
         diff = (p[1] + p[2] - p[0] - p[3]) / 2
         se = math.sqrt(sum(pi * (1 - pi) / ni for pi, ni in zip(p, n, strict=True))) / 2
         inner_outer.append({"arm": stem, "inner_minus_outer": round(diff, ROUND), "se": round(se, ROUND)})
