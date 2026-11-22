@@ -18,6 +18,13 @@ so this summary gathers what the repository itself measured, each figure beside 
   row: single_exponential (the case's verdict), chi_square_per_dof, the binomial standard error us_se and
   us_se_scaled, which multiplies it by sqrt(max(1, chi_square_per_dof)). A reader that shows us beside these rows
   labels the figure by single_exponential.
+- per qubit, from the interleaved series
+  (results/quantum_inspire/characterization_interleaved_tuna_17_analysis.json): the additive key interleaved_t1 holds
+  the series' run instant utc (the earliest finish of its first interleaved_t1 run), the single-exponential T us,
+  us_se (null, because the record carries no error on T), lack_of_fit_probability (the single fit's probability),
+  replicate_probability, verdict (the analysis's per-qubit label), chi_square_per_dof of the single fit and rounds.
+  It leaves readout, implied_t1, baseline_readout and baseline_implied_t1 as they are. A reader that shows the
+  figure labels it by verdict and the two probabilities.
 - per backend and UTC day, from each retained run's results.json: the job count, the median and largest time from
   a job's creation to its finish, and the median execution time the provider reports.
 
@@ -53,6 +60,8 @@ OUT = "docs/evidence/qi-status-context/retained-context.json"
 CHARACTERIZATION = "results/quantum_inspire/characterization_tuna_17_analysis.json"
 # One wait cycle of the Tuna and Starmon-7 control stack (docs/notes/quantum_inspire/platform-facts.md).
 CYCLE_US = 0.02
+INTERLEAVED = "results/quantum_inspire/characterization_interleaved_tuna_17_analysis.json"
+INTERLEAVED_ROUNDS = 3
 SIGNIFICANT = 6
 
 
@@ -125,10 +134,37 @@ def characterization(root: Path) -> dict[int, dict[str, Any]]:
     return found
 
 
+def interleaved(root: Path) -> dict[int, dict[str, Any]]:
+    """Qubit -> the interleaved series' single-exponential T with its fit adequacy, or {} without an analysis."""
+    path = root / INTERLEAVED
+    if not path.is_file():
+        return {}
+    analysis = json.loads(path.read_text(encoding="utf-8"))
+    names = [name for name in analysis["runs"] if "-interleaved_t1-" in name]
+    if not names:
+        return {}
+    utc = run_utc(root, f"{RUNS}/{names[0]}")
+    found: dict[int, dict[str, Any]] = {}
+    for row in analysis["interleaved_t1"]["qubits"]:
+        single = row["fits"]["single"]
+        found[row["qubit"]] = {
+            "utc": utc,
+            "us": _number(single["params"][0]),
+            "us_se": None,
+            "lack_of_fit_probability": _number(single["probability"]),
+            "replicate_probability": _number(row["replicate_probability"]),
+            "verdict": row["verdict"],
+            "chi_square_per_dof": _number(single["chi_square"] / single["dof"]),
+            "rounds": INTERLEAVED_ROUNDS,
+        }
+    return found
+
+
 def qubits(context: dict[str, Any], root: Path) -> list[dict[str, Any]]:
     """One row per qubit of the device-context record, each figure with the run it comes from."""
     rows = []
     series = characterization(root)
+    rounds = interleaved(root)
     for name, entry in sorted(context["qubits"].items(), key=lambda item: int(item[0])):
         mapped = entry.get("coupler_map") or {}
         readout = entry.get("readout") or {}
@@ -170,6 +206,8 @@ def qubits(context: dict[str, Any], root: Path) -> list[dict[str, Any]]:
                 if "implied_t1" in row:
                     row["baseline_implied_t1"] = row["implied_t1"]
                 row["implied_t1"] = newer["implied_t1"]
+        if int(name) in rounds:
+            row["interleaved_t1"] = rounds[int(name)]
         rows.append(row)
     return rows
 
@@ -214,6 +252,7 @@ def summary(root: Path = ROOT) -> dict[str, Any]:
     text = source.read_bytes()
     context = json.loads(text)
     series = characterization(root)
+    interleaved_record = root / INTERLEAVED
     return {
         "schema": SCHEMA,
         "profile": context.get("profile"),
@@ -228,11 +267,18 @@ def summary(root: Path = ROOT) -> dict[str, Any]:
             "characterization_analysis_sha256": hashlib.sha256((root / CHARACTERIZATION).read_bytes()).hexdigest()
             if series
             else None,
+            "interleaved_analysis": INTERLEAVED if interleaved_record.is_file() else None,
+            "interleaved_analysis_sha256": hashlib.sha256(interleaved_record.read_bytes()).hexdigest()
+            if interleaved_record.is_file()
+            else None,
         },
         "implied_t1_assumption": "the whole P(1|1) drop between the no-wait and the wait run is T1 decay during the"
         " wait, and readout fidelity is unchanged between the two runs",
         "fitted_t1_assumption": "an implied_t1 row with fit_points is a single-exponential fit of a series' own delays;"
         " single_exponential, chi_square_per_dof and us_se_scaled say whether the fit describes the decay",
+        "interleaved_t1_assumption": "an interleaved_t1 row is the single-exponential parameter of three interleaved"
+        " rounds; verdict, lack_of_fit_probability and replicate_probability say whether one exponential describes the"
+        " decay, and us_se is null because the analysis record carries no error on T",
         "qubits": qubits(context, root),
         "jobs": jobs(root / RUNS),
     }

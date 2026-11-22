@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-11-20T22:55:39+00:00",
+ "approval": "owner chat 2026-11-19T16:42Z: ok those items are approved",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "1b7b19432caa6da7990ab34d0a5995ac54ae34ebb877c0153cbfbbe03d2096c9",
+ "shots": 8192,
+ "jobs": [
+  {
+   "file": "xt-prep1-A.cq",
+   "job": 1750780,
+   "sha256": "a908338d87a5a1b659d1475949c97171cf085015535f8633d4f16ac709d1d64d"
+  },
+  {
+   "file": "readout-0.cq",
+   "job": 1750781,
+   "sha256": "a36928ee64d24ae0e45618bfb9192a49f1d6993a9b320bae474cd5ea7a75a74d"
+  },
+  {
+   "file": "xt-prep1-B.cq",
+   "job": 1750782,
+   "sha256": "2e9a3ed9ce5dd197c4bee920ab91b4cc1ad830227f5e428a22f2db4d08a5fc90"
+  }
+ ],
+ "project": 861372,
+ "batch_job": 961306,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-11-20T22:55:41+00:00",
+  "approval": "owner chat 2026-11-19T16:42Z: ok those items are approved",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "1b7b19432caa6da7990ab34d0a5995ac54ae34ebb877c0153cbfbbe03d2096c9",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 961306,
+  "project": 861372,
+  "shots": 8192,
+  "jobs": [
+   {
+    "file": "xt-prep1-A.cq",
+    "job": 1750780,
+    "sha256": "a908338d87a5a1b659d1475949c97171cf085015535f8633d4f16ac709d1d64d"
+   },
+   {
+    "file": "readout-0.cq",
+    "job": 1750781,
+    "sha256": "a36928ee64d24ae0e45618bfb9192a49f1d6993a9b320bae474cd5ea7a75a74d"
+   },
+   {
+    "file": "xt-prep1-B.cq",
+    "job": 1750782,
+    "sha256": "2e9a3ed9ce5dd197c4bee920ab91b4cc1ad830227f5e428a22f2db4d08a5fc90"
+   }
+  ],
+  "submitted_utc": "2026-11-20T22:55:41+00:00"
+ },
+ "confirmed_utc": "2026-11-20T22:55:41+00:00"
+}

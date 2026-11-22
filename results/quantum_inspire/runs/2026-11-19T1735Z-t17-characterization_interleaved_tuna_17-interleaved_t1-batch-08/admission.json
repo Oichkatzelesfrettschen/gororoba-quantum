@@ -1,0 +1,8 @@
+{
+ "schema": "qi-admission-v1",
+ "utc": "2026-11-20T22:43:33.022794+00:00",
+ "backend_type_id": 7,
+ "status": "idle",
+ "queue_own": 0,
+ "attempt": 2
+}

@@ -1415,6 +1415,34 @@
    "value": 50182,
    "record": "docs/evidence/anu_qrng/draw-2026-11-21T184244Z.json",
    "index": 0
+  },
+  {
+   "path": "docs/evidence/qi-tuna17-interleaved-rounds/hypothesis_tests.py",
+   "name": "PERMUTATION_SEEDS",
+   "value": 60895,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 0
+  },
+  {
+   "path": "docs/evidence/qi-tuna17-interleaved-rounds/hypothesis_tests.py",
+   "name": "PERMUTATION_SEEDS",
+   "value": 62322,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 1
+  },
+  {
+   "path": "docs/evidence/qi-tuna17-interleaved-rounds/hypothesis_tests.py",
+   "name": "PERMUTATION_SEEDS",
+   "value": 9775,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 2
+  },
+  {
+   "path": "docs/evidence/qi-tuna17-interleaved-rounds/hypothesis_tests.py",
+   "name": "PERMUTATION_SEEDS",
+   "value": 9353,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 3
   }
  ],
  "runtime": [

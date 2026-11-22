@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-11-20T23:05:01+00:00",
+ "approval": "owner chat 2026-11-19T16:42Z: ok those items are approved",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "e3cece0e3f651b137c348230b0a71a890c83979678347fa366bacbf5c56a832e",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 1,
+ "batch_job": 961321,
+ "project": 861385,
+ "shots": 4096,
+ "jobs": [
+  {
+   "file": "ramsey-q12-w0-s48.cq",
+   "job": 1750816,
+   "sha256": "42ba63b346ab7962731bb4b9f95805b2fe614da214c36c8dbcefe463bfbaf9d7"
+  },
+  {
+   "file": "ramsey-q12-w0-s00.cq",
+   "job": 1750817,
+   "sha256": "c98e35fa9c176ac57bf0fa7feba0b42b61fd8a74636f134e9e2b738cb9fca053"
+  },
+  {
+   "file": "ramsey-q12-w0-s24.cq",
+   "job": 1750818,
+   "sha256": "828f2740a35bfe78fb66952dcdcfb79fb3b37e8ebb4e41e6f2c0b5fa9eeee9e3"
+  }
+ ],
+ "submitted_utc": "2026-11-20T23:05:02+00:00"
+}

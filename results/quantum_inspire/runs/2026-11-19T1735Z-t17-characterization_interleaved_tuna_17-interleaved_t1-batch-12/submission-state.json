@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-11-20T22:48:26+00:00",
+ "approval": "owner chat 2026-11-19T16:42Z: ok those items are approved",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "5d7cff739c3fa234bfb9395629b7b98f1a4b07e82332fcb0668d19ca1ea2c873",
+ "shots": 8192,
+ "jobs": [
+  {
+   "file": "t1-0-m8.cq",
+   "job": 1750762,
+   "sha256": "9f2d2eb87bad2d27ecd178262985168afa5019893f98c6e700abc95e83414816"
+  },
+  {
+   "file": "t1-m8.cq",
+   "job": 1750763,
+   "sha256": "60f9ca685e9a68b1fef353b93b9010fce224c812bd376e4560c262faf911f3ef"
+  },
+  {
+   "file": "readout-0-m8.cq",
+   "job": 1750764,
+   "sha256": "721a1df5768baab342b8ffb5f4612c05cdd98de9ea3c324353f7ee4ab39a49f5"
+  }
+ ],
+ "project": 861366,
+ "batch_job": 961300,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-11-20T22:48:29+00:00",
+  "approval": "owner chat 2026-11-19T16:42Z: ok those items are approved",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "5d7cff739c3fa234bfb9395629b7b98f1a4b07e82332fcb0668d19ca1ea2c873",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 961300,
+  "project": 861366,
+  "shots": 8192,
+  "jobs": [
+   {
+    "file": "t1-0-m8.cq",
+    "job": 1750762,
+    "sha256": "9f2d2eb87bad2d27ecd178262985168afa5019893f98c6e700abc95e83414816"
+   },
+   {
+    "file": "t1-m8.cq",
+    "job": 1750763,
+    "sha256": "60f9ca685e9a68b1fef353b93b9010fce224c812bd376e4560c262faf911f3ef"
+   },
+   {
+    "file": "readout-0-m8.cq",
+    "job": 1750764,
+    "sha256": "721a1df5768baab342b8ffb5f4612c05cdd98de9ea3c324353f7ee4ab39a49f5"
+   }
+  ],
+  "submitted_utc": "2026-11-20T22:48:29+00:00"
+ },
+ "confirmed_utc": "2026-11-20T22:48:29+00:00"
+}

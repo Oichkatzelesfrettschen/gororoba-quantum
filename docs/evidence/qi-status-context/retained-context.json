@@ -1,6 +1,7 @@
 {
  "fitted_t1_assumption": "an implied_t1 row with fit_points is a single-exponential fit of a series' own delays; single_exponential, chi_square_per_dof and us_se_scaled say whether the fit describes the decay",
  "implied_t1_assumption": "the whole P(1|1) drop between the no-wait and the wait run is T1 decay during the wait, and readout fidelity is unchanged between the two runs",
+ "interleaved_t1_assumption": "an interleaved_t1 row is the single-exponential parameter of three interleaved rounds; verdict, lack_of_fit_probability and replicate_probability say whether one exponential describes the decay, and us_se is null because the analysis record carries no error on T",
  "jobs": {
   "QXsinglenodesimulator": [
    {
@@ -224,12 +225,20 @@
     "shots": 147456
    },
    {
+    "day": "2026-11-20",
+    "jobs": 81,
+    "max_turnaround_seconds": 36.7932,
+    "median_execution_seconds": 7.34687,
+    "median_turnaround_seconds": 18.4672,
+    "shots": 651264
+   },
+   {
     "day": "2026-11-21",
-    "jobs": 72,
+    "jobs": 81,
     "max_turnaround_seconds": 1964.69,
-    "median_execution_seconds": 66.1638,
-    "median_turnaround_seconds": 74.4386,
-    "shots": 6488064
+    "median_execution_seconds": 65.8993,
+    "median_turnaround_seconds": 73.0865,
+    "shots": 6524928
    }
   ]
  },
@@ -274,6 +283,16 @@
     "us_se_scaled": 0.334282,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
+   },
+   "interleaved_t1": {
+    "chi_square_per_dof": 60.5982,
+    "lack_of_fit_probability": 3.16217e-208,
+    "replicate_probability": 3.20359e-140,
+    "rounds": 3,
+    "us": 16.555,
+    "us_se": null,
+    "utc": "2026-11-20T22:34:15.974084+00:00",
+    "verdict": "unresolved"
    },
    "qubit": 0,
    "readout": {
@@ -325,6 +344,16 @@
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
+   "interleaved_t1": {
+    "chi_square_per_dof": 294.174,
+    "lack_of_fit_probability": 0.0,
+    "replicate_probability": 0.0,
+    "rounds": 3,
+    "us": 2.83899,
+    "us_se": null,
+    "utc": "2026-11-20T22:34:15.974084+00:00",
+    "verdict": "unresolved"
+   },
    "qubit": 1,
    "readout": {
     "p1_given_0": 0.0280762,
@@ -374,6 +403,16 @@
     "us_se_scaled": 3.38209,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
+   },
+   "interleaved_t1": {
+    "chi_square_per_dof": 103.494,
+    "lack_of_fit_probability": 0.0,
+    "replicate_probability": 4.00317e-231,
+    "rounds": 3,
+    "us": 23.1643,
+    "us_se": null,
+    "utc": "2026-11-20T22:34:15.974084+00:00",
+    "verdict": "unresolved"
    },
    "qubit": 2,
    "readout": {
@@ -425,6 +464,16 @@
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
+   "interleaved_t1": {
+    "chi_square_per_dof": 11.2334,
+    "lack_of_fit_probability": 1.85901e-31,
+    "replicate_probability": 3.29617e-27,
+    "rounds": 3,
+    "us": 13.8365,
+    "us_se": null,
+    "utc": "2026-11-20T22:34:15.974084+00:00",
+    "verdict": "unresolved"
+   },
    "qubit": 3,
    "readout": {
     "p1_given_0": 0.0135498,
@@ -474,6 +523,16 @@
     "us_se_scaled": 1.89046,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
+   },
+   "interleaved_t1": {
+    "chi_square_per_dof": 21.5917,
+    "lack_of_fit_probability": 1.38962e-67,
+    "replicate_probability": 1.26897e-69,
+    "rounds": 3,
+    "us": 23.6312,
+    "us_se": null,
+    "utc": "2026-11-20T22:34:15.974084+00:00",
+    "verdict": "unresolved"
    },
    "qubit": 4,
    "readout": {
@@ -525,6 +584,16 @@
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
+   "interleaved_t1": {
+    "chi_square_per_dof": 22.4926,
+    "lack_of_fit_probability": 8.90148e-71,
+    "replicate_probability": 7.24721e-39,
+    "rounds": 3,
+    "us": 19.8811,
+    "us_se": null,
+    "utc": "2026-11-20T22:34:15.974084+00:00",
+    "verdict": "unresolved"
+   },
    "qubit": 5,
    "readout": {
     "p1_given_0": 0.0333862,
@@ -574,6 +643,16 @@
     "us_se_scaled": 0.784959,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
+   },
+   "interleaved_t1": {
+    "chi_square_per_dof": 12.3781,
+    "lack_of_fit_probability": 2.27182e-35,
+    "replicate_probability": 2.63806e-18,
+    "rounds": 3,
+    "us": 19.6125,
+    "us_se": null,
+    "utc": "2026-11-20T22:34:15.974084+00:00",
+    "verdict": "unresolved"
    },
    "qubit": 6,
    "readout": {
@@ -625,6 +704,16 @@
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
+   "interleaved_t1": {
+    "chi_square_per_dof": 24.6014,
+    "lack_of_fit_probability": 2.85336e-78,
+    "replicate_probability": 4.15349e-66,
+    "rounds": 3,
+    "us": 29.061,
+    "us_se": null,
+    "utc": "2026-11-20T22:34:15.974084+00:00",
+    "verdict": "unresolved"
+   },
    "qubit": 7,
    "readout": {
     "p1_given_0": 0.0302124,
@@ -674,6 +763,16 @@
     "us_se_scaled": 0.251406,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
+   },
+   "interleaved_t1": {
+    "chi_square_per_dof": 3.35493,
+    "lack_of_fit_probability": 3.21616e-06,
+    "replicate_probability": 0.00202298,
+    "rounds": 3,
+    "us": 21.8842,
+    "us_se": null,
+    "utc": "2026-11-20T22:34:15.974084+00:00",
+    "verdict": "unresolved"
    },
    "qubit": 8,
    "readout": {
@@ -725,6 +824,16 @@
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
+   "interleaved_t1": {
+    "chi_square_per_dof": 11.4993,
+    "lack_of_fit_probability": 2.30656e-32,
+    "replicate_probability": 5.17438e-23,
+    "rounds": 3,
+    "us": 26.3222,
+    "us_se": null,
+    "utc": "2026-11-20T22:34:15.974084+00:00",
+    "verdict": "unresolved"
+   },
    "qubit": 9,
    "readout": {
     "p1_given_0": 0.0200195,
@@ -774,6 +883,16 @@
     "us_se_scaled": 1.28618,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
+   },
+   "interleaved_t1": {
+    "chi_square_per_dof": 5.94469,
+    "lack_of_fit_probability": 5.65812e-14,
+    "replicate_probability": 8.47059e-08,
+    "rounds": 3,
+    "us": 30.6709,
+    "us_se": null,
+    "utc": "2026-11-20T22:34:15.974084+00:00",
+    "verdict": "unresolved"
    },
    "qubit": 10,
    "readout": {
@@ -825,6 +944,16 @@
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
+   "interleaved_t1": {
+    "chi_square_per_dof": 12.1068,
+    "lack_of_fit_probability": 1.93355e-34,
+    "replicate_probability": 5.09045e-20,
+    "rounds": 3,
+    "us": 24.0159,
+    "us_se": null,
+    "utc": "2026-11-20T22:34:15.974084+00:00",
+    "verdict": "unresolved"
+   },
    "qubit": 11,
    "readout": {
     "p1_given_0": 0.0230713,
@@ -874,6 +1003,16 @@
     "us_se_scaled": 1.43977,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
+   },
+   "interleaved_t1": {
+    "chi_square_per_dof": 14.5685,
+    "lack_of_fit_probability": 6.2577e-43,
+    "replicate_probability": 2.95282e-39,
+    "rounds": 3,
+    "us": 20.64,
+    "us_se": null,
+    "utc": "2026-11-20T22:34:15.974084+00:00",
+    "verdict": "unresolved"
    },
    "qubit": 12,
    "readout": {
@@ -925,6 +1064,16 @@
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
+   "interleaved_t1": {
+    "chi_square_per_dof": 20.8237,
+    "lack_of_fit_probability": 7.25148e-65,
+    "replicate_probability": 1.3782e-10,
+    "rounds": 3,
+    "us": 23.211,
+    "us_se": null,
+    "utc": "2026-11-20T22:34:15.974084+00:00",
+    "verdict": "unresolved"
+   },
    "qubit": 13,
    "readout": {
     "p1_given_0": 0.0246582,
@@ -974,6 +1123,16 @@
     "us_se_scaled": 4.64353,
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
+   },
+   "interleaved_t1": {
+    "chi_square_per_dof": 48.7264,
+    "lack_of_fit_probability": 4.12871e-165,
+    "replicate_probability": 3.18164e-117,
+    "rounds": 3,
+    "us": 30.2715,
+    "us_se": null,
+    "utc": "2026-11-20T22:34:15.974084+00:00",
+    "verdict": "unresolved"
    },
    "qubit": 14,
    "readout": {
@@ -1025,6 +1184,16 @@
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
+   "interleaved_t1": {
+    "chi_square_per_dof": 1.36638,
+    "lack_of_fit_probability": 0.14196,
+    "replicate_probability": 0.125495,
+    "rounds": 3,
+    "us": 28.7422,
+    "us_se": null,
+    "utc": "2026-11-20T22:34:15.974084+00:00",
+    "verdict": "level_shift"
+   },
    "qubit": 15,
    "readout": {
     "p1_given_0": 0.0430298,
@@ -1075,6 +1244,16 @@
     "wait_run_utc": "2026-11-16T12:27:36.852330+00:00",
     "wait_us": 80.0
    },
+   "interleaved_t1": {
+    "chi_square_per_dof": 7.55547,
+    "lack_of_fit_probability": 3.73543e-19,
+    "replicate_probability": 7.00107e-07,
+    "rounds": 3,
+    "us": 25.9382,
+    "us_se": null,
+    "utc": "2026-11-20T22:34:15.974084+00:00",
+    "verdict": "unresolved"
+   },
    "qubit": 16,
    "readout": {
     "p1_given_0": 0.0304565,
@@ -1098,6 +1277,8 @@
   ],
   "device_context": "results/quantum_inspire/readout_ringdown_tuna_17_device_context.json",
   "device_context_sha256": "293a97af8c510d022e8e90b3949a54ab779ee23317ed776a5de43811e6bd798c",
+  "interleaved_analysis": "results/quantum_inspire/characterization_interleaved_tuna_17_analysis.json",
+  "interleaved_analysis_sha256": "3e393204f880db67db0ebc03052303c9e8a37233a948ecc12b237c0b714846c9",
   "job_runs": "results/quantum_inspire/runs"
  }
 }

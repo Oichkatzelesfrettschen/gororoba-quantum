@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-11-20T22:45:58+00:00",
+ "approval": "owner chat 2026-11-19T16:42Z: ok those items are approved",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "a01820bc1261f54e84a403067752db2a01e5a50004ed1c3c7e0f918535f6bf16",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 1,
+ "batch_job": 961298,
+ "project": 861364,
+ "shots": 8192,
+ "jobs": [
+  {
+   "file": "t1-m2.cq",
+   "job": 1750756,
+   "sha256": "03f4bf65d9f06e17c6b27c46ce21878274ff407a2202265cc97e28693dda4b05"
+  },
+  {
+   "file": "readout-0-m2.cq",
+   "job": 1750757,
+   "sha256": "dc2ae65f829fc47fe57b2b8e58515578ebc76f8e5e738354a5b30e00ef2bbd73"
+  },
+  {
+   "file": "t1-0-m2.cq",
+   "job": 1750758,
+   "sha256": "25c9bc4424b9af5e6d10dc150a1900f09cc98fcb43c3480bf9215430311ad208"
+  }
+ ],
+ "submitted_utc": "2026-11-20T22:45:59+00:00"
+}

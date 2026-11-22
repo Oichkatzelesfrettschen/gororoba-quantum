@@ -1,0 +1,78 @@
+{
+ "schema": "qi-tuna17-interleaved-cases-v1",
+ "arm": "crosstalk",
+ "meta": {
+  "unit": "t1-4000"
+ },
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "shots": 8192,
+ "bit_order": "qubit 0 at the rightmost character",
+ "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-19T164737Z.json",
+ "circuits": [
+  {
+   "file": "xt-t1-4000-B.cq",
+   "kind": "xt_t1",
+   "context": "B",
+   "wait_cycles": 4000,
+   "driven": [
+    1,
+    3,
+    7,
+    8,
+    9,
+    13,
+    14,
+    15
+   ],
+   "expected_p1": 1.0,
+   "sha256": "3520195e654d85a969d85518d475b811f5bba8a48f294455ab501d337441a03f"
+  },
+  {
+   "file": "xt-t1-4000-all.cq",
+   "kind": "xt_t1",
+   "context": "all",
+   "wait_cycles": 4000,
+   "driven": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "expected_p1": 1.0,
+   "sha256": "afea9c5c0143ccf57d196e86d3b6450f3a6412c2ce34d58a3179761afbb83bc7"
+  },
+  {
+   "file": "xt-t1-4000-A.cq",
+   "kind": "xt_t1",
+   "context": "A",
+   "wait_cycles": 4000,
+   "driven": [
+    0,
+    4,
+    5,
+    6,
+    10,
+    11,
+    12,
+    16
+   ],
+   "expected_p1": 1.0,
+   "sha256": "24b054d32f067392c81fb0bb8fe68e8d85fb72cc3707fe13f0f7d886606097f8"
+  }
+ ]
+}
