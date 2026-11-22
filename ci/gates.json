@@ -5873,7 +5873,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/attaching_maps_resolved.py --check",
       "name": "core-a5-attaching-maps-resolved",
-      "seconds": 0.3,
+      "seconds": 2,
       "workers": "all",
       "replays": [
         "docs/evidence/a5-kernel-attachments/attaching-maps-resolved-result.json"
@@ -5884,7 +5884,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/attaching_maps_resolved.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-attachments/attaching_maps_resolved.py --self-test",
       "name": "core-a5-attaching-maps-resolved-self-test",
-      "seconds": 0.5,
+      "seconds": 14,
       "workers": "all"
     },
     {
