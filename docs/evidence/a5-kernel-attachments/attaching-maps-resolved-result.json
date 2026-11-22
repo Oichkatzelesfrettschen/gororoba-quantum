@@ -1,0 +1,4376 @@
+{
+ "fields": [
+  "Q(i)",
+  "F_32009"
+ ],
+ "incidences": [
+  {
+   "boundary_orbit": "B9",
+   "certificates": {
+    "certificate_0_constant_nullity": {
+     "decided_in_this_field": {
+      "bordered_kernel_dimension_at_the_boundary": 6,
+      "cone_point_lies_on_the_tangent_cone": true,
+      "degeneracy_locus_empty_matches_2c": true,
+      "exceptional_charts_base_free": true,
+      "exceptional_charts_nonempty": [
+       false,
+       true,
+       false,
+       true,
+       true,
+       false
+      ],
+      "exceptional_charts_nonempty_match_2i": true,
+      "first_order_form_nonzero_at_the_cone_point": true,
+      "pass": true,
+      "phi_has_no_zero_on_E": true,
+      "pivot_pfaffian_is_a_unit": true,
+      "real_nullity_upper_bound": 8,
+      "schur_coordinate_count_matches_kernel_dimension": true,
+      "schur_form_rank_lower_bound": 2
+     },
+     "field_specific": {
+      "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero near E and its rank is exactly the first-order rank wherever the Pfaffian ideal contains the higher terms",
+      "pass": true,
+      "rank_four_pfaffians_vanish_carried_from_retained_exact_runs": {
+       "2c_effective_form_run": true,
+       "2i_rational_run": true
+      },
+      "real_nullity_off_the_basepoint": 8,
+      "reason": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here",
+      "recomputed_here": false,
+      "schur_form_rank": 2
+     },
+     "pass": true
+    },
+    "certificate_1_conical_structure": {
+     "derived_dimension_multiplicity_embedding_components": [
+      2,
+      2,
+      3,
+      1
+     ],
+     "derived_equals_recorded": true,
+     "dimension_multiplicity_embedding_components": [
+      2,
+      2,
+      3,
+      1
+     ],
+     "generators_cut_out": "an irreducible quadric cone in the linear span (reduced, multiplicity 2)",
+     "kind": "hypersurface",
+     "morse": true,
+     "pass": true,
+     "quadratic_part_rank": 3,
+     "quadric_present": true,
+     "quadrics_proportional": true
+    },
+    "certificate_2_linear_injective_phi": {
+     "component_span_dimensions": [
+      3
+     ],
+     "coordinate_change_2i_to_2c": {
+      "2c_generators_lie_in_the_2i_ideal": true,
+      "2i_generators_lie_in_the_2c_ideal": true,
+      "A_invertible": true,
+      "both_coordinate_systems_independent": true,
+      "coordinate_count": 6,
+      "pass": true,
+      "rows_h_equal_A_times_rows_c": true
+     },
+     "fiber_2l": [
+      1,
+      2,
+      1
+     ],
+     "first_order_2c": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "pulled_back_image_generators_vanish_on_E": true,
+      "rank_on_each_component_span": [
+       3
+      ],
+      "rank_on_the_sum_of_components": 3
+     },
+     "holomorphic_2i": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "pulled_back_image_generators_vanish_on_E": true,
+      "rank_on_each_component_span": [
+       3
+      ],
+      "rank_on_the_sum_of_components": 3
+     },
+     "image_2c": [
+      1,
+      2,
+      1
+     ],
+     "image_2i_rational_and_modular": [
+      [
+       1,
+       2,
+       1
+      ],
+      [
+       1,
+       2,
+       1
+      ]
+     ],
+     "image_matches_2c": true,
+     "image_matches_2i": true,
+     "image_matches_2l": true,
+     "image_projective_dimension_degree_components": [
+      1,
+      2,
+      1
+     ],
+     "multiplicity_equals_degree_sum": true,
+     "pass": true
+    },
+    "certificate_3_homotopy_data": {
+     "components": [
+      {
+       "c1_of_S_evaluated_on_the_curve": -2,
+       "c1_of_S_evaluated_on_the_generator_of_H2": -2,
+       "c1_of_S_on_the_component": "-1*h",
+       "degree_of_E_in_its_span": 2,
+       "degree_of_the_generator_curve_of_H2": 2,
+       "euler_class_coefficient": -2,
+       "euler_class_equals_c1_on_the_generator": true,
+       "euler_class_equals_minus_pluecker_degree": true,
+       "exceptional_projective_dimension": 1,
+       "h1_of_link": "Z/2",
+       "h2_of_E_is_zero": false,
+       "link": "RP^3",
+       "phi_on_h2_is_an_isomorphism": true,
+       "plucker_forms_degree": 1,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      }
+     ],
+     "pass": true
+    }
+   },
+   "incidence": "E8bar->B9",
+   "modular_certificate_0_field_specific": {
+    "not_decided": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here; the 2i modular run is modulo 32003, not 32009",
+    "pass": null,
+    "rank_four_pfaffians_vanish": null,
+    "real_nullity_off_the_basepoint": null,
+    "schur_form_rank": null
+   },
+   "modular_certificates_equal_gaussian_where_both_decide": true,
+   "mutation_controls": [
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 0,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "E8bar->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      false
+     ],
+     "projective_kernel_point": [
+      "0",
+      "-13/16",
+      "0",
+      "-11/16",
+      "1",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "E8bar->B9",
+     "morse_certificate_passes": false,
+     "mutated_generator": "779*t2^2-1754*t2*t4+987*t4^2",
+     "mutation": "rank_two_quadratic_part",
+     "quadratic_part_rank": 2
+    },
+    {
+     "certificates_pass": true,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "E8bar->B9",
+     "mutation": "wrong_value_in_the_prediction_table",
+     "predictions_hold": false
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": false,
+     "incidence": "E8bar->B9",
+     "mutation": "perturb_a_coordinate_form_holomorphic_2i",
+     "perturbed_coordinate_and_added_coordinate": [
+      3,
+      4
+     ]
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": false,
+     "incidence": "E8bar->B9",
+     "mutation": "perturb_a_coordinate_form_first_order_2c",
+     "perturbed_coordinate_and_added_coordinate": [
+      3,
+      4
+     ]
+    },
+    {
+     "coordinate_change_passes": false,
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": true,
+     "incidence": "E8bar->B9",
+     "mutation": "delete_an_image_generator"
+    },
+    {
+     "certificate_1_passes": false,
+     "cone_kind_of_the_remaining_generators": "smooth",
+     "detected": true,
+     "field": "Q(i)",
+     "generators_deleted": 1,
+     "incidence": "E8bar->B9",
+     "mutation": "delete_tangent_cone_generators"
+    },
+    {
+     "c1_on_the_generator": [
+      -4
+     ],
+     "detected": true,
+     "euler_class": [
+      -2
+     ],
+     "field": "Q(i)",
+     "incidence": "E8bar->B9",
+     "mutation": "square_the_plucker_coordinates",
+     "plucker_forms_degree": [
+      2
+     ]
+    },
+    {
+     "certificate_1_passes": false,
+     "certificate_2_passes": false,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "E8bar->B9",
+     "mutation": "tamper_the_recorded_multiplicity"
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "E8bar->B9",
+     "mutation": "tamper_the_recorded_bordered_rank",
+     "real_nullity_upper_bound": 10
+    },
+    {
+     "decided_part_passes": true,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "E8bar->B9",
+     "mutation": "tamper_the_carried_pfaffian_flag"
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 0,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "E8bar->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      false
+     ],
+     "projective_kernel_point": [
+      "0",
+      "10002",
+      "0",
+      "6001",
+      "1",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "E8bar->B9",
+     "morse_certificate_passes": false,
+     "mutated_generator": "779*t2^2-1754*t2*t4+987*t4^2",
+     "mutation": "rank_two_quadratic_part",
+     "quadratic_part_rank": 2
+    },
+    {
+     "certificates_pass": true,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "E8bar->B9",
+     "mutation": "wrong_value_in_the_prediction_table",
+     "predictions_hold": false
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": false,
+     "incidence": "E8bar->B9",
+     "mutation": "perturb_a_coordinate_form_holomorphic_2i",
+     "perturbed_coordinate_and_added_coordinate": [
+      3,
+      4
+     ]
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": false,
+     "incidence": "E8bar->B9",
+     "mutation": "perturb_a_coordinate_form_first_order_2c",
+     "perturbed_coordinate_and_added_coordinate": [
+      3,
+      4
+     ]
+    },
+    {
+     "coordinate_change_passes": false,
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": true,
+     "incidence": "E8bar->B9",
+     "mutation": "delete_an_image_generator"
+    },
+    {
+     "certificate_1_passes": false,
+     "cone_kind_of_the_remaining_generators": "smooth",
+     "detected": true,
+     "field": "F_32009",
+     "generators_deleted": 1,
+     "incidence": "E8bar->B9",
+     "mutation": "delete_tangent_cone_generators"
+    },
+    {
+     "c1_on_the_generator": [
+      -4
+     ],
+     "detected": true,
+     "euler_class": [
+      -2
+     ],
+     "field": "F_32009",
+     "incidence": "E8bar->B9",
+     "mutation": "square_the_plucker_coordinates",
+     "plucker_forms_degree": [
+      2
+     ]
+    },
+    {
+     "certificate_1_passes": false,
+     "certificate_2_passes": false,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "E8bar->B9",
+     "mutation": "tamper_the_recorded_multiplicity"
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "E8bar->B9",
+     "mutation": "tamper_the_recorded_bordered_rank",
+     "real_nullity_upper_bound": 10
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "E8bar->B9",
+     "mutation": "pivot_pfaffian_divisible_by_the_prime",
+     "pivot_is_a_unit_in_Q(i)": true
+    }
+   ],
+   "pass": true,
+   "predictions": [
+    {
+     "applicable": true,
+     "computed": 2,
+     "name": "germ_dimension",
+     "pass": true,
+     "predicted": 2
+    },
+    {
+     "applicable": true,
+     "computed": 2,
+     "name": "tangent_cone_multiplicity",
+     "pass": true,
+     "predicted": 2
+    },
+    {
+     "applicable": true,
+     "computed": [
+      "RP^3"
+     ],
+     "name": "link",
+     "pass": true,
+     "predicted": [
+      "RP^3"
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      "Z/2"
+     ],
+     "name": "link_h1",
+     "pass": true,
+     "predicted": [
+      "Z/2"
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      -2
+     ],
+     "name": "euler_class_coefficients",
+     "pass": true,
+     "predicted": [
+      -2
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      1
+     ],
+     "name": "exceptional_projective_dimensions",
+     "pass": true,
+     "predicted": [
+      1
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      1,
+      2,
+      1
+     ],
+     "name": "image_projective_dimension_degree_components",
+     "pass": true,
+     "predicted": [
+      1,
+      2,
+      1
+     ]
+    },
+    {
+     "applicable": false,
+     "computed": null,
+     "name": "image_components_disjoint",
+     "pass": true,
+     "predicted": null
+    },
+    {
+     "applicable": true,
+     "computed": [
+      -2
+     ],
+     "name": "c1_on_curve_components",
+     "pass": true,
+     "predicted": [
+      -2
+     ]
+    }
+   ],
+   "retained_rows_agree": {
+    "cone_summary_matches_germ": true,
+    "germ_invariants_equal_in_2b_2c": true,
+    "slice_columns_equal_in_2b_2c_2i": true,
+    "source_and_boundary_equal": true,
+    "tangent_generators_equal_in_2b_2c_2i": true
+   },
+   "source_orbit": "E8bar"
+  },
+  {
+   "boundary_orbit": "V",
+   "certificates": {
+    "certificate_0_constant_nullity": {
+     "decided_in_this_field": {
+      "bordered_kernel_dimension_at_the_boundary": 6,
+      "cone_point_lies_on_the_tangent_cone": true,
+      "degeneracy_locus_empty_matches_2c": true,
+      "exceptional_charts_base_free": true,
+      "exceptional_charts_nonempty": [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false
+      ],
+      "exceptional_charts_nonempty_match_2i": true,
+      "first_order_form_nonzero_at_the_cone_point": true,
+      "pass": true,
+      "phi_has_no_zero_on_E": true,
+      "pivot_pfaffian_is_a_unit": true,
+      "real_nullity_upper_bound": 8,
+      "schur_coordinate_count_matches_kernel_dimension": true,
+      "schur_form_rank_lower_bound": 2
+     },
+     "field_specific": {
+      "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero near E and its rank is exactly the first-order rank wherever the Pfaffian ideal contains the higher terms",
+      "pass": true,
+      "rank_four_pfaffians_vanish_carried_from_retained_exact_runs": {
+       "2c_effective_form_run": true,
+       "2i_rational_run": true
+      },
+      "real_nullity_off_the_basepoint": 8,
+      "reason": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here",
+      "recomputed_here": false,
+      "schur_form_rank": 2
+     },
+     "pass": true
+    },
+    "certificate_1_conical_structure": {
+     "component_dimensions": [
+      3,
+      3
+     ],
+     "components_smooth": true,
+     "derived_dimension_multiplicity_embedding_components": [
+      3,
+      2,
+      6,
+      2
+     ],
+     "derived_equals_recorded": true,
+     "dimension_multiplicity_embedding_components": [
+      3,
+      2,
+      6,
+      2
+     ],
+     "generators_cut_out": "the union of the two components: the ideal of two linear spaces that meet only at 0 is generated in degrees 1 and 2, and the retained generators equal it in those degrees (reduced, multiplicity 2)",
+     "generators_cut_out_the_union_of_the_components": true,
+     "kind": "two-components",
+     "linear_generators_span_the_forms_vanishing_on_both": true,
+     "pass": true,
+     "quadrics_generated_by_the_retained_generators": 16,
+     "quadrics_vanishing_on_both_components": 16,
+     "retained_generators_vanish_on_each_component": true,
+     "tangent_spaces_joint_rank": 6,
+     "tangent_spaces_meet_only_at_zero": true
+    },
+    "certificate_2_linear_injective_phi": {
+     "component_span_dimensions": [
+      3,
+      3
+     ],
+     "coordinate_change_2i_to_2c": {
+      "2c_generators_lie_in_the_2i_ideal": true,
+      "2i_generators_lie_in_the_2c_ideal": true,
+      "A_invertible": true,
+      "both_coordinate_systems_independent": true,
+      "coordinate_count": 7,
+      "pass": true,
+      "rows_h_equal_A_times_rows_c": true
+     },
+     "fiber_2l": [
+      2,
+      2,
+      2
+     ],
+     "first_order_2c": {
+      "coordinate_count": 7,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "pulled_back_image_generators_vanish_on_E": true,
+      "rank_on_each_component_span": [
+       3,
+       3
+      ],
+      "rank_on_the_sum_of_components": 6
+     },
+     "holomorphic_2i": {
+      "coordinate_count": 7,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "pulled_back_image_generators_vanish_on_E": true,
+      "rank_on_each_component_span": [
+       3,
+       3
+      ],
+      "rank_on_the_sum_of_components": 6
+     },
+     "image_2c": [
+      2,
+      2,
+      2
+     ],
+     "image_2i_rational_and_modular": [
+      [
+       2,
+       2,
+       2
+      ],
+      [
+       2,
+       2,
+       2
+      ]
+     ],
+     "image_matches_2c": true,
+     "image_matches_2i": true,
+     "image_matches_2l": true,
+     "image_projective_dimension_degree_components": [
+      2,
+      2,
+      2
+     ],
+     "multiplicity_equals_degree_sum": true,
+     "pass": true
+    },
+    "certificate_3_homotopy_data": {
+     "components": [
+      {
+       "c1_of_S_evaluated_on_the_curve": null,
+       "c1_of_S_evaluated_on_the_generator_of_H2": -1,
+       "c1_of_S_on_the_component": "-1*h",
+       "degree_of_E_in_its_span": 1,
+       "degree_of_the_generator_curve_of_H2": 1,
+       "euler_class_coefficient": -1,
+       "euler_class_equals_c1_on_the_generator": true,
+       "euler_class_equals_minus_pluecker_degree": null,
+       "exceptional_projective_dimension": 2,
+       "h1_of_link": "0",
+       "h2_of_E_is_zero": false,
+       "link": "S^5",
+       "phi_on_h2_is_an_isomorphism": true,
+       "plucker_forms_degree": 1,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      },
+      {
+       "c1_of_S_evaluated_on_the_curve": null,
+       "c1_of_S_evaluated_on_the_generator_of_H2": -1,
+       "c1_of_S_on_the_component": "-1*h",
+       "degree_of_E_in_its_span": 1,
+       "degree_of_the_generator_curve_of_H2": 1,
+       "euler_class_coefficient": -1,
+       "euler_class_equals_c1_on_the_generator": true,
+       "euler_class_equals_minus_pluecker_degree": null,
+       "exceptional_projective_dimension": 2,
+       "h1_of_link": "0",
+       "h2_of_E_is_zero": false,
+       "link": "S^5",
+       "phi_on_h2_is_an_isomorphism": true,
+       "plucker_forms_degree": 1,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      }
+     ],
+     "pass": true
+    }
+   },
+   "incidence": "E8bar->V",
+   "modular_certificate_0_field_specific": {
+    "not_decided": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here; the 2i modular run is modulo 32003, not 32009",
+    "pass": null,
+    "rank_four_pfaffians_vanish": null,
+    "real_nullity_off_the_basepoint": null,
+    "schur_form_rank": null
+   },
+   "modular_certificates_equal_gaussian_where_both_decide": true,
+   "mutation_controls": [
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 0,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "E8bar->V",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      false,
+      true
+     ],
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 1,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "E8bar->V",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      true,
+      false
+     ],
+     "projective_kernel_point": [
+      "1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "certificates_pass": true,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "E8bar->V",
+     "mutation": "wrong_value_in_the_prediction_table",
+     "predictions_hold": false
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "images_meet_only_at_zero": false,
+     "incidence": "E8bar->V",
+     "injective_on_each_component": true,
+     "mutation": "image_planes_meet_holomorphic_2i",
+     "rank_on_the_sum_of_components": 3
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "images_meet_only_at_zero": false,
+     "incidence": "E8bar->V",
+     "injective_on_each_component": true,
+     "mutation": "image_planes_meet_first_order_2c",
+     "rank_on_the_sum_of_components": 3
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": false,
+     "incidence": "E8bar->V",
+     "mutation": "perturb_a_coordinate_form_holomorphic_2i",
+     "perturbed_coordinate_and_added_coordinate": [
+      3,
+      1
+     ]
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": false,
+     "incidence": "E8bar->V",
+     "mutation": "perturb_a_coordinate_form_first_order_2c",
+     "perturbed_coordinate_and_added_coordinate": [
+      3,
+      1
+     ]
+    },
+    {
+     "coordinate_change_passes": false,
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": true,
+     "incidence": "E8bar->V",
+     "mutation": "delete_an_image_generator"
+    },
+    {
+     "certificate_1_passes": false,
+     "cone_kind_of_the_remaining_generators": "two-components",
+     "detected": true,
+     "field": "Q(i)",
+     "generators_deleted": 9,
+     "incidence": "E8bar->V",
+     "mutation": "delete_tangent_cone_generators"
+    },
+    {
+     "c1_on_the_generator": [
+      -2,
+      -2
+     ],
+     "detected": true,
+     "euler_class": [
+      -1,
+      -1
+     ],
+     "field": "Q(i)",
+     "incidence": "E8bar->V",
+     "mutation": "square_the_plucker_coordinates",
+     "plucker_forms_degree": [
+      2,
+      2
+     ]
+    },
+    {
+     "certificate_1_passes": false,
+     "certificate_2_passes": false,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "E8bar->V",
+     "mutation": "tamper_the_recorded_multiplicity"
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "E8bar->V",
+     "mutation": "tamper_the_recorded_bordered_rank",
+     "real_nullity_upper_bound": 10
+    },
+    {
+     "decided_part_passes": true,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "E8bar->V",
+     "mutation": "tamper_the_carried_pfaffian_flag"
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 0,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "E8bar->V",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      false,
+      true
+     ],
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 1,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "E8bar->V",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      true,
+      false
+     ],
+     "projective_kernel_point": [
+      "1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "certificates_pass": true,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "E8bar->V",
+     "mutation": "wrong_value_in_the_prediction_table",
+     "predictions_hold": false
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "images_meet_only_at_zero": false,
+     "incidence": "E8bar->V",
+     "injective_on_each_component": true,
+     "mutation": "image_planes_meet_holomorphic_2i",
+     "rank_on_the_sum_of_components": 3
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "images_meet_only_at_zero": false,
+     "incidence": "E8bar->V",
+     "injective_on_each_component": true,
+     "mutation": "image_planes_meet_first_order_2c",
+     "rank_on_the_sum_of_components": 3
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": false,
+     "incidence": "E8bar->V",
+     "mutation": "perturb_a_coordinate_form_holomorphic_2i",
+     "perturbed_coordinate_and_added_coordinate": [
+      3,
+      1
+     ]
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": false,
+     "incidence": "E8bar->V",
+     "mutation": "perturb_a_coordinate_form_first_order_2c",
+     "perturbed_coordinate_and_added_coordinate": [
+      3,
+      1
+     ]
+    },
+    {
+     "coordinate_change_passes": false,
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": true,
+     "incidence": "E8bar->V",
+     "mutation": "delete_an_image_generator"
+    },
+    {
+     "certificate_1_passes": false,
+     "cone_kind_of_the_remaining_generators": "two-components",
+     "detected": true,
+     "field": "F_32009",
+     "generators_deleted": 9,
+     "incidence": "E8bar->V",
+     "mutation": "delete_tangent_cone_generators"
+    },
+    {
+     "c1_on_the_generator": [
+      -2,
+      -2
+     ],
+     "detected": true,
+     "euler_class": [
+      -1,
+      -1
+     ],
+     "field": "F_32009",
+     "incidence": "E8bar->V",
+     "mutation": "square_the_plucker_coordinates",
+     "plucker_forms_degree": [
+      2,
+      2
+     ]
+    },
+    {
+     "certificate_1_passes": false,
+     "certificate_2_passes": false,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "E8bar->V",
+     "mutation": "tamper_the_recorded_multiplicity"
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "E8bar->V",
+     "mutation": "tamper_the_recorded_bordered_rank",
+     "real_nullity_upper_bound": 10
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "E8bar->V",
+     "mutation": "pivot_pfaffian_divisible_by_the_prime",
+     "pivot_is_a_unit_in_Q(i)": true
+    }
+   ],
+   "pass": true,
+   "predictions": [
+    {
+     "applicable": true,
+     "computed": 3,
+     "name": "germ_dimension",
+     "pass": true,
+     "predicted": 3
+    },
+    {
+     "applicable": true,
+     "computed": 2,
+     "name": "tangent_cone_multiplicity",
+     "pass": true,
+     "predicted": 2
+    },
+    {
+     "applicable": true,
+     "computed": [
+      "S^5",
+      "S^5"
+     ],
+     "name": "link",
+     "pass": true,
+     "predicted": [
+      "S^5",
+      "S^5"
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      "0",
+      "0"
+     ],
+     "name": "link_h1",
+     "pass": true,
+     "predicted": [
+      "0",
+      "0"
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      -1,
+      -1
+     ],
+     "name": "euler_class_coefficients",
+     "pass": true,
+     "predicted": [
+      -1,
+      -1
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      2,
+      2
+     ],
+     "name": "exceptional_projective_dimensions",
+     "pass": true,
+     "predicted": [
+      2,
+      2
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      2,
+      2,
+      2
+     ],
+     "name": "image_projective_dimension_degree_components",
+     "pass": true,
+     "predicted": [
+      2,
+      2,
+      2
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": true,
+     "name": "image_components_disjoint",
+     "pass": true,
+     "predicted": true
+    },
+    {
+     "applicable": false,
+     "computed": [
+      null,
+      null
+     ],
+     "name": "c1_on_curve_components",
+     "pass": true,
+     "predicted": [
+      null,
+      null
+     ]
+    }
+   ],
+   "retained_rows_agree": {
+    "cone_summary_matches_germ": true,
+    "germ_invariants_equal_in_2b_2c": true,
+    "slice_columns_equal_in_2b_2c_2i": true,
+    "source_and_boundary_equal": true,
+    "tangent_generators_equal_in_2b_2c_2i": true
+   },
+   "source_orbit": "E8bar"
+  },
+  {
+   "boundary_orbit": "B9",
+   "certificates": {
+    "certificate_0_constant_nullity": {
+     "decided_in_this_field": {
+      "bordered_kernel_dimension_at_the_boundary": 6,
+      "cone_point_lies_on_the_tangent_cone": true,
+      "degeneracy_locus_empty_matches_2c": true,
+      "exceptional_charts_base_free": true,
+      "exceptional_charts_nonempty": [
+       false,
+       true,
+       false,
+       true,
+       false,
+       false
+      ],
+      "exceptional_charts_nonempty_match_2i": true,
+      "first_order_form_nonzero_at_the_cone_point": true,
+      "pass": true,
+      "phi_has_no_zero_on_E": true,
+      "pivot_pfaffian_is_a_unit": true,
+      "real_nullity_upper_bound": 8,
+      "schur_coordinate_count_matches_kernel_dimension": true,
+      "schur_form_rank_lower_bound": 2
+     },
+     "field_specific": {
+      "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero near E and its rank is exactly the first-order rank wherever the Pfaffian ideal contains the higher terms",
+      "pass": true,
+      "rank_four_pfaffians_vanish_carried_from_retained_exact_runs": {
+       "2c_effective_form_run": true,
+       "2i_rational_run": true
+      },
+      "real_nullity_off_the_basepoint": 8,
+      "reason": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here",
+      "recomputed_here": false,
+      "schur_form_rank": 2
+     },
+     "pass": true
+    },
+    "certificate_1_conical_structure": {
+     "derived_dimension_multiplicity_embedding_components": [
+      2,
+      1,
+      2,
+      1
+     ],
+     "derived_equals_recorded": true,
+     "dimension_multiplicity_embedding_components": [
+      2,
+      1,
+      2,
+      1
+     ],
+     "every_quadric_vanishes_on_the_linear_span": true,
+     "generators_cut_out": "the linear span of the linear generators (reduced, multiplicity 1)",
+     "kind": "smooth",
+     "pass": true
+    },
+    "certificate_2_linear_injective_phi": {
+     "component_span_dimensions": [
+      2
+     ],
+     "coordinate_change_2i_to_2c": {
+      "2c_generators_lie_in_the_2i_ideal": true,
+      "2i_generators_lie_in_the_2c_ideal": true,
+      "A_invertible": true,
+      "both_coordinate_systems_independent": true,
+      "coordinate_count": 6,
+      "pass": true,
+      "rows_h_equal_A_times_rows_c": true
+     },
+     "fiber_2l": [
+      1,
+      1,
+      1
+     ],
+     "first_order_2c": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "pulled_back_image_generators_vanish_on_E": true,
+      "rank_on_each_component_span": [
+       2
+      ],
+      "rank_on_the_sum_of_components": 2
+     },
+     "holomorphic_2i": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "pulled_back_image_generators_vanish_on_E": true,
+      "rank_on_each_component_span": [
+       2
+      ],
+      "rank_on_the_sum_of_components": 2
+     },
+     "image_2c": [
+      1,
+      1,
+      1
+     ],
+     "image_2i_rational_and_modular": [
+      [
+       1,
+       1,
+       1
+      ],
+      [
+       1,
+       1,
+       1
+      ]
+     ],
+     "image_matches_2c": true,
+     "image_matches_2i": true,
+     "image_matches_2l": true,
+     "image_projective_dimension_degree_components": [
+      1,
+      1,
+      1
+     ],
+     "multiplicity_equals_degree_sum": true,
+     "pass": true
+    },
+    "certificate_3_homotopy_data": {
+     "components": [
+      {
+       "c1_of_S_evaluated_on_the_curve": -1,
+       "c1_of_S_evaluated_on_the_generator_of_H2": -1,
+       "c1_of_S_on_the_component": "-1*h",
+       "degree_of_E_in_its_span": 1,
+       "degree_of_the_generator_curve_of_H2": 1,
+       "euler_class_coefficient": -1,
+       "euler_class_equals_c1_on_the_generator": true,
+       "euler_class_equals_minus_pluecker_degree": true,
+       "exceptional_projective_dimension": 1,
+       "h1_of_link": "0",
+       "h2_of_E_is_zero": false,
+       "link": "S^3",
+       "phi_on_h2_is_an_isomorphism": true,
+       "plucker_forms_degree": 1,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      }
+     ],
+     "pass": true
+    }
+   },
+   "incidence": "Iso->B9",
+   "modular_certificate_0_field_specific": {
+    "not_decided": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here; the 2i modular run is modulo 32003, not 32009",
+    "pass": null,
+    "rank_four_pfaffians_vanish": null,
+    "real_nullity_off_the_basepoint": null,
+    "schur_form_rank": null
+   },
+   "modular_certificates_equal_gaussian_where_both_decide": true,
+   "mutation_controls": [
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 2,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 0,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "Iso->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 1,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      false
+     ],
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 2
+    },
+    {
+     "certificates_pass": true,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "Iso->B9",
+     "mutation": "wrong_value_in_the_prediction_table",
+     "predictions_hold": false
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": false,
+     "incidence": "Iso->B9",
+     "mutation": "perturb_a_coordinate_form_holomorphic_2i",
+     "perturbed_coordinate_and_added_coordinate": [
+      6,
+      4
+     ]
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": false,
+     "incidence": "Iso->B9",
+     "mutation": "perturb_a_coordinate_form_first_order_2c",
+     "perturbed_coordinate_and_added_coordinate": [
+      6,
+      4
+     ]
+    },
+    {
+     "coordinate_change_passes": false,
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": true,
+     "incidence": "Iso->B9",
+     "mutation": "delete_an_image_generator"
+    },
+    {
+     "certificate_1_passes": false,
+     "cone_kind_of_the_remaining_generators": "smooth",
+     "detected": true,
+     "field": "Q(i)",
+     "generators_deleted": 1,
+     "incidence": "Iso->B9",
+     "mutation": "delete_tangent_cone_generators"
+    },
+    {
+     "c1_on_the_generator": [
+      -2
+     ],
+     "detected": true,
+     "euler_class": [
+      -1
+     ],
+     "field": "Q(i)",
+     "incidence": "Iso->B9",
+     "mutation": "square_the_plucker_coordinates",
+     "plucker_forms_degree": [
+      2
+     ]
+    },
+    {
+     "certificate_1_passes": false,
+     "certificate_2_passes": false,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "Iso->B9",
+     "mutation": "tamper_the_recorded_multiplicity"
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "Iso->B9",
+     "mutation": "tamper_the_recorded_bordered_rank",
+     "real_nullity_upper_bound": 10
+    },
+    {
+     "decided_part_passes": true,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "Iso->B9",
+     "mutation": "tamper_the_carried_pfaffian_flag"
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 2,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 0,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "Iso->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 1,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      false
+     ],
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 2
+    },
+    {
+     "certificates_pass": true,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "Iso->B9",
+     "mutation": "wrong_value_in_the_prediction_table",
+     "predictions_hold": false
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": false,
+     "incidence": "Iso->B9",
+     "mutation": "perturb_a_coordinate_form_holomorphic_2i",
+     "perturbed_coordinate_and_added_coordinate": [
+      6,
+      4
+     ]
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": false,
+     "incidence": "Iso->B9",
+     "mutation": "perturb_a_coordinate_form_first_order_2c",
+     "perturbed_coordinate_and_added_coordinate": [
+      6,
+      4
+     ]
+    },
+    {
+     "coordinate_change_passes": false,
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": true,
+     "incidence": "Iso->B9",
+     "mutation": "delete_an_image_generator"
+    },
+    {
+     "certificate_1_passes": false,
+     "cone_kind_of_the_remaining_generators": "smooth",
+     "detected": true,
+     "field": "F_32009",
+     "generators_deleted": 1,
+     "incidence": "Iso->B9",
+     "mutation": "delete_tangent_cone_generators"
+    },
+    {
+     "c1_on_the_generator": [
+      -2
+     ],
+     "detected": true,
+     "euler_class": [
+      -1
+     ],
+     "field": "F_32009",
+     "incidence": "Iso->B9",
+     "mutation": "square_the_plucker_coordinates",
+     "plucker_forms_degree": [
+      2
+     ]
+    },
+    {
+     "certificate_1_passes": false,
+     "certificate_2_passes": false,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "Iso->B9",
+     "mutation": "tamper_the_recorded_multiplicity"
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "Iso->B9",
+     "mutation": "tamper_the_recorded_bordered_rank",
+     "real_nullity_upper_bound": 10
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "Iso->B9",
+     "mutation": "pivot_pfaffian_divisible_by_the_prime",
+     "pivot_is_a_unit_in_Q(i)": true
+    }
+   ],
+   "pass": true,
+   "predictions": [
+    {
+     "applicable": true,
+     "computed": 2,
+     "name": "germ_dimension",
+     "pass": true,
+     "predicted": 2
+    },
+    {
+     "applicable": true,
+     "computed": 1,
+     "name": "tangent_cone_multiplicity",
+     "pass": true,
+     "predicted": 1
+    },
+    {
+     "applicable": true,
+     "computed": [
+      "S^3"
+     ],
+     "name": "link",
+     "pass": true,
+     "predicted": [
+      "S^3"
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      "0"
+     ],
+     "name": "link_h1",
+     "pass": true,
+     "predicted": [
+      "0"
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      -1
+     ],
+     "name": "euler_class_coefficients",
+     "pass": true,
+     "predicted": [
+      -1
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      1
+     ],
+     "name": "exceptional_projective_dimensions",
+     "pass": true,
+     "predicted": [
+      1
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      1,
+      1,
+      1
+     ],
+     "name": "image_projective_dimension_degree_components",
+     "pass": true,
+     "predicted": [
+      1,
+      1,
+      1
+     ]
+    },
+    {
+     "applicable": false,
+     "computed": null,
+     "name": "image_components_disjoint",
+     "pass": true,
+     "predicted": null
+    },
+    {
+     "applicable": true,
+     "computed": [
+      -1
+     ],
+     "name": "c1_on_curve_components",
+     "pass": true,
+     "predicted": [
+      -1
+     ]
+    }
+   ],
+   "retained_rows_agree": {
+    "cone_summary_matches_germ": true,
+    "germ_invariants_equal_in_2b_2c": true,
+    "slice_columns_equal_in_2b_2c_2i": true,
+    "source_and_boundary_equal": true,
+    "tangent_generators_equal_in_2b_2c_2i": true
+   },
+   "source_orbit": "Iso"
+  },
+  {
+   "boundary_orbit": "B9",
+   "certificates": {
+    "certificate_0_constant_nullity": {
+     "decided_in_this_field": {
+      "bordered_kernel_dimension_at_the_boundary": 6,
+      "cone_point_lies_on_the_tangent_cone": true,
+      "degeneracy_locus_empty_matches_2c": true,
+      "exceptional_charts_base_free": true,
+      "exceptional_charts_nonempty": [
+       true,
+       true,
+       true,
+       true,
+       false,
+       true
+      ],
+      "exceptional_charts_nonempty_match_2i": true,
+      "first_order_form_nonzero_at_the_cone_point": true,
+      "pass": true,
+      "phi_has_no_zero_on_E": true,
+      "pivot_pfaffian_is_a_unit": true,
+      "real_nullity_upper_bound": 8,
+      "schur_coordinate_count_matches_kernel_dimension": true,
+      "schur_form_rank_lower_bound": 2
+     },
+     "field_specific": {
+      "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero near E and its rank is exactly the first-order rank wherever the Pfaffian ideal contains the higher terms",
+      "pass": true,
+      "rank_four_pfaffians_vanish_carried_from_retained_exact_runs": {
+       "2c_effective_form_run": true,
+       "2i_rational_run": true
+      },
+      "real_nullity_off_the_basepoint": 8,
+      "reason": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here",
+      "recomputed_here": false,
+      "schur_form_rank": 2
+     },
+     "pass": true
+    },
+    "certificate_1_conical_structure": {
+     "derived_dimension_multiplicity_embedding_components": [
+      3,
+      1,
+      3,
+      1
+     ],
+     "derived_equals_recorded": true,
+     "dimension_multiplicity_embedding_components": [
+      3,
+      1,
+      3,
+      1
+     ],
+     "every_quadric_vanishes_on_the_linear_span": true,
+     "generators_cut_out": "the linear span of the linear generators (reduced, multiplicity 1)",
+     "kind": "smooth",
+     "pass": true
+    },
+    "certificate_2_linear_injective_phi": {
+     "component_span_dimensions": [
+      3
+     ],
+     "coordinate_change_2i_to_2c": {
+      "2c_generators_lie_in_the_2i_ideal": true,
+      "2i_generators_lie_in_the_2c_ideal": true,
+      "A_invertible": true,
+      "both_coordinate_systems_independent": true,
+      "coordinate_count": 6,
+      "pass": true,
+      "rows_h_equal_A_times_rows_c": true
+     },
+     "fiber_2l": [
+      2,
+      1,
+      1
+     ],
+     "first_order_2c": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "pulled_back_image_generators_vanish_on_E": true,
+      "rank_on_each_component_span": [
+       3
+      ],
+      "rank_on_the_sum_of_components": 3
+     },
+     "holomorphic_2i": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "pulled_back_image_generators_vanish_on_E": true,
+      "rank_on_each_component_span": [
+       3
+      ],
+      "rank_on_the_sum_of_components": 3
+     },
+     "image_2c": [
+      2,
+      1,
+      1
+     ],
+     "image_2i_rational_and_modular": [
+      [
+       2,
+       1,
+       1
+      ],
+      [
+       2,
+       1,
+       1
+      ]
+     ],
+     "image_matches_2c": true,
+     "image_matches_2i": true,
+     "image_matches_2l": true,
+     "image_projective_dimension_degree_components": [
+      2,
+      1,
+      1
+     ],
+     "multiplicity_equals_degree_sum": true,
+     "pass": true
+    },
+    "certificate_3_homotopy_data": {
+     "components": [
+      {
+       "c1_of_S_evaluated_on_the_curve": null,
+       "c1_of_S_evaluated_on_the_generator_of_H2": -1,
+       "c1_of_S_on_the_component": "-1*h",
+       "degree_of_E_in_its_span": 1,
+       "degree_of_the_generator_curve_of_H2": 1,
+       "euler_class_coefficient": -1,
+       "euler_class_equals_c1_on_the_generator": true,
+       "euler_class_equals_minus_pluecker_degree": null,
+       "exceptional_projective_dimension": 2,
+       "h1_of_link": "0",
+       "h2_of_E_is_zero": false,
+       "link": "S^5",
+       "phi_on_h2_is_an_isomorphism": true,
+       "plucker_forms_degree": 1,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      }
+     ],
+     "pass": true
+    }
+   },
+   "incidence": "W8->B9",
+   "modular_certificate_0_field_specific": {
+    "not_decided": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here; the 2i modular run is modulo 32003, not 32009",
+    "pass": null,
+    "rank_four_pfaffians_vanish": null,
+    "real_nullity_off_the_basepoint": null,
+    "schur_form_rank": null
+   },
+   "modular_certificates_equal_gaussian_where_both_decide": true,
+   "mutation_controls": [
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 0,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "W8->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      false
+     ],
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "certificates_pass": true,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "W8->B9",
+     "mutation": "wrong_value_in_the_prediction_table",
+     "predictions_hold": false
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": false,
+     "incidence": "W8->B9",
+     "mutation": "perturb_a_coordinate_form_holomorphic_2i",
+     "perturbed_coordinate_and_added_coordinate": [
+      6,
+      1
+     ]
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": false,
+     "incidence": "W8->B9",
+     "mutation": "perturb_a_coordinate_form_first_order_2c",
+     "perturbed_coordinate_and_added_coordinate": [
+      6,
+      1
+     ]
+    },
+    {
+     "coordinate_change_passes": false,
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": true,
+     "incidence": "W8->B9",
+     "mutation": "delete_an_image_generator"
+    },
+    {
+     "certificate_1_passes": false,
+     "cone_kind_of_the_remaining_generators": "smooth",
+     "detected": true,
+     "field": "Q(i)",
+     "generators_deleted": 1,
+     "incidence": "W8->B9",
+     "mutation": "delete_tangent_cone_generators"
+    },
+    {
+     "c1_on_the_generator": [
+      -2
+     ],
+     "detected": true,
+     "euler_class": [
+      -1
+     ],
+     "field": "Q(i)",
+     "incidence": "W8->B9",
+     "mutation": "square_the_plucker_coordinates",
+     "plucker_forms_degree": [
+      2
+     ]
+    },
+    {
+     "certificate_1_passes": false,
+     "certificate_2_passes": false,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "W8->B9",
+     "mutation": "tamper_the_recorded_multiplicity"
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "W8->B9",
+     "mutation": "tamper_the_recorded_bordered_rank",
+     "real_nullity_upper_bound": 10
+    },
+    {
+     "decided_part_passes": true,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "W8->B9",
+     "mutation": "tamper_the_carried_pfaffian_flag"
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 0,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "W8->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      false
+     ],
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "certificates_pass": true,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "W8->B9",
+     "mutation": "wrong_value_in_the_prediction_table",
+     "predictions_hold": false
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": false,
+     "incidence": "W8->B9",
+     "mutation": "perturb_a_coordinate_form_holomorphic_2i",
+     "perturbed_coordinate_and_added_coordinate": [
+      6,
+      1
+     ]
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": false,
+     "incidence": "W8->B9",
+     "mutation": "perturb_a_coordinate_form_first_order_2c",
+     "perturbed_coordinate_and_added_coordinate": [
+      6,
+      1
+     ]
+    },
+    {
+     "coordinate_change_passes": false,
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": true,
+     "incidence": "W8->B9",
+     "mutation": "delete_an_image_generator"
+    },
+    {
+     "certificate_1_passes": false,
+     "cone_kind_of_the_remaining_generators": "smooth",
+     "detected": true,
+     "field": "F_32009",
+     "generators_deleted": 1,
+     "incidence": "W8->B9",
+     "mutation": "delete_tangent_cone_generators"
+    },
+    {
+     "c1_on_the_generator": [
+      -2
+     ],
+     "detected": true,
+     "euler_class": [
+      -1
+     ],
+     "field": "F_32009",
+     "incidence": "W8->B9",
+     "mutation": "square_the_plucker_coordinates",
+     "plucker_forms_degree": [
+      2
+     ]
+    },
+    {
+     "certificate_1_passes": false,
+     "certificate_2_passes": false,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "W8->B9",
+     "mutation": "tamper_the_recorded_multiplicity"
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "W8->B9",
+     "mutation": "tamper_the_recorded_bordered_rank",
+     "real_nullity_upper_bound": 10
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "W8->B9",
+     "mutation": "pivot_pfaffian_divisible_by_the_prime",
+     "pivot_is_a_unit_in_Q(i)": true
+    }
+   ],
+   "pass": true,
+   "predictions": [
+    {
+     "applicable": true,
+     "computed": 3,
+     "name": "germ_dimension",
+     "pass": true,
+     "predicted": 3
+    },
+    {
+     "applicable": true,
+     "computed": 1,
+     "name": "tangent_cone_multiplicity",
+     "pass": true,
+     "predicted": 1
+    },
+    {
+     "applicable": true,
+     "computed": [
+      "S^5"
+     ],
+     "name": "link",
+     "pass": true,
+     "predicted": [
+      "S^5"
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      "0"
+     ],
+     "name": "link_h1",
+     "pass": true,
+     "predicted": [
+      "0"
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      -1
+     ],
+     "name": "euler_class_coefficients",
+     "pass": true,
+     "predicted": [
+      -1
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      2
+     ],
+     "name": "exceptional_projective_dimensions",
+     "pass": true,
+     "predicted": [
+      2
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      2,
+      1,
+      1
+     ],
+     "name": "image_projective_dimension_degree_components",
+     "pass": true,
+     "predicted": [
+      2,
+      1,
+      1
+     ]
+    },
+    {
+     "applicable": false,
+     "computed": null,
+     "name": "image_components_disjoint",
+     "pass": true,
+     "predicted": null
+    },
+    {
+     "applicable": false,
+     "computed": [
+      null
+     ],
+     "name": "c1_on_curve_components",
+     "pass": true,
+     "predicted": [
+      null
+     ]
+    }
+   ],
+   "retained_rows_agree": {
+    "cone_summary_matches_germ": true,
+    "germ_invariants_equal_in_2b_2c": true,
+    "slice_columns_equal_in_2b_2c_2i": true,
+    "source_and_boundary_equal": true,
+    "tangent_generators_equal_in_2b_2c_2i": true
+   },
+   "source_orbit": "W8"
+  },
+  {
+   "boundary_orbit": "B9",
+   "certificates": {
+    "certificate_0_constant_nullity": {
+     "decided_in_this_field": {
+      "bordered_kernel_dimension_at_the_boundary": 6,
+      "cone_point_lies_on_the_tangent_cone": true,
+      "degeneracy_locus_empty_matches_2c": true,
+      "exceptional_charts_base_free": true,
+      "exceptional_charts_nonempty": [
+       false,
+       true,
+       false,
+       true,
+       false,
+       false
+      ],
+      "exceptional_charts_nonempty_match_2i": true,
+      "first_order_form_nonzero_at_the_cone_point": true,
+      "pass": true,
+      "phi_has_no_zero_on_E": true,
+      "pivot_pfaffian_is_a_unit": true,
+      "real_nullity_upper_bound": 8,
+      "schur_coordinate_count_matches_kernel_dimension": true,
+      "schur_form_rank_lower_bound": 2
+     },
+     "field_specific": {
+      "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero near E and its rank is exactly the first-order rank wherever the Pfaffian ideal contains the higher terms",
+      "pass": true,
+      "rank_four_pfaffians_vanish_carried_from_retained_exact_runs": {
+       "2c_effective_form_run": true,
+       "2i_rational_run": true
+      },
+      "real_nullity_off_the_basepoint": 8,
+      "reason": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here",
+      "recomputed_here": false,
+      "schur_form_rank": 2
+     },
+     "pass": true
+    },
+    "certificate_1_conical_structure": {
+     "derived_dimension_multiplicity_embedding_components": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "derived_equals_recorded": true,
+     "dimension_multiplicity_embedding_components": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "every_quadric_vanishes_on_the_linear_span": true,
+     "generators_cut_out": "the linear span of the linear generators (reduced, multiplicity 1)",
+     "kind": "smooth",
+     "pass": true
+    },
+    "certificate_2_linear_injective_phi": {
+     "component_span_dimensions": [
+      1
+     ],
+     "coordinate_change_2i_to_2c": {
+      "2c_generators_lie_in_the_2i_ideal": true,
+      "2i_generators_lie_in_the_2c_ideal": true,
+      "A_invertible": true,
+      "both_coordinate_systems_independent": true,
+      "coordinate_count": 6,
+      "pass": true,
+      "rows_h_equal_A_times_rows_c": true
+     },
+     "fiber_2l": [
+      0,
+      1,
+      1
+     ],
+     "first_order_2c": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "pulled_back_image_generators_vanish_on_E": true,
+      "rank_on_each_component_span": [
+       1
+      ],
+      "rank_on_the_sum_of_components": 1
+     },
+     "holomorphic_2i": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "pulled_back_image_generators_vanish_on_E": true,
+      "rank_on_each_component_span": [
+       1
+      ],
+      "rank_on_the_sum_of_components": 1
+     },
+     "image_2c": [
+      0,
+      1,
+      1
+     ],
+     "image_2i_rational_and_modular": [
+      [
+       0,
+       1,
+       1
+      ],
+      [
+       0,
+       1,
+       1
+      ]
+     ],
+     "image_matches_2c": true,
+     "image_matches_2i": true,
+     "image_matches_2l": true,
+     "image_projective_dimension_degree_components": [
+      0,
+      1,
+      1
+     ],
+     "multiplicity_equals_degree_sum": true,
+     "pass": true
+    },
+    "certificate_3_homotopy_data": {
+     "components": [
+      {
+       "c1_of_S_evaluated_on_the_curve": null,
+       "c1_of_S_evaluated_on_the_generator_of_H2": null,
+       "c1_of_S_on_the_component": null,
+       "degree_of_E_in_its_span": 1,
+       "degree_of_the_generator_curve_of_H2": null,
+       "euler_class_coefficient": null,
+       "euler_class_equals_c1_on_the_generator": null,
+       "euler_class_equals_minus_pluecker_degree": null,
+       "exceptional_projective_dimension": 0,
+       "h1_of_link": "Z",
+       "h2_of_E_is_zero": true,
+       "link": "S^1",
+       "phi_on_h2_is_an_isomorphism": true,
+       "plucker_forms_degree": 1,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      }
+     ],
+     "pass": true
+    }
+   },
+   "incidence": "X+->B9",
+   "modular_certificate_0_field_specific": {
+    "not_decided": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here; the 2i modular run is modulo 32003, not 32009",
+    "pass": null,
+    "rank_four_pfaffians_vanish": null,
+    "real_nullity_off_the_basepoint": null,
+    "schur_form_rank": null
+   },
+   "modular_certificates_equal_gaussian_where_both_decide": true,
+   "mutation_controls": [
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 1,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 0,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X+->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 0,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      false
+     ],
+     "projective_kernel_point": [
+      "0",
+      "21/19",
+      "0",
+      "1",
+      "0",
+      "0"
+     ],
+     "span_dimension": 1
+    },
+    {
+     "certificates_pass": true,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X+->B9",
+     "mutation": "wrong_value_in_the_prediction_table",
+     "predictions_hold": false
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": false,
+     "incidence": "X+->B9",
+     "mutation": "perturb_a_coordinate_form_holomorphic_2i",
+     "perturbed_coordinate_and_added_coordinate": [
+      6,
+      4
+     ]
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": false,
+     "incidence": "X+->B9",
+     "mutation": "perturb_a_coordinate_form_first_order_2c",
+     "perturbed_coordinate_and_added_coordinate": [
+      6,
+      4
+     ]
+    },
+    {
+     "coordinate_change_passes": false,
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": true,
+     "incidence": "X+->B9",
+     "mutation": "delete_an_image_generator"
+    },
+    {
+     "certificate_1_passes": false,
+     "cone_kind_of_the_remaining_generators": "smooth",
+     "detected": true,
+     "field": "Q(i)",
+     "generators_deleted": 1,
+     "incidence": "X+->B9",
+     "mutation": "delete_tangent_cone_generators"
+    },
+    {
+     "c1_on_the_generator": [
+      null
+     ],
+     "detected": true,
+     "euler_class": [
+      null
+     ],
+     "field": "Q(i)",
+     "incidence": "X+->B9",
+     "mutation": "square_the_plucker_coordinates",
+     "plucker_forms_degree": [
+      2
+     ]
+    },
+    {
+     "certificate_1_passes": false,
+     "certificate_2_passes": false,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X+->B9",
+     "mutation": "tamper_the_recorded_multiplicity"
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X+->B9",
+     "mutation": "tamper_the_recorded_bordered_rank",
+     "real_nullity_upper_bound": 10
+    },
+    {
+     "decided_part_passes": true,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X+->B9",
+     "mutation": "tamper_the_carried_pfaffian_flag"
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 1,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 0,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X+->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 0,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      false
+     ],
+     "projective_kernel_point": [
+      "0",
+      "21902",
+      "0",
+      "1",
+      "0",
+      "0"
+     ],
+     "span_dimension": 1
+    },
+    {
+     "certificates_pass": true,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X+->B9",
+     "mutation": "wrong_value_in_the_prediction_table",
+     "predictions_hold": false
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": false,
+     "incidence": "X+->B9",
+     "mutation": "perturb_a_coordinate_form_holomorphic_2i",
+     "perturbed_coordinate_and_added_coordinate": [
+      6,
+      4
+     ]
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": false,
+     "incidence": "X+->B9",
+     "mutation": "perturb_a_coordinate_form_first_order_2c",
+     "perturbed_coordinate_and_added_coordinate": [
+      6,
+      4
+     ]
+    },
+    {
+     "coordinate_change_passes": false,
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": true,
+     "incidence": "X+->B9",
+     "mutation": "delete_an_image_generator"
+    },
+    {
+     "certificate_1_passes": false,
+     "cone_kind_of_the_remaining_generators": "smooth",
+     "detected": true,
+     "field": "F_32009",
+     "generators_deleted": 1,
+     "incidence": "X+->B9",
+     "mutation": "delete_tangent_cone_generators"
+    },
+    {
+     "c1_on_the_generator": [
+      null
+     ],
+     "detected": true,
+     "euler_class": [
+      null
+     ],
+     "field": "F_32009",
+     "incidence": "X+->B9",
+     "mutation": "square_the_plucker_coordinates",
+     "plucker_forms_degree": [
+      2
+     ]
+    },
+    {
+     "certificate_1_passes": false,
+     "certificate_2_passes": false,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X+->B9",
+     "mutation": "tamper_the_recorded_multiplicity"
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X+->B9",
+     "mutation": "tamper_the_recorded_bordered_rank",
+     "real_nullity_upper_bound": 10
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X+->B9",
+     "mutation": "pivot_pfaffian_divisible_by_the_prime",
+     "pivot_is_a_unit_in_Q(i)": true
+    }
+   ],
+   "pass": true,
+   "predictions": [
+    {
+     "applicable": true,
+     "computed": 1,
+     "name": "germ_dimension",
+     "pass": true,
+     "predicted": 1
+    },
+    {
+     "applicable": true,
+     "computed": 1,
+     "name": "tangent_cone_multiplicity",
+     "pass": true,
+     "predicted": 1
+    },
+    {
+     "applicable": true,
+     "computed": [
+      "S^1"
+     ],
+     "name": "link",
+     "pass": true,
+     "predicted": [
+      "S^1"
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      "Z"
+     ],
+     "name": "link_h1",
+     "pass": true,
+     "predicted": [
+      "Z"
+     ]
+    },
+    {
+     "applicable": false,
+     "computed": [
+      null
+     ],
+     "name": "euler_class_coefficients",
+     "pass": true,
+     "predicted": [
+      null
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      0
+     ],
+     "name": "exceptional_projective_dimensions",
+     "pass": true,
+     "predicted": [
+      0
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      0,
+      1,
+      1
+     ],
+     "name": "image_projective_dimension_degree_components",
+     "pass": true,
+     "predicted": [
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "applicable": false,
+     "computed": null,
+     "name": "image_components_disjoint",
+     "pass": true,
+     "predicted": null
+    },
+    {
+     "applicable": false,
+     "computed": [
+      null
+     ],
+     "name": "c1_on_curve_components",
+     "pass": true,
+     "predicted": [
+      null
+     ]
+    }
+   ],
+   "retained_rows_agree": {
+    "cone_summary_matches_germ": true,
+    "germ_invariants_equal_in_2b_2c": true,
+    "slice_columns_equal_in_2b_2c_2i": true,
+    "source_and_boundary_equal": true,
+    "tangent_generators_equal_in_2b_2c_2i": true
+   },
+   "source_orbit": "X+"
+  },
+  {
+   "boundary_orbit": "Va+",
+   "certificates": {
+    "certificate_0_constant_nullity": {
+     "decided_in_this_field": {
+      "bordered_kernel_dimension_at_the_boundary": 6,
+      "cone_point_lies_on_the_tangent_cone": true,
+      "degeneracy_locus_empty_matches_2c": true,
+      "exceptional_charts_base_free": true,
+      "exceptional_charts_nonempty": [
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false
+      ],
+      "exceptional_charts_nonempty_match_2i": true,
+      "first_order_form_nonzero_at_the_cone_point": true,
+      "pass": true,
+      "phi_has_no_zero_on_E": true,
+      "pivot_pfaffian_is_a_unit": true,
+      "real_nullity_upper_bound": 8,
+      "schur_coordinate_count_matches_kernel_dimension": true,
+      "schur_form_rank_lower_bound": 2
+     },
+     "field_specific": {
+      "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero near E and its rank is exactly the first-order rank wherever the Pfaffian ideal contains the higher terms",
+      "pass": true,
+      "rank_four_pfaffians_vanish_carried_from_retained_exact_runs": {
+       "2c_effective_form_run": true,
+       "2i_rational_run": true
+      },
+      "real_nullity_off_the_basepoint": 8,
+      "reason": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here",
+      "recomputed_here": false,
+      "schur_form_rank": 2
+     },
+     "pass": true
+    },
+    "certificate_1_conical_structure": {
+     "component_dimensions": [
+      3,
+      3
+     ],
+     "components_smooth": true,
+     "derived_dimension_multiplicity_embedding_components": [
+      3,
+      2,
+      6,
+      2
+     ],
+     "derived_equals_recorded": true,
+     "dimension_multiplicity_embedding_components": [
+      3,
+      2,
+      6,
+      2
+     ],
+     "generators_cut_out": "the union of the two components: the ideal of two linear spaces that meet only at 0 is generated in degrees 1 and 2, and the retained generators equal it in those degrees (reduced, multiplicity 2)",
+     "generators_cut_out_the_union_of_the_components": true,
+     "kind": "two-components",
+     "linear_generators_span_the_forms_vanishing_on_both": true,
+     "pass": true,
+     "quadrics_generated_by_the_retained_generators": 24,
+     "quadrics_vanishing_on_both_components": 24,
+     "retained_generators_vanish_on_each_component": true,
+     "tangent_spaces_joint_rank": 6,
+     "tangent_spaces_meet_only_at_zero": true
+    },
+    "certificate_2_linear_injective_phi": {
+     "component_span_dimensions": [
+      3,
+      3
+     ],
+     "coordinate_change_2i_to_2c": {
+      "2c_generators_lie_in_the_2i_ideal": true,
+      "2i_generators_lie_in_the_2c_ideal": true,
+      "A_invertible": true,
+      "both_coordinate_systems_independent": true,
+      "coordinate_count": 7,
+      "pass": true,
+      "rows_h_equal_A_times_rows_c": true
+     },
+     "fiber_2l": [
+      2,
+      2,
+      2
+     ],
+     "first_order_2c": {
+      "coordinate_count": 7,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "pulled_back_image_generators_vanish_on_E": true,
+      "rank_on_each_component_span": [
+       3,
+       3
+      ],
+      "rank_on_the_sum_of_components": 6
+     },
+     "holomorphic_2i": {
+      "coordinate_count": 7,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "pulled_back_image_generators_vanish_on_E": true,
+      "rank_on_each_component_span": [
+       3,
+       3
+      ],
+      "rank_on_the_sum_of_components": 6
+     },
+     "image_2c": [
+      2,
+      2,
+      2
+     ],
+     "image_2i_rational_and_modular": [
+      [
+       2,
+       2,
+       2
+      ],
+      [
+       2,
+       2,
+       2
+      ]
+     ],
+     "image_matches_2c": true,
+     "image_matches_2i": true,
+     "image_matches_2l": true,
+     "image_projective_dimension_degree_components": [
+      2,
+      2,
+      2
+     ],
+     "multiplicity_equals_degree_sum": true,
+     "pass": true
+    },
+    "certificate_3_homotopy_data": {
+     "components": [
+      {
+       "c1_of_S_evaluated_on_the_curve": null,
+       "c1_of_S_evaluated_on_the_generator_of_H2": -1,
+       "c1_of_S_on_the_component": "-1*h",
+       "degree_of_E_in_its_span": 1,
+       "degree_of_the_generator_curve_of_H2": 1,
+       "euler_class_coefficient": -1,
+       "euler_class_equals_c1_on_the_generator": true,
+       "euler_class_equals_minus_pluecker_degree": null,
+       "exceptional_projective_dimension": 2,
+       "h1_of_link": "0",
+       "h2_of_E_is_zero": false,
+       "link": "S^5",
+       "phi_on_h2_is_an_isomorphism": true,
+       "plucker_forms_degree": 1,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      },
+      {
+       "c1_of_S_evaluated_on_the_curve": null,
+       "c1_of_S_evaluated_on_the_generator_of_H2": -1,
+       "c1_of_S_on_the_component": "-1*h",
+       "degree_of_E_in_its_span": 1,
+       "degree_of_the_generator_curve_of_H2": 1,
+       "euler_class_coefficient": -1,
+       "euler_class_equals_c1_on_the_generator": true,
+       "euler_class_equals_minus_pluecker_degree": null,
+       "exceptional_projective_dimension": 2,
+       "h1_of_link": "0",
+       "h2_of_E_is_zero": false,
+       "link": "S^5",
+       "phi_on_h2_is_an_isomorphism": true,
+       "plucker_forms_degree": 1,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      }
+     ],
+     "pass": true
+    }
+   },
+   "incidence": "X+->Va+",
+   "modular_certificate_0_field_specific": {
+    "not_decided": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here; the 2i modular run is modulo 32003, not 32009",
+    "pass": null,
+    "rank_four_pfaffians_vanish": null,
+    "real_nullity_off_the_basepoint": null,
+    "schur_form_rank": null
+   },
+   "modular_certificates_equal_gaussian_where_both_decide": true,
+   "mutation_controls": [
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 0,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X+->Va+",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      false,
+      true
+     ],
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "-1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 1,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X+->Va+",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      true,
+      false
+     ],
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "certificates_pass": true,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X+->Va+",
+     "mutation": "wrong_value_in_the_prediction_table",
+     "predictions_hold": false
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "images_meet_only_at_zero": false,
+     "incidence": "X+->Va+",
+     "injective_on_each_component": true,
+     "mutation": "image_planes_meet_holomorphic_2i",
+     "rank_on_the_sum_of_components": 3
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "images_meet_only_at_zero": false,
+     "incidence": "X+->Va+",
+     "injective_on_each_component": true,
+     "mutation": "image_planes_meet_first_order_2c",
+     "rank_on_the_sum_of_components": 3
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": false,
+     "incidence": "X+->Va+",
+     "mutation": "perturb_a_coordinate_form_holomorphic_2i",
+     "perturbed_coordinate_and_added_coordinate": [
+      1,
+      2
+     ]
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": false,
+     "incidence": "X+->Va+",
+     "mutation": "perturb_a_coordinate_form_first_order_2c",
+     "perturbed_coordinate_and_added_coordinate": [
+      1,
+      2
+     ]
+    },
+    {
+     "coordinate_change_passes": false,
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": true,
+     "incidence": "X+->Va+",
+     "mutation": "delete_an_image_generator"
+    },
+    {
+     "certificate_1_passes": false,
+     "cone_kind_of_the_remaining_generators": "two-components",
+     "detected": true,
+     "field": "Q(i)",
+     "generators_deleted": 9,
+     "incidence": "X+->Va+",
+     "mutation": "delete_tangent_cone_generators"
+    },
+    {
+     "c1_on_the_generator": [
+      -2,
+      -2
+     ],
+     "detected": true,
+     "euler_class": [
+      -1,
+      -1
+     ],
+     "field": "Q(i)",
+     "incidence": "X+->Va+",
+     "mutation": "square_the_plucker_coordinates",
+     "plucker_forms_degree": [
+      2,
+      2
+     ]
+    },
+    {
+     "certificate_1_passes": false,
+     "certificate_2_passes": false,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X+->Va+",
+     "mutation": "tamper_the_recorded_multiplicity"
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X+->Va+",
+     "mutation": "tamper_the_recorded_bordered_rank",
+     "real_nullity_upper_bound": 10
+    },
+    {
+     "decided_part_passes": true,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X+->Va+",
+     "mutation": "tamper_the_carried_pfaffian_flag"
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 0,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X+->Va+",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      false,
+      true
+     ],
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "32008",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 1,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X+->Va+",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      true,
+      false
+     ],
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "certificates_pass": true,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X+->Va+",
+     "mutation": "wrong_value_in_the_prediction_table",
+     "predictions_hold": false
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "images_meet_only_at_zero": false,
+     "incidence": "X+->Va+",
+     "injective_on_each_component": true,
+     "mutation": "image_planes_meet_holomorphic_2i",
+     "rank_on_the_sum_of_components": 3
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "images_meet_only_at_zero": false,
+     "incidence": "X+->Va+",
+     "injective_on_each_component": true,
+     "mutation": "image_planes_meet_first_order_2c",
+     "rank_on_the_sum_of_components": 3
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": false,
+     "incidence": "X+->Va+",
+     "mutation": "perturb_a_coordinate_form_holomorphic_2i",
+     "perturbed_coordinate_and_added_coordinate": [
+      1,
+      2
+     ]
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": false,
+     "incidence": "X+->Va+",
+     "mutation": "perturb_a_coordinate_form_first_order_2c",
+     "perturbed_coordinate_and_added_coordinate": [
+      1,
+      2
+     ]
+    },
+    {
+     "coordinate_change_passes": false,
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": true,
+     "incidence": "X+->Va+",
+     "mutation": "delete_an_image_generator"
+    },
+    {
+     "certificate_1_passes": false,
+     "cone_kind_of_the_remaining_generators": "two-components",
+     "detected": true,
+     "field": "F_32009",
+     "generators_deleted": 9,
+     "incidence": "X+->Va+",
+     "mutation": "delete_tangent_cone_generators"
+    },
+    {
+     "c1_on_the_generator": [
+      -2,
+      -2
+     ],
+     "detected": true,
+     "euler_class": [
+      -1,
+      -1
+     ],
+     "field": "F_32009",
+     "incidence": "X+->Va+",
+     "mutation": "square_the_plucker_coordinates",
+     "plucker_forms_degree": [
+      2,
+      2
+     ]
+    },
+    {
+     "certificate_1_passes": false,
+     "certificate_2_passes": false,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X+->Va+",
+     "mutation": "tamper_the_recorded_multiplicity"
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X+->Va+",
+     "mutation": "tamper_the_recorded_bordered_rank",
+     "real_nullity_upper_bound": 10
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X+->Va+",
+     "mutation": "pivot_pfaffian_divisible_by_the_prime",
+     "pivot_is_a_unit_in_Q(i)": true
+    }
+   ],
+   "pass": true,
+   "predictions": [
+    {
+     "applicable": true,
+     "computed": 3,
+     "name": "germ_dimension",
+     "pass": true,
+     "predicted": 3
+    },
+    {
+     "applicable": true,
+     "computed": 2,
+     "name": "tangent_cone_multiplicity",
+     "pass": true,
+     "predicted": 2
+    },
+    {
+     "applicable": true,
+     "computed": [
+      "S^5",
+      "S^5"
+     ],
+     "name": "link",
+     "pass": true,
+     "predicted": [
+      "S^5",
+      "S^5"
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      "0",
+      "0"
+     ],
+     "name": "link_h1",
+     "pass": true,
+     "predicted": [
+      "0",
+      "0"
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      -1,
+      -1
+     ],
+     "name": "euler_class_coefficients",
+     "pass": true,
+     "predicted": [
+      -1,
+      -1
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      2,
+      2
+     ],
+     "name": "exceptional_projective_dimensions",
+     "pass": true,
+     "predicted": [
+      2,
+      2
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      2,
+      2,
+      2
+     ],
+     "name": "image_projective_dimension_degree_components",
+     "pass": true,
+     "predicted": [
+      2,
+      2,
+      2
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": true,
+     "name": "image_components_disjoint",
+     "pass": true,
+     "predicted": true
+    },
+    {
+     "applicable": false,
+     "computed": [
+      null,
+      null
+     ],
+     "name": "c1_on_curve_components",
+     "pass": true,
+     "predicted": [
+      null,
+      null
+     ]
+    }
+   ],
+   "retained_rows_agree": {
+    "cone_summary_matches_germ": true,
+    "germ_invariants_equal_in_2b_2c": true,
+    "slice_columns_equal_in_2b_2c_2i": true,
+    "source_and_boundary_equal": true,
+    "tangent_generators_equal_in_2b_2c_2i": true
+   },
+   "source_orbit": "X+"
+  },
+  {
+   "boundary_orbit": "B9",
+   "certificates": {
+    "certificate_0_constant_nullity": {
+     "decided_in_this_field": {
+      "bordered_kernel_dimension_at_the_boundary": 6,
+      "cone_point_lies_on_the_tangent_cone": true,
+      "degeneracy_locus_empty_matches_2c": true,
+      "exceptional_charts_base_free": true,
+      "exceptional_charts_nonempty": [
+       false,
+       true,
+       false,
+       true,
+       false,
+       false
+      ],
+      "exceptional_charts_nonempty_match_2i": true,
+      "first_order_form_nonzero_at_the_cone_point": true,
+      "pass": true,
+      "phi_has_no_zero_on_E": true,
+      "pivot_pfaffian_is_a_unit": true,
+      "real_nullity_upper_bound": 8,
+      "schur_coordinate_count_matches_kernel_dimension": true,
+      "schur_form_rank_lower_bound": 2
+     },
+     "field_specific": {
+      "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero near E and its rank is exactly the first-order rank wherever the Pfaffian ideal contains the higher terms",
+      "pass": true,
+      "rank_four_pfaffians_vanish_carried_from_retained_exact_runs": {
+       "2c_effective_form_run": true,
+       "2i_rational_run": true
+      },
+      "real_nullity_off_the_basepoint": 8,
+      "reason": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here",
+      "recomputed_here": false,
+      "schur_form_rank": 2
+     },
+     "pass": true
+    },
+    "certificate_1_conical_structure": {
+     "derived_dimension_multiplicity_embedding_components": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "derived_equals_recorded": true,
+     "dimension_multiplicity_embedding_components": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "every_quadric_vanishes_on_the_linear_span": true,
+     "generators_cut_out": "the linear span of the linear generators (reduced, multiplicity 1)",
+     "kind": "smooth",
+     "pass": true
+    },
+    "certificate_2_linear_injective_phi": {
+     "component_span_dimensions": [
+      1
+     ],
+     "coordinate_change_2i_to_2c": {
+      "2c_generators_lie_in_the_2i_ideal": true,
+      "2i_generators_lie_in_the_2c_ideal": true,
+      "A_invertible": true,
+      "both_coordinate_systems_independent": true,
+      "coordinate_count": 6,
+      "pass": true,
+      "rows_h_equal_A_times_rows_c": true
+     },
+     "fiber_2l": [
+      0,
+      1,
+      1
+     ],
+     "first_order_2c": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "pulled_back_image_generators_vanish_on_E": true,
+      "rank_on_each_component_span": [
+       1
+      ],
+      "rank_on_the_sum_of_components": 1
+     },
+     "holomorphic_2i": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "pulled_back_image_generators_vanish_on_E": true,
+      "rank_on_each_component_span": [
+       1
+      ],
+      "rank_on_the_sum_of_components": 1
+     },
+     "image_2c": [
+      0,
+      1,
+      1
+     ],
+     "image_2i_rational_and_modular": [
+      [
+       0,
+       1,
+       1
+      ],
+      [
+       0,
+       1,
+       1
+      ]
+     ],
+     "image_matches_2c": true,
+     "image_matches_2i": true,
+     "image_matches_2l": true,
+     "image_projective_dimension_degree_components": [
+      0,
+      1,
+      1
+     ],
+     "multiplicity_equals_degree_sum": true,
+     "pass": true
+    },
+    "certificate_3_homotopy_data": {
+     "components": [
+      {
+       "c1_of_S_evaluated_on_the_curve": null,
+       "c1_of_S_evaluated_on_the_generator_of_H2": null,
+       "c1_of_S_on_the_component": null,
+       "degree_of_E_in_its_span": 1,
+       "degree_of_the_generator_curve_of_H2": null,
+       "euler_class_coefficient": null,
+       "euler_class_equals_c1_on_the_generator": null,
+       "euler_class_equals_minus_pluecker_degree": null,
+       "exceptional_projective_dimension": 0,
+       "h1_of_link": "Z",
+       "h2_of_E_is_zero": true,
+       "link": "S^1",
+       "phi_on_h2_is_an_isomorphism": true,
+       "plucker_forms_degree": 1,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      }
+     ],
+     "pass": true
+    }
+   },
+   "incidence": "X-->B9",
+   "modular_certificate_0_field_specific": {
+    "not_decided": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here; the 2i modular run is modulo 32003, not 32009",
+    "pass": null,
+    "rank_four_pfaffians_vanish": null,
+    "real_nullity_off_the_basepoint": null,
+    "schur_form_rank": null
+   },
+   "modular_certificates_equal_gaussian_where_both_decide": true,
+   "mutation_controls": [
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 1,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 0,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X-->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 0,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      false
+     ],
+     "projective_kernel_point": [
+      "0",
+      "47/41",
+      "0",
+      "1",
+      "0",
+      "0"
+     ],
+     "span_dimension": 1
+    },
+    {
+     "certificates_pass": true,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X-->B9",
+     "mutation": "wrong_value_in_the_prediction_table",
+     "predictions_hold": false
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": false,
+     "incidence": "X-->B9",
+     "mutation": "perturb_a_coordinate_form_holomorphic_2i",
+     "perturbed_coordinate_and_added_coordinate": [
+      6,
+      4
+     ]
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": false,
+     "incidence": "X-->B9",
+     "mutation": "perturb_a_coordinate_form_first_order_2c",
+     "perturbed_coordinate_and_added_coordinate": [
+      6,
+      4
+     ]
+    },
+    {
+     "coordinate_change_passes": false,
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": true,
+     "incidence": "X-->B9",
+     "mutation": "delete_an_image_generator"
+    },
+    {
+     "certificate_1_passes": false,
+     "cone_kind_of_the_remaining_generators": "smooth",
+     "detected": true,
+     "field": "Q(i)",
+     "generators_deleted": 1,
+     "incidence": "X-->B9",
+     "mutation": "delete_tangent_cone_generators"
+    },
+    {
+     "c1_on_the_generator": [
+      null
+     ],
+     "detected": true,
+     "euler_class": [
+      null
+     ],
+     "field": "Q(i)",
+     "incidence": "X-->B9",
+     "mutation": "square_the_plucker_coordinates",
+     "plucker_forms_degree": [
+      2
+     ]
+    },
+    {
+     "certificate_1_passes": false,
+     "certificate_2_passes": false,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X-->B9",
+     "mutation": "tamper_the_recorded_multiplicity"
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X-->B9",
+     "mutation": "tamper_the_recorded_bordered_rank",
+     "real_nullity_upper_bound": 10
+    },
+    {
+     "decided_part_passes": true,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X-->B9",
+     "mutation": "tamper_the_carried_pfaffian_flag"
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 1,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 0,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X-->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 0,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      false
+     ],
+     "projective_kernel_point": [
+      "0",
+      "16396",
+      "0",
+      "1",
+      "0",
+      "0"
+     ],
+     "span_dimension": 1
+    },
+    {
+     "certificates_pass": true,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X-->B9",
+     "mutation": "wrong_value_in_the_prediction_table",
+     "predictions_hold": false
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": false,
+     "incidence": "X-->B9",
+     "mutation": "perturb_a_coordinate_form_holomorphic_2i",
+     "perturbed_coordinate_and_added_coordinate": [
+      6,
+      4
+     ]
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": false,
+     "incidence": "X-->B9",
+     "mutation": "perturb_a_coordinate_form_first_order_2c",
+     "perturbed_coordinate_and_added_coordinate": [
+      6,
+      4
+     ]
+    },
+    {
+     "coordinate_change_passes": false,
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": true,
+     "incidence": "X-->B9",
+     "mutation": "delete_an_image_generator"
+    },
+    {
+     "certificate_1_passes": false,
+     "cone_kind_of_the_remaining_generators": "smooth",
+     "detected": true,
+     "field": "F_32009",
+     "generators_deleted": 1,
+     "incidence": "X-->B9",
+     "mutation": "delete_tangent_cone_generators"
+    },
+    {
+     "c1_on_the_generator": [
+      null
+     ],
+     "detected": true,
+     "euler_class": [
+      null
+     ],
+     "field": "F_32009",
+     "incidence": "X-->B9",
+     "mutation": "square_the_plucker_coordinates",
+     "plucker_forms_degree": [
+      2
+     ]
+    },
+    {
+     "certificate_1_passes": false,
+     "certificate_2_passes": false,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X-->B9",
+     "mutation": "tamper_the_recorded_multiplicity"
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X-->B9",
+     "mutation": "tamper_the_recorded_bordered_rank",
+     "real_nullity_upper_bound": 10
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X-->B9",
+     "mutation": "pivot_pfaffian_divisible_by_the_prime",
+     "pivot_is_a_unit_in_Q(i)": true
+    }
+   ],
+   "pass": true,
+   "predictions": [
+    {
+     "applicable": true,
+     "computed": 1,
+     "name": "germ_dimension",
+     "pass": true,
+     "predicted": 1
+    },
+    {
+     "applicable": true,
+     "computed": 1,
+     "name": "tangent_cone_multiplicity",
+     "pass": true,
+     "predicted": 1
+    },
+    {
+     "applicable": true,
+     "computed": [
+      "S^1"
+     ],
+     "name": "link",
+     "pass": true,
+     "predicted": [
+      "S^1"
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      "Z"
+     ],
+     "name": "link_h1",
+     "pass": true,
+     "predicted": [
+      "Z"
+     ]
+    },
+    {
+     "applicable": false,
+     "computed": [
+      null
+     ],
+     "name": "euler_class_coefficients",
+     "pass": true,
+     "predicted": [
+      null
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      0
+     ],
+     "name": "exceptional_projective_dimensions",
+     "pass": true,
+     "predicted": [
+      0
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      0,
+      1,
+      1
+     ],
+     "name": "image_projective_dimension_degree_components",
+     "pass": true,
+     "predicted": [
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "applicable": false,
+     "computed": null,
+     "name": "image_components_disjoint",
+     "pass": true,
+     "predicted": null
+    },
+    {
+     "applicable": false,
+     "computed": [
+      null
+     ],
+     "name": "c1_on_curve_components",
+     "pass": true,
+     "predicted": [
+      null
+     ]
+    }
+   ],
+   "retained_rows_agree": {
+    "cone_summary_matches_germ": true,
+    "germ_invariants_equal_in_2b_2c": true,
+    "slice_columns_equal_in_2b_2c_2i": true,
+    "source_and_boundary_equal": true,
+    "tangent_generators_equal_in_2b_2c_2i": true
+   },
+   "source_orbit": "X-"
+  },
+  {
+   "boundary_orbit": "Va-",
+   "certificates": {
+    "certificate_0_constant_nullity": {
+     "decided_in_this_field": {
+      "bordered_kernel_dimension_at_the_boundary": 6,
+      "cone_point_lies_on_the_tangent_cone": true,
+      "degeneracy_locus_empty_matches_2c": true,
+      "exceptional_charts_base_free": true,
+      "exceptional_charts_nonempty": [
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false
+      ],
+      "exceptional_charts_nonempty_match_2i": true,
+      "first_order_form_nonzero_at_the_cone_point": true,
+      "pass": true,
+      "phi_has_no_zero_on_E": true,
+      "pivot_pfaffian_is_a_unit": true,
+      "real_nullity_upper_bound": 8,
+      "schur_coordinate_count_matches_kernel_dimension": true,
+      "schur_form_rank_lower_bound": 2
+     },
+     "field_specific": {
+      "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero near E and its rank is exactly the first-order rank wherever the Pfaffian ideal contains the higher terms",
+      "pass": true,
+      "rank_four_pfaffians_vanish_carried_from_retained_exact_runs": {
+       "2c_effective_form_run": true,
+       "2i_rational_run": true
+      },
+      "real_nullity_off_the_basepoint": 8,
+      "reason": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here",
+      "recomputed_here": false,
+      "schur_form_rank": 2
+     },
+     "pass": true
+    },
+    "certificate_1_conical_structure": {
+     "component_dimensions": [
+      3,
+      3
+     ],
+     "components_smooth": true,
+     "derived_dimension_multiplicity_embedding_components": [
+      3,
+      2,
+      6,
+      2
+     ],
+     "derived_equals_recorded": true,
+     "dimension_multiplicity_embedding_components": [
+      3,
+      2,
+      6,
+      2
+     ],
+     "generators_cut_out": "the union of the two components: the ideal of two linear spaces that meet only at 0 is generated in degrees 1 and 2, and the retained generators equal it in those degrees (reduced, multiplicity 2)",
+     "generators_cut_out_the_union_of_the_components": true,
+     "kind": "two-components",
+     "linear_generators_span_the_forms_vanishing_on_both": true,
+     "pass": true,
+     "quadrics_generated_by_the_retained_generators": 24,
+     "quadrics_vanishing_on_both_components": 24,
+     "retained_generators_vanish_on_each_component": true,
+     "tangent_spaces_joint_rank": 6,
+     "tangent_spaces_meet_only_at_zero": true
+    },
+    "certificate_2_linear_injective_phi": {
+     "component_span_dimensions": [
+      3,
+      3
+     ],
+     "coordinate_change_2i_to_2c": {
+      "2c_generators_lie_in_the_2i_ideal": true,
+      "2i_generators_lie_in_the_2c_ideal": true,
+      "A_invertible": true,
+      "both_coordinate_systems_independent": true,
+      "coordinate_count": 7,
+      "pass": true,
+      "rows_h_equal_A_times_rows_c": true
+     },
+     "fiber_2l": [
+      2,
+      2,
+      2
+     ],
+     "first_order_2c": {
+      "coordinate_count": 7,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "pulled_back_image_generators_vanish_on_E": true,
+      "rank_on_each_component_span": [
+       3,
+       3
+      ],
+      "rank_on_the_sum_of_components": 6
+     },
+     "holomorphic_2i": {
+      "coordinate_count": 7,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "pulled_back_image_generators_vanish_on_E": true,
+      "rank_on_each_component_span": [
+       3,
+       3
+      ],
+      "rank_on_the_sum_of_components": 6
+     },
+     "image_2c": [
+      2,
+      2,
+      2
+     ],
+     "image_2i_rational_and_modular": [
+      [
+       2,
+       2,
+       2
+      ],
+      [
+       2,
+       2,
+       2
+      ]
+     ],
+     "image_matches_2c": true,
+     "image_matches_2i": true,
+     "image_matches_2l": true,
+     "image_projective_dimension_degree_components": [
+      2,
+      2,
+      2
+     ],
+     "multiplicity_equals_degree_sum": true,
+     "pass": true
+    },
+    "certificate_3_homotopy_data": {
+     "components": [
+      {
+       "c1_of_S_evaluated_on_the_curve": null,
+       "c1_of_S_evaluated_on_the_generator_of_H2": -1,
+       "c1_of_S_on_the_component": "-1*h",
+       "degree_of_E_in_its_span": 1,
+       "degree_of_the_generator_curve_of_H2": 1,
+       "euler_class_coefficient": -1,
+       "euler_class_equals_c1_on_the_generator": true,
+       "euler_class_equals_minus_pluecker_degree": null,
+       "exceptional_projective_dimension": 2,
+       "h1_of_link": "0",
+       "h2_of_E_is_zero": false,
+       "link": "S^5",
+       "phi_on_h2_is_an_isomorphism": true,
+       "plucker_forms_degree": 1,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      },
+      {
+       "c1_of_S_evaluated_on_the_curve": null,
+       "c1_of_S_evaluated_on_the_generator_of_H2": -1,
+       "c1_of_S_on_the_component": "-1*h",
+       "degree_of_E_in_its_span": 1,
+       "degree_of_the_generator_curve_of_H2": 1,
+       "euler_class_coefficient": -1,
+       "euler_class_equals_c1_on_the_generator": true,
+       "euler_class_equals_minus_pluecker_degree": null,
+       "exceptional_projective_dimension": 2,
+       "h1_of_link": "0",
+       "h2_of_E_is_zero": false,
+       "link": "S^5",
+       "phi_on_h2_is_an_isomorphism": true,
+       "plucker_forms_degree": 1,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      }
+     ],
+     "pass": true
+    }
+   },
+   "incidence": "X-->Va-",
+   "modular_certificate_0_field_specific": {
+    "not_decided": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here; the 2i modular run is modulo 32003, not 32009",
+    "pass": null,
+    "rank_four_pfaffians_vanish": null,
+    "real_nullity_off_the_basepoint": null,
+    "schur_form_rank": null
+   },
+   "modular_certificates_equal_gaussian_where_both_decide": true,
+   "mutation_controls": [
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 0,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X-->Va-",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      false,
+      true
+     ],
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "-1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 1,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X-->Va-",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      true,
+      false
+     ],
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "certificates_pass": true,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X-->Va-",
+     "mutation": "wrong_value_in_the_prediction_table",
+     "predictions_hold": false
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "images_meet_only_at_zero": false,
+     "incidence": "X-->Va-",
+     "injective_on_each_component": true,
+     "mutation": "image_planes_meet_holomorphic_2i",
+     "rank_on_the_sum_of_components": 3
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "images_meet_only_at_zero": false,
+     "incidence": "X-->Va-",
+     "injective_on_each_component": true,
+     "mutation": "image_planes_meet_first_order_2c",
+     "rank_on_the_sum_of_components": 3
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": false,
+     "incidence": "X-->Va-",
+     "mutation": "perturb_a_coordinate_form_holomorphic_2i",
+     "perturbed_coordinate_and_added_coordinate": [
+      1,
+      2
+     ]
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": false,
+     "incidence": "X-->Va-",
+     "mutation": "perturb_a_coordinate_form_first_order_2c",
+     "perturbed_coordinate_and_added_coordinate": [
+      1,
+      2
+     ]
+    },
+    {
+     "coordinate_change_passes": false,
+     "detected": true,
+     "field": "Q(i)",
+     "image_generators_vanish_on_E": true,
+     "incidence": "X-->Va-",
+     "mutation": "delete_an_image_generator"
+    },
+    {
+     "certificate_1_passes": false,
+     "cone_kind_of_the_remaining_generators": "two-components",
+     "detected": true,
+     "field": "Q(i)",
+     "generators_deleted": 9,
+     "incidence": "X-->Va-",
+     "mutation": "delete_tangent_cone_generators"
+    },
+    {
+     "c1_on_the_generator": [
+      -2,
+      -2
+     ],
+     "detected": true,
+     "euler_class": [
+      -1,
+      -1
+     ],
+     "field": "Q(i)",
+     "incidence": "X-->Va-",
+     "mutation": "square_the_plucker_coordinates",
+     "plucker_forms_degree": [
+      2,
+      2
+     ]
+    },
+    {
+     "certificate_1_passes": false,
+     "certificate_2_passes": false,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X-->Va-",
+     "mutation": "tamper_the_recorded_multiplicity"
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X-->Va-",
+     "mutation": "tamper_the_recorded_bordered_rank",
+     "real_nullity_upper_bound": 10
+    },
+    {
+     "decided_part_passes": true,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X-->Va-",
+     "mutation": "tamper_the_carried_pfaffian_flag"
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 0,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X-->Va-",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      false,
+      true
+     ],
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "32008",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "certificate_0_phi_has_no_zero_on_E": false,
+     "certificate_2_passes_on_the_mutated_phi": false,
+     "component": 1,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X-->Va-",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "phi_on_h2_is_an_isomorphism_per_component": [
+      true,
+      false
+     ],
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "certificates_pass": true,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X-->Va-",
+     "mutation": "wrong_value_in_the_prediction_table",
+     "predictions_hold": false
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "images_meet_only_at_zero": false,
+     "incidence": "X-->Va-",
+     "injective_on_each_component": true,
+     "mutation": "image_planes_meet_holomorphic_2i",
+     "rank_on_the_sum_of_components": 3
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "images_meet_only_at_zero": false,
+     "incidence": "X-->Va-",
+     "injective_on_each_component": true,
+     "mutation": "image_planes_meet_first_order_2c",
+     "rank_on_the_sum_of_components": 3
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": false,
+     "incidence": "X-->Va-",
+     "mutation": "perturb_a_coordinate_form_holomorphic_2i",
+     "perturbed_coordinate_and_added_coordinate": [
+      1,
+      2
+     ]
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": false,
+     "incidence": "X-->Va-",
+     "mutation": "perturb_a_coordinate_form_first_order_2c",
+     "perturbed_coordinate_and_added_coordinate": [
+      1,
+      2
+     ]
+    },
+    {
+     "coordinate_change_passes": false,
+     "detected": true,
+     "field": "F_32009",
+     "image_generators_vanish_on_E": true,
+     "incidence": "X-->Va-",
+     "mutation": "delete_an_image_generator"
+    },
+    {
+     "certificate_1_passes": false,
+     "cone_kind_of_the_remaining_generators": "two-components",
+     "detected": true,
+     "field": "F_32009",
+     "generators_deleted": 9,
+     "incidence": "X-->Va-",
+     "mutation": "delete_tangent_cone_generators"
+    },
+    {
+     "c1_on_the_generator": [
+      -2,
+      -2
+     ],
+     "detected": true,
+     "euler_class": [
+      -1,
+      -1
+     ],
+     "field": "F_32009",
+     "incidence": "X-->Va-",
+     "mutation": "square_the_plucker_coordinates",
+     "plucker_forms_degree": [
+      2,
+      2
+     ]
+    },
+    {
+     "certificate_1_passes": false,
+     "certificate_2_passes": false,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X-->Va-",
+     "mutation": "tamper_the_recorded_multiplicity"
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X-->Va-",
+     "mutation": "tamper_the_recorded_bordered_rank",
+     "real_nullity_upper_bound": 10
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X-->Va-",
+     "mutation": "pivot_pfaffian_divisible_by_the_prime",
+     "pivot_is_a_unit_in_Q(i)": true
+    }
+   ],
+   "pass": true,
+   "predictions": [
+    {
+     "applicable": true,
+     "computed": 3,
+     "name": "germ_dimension",
+     "pass": true,
+     "predicted": 3
+    },
+    {
+     "applicable": true,
+     "computed": 2,
+     "name": "tangent_cone_multiplicity",
+     "pass": true,
+     "predicted": 2
+    },
+    {
+     "applicable": true,
+     "computed": [
+      "S^5",
+      "S^5"
+     ],
+     "name": "link",
+     "pass": true,
+     "predicted": [
+      "S^5",
+      "S^5"
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      "0",
+      "0"
+     ],
+     "name": "link_h1",
+     "pass": true,
+     "predicted": [
+      "0",
+      "0"
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      -1,
+      -1
+     ],
+     "name": "euler_class_coefficients",
+     "pass": true,
+     "predicted": [
+      -1,
+      -1
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      2,
+      2
+     ],
+     "name": "exceptional_projective_dimensions",
+     "pass": true,
+     "predicted": [
+      2,
+      2
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": [
+      2,
+      2,
+      2
+     ],
+     "name": "image_projective_dimension_degree_components",
+     "pass": true,
+     "predicted": [
+      2,
+      2,
+      2
+     ]
+    },
+    {
+     "applicable": true,
+     "computed": true,
+     "name": "image_components_disjoint",
+     "pass": true,
+     "predicted": true
+    },
+    {
+     "applicable": false,
+     "computed": [
+      null,
+      null
+     ],
+     "name": "c1_on_curve_components",
+     "pass": true,
+     "predicted": [
+      null,
+      null
+     ]
+    }
+   ],
+   "retained_rows_agree": {
+    "cone_summary_matches_germ": true,
+    "germ_invariants_equal_in_2b_2c": true,
+    "slice_columns_equal_in_2b_2c_2i": true,
+    "source_and_boundary_equal": true,
+    "tangent_generators_equal_in_2b_2c_2i": true
+   },
+   "source_orbit": "X-"
+  }
+ ],
+ "inferred": [
+  "the germ of E8-bar to B9 is analytically the A_1 cone (holomorphic Morse lemma) and the other germs are analytically their tangent cones",
+  "the identification of the actual germ link L with the unit circle bundle of O_E(-1) through the radial deformation of kappa on the link to phi o p, which gives the attaching datum its homotopy class; the record computes the circle-bundle model"
+ ],
+ "inputs": {
+  "attaching_maps_resolved.py": "89dc2c98cac24b27fdd28706c49a6529ad965f871745854657383ad644f21498",
+  "first-order-normal-cones-result.json": "0173462891d377fcf50cd7a88f923ecf8648011f8a0e91cc39a11b32f59d3d49",
+  "holomorphic-gauss-fibers-result.json": "4dbd90b752b1c4107f547036b2cf7950c9783c6291f4f1e2a3c8dabd94211d98",
+  "path-supported-basepoints-result.json": "eeeb5a03c7ef0cf574d92e4f5aac85a34c3b873102a12be89aa716deeedd813c",
+  "real-limit-sets-result.json": "df69cf22229c8d3e5d9f68322e828f5345ac08b888e2dadc75ab5d144d1a4f08"
+ },
+ "not_recomputed": [
+  "the vanishing of the rank-four Pfaffians of the Schur form, and with it the exact rank two of the form and the real nullity 8: the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here. Over Q(i) the flags of the 2i rational run and the 2c effective-form run are carried and labeled; modulo 32009 the claim is narrowed to the lower bound rank >= 2 (nullity at most 8), since the 2i modular run is modulo 32003"
+ ],
+ "pass": true,
+ "prime": 32009,
+ "schema": "gororoba.a5.attaching-maps-resolved/1",
+ "square_root_of_minus_one": 10754,
+ "summary": {
+  "certificates_pass": true,
+  "incidence_count": 8,
+  "mutation_controls": 180,
+  "mutation_controls_detected": 180,
+  "predictions_applicable": 59,
+  "predictions_hold": true,
+  "predictions_not_applicable": 13
+ }
+}
