@@ -77,11 +77,11 @@
    },
    {
     "day": "2026-11-15",
-    "jobs": 13,
-    "max_turnaround_seconds": 9.82648,
-    "median_execution_seconds": 0.720792,
+    "jobs": 33,
+    "max_turnaround_seconds": 10.1982,
+    "median_execution_seconds": 0.123884,
     "median_turnaround_seconds": 8.4262,
-    "shots": 26624
+    "shots": 67584
    },
    {
     "day": "2026-11-16",
@@ -90,6 +90,22 @@
     "median_execution_seconds": 0.0078065,
     "median_turnaround_seconds": 6.28134,
     "shots": 14336
+   },
+   {
+    "day": "2026-11-19",
+    "jobs": 90,
+    "max_turnaround_seconds": 118.899,
+    "median_execution_seconds": 0.0080055,
+    "median_turnaround_seconds": 6.50595,
+    "shots": 92160
+   },
+   {
+    "day": "2026-11-21",
+    "jobs": 12,
+    "max_turnaround_seconds": 9.59742,
+    "median_execution_seconds": 0.781915,
+    "median_turnaround_seconds": 7.82739,
+    "shots": 24576
    }
   ],
   "Rydberg": [
@@ -206,6 +222,14 @@
     "median_execution_seconds": 7.92505,
     "median_turnaround_seconds": 82.6955,
     "shots": 147456
+   },
+   {
+    "day": "2026-11-21",
+    "jobs": 72,
+    "max_turnaround_seconds": 1964.69,
+    "median_execution_seconds": 66.1638,
+    "median_turnaround_seconds": 74.4386,
+    "shots": 6488064
    }
   ]
  },
