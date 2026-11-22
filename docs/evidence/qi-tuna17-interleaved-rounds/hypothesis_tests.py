@@ -1,6 +1,3 @@
-** WARNING: connection is not using a post-quantum key exchange algorithm.
-** This session may be vulnerable to "store now, decrypt later" attacks.
-** The server may need to be upgraded. See https://openssh.com/pq.html
 """Three post-hoc tests of the interleaved Tuna-17 series: a level shift against a moving T1, a disturbance common to
 all qubits of a batch, and the identifiability of the X90 ladder over-rotation.
 
