@@ -235,16 +235,19 @@ def depth_positions(arm_records: dict[str, Any]) -> dict[int, list[int]]:
     }
 
 
-def drift_noncentrality(model: list[float], positions: dict[int, list[int]], slope: float) -> float:
-    """Noncentrality of the heterogeneity statistic when the retention of every copy drifts linearly in position by
-    slope per position: a depth's marked frequency then moves by slope times its retention scale P_k - 1/8, the
-    copies' frequencies scatter about their mean by that amount times their offset from the depth's mean position,
-    and each depth adds kept shots per copy times the squared scatter over p (1 - p)."""
+def drift_noncentrality(
+    model: list[float], positions: dict[int, list[int]], slope: float, in_retention: bool = True
+) -> float:
+    """Noncentrality of the heterogeneity statistic when every copy drifts linearly in position by slope per position,
+    in retention (a depth's marked frequency then moves by slope times its retention scale P_k - 1/8) or, with
+    in_retention false, in marked frequency at the same rate at every depth: the copies' frequencies scatter about
+    their mean by that amount times their offset from the depth's mean position, and each depth adds kept shots per
+    copy times the squared scatter over p (1 - p)."""
     total = 0.0
     for k, m in zip(families.DEPTHS, model, strict=True):
         p = families.probability_of(m, k)
         x = np.asarray(positions[k], dtype=float)
-        shift = slope * families.retention_scale(k) * (x - x.mean())
+        shift = slope * (families.retention_scale(k) if in_retention else 1.0) * (x - x.mean())
         total += float(np.sum(shift**2)) * PLANNED_KEPT_PER_COPY / (p * (1 - p))
     return total
 
@@ -260,20 +263,22 @@ def heterogeneity_gate(arm_records: dict[str, Any], model: list[float]) -> dict[
     dof = sum(len(x) - 1 for x in positions.values())
     threshold = families.heterogeneity_threshold(dof)
 
-    def fires(slope: float) -> float:
-        return float(stats.ncx2.sf(threshold, dof, drift_noncentrality(model, positions, slope)))
+    def fires(slope: float, in_retention: bool = True) -> float:
+        noncentrality = drift_noncentrality(model, positions, slope, in_retention)
+        return float(stats.ncx2.sf(threshold, dof, noncentrality))
 
-    def slope_at(power: float) -> float:
+    def slope_at(power: float, in_retention: bool = True) -> float:
         low, high = 0.0, 0.05
         for _ in range(100):
             mid = (low + high) / 2
-            low, high = (mid, high) if fires(mid) < power else (low, mid)
+            low, high = (mid, high) if fires(mid, in_retention) < power else (low, mid)
         return high
 
     # The retained job's k = 1 copies, positions 0, 13, 22 and 35, gave a raw marked-frequency slope of -0.000303
     # +- 0.000317 per position (docs/evidence/iqm-garnet-grover-positions on branch iqm-qb12-fault-models), which is
     # slope / (P_1 - 1/8) in retention.
-    retained_slope = 0.000303 / families.retention_scale(1)
+    retained_frequency_slope = 0.000303
+    retained_slope = retained_frequency_slope / families.retention_scale(1)
     return {
         "statistic": (
             "sum over depths of the chi-square of the surviving copies' marked counts about the depth's pooled "
@@ -292,6 +297,14 @@ def heterogeneity_gate(arm_records: dict[str, Any], model: list[float]) -> dict[
             "retained_slope_of_retention_per_position": retained_slope,
             "probability_at_the_retained_slope": fires(retained_slope),
             "probability_at_half_the_retained_slope": fires(retained_slope / 2),
+            # The retained evidence is one raw marked-frequency slope on depth-1 copies, so it does not choose
+            # between a drift that follows each depth's retention span (above) and one of equal marked-frequency
+            # size at every depth (below), which the depth-4 copies, at frequency 0.06, feel most.
+            "equal_frequency_drift_of_marked_frequency_per_position_at_half_power": slope_at(0.5, False),
+            "equal_frequency_drift_of_marked_frequency_per_position_at_nine_tenths_power": slope_at(0.9, False),
+            "retained_slope_of_marked_frequency_per_position": retained_frequency_slope,
+            "probability_at_the_retained_slope_in_marked_frequency": fires(retained_frequency_slope, False),
+            "probability_at_half_the_retained_slope_in_marked_frequency": fires(retained_frequency_slope / 2, False),
         },
     }
 

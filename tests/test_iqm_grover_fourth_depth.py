@@ -232,6 +232,12 @@ def test_the_committed_gate_holds_the_chi_square_quantile_of_every_degree_of_fre
     power = gate["power"]
     if not 0.0 < power["probability_at_half_the_retained_slope"] < power["probability_at_the_retained_slope"] < 1.0:
         raise AssertionError(power)
+    if (
+        not power["probability_at_the_retained_slope"]
+        < power["probability_at_the_retained_slope_in_marked_frequency"]
+        <= 1.0
+    ):
+        raise AssertionError(power)
 
 
 @pytest.mark.audit

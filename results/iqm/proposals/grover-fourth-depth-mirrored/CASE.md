@@ -108,12 +108,16 @@ per position and reads the centered verdict "no bend resolved").
 Power cost of the gate (`decisions.heterogeneity.power`):
 
 - Under the model the gate returns "not evaluated" with probability 0.01, the whole run's loss of its two decisions.
-- A drift of the retention linear in position trips it with probability 0.5 at 0.00054 per position and 0.9 at 0.00073 per
-  position (noncentral chi-square at the planned shots; the drift moves each depth's marked frequency by its retention
-  scale P_k - 1/8). The retained run's depth-1 copies gave a raw marked-frequency slope of -0.000303 +- 0.000317 per
-  position, which is -0.00046 per position in retention: the gate fires with probability 0.30 at that point estimate and
-  0.04 at half of it. A drift of that size is the kind the mirroring cancels in the pooled frequencies, so the gate
-  withholds a decision that the design could have made. Retained copies, where positions 0 to 35 carry the four copies of
+- The gate's firing probability under a drift linear in position (noncentral chi-square at the planned shots) depends on
+  how the drift reaches the depths, and the retained evidence, one raw marked-frequency slope of -0.000303 +- 0.000317
+  per position on depth-1 copies, does not choose. If the drift follows each depth's retention span P_k - 1/8 (the same
+  retention slope at every depth), the gate fires with probability 0.5 at 0.00054 per position and 0.9 at 0.00073; the
+  retained slope is -0.00046 per position in retention, so it fires with probability 0.30 at that point estimate and 0.04
+  at half of it. If the drift is the same marked-frequency slope at every depth, which the 18 depth-4 copies at frequency
+  0.06 feel most, it fires with probability 0.5 at 0.000145 per position and 0.9 at 0.000195; the retained 0.000303 then
+  fires it with probability 0.99999 and half of it with 0.56. A drift of that size is the kind the mirroring cancels in
+  the pooled frequencies, so the gate withholds a decision that the design could have made; the retained slope lies within
+  one standard error of zero, where the gate fires with probability 0.01. Retained copies, where positions 0 to 35 carry the four copies of
   each depth-1 arm, read 13.3 on 16 degrees of freedom over all the retained copy-bearing arms (p 0.65).
 
 Domains. The geometric family's rate s is searched over [0.30, 1.20] and the coherent family's over [0.50, 1.10] (its offset
@@ -152,7 +156,7 @@ PR 980, gives 0.1347 s + 7.62e-6 s per circuit-shot = 5.9 s plus the compiler's 
 case rule of `scripts/iqm_jobs.py` cancels a job that reaches the threshold, and IQM can bill a failed or cancelled job, so
 the ceiling bounds the spend and is not a guarantee of zero cost on a cancellation. The repair of the analyzer and the gates
 leaves the circuits, shots, expected seconds and credits as they were; `cases.json` binds the regenerated prediction and has
-sha256 `0f49c5762bd388439816e98f27da2f89f5fe2ce710f20f99ff1b61bf7ef56e30` on calibration set `a0e725eb` (a live rebuild may change
+sha256 `1c62502fecde9816c406de8dc54570a0dc7b7799d7377c4973a246f594b03aa9` on calibration set `a0e725eb` (a live rebuild may change
 it, and the approvals name the digest after that rebuild).
 
 ## Steps before a submission (owner approval needed for each paid or provider step)
@@ -185,7 +189,9 @@ take no part.
 - Mirroring cancels drift linear in position; drift that is not linear stays, balanced to the order of the squared-offset
   spread.
 - The heterogeneity gate also fires on a drift linear in position of the size the retained run's point estimate shows
-  (probability 0.30), which the mirroring would have cancelled; the alternative statistic on mirror-pair sums would not
+  (probability 0.30 for a retention-proportional drift, 0.99999 for an equal marked-frequency drift), which the mirroring
+  would have cancelled; the alternative statistic on mirror-pair sums would not
   fire on it, and the choice between the two is the owner's (the brief names the per-copy statistic).
-- The coherent fit's rate bound at 0.50 makes strongly lossy data (geometric s below about 0.8) read "out of domain" rather
-  than "geometric", since the coherent fit is cut off by its bound.
+- The coherent fit's rate bound at 0.50 makes strongly lossy data read "out of domain" rather than "geometric", since the
+  coherent fit is cut off by its bound (planted geometric data with amplitude 0.5 read "out of domain" for s of 0.7 and
+  below and "geometric" at 0.8; the threshold depends on the amplitude and the plant).

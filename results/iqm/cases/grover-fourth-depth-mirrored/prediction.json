@@ -946,11 +946,16 @@
    "planned_kept_per_copy": 16800.0,
    "planned_threshold": 45.641683,
    "power": {
+    "equal_frequency_drift_of_marked_frequency_per_position_at_half_power": 0.000145,
+    "equal_frequency_drift_of_marked_frequency_per_position_at_nine_tenths_power": 0.000195,
     "false_not_evaluated_probability": 0.01,
     "linear_drift_of_retention_per_position_at_half_power": 0.000544,
     "linear_drift_of_retention_per_position_at_nine_tenths_power": 0.000732,
     "probability_at_half_the_retained_slope": 0.038135,
+    "probability_at_half_the_retained_slope_in_marked_frequency": 0.5604,
     "probability_at_the_retained_slope": 0.299472,
+    "probability_at_the_retained_slope_in_marked_frequency": 0.999989,
+    "retained_slope_of_marked_frequency_per_position": 0.000303,
     "retained_slope_of_retention_per_position": 0.000462
    },
    "statistic": "sum over depths of the chi-square of the surviving copies' marked counts about the depth's pooled marked frequency, sum (m - n p)^2 / (n p (1 - p)), with copies - 1 degrees of freedom per depth",

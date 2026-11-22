@@ -3664,7 +3664,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_fourth_depth.py --self-test",
       "name": "core-iqm-grover-fourth-depth-selftest",
-      "seconds": 12.0
+      "seconds": 7.0
     },
     {
       "suite": "core",
