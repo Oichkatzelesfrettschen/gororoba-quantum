@@ -48,8 +48,9 @@ and 2000 pulses. Its prediction carries the line g(N) = a + b / N through the re
 pulses from the line through the same job's gaps at 500 and 1000, with its covariance, and on-line, off-line,
 anchors-moved or unidentifiable per subject. "power" records what the case resolves.
 
-Usage: "$PYTHON" scripts/iqm_idle_schedule_probe.py (build DIR [--live] [--qc QC] | check DIR [--qc QC] |
-       study CASE_DIR --out FILE | power CASE_DIR --out FILE | analyze RUN_DIR --out FILE [--replay] | --self-test)
+Usage: "$PYTHON" scripts/iqm_idle_schedule_probe.py (build DIR [--live | --calibration-from DIR] [--qc QC] |
+       check DIR [--qc QC] | study CASE_DIR --out FILE | power CASE_DIR --out FILE |
+       analyze RUN_DIR --out FILE [--replay] | --self-test)
 """
 
 from __future__ import annotations
@@ -116,6 +117,11 @@ T1_FIT_P_MIN = 0.001
 # arm enters only when its population lies this many standard errors above zero.
 LINE_MIN_COHORT = 7
 LINE_ARM_SE = T1_POINT_SE
+# The delta method holds the delay fit's weights and the pooling weights fixed. Central differences of the production
+# estimators, whose weights follow the data, read the error of a delay-fit rate and of a pooled anchor gap within this
+# fraction of it (decision_self_test measures the model device); the within-job deviation vanishes under the line,
+# where a change of weights moves nothing, and its derivatives match to 1e-3.
+FIXED_WEIGHT_TOLERANCE = 0.10
 # The successor's calibration study (study()) draws its binomial replicates from this seed: draw
 # docs/evidence/anu_qrng/draw-2026-11-21T184244Z.json, index 0.
 CALIBRATION_STUDY_SEED = 50182
@@ -1053,6 +1059,17 @@ def line_of(profile: Profile) -> dict[str, Any]:
     subjects: dict[str, Any] = {}
     for name, qubits, minimum in profile.line_subjects:
         named = ordered(qubits or set(trains[str(a)]["gaps"]) & set(trains[str(b)]["gaps"]))
+        for n in (a, b):
+            for qubit in named:
+                held = trains[str(n)]["gaps"][qubit]
+                mine = required(qubit_gap(counts, preps[qubit], 0, n, d), f"{qubit} at {n} pulses")
+                if not same(
+                    [mine.value, math.sqrt(variance(mine, counts, shared_only))],
+                    [held["gap_seconds"], held["se_seconds"]],
+                ):
+                    raise ValueError(
+                        f"{qubit} at {n} pulses: the retained run's counts do not reproduce {profile.line_source}"
+                    )
         ga, gb = (required(cohort_gap(counts, preps, named, 0, n, d)[0], f"{name} at {n} pulses") for n in (a, b))
         duals = {a: ga, b: gb}
         slope = required(cohort_gap(counts, preps, named, a, b, d)[0], f"{name} between the anchors")
@@ -1566,6 +1583,8 @@ def decision_self_test(prediction: dict[str, Any]) -> None:
         return row
 
     good = read()
+    if json.loads(dump(good)) != good:
+        raise RuntimeError("the decision does not survive its own serialization")
     if good["verdict"] != "on-line" or any(abs(contrast(good, "cohort", n)["z"]) > 1e-6 for n in line["tested"]):
         raise RuntimeError(f"a device on its own lines reads {good['verdict']}")
     for shift, want in (
@@ -1618,31 +1637,55 @@ def decision_self_test(prediction: dict[str, Any]) -> None:
         raise RuntimeError("QB44's counts change the third-length decision")
     # The covariance: the delta method against central differences of the estimator over every count it uses.
     report = evaluate(counts, prediction)
-    preps = prepare_all(counts, prediction, report["h1_schedule"]["arms"], report["t1_delay"])
+    arms, t1 = report["h1_schedule"]["arms"], report["t1_delay"]
+    preps = prepare_all(counts, prediction, arms, t1)
+    d = prediction["prx_seconds"]
+
+    def finite_difference(function: Any, dual: Dual) -> tuple[float, float, float]:
+        """The delta method's error of dual, the error from central differences of function over the same counts and
+        the largest difference of one derivative from the delta method's, in units of the delta method's error."""
+        total, worst = 0.0, 0.0
+        for key, derivative in dual.grad.items():
+            ones, shots = counts[key]
+            step = 1e-3 * shots
+            values = [function({**counts, key: (ones + sign * step, shots)}) for sign in (1, -1)]
+            numeric = (values[0] - values[1]) / (2 * step / shots)
+            total += numeric**2 * shot_variance(counts, key)
+            worst = max(worst, abs(numeric - derivative) * math.sqrt(shot_variance(counts, key)))
+        error = math.sqrt(variance(dual, counts))
+        return error, math.sqrt(total), worst / error
+
+    def contrast_value(moved: Counts) -> float:
+        trial = prepare_all(moved, prediction, arms, t1)
+        return required(contrast_reading(moved, trial, cohort["qubits"], coefficients), "the cohort")["value_seconds"]
+
     coefficients = contrast_of(250, line["anchors"])
-    reading = contrast_reading(counts, preps, cohort["qubits"], coefficients)
-    if reading is None:
-        raise RuntimeError("the model device has no cohort reading")
-    dual = reading["_dual"]
-    total = 0.0
-    for key, derivative in dual.grad.items():
-        ones, shots = counts[key]
-        step = 1e-3 * shots
-        values = []
-        for sign in (1, -1):
-            moved = dict(counts)
-            moved[key] = (ones + sign * step, shots)
-            trial = prepare_all(moved, prediction, report["h1_schedule"]["arms"], report["t1_delay"])
-            values.append(
-                required(contrast_reading(moved, trial, cohort["qubits"], coefficients), key)["value_seconds"]
-            )
-        numeric = (values[0] - values[1]) / (2 * step / shots)
-        scale = abs(derivative) + 1e-12
-        if abs(numeric - derivative) > 1e-3 * scale + 1e-15:
-            raise RuntimeError(f"d L / d {key}: delta method {derivative}, finite difference {numeric}")
-        total += numeric**2 * shot_variance(counts, key)
-    if abs(math.sqrt(total) - reading["se_seconds"]) > 1e-3 * reading["se_seconds"]:
-        raise RuntimeError(f"the finite-difference error {math.sqrt(total)} differs from {reading['se_seconds']}")
+    reading = required(contrast_reading(counts, preps, cohort["qubits"], coefficients), "the cohort")
+    error, numeric, worst = finite_difference(contrast_value, reading["_dual"])
+    if abs(numeric / error - 1) > 1e-3 or worst > 1e-3:
+        raise RuntimeError(f"the deviation's error {error} against {numeric} by finite differences, worst {worst}")
+    # The delay fit's rate against t1_fit's, qubit by qubit, with the fit's weights held in the delta method.
+    for qubit in cohort["qubits"]:
+
+        def rate_of(moved: Counts, qubit: str = qubit) -> float:
+            pair = readout_pair(moved, qubit)
+            fit_row = t1_fit(moved, qubit, {"e01": pair[0], "e10": pair[1]}, prediction["t1_delays"])
+            return float(fit_row["rate_per_second"])
+
+        error, numeric, _ = finite_difference(rate_of, required(preps[qubit].k1, qubit))
+        if abs(numeric / error - 1.0) > FIXED_WEIGHT_TOLERANCE:
+            raise RuntimeError(f"{qubit}: the rate's error {error} against {numeric} by finite differences")
+    # The anchors' pooled gaps hold their pooling weights fixed, with the tolerance stated at FIXED_WEIGHT_TOLERANCE.
+    for n in line["anchors"]:
+        anchor = required(cohort_gap(counts, preps, cohort["qubits"], 0, n, d)[0], f"the cohort at {n}")
+
+        def anchor_value(moved: Counts, n: int = n) -> float:
+            trial = prepare_all(moved, prediction, arms, t1)
+            return required(cohort_gap(moved, trial, cohort["qubits"], 0, n, d)[0], "the cohort").value
+
+        error, numeric, _ = finite_difference(anchor_value, anchor)
+        if abs(numeric / error - 1.0) > FIXED_WEIGHT_TOLERANCE:
+            raise RuntimeError(f"the anchor gap at {n} pulses has error {error}, {numeric} by finite differences")
     # The cell identity behind the closed form: the contrast of the gaps to the baseline equals the closed form.
     prep = preps["QB24"]
     layout = next(iter(prep.cells))

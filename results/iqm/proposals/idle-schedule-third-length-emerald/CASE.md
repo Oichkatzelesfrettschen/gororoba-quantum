@@ -86,7 +86,10 @@ a functional form across train lengths on the physical device.
    (dL/dp)^2 Var(p), with the arms at the contrast's lengths, the bare readout one-fraction r that every arm and the T1
    fit of the qubit share, the one-fraction s and the delay circuits behind k_T1. Two contrasts covary through the
    counts they share (the 500 and 1000 pulse arms, r, k_T1). The test against central differences of the estimator
-   (`decision_self_test`) holds the delta method to 1e-3 of each derivative. The retained line's own error carries the
+   (`decision_self_test`) holds every derivative of the within-job deviation to 1e-3. The delay fit's rate and the pooled
+   anchor gaps hold the fit weights and the pooling weights fixed, and central differences of the production estimators,
+   whose weights follow the data, read their errors from 0.99 to 1.05 times the delta method's at the model device
+   (tolerance 10 percent); the anchors enter `anchors-moved` and the retained-line reading only. The retained line's own error carries the
    same covariance: the two anchor gaps share the delay fit and the baseline, so the line's error is 1.40 ns at 250
    pulses and 0.59 ns at 2000 for the cohort, below the 1.97 and 0.77 ns that independent anchors give, and the
    covariance through the delay fit alone is 0.157 ns^2.
@@ -128,7 +131,9 @@ a functional form across train lengths on the physical device.
    its dof) stays below the gate's critical value; arms are normal at the model device's populations; qubits and arms
    are independent. The delay-fit pass probabilities run from 0.66 (QB5) to 0.999. Under the retained run's rule, which
    needed all eleven, the repeat is unidentifiable with probability 0.81. With a minimum of seven qubits it is 0.0034;
-   every arm of every cohort cell passes its population gate with probability within 1e-6 of one (the weakest modeled arm sits 18 standard errors above zero population). The model's one input
+   every arm of every cohort cell passes its population gate with probability within 1e-6 of one, and the model takes
+   the per-arm schedule verdict (`asap`, separated from `alap` by at least 25 standard errors in the prediction) and the
+   delay fit's three-point requirement (the retained run kept all four delay points of every qubit) as certain. The weakest modeled arm sits 18 standard errors above zero population. The model's one input
    (the retained fits' excess chi-square) comes from a single run.
 10. Power, arithmetic at expected counts with no random draw (`power`, `power.json` beside this file). The model device
     is the retained run's readout, delay and anchor arms with each qubit's tested lengths on its own line, so no pulse
@@ -170,7 +175,8 @@ compiled in 0.233 s. The builder's plan figure for that job (3.168 s) over-read 
   (`iqm_jobs.cancel_threshold_seconds`), about 2.8 times the expected runtime, which covers the slow execution of the
   cancelled predecessor (`01a1f811`, at least 1.46 times its mock estimate) with room. IQM can bill a failed or
   cancelled job (`iqm_jobs.settled_unrun` frees a job only on an explicit zero), so a cancelled job bills the seconds it
-  ran, at most 9.00 credits, and returns no data. The submitter's own bound holds: ceil(1.6 + 4.2) x 0.75 = 4.5 credits
+  ran and returns no data. The ceiling is best effort: IQM takes no runtime limit with a job, so `collect` holds the
+  9.00 credits by polling and cancelling at 11.0 s, and a late poll can let the runtime pass it. The submitter's own bound holds: ceil(1.6 + 4.2) x 0.75 = 4.5 credits
   is below 9.00. The balance read 26.75 credits on 2026-11-21 and expires 2026-12-01.
 
 ## Mock check first
