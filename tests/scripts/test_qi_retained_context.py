@@ -292,7 +292,7 @@ def test_the_interleaved_series_adds_one_key_and_leaves_the_existing_ones(tmp_pa
         "us": 16.5550,
         "us_se": None,
         "lack_of_fit_probability": 3.16217e-208,
-        "replicate_probability": 3.2036e-140,
+        "replicate_probability": 3.20359e-140,
         "verdict": "level_shift",
         "chi_square_per_dof": 2.0,
         "rounds": 3,
