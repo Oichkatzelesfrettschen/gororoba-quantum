@@ -1,0 +1,71 @@
+{
+ "schema": "qi-null-phase-scan-analysis-provenance-v1",
+ "tuna_17": {
+  "record": "results/quantum_inspire/pathion_null_phase_scan_tuna_17_analysis.json",
+  "record_sha256": "9c8fec37664f5eaef93f5e4881a0dfe5cd021a0b929f393e2792b135f707a1be",
+  "commit": "b35a867c09bc867359e2ac88b1f69733ec1c088f",
+  "host": "compute host (Ryzen 9 7945HX), Python 3.14.7",
+  "environment": {
+   "GOROROBA_WORKERS": "8",
+   "GOROROBA_SCAN_TABLES": "a scratch directory outside the checkout",
+   "memory_cap": "systemd-run scope MemoryMax=16G MemorySwapMax=0"
+  },
+  "sanity": {
+   "command": "\"$PYTHON\" -B scripts/qi_pathion_null_phase_scan_cases.py --sanity RUNS",
+   "exit": 0,
+   "output_sha256": "7e07fba28e3d3ef1f0b971b657153dfaf4dcf107f266faa7176c58b10c90ff2e",
+   "finished_utc": "2026-11-21T19:42:03Z"
+  },
+  "analyze": {
+   "command": "\"$PYTHON\" -B scripts/qi_pathion_null_phase_scan_cases.py --analyze RUNS --out results/quantum_inspire/pathion_null_phase_scan_tuna_17_analysis.json",
+   "exit": 0,
+   "started_utc": "2026-11-21T19:41:56Z",
+   "finished_utc": "2026-11-21T23:29:19Z"
+  },
+  "runs": [
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-00",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-01",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-02",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-03",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-04",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-05",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-06",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-07",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-08",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-09",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-10",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-11",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-12",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-13",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-14",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-15",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-16",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-17",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-18",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-19",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-20",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-21",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-22",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-23",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-24",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-25",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-26",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-27",
+   "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-28"
+  ],
+  "source_identity": "scripts/qi_pathion_null_phase_scan_cases.py and its imports are unchanged between b35a867c0 and this branch (git diff --stat b35a867c0 HEAD on the analyzer files is empty)"
+ },
+ "qx": {
+  "record": "results/quantum_inspire/pathion_null_phase_scan_qx_analysis.json",
+  "record_sha256": "5b29f8ab4de27d26cf0d921640701f590b35feae8aff758dc7ed1119f6e5c5bf",
+  "replay": {
+   "commit": "97a4c3170fdab1db6562f73a5bb470d39d67ce3a",
+   "command": "\"$PYTHON\" -B scripts/qi_pathion_null_phase_scan_cases.py --analyze results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_qx-batch-* --out OUT",
+   "exit": 0,
+   "started_utc": "2026-11-22T00:31:52Z",
+   "finished_utc": "2026-11-22T00:31:54Z",
+   "compared": "cmp OUT against the record: identical",
+   "host": "compute host, Python 3.14.7"
+  }
+ }
+}
