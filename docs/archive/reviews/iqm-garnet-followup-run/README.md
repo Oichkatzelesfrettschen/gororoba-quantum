@@ -29,8 +29,10 @@ runs entered the tree. Reviewers chosen by the owner (2026-11-21): codex (gpt-da
 | 17 | codex, gemini | Conjectures: a load-dependent QB12 failure, a row-specific coherent error on e_10, a marked-state-dependent depth bend, a heralding keep fraction that tracks QB12 | They stay in the reports as leads; the e_10 hypothesis's test separates the first two |
 
 Correction of row 1 (2026-11-22): the kickback account in its disposition fails for a static QB12 state. In the e_10
-null arm each of QB11 and QB17 meets QB12 in exactly two CZs and every other gate between its prx layers acts on another
-qubit, so the arm is the identity for every static QB12 state. The design Result states the corrected reading and the
-post-hoc model comparison of [qb12-models](../../../evidence/iqm-garnet-qb12-models/README.md).
+null arm every gate between the prx layers of QB11 and QB17 is a diagonal CZ or a prx on the other partner, and each
+pair of qubits meets in exactly two CZs, so the arm is the identity for every static QB12 state. The design Result states
+the corrected reading and the post-hoc model comparison of
+[qb12-models](../../../evidence/iqm-garnet-qb12-models/README.md), which ranks a QB12 state change during the CZ
+sequence first.
 
 Claim 4 (every number and verdict of the Result equals the analysis record) stands; every reviewer confirmed it.

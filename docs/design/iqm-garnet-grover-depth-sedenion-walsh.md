@@ -252,8 +252,9 @@ Descriptive readings beside the decisions, deciding nothing:
   carry a Hadamard layer before and after their CZs with QB12 (QB11: prx, CZ QB12, CZ QB12, CZ QB16, CZ QB16, prx),
   and QB12 carries the oracle's phase gates between its CZs (row arm) or no single-qubit gate at all (null arm). In
   e_5, QB11 and QB17 carry no single-qubit gate in the null arm, and QB12 its two Hadamard layers. In the e_10 null
-  arm every gate between the prx layers of QB11 and QB17 is a CZ or a gate on another qubit, and each of them meets
-  QB12 in exactly two CZs, so for every static QB12 state the arm is the identity (largest entry of U - I 2e-11,
+  arm every gate between the prx layers of QB11 and QB17 is a CZ (diagonal, so they commute) or a prx on the other
+  partner, and each pair of qubits meets in exactly two CZs, so for every static QB12 state the arm is the identity
+  (largest entry of U - I 2e-11,
   `docs/evidence/iqm-garnet-qb12-models/qb12_models.json`): an excited QB12 alone flips neither partner. A flip
   needs QB12 to change during the CZ sequence or a CZ whose conditional phase is not pi. The retained shots carry
   such a coupling: in the e_10 null arm QB11 reads 1 in 0.30 and 0.42 of the shots where QB12 reads 1 against 0.09
@@ -263,21 +264,25 @@ Descriptive readings beside the decisions, deciding nothing:
 
 Open hypotheses:
 
-- hypothesis: QB12's frequency moved between the calibration at 02:43 UTC and the jobs at 22:03 UTC. A post-hoc
-  comparison of five QB12 fault models on the job's twelve sedenion circuits and sixteen readout preparations
-  ([qb12-models](../evidence/iqm-garnet-qb12-models/README.md)) ranks a frequency-shift model first: an excited
-  population the herald keeps, a detuned QB12 prx, a QB12 phase after each of its CZs and a conditional-phase error on
-  them, deviance 1901 on 414 degrees of freedom, against leakage 2858, a mid-sequence QB12 transition 4317 and readout
-  or static excitation 8159. No model fits absolutely. The next calibration set, a0e725eb (2026-11-22T03:02Z), takes
-  QB12 out of every gate locus and reads its readout fidelity at 0.802, so the fault persists and no case can address
-  QB12 until a later set restores it. Test, once it does: QB12's frequency and T2 against ea681de1, then a QB12 Ramsey
-  with a CZ-phase echo on QB11-QB12 and QB17-QB12 before the e_10 row reruns.
+- hypothesis: QB12's state changes during the CZ sequence, by excitation, relaxation or leakage to level 2. A post-hoc
+  comparison of QB12 fault models on the job's twelve sedenion circuits and sixteen readout preparations
+  ([qb12-models](../evidence/iqm-garnet-qb12-models/README.md)), every fault model sharing QB12's single-qubit terms,
+  ranks a hybrid of leakage, a mid-sequence QB12 transition and a CZ conditional-phase error first (deviance 1182),
+  then transition (1420) and leakage (1443), with a conditional-phase error alone at 2186 and the single-qubit terms
+  alone at 3173. The likelihood is composite and no model fits absolutely, so the order ranks hypotheses; the job's
+  readout preparations also show QB12's excitation carrying from one circuit to the next, which every model omits. The
+  next calibration set, a0e725eb (2026-11-22T03:02Z), lists QB12 in no gate locus but measure_fidelity and reads its
+  readout fidelity at 0.802, so the fault persists and no case can address QB12 until a later set restores it. Test,
+  once it does: QB12's T1, T2 and level-2 population against ea681de1, then a QB12 Ramsey with a CZ-pair echo on
+  QB11-QB12 and QB17-QB12 and a measure_012 readout, before the e_10 row reruns.
 - hypothesis: the bend of the 101 depth law is coherent error accumulating with iterations, which the model omits.
-  The alternative, drift with position or time in the job, is closed on the retained bytes
-  ([grover-positions](../evidence/iqm-garnet-grover-positions/README.md)): the k = 1 copies give a slope of
-  -0.0003 +- 0.0003 per position, moving the k = 2 and 3 arms along that line or along it at three standard errors
-  moves the raw f from -0.1222 to between -0.1210 and -0.1246, and the shot blocks of the depth arms show no transient
-  (Pearson 6.7 and 0.9 on 3 degrees of freedom). Test of the coherent account: a fourth depth, where a coherent error
+  The retained bytes exclude the simplest drift alternatives ([grover-positions](../evidence/iqm-garnet-grover-positions/README.md)):
+  the k = 1 copies give a slope of -0.0003 +- 0.0003 per position, and moving the k = 2 and 3 arms along that line or
+  along it at three standard errors moves the raw f from -0.1222 to between -0.1210 and -0.1246; the inner copies
+  minus the outer ones, over every four-copy arm, read -0.0005 +- 0.0036, so a drift symmetric about the job's center
+  is absent at that resolution; the shot blocks of the depth arms show no transient (Pearson 6.7 and 0.9 on 3 degrees
+  of freedom). A step or a circuit-specific effect at positions 15 and 16 stays open, since the depth arms there are
+  single circuits. Test of the coherent account: a fourth depth, where a coherent error
   predicts a non-monotone retention.
 
 ## Commands
