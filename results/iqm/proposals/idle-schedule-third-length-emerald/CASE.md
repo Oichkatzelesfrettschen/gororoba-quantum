@@ -114,8 +114,11 @@ a functional form across train lengths on the physical device.
    - `on-line`: otherwise. The line survives at two lengths; it is not proved.
 
    The case verdict is `off-line` when any subject is off-line, and otherwise the cohort's verdict; a QB24 that drifts reads
-   `anchors-moved` in its own row without blocking the cohort. Two deviations are tested, so the false-alarm rate of
-   the pair is 0.0051 (their correlation is -0.62, `power.json`). Secondary readings decide nothing but
+   `anchors-moved` in its own row without blocking the cohort. Four deviations can reject the case (the cohort and
+   QB24, each at 250 and 2000 pulses), so the case-level false-alarm rate is taken over all four from their full
+   covariance (`decision_correlation`, `family_false_alarm`; correlations -0.62 within a subject, +0.35 and -0.22 across
+   subjects, `power.json`): 0.0100 under the Gaussian delta model, against 0.0051 for the cohort's two alone. QB24
+   stays decision-producing, since it is the one subject that tests a single tightly fitted qubit. Secondary readings decide nothing but
    `anchors-moved`: the gap at the tested lengths against the retained line (`retained_line`), the per-pulse gap
    between 250 and 2000 pulses against the retained run's between 500 and 1000 (`nonzero_gap`, which a fixed
    population drop cannot move), and each layout's deviation separately (`by_layout`).
@@ -150,9 +153,10 @@ a functional form across train lengths on the physical device.
     the 3 standard error gate is biased by one sixth of the arm's own error, and the bias falls in proportion to the error as
     the population moves away from zero, at 18 standard errors or more for every arm of the model device. The qubit weights are fixed at
     their estimated values.
-12. What each result changes. `on-line`: ln(population) is linear in the pulse count from 250 to 2000 pulses, the per-pulse
-    gap a is the constant the retained anchors fix, and the pulse-count budgets of the pinching and QET cases on Emerald
-    take d + a per pulse plus an intercept b that no budget may split into wait and loss. `off-line`: the two-parameter
+12. What each result changes. `on-line`: the four measured lengths are consistent with linearity within the stated errors; the run does not
+    distinguish the surviving mechanisms. The pulse-count budgets of the pinching and QET cases on Emerald
+    may take d + a per pulse plus an intercept b, as a description consistent with the data, and no budget may split b
+    into wait and loss. `off-line`: the two-parameter
     line is rejected, and the sign of L at 250 and at 2000 pulses discriminates a shape that flattens from one that keeps
     rising. `anchors-moved`: the retained gap is not a stable property of the chip over the interval, and the stationarity
     of the gap comes before the line.

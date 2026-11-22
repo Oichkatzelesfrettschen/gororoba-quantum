@@ -117,6 +117,8 @@ T1_FIT_P_MIN = 0.001
 # arm enters only when its population lies this many standard errors above zero.
 LINE_MIN_COHORT = 7
 LINE_ARM_SE = T1_POINT_SE
+# Gauss-Legendre nodes per dimension of the case-level false-alarm integral (family_false_alarm).
+FAMILY_NODES = 128
 # The delta method holds the delay fit's weights and the pooling weights fixed. Central differences of the production
 # estimators, whose weights follow the data, read the error of a delay-fit rate and of a pooled anchor gap within this
 # fraction of it (decision_self_test measures the model device); the within-job deviation vanishes under the line,
@@ -1482,14 +1484,51 @@ def unidentifiable_probability(prediction: dict[str, Any], counts: Counts) -> di
     }
 
 
-def family_false_alarm(rho: float, z_reject: float) -> float:
-    """P(|Z1| > z or |Z2| > z) for two standard normals of correlation rho, by quadrature."""
-    spread = math.sqrt(1 - rho * rho)
+def family_false_alarm(correlation: np.ndarray, z_reject: float) -> float:
+    """P(any |Z_i| > z_reject) for standard normals of the given correlation matrix: one minus the box probability,
+    by Genz's transformation of the box integral to the unit cube and a Gauss-Legendre product rule over its first
+    k - 1 variables (the last integrates in closed form), so the value is deterministic."""
+    k = len(correlation)
+    chol = np.linalg.cholesky(correlation)
+    nodes, weights = np.polynomial.legendre.leggauss(FAMILY_NODES)
+    nodes, weights = (nodes + 1) / 2, weights / 2
+    grid = np.stack(np.meshgrid(*([nodes] * (k - 1)), indexing="ij"), axis=-1).reshape(-1, k - 1)
+    mass = np.prod(np.stack(np.meshgrid(*([weights] * (k - 1)), indexing="ij"), axis=-1).reshape(-1, k - 1), axis=1)
+    y = np.zeros((len(grid), k))
+    total = np.ones(len(grid))
+    for i in range(k):
+        shift = y[:, :i] @ chol[i, :i]
+        low = norm.cdf((-z_reject - shift) / chol[i, i])
+        high = norm.cdf((z_reject - shift) / chol[i, i])
+        total *= high - low
+        if i < k - 1:
+            y[:, i] = norm.ppf(low + grid[:, i] * (high - low))
+    return 1 - float(np.sum(mass * total))
 
-    def inside(x: float) -> float:
-        return float(norm.pdf(x) * (norm.cdf((z_reject - rho * x) / spread) - norm.cdf((-z_reject - rho * x) / spread)))
 
-    return 1 - float(quad(inside, -z_reject, z_reject, epsabs=1e-12, epsrel=1e-12)[0])
+def decision_correlation(
+    counts: Counts, preps: dict[str, Prep], prediction: dict[str, Any]
+) -> tuple[list[str], np.ndarray]:
+    """The labels and correlation matrix of every deviation L that can make the case off-line: each subject at each
+    tested length. Two deviations covary through the counts they share (the anchor arms, the subjects' common qubits,
+    the readout pair and the delay fit), summed over the Duals."""
+    line = prediction["line"]
+    labels, duals, errors = [], [], []
+    for name, subject in line["subjects"].items():
+        for n in line["tested"]:
+            reading = required(
+                contrast_reading(counts, preps, subject["qubits"], contrast_of(n, line["anchors"])), f"{name}-{n}"
+            )
+            labels.append(f"{name}-{n}")
+            duals.append(reading["_dual"])
+            errors.append(reading["se_seconds"])
+    matrix = np.array(
+        [
+            [covariance(a, b, counts) / (ea * eb) for b, eb in zip(duals, errors, strict=True)]
+            for a, ea in zip(duals, errors, strict=True)
+        ]
+    )
+    return labels, matrix
 
 
 def power(case_dir: Path) -> dict[str, Any]:
@@ -1497,8 +1536,9 @@ def power(case_dir: Path) -> dict[str, Any]:
     run's readout, delay and anchor arms, every qubit's tested lengths on its own line) at the case's shots and at
     twice them. For each subject and tested length it records the error of the within-job deviation L and the deviation
     that sits z_reject errors out, for every qubit of the subject and for the smallest cohort the decision accepts (the
-    qubits of least weight), plus the probability of an unidentifiable verdict and the false-alarm rate of the two
-    deviations taken together."""
+    qubits of least weight), plus the probability of an unidentifiable verdict and the false-alarm rate of every
+    deviation that can reject the case (each subject at each tested length) taken together, from their full
+    covariance (decision_correlation)."""
     profile = EMERALD_THIRD
     prediction = json.loads((case_dir / "prediction.json").read_text(encoding="utf-8"))
     line = prediction["line"]
@@ -1544,15 +1584,8 @@ def power(case_dir: Path) -> dict[str, Any]:
                     },
                 }
         if factor == 1:
-            duals = [
-                contrast_reading(counts, preps, line["subjects"]["cohort"]["qubits"], contrast_of(n, line["anchors"]))
-                for n in line["tested"]
-            ]
-            first, second = duals[0], duals[-1]
-            if first is None or second is None:
-                raise ValueError("the model device has no cohort reading")
-            rho = covariance(first["_dual"], second["_dual"], counts) / (first["se_seconds"] * second["se_seconds"])
-            family = family_false_alarm(rho, line["z_reject"])
+            labels, correlation = decision_correlation(counts, preps, prediction)
+            family = family_false_alarm(correlation, line["z_reject"])
             probability = unidentifiable_probability(prediction, counts)
     return {
         "schema": "iqm-idle-schedule-third-length-power-v2",
@@ -1561,8 +1594,9 @@ def power(case_dir: Path) -> dict[str, Any]:
             "within-job deviation of the gap at a tested length from the line through the job's gaps at the anchors"
         ),
         "rows": rows,
-        "correlation_of_the_two_cohort_deviations": rho,
-        "false_alarm_of_the_two_deviations_together": family,
+        "decision_deviations": labels,
+        "correlation_of_the_decision_deviations": correlation.tolist(),
+        "false_alarm_of_the_decision_deviations_together": family,
         "unidentifiable": probability,
     }
 
@@ -1585,6 +1619,36 @@ def decision_self_test(prediction: dict[str, Any]) -> None:
     good = read()
     if json.loads(dump(good)) != good:
         raise RuntimeError("the decision does not survive its own serialization")
+    # The case-level false alarm: independent deviations give 1 - (2 Phi(z) - 1)^k, two correlated ones match the
+    # one-dimensional quadrature, and the case's four deviations match an independent integration of their covariance
+    # (0.0100285, computed with a general-purpose Gaussian integrator).
+    z = line["z_reject"]
+    if abs(family_false_alarm(np.eye(4), z) - (1 - (2 * norm.cdf(z) - 1) ** 4)) > 1e-9:
+        raise RuntimeError("the false alarm of four independent deviations is wrong")
+    rho = -0.62
+    spread = math.sqrt(1 - rho * rho)
+    exact = (
+        1
+        - quad(
+            lambda x: norm.pdf(x) * (norm.cdf((z - rho * x) / spread) - norm.cdf((-z - rho * x) / spread)),
+            -z,
+            z,
+            epsabs=1e-12,
+            epsrel=1e-12,
+        )[0]
+    )
+    if abs(family_false_alarm(np.array([[1.0, rho], [rho, 1.0]]), z) - exact) > 1e-6:
+        raise RuntimeError("the false alarm of two correlated deviations differs from quadrature")
+    base = planted_counts(prediction)
+    base_report = evaluate(base, prediction)
+    labels, matrix = decision_correlation(
+        base, prepare_all(base, prediction, base_report["h1_schedule"]["arms"], base_report["t1_delay"]), prediction
+    )
+    if (
+        sorted(labels) != ["QB24-2000", "QB24-250", "cohort-2000", "cohort-250"]
+        or abs(family_false_alarm(matrix, z) - 0.0100285) > 2e-6
+    ):
+        raise RuntimeError(f"the case-level false alarm is {family_false_alarm(matrix, z)} for {labels}")
     if good["verdict"] != "on-line" or any(abs(contrast(good, "cohort", n)["z"]) > 1e-6 for n in line["tested"]):
         raise RuntimeError(f"a device on its own lines reads {good['verdict']}")
     for shift, want in (
