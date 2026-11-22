@@ -33,7 +33,8 @@ its hypothesis. The role rule reads |z| > Z_RESOLVE on the unrounded z, the stri
 row minus truncation and row minus null each reach Z_RESOLVE and the row arms' pooled counts have the row peak as
 their single most frequent string.
 
-Every value is rounded to 6 digits. The CPU-bound per-arm readout solves run through parallel.ordered_map.
+Every value is rounded to 6 digits. The CPU-bound per-arm readout solves and the per-row sedenion decisions run
+through parallel.ordered_map.
 """
 
 from __future__ import annotations
@@ -404,71 +405,76 @@ def grover_analysis(job: Job) -> tuple[dict[str, Any], dict[str, Any]]:
     return decisions, exploratory
 
 
-def sedenion_analysis(job: Job) -> tuple[dict[str, Any], dict[str, Any]]:
+def sedenion_row(item: tuple[Job, int, np.ndarray]) -> tuple[dict[str, Any], dict[str, Any]]:
+    """The decision of sedenion row m and its exploratory statistics; matrix is the 4-qubit assignment matrix."""
+    job, m, matrix = item
     prediction = job.prediction
-    decisions: dict[str, Any] = {}
-    exploratory: dict[str, Any] = {}
+    width = 4
+    order = job.orders[f"ro4-{outcome_key(0, width)}"]
+    peak = prediction["arms"][f"s{m}-row-c0"]["row_peak"]
+    index = outcome_index(peak)
+    arms = {}
+    for kind in ("row", "trunc", "id"):
+        counts, arm_order = job.pooled(f"s{m}-{kind}")
+        if arm_order != order:
+            raise AnalysisError(f"{job.directory}: s{m}-{kind} measures in another order than the readout circuits")
+        shots = int(counts.sum())
+        arms[kind] = (float(counts[index]) / shots, shots, counts)
+    (pr, nr, row_counts), (pt, nt, _), (pn, nn, _) = arms["row"], arms["trunc"], arms["id"]
+    se_trunc = binomial_se([(pr, nr), (pt, nt)])
+    se_null = binomial_se([(pr, nr), (pn, nn)])
+    z_trunc, z_null = z_of(pr - pt, se_trunc), z_of(pr - pn, se_null)
+    others = np.delete(row_counts, index)
+    unique_mode = bool(row_counts[index] > others.max())
+    resolved = z_trunc >= Z_RESOLVE and z_null >= Z_RESOLVE and unique_mode
+    decision = {
+        "row_peak": peak,
+        "p_row": r6(pr),
+        "p_truncation": r6(pt),
+        "p_null": r6(pn),
+        "kept_shots": {"row": nr, "truncation": nt, "null": nn},
+        "row_minus_truncation": r6(pr - pt),
+        "row_minus_truncation_se": r6(se_trunc),
+        "row_minus_truncation_z": r6(z_trunc),
+        "row_minus_null": r6(pr - pn),
+        "row_minus_null_se": r6(se_null),
+        "row_minus_null_z": r6(z_null),
+        "most_frequent_row_string": outcome_key(int(np.argmax(row_counts)), width),
+        "row_peak_is_unique_mode": unique_mode,
+        "verdict": "resolved" if resolved else "unresolved",
+        "reading": (
+            "resolved: the eight-CZ sign oracle keeps its Walsh peak against truncation and null"
+            if resolved
+            else "unresolved: a row peak within 3 SE of its truncation or null, or not the most frequent string"
+        ),
+        "predicted": predicted_of(prediction, f"sedenion_{m}")
+        | {"row_minus_null_z": prediction["decisions"][f"sedenion_{m}"]["row_minus_null_z"]},
+    }
+    ideal = prediction["arms"][f"s{m}-row-c0"]["ideal"]
+    distribution = row_counts / row_counts.sum()
+    model = np.array([prediction["arms"][f"s{m}-row-c0"]["predicted"][outcome_key(c, width)] for c in range(2**width)])
+    ideal_vector = np.array([ideal.get(outcome_key(c, width), 0.0) for c in range(2**width)])
+    corrected = np.linalg.solve(matrix, distribution)
+    detail = {
+        "row_distribution": {outcome_key(c, width): r6(float(distribution[c])) for c in range(2**width)},
+        "tvd_to_model": r6(0.5 * float(np.abs(distribution - model).sum())),
+        "tvd_to_ideal": r6(0.5 * float(np.abs(distribution - ideal_vector).sum())),
+        "readout_corrected_row_peak": r6(float(corrected[index])),
+        "copy_peak_frequencies": {
+            kind: [r6(float(job.counts[n][index]) / float(job.counts[n].sum())) for n in job.copies(f"s{m}-{kind}")]
+            for kind in ("row", "trunc", "id")
+        },
+    }
+    return decision, detail
+
+
+def sedenion_analysis(job: Job) -> tuple[dict[str, Any], dict[str, Any]]:
     width = 4
     ro_names = [f"ro4-{outcome_key(c, width)}" for c in range(2**width)]
-    order = job.orders[ro_names[0]]
     matrix = np.column_stack([job.counts[n] / job.counts[n].sum() for n in ro_names])
-    for m in ROWS:
-        peak = prediction["arms"][f"s{m}-row-c0"]["row_peak"]
-        index = outcome_index(peak)
-        arms = {}
-        for kind in ("row", "trunc", "id"):
-            counts, arm_order = job.pooled(f"s{m}-{kind}")
-            if arm_order != order:
-                raise AnalysisError(f"{job.directory}: s{m}-{kind} measures in another order than the readout circuits")
-            shots = int(counts.sum())
-            arms[kind] = (float(counts[index]) / shots, shots, counts)
-        (pr, nr, row_counts), (pt, nt, _), (pn, nn, _) = arms["row"], arms["trunc"], arms["id"]
-        se_trunc = binomial_se([(pr, nr), (pt, nt)])
-        se_null = binomial_se([(pr, nr), (pn, nn)])
-        z_trunc, z_null = z_of(pr - pt, se_trunc), z_of(pr - pn, se_null)
-        others = np.delete(row_counts, index)
-        unique_mode = bool(row_counts[index] > others.max())
-        resolved = z_trunc >= Z_RESOLVE and z_null >= Z_RESOLVE and unique_mode
-        decisions[f"sedenion_{m}"] = {
-            "row_peak": peak,
-            "p_row": r6(pr),
-            "p_truncation": r6(pt),
-            "p_null": r6(pn),
-            "kept_shots": {"row": nr, "truncation": nt, "null": nn},
-            "row_minus_truncation": r6(pr - pt),
-            "row_minus_truncation_se": r6(se_trunc),
-            "row_minus_truncation_z": r6(z_trunc),
-            "row_minus_null": r6(pr - pn),
-            "row_minus_null_se": r6(se_null),
-            "row_minus_null_z": r6(z_null),
-            "most_frequent_row_string": outcome_key(int(np.argmax(row_counts)), width),
-            "row_peak_is_unique_mode": unique_mode,
-            "verdict": "resolved" if resolved else "unresolved",
-            "reading": (
-                "resolved: the eight-CZ sign oracle keeps its Walsh peak against truncation and null"
-                if resolved
-                else "unresolved: a row peak within 3 SE of its truncation or null, or not the most frequent string"
-            ),
-            "predicted": predicted_of(prediction, f"sedenion_{m}")
-            | {"row_minus_null_z": prediction["decisions"][f"sedenion_{m}"]["row_minus_null_z"]},
-        }
-        ideal = prediction["arms"][f"s{m}-row-c0"]["ideal"]
-        distribution = row_counts / row_counts.sum()
-        model = np.array(
-            [prediction["arms"][f"s{m}-row-c0"]["predicted"][outcome_key(c, width)] for c in range(2**width)]
-        )
-        ideal_vector = np.array([ideal.get(outcome_key(c, width), 0.0) for c in range(2**width)])
-        corrected = np.linalg.solve(matrix, distribution)
-        exploratory[f"sedenion_{m}"] = {
-            "row_distribution": {outcome_key(c, width): r6(float(distribution[c])) for c in range(2**width)},
-            "tvd_to_model": r6(0.5 * float(np.abs(distribution - model).sum())),
-            "tvd_to_ideal": r6(0.5 * float(np.abs(distribution - ideal_vector).sum())),
-            "readout_corrected_row_peak": r6(float(corrected[index])),
-            "copy_peak_frequencies": {
-                kind: [r6(float(job.counts[n][index]) / float(job.counts[n].sum())) for n in job.copies(f"s{m}-{kind}")]
-                for kind in ("row", "trunc", "id")
-            },
-        }
+    rows = ordered_map(sedenion_row, [(job, m, matrix) for m in ROWS])
+    decisions = {f"sedenion_{m}": decision for m, (decision, _) in zip(ROWS, rows, strict=True)}
+    exploratory: dict[str, Any] = {f"sedenion_{m}": detail for m, (_, detail) in zip(ROWS, rows, strict=True)}
     exploratory["readout_assignment_diagonal"] = {
         outcome_key(c, width): r6(float(matrix[c, c])) for c in range(2**width)
     }
