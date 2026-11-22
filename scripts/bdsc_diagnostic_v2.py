@@ -32,6 +32,7 @@ from typing import Any
 
 import bdsc_diagnostic as frozen
 from billing_rule_v2 import supersede
+
 from parallel import ordered_map
 
 SLOTS = 6
