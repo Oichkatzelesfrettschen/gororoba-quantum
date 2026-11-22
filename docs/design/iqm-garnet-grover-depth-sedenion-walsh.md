@@ -251,22 +251,32 @@ Descriptive readings beside the decisions, deciding nothing:
   The two networks differ in where QB12 acts (`circuits/`, gates on each qubit in order). In e_10, QB11 and QB17 each
   carry a Hadamard layer before and after their CZs with QB12 (QB11: prx, CZ QB12, CZ QB12, CZ QB16, CZ QB16, prx),
   and QB12 carries the oracle's phase gates between its CZs (row arm) or no single-qubit gate at all (null arm). In
-  e_5, QB11 and QB17 carry no single-qubit gate in the null arm, and QB12 its two Hadamard layers. An excited or
-  mis-rotated QB12 applies a Z to its CZ partners; between Hadamard layers that Z flips the partner, and without them
-  it leaves the partner's computational state alone. That matches the null arms: e_10 reads QB11 and QB17 at 0.13 to
-  0.17 with QB12 at 0.23 to 0.30, though no gate drives QB12 there, while e_5 leaves QB11 and QB17 below 0.01.
+  e_5, QB11 and QB17 carry no single-qubit gate in the null arm, and QB12 its two Hadamard layers. In the e_10 null
+  arm every gate between the prx layers of QB11 and QB17 is a CZ or a gate on another qubit, and each of them meets
+  QB12 in exactly two CZs, so for every static QB12 state the arm is the identity (largest entry of U - I 2e-11,
+  `docs/evidence/iqm-garnet-qb12-models/qb12_models.json`): an excited QB12 alone flips neither partner. A flip
+  needs QB12 to change during the CZ sequence or a CZ whose conditional phase is not pi. The retained shots carry
+  such a coupling: in the e_10 null arm QB11 reads 1 in 0.30 and 0.42 of the shots where QB12 reads 1 against 0.09
+  and 0.05 where it reads 0, and QB17 in 0.41 and 0.44 against 0.07 and 0.05 (copies c0 and c1), while e_5 leaves
+  QB11 and QB17 below 0.015. QB12's two prx in the e_5 null arm are exact inverses, so an amplitude error cancels
+  there and its 0.47 to 0.48 needs a phase, frequency or dephasing fault.
 
 Open hypotheses:
 
-- hypothesis: one fault on QB12 (its drive or frequency moved, or it is excited without a drive, between the
-  calibration at 02:43 UTC and the jobs at 22:03 UTC) accounts for both sedenion rows: the e_10 network turns QB12's
-  excitation into flips of QB11 and QB17 through CZ phase kickback, and the e_5 network does not. Test: a local
-  simulation of the four sedenion arms in the case's noise model with QB12 excited at the measured rate and its
-  pulses randomized, against the measured marginals; then QB12's metrics in the next calibration set and a
-  single-qubit Rabi and readout circuit on QB12, before the e_10 row reruns.
-- hypothesis: the bend of the 101 depth law is coherent error accumulating with iterations, which the model omits;
-  the alternative is drift across the job's positions. Test: the per-copy and per-position frequencies already in
-  the run, then a fourth depth with mirrored depth arms, where a coherent error predicts a non-monotone retention.
+- hypothesis: QB12's frequency moved between the calibration at 02:43 UTC and the jobs at 22:03 UTC. A post-hoc
+  comparison of five QB12 fault models on the job's twelve sedenion circuits and sixteen readout preparations
+  ([qb12-models](../evidence/iqm-garnet-qb12-models/README.md)) ranks a frequency-shift model first: an excited
+  population the herald keeps, a detuned QB12 prx, a QB12 phase after each of its CZs and a conditional-phase error on
+  them, deviance 1901 on 414 degrees of freedom, against leakage 2858, a mid-sequence QB12 transition 4317 and readout
+  or static excitation 8159. No model fits absolutely. Test: QB12's frequency and T2 in the next calibration set
+  against ea681de1, then a QB12 Ramsey with a CZ-phase echo on QB11-QB12 and QB17-QB12 before the e_10 row reruns.
+- hypothesis: the bend of the 101 depth law is coherent error accumulating with iterations, which the model omits.
+  The alternative, drift with position or time in the job, is closed on the retained bytes
+  ([grover-positions](../evidence/iqm-garnet-grover-positions/README.md)): the k = 1 copies give a slope of
+  -0.0003 +- 0.0003 per position, moving the k = 2 and 3 arms along that line or along it at three standard errors
+  moves the raw f from -0.1222 to between -0.1210 and -0.1246, and the shot blocks of the depth arms show no transient
+  (Pearson 6.7 and 0.9 on 3 degrees of freedom). Test of the coherent account: a fourth depth, where a coherent error
+  predicts a non-monotone retention.
 
 ## Commands
 
@@ -298,6 +308,7 @@ Zen 4 workstation; the generic and fused arms' gate sequences follow the qiskit 
   lie within 0.004 of each other, so the choice carries little selection gain.
 - The reversed path exchanges the roles of the two end qubits only; QB16 keeps the middle role, so the test
   cannot separate QB16's qubit and role.
-- The depth arms are centrally grouped, not mirrored.
+- The depth arms are centrally grouped, not mirrored; the retained positional reading bounds that effect (Open
+  hypotheses).
 - One calibration set for both jobs: drift between the two jobs enters no decision, since each contrast lies
   inside one job.
