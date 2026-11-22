@@ -661,6 +661,7 @@ def decide_map(
     spans = [len(comp) for comp in cone.components]
     union = [vector for comp in cone.components for vector in comp]
     committed = task.first_order["first_order_image"]
+    blowup = task.holomorphic["explicit_blowup"]
     degrees = exceptional_degrees(field, cone)
     result: dict[str, Any] = {"component_span_dimensions": spans}
     for label, rows in (("holomorphic_2i", rows_h), ("first_order_2c", rows_c)):
@@ -675,11 +676,21 @@ def decide_map(
         }
     result["pulled_back_image_generators_vanish_on_E"] = pulled_back_vanishes(field, task, cone, rows_c)
     image = [dimension - 1, sum(degrees), len(cone.components)]
-    committed_triple = [committed["projective_dimension"], committed["degree"], committed["component_count"]]
+    triple_2c = [committed["projective_dimension"], committed["degree"], committed["component_count"]]
+    triples_2i = [
+        [
+            blowup[part]["image_projective_dimension"],
+            blowup[part]["image_degree"],
+            blowup[part]["image_component_count"],
+        ]
+        for part in ("rational", "modular")
+    ]
     result["image_projective_dimension_degree_components"] = image
-    result["committed_2i_image"] = committed_triple
+    result["image_2i_rational_and_modular"] = triples_2i
+    result["image_2c"] = triple_2c
     result["fiber_2l"] = task.real_limits["fiber_projective_dimension_degree_components"]
-    result["image_matches_2i"] = image == committed_triple
+    result["image_matches_2i"] = all(image == triple for triple in triples_2i)
+    result["image_matches_2c"] = image == triple_2c
     result["image_matches_2l"] = image == result["fiber_2l"]
     result["multiplicity_equals_degree_sum"] = (
         observed[1] == sum(degrees) == task.first_order["tangent_cone"]["multiplicity"]
@@ -689,6 +700,7 @@ def decide_map(
         and result["first_order_2c"]["injective_on_each_component"]
         and result["pulled_back_image_generators_vanish_on_E"]
         and result["image_matches_2i"]
+        and result["image_matches_2c"]
         and result["image_matches_2l"]
         and result["multiplicity_equals_degree_sum"]
     )
@@ -756,7 +768,7 @@ def decide_topology(field: Field, task: Task, cone: Cone, map_result: dict[str, 
     """Certificate 3 and the independent topology checks."""
     dimension = task.first_order["germ"]["observed_dimension_multiplicity_embedding_components"][0]
     degrees = exceptional_degrees(field, cone)
-    committed = task.first_order["first_order_image"]
+    pluecker_degree = task.holomorphic["explicit_blowup"]["rational"]["image_degree"]
     spans = map_result["component_span_dimensions"]
     complete = [
         rank_ == span
@@ -768,7 +780,7 @@ def decide_topology(field: Field, task: Task, cone: Cone, map_result: dict[str, 
         euler = None if projective == 0 else -degree
         h1, link = gysin_h1(projective, euler)
         curve = projective == 1
-        evaluation = -committed["degree"] if curve and len(degrees) == 1 else None
+        evaluation = -pluecker_degree if curve and len(degrees) == 1 else None
         components.append(
             {
                 "exceptional_projective_dimension": projective,
@@ -869,6 +881,7 @@ def lower_rank_of_phi(field: Field, task: Task, component: int) -> dict[str, Any
         )
         for p in points
     ]
+    mapped = decide_map(field, task, cone, mutated, phi_from_first_order(field, task))
     return {
         "incidence": task.incidence,
         "mutation": "lower_the_rank_of_phi_on_a_component",
@@ -881,7 +894,8 @@ def lower_rank_of_phi(field: Field, task: Task, component: int) -> dict[str, Any
         "kernel_point_on_the_cone": on_cone,
         "mutated_phi_kills_the_point": all(field.is_zero(x) for x in apply(field, mutated, point)),
         "all_kernel_points_on_the_cone": all(kernel_on_cone),
-        "detected": bool(points) and on_cone and image_rank(field, mutated, comp) < len(comp),
+        "certificate_2_passes_on_the_mutated_phi": mapped["pass"],
+        "detected": bool(points) and on_cone and not mapped["pass"],
     }
 
 
@@ -953,10 +967,34 @@ def predict(task: Task, certificates: dict[str, Any]) -> list[dict[str, Any]]:
         ),
         "c1_on_curve_components": [c["c1_of_S_evaluated_on_the_curve"] for c in topology],
     }
-    return [
-        {"name": name, "predicted": table[name], "computed": computed[name], "pass": table[name] == computed[name]}
-        for name in table
-    ]
+    rows = []
+    for name, predicted in table.items():
+        value = computed[name]
+        if _is_null(predicted):
+            rows.append(
+                {
+                    "name": name,
+                    "applicable": False,
+                    "predicted": predicted,
+                    "computed": value,
+                    "pass": _is_null(value),
+                }
+            )
+        else:
+            rows.append(
+                {
+                    "name": name,
+                    "applicable": True,
+                    "predicted": predicted,
+                    "computed": value,
+                    "pass": predicted == value,
+                }
+            )
+    return rows
+
+
+def _is_null(value: Any) -> bool:
+    return value is None or (isinstance(value, list) and all(item is None for item in value))
 
 
 # ---------------------------------------------------------------- the record
@@ -990,6 +1028,10 @@ def build() -> dict[str, Any]:
         "summary": {
             "incidence_count": len(incidences),
             "certificates_pass": all(all(c["pass"] for c in row["certificates"].values()) for row in incidences),
+            "predictions_applicable": sum(1 for row in incidences for p in row["predictions"] if p["applicable"]),
+            "predictions_not_applicable": sum(
+                1 for row in incidences for p in row["predictions"] if not p["applicable"]
+            ),
             "predictions_hold": all(p["pass"] for row in incidences for p in row["predictions"]),
             "mutation_controls": len(controls),
             "mutation_controls_detected": sum(1 for c in controls if c["detected"]),
