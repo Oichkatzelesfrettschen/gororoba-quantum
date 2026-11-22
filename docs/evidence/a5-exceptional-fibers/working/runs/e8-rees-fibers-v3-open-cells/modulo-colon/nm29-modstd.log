@@ -1,0 +1,7 @@
+MODE modulo_std full nm p32029 r9115 size 6139 char 32029
+STAGE first_colon 5779 7364103
+CHECK first_colon_new 301
+STAGE std 5814 2935181
+STAGE saved
+STAGE second_colon 5798 6619952
+CHECK fixpoint_bad 0
