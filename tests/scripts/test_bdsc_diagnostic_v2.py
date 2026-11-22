@@ -183,7 +183,7 @@ def test_a_platform_outside_the_request_is_refused() -> None:
 def test_manifests_hold_36_iterations_cite_indices_inside_the_draw_and_bind_the_record(drawn: Drawn) -> None:
     values = json.loads(drawn.draw.read_text(encoding="utf-8"))["values"]
     case_sha = digest(drawn.case)
-    cited = set()
+    cited: set[int] = set()
     for job, manifest in drawn.manifests().items():
         if manifest["platforms"] != [PLATFORM] or manifest["acquisition_admission"] != "ready":
             raise AssertionError(f"{job}: platform or admission")

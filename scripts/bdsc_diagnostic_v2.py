@@ -5,12 +5,13 @@ readout), so this module runs a fork of its functions: every function of that mo
 globals dict (`fork`) whose overrides replace the layout constants. The copies call each other, so a callee that
 reads SLOTS sees six without a per-function override list; the original module stays unmodified.
 
-The layout changes from the frozen design in one parameter. SLOTS grows from 4 to 6, so a job holds 6 groups x 6 states = 36 iterations of 40000 samples under an
-80000-shot cap (results/quandela/cases/bdsc_diagnostic_packed_qpu_belenos/CASE.md, shape A). Block 1's first job runs
-the outward groups of slots 0 to 2 with the reverse groups of slots 3 to 5, its second job the complement, and block
-2 swaps the two assignments, so b2-j1 repeats exactly the groups of b1-j2 and job position never aliases a seed or
-template across blocks. The draw holds DRAW_VALUES = 6 + 2 x 2 x 6 x 6 = 150 uint16 values: values 0 to 5 are the
-seed slots and value 6 + i orders block-1 instance i within its job.
+The layout changes from the frozen design in one parameter. SLOTS grows from 4 to 6, so a job holds 6 groups x 6
+states = 36 iterations of 40000 samples under an 80000-shot cap
+(results/quandela/cases/bdsc_diagnostic_packed_qpu_belenos/CASE.md, shape A). Block 1's first job runs the outward
+groups of slots 0 to 2 with the reverse groups of slots 3 to 5, its second job the complement, and block 2 swaps the
+two assignments, so b2-j1 repeats exactly the groups of b1-j2 and job position never aliases a seed or template
+across blocks. The draw holds DRAW_VALUES = 6 + 2 x 2 x 6 x 6 = 150 uint16 values: values 0 to 5 are the seed slots
+and value 6 + i orders block-1 instance i within its job.
 
 The case record differs from the frozen one in its counts, its schema name, the authorization wording (free ANU
 draws need no approval; AGENTS.md, "Hardware services") and the power statement of the six-slot design. Each
