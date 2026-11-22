@@ -504,9 +504,7 @@ def matmul(field: Field, left: Sequence[Vector], right: Sequence[Vector]) -> lis
 
 def inverse(field: Field, matrix: Sequence[Vector]) -> list[Vector]:
     size = len(matrix)
-    augmented = [
-        list(row) + [field.one if i == j else field.zero for j in range(size)] for i, row in enumerate(matrix)
-    ]
+    augmented = [list(row) + [field.one if i == j else field.zero for j in range(size)] for i, row in enumerate(matrix)]
     reduced, pivots = rref(field, augmented, 2 * size)
     _require(pivots == list(range(size)), "a matrix that must be invertible is singular")
     return [row[size:] for row in reduced]
@@ -790,9 +788,7 @@ def pullback_images(field: Field, rows: Sequence[Vector], comp: Sequence[Vector]
     return images
 
 
-def pulled_back_vanishes(
-    field: Field, cone: Cone, rows: Sequence[Vector], generators: Sequence[str]
-) -> bool:
+def pulled_back_vanishes(field: Field, cone: Cone, rows: Sequence[Vector], generators: Sequence[str]) -> bool:
     """Every recorded image generator, composed with the coordinate forms, vanishes on E.
 
     On the hypersurface row the composite is a multiple of the restricted quadric, which cuts E out of its span."""
@@ -960,11 +956,11 @@ def decide_nullity(
     kernel = schur["boundary_kernel_dimension"]
     bordered_kernel = schur["boundary_c_rank"] + kernel + 1 - schur["boundary_bordered_rank"]
     point = cone_point(field, task, cone)
-    injective = all(
-        image_rank(field, rows, comp) == len(comp) for rows in (rows_h, rows_c) for comp in cone.components
-    )
+    injective = all(image_rank(field, rows, comp) == len(comp) for rows in (rows_h, rows_c) for comp in cone.components)
     nonzero_at_point = all(any(not field.is_zero(x) for x in apply(field, rows, point)) for rows in (rows_h, rows_c))
-    nonempty = [any(not field.is_zero(vector[k]) for comp in cone.components for vector in comp) for k in range(cone.width)]
+    nonempty = [
+        any(not field.is_zero(vector[k]) for comp in cone.components for vector in comp) for k in range(cone.width)
+    ]
     recorded_nonempty = [chart["nonempty"] for chart in blowup["rational"]["charts"]]
     degeneracy_empty = task.first_order["degeneracy_locus"]["projective_dimension"] == -1
     rank_bound = 2 if injective and nonzero_at_point else 0
@@ -996,7 +992,9 @@ def decide_nullity(
     if field.name == GAUSSIAN.name:
         flags = {
             "2i_rational_run": bool(blowup["rational"]["rank_four_pfaffians_vanish"]),
-            "2c_effective_form_run": bool(task.first_order["effective_form"]["rank_four_pfaffians_vanish_on_tangent_cone"]),
+            "2c_effective_form_run": bool(
+                task.first_order["effective_form"]["rank_four_pfaffians_vanish_on_tangent_cone"]
+            ),
         }
         carried = all(flags.values())
         exact_rank = 2 if carried and rank_bound == 2 else None
@@ -1075,12 +1073,13 @@ def decide_topology(
         h1, link = gysin_h1(projective, euler)
         curve = projective == 1
         recorded_check = (
-            None if not (curve and len(degrees) == 1 and c1_on_generator is not None) else -recorded_degree == c1_on_generator
+            None
+            if not (curve and len(degrees) == 1 and c1_on_generator is not None)
+            else -recorded_degree == c1_on_generator
         )
-        isomorphism = (
-            map_result["holomorphic_2i"]["rank_on_each_component_span"][index] == len(comp)
-            and map_result["first_order_2c"]["rank_on_each_component_span"][index] == len(comp)
-        )
+        isomorphism = map_result["holomorphic_2i"]["rank_on_each_component_span"][index] == len(comp) and map_result[
+            "first_order_2c"
+        ]["rank_on_each_component_span"][index] == len(comp)
         euler_comparison = None if projective == 0 else (c1_on_generator is not None and c1_on_generator == euler)
         components.append(
             {
@@ -1321,11 +1320,7 @@ def perturb_a_phi_row(field: Field, task: Task, label: str) -> dict[str, Any]:
         else task.first_order["first_order_image"]["generators_in_independent_form_coordinates"]
     )
     target = first_generator_variable(generators)
-    source = next(
-        k
-        for k, row in enumerate(rows)
-        if any(image_rank(field, [row], comp) for comp in cone.components)
-    )
+    source = next(k for k, row in enumerate(rows) if any(image_rank(field, [row], comp) for comp in cone.components))
     mutated = [list(row) for row in rows]
     mutated[target] = [field.add(a, b) for a, b in zip(rows[target], rows[source], strict=True)]
     certificates = analyze(
@@ -1435,7 +1430,9 @@ def tamper_the_bordered_rank(field: Field, task: Task) -> dict[str, Any]:
         "incidence": task.incidence,
         "mutation": "tamper_the_recorded_bordered_rank",
         "real_nullity_upper_bound": decided["real_nullity_upper_bound"],
-        "detected": bool(not certificates["certificate_0_constant_nullity"]["pass"] and decided["real_nullity_upper_bound"] != 8),
+        "detected": bool(
+            not certificates["certificate_0_constant_nullity"]["pass"] and decided["real_nullity_upper_bound"] != 8
+        ),
     }
 
 
@@ -1555,7 +1552,13 @@ def predict(task: Task, certificates: dict[str, Any], table: dict[str, Any] | No
             )
         else:
             rows.append(
-                {"name": name, "applicable": True, "predicted": predicted, "computed": value, "pass": predicted == value}
+                {
+                    "name": name,
+                    "applicable": True,
+                    "predicted": predicted,
+                    "computed": value,
+                    "pass": predicted == value,
+                }
             )
     return rows
 
