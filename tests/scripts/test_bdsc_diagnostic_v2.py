@@ -94,14 +94,14 @@ def test_the_fork_leaves_the_frozen_module_at_four_slots_and_every_copy_reads_si
     scope = layout.SCOPE
     if (scope["SLOTS"], scope["DRAW_VALUES"]) != (6, 150):
         raise AssertionError("the fork does not hold six slots and 150 draw values")
-    copies = [v for v in scope.values() if callable(v) and getattr(v, "__globals__", None) is scope]
+    replaced = {"case_record", "outward_slots"}
     functions = [n for n, v in vars(frozen).items() if getattr(v, "__module__", None) == frozen.__name__]
-    kept = [n for n in functions if scope[n] is vars(frozen)[n]]
-    if sorted(kept) != sorted(layout.KEEP):
-        raise AssertionError(f"functions shared with the frozen module: {kept}")
-    # case_record is replaced by the successor's own function, so the copies number the module's functions less one.
-    if len(copies) < len(functions) - len(layout.KEEP) - 1:
-        raise AssertionError("a function of the frozen module reads the frozen globals")
+    shared = sorted(n for n in functions if scope[n] is vars(frozen)[n])
+    if shared != sorted(layout.KEEP):
+        raise AssertionError(f"functions shared with the frozen module: {shared}")
+    stale = [n for n in functions if n not in layout.KEEP | replaced and scope[n].__globals__ is not scope]
+    if stale:
+        raise AssertionError(f"functions that read the frozen globals: {stale}")
 
 
 def test_the_layout_holds_four_jobs_of_36_iterations_in_matched_blocks() -> None:
