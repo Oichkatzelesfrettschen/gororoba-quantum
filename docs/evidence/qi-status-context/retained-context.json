@@ -1,6 +1,7 @@
 {
  "fitted_t1_assumption": "an implied_t1 row with fit_points is a single-exponential fit of a series' own delays; single_exponential, chi_square_per_dof and us_se_scaled say whether the fit describes the decay",
  "implied_t1_assumption": "the whole P(1|1) drop between the no-wait and the wait run is T1 decay during the wait, and readout fidelity is unchanged between the two runs",
+ "interleaved_t1_assumption": "an interleaved_t1 row is the single-exponential parameter of three interleaved rounds; verdict, lack_of_fit_probability and replicate_probability say whether one exponential describes the decay, and us_se is null because the analysis record carries no error on T",
  "jobs": {
   "QXsinglenodesimulator": [
    {
@@ -1268,6 +1269,8 @@
   ],
   "device_context": "results/quantum_inspire/readout_ringdown_tuna_17_device_context.json",
   "device_context_sha256": "293a97af8c510d022e8e90b3949a54ab779ee23317ed776a5de43811e6bd798c",
+  "interleaved_analysis": "results/quantum_inspire/characterization_interleaved_tuna_17_analysis.json",
+  "interleaved_analysis_sha256": "3e393204f880db67db0ebc03052303c9e8a37233a948ecc12b237c0b714846c9",
   "job_runs": "results/quantum_inspire/runs"
  }
 }
