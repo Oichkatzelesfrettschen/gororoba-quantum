@@ -1941,13 +1941,20 @@ def self_test() -> str:
     _require(exit_status(record) == 0, "a passing record has a nonzero exit status")
     wrong = dict(PREDICTED["Iso->B9"])
     wrong["link"] = ["S^5"]
-    rows = [certify(task) if task.incidence != "Iso->B9" else certify(task, wrong) for task in items]
+    altered = [(task, wrong if task.incidence == "Iso->B9" else None) for task in items]
+    rows = parallel.ordered_map(certify_with, altered, min_items=2)
     failing = assemble(rows)
     _require(
         not failing["summary"]["predictions_hold"] and not failing["pass"] and exit_status(failing) == 1,
         "a failed table prediction left the record passing",
     )
     return f"self-test: {summary['mutation_controls']} mutations detected, record pass={record['pass']}"
+
+
+def certify_with(item: tuple[Task, dict[str, Any] | None]) -> dict[str, Any]:
+    """certify under an altered prediction table when one is given; the unit the self-test dispatches."""
+    task, table = item
+    return certify(task) if table is None else certify(task, table)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
