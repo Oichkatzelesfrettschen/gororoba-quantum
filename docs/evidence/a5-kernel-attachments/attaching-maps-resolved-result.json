@@ -33,11 +33,6 @@
      "quadrics_proportional": true
     },
     "certificate_2_linear_injective_phi": {
-     "committed_2i_image": [
-      1,
-      2,
-      1
-     ],
      "component_span_dimensions": [
       3
      ],
@@ -64,6 +59,24 @@
       ],
       "rank_on_the_sum_of_components": 3
      },
+     "image_2c": [
+      1,
+      2,
+      1
+     ],
+     "image_2i_rational_and_modular": [
+      [
+       1,
+       2,
+       1
+      ],
+      [
+       1,
+       2,
+       1
+      ]
+     ],
+     "image_matches_2c": true,
      "image_matches_2i": true,
      "image_matches_2l": true,
      "image_projective_dimension_degree_components": [
@@ -99,6 +112,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 3,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 0,
      "detected": true,
      "field": "Q(i)",
@@ -130,6 +144,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 3,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 0,
      "detected": true,
      "field": "F_32009",
@@ -162,18 +177,21 @@
    "pass": true,
    "predictions": [
     {
+     "applicable": true,
      "computed": 2,
      "name": "germ_dimension",
      "pass": true,
      "predicted": 2
     },
     {
+     "applicable": true,
      "computed": 2,
      "name": "tangent_cone_multiplicity",
      "pass": true,
      "predicted": 2
     },
     {
+     "applicable": true,
      "computed": [
       "RP^3"
      ],
@@ -184,6 +202,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       "Z/2"
      ],
@@ -194,6 +213,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       -2
      ],
@@ -204,6 +224,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       1
      ],
@@ -214,6 +235,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       1,
       2,
@@ -228,12 +250,14 @@
      ]
     },
     {
+     "applicable": false,
      "computed": null,
      "name": "image_components_disjoint",
      "pass": true,
      "predicted": null
     },
     {
+     "applicable": true,
      "computed": [
       -2
      ],
@@ -287,11 +311,6 @@
      "tangent_spaces_meet_only_at_zero": true
     },
     "certificate_2_linear_injective_phi": {
-     "committed_2i_image": [
-      2,
-      2,
-      2
-     ],
      "component_span_dimensions": [
       3,
       3
@@ -321,6 +340,24 @@
       ],
       "rank_on_the_sum_of_components": 6
      },
+     "image_2c": [
+      2,
+      2,
+      2
+     ],
+     "image_2i_rational_and_modular": [
+      [
+       2,
+       2,
+       2
+      ],
+      [
+       2,
+       2,
+       2
+      ]
+     ],
+     "image_matches_2c": true,
      "image_matches_2i": true,
      "image_matches_2l": true,
      "image_projective_dimension_degree_components": [
@@ -368,6 +405,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 3,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 0,
      "detected": true,
      "field": "Q(i)",
@@ -391,6 +429,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 3,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 1,
      "detected": true,
      "field": "Q(i)",
@@ -414,6 +453,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 3,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 0,
      "detected": true,
      "field": "F_32009",
@@ -437,6 +477,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 3,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 1,
      "detected": true,
      "field": "F_32009",
@@ -461,18 +502,21 @@
    "pass": true,
    "predictions": [
     {
+     "applicable": true,
      "computed": 3,
      "name": "germ_dimension",
      "pass": true,
      "predicted": 3
     },
     {
+     "applicable": true,
      "computed": 2,
      "name": "tangent_cone_multiplicity",
      "pass": true,
      "predicted": 2
     },
     {
+     "applicable": true,
      "computed": [
       "S^5",
       "S^5"
@@ -485,6 +529,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       "0",
       "0"
@@ -497,6 +542,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       -1,
       -1
@@ -509,6 +555,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       2,
       2
@@ -521,6 +568,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       2,
       2,
@@ -535,12 +583,14 @@
      ]
     },
     {
+     "applicable": true,
      "computed": true,
      "name": "image_components_disjoint",
      "pass": true,
      "predicted": true
     },
     {
+     "applicable": false,
      "computed": [
       null,
       null
@@ -589,11 +639,6 @@
      "smooth": true
     },
     "certificate_2_linear_injective_phi": {
-     "committed_2i_image": [
-      1,
-      1,
-      1
-     ],
      "component_span_dimensions": [
       2
      ],
@@ -620,6 +665,24 @@
       ],
       "rank_on_the_sum_of_components": 2
      },
+     "image_2c": [
+      1,
+      1,
+      1
+     ],
+     "image_2i_rational_and_modular": [
+      [
+       1,
+       1,
+       1
+      ],
+      [
+       1,
+       1,
+       1
+      ]
+     ],
+     "image_matches_2c": true,
      "image_matches_2i": true,
      "image_matches_2l": true,
      "image_projective_dimension_degree_components": [
@@ -655,6 +718,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 2,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 0,
      "detected": true,
      "field": "Q(i)",
@@ -677,6 +741,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 2,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 0,
      "detected": true,
      "field": "F_32009",
@@ -700,18 +765,21 @@
    "pass": true,
    "predictions": [
     {
+     "applicable": true,
      "computed": 2,
      "name": "germ_dimension",
      "pass": true,
      "predicted": 2
     },
     {
+     "applicable": true,
      "computed": 1,
      "name": "tangent_cone_multiplicity",
      "pass": true,
      "predicted": 1
     },
     {
+     "applicable": true,
      "computed": [
       "S^3"
      ],
@@ -722,6 +790,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       "0"
      ],
@@ -732,6 +801,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       -1
      ],
@@ -742,6 +812,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       1
      ],
@@ -752,6 +823,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       1,
       1,
@@ -766,12 +838,14 @@
      ]
     },
     {
+     "applicable": false,
      "computed": null,
      "name": "image_components_disjoint",
      "pass": true,
      "predicted": null
     },
     {
+     "applicable": true,
      "computed": [
       -1
      ],
@@ -818,11 +892,6 @@
      "smooth": true
     },
     "certificate_2_linear_injective_phi": {
-     "committed_2i_image": [
-      2,
-      1,
-      1
-     ],
      "component_span_dimensions": [
       3
      ],
@@ -849,6 +918,24 @@
       ],
       "rank_on_the_sum_of_components": 3
      },
+     "image_2c": [
+      2,
+      1,
+      1
+     ],
+     "image_2i_rational_and_modular": [
+      [
+       2,
+       1,
+       1
+      ],
+      [
+       2,
+       1,
+       1
+      ]
+     ],
+     "image_matches_2c": true,
      "image_matches_2i": true,
      "image_matches_2l": true,
      "image_projective_dimension_degree_components": [
@@ -884,6 +971,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 3,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 0,
      "detected": true,
      "field": "Q(i)",
@@ -906,6 +994,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 3,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 0,
      "detected": true,
      "field": "F_32009",
@@ -929,18 +1018,21 @@
    "pass": true,
    "predictions": [
     {
+     "applicable": true,
      "computed": 3,
      "name": "germ_dimension",
      "pass": true,
      "predicted": 3
     },
     {
+     "applicable": true,
      "computed": 1,
      "name": "tangent_cone_multiplicity",
      "pass": true,
      "predicted": 1
     },
     {
+     "applicable": true,
      "computed": [
       "S^5"
      ],
@@ -951,6 +1043,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       "0"
      ],
@@ -961,6 +1054,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       -1
      ],
@@ -971,6 +1065,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       2
      ],
@@ -981,6 +1076,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       2,
       1,
@@ -995,12 +1091,14 @@
      ]
     },
     {
+     "applicable": false,
      "computed": null,
      "name": "image_components_disjoint",
      "pass": true,
      "predicted": null
     },
     {
+     "applicable": false,
      "computed": [
       null
      ],
@@ -1047,11 +1145,6 @@
      "smooth": true
     },
     "certificate_2_linear_injective_phi": {
-     "committed_2i_image": [
-      0,
-      1,
-      1
-     ],
      "component_span_dimensions": [
       1
      ],
@@ -1078,6 +1171,24 @@
       ],
       "rank_on_the_sum_of_components": 1
      },
+     "image_2c": [
+      0,
+      1,
+      1
+     ],
+     "image_2i_rational_and_modular": [
+      [
+       0,
+       1,
+       1
+      ],
+      [
+       0,
+       1,
+       1
+      ]
+     ],
+     "image_matches_2c": true,
      "image_matches_2i": true,
      "image_matches_2l": true,
      "image_projective_dimension_degree_components": [
@@ -1113,6 +1224,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 1,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 0,
      "detected": true,
      "field": "Q(i)",
@@ -1135,6 +1247,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 1,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 0,
      "detected": true,
      "field": "F_32009",
@@ -1158,18 +1271,21 @@
    "pass": true,
    "predictions": [
     {
+     "applicable": true,
      "computed": 1,
      "name": "germ_dimension",
      "pass": true,
      "predicted": 1
     },
     {
+     "applicable": true,
      "computed": 1,
      "name": "tangent_cone_multiplicity",
      "pass": true,
      "predicted": 1
     },
     {
+     "applicable": true,
      "computed": [
       "S^1"
      ],
@@ -1180,6 +1296,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       "Z"
      ],
@@ -1190,6 +1307,7 @@
      ]
     },
     {
+     "applicable": false,
      "computed": [
       null
      ],
@@ -1200,6 +1318,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       0
      ],
@@ -1210,6 +1329,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       0,
       1,
@@ -1224,12 +1344,14 @@
      ]
     },
     {
+     "applicable": false,
      "computed": null,
      "name": "image_components_disjoint",
      "pass": true,
      "predicted": null
     },
     {
+     "applicable": false,
      "computed": [
       null
      ],
@@ -1283,11 +1405,6 @@
      "tangent_spaces_meet_only_at_zero": true
     },
     "certificate_2_linear_injective_phi": {
-     "committed_2i_image": [
-      2,
-      2,
-      2
-     ],
      "component_span_dimensions": [
       3,
       3
@@ -1317,6 +1434,24 @@
       ],
       "rank_on_the_sum_of_components": 6
      },
+     "image_2c": [
+      2,
+      2,
+      2
+     ],
+     "image_2i_rational_and_modular": [
+      [
+       2,
+       2,
+       2
+      ],
+      [
+       2,
+       2,
+       2
+      ]
+     ],
+     "image_matches_2c": true,
      "image_matches_2i": true,
      "image_matches_2l": true,
      "image_projective_dimension_degree_components": [
@@ -1364,6 +1499,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 3,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 0,
      "detected": true,
      "field": "Q(i)",
@@ -1388,6 +1524,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 3,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 1,
      "detected": true,
      "field": "Q(i)",
@@ -1412,6 +1549,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 3,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 0,
      "detected": true,
      "field": "F_32009",
@@ -1436,6 +1574,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 3,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 1,
      "detected": true,
      "field": "F_32009",
@@ -1461,18 +1600,21 @@
    "pass": true,
    "predictions": [
     {
+     "applicable": true,
      "computed": 3,
      "name": "germ_dimension",
      "pass": true,
      "predicted": 3
     },
     {
+     "applicable": true,
      "computed": 2,
      "name": "tangent_cone_multiplicity",
      "pass": true,
      "predicted": 2
     },
     {
+     "applicable": true,
      "computed": [
       "S^5",
       "S^5"
@@ -1485,6 +1627,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       "0",
       "0"
@@ -1497,6 +1640,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       -1,
       -1
@@ -1509,6 +1653,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       2,
       2
@@ -1521,6 +1666,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       2,
       2,
@@ -1535,12 +1681,14 @@
      ]
     },
     {
+     "applicable": true,
      "computed": true,
      "name": "image_components_disjoint",
      "pass": true,
      "predicted": true
     },
     {
+     "applicable": false,
      "computed": [
       null,
       null
@@ -1589,11 +1737,6 @@
      "smooth": true
     },
     "certificate_2_linear_injective_phi": {
-     "committed_2i_image": [
-      0,
-      1,
-      1
-     ],
      "component_span_dimensions": [
       1
      ],
@@ -1620,6 +1763,24 @@
       ],
       "rank_on_the_sum_of_components": 1
      },
+     "image_2c": [
+      0,
+      1,
+      1
+     ],
+     "image_2i_rational_and_modular": [
+      [
+       0,
+       1,
+       1
+      ],
+      [
+       0,
+       1,
+       1
+      ]
+     ],
+     "image_matches_2c": true,
      "image_matches_2i": true,
      "image_matches_2l": true,
      "image_projective_dimension_degree_components": [
@@ -1655,6 +1816,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 1,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 0,
      "detected": true,
      "field": "Q(i)",
@@ -1677,6 +1839,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 1,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 0,
      "detected": true,
      "field": "F_32009",
@@ -1700,18 +1863,21 @@
    "pass": true,
    "predictions": [
     {
+     "applicable": true,
      "computed": 1,
      "name": "germ_dimension",
      "pass": true,
      "predicted": 1
     },
     {
+     "applicable": true,
      "computed": 1,
      "name": "tangent_cone_multiplicity",
      "pass": true,
      "predicted": 1
     },
     {
+     "applicable": true,
      "computed": [
       "S^1"
      ],
@@ -1722,6 +1888,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       "Z"
      ],
@@ -1732,6 +1899,7 @@
      ]
     },
     {
+     "applicable": false,
      "computed": [
       null
      ],
@@ -1742,6 +1910,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       0
      ],
@@ -1752,6 +1921,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       0,
       1,
@@ -1766,12 +1936,14 @@
      ]
     },
     {
+     "applicable": false,
      "computed": null,
      "name": "image_components_disjoint",
      "pass": true,
      "predicted": null
     },
     {
+     "applicable": false,
      "computed": [
       null
      ],
@@ -1825,11 +1997,6 @@
      "tangent_spaces_meet_only_at_zero": true
     },
     "certificate_2_linear_injective_phi": {
-     "committed_2i_image": [
-      2,
-      2,
-      2
-     ],
      "component_span_dimensions": [
       3,
       3
@@ -1859,6 +2026,24 @@
       ],
       "rank_on_the_sum_of_components": 6
      },
+     "image_2c": [
+      2,
+      2,
+      2
+     ],
+     "image_2i_rational_and_modular": [
+      [
+       2,
+       2,
+       2
+      ],
+      [
+       2,
+       2,
+       2
+      ]
+     ],
+     "image_matches_2c": true,
      "image_matches_2i": true,
      "image_matches_2l": true,
      "image_projective_dimension_degree_components": [
@@ -1906,6 +2091,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 3,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 0,
      "detected": true,
      "field": "Q(i)",
@@ -1930,6 +2116,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 3,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 1,
      "detected": true,
      "field": "Q(i)",
@@ -1954,6 +2141,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 3,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 0,
      "detected": true,
      "field": "F_32009",
@@ -1978,6 +2166,7 @@
     {
      "all_kernel_points_on_the_cone": true,
      "baseline_rank_on_component": 3,
+     "certificate_2_passes_on_the_mutated_phi": false,
      "component": 1,
      "detected": true,
      "field": "F_32009",
@@ -2003,18 +2192,21 @@
    "pass": true,
    "predictions": [
     {
+     "applicable": true,
      "computed": 3,
      "name": "germ_dimension",
      "pass": true,
      "predicted": 3
     },
     {
+     "applicable": true,
      "computed": 2,
      "name": "tangent_cone_multiplicity",
      "pass": true,
      "predicted": 2
     },
     {
+     "applicable": true,
      "computed": [
       "S^5",
       "S^5"
@@ -2027,6 +2219,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       "0",
       "0"
@@ -2039,6 +2232,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       -1,
       -1
@@ -2051,6 +2245,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       2,
       2
@@ -2063,6 +2258,7 @@
      ]
     },
     {
+     "applicable": true,
      "computed": [
       2,
       2,
@@ -2077,12 +2273,14 @@
      ]
     },
     {
+     "applicable": true,
      "computed": true,
      "name": "image_components_disjoint",
      "pass": true,
      "predicted": true
     },
     {
+     "applicable": false,
      "computed": [
       null,
       null
@@ -2110,7 +2308,7 @@
   "the radial deformation of kappa on the link to phi o p, which identifies L with the unit circle bundle of O_E(-1) and gives the attaching datum its homotopy class"
  ],
  "inputs": {
-  "attaching_maps_resolved.py": "5966af748f5946fd80062c69d144e3d2242fcfbb5d3b771f0bba04cba6217594",
+  "attaching_maps_resolved.py": "e9dece7c41e39a0d3fc6c1345a93473894957b895b5eca5942f197235fda0061",
   "first-order-normal-cones-result.json": "0173462891d377fcf50cd7a88f923ecf8648011f8a0e91cc39a11b32f59d3d49",
   "holomorphic-gauss-fibers-result.json": "4dbd90b752b1c4107f547036b2cf7950c9783c6291f4f1e2a3c8dabd94211d98",
   "path-supported-basepoints-result.json": "eeeb5a03c7ef0cf574d92e4f5aac85a34c3b873102a12be89aa716deeedd813c",
@@ -2125,6 +2323,8 @@
   "incidence_count": 8,
   "mutation_controls": 24,
   "mutation_controls_detected": 24,
-  "predictions_hold": true
+  "predictions_applicable": 59,
+  "predictions_hold": true,
+  "predictions_not_applicable": 13
  }
 }
