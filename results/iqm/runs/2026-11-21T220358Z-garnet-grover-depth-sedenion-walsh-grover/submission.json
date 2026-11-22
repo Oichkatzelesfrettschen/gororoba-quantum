@@ -1,0 +1,17 @@
+{
+ "approval": "owner AskUserQuestion 2026-11-21T22:00Z: Approve run",
+ "body_sha256": "04d4524d8f0c295c0f9efff88a2c7d223cdfcdc6cd2c9d7eb7895ca31f94aa26",
+ "cases_sha256": "e4c71f05b25d28d2edc11e5fed0d3e5f768b8f06cad2e00376eb66a66e601f84",
+ "credit_before": {
+  "currentBalance": "25.75",
+  "expiresAt": "2026-12-01T00:00:00+00:00"
+ },
+ "expected_seconds": 5.4,
+ "job": "grover",
+ "job_id": "01a20023-427c-768d-ae3b-da9c12a7d827",
+ "max_credits": 3.5,
+ "price_per_second": 0.5,
+ "qc": "garnet",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-11-21T22:04:00Z"
+}
