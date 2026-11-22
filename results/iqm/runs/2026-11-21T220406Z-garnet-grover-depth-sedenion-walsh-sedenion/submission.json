@@ -1,0 +1,17 @@
+{
+ "approval": "owner AskUserQuestion 2026-11-21T22:00Z: Approve run",
+ "body_sha256": "82713be90f9fe069f770262cf4ad50787e38b23fb89a05070ef893331f6e2199",
+ "cases_sha256": "e4c71f05b25d28d2edc11e5fed0d3e5f768b8f06cad2e00376eb66a66e601f84",
+ "credit_before": {
+  "currentBalance": "24.25",
+  "expiresAt": "2026-12-01T00:00:00+00:00"
+ },
+ "expected_seconds": 1.05,
+ "job": "sedenion",
+ "job_id": "01a20023-5ea3-74e6-878c-ba154d175aa4",
+ "max_credits": 1.5,
+ "price_per_second": 0.5,
+ "qc": "garnet",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-11-21T22:04:07Z"
+}
