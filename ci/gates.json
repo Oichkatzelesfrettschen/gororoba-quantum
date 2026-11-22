@@ -3653,7 +3653,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/iqm-garnet-qb12-models/qb12_models.py \"${TMPDIR:-/tmp}/garnet-qb12-models.json\" && cmp \"${TMPDIR:-/tmp}/garnet-qb12-models.json\" docs/evidence/iqm-garnet-qb12-models/qb12_models.json",
       "name": "core-iqm-garnet-qb12-models-replay",
-      "seconds": 581.5,
+      "seconds": 1587.2,
       "replays": [
         "docs/evidence/iqm-garnet-qb12-models/qb12_models.json"
       ]

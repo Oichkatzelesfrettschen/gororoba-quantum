@@ -264,13 +264,11 @@ def grid(terms: list[tuple[str, float, float]]) -> list[tuple[float, ...]]:
 
 
 def starts(kind: str, best: dict[str, dict[str, float]]) -> list[tuple[str, tuple[float, ...]]]:
-    """A fixed grid for a model without parents; otherwise each parent's optimum, its absent terms taken from the
-    grid of the terms the model adds."""
+    """The model's own fixed grid (except for the hybrid, whose grid of seven terms is replaced by its parents), and
+    each parent's optimum with its absent terms taken from the grid of the terms the model adds."""
     names = [n for n, _, _ in SPACE[kind] + READOUT]
-    if not PARENTS[kind]:
-        readout = (0.05, 0.25)
-        return [(kind, point + readout) for point in grid(SPACE[kind])]
-    out = []
+    readout = (0.05, 0.25)
+    out = [] if kind == "hybrid" else [(kind, point + readout) for point in grid(SPACE[kind])]
     for parent in PARENTS[kind]:
         added = [t for t in SPACE[kind] if t[0] not in best[parent]]
         for point in grid(added):
