@@ -1,0 +1,17 @@
+{
+ "approval": "owner AskUserQuestion 2026-11-21T20:53Z: Approve (Recommended), iqm:emerald idle-schedule-t1-emerald cases.json sha256 37326cf0793dd2a3fdd41ddca07c234206ec7baaf2c3c67e6d21386b9da87df9, ceiling 12.00 credits",
+ "body_sha256": "5b26ff446cf517dc4fe2d9dc2851cb849bac12a8507bc9a42541b62320638d5a",
+ "cases_sha256": "37326cf0793dd2a3fdd41ddca07c234206ec7baaf2c3c67e6d21386b9da87df9",
+ "credit_before": {
+  "currentBalance": "29.00",
+  "expiresAt": "2026-12-01T00:00:00+00:00"
+ },
+ "expected_seconds": 3.168,
+ "job": "probe",
+ "job_id": "01a1ffe5-b55a-74f5-a116-d45746738d44",
+ "max_credits": 12.0,
+ "price_per_second": 0.75,
+ "qc": "emerald",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-11-21T20:56:46Z"
+}

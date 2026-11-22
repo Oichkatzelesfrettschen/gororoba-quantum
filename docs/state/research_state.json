@@ -4006,6 +4006,13 @@
       "question": "Does the emerald:mock station accept the sixteen-circuit Emerald successor with IQM delay instructions, and what runtime does it estimate?"
     },
     {
+      "id": "iqm-emerald-idle-schedule-t1",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-21T205643Z-emerald-idle-schedule-t1-emerald-probe",
+      "family": "IQM idle schedule and train readout probe",
+      "question": "Does Emerald schedule ASAP, and is the decay of its pulse trains beyond the delay-measured T1 one per-pulse gap common to the qubits?"
+    },
+    {
       "id": "iqm-garnet-mock-packed-pauli-36",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-11-21T193252Z-garnet_mock-packed-pauli-response-garnet-packed",
@@ -4018,6 +4025,13 @@
       "run": "results/iqm/runs/2026-11-21T205843Z-garnet_mock-packed-pauli-response-garnet-packed",
       "family": "IQM packed Pauli response",
       "question": "Does the garnet:mock station accept the 68-circuit packed Pauli body with measure-only buffer circuits, and what runtime does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-packed-pauli-response",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-21T220346Z-garnet-packed-pauli-response-garnet-packed",
+      "family": "IQM packed Pauli response",
+      "question": "On Garnet, does preparing every one of five four-qubit cells, against only the four sentinel cells, change the sentinel Y-quadrature response B_Y - K_Y of 16 randomized dense/sparse pairs, each circuit preceded by a measure-only buffer?"
     },
     {
       "id": "iqm-garnet-grover-depth-sedenion-walsh-grover",

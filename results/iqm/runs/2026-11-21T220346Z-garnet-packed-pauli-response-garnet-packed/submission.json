@@ -1,0 +1,17 @@
+{
+ "approval": "owner AskUserQuestion 2026-11-21T22:00Z: Approve run",
+ "body_sha256": "ee43571c8b70cdc64711b719311c752f981963f455cd46c8fbe364907f9597ff",
+ "cases_sha256": "12a17407ac83c02762c3cb90b6e3bfe5a80a8f59f50ca323ad109a78e13b153e",
+ "credit_before": {
+  "currentBalance": "26.75",
+  "expiresAt": "2026-12-01T00:00:00+00:00"
+ },
+ "expected_seconds": 5.111,
+ "job": "packed",
+ "job_id": "01a20023-1aa1-7001-9806-28b92b115b96",
+ "max_credits": 5.0,
+ "price_per_second": 0.5,
+ "qc": "garnet",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-11-21T22:03:50Z"
+}
