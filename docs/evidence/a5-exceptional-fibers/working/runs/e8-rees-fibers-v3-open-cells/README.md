@@ -13,7 +13,7 @@ a prime p and a root r of -1 modulo p; the retained v2 runs cover (32009, 10754)
 | N+ (32009, 21255) | 17 h 10 min 5 s, 527 MB | 5 h 50 min 8 s, 641 MB |
 | N- (32029, 9115) | 19 h 25 min 24 s, 555 MB | resumed run: colon 4 h 42 min from the first-stage basis, fiber stage 31 s |
 | N+ (32029, 9115) | 17 h 24 min 20 s, 527 MB | 5 h 50 min 8 s, 641 MB |
-| N- (32029, 22914) | 19 h 10 min 48 s, 555 MB | not retained here |
+| N- (32029, 22914) | 19 h 10 min 48 s, 555 MB | 6 h 53 min 48 s, 702 MB |
 | N+ (32029, 22914) | 17 h 12 min 15 s, 526 MB | 5 h 50 min 38 s, 641 MB |
 
 - Every run prints `FIBER bound 0 minimal generators 148 dim 5 mult 11`, 148 generator degrees equal to 2,
@@ -38,7 +38,7 @@ HS. The `v4m` scripts replace that one call by `module MQ=modulo(ideal(u),HS); Q
 computes the same ideal HS : u as the kernel of multiplication by u on R/HS. The loop, its end test and every later
 line are unchanged.
 
-- Equality on recorded digests: for the four cells with both runs, the first-stage basis file and the saturated basis
+- Equality on recorded digests: for the five cells with both full runs, the first-stage basis file and the saturated basis
   file of the modulo run have the sha256 of the files of the quotient run (`bases.sha256`, `modulo-colon/bases.sha256`),
   across the two architectures (x86-64 and aarch64 builds of Singular 4.4.1). The saturated file is written after
   the colon loop and is the evidence for the colon; the first-stage file precedes the loop and shows equal inputs.
@@ -86,4 +86,4 @@ file.
 
 One run per script and method; Singular 4.4.1 (banner Dec 6 2025 11:10:58) on both hosts; the two primes 32009 and
 32029 and their four roots of -1. The certificates are modular: they state the fiber cone of the reduction modulo p on
-the weight slice of A5-421, as A5-572 and A5-573 do. The modulo-colon run of N- (32029, 22914) is not retained here.
+the weight slice of A5-421, as A5-572 and A5-573 do.

@@ -36,7 +36,13 @@ REPLAY = HERE / "replay-v2-full"
 COLON_OLD = "QU=quotient(HS,ideal(u));"
 COLON_NEW = "module MQ=modulo(ideal(u),HS); QU=ideal(matrix(MQ)); kill MQ;"
 # Modulo-colon cells with a retained full run; the N- cell at (32029, 9115) has the resumed run RESUMED instead.
-MOD_CELLS = [("np", 32029, 9115), ("np", 32009, 21255), ("np", 32029, 22914), ("nm", 32009, 21255)]
+MOD_CELLS = [
+    ("np", 32029, 9115),
+    ("np", 32009, 21255),
+    ("np", 32029, 22914),
+    ("nm", 32009, 21255),
+    ("nm", 32029, 22914),
+]
 RESUMED = "e8-nm-p32029-r9115.fiber-from-modsat"
 REQUIRED = [
     "UNIT zero_constant_term_count 0",
