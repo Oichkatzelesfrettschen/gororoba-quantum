@@ -859,11 +859,13 @@ def synthetic_run(
     qc: str = "garnet",
     prediction_edit: str | None = None,
     calibration: str | None = None,
+    kept_of: Callable[[str], int] | None = None,
 ) -> Path:
     """A run directory of a model device over the built case, in the layout iqm_records reads: every circuit's
     model distribution (plant may replace it) rounded to the kept shots by largest remainder, with no random
     generator. prediction_edit "unbound" changes prediction.json alone; "rebound" also rebinds cases.json to the
-    changed bytes, as a case built with another prediction would. calibration replaces the compiled calibration set."""
+    changed bytes, as a case built with another prediction would. calibration replaces the compiled calibration set;
+    kept_of maps a circuit name to its kept shots where the circuits keep different numbers."""
     shutil.copytree(case_dir, run_dir, ignore=shutil.ignore_patterns("calibration"))
     prediction = json.loads((run_dir / "prediction.json").read_text(encoding="utf-8"))
     if prediction_edit:
@@ -880,6 +882,7 @@ def synthetic_run(
     kept = round(KEPT * row["shots"])
     measurements = []
     counts_records = []
+    kept_list = []
     for circuit in row["circuits"]:
         name = Path(circuit["file"]).stem
         arm = prediction["arms"][name]
@@ -887,7 +890,9 @@ def synthetic_run(
         if plant is not None:
             distribution = plant(name, distribution)
         keys = sorted(distribution)
-        counts = largest_remainder([distribution[k] for k in keys], kept)
+        kept_here = kept if kept_of is None else kept_of(name)
+        kept_list.append(kept_here)
+        counts = largest_remainder([distribution[k] for k in keys], kept_here)
         bits: list[list[int]] = []
         for key, n in zip(keys, counts, strict=True):
             bits.extend([[int(c) for c in key]] * n)
@@ -930,7 +935,7 @@ def synthetic_run(
                 "job_id": "job-1",
                 "status": "completed",
                 "raw_sha256": {n: sha256(d) for n, d in files.items()},
-                "shots_per_circuit": [kept] * len(row["circuits"]),
+                "shots_per_circuit": kept_list,
             }
         ),
         encoding="utf-8",

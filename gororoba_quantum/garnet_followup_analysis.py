@@ -105,20 +105,21 @@ class Job:
         return np.sum([self.counts[n] for n in names], axis=0), order
 
 
-def read_job(run_dir: Path, case_dir: Path = CASE_DIR) -> Job:
-    """Admit one run of the case: the shared record checks, then the case-bound ones."""
+def read_job(run_dir: Path, case_dir: Path = CASE_DIR, case: str = CASE, jobs: tuple[str, ...] = JOBS) -> Job:
+    """Admit one run of the case: the shared record checks, then the case-bound ones. A later case of the same
+    record shape passes its own name and jobs (gororoba_quantum/grover_depth_analysis.py)."""
     run = iqm_records.read_run(run_dir)
     submission = run.submission
-    if submission["qc"] != QC or run.case.get("case") != CASE:
-        raise AnalysisError(f"{run_dir}: a {run.case.get('case')} run on {submission['qc']}, not a {CASE} run on {QC}")
+    if submission["qc"] != QC or run.case.get("case") != case:
+        raise AnalysisError(f"{run_dir}: a {run.case.get('case')} run on {submission['qc']}, not a {case} run on {QC}")
     bound = json.loads((case_dir / "cases.json").read_text(encoding="utf-8"))
     if run.case.get("prediction_sha256") != bound["prediction_sha256"]:
         raise AnalysisError(f"{run_dir}: the case binds another prediction digest than the retained case")
     if run.cases_sha256 != iqm_records.sha256((case_dir / "cases.json").read_bytes()):
         raise AnalysisError(f"{run_dir}: cases.json differs from the retained case")
     job = run.row["job"]
-    if job not in JOBS:
-        raise AnalysisError(f"{run_dir}: job {job} is not a job of {CASE}")
+    if job not in jobs:
+        raise AnalysisError(f"{run_dir}: job {job} is not a job of {case}")
     prediction = json.loads((run_dir / "prediction.json").read_text(encoding="utf-8"))
     compilation = run.job.get("compilation") or {}
     if compilation.get("calibration_set_id") != prediction["calibration_set"]:
