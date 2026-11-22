@@ -5902,7 +5902,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/attaching_maps_resolved.py --check",
       "name": "core-a5-attaching-maps-resolved",
-      "seconds": 2,
+      "seconds": 4,
       "workers": "all",
       "replays": [
         "docs/evidence/a5-kernel-attachments/attaching-maps-resolved-result.json"
@@ -5914,6 +5914,25 @@
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/attaching_maps_resolved.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-attachments/attaching_maps_resolved.py --self-test",
       "name": "core-a5-attaching-maps-resolved-self-test",
       "seconds": 14,
+      "workers": "all"
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/schur_entry_forms.py --check docs/evidence/a5-kernel-attachments/schur-entry-forms-result.json",
+      "name": "core-a5-schur-entry-forms",
+      "seconds": 14,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/schur-entry-forms-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/schur_entry_forms.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-attachments/schur_entry_forms.py --self-test",
+      "name": "core-a5-schur-entry-forms-self-test",
+      "seconds": 26,
       "workers": "all"
     },
     {

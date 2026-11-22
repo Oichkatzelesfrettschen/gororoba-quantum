@@ -209,6 +209,25 @@ Two prior capped attempts stopped before retention: the first exposed an unpickl
 66,688 KiB. Evidence: [`holomorphic-gauss-fibers-result.json`](holomorphic-gauss-fibers-result.json) and the
 [ledger](ledger.md#ledger-rows).
 
+
+## Every Schur-entry form decides the rank-four Pfaffians in both fields
+
+The 2c and 2i records retain only a basis of the first-order Schur entries: six or seven of the 15 forms of the 6 x 6
+effective form and six or seven of the 21 forms of the 7 x 7 holomorphic leading form (seven at the three two-component
+incidences, six at the other five). [`schur_entry_forms.py`](schur_entry_forms.py)
+imports both producers, rebuilds each skew matrix at the retained basepoint and slice columns, and writes all 15 and
+all 21 entry forms of the eight incidences to [`schur-entry-forms-result.json`](schur-entry-forms-result.json) as
+coefficient rows over the slice variables, over `Q(i)` and as residues modulo 32009 (`i = 10754`). The 2i matrix
+reproduces the retained `coordinate_sha256`, and both retained bases reappear at their retained indices.
+
+[`attaching_maps_resolved.py`](attaching_maps_resolved.py) forms the 35 principal 4 x 4 Pfaffians of the 7 x 7 matrix
+and the 15 of the 6 x 6 matrix as quadrics and tests each against the degree-2 part of the ideal of the retained
+tangent-cone generators, in both fields. All 400 quadrics (8 incidences, 50 each) lie in the ideal, so the first-order
+form has rank exactly two on the cone and the real nullity is exactly 8, over `Q(i)` and modulo 32009; the retained
+2i and 2c flags agree with that decision. An independent Singular `reduce(Pfaffians, std(T))` run on the same entry
+forms returns the zero remainder in characteristic 0 and 32009 and a nonzero remainder after one coefficient of an entry
+form changes. The passage from the first-order form to the germ stays inferred.
+
 ## Second jets can change the limiting plane on a fixed first-order direction
 
 The seven exceptional first-order rows need the Schur-corrected form
@@ -1426,6 +1445,9 @@ prlimit --as=17179869184 -- "$PYTHON" -B -W error -O \
     docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --self-test
 prlimit --as=17179869184 -- "$PYTHON" docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py \
     --check docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/schur_entry_forms.py --self-test
+"$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/schur_entry_forms.py \
+    --check docs/evidence/a5-kernel-attachments/schur-entry-forms-result.json
 prlimit --as=17179869184 -- "$PYTHON" -B -W error \
     docs/evidence/a5-kernel-attachments/holomorphic_gauss_fibers.py --self-test
 prlimit --as=17179869184 -- "$PYTHON" -B -W error -O \

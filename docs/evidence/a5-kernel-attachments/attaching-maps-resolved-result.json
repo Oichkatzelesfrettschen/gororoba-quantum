@@ -12,6 +12,7 @@
       "bordered_kernel_dimension_at_the_boundary": 6,
       "cone_point_lies_on_the_tangent_cone": true,
       "degeneracy_locus_empty_matches_2c": true,
+      "entry_forms_complete_and_equal_to_the_retained_bases": true,
       "exceptional_charts_base_free": true,
       "exceptional_charts_nonempty": [
        false,
@@ -26,21 +27,44 @@
       "pass": true,
       "phi_has_no_zero_on_E": true,
       "pivot_pfaffian_is_a_unit": true,
+      "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+      "real_nullity_off_the_basepoint": 8,
       "real_nullity_upper_bound": 8,
       "schur_coordinate_count_matches_kernel_dimension": true,
+      "schur_entry_forms": {
+       "first_order_effective_form": {
+        "entry_forms": 15,
+        "entry_forms_complete": true,
+        "first_pfaffian_outside_the_ideal": null,
+        "matrix_size": 6,
+        "rank_four_pfaffians": 15,
+        "rank_four_pfaffians_outside_the_tangent_cone_ideal": 0,
+        "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+        "residues_are_the_images_of_the_q_i_rows": true,
+        "retained_basis_rows_are_entry_forms_at_their_indices": true
+       },
+       "holomorphic_schur_leading_form": {
+        "entry_forms": 21,
+        "entry_forms_complete": true,
+        "first_pfaffian_outside_the_ideal": null,
+        "matrix_size": 7,
+        "rank_four_pfaffians": 35,
+        "rank_four_pfaffians_outside_the_tangent_cone_ideal": 0,
+        "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+        "residues_are_the_images_of_the_q_i_rows": true,
+        "retained_basis_rows_are_entry_forms_at_their_indices": true
+       }
+      },
+      "schur_form_rank": 2,
       "schur_form_rank_lower_bound": 2
      },
      "field_specific": {
-      "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero near E and its rank is exactly the first-order rank wherever the Pfaffian ideal contains the higher terms",
       "pass": true,
-      "rank_four_pfaffians_vanish_carried_from_retained_exact_runs": {
+      "rank_four_pfaffians_vanish_in_the_retained_exact_runs": {
        "2c_effective_form_run": true,
        "2i_rational_run": true
       },
-      "real_nullity_off_the_basepoint": 8,
-      "reason": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here",
-      "recomputed_here": false,
-      "schur_form_rank": 2
+      "retained_runs_agree_with_the_recomputation": true
      },
      "pass": true
     },
@@ -157,11 +181,8 @@
    },
    "incidence": "E8bar->B9",
    "modular_certificate_0_field_specific": {
-    "not_decided": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here; the 2i modular run is modulo 32003, not 32009",
     "pass": null,
-    "rank_four_pfaffians_vanish": null,
-    "real_nullity_off_the_basepoint": null,
-    "schur_form_rank": null
+    "retained_exact_runs": "none in this characteristic: the 2i modular run is modulo 32003, not 32009"
    },
    "modular_certificates_equal_gaussian_where_both_decide": true,
    "mutation_controls": [
@@ -283,7 +304,47 @@
      "detected": true,
      "field": "Q(i)",
      "incidence": "E8bar->B9",
-     "mutation": "tamper_the_carried_pfaffian_flag"
+     "mutation": "retained_pfaffian_flag_contradicts_the_recomputation"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 0,
+     "field": "Q(i)",
+     "incidence": "E8bar->B9",
+     "mutation": "alter_a_schur_entry_form_holomorphic_schur_leading_form",
+     "pfaffians_leaving_the_ideal": 3,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 1,
+     "field": "Q(i)",
+     "incidence": "E8bar->B9",
+     "mutation": "alter_a_schur_entry_form_first_order_effective_form",
+     "pfaffians_leaving_the_ideal": 3,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 0,
+     "field": "Q(i)",
+     "incidence": "E8bar->B9",
+     "mutation": "drop_a_schur_entry_form_holomorphic_schur_leading_form"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 1,
+     "field": "Q(i)",
+     "incidence": "E8bar->B9",
+     "mutation": "drop_a_schur_entry_form_first_order_effective_form"
     },
     {
      "all_kernel_points_on_the_cone": true,
@@ -397,6 +458,46 @@
      "incidence": "E8bar->B9",
      "mutation": "tamper_the_recorded_bordered_rank",
      "real_nullity_upper_bound": 10
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 0,
+     "field": "F_32009",
+     "incidence": "E8bar->B9",
+     "mutation": "alter_a_schur_entry_form_holomorphic_schur_leading_form",
+     "pfaffians_leaving_the_ideal": 3,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 1,
+     "field": "F_32009",
+     "incidence": "E8bar->B9",
+     "mutation": "alter_a_schur_entry_form_first_order_effective_form",
+     "pfaffians_leaving_the_ideal": 3,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 0,
+     "field": "F_32009",
+     "incidence": "E8bar->B9",
+     "mutation": "drop_a_schur_entry_form_holomorphic_schur_leading_form"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 1,
+     "field": "F_32009",
+     "incidence": "E8bar->B9",
+     "mutation": "drop_a_schur_entry_form_first_order_effective_form"
     },
     {
      "detected": true,
@@ -517,6 +618,7 @@
       "bordered_kernel_dimension_at_the_boundary": 6,
       "cone_point_lies_on_the_tangent_cone": true,
       "degeneracy_locus_empty_matches_2c": true,
+      "entry_forms_complete_and_equal_to_the_retained_bases": true,
       "exceptional_charts_base_free": true,
       "exceptional_charts_nonempty": [
        true,
@@ -532,21 +634,44 @@
       "pass": true,
       "phi_has_no_zero_on_E": true,
       "pivot_pfaffian_is_a_unit": true,
+      "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+      "real_nullity_off_the_basepoint": 8,
       "real_nullity_upper_bound": 8,
       "schur_coordinate_count_matches_kernel_dimension": true,
+      "schur_entry_forms": {
+       "first_order_effective_form": {
+        "entry_forms": 15,
+        "entry_forms_complete": true,
+        "first_pfaffian_outside_the_ideal": null,
+        "matrix_size": 6,
+        "rank_four_pfaffians": 15,
+        "rank_four_pfaffians_outside_the_tangent_cone_ideal": 0,
+        "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+        "residues_are_the_images_of_the_q_i_rows": true,
+        "retained_basis_rows_are_entry_forms_at_their_indices": true
+       },
+       "holomorphic_schur_leading_form": {
+        "entry_forms": 21,
+        "entry_forms_complete": true,
+        "first_pfaffian_outside_the_ideal": null,
+        "matrix_size": 7,
+        "rank_four_pfaffians": 35,
+        "rank_four_pfaffians_outside_the_tangent_cone_ideal": 0,
+        "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+        "residues_are_the_images_of_the_q_i_rows": true,
+        "retained_basis_rows_are_entry_forms_at_their_indices": true
+       }
+      },
+      "schur_form_rank": 2,
       "schur_form_rank_lower_bound": 2
      },
      "field_specific": {
-      "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero near E and its rank is exactly the first-order rank wherever the Pfaffian ideal contains the higher terms",
       "pass": true,
-      "rank_four_pfaffians_vanish_carried_from_retained_exact_runs": {
+      "rank_four_pfaffians_vanish_in_the_retained_exact_runs": {
        "2c_effective_form_run": true,
        "2i_rational_run": true
       },
-      "real_nullity_off_the_basepoint": 8,
-      "reason": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here",
-      "recomputed_here": false,
-      "schur_form_rank": 2
+      "retained_runs_agree_with_the_recomputation": true
      },
      "pass": true
     },
@@ -691,11 +816,8 @@
    },
    "incidence": "E8bar->V",
    "modular_certificate_0_field_specific": {
-    "not_decided": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here; the 2i modular run is modulo 32003, not 32009",
     "pass": null,
-    "rank_four_pfaffians_vanish": null,
-    "real_nullity_off_the_basepoint": null,
-    "schur_form_rank": null
+    "retained_exact_runs": "none in this characteristic: the 2i modular run is modulo 32003, not 32009"
    },
    "modular_certificates_equal_gaussian_where_both_decide": true,
    "mutation_controls": [
@@ -860,7 +982,47 @@
      "detected": true,
      "field": "Q(i)",
      "incidence": "E8bar->V",
-     "mutation": "tamper_the_carried_pfaffian_flag"
+     "mutation": "retained_pfaffian_flag_contradicts_the_recomputation"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 3,
+     "field": "Q(i)",
+     "incidence": "E8bar->V",
+     "mutation": "alter_a_schur_entry_form_holomorphic_schur_leading_form",
+     "pfaffians_leaving_the_ideal": 3,
+     "retained_basis_rows_unchanged": true,
+     "variable": 1
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 3,
+     "field": "Q(i)",
+     "incidence": "E8bar->V",
+     "mutation": "alter_a_schur_entry_form_first_order_effective_form",
+     "pfaffians_leaving_the_ideal": 1,
+     "retained_basis_rows_unchanged": true,
+     "variable": 1
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 3,
+     "field": "Q(i)",
+     "incidence": "E8bar->V",
+     "mutation": "drop_a_schur_entry_form_holomorphic_schur_leading_form"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 3,
+     "field": "Q(i)",
+     "incidence": "E8bar->V",
+     "mutation": "drop_a_schur_entry_form_first_order_effective_form"
     },
     {
      "all_kernel_points_on_the_cone": true,
@@ -1017,6 +1179,46 @@
      "incidence": "E8bar->V",
      "mutation": "tamper_the_recorded_bordered_rank",
      "real_nullity_upper_bound": 10
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 3,
+     "field": "F_32009",
+     "incidence": "E8bar->V",
+     "mutation": "alter_a_schur_entry_form_holomorphic_schur_leading_form",
+     "pfaffians_leaving_the_ideal": 3,
+     "retained_basis_rows_unchanged": true,
+     "variable": 1
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 3,
+     "field": "F_32009",
+     "incidence": "E8bar->V",
+     "mutation": "alter_a_schur_entry_form_first_order_effective_form",
+     "pfaffians_leaving_the_ideal": 1,
+     "retained_basis_rows_unchanged": true,
+     "variable": 1
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 3,
+     "field": "F_32009",
+     "incidence": "E8bar->V",
+     "mutation": "drop_a_schur_entry_form_holomorphic_schur_leading_form"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 3,
+     "field": "F_32009",
+     "incidence": "E8bar->V",
+     "mutation": "drop_a_schur_entry_form_first_order_effective_form"
     },
     {
      "detected": true,
@@ -1147,6 +1349,7 @@
       "bordered_kernel_dimension_at_the_boundary": 6,
       "cone_point_lies_on_the_tangent_cone": true,
       "degeneracy_locus_empty_matches_2c": true,
+      "entry_forms_complete_and_equal_to_the_retained_bases": true,
       "exceptional_charts_base_free": true,
       "exceptional_charts_nonempty": [
        false,
@@ -1161,21 +1364,44 @@
       "pass": true,
       "phi_has_no_zero_on_E": true,
       "pivot_pfaffian_is_a_unit": true,
+      "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+      "real_nullity_off_the_basepoint": 8,
       "real_nullity_upper_bound": 8,
       "schur_coordinate_count_matches_kernel_dimension": true,
+      "schur_entry_forms": {
+       "first_order_effective_form": {
+        "entry_forms": 15,
+        "entry_forms_complete": true,
+        "first_pfaffian_outside_the_ideal": null,
+        "matrix_size": 6,
+        "rank_four_pfaffians": 15,
+        "rank_four_pfaffians_outside_the_tangent_cone_ideal": 0,
+        "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+        "residues_are_the_images_of_the_q_i_rows": true,
+        "retained_basis_rows_are_entry_forms_at_their_indices": true
+       },
+       "holomorphic_schur_leading_form": {
+        "entry_forms": 21,
+        "entry_forms_complete": true,
+        "first_pfaffian_outside_the_ideal": null,
+        "matrix_size": 7,
+        "rank_four_pfaffians": 35,
+        "rank_four_pfaffians_outside_the_tangent_cone_ideal": 0,
+        "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+        "residues_are_the_images_of_the_q_i_rows": true,
+        "retained_basis_rows_are_entry_forms_at_their_indices": true
+       }
+      },
+      "schur_form_rank": 2,
       "schur_form_rank_lower_bound": 2
      },
      "field_specific": {
-      "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero near E and its rank is exactly the first-order rank wherever the Pfaffian ideal contains the higher terms",
       "pass": true,
-      "rank_four_pfaffians_vanish_carried_from_retained_exact_runs": {
+      "rank_four_pfaffians_vanish_in_the_retained_exact_runs": {
        "2c_effective_form_run": true,
        "2i_rational_run": true
       },
-      "real_nullity_off_the_basepoint": 8,
-      "reason": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here",
-      "recomputed_here": false,
-      "schur_form_rank": 2
+      "retained_runs_agree_with_the_recomputation": true
      },
      "pass": true
     },
@@ -1289,11 +1515,8 @@
    },
    "incidence": "Iso->B9",
    "modular_certificate_0_field_specific": {
-    "not_decided": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here; the 2i modular run is modulo 32003, not 32009",
     "pass": null,
-    "rank_four_pfaffians_vanish": null,
-    "real_nullity_off_the_basepoint": null,
-    "schur_form_rank": null
+    "retained_exact_runs": "none in this characteristic: the 2i modular run is modulo 32003, not 32009"
    },
    "modular_certificates_equal_gaussian_where_both_decide": true,
    "mutation_controls": [
@@ -1406,7 +1629,47 @@
      "detected": true,
      "field": "Q(i)",
      "incidence": "Iso->B9",
-     "mutation": "tamper_the_carried_pfaffian_flag"
+     "mutation": "retained_pfaffian_flag_contradicts_the_recomputation"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 0,
+     "field": "Q(i)",
+     "incidence": "Iso->B9",
+     "mutation": "alter_a_schur_entry_form_holomorphic_schur_leading_form",
+     "pfaffians_leaving_the_ideal": 2,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 1,
+     "field": "Q(i)",
+     "incidence": "Iso->B9",
+     "mutation": "alter_a_schur_entry_form_first_order_effective_form",
+     "pfaffians_leaving_the_ideal": 2,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 0,
+     "field": "Q(i)",
+     "incidence": "Iso->B9",
+     "mutation": "drop_a_schur_entry_form_holomorphic_schur_leading_form"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 1,
+     "field": "Q(i)",
+     "incidence": "Iso->B9",
+     "mutation": "drop_a_schur_entry_form_first_order_effective_form"
     },
     {
      "all_kernel_points_on_the_cone": true,
@@ -1511,6 +1774,46 @@
      "incidence": "Iso->B9",
      "mutation": "tamper_the_recorded_bordered_rank",
      "real_nullity_upper_bound": 10
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 0,
+     "field": "F_32009",
+     "incidence": "Iso->B9",
+     "mutation": "alter_a_schur_entry_form_holomorphic_schur_leading_form",
+     "pfaffians_leaving_the_ideal": 2,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 1,
+     "field": "F_32009",
+     "incidence": "Iso->B9",
+     "mutation": "alter_a_schur_entry_form_first_order_effective_form",
+     "pfaffians_leaving_the_ideal": 2,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 0,
+     "field": "F_32009",
+     "incidence": "Iso->B9",
+     "mutation": "drop_a_schur_entry_form_holomorphic_schur_leading_form"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 1,
+     "field": "F_32009",
+     "incidence": "Iso->B9",
+     "mutation": "drop_a_schur_entry_form_first_order_effective_form"
     },
     {
      "detected": true,
@@ -1631,6 +1934,7 @@
       "bordered_kernel_dimension_at_the_boundary": 6,
       "cone_point_lies_on_the_tangent_cone": true,
       "degeneracy_locus_empty_matches_2c": true,
+      "entry_forms_complete_and_equal_to_the_retained_bases": true,
       "exceptional_charts_base_free": true,
       "exceptional_charts_nonempty": [
        true,
@@ -1645,21 +1949,44 @@
       "pass": true,
       "phi_has_no_zero_on_E": true,
       "pivot_pfaffian_is_a_unit": true,
+      "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+      "real_nullity_off_the_basepoint": 8,
       "real_nullity_upper_bound": 8,
       "schur_coordinate_count_matches_kernel_dimension": true,
+      "schur_entry_forms": {
+       "first_order_effective_form": {
+        "entry_forms": 15,
+        "entry_forms_complete": true,
+        "first_pfaffian_outside_the_ideal": null,
+        "matrix_size": 6,
+        "rank_four_pfaffians": 15,
+        "rank_four_pfaffians_outside_the_tangent_cone_ideal": 0,
+        "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+        "residues_are_the_images_of_the_q_i_rows": true,
+        "retained_basis_rows_are_entry_forms_at_their_indices": true
+       },
+       "holomorphic_schur_leading_form": {
+        "entry_forms": 21,
+        "entry_forms_complete": true,
+        "first_pfaffian_outside_the_ideal": null,
+        "matrix_size": 7,
+        "rank_four_pfaffians": 35,
+        "rank_four_pfaffians_outside_the_tangent_cone_ideal": 0,
+        "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+        "residues_are_the_images_of_the_q_i_rows": true,
+        "retained_basis_rows_are_entry_forms_at_their_indices": true
+       }
+      },
+      "schur_form_rank": 2,
       "schur_form_rank_lower_bound": 2
      },
      "field_specific": {
-      "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero near E and its rank is exactly the first-order rank wherever the Pfaffian ideal contains the higher terms",
       "pass": true,
-      "rank_four_pfaffians_vanish_carried_from_retained_exact_runs": {
+      "rank_four_pfaffians_vanish_in_the_retained_exact_runs": {
        "2c_effective_form_run": true,
        "2i_rational_run": true
       },
-      "real_nullity_off_the_basepoint": 8,
-      "reason": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here",
-      "recomputed_here": false,
-      "schur_form_rank": 2
+      "retained_runs_agree_with_the_recomputation": true
      },
      "pass": true
     },
@@ -1773,11 +2100,8 @@
    },
    "incidence": "W8->B9",
    "modular_certificate_0_field_specific": {
-    "not_decided": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here; the 2i modular run is modulo 32003, not 32009",
     "pass": null,
-    "rank_four_pfaffians_vanish": null,
-    "real_nullity_off_the_basepoint": null,
-    "schur_form_rank": null
+    "retained_exact_runs": "none in this characteristic: the 2i modular run is modulo 32003, not 32009"
    },
    "modular_certificates_equal_gaussian_where_both_decide": true,
    "mutation_controls": [
@@ -1890,7 +2214,47 @@
      "detected": true,
      "field": "Q(i)",
      "incidence": "W8->B9",
-     "mutation": "tamper_the_carried_pfaffian_flag"
+     "mutation": "retained_pfaffian_flag_contradicts_the_recomputation"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 0,
+     "field": "Q(i)",
+     "incidence": "W8->B9",
+     "mutation": "alter_a_schur_entry_form_holomorphic_schur_leading_form",
+     "pfaffians_leaving_the_ideal": 4,
+     "retained_basis_rows_unchanged": true,
+     "variable": 1
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 1,
+     "field": "Q(i)",
+     "incidence": "W8->B9",
+     "mutation": "alter_a_schur_entry_form_first_order_effective_form",
+     "pfaffians_leaving_the_ideal": 3,
+     "retained_basis_rows_unchanged": true,
+     "variable": 1
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 0,
+     "field": "Q(i)",
+     "incidence": "W8->B9",
+     "mutation": "drop_a_schur_entry_form_holomorphic_schur_leading_form"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 1,
+     "field": "Q(i)",
+     "incidence": "W8->B9",
+     "mutation": "drop_a_schur_entry_form_first_order_effective_form"
     },
     {
      "all_kernel_points_on_the_cone": true,
@@ -1995,6 +2359,46 @@
      "incidence": "W8->B9",
      "mutation": "tamper_the_recorded_bordered_rank",
      "real_nullity_upper_bound": 10
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 0,
+     "field": "F_32009",
+     "incidence": "W8->B9",
+     "mutation": "alter_a_schur_entry_form_holomorphic_schur_leading_form",
+     "pfaffians_leaving_the_ideal": 4,
+     "retained_basis_rows_unchanged": true,
+     "variable": 1
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 1,
+     "field": "F_32009",
+     "incidence": "W8->B9",
+     "mutation": "alter_a_schur_entry_form_first_order_effective_form",
+     "pfaffians_leaving_the_ideal": 3,
+     "retained_basis_rows_unchanged": true,
+     "variable": 1
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 0,
+     "field": "F_32009",
+     "incidence": "W8->B9",
+     "mutation": "drop_a_schur_entry_form_holomorphic_schur_leading_form"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 1,
+     "field": "F_32009",
+     "incidence": "W8->B9",
+     "mutation": "drop_a_schur_entry_form_first_order_effective_form"
     },
     {
      "detected": true,
@@ -2115,6 +2519,7 @@
       "bordered_kernel_dimension_at_the_boundary": 6,
       "cone_point_lies_on_the_tangent_cone": true,
       "degeneracy_locus_empty_matches_2c": true,
+      "entry_forms_complete_and_equal_to_the_retained_bases": true,
       "exceptional_charts_base_free": true,
       "exceptional_charts_nonempty": [
        false,
@@ -2129,21 +2534,44 @@
       "pass": true,
       "phi_has_no_zero_on_E": true,
       "pivot_pfaffian_is_a_unit": true,
+      "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+      "real_nullity_off_the_basepoint": 8,
       "real_nullity_upper_bound": 8,
       "schur_coordinate_count_matches_kernel_dimension": true,
+      "schur_entry_forms": {
+       "first_order_effective_form": {
+        "entry_forms": 15,
+        "entry_forms_complete": true,
+        "first_pfaffian_outside_the_ideal": null,
+        "matrix_size": 6,
+        "rank_four_pfaffians": 15,
+        "rank_four_pfaffians_outside_the_tangent_cone_ideal": 0,
+        "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+        "residues_are_the_images_of_the_q_i_rows": true,
+        "retained_basis_rows_are_entry_forms_at_their_indices": true
+       },
+       "holomorphic_schur_leading_form": {
+        "entry_forms": 21,
+        "entry_forms_complete": true,
+        "first_pfaffian_outside_the_ideal": null,
+        "matrix_size": 7,
+        "rank_four_pfaffians": 35,
+        "rank_four_pfaffians_outside_the_tangent_cone_ideal": 0,
+        "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+        "residues_are_the_images_of_the_q_i_rows": true,
+        "retained_basis_rows_are_entry_forms_at_their_indices": true
+       }
+      },
+      "schur_form_rank": 2,
       "schur_form_rank_lower_bound": 2
      },
      "field_specific": {
-      "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero near E and its rank is exactly the first-order rank wherever the Pfaffian ideal contains the higher terms",
       "pass": true,
-      "rank_four_pfaffians_vanish_carried_from_retained_exact_runs": {
+      "rank_four_pfaffians_vanish_in_the_retained_exact_runs": {
        "2c_effective_form_run": true,
        "2i_rational_run": true
       },
-      "real_nullity_off_the_basepoint": 8,
-      "reason": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here",
-      "recomputed_here": false,
-      "schur_form_rank": 2
+      "retained_runs_agree_with_the_recomputation": true
      },
      "pass": true
     },
@@ -2257,11 +2685,8 @@
    },
    "incidence": "X+->B9",
    "modular_certificate_0_field_specific": {
-    "not_decided": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here; the 2i modular run is modulo 32003, not 32009",
     "pass": null,
-    "rank_four_pfaffians_vanish": null,
-    "real_nullity_off_the_basepoint": null,
-    "schur_form_rank": null
+    "retained_exact_runs": "none in this characteristic: the 2i modular run is modulo 32003, not 32009"
    },
    "modular_certificates_equal_gaussian_where_both_decide": true,
    "mutation_controls": [
@@ -2374,7 +2799,47 @@
      "detected": true,
      "field": "Q(i)",
      "incidence": "X+->B9",
-     "mutation": "tamper_the_carried_pfaffian_flag"
+     "mutation": "retained_pfaffian_flag_contradicts_the_recomputation"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 0,
+     "field": "Q(i)",
+     "incidence": "X+->B9",
+     "mutation": "alter_a_schur_entry_form_holomorphic_schur_leading_form",
+     "pfaffians_leaving_the_ideal": 2,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 1,
+     "field": "Q(i)",
+     "incidence": "X+->B9",
+     "mutation": "alter_a_schur_entry_form_first_order_effective_form",
+     "pfaffians_leaving_the_ideal": 2,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 0,
+     "field": "Q(i)",
+     "incidence": "X+->B9",
+     "mutation": "drop_a_schur_entry_form_holomorphic_schur_leading_form"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 1,
+     "field": "Q(i)",
+     "incidence": "X+->B9",
+     "mutation": "drop_a_schur_entry_form_first_order_effective_form"
     },
     {
      "all_kernel_points_on_the_cone": true,
@@ -2479,6 +2944,46 @@
      "incidence": "X+->B9",
      "mutation": "tamper_the_recorded_bordered_rank",
      "real_nullity_upper_bound": 10
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 0,
+     "field": "F_32009",
+     "incidence": "X+->B9",
+     "mutation": "alter_a_schur_entry_form_holomorphic_schur_leading_form",
+     "pfaffians_leaving_the_ideal": 2,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 1,
+     "field": "F_32009",
+     "incidence": "X+->B9",
+     "mutation": "alter_a_schur_entry_form_first_order_effective_form",
+     "pfaffians_leaving_the_ideal": 2,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 0,
+     "field": "F_32009",
+     "incidence": "X+->B9",
+     "mutation": "drop_a_schur_entry_form_holomorphic_schur_leading_form"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 1,
+     "field": "F_32009",
+     "incidence": "X+->B9",
+     "mutation": "drop_a_schur_entry_form_first_order_effective_form"
     },
     {
      "detected": true,
@@ -2599,6 +3104,7 @@
       "bordered_kernel_dimension_at_the_boundary": 6,
       "cone_point_lies_on_the_tangent_cone": true,
       "degeneracy_locus_empty_matches_2c": true,
+      "entry_forms_complete_and_equal_to_the_retained_bases": true,
       "exceptional_charts_base_free": true,
       "exceptional_charts_nonempty": [
        false,
@@ -2615,21 +3121,44 @@
       "pass": true,
       "phi_has_no_zero_on_E": true,
       "pivot_pfaffian_is_a_unit": true,
+      "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+      "real_nullity_off_the_basepoint": 8,
       "real_nullity_upper_bound": 8,
       "schur_coordinate_count_matches_kernel_dimension": true,
+      "schur_entry_forms": {
+       "first_order_effective_form": {
+        "entry_forms": 15,
+        "entry_forms_complete": true,
+        "first_pfaffian_outside_the_ideal": null,
+        "matrix_size": 6,
+        "rank_four_pfaffians": 15,
+        "rank_four_pfaffians_outside_the_tangent_cone_ideal": 0,
+        "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+        "residues_are_the_images_of_the_q_i_rows": true,
+        "retained_basis_rows_are_entry_forms_at_their_indices": true
+       },
+       "holomorphic_schur_leading_form": {
+        "entry_forms": 21,
+        "entry_forms_complete": true,
+        "first_pfaffian_outside_the_ideal": null,
+        "matrix_size": 7,
+        "rank_four_pfaffians": 35,
+        "rank_four_pfaffians_outside_the_tangent_cone_ideal": 0,
+        "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+        "residues_are_the_images_of_the_q_i_rows": true,
+        "retained_basis_rows_are_entry_forms_at_their_indices": true
+       }
+      },
+      "schur_form_rank": 2,
       "schur_form_rank_lower_bound": 2
      },
      "field_specific": {
-      "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero near E and its rank is exactly the first-order rank wherever the Pfaffian ideal contains the higher terms",
       "pass": true,
-      "rank_four_pfaffians_vanish_carried_from_retained_exact_runs": {
+      "rank_four_pfaffians_vanish_in_the_retained_exact_runs": {
        "2c_effective_form_run": true,
        "2i_rational_run": true
       },
-      "real_nullity_off_the_basepoint": 8,
-      "reason": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here",
-      "recomputed_here": false,
-      "schur_form_rank": 2
+      "retained_runs_agree_with_the_recomputation": true
      },
      "pass": true
     },
@@ -2774,11 +3303,8 @@
    },
    "incidence": "X+->Va+",
    "modular_certificate_0_field_specific": {
-    "not_decided": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here; the 2i modular run is modulo 32003, not 32009",
     "pass": null,
-    "rank_four_pfaffians_vanish": null,
-    "real_nullity_off_the_basepoint": null,
-    "schur_form_rank": null
+    "retained_exact_runs": "none in this characteristic: the 2i modular run is modulo 32003, not 32009"
    },
    "modular_certificates_equal_gaussian_where_both_decide": true,
    "mutation_controls": [
@@ -2945,7 +3471,47 @@
      "detected": true,
      "field": "Q(i)",
      "incidence": "X+->Va+",
-     "mutation": "tamper_the_carried_pfaffian_flag"
+     "mutation": "retained_pfaffian_flag_contradicts_the_recomputation"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 0,
+     "field": "Q(i)",
+     "incidence": "X+->Va+",
+     "mutation": "alter_a_schur_entry_form_holomorphic_schur_leading_form",
+     "pfaffians_leaving_the_ideal": 8,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 5,
+     "field": "Q(i)",
+     "incidence": "X+->Va+",
+     "mutation": "alter_a_schur_entry_form_first_order_effective_form",
+     "pfaffians_leaving_the_ideal": 5,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 0,
+     "field": "Q(i)",
+     "incidence": "X+->Va+",
+     "mutation": "drop_a_schur_entry_form_holomorphic_schur_leading_form"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 5,
+     "field": "Q(i)",
+     "incidence": "X+->Va+",
+     "mutation": "drop_a_schur_entry_form_first_order_effective_form"
     },
     {
      "all_kernel_points_on_the_cone": true,
@@ -3106,6 +3672,46 @@
      "real_nullity_upper_bound": 10
     },
     {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 0,
+     "field": "F_32009",
+     "incidence": "X+->Va+",
+     "mutation": "alter_a_schur_entry_form_holomorphic_schur_leading_form",
+     "pfaffians_leaving_the_ideal": 8,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 5,
+     "field": "F_32009",
+     "incidence": "X+->Va+",
+     "mutation": "alter_a_schur_entry_form_first_order_effective_form",
+     "pfaffians_leaving_the_ideal": 5,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 0,
+     "field": "F_32009",
+     "incidence": "X+->Va+",
+     "mutation": "drop_a_schur_entry_form_holomorphic_schur_leading_form"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 5,
+     "field": "F_32009",
+     "incidence": "X+->Va+",
+     "mutation": "drop_a_schur_entry_form_first_order_effective_form"
+    },
+    {
      "detected": true,
      "field": "F_32009",
      "incidence": "X+->Va+",
@@ -3234,6 +3840,7 @@
       "bordered_kernel_dimension_at_the_boundary": 6,
       "cone_point_lies_on_the_tangent_cone": true,
       "degeneracy_locus_empty_matches_2c": true,
+      "entry_forms_complete_and_equal_to_the_retained_bases": true,
       "exceptional_charts_base_free": true,
       "exceptional_charts_nonempty": [
        false,
@@ -3248,21 +3855,44 @@
       "pass": true,
       "phi_has_no_zero_on_E": true,
       "pivot_pfaffian_is_a_unit": true,
+      "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+      "real_nullity_off_the_basepoint": 8,
       "real_nullity_upper_bound": 8,
       "schur_coordinate_count_matches_kernel_dimension": true,
+      "schur_entry_forms": {
+       "first_order_effective_form": {
+        "entry_forms": 15,
+        "entry_forms_complete": true,
+        "first_pfaffian_outside_the_ideal": null,
+        "matrix_size": 6,
+        "rank_four_pfaffians": 15,
+        "rank_four_pfaffians_outside_the_tangent_cone_ideal": 0,
+        "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+        "residues_are_the_images_of_the_q_i_rows": true,
+        "retained_basis_rows_are_entry_forms_at_their_indices": true
+       },
+       "holomorphic_schur_leading_form": {
+        "entry_forms": 21,
+        "entry_forms_complete": true,
+        "first_pfaffian_outside_the_ideal": null,
+        "matrix_size": 7,
+        "rank_four_pfaffians": 35,
+        "rank_four_pfaffians_outside_the_tangent_cone_ideal": 0,
+        "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+        "residues_are_the_images_of_the_q_i_rows": true,
+        "retained_basis_rows_are_entry_forms_at_their_indices": true
+       }
+      },
+      "schur_form_rank": 2,
       "schur_form_rank_lower_bound": 2
      },
      "field_specific": {
-      "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero near E and its rank is exactly the first-order rank wherever the Pfaffian ideal contains the higher terms",
       "pass": true,
-      "rank_four_pfaffians_vanish_carried_from_retained_exact_runs": {
+      "rank_four_pfaffians_vanish_in_the_retained_exact_runs": {
        "2c_effective_form_run": true,
        "2i_rational_run": true
       },
-      "real_nullity_off_the_basepoint": 8,
-      "reason": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here",
-      "recomputed_here": false,
-      "schur_form_rank": 2
+      "retained_runs_agree_with_the_recomputation": true
      },
      "pass": true
     },
@@ -3376,11 +4006,8 @@
    },
    "incidence": "X-->B9",
    "modular_certificate_0_field_specific": {
-    "not_decided": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here; the 2i modular run is modulo 32003, not 32009",
     "pass": null,
-    "rank_four_pfaffians_vanish": null,
-    "real_nullity_off_the_basepoint": null,
-    "schur_form_rank": null
+    "retained_exact_runs": "none in this characteristic: the 2i modular run is modulo 32003, not 32009"
    },
    "modular_certificates_equal_gaussian_where_both_decide": true,
    "mutation_controls": [
@@ -3493,7 +4120,47 @@
      "detected": true,
      "field": "Q(i)",
      "incidence": "X-->B9",
-     "mutation": "tamper_the_carried_pfaffian_flag"
+     "mutation": "retained_pfaffian_flag_contradicts_the_recomputation"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 0,
+     "field": "Q(i)",
+     "incidence": "X-->B9",
+     "mutation": "alter_a_schur_entry_form_holomorphic_schur_leading_form",
+     "pfaffians_leaving_the_ideal": 2,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 1,
+     "field": "Q(i)",
+     "incidence": "X-->B9",
+     "mutation": "alter_a_schur_entry_form_first_order_effective_form",
+     "pfaffians_leaving_the_ideal": 2,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 0,
+     "field": "Q(i)",
+     "incidence": "X-->B9",
+     "mutation": "drop_a_schur_entry_form_holomorphic_schur_leading_form"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 1,
+     "field": "Q(i)",
+     "incidence": "X-->B9",
+     "mutation": "drop_a_schur_entry_form_first_order_effective_form"
     },
     {
      "all_kernel_points_on_the_cone": true,
@@ -3598,6 +4265,46 @@
      "incidence": "X-->B9",
      "mutation": "tamper_the_recorded_bordered_rank",
      "real_nullity_upper_bound": 10
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 0,
+     "field": "F_32009",
+     "incidence": "X-->B9",
+     "mutation": "alter_a_schur_entry_form_holomorphic_schur_leading_form",
+     "pfaffians_leaving_the_ideal": 2,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 1,
+     "field": "F_32009",
+     "incidence": "X-->B9",
+     "mutation": "alter_a_schur_entry_form_first_order_effective_form",
+     "pfaffians_leaving_the_ideal": 2,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 0,
+     "field": "F_32009",
+     "incidence": "X-->B9",
+     "mutation": "drop_a_schur_entry_form_holomorphic_schur_leading_form"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 1,
+     "field": "F_32009",
+     "incidence": "X-->B9",
+     "mutation": "drop_a_schur_entry_form_first_order_effective_form"
     },
     {
      "detected": true,
@@ -3718,6 +4425,7 @@
       "bordered_kernel_dimension_at_the_boundary": 6,
       "cone_point_lies_on_the_tangent_cone": true,
       "degeneracy_locus_empty_matches_2c": true,
+      "entry_forms_complete_and_equal_to_the_retained_bases": true,
       "exceptional_charts_base_free": true,
       "exceptional_charts_nonempty": [
        false,
@@ -3734,21 +4442,44 @@
       "pass": true,
       "phi_has_no_zero_on_E": true,
       "pivot_pfaffian_is_a_unit": true,
+      "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+      "real_nullity_off_the_basepoint": 8,
       "real_nullity_upper_bound": 8,
       "schur_coordinate_count_matches_kernel_dimension": true,
+      "schur_entry_forms": {
+       "first_order_effective_form": {
+        "entry_forms": 15,
+        "entry_forms_complete": true,
+        "first_pfaffian_outside_the_ideal": null,
+        "matrix_size": 6,
+        "rank_four_pfaffians": 15,
+        "rank_four_pfaffians_outside_the_tangent_cone_ideal": 0,
+        "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+        "residues_are_the_images_of_the_q_i_rows": true,
+        "retained_basis_rows_are_entry_forms_at_their_indices": true
+       },
+       "holomorphic_schur_leading_form": {
+        "entry_forms": 21,
+        "entry_forms_complete": true,
+        "first_pfaffian_outside_the_ideal": null,
+        "matrix_size": 7,
+        "rank_four_pfaffians": 35,
+        "rank_four_pfaffians_outside_the_tangent_cone_ideal": 0,
+        "rank_four_pfaffians_vanish_on_the_tangent_cone": true,
+        "residues_are_the_images_of_the_q_i_rows": true,
+        "retained_basis_rows_are_entry_forms_at_their_indices": true
+       }
+      },
+      "schur_form_rank": 2,
       "schur_form_rank_lower_bound": 2
      },
      "field_specific": {
-      "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero near E and its rank is exactly the first-order rank wherever the Pfaffian ideal contains the higher terms",
       "pass": true,
-      "rank_four_pfaffians_vanish_carried_from_retained_exact_runs": {
+      "rank_four_pfaffians_vanish_in_the_retained_exact_runs": {
        "2c_effective_form_run": true,
        "2i_rational_run": true
       },
-      "real_nullity_off_the_basepoint": 8,
-      "reason": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here",
-      "recomputed_here": false,
-      "schur_form_rank": 2
+      "retained_runs_agree_with_the_recomputation": true
      },
      "pass": true
     },
@@ -3893,11 +4624,8 @@
    },
    "incidence": "X-->Va-",
    "modular_certificate_0_field_specific": {
-    "not_decided": "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here; the 2i modular run is modulo 32003, not 32009",
     "pass": null,
-    "rank_four_pfaffians_vanish": null,
-    "real_nullity_off_the_basepoint": null,
-    "schur_form_rank": null
+    "retained_exact_runs": "none in this characteristic: the 2i modular run is modulo 32003, not 32009"
    },
    "modular_certificates_equal_gaussian_where_both_decide": true,
    "mutation_controls": [
@@ -4064,7 +4792,47 @@
      "detected": true,
      "field": "Q(i)",
      "incidence": "X-->Va-",
-     "mutation": "tamper_the_carried_pfaffian_flag"
+     "mutation": "retained_pfaffian_flag_contradicts_the_recomputation"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 0,
+     "field": "Q(i)",
+     "incidence": "X-->Va-",
+     "mutation": "alter_a_schur_entry_form_holomorphic_schur_leading_form",
+     "pfaffians_leaving_the_ideal": 8,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 5,
+     "field": "Q(i)",
+     "incidence": "X-->Va-",
+     "mutation": "alter_a_schur_entry_form_first_order_effective_form",
+     "pfaffians_leaving_the_ideal": 5,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 0,
+     "field": "Q(i)",
+     "incidence": "X-->Va-",
+     "mutation": "drop_a_schur_entry_form_holomorphic_schur_leading_form"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 5,
+     "field": "Q(i)",
+     "incidence": "X-->Va-",
+     "mutation": "drop_a_schur_entry_form_first_order_effective_form"
     },
     {
      "all_kernel_points_on_the_cone": true,
@@ -4225,6 +4993,46 @@
      "real_nullity_upper_bound": 10
     },
     {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 0,
+     "field": "F_32009",
+     "incidence": "X-->Va-",
+     "mutation": "alter_a_schur_entry_form_holomorphic_schur_leading_form",
+     "pfaffians_leaving_the_ideal": 8,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_index": 5,
+     "field": "F_32009",
+     "incidence": "X-->Va-",
+     "mutation": "alter_a_schur_entry_form_first_order_effective_form",
+     "pfaffians_leaving_the_ideal": 5,
+     "retained_basis_rows_unchanged": true,
+     "variable": 2
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 0,
+     "field": "F_32009",
+     "incidence": "X-->Va-",
+     "mutation": "drop_a_schur_entry_form_holomorphic_schur_leading_form"
+    },
+    {
+     "baseline_certificate_0_passes": true,
+     "detected": true,
+     "entry_forms_complete": false,
+     "entry_index": 5,
+     "field": "F_32009",
+     "incidence": "X-->Va-",
+     "mutation": "drop_a_schur_entry_form_first_order_effective_form"
+    },
+    {
      "detected": true,
      "field": "F_32009",
      "incidence": "X-->Va-",
@@ -4347,28 +5155,29 @@
   }
  ],
  "inferred": [
+  "the passage from the first-order form to the germ: the form is its first-order part plus O(|z|^2) and the first-order part is bounded below on the unit sphere of the cone, so the form stays nonzero near E and its rank is the first-order rank, exactly two; the record decides the first-order rank and nullity",
   "the germ of E8-bar to B9 is analytically the A_1 cone (holomorphic Morse lemma) and the other germs are analytically their tangent cones",
   "the identification of the actual germ link L with the unit circle bundle of O_E(-1) through the radial deformation of kappa on the link to phi o p, which gives the attaching datum its homotopy class; the record computes the circle-bundle model"
  ],
  "inputs": {
-  "attaching_maps_resolved.py": "89dc2c98cac24b27fdd28706c49a6529ad965f871745854657383ad644f21498",
+  "attaching_maps_resolved.py": "79cb7e0167769c2658b23a06fac906748f1bab77e05c082c6a0725ec53fc4792",
   "first-order-normal-cones-result.json": "0173462891d377fcf50cd7a88f923ecf8648011f8a0e91cc39a11b32f59d3d49",
   "holomorphic-gauss-fibers-result.json": "4dbd90b752b1c4107f547036b2cf7950c9783c6291f4f1e2a3c8dabd94211d98",
   "path-supported-basepoints-result.json": "eeeb5a03c7ef0cf574d92e4f5aac85a34c3b873102a12be89aa716deeedd813c",
-  "real-limit-sets-result.json": "df69cf22229c8d3e5d9f68322e828f5345ac08b888e2dadc75ab5d144d1a4f08"
+  "real-limit-sets-result.json": "df69cf22229c8d3e5d9f68322e828f5345ac08b888e2dadc75ab5d144d1a4f08",
+  "schur-entry-forms-result.json": "1a66d120615de900e71cdc97521e97d6b09e204e234c5c123058cc9cd98ff188"
  },
- "not_recomputed": [
-  "the vanishing of the rank-four Pfaffians of the Schur form, and with it the exact rank two of the form and the real nullity 8: the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here. Over Q(i) the flags of the 2i rational run and the 2c effective-form run are carried and labeled; modulo 32009 the claim is narrowed to the lower bound rank >= 2 (nullity at most 8), since the 2i modular run is modulo 32003"
- ],
+ "not_recomputed": [],
  "pass": true,
  "prime": 32009,
- "schema": "gororoba.a5.attaching-maps-resolved/1",
+ "schema": "gororoba.a5.attaching-maps-resolved/2",
  "square_root_of_minus_one": 10754,
  "summary": {
   "certificates_pass": true,
+  "entry_forms_read_from_the_current_retained_records": true,
   "incidence_count": 8,
-  "mutation_controls": 180,
-  "mutation_controls_detected": 180,
+  "mutation_controls": 244,
+  "mutation_controls_detected": 244,
   "predictions_applicable": 59,
   "predictions_hold": true,
   "predictions_not_applicable": 13
