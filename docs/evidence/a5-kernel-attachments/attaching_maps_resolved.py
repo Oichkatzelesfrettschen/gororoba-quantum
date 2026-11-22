@@ -953,7 +953,7 @@ PFAFFIAN_UNDECIDED = (
 def decide_nullity(
     field: Field, task: Task, cone: Cone, rows_h: Sequence[Vector], rows_c: Sequence[Vector]
 ) -> dict[str, Any]:
-    """Certificate 0: what the retained inputs decide in this field, and what is carried from the exact 2i and 2c runs."""
+    """Certificate 0: what the retained inputs decide in this field, and what the exact 2i and 2c runs carry."""
     schur = task.holomorphic["c_schur_complement"]
     blowup = task.holomorphic["explicit_blowup"]
     pivot = gaussian_from_record(field, schur["pivot_pfaffian_at_origin"])
@@ -1259,7 +1259,7 @@ def rank_two_quadratic_part(field: Field, task: Task) -> dict[str, Any]:
 
 
 def flip_a_table_entry(field: Field, task: Task) -> dict[str, Any]:
-    """Mutation: the program table predicts a germ dimension one too large; the row must fail on the prediction alone."""
+    """Mutation: the table predicts a germ dimension one too large; the row must fail on the prediction alone."""
     table = dict(PREDICTED[task.incidence])
     table["germ_dimension"] = table["germ_dimension"] + 1
     certificates = analyze(field, task)
@@ -1312,7 +1312,7 @@ def first_generator_variable(generators: Sequence[str]) -> int:
 
 
 def perturb_a_phi_row(field: Field, task: Task, label: str) -> dict[str, Any]:
-    """Mutation: add to the coordinate that the first image generator sets to zero a coordinate that does not vanish on E."""
+    """Mutation: add a coordinate that does not vanish on E to the coordinate the first image generator zeroes."""
     cone = build_cone(field, task)
     rows = phi_from_holomorphic(field, task) if label == "holomorphic_2i" else phi_from_first_order(field, task)
     generators = (
@@ -1346,7 +1346,7 @@ def perturb_a_phi_row(field: Field, task: Task, label: str) -> dict[str, Any]:
 
 
 def drop_an_image_generator(field: Field, task: Task) -> dict[str, Any]:
-    """Mutation: delete the first 2i image generator; the generators still vanish on E but no longer cut out its image."""
+    """Mutation: delete the first 2i image generator; the rest vanish on E but no longer cut out its image."""
     kept = list(task.holomorphic["explicit_blowup"]["rational"]["image_generators"])[1:]
     certificates = analyze(field, task, generators_h=kept)
     mapped = certificates["certificate_2_linear_injective_phi"]
