@@ -9,7 +9,7 @@ a prime p and a root r of -1 modulo p; the retained v2 runs cover (32009, 10754)
 
 | Cell | Quotient colon, cloud VM (`NAME.v3-u-full`) | Modulo colon, Arm host (`modulo-colon/NAME.v4m-u-full`) |
 |---|---|---|
-| N- (32009, 21255) | 19 h 20 min 59 s, 555 MB | 7 h 21 min 57 s, 641 MB |
+| N- (32009, 21255) | 19 h 20 min 59 s, 555 MB | 7 h 21 min 57 s, 705 MB |
 | N+ (32009, 21255) | 17 h 10 min 5 s, 527 MB | 5 h 50 min 8 s, 641 MB |
 | N- (32029, 9115) | 19 h 25 min 24 s, 555 MB | resumed run: colon 4 h 42 min from the first-stage basis, fiber stage 31 s |
 | N+ (32029, 9115) | 17 h 24 min 20 s, 527 MB | 5 h 50 min 8 s, 641 MB |
@@ -26,9 +26,10 @@ a prime p and a root r of -1 modulo p; the retained v2 runs cover (32009, 10754)
   VM with two short jobs; the Arm host ran four processes on four cores. The two columns therefore differ by host,
   by load and by method. The same-host comparison of one colon call is 578 s against 239 s on the bounded cell
   (`modulo-colon/y2-base.log`, `modulo-colon/y2-modstd.log`).
-- Relation lines of sign pairs: the 149 `REL` lines of N- at root -r equal those of N+ at root r at both primes (four
-  pairs, the retained (32009, 10754) logs included), so the quadric ideal K of a cell depends on the product of sign
-  and root. The logs of a pair differ in about 170 other lines.
+- Relation lines of sign pairs: the 148 `REL` lines of N- at root -r equal those of N+ at root r at both primes (four
+  pairs, the retained (32009, 10754) logs included), so on these eight cells the quadric ideal K depends on the
+  product of sign and root. The runs of a pair are distinct computations: the Rees-stage basis has 5955 elements
+  for every N+ run and 6139 for every N- run.
 
 ## Modulo colon
 
@@ -37,9 +38,13 @@ HS. The `v4m` scripts replace that one call by `module MQ=modulo(ideal(u),HS); Q
 computes the same ideal HS : u as the kernel of multiplication by u on R/HS. The loop, its end test and every later
 line are unchanged.
 
-- Equality on retained bytes: for the four cells with both runs, the first-stage basis file and the saturated basis
+- Equality on recorded digests: for the four cells with both runs, the first-stage basis file and the saturated basis
   file of the modulo run have the sha256 of the files of the quotient run (`bases.sha256`, `modulo-colon/bases.sha256`),
-  across the two architectures (x86-64 and aarch64 builds of Singular 4.4.1).
+  across the two architectures (x86-64 and aarch64 builds of Singular 4.4.1). The saturated file is written after
+  the colon loop and is the evidence for the colon; the first-stage file precedes the loop and shows equal inputs.
+  The basis files are not retained, and the digests were recorded on the run hosts outside the logs.
+- The identity holds for the principal ideal (u): `modulo(ideal(u),HS)` is the module of g with g*u in HS. For an
+  ideal with two or more generators the same pattern returns another ideal (for HS = (x) and (x, y) it returns (1)).
 - `modulo-colon/np-modstd`: on the retained first-stage basis of the N+ (32009, 10754) run, the two colons by modulo
   and the std between them take 5,785 s, 2,345 s and 4,953 s; the result reduces to zero modulo the retained saturated
   basis and conversely, and the second colon adds nothing (`CHECK fixpoint_bad 0`). The basis files are not retained;
@@ -63,7 +68,7 @@ From `docs/evidence/a5-exceptional-fibers`:
     python -B working/runs/e8-rees-fibers-v3-open-cells/check_open_cells.py
     python -B working/runs/e8-rees-fibers-v3-open-cells/check_open_cells.py --self-test
 
-Both verdicts read PASS (Python 3.14.4, measured on the Arm host). The self-test feeds eight known-bad variants of one
+Both verdicts read PASS (Python 3.14.4, measured on the Arm host). The self-test feeds fifteen known-bad variants of one
 log to the verdict (generator count, exit status, failure marker, Singular error line, numerator, inclusion, script
 digest, truncation) and requires each to fail. `run2.sh` is the launcher of the cloud runs; `sha256.txt` lists every
 file.

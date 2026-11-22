@@ -74,6 +74,9 @@ def scripts() -> dict[str, str]:
 
 def main(argv: list[str]) -> int:
     mode = argv[1] if len(argv) > 1 else "--check"
+    if mode not in ("--check", "--write") or len(argv) > 2:
+        print("usage: render_cells.py [--check | --write]")
+        return 2
     bad = 0
     for name, text in scripts().items():
         path = HERE / f"{name}.sing"
