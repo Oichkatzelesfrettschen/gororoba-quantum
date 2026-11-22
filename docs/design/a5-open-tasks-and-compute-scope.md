@@ -37,8 +37,9 @@ the value K2 predicted before the run.
 Three findings bound the ladder's value. Every all-degree statement above came from geometry (arcs, component
 containment, blowup planes), never from a rung. The export cost grows about 1.36 times per order on VB with
 `slimgb` (12,150 s at N = 21, 16,500 s at N = 22 on the laptop), so N = 31, degree 10, extrapolates to about three
-days per prime for a value K2 already predicts. E8-bar -> N+- degree 6 is the one cell whose value is unknown.
-The ladder therefore stops at its present rungs except for that cell, and task 113 (W8 degree 6 at N = 19, a value
+days per prime for a value K2 already predicts. E8-bar -> N+- degree 6 was the one cell whose value was unknown;
+formal-arc jet ranks close it and the next degree without a rung (A5-335: h_6 = 1666; A5-339: h_7 = 2718; both over
+F_32009 and F_32029). The ladder therefore stops at its present rungs, and task 113 (W8 degree 6 at N = 19, a value
 A5-066 already proves, 129 to 223 GiB) is withdrawn (owner decision of 2026-11-10, ledger row A5-291).
 
 Three gaps separate the fiber record from item 6:

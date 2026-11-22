@@ -235,3 +235,5 @@ The [Garnet follow-up case review](garnet-followup-case/reconciliation.md) (pull
 reviewers' and one red-teamer's findings on [the brief](garnet-followup-case/brief.md) for
 `scripts/iqm_garnet_followup.py`, `gororoba_quantum/sedenion_sign_oracle.py` and the written case, fixed before
 the case spent credits.
+
+The [A5 task-closures review](a5-records-task-closures/README.md) (pull request 982) records four reviewers' findings on the Barrett-successor closure and the open clauses of task 127.
