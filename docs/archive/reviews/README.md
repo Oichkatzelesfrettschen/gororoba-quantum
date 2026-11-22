@@ -235,3 +235,5 @@ The [Garnet follow-up case review](garnet-followup-case/reconciliation.md) (pull
 reviewers' and one red-teamer's findings on [the brief](garnet-followup-case/brief.md) for
 `scripts/iqm_garnet_followup.py`, `gororoba_quantum/sedenion_sign_oracle.py` and the written case, fixed before
 the case spent credits.
+
+The [Emerald third-length case review](iqm-emerald-third-length-case/README.md) (pull request 986) records four rounds of findings on the written case, fixed before any submission.
