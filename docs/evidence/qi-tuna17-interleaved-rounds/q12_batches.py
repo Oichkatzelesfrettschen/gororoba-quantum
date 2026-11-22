@@ -22,6 +22,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import qi_tuna17_interleaved_cases as case  # noqa: E402
+
 from parallel import ordered_map  # noqa: E402
 
 RUNS = "results/quantum_inspire/runs"
