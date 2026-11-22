@@ -69,27 +69,43 @@ round's six points per qubit, through the analysis's own anchored points and fit
 - q1 fits a T of 2.7 to 3.0 us in every round, far below the other sixteen qubits (13.1 to 32.5 us), and fails every
   fit.
 
-## Open hypotheses, each with its test
+## Post-hoc tests of the replicate failure
 
-- hypothesis: T1 itself moves between jobs (two-level-system switching), rather than an additive level that shifts
-  each job. The two predict different replicate scatter: a moving T1 changes the excited population most near
-  t ~ T1, where its sensitivity (t/T1) exp(-t/T1) peaks, while a level shift scatters every multiplier alike. Test:
-  the replicate variance by multiplier (0.5 to 12 T) in the retained record, against the two profiles.
-- hypothesis: a disturbance common to all qubits of a batch drives much of the replicate failure. Test: the 17 by 18
-  matrix of anchored residuals, its leading component against batch and execution order.
-- hypothesis: the large ladder contrasts on q4 and q15 are coherent over-rotations that depend on which neighbors are
-  driven. Test: a fit of the retained 32, 128 and 256 pulse readings per context to an over-rotation, then the
-  single-qubit arm of [issue 941](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/941) on those two
-  qubits.
+`docs/evidence/qi-tuna17-interleaved-rounds/hypothesis_tests.py` states each prediction, falsifier and threshold in its
+docstring, passes a synthetic self-test with a planted positive and a planted null for each test, and then reads the
+retained series through the analysis's own functions (output `hypothesis_tests.json`). The tests decide nothing about
+the case's registered verdicts.
+
+- Moving T1 against an additive level shift. Through `anchored_point`, a per-job level shift tau adds replicate variance
+  in proportion to 1 + (1 - x)^2 + x^2, nonzero at every multiplier, while a T1 that moves between rounds adds
+  (dx/dT)^2 sigma_T^2, which vanishes at 8 and 12 T where x is near 0. Pooled over qubits, the replicate excess at 8 and
+  12 T reads Z 1.12 (34 terms): the level shift is falsified at its threshold of 3 and the moving T1 survives. By
+  multiplier the excess reads Z 2.96, 1.52, 3.73, 2.79, 0.43 and 1.04 at 0.5, 1, 2, 4, 8 and 12 T, present at the short
+  waits and absent at the long ones. Neither profile fits q1.
+- A disturbance common to all qubits of a batch. The leading eigenvalue fraction of the batch covariance of the
+  replicate residuals across the 17 qubits reads 0.276 against a permutation null (rounds permuted independently per
+  qubit within each multiplier, 10,000 permutations, seed from `docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json`
+  indices 0 to 3) with mean 0.287 and 99th percentile 0.363: p 0.63, so a batch-common disturbance is falsified.
+- Ladder over-rotation. With three pulse counts in ratio 1:4:8 at the record's standard errors, 18 percent of model
+  truths have an indistinguishable partner (the sign of the rotation and a shift by 2 pi / 32 leave the readings
+  unchanged), above the identifiability threshold of 10 percent: not decidable from the retained data. The single-qubit
+  arm of [issue 941](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/941) remains the test.
+
+What survives: the replicate failure reads as a T1 that moves between the rounds of the series, qubit by qubit and not
+as one disturbance across the chip, with the round split's three-qubit list (q0, q4, q14) a weaker reading of the same
+effect.
+
+hypothesis: two-level-system defects that switch on a scale of minutes set each qubit's T1. Test: repeated
+single-delay circuits near t ~ T1 on a few qubits over an hour, read as a time series of the excited population.
 
 ## Open
 
 - No claim cites the 30 acquisitions yet; the claim that interprets them is a later change.
 - The case sizes the single-drive follow-up for six of eight flagged qubits persisting; 15 distinct qubits flag here,
   so the follow-up of issue 941 needs its budget recomputed before it is proposed.
-- `scripts/qi_retained_context.py` still reads the 2026-11-16 characterization for each qubit's readout and implied
-  T1; this change regenerates its retained-context file for the new jobs. CASE.md asks the retaining change to read the
-  new analysis rows there; the interleaved fits are rejected on 16 of 17 qubits, so their T values would mislead the
-  dashboard, and that extension waits for a fit that passes.
+- `scripts/qi_retained_context.py` reads the new analysis rows, as CASE.md asks: each qubit row carries an additive
+  `interleaved_t1` (the fit's T with its verdict and the lack-of-fit and replicate probabilities, and a null error), and
+  the record's sources bind the analysis by sha256. The readout and implied-T1 figures the dashboard shows stay on the
+  2026-11-16 characterization; a reader labels an interleaved figure by its verdict and probabilities.
 - The account ledger snapshot of this change declares 84 jobs unretained, among them the null phase scan series of
   2026-11-21 and its QX twin, whose retention is a separate change.
