@@ -3,14 +3,16 @@
 The source closure of each incidence is complex-algebraic, so its transverse germ (Z, 0) at the retained basepoint has a
 link L = Z meet S_eps. One blow-up resolves the Gauss map kappa of Z minus 0, and on the exceptional divisor
 E = P(C_0 Z) it is the projectivized first-order map phi (rows 2c and 2i of the ledger). This producer reads only
-the four retained records of rows 2b (path-supported basepoints), 2c (first-order normal cones), 2i (holomorphic Schur
-blow-ups) and 2l (real limit sets), and certifies per incidence, exactly over Q(i) and over F_32009 (i = 10754):
+the five retained records of rows 2b (path-supported basepoints), 2c (first-order normal cones), 2i (holomorphic Schur
+blow-ups), 2l (real limit sets) and the successor of 2c and 2i that keeps every Schur-entry form
+(schur_entry_forms.py), and certifies per incidence, exactly over Q(i) and over F_32009 (i = 10754):
 
   0. the punctured germ has constant nullity 8: the pivot Pfaffian of the Schur block is a unit, phi has no zero on E
      (so every nonempty exceptional chart is base free and the Schur form is nonzero, of rank at least two, on the
-     punctured cone), and the real nullity is at most 8. The vanishing of the rank-four Pfaffians, which makes the
-     rank exactly two and the nullity exactly 8, needs entries of the Schur matrix that the retained records do not
-     hold; it is carried from the exact 2i and 2c runs over Q(i) and stays undecided modulo 32009;
+     punctured cone), and every rank-four Pfaffian of the 7 x 7 Schur form (35) and of the 6 x 6 effective form (15)
+     lies in the ideal of the tangent cone, so the first-order form has rank exactly two and the real nullity is
+     exactly 8. The Pfaffians are computed from all 21 and all 15 entry forms of the successor record in both
+     fields, and the retained 2i and 2c vanishing flags are compared with that decision over Q(i);
   1. the conical structure, decided from the generators: a linear space (smooth germs), the A_1 cone of E8-bar to B9
      (one quadric of rank 3 in the span of the linear generators), or the union of two linear components, for which
      the retained generators equal the ideal of the union in degrees 1 and 2, where that ideal is generated;
@@ -36,6 +38,7 @@ import argparse
 import ast
 import copy
 import hashlib
+import itertools
 import json
 import re
 import sys
@@ -51,12 +54,15 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import parallel  # noqa: E402
 
-SCHEMA = "gororoba.a5.attaching-maps-resolved/1"
+SCHEMA = "gororoba.a5.attaching-maps-resolved/2"
 RECORD = HERE / "attaching-maps-resolved-result.json"
 PATH_SUPPORTED = HERE / "path-supported-basepoints-result.json"
 FIRST_ORDER = HERE / "first-order-normal-cones-result.json"
 HOLOMORPHIC = HERE / "holomorphic-gauss-fibers-result.json"
 REAL_LIMITS = HERE / "real-limit-sets-result.json"
+SCHUR_FORMS = HERE / "schur-entry-forms-result.json"
+HOLOMORPHIC_FAMILY = "holomorphic_schur_leading_form"
+FIRST_ORDER_FAMILY = "first_order_effective_form"
 PRODUCER = HERE / "attaching_maps_resolved.py"
 INCIDENCES = (
     "E8bar->B9",
@@ -483,10 +489,11 @@ class Task:
     first_order: dict[str, Any]
     holomorphic: dict[str, Any]
     real_limits: dict[str, Any]
+    entry_forms: dict[str, Any]
 
 
 def tasks() -> list[Task]:
-    records = [load(path) for path in (PATH_SUPPORTED, FIRST_ORDER, HOLOMORPHIC, REAL_LIMITS)]
+    records = [load(path) for path in (PATH_SUPPORTED, FIRST_ORDER, HOLOMORPHIC, REAL_LIMITS, SCHUR_FORMS)]
     return [Task(name, *(entry(record, name) for record in records)) for name in INCIDENCES]
 
 
@@ -940,16 +947,119 @@ def on_cone(field: Field, cone: Cone, point: Vector) -> bool:
     return all(field.is_zero(evaluate(field, g, point)) for g in cone.generators)
 
 
-PFAFFIAN_UNDECIDED = (
-    "the rank-four Pfaffians need the full skew Schur matrix; the retained records hold only a basis of its entry "
-    "forms (the 2c record 7 of 15, the 2i record 7 of 21 coordinates), so the vanishing is not recomputable here"
-)
+def skew_matrix(rows: Sequence[Vector], size: int, field: Field) -> list[list[Poly]]:
+    """The skew matrix whose upper-triangle entries, row-major, are the linear forms with coefficient rows ROWS."""
+    matrix: list[list[Poly]] = [[{} for _ in range(size)] for _ in range(size)]
+    pairs = [(first, second) for first in range(size) for second in range(first + 1, size)]
+    _require(len(pairs) == len(rows), "the entry forms do not fill the skew matrix")
+    for (first, second), row in zip(pairs, rows, strict=True):
+        form: Poly = {}
+        for variable, coefficient in enumerate(row, start=1):
+            form = poly_add(field, form, {((variable, 1),): coefficient} if not field.is_zero(coefficient) else {})
+        matrix[first][second] = form
+        matrix[second][first] = poly_scale(field, form, field.neg(field.one))
+    return matrix
+
+
+def rank_four_pfaffians(field: Field, matrix: Sequence[Sequence[Poly]]) -> list[Poly]:
+    """Every principal 4 x 4 Pfaffian a_ab a_cd - a_ac a_bd + a_ad a_bc of a skew matrix of linear forms."""
+    minors: list[Poly] = []
+    for a, b, c, d in itertools.combinations(range(len(matrix)), 4):
+        first = poly_mul(field, matrix[a][b], matrix[c][d])
+        second = poly_mul(field, matrix[a][c], matrix[b][d])
+        third = poly_mul(field, matrix[a][d], matrix[b][c])
+        minors.append(poly_add(field, poly_add(field, first, poly_scale(field, second, field.neg(field.one))), third))
+    return minors
+
+
+class QuadricIdeal:
+    """The degree-2 part of the ideal generated by degree 1 and 2 forms, reduced once for many membership tests."""
+
+    def __init__(self, field: Field, generators: Sequence[Poly], width: int) -> None:
+        self.field = field
+        self.monomials = monomials_of_degree(width, 2)
+        part = ideal_part(field, generators, 2, width)
+        self.rows, self.pivots = rref(field, part, len(self.monomials)) if part else ([], [])
+
+    def contains(self, poly: Poly) -> bool:
+        if not poly:
+            return True
+        _require(poly_degrees(poly) == {2}, "a quadric tested for membership is not homogeneous of degree 2")
+        field = self.field
+        vector = poly_vector(field, poly, self.monomials)
+        for row, pivot in zip(self.rows, self.pivots, strict=True):
+            if not field.is_zero(vector[pivot]):
+                factor = vector[pivot]
+                vector = [field.sub(a, field.mul(factor, b)) for a, b in zip(vector, row, strict=True)]
+        return all(field.is_zero(entry) for entry in vector)
+
+
+def entry_rows(field: Field, task: Task, family: str) -> tuple[list[Vector], bool]:
+    """Every entry form of one skew matrix as coefficient rows in this field, and whether the residues are the
+    images of the Q(i) rows."""
+    data = task.entry_forms[family]
+    lifted = [[gaussian_from_record(field, pair) for pair in row] for row in data["q_i_rows"]]
+    if field.name == GAUSSIAN.name:
+        return lifted, True
+    stored = [[int(value) for value in row] for row in data["f_32009_rows"]]
+    return stored, stored == lifted
+
+
+def decide_family(field: Field, task: Task, cone: Cone, ideal: QuadricIdeal, family: str, size: int) -> dict[str, Any]:
+    """The complete skew matrix of one family, its retained basis rows, and its rank-four Pfaffians."""
+    data = task.entry_forms[family]
+    count = size * (size - 1) // 2
+    rows, residues_match = entry_rows(field, task, family)
+    if family == HOLOMORPHIC_FAMILY:
+        retained = phi_from_holomorphic(field, task)
+        retained_indices = task.holomorphic["c_schur_complement"]["independent_leading_coordinate_indices"]
+    else:
+        retained = phi_from_first_order(field, task)
+        retained_indices = task.first_order["effective_form"]["independent_upper_triangle_indices"]
+    complete = (
+        data["matrix_size"] == size
+        and data["entry_count"] == count
+        and len(rows) == count
+        and len(data["f_32009_rows"]) == count
+        and all(len(row) == cone.width for row in rows)
+    )
+    indices = data["retained_basis_indices"]
+    basis_is_retained = bool(
+        complete and indices == retained_indices and [rows[index] for index in indices] == [list(r) for r in retained]
+    )
+    result: dict[str, Any] = {
+        "matrix_size": size,
+        "entry_forms": len(rows),
+        "entry_forms_complete": complete,
+        "residues_are_the_images_of_the_q_i_rows": residues_match,
+        "retained_basis_rows_are_entry_forms_at_their_indices": basis_is_retained,
+    }
+    if not complete:
+        result.update(
+            {
+                "rank_four_pfaffians": None,
+                "rank_four_pfaffians_outside_the_tangent_cone_ideal": None,
+                "rank_four_pfaffians_vanish_on_the_tangent_cone": False,
+            }
+        )
+        return result
+    minors = rank_four_pfaffians(field, skew_matrix(rows, size, field))
+    outside = [index for index, minor in enumerate(minors) if not ideal.contains(minor)]
+    result.update(
+        {
+            "rank_four_pfaffians": len(minors),
+            "rank_four_pfaffians_outside_the_tangent_cone_ideal": len(outside),
+            "first_pfaffian_outside_the_ideal": outside[0] if outside else None,
+            "rank_four_pfaffians_vanish_on_the_tangent_cone": not outside,
+        }
+    )
+    return result
 
 
 def decide_nullity(
     field: Field, task: Task, cone: Cone, rows_h: Sequence[Vector], rows_c: Sequence[Vector]
 ) -> dict[str, Any]:
-    """Certificate 0: what the retained inputs decide in this field, and what the exact 2i and 2c runs carry."""
+    """Certificate 0: the punctured germ has constant nullity 8, in this field."""
     schur = task.holomorphic["c_schur_complement"]
     blowup = task.holomorphic["explicit_blowup"]
     pivot = gaussian_from_record(field, schur["pivot_pfaffian_at_origin"])
@@ -964,6 +1074,19 @@ def decide_nullity(
     recorded_nonempty = [chart["nonempty"] for chart in blowup["rational"]["charts"]]
     degeneracy_empty = task.first_order["degeneracy_locus"]["projective_dimension"] == -1
     rank_bound = 2 if injective and nonzero_at_point else 0
+    ideal = QuadricIdeal(field, cone.generators, cone.width)
+    families = {
+        HOLOMORPHIC_FAMILY: decide_family(field, task, cone, ideal, HOLOMORPHIC_FAMILY, 7),
+        FIRST_ORDER_FAMILY: decide_family(field, task, cone, ideal, FIRST_ORDER_FAMILY, 6),
+    }
+    entry_forms_sound = all(
+        family["entry_forms_complete"]
+        and family["residues_are_the_images_of_the_q_i_rows"]
+        and family["retained_basis_rows_are_entry_forms_at_their_indices"]
+        for family in families.values()
+    )
+    pfaffians_vanish = all(family["rank_four_pfaffians_vanish_on_the_tangent_cone"] for family in families.values())
+    exact_rank = 2 if rank_bound == 2 and entry_forms_sound and pfaffians_vanish else None
     decided = {
         "pivot_pfaffian_is_a_unit": not field.is_zero(pivot),
         "bordered_kernel_dimension_at_the_boundary": bordered_kernel,
@@ -977,6 +1100,11 @@ def decide_nullity(
         "degeneracy_locus_empty_matches_2c": degeneracy_empty == injective,
         "schur_form_rank_lower_bound": rank_bound,
         "real_nullity_upper_bound": 2 * (bordered_kernel - rank_bound),
+        "schur_entry_forms": families,
+        "entry_forms_complete_and_equal_to_the_retained_bases": entry_forms_sound,
+        "rank_four_pfaffians_vanish_on_the_tangent_cone": pfaffians_vanish,
+        "schur_form_rank": exact_rank,
+        "real_nullity_off_the_basepoint": None if exact_rank is None else 2 * (bordered_kernel - exact_rank),
     }
     decided["pass"] = bool(
         decided["pivot_pfaffian_is_a_unit"]
@@ -987,6 +1115,9 @@ def decide_nullity(
         and decided["exceptional_charts_nonempty_match_2i"]
         and decided["degeneracy_locus_empty_matches_2c"]
         and decided["real_nullity_upper_bound"] == 8
+        and entry_forms_sound
+        and pfaffians_vanish
+        and decided["real_nullity_off_the_basepoint"] == 8
     )
     specific: dict[str, Any]
     if field.name == GAUSSIAN.name:
@@ -996,27 +1127,15 @@ def decide_nullity(
                 task.first_order["effective_form"]["rank_four_pfaffians_vanish_on_tangent_cone"]
             ),
         }
-        carried = all(flags.values())
-        exact_rank = 2 if carried and rank_bound == 2 else None
+        agree = all(flag == pfaffians_vanish for flag in flags.values())
         specific = {
-            "rank_four_pfaffians_vanish_carried_from_retained_exact_runs": flags,
-            "recomputed_here": False,
-            "reason": PFAFFIAN_UNDECIDED,
-            "schur_form_rank": exact_rank,
-            "real_nullity_off_the_basepoint": None if exact_rank is None else 2 * (bordered_kernel - exact_rank),
-            "inferred": (
-                "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the "
-                "unit sphere of the cone, so the form stays nonzero near E and its rank is exactly the first-order "
-                "rank wherever the Pfaffian ideal contains the higher terms"
-            ),
+            "rank_four_pfaffians_vanish_in_the_retained_exact_runs": flags,
+            "retained_runs_agree_with_the_recomputation": agree,
+            "pass": agree,
         }
-        specific["pass"] = carried and specific["real_nullity_off_the_basepoint"] == 8
     else:
         specific = {
-            "rank_four_pfaffians_vanish": None,
-            "not_decided": PFAFFIAN_UNDECIDED + "; the 2i modular run is modulo 32003, not " + str(PRIME),
-            "schur_form_rank": None,
-            "real_nullity_off_the_basepoint": None,
+            "retained_exact_runs": "none in this characteristic: the 2i modular run is modulo 32003, not " + str(PRIME),
             "pass": None,
         }
     return {
@@ -1181,6 +1300,7 @@ def altered(task: Task, edit: Callable[[Task], None]) -> Task:
         copy.deepcopy(task.first_order),
         copy.deepcopy(task.holomorphic),
         copy.deepcopy(task.real_limits),
+        copy.deepcopy(task.entry_forms),
     )
     edit(copy_)
     return copy_
@@ -1436,8 +1556,84 @@ def tamper_the_bordered_rank(field: Field, task: Task) -> dict[str, Any]:
     }
 
 
+def nullity_of(field: Field, task: Task) -> dict[str, Any]:
+    """Certificate 0 of a task (possibly altered), from its retained rows."""
+    cone = build_cone(field, task)
+    return decide_nullity(field, task, cone, phi_from_holomorphic(field, task), phi_from_first_order(field, task))
+
+
+FAMILY_SIZES = ((HOLOMORPHIC_FAMILY, 7), (FIRST_ORDER_FAMILY, 6))
+
+
+def alter_a_schur_entry_form(field: Field, task: Task, family: str) -> dict[str, Any]:
+    """Mutation: add 1 to one coefficient of an entry form outside the retained basis (in both representations), at
+    the first position where a rank-four Pfaffian then leaves the tangent-cone ideal."""
+    size = dict(FAMILY_SIZES)[family]
+    baseline = nullity_of(field, task)
+    basis = task.entry_forms[family]["retained_basis_indices"]
+    cone = build_cone(field, task)
+    ideal = QuadricIdeal(field, cone.generators, cone.width)
+    for entry in (index for index in range(size * (size - 1) // 2) if index not in basis):
+        for variable in range(cone.width):
+
+            def edit(copy_: Task, entry: int = entry, variable: int = variable) -> None:
+                data = copy_.entry_forms[family]
+                pair = data["q_i_rows"][entry][variable]
+                data["q_i_rows"][entry][variable] = [str(Fraction(pair[0]) + 1), pair[1]]
+                data["f_32009_rows"][entry][variable] = (data["f_32009_rows"][entry][variable] + 1) % PRIME
+
+            mutated = altered(task, edit)
+            probe = decide_family(field, mutated, cone, ideal, family, size)
+            if probe["rank_four_pfaffians_outside_the_tangent_cone_ideal"]:
+                certificate = decide_nullity(
+                    field, mutated, cone, phi_from_holomorphic(field, mutated), phi_from_first_order(field, mutated)
+                )
+                return {
+                    "incidence": task.incidence,
+                    "mutation": f"alter_a_schur_entry_form_{family}",
+                    "entry_index": entry,
+                    "variable": variable + 1,
+                    "baseline_certificate_0_passes": baseline["pass"],
+                    "pfaffians_leaving_the_ideal": probe["rank_four_pfaffians_outside_the_tangent_cone_ideal"],
+                    "retained_basis_rows_unchanged": certificate["decided_in_this_field"]["schur_entry_forms"][family][
+                        "retained_basis_rows_are_entry_forms_at_their_indices"
+                    ],
+                    "detected": bool(
+                        baseline["pass"]
+                        and not certificate["decided_in_this_field"]["rank_four_pfaffians_vanish_on_the_tangent_cone"]
+                        and not certificate["pass"]
+                    ),
+                }
+    raise RuntimeError(f"{task.incidence}: no single-coefficient change moves a rank-four Pfaffian off the cone ideal")
+
+
+def drop_a_schur_entry_form(field: Field, task: Task, family: str) -> dict[str, Any]:
+    """Mutation: delete one entry form outside the retained basis from the table."""
+    size = dict(FAMILY_SIZES)[family]
+    baseline = nullity_of(field, task)
+    basis = task.entry_forms[family]["retained_basis_indices"]
+    entry = next(index for index in range(size * (size - 1) // 2) if index not in basis)
+
+    def edit(copy_: Task) -> None:
+        data = copy_.entry_forms[family]
+        data["q_i_rows"].pop(entry)
+        data["f_32009_rows"].pop(entry)
+
+    certificate = nullity_of(field, altered(task, edit))
+    return {
+        "incidence": task.incidence,
+        "mutation": f"drop_a_schur_entry_form_{family}",
+        "entry_index": entry,
+        "baseline_certificate_0_passes": baseline["pass"],
+        "entry_forms_complete": certificate["decided_in_this_field"]["schur_entry_forms"][family][
+            "entry_forms_complete"
+        ],
+        "detected": bool(baseline["pass"] and not certificate["pass"]),
+    }
+
+
 def tamper_the_pfaffian_flag(field: Field, task: Task) -> dict[str, Any]:
-    """Mutation (Q(i)): the carried rank-four Pfaffian flag of the 2i rational run reads false."""
+    """Mutation (Q(i)): the retained 2i rational-run Pfaffian flag reads false against the recomputation."""
 
     def edit(copy_: Task) -> None:
         copy_.holomorphic["explicit_blowup"]["rational"]["rank_four_pfaffians_vanish"] = False
@@ -1446,7 +1642,7 @@ def tamper_the_pfaffian_flag(field: Field, task: Task) -> dict[str, Any]:
     nullity = certificates["certificate_0_constant_nullity"]
     return {
         "incidence": task.incidence,
-        "mutation": "tamper_the_carried_pfaffian_flag",
+        "mutation": "retained_pfaffian_flag_contradicts_the_recomputation",
         "decided_part_passes": nullity["decided_in_this_field"]["pass"],
         "detected": bool(nullity["decided_in_this_field"]["pass"] and not nullity["pass"]),
     }
@@ -1497,6 +1693,8 @@ def certify(task: Task, table: dict[str, Any] | None = None) -> dict[str, Any]:
             tamper_the_multiplicity(field, task),
             tamper_the_bordered_rank(field, task),
             tamper_the_pfaffian_flag(field, task) if field.name == GAUSSIAN.name else None,
+            *(alter_a_schur_entry_form(field, task, family) for family, _size in FAMILY_SIZES),
+            *(drop_a_schur_entry_form(field, task, family) for family, _size in FAMILY_SIZES),
             pivot_vanishing_modulo_the_prime(field, task) if field.name == MODULAR.name else None,
         ]
         mutations.extend({"field": field.name, **item} for item in found if item is not None)
@@ -1574,6 +1772,15 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def entry_forms_current() -> bool:
+    """Whether the successor record names the retained 2c and 2i records by their present digests."""
+    forms = load(SCHUR_FORMS)
+    return all(
+        forms["inputs"].get(f"docs/evidence/a5-kernel-attachments/{path.name}") == sha256(path)
+        for path in (FIRST_ORDER, HOLOMORPHIC)
+    )
+
+
 def assemble(incidences: list[dict[str, Any]]) -> dict[str, Any]:
     controls = [
         {
@@ -1591,7 +1798,8 @@ def assemble(incidences: list[dict[str, Any]]) -> dict[str, Any]:
         "prime": PRIME,
         "square_root_of_minus_one": SQRT_MINUS_ONE,
         "inputs": {
-            path.name: sha256(path) for path in (PRODUCER, PATH_SUPPORTED, FIRST_ORDER, HOLOMORPHIC, REAL_LIMITS)
+            path.name: sha256(path)
+            for path in (PRODUCER, PATH_SUPPORTED, FIRST_ORDER, HOLOMORPHIC, REAL_LIMITS, SCHUR_FORMS)
         },
         "incidences": incidences,
         "summary": {
@@ -1604,14 +1812,13 @@ def assemble(incidences: list[dict[str, Any]]) -> dict[str, Any]:
             "predictions_hold": all(p["pass"] for row in incidences for p in row["predictions"]),
             "mutation_controls": len(controls),
             "mutation_controls_detected": sum(1 for c in controls if c["detected"]),
+            "entry_forms_read_from_the_current_retained_records": entry_forms_current(),
         },
-        "not_recomputed": [
-            "the vanishing of the rank-four Pfaffians of the Schur form, and with it the exact rank two of the form "
-            "and the real nullity 8: " + PFAFFIAN_UNDECIDED + ". Over Q(i) the flags of the 2i rational run and the "
-            "2c effective-form run are carried and labeled; modulo 32009 the claim is narrowed to the lower bound "
-            "rank >= 2 (nullity at most 8), since the 2i modular run is modulo 32003",
-        ],
+        "not_recomputed": [],
         "inferred": [
+            "the passage from the first-order form to the germ: the form is its first-order part plus O(|z|^2) and the "
+            "first-order part is bounded below on the unit sphere of the cone, so the form stays nonzero near E and "
+            "its rank is the first-order rank, exactly two; the record decides the first-order rank and nullity",
             "the germ of E8-bar to B9 is analytically the A_1 cone (holomorphic Morse lemma) and the other germs "
             "are analytically their tangent cones",
             "the identification of the actual germ link L with the unit circle bundle of O_E(-1) through the "
@@ -1623,6 +1830,7 @@ def assemble(incidences: list[dict[str, Any]]) -> dict[str, Any]:
     summary = record["summary"]
     record["pass"] = bool(
         summary["certificates_pass"]
+        and summary["entry_forms_read_from_the_current_retained_records"]
         and summary["predictions_hold"]
         and all(row["pass"] for row in incidences)
         and summary["mutation_controls_detected"] == summary["mutation_controls"]
@@ -1673,6 +1881,39 @@ def self_test() -> str:
         product = parse_polynomial(field, "y1*y2", "y")
         _require(in_ideal(field, product, [parse_polynomial(field, "y1", "y")], 2), "y1*y2 lies in (y1)")
         _require(not in_ideal(field, product, [parse_polynomial(field, "y1^2", "y")], 2), "y1*y2 is not in (y1^2)")
+    for field in FIELDS:
+        # a 4 x 4 skew matrix with one nonzero entry has rank two and Pfaffian 0; entries a_12 = t1 and a_34 = t2
+        # give rank four and Pfaffian t1*t2
+        rank_two = [
+            [field.one, field.zero],
+            [field.zero, field.zero],
+            [field.zero, field.zero],
+            [field.zero, field.zero],
+            [field.zero, field.zero],
+            [field.zero, field.zero],
+        ]
+        _require(
+            all(not minor for minor in rank_four_pfaffians(field, skew_matrix(rank_two, 4, field))),
+            "a rank-two skew matrix has a nonzero rank-four Pfaffian",
+        )
+        rank_four = [
+            [field.one, field.zero],
+            [field.zero, field.zero],
+            [field.zero, field.zero],
+            [field.zero, field.zero],
+            [field.zero, field.zero],
+            [field.zero, field.one],
+        ]
+        (product,) = rank_four_pfaffians(field, skew_matrix(rank_four, 4, field))
+        _require(product == parse_polynomial(field, "t1*t2", "t"), "the Pfaffian of a rank-four form is not t1*t2")
+        _require(
+            QuadricIdeal(field, [parse_polynomial(field, "t1", "t")], 2).contains(product),
+            "t1*t2 lies in the ideal of t1",
+        )
+        _require(
+            not QuadricIdeal(field, [parse_polynomial(field, "t1^2", "t")], 2).contains(product),
+            "t1*t2 is not in the ideal of t1^2",
+        )
     _require(gysin_h1(1, -2) == ("Z/2", "RP^3"), "Gysin: Euler number -2 over P^1 is RP^3")
     _require(gysin_h1(1, -1) == ("0", "S^3"), "Gysin: Euler number -1 over P^1 is S^3")
     _require(gysin_h1(2, -1) == ("0", "S^5"), "Gysin: Euler number -1 over P^2 is S^5")

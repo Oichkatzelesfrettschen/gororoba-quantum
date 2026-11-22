@@ -407,7 +407,7 @@ deliverables stand as follows.
 | limit sets 8 to 12 | rows 2i (eight fibers) and 2j-c (six) at the selected basepoints, each equal to the real limit set on the slice germ by row 2l; rows 2c and 2d are the first-order upper bound and the arc lower bound; E8-bar to `VB` imports its fiber by row 2q, decided in every degree at 32009 and 32029 (`A5-005`) and open in characteristic 0 (`A5-315`) | todo (the plan admits one active step); open: the E8-bar to `VB` real limit set, the variation along the boundary orbit (rows 2r and 2w sample the boost only), and arcs that leave the slice on `V` and `VB` |
 | limit sets into nullity 16 | rows 2k-c (eight fibers) and 2m (their real limit sets); row 2q imports the ten 8-to-16 fibers, and row 2t with the README section "The ten blocked fibers into nullity 16 are the fiber cones of the exceptional-fiber record" decides each real limit set as a point set: `X` by `A5-270` and `A5-305`, `Iso` by `A5-446`, `W8` by `A5-448`, E8-bar conditional on `A5-421` and the slice premise of `A5-423` (`A5-425`) | todo; open: the header-slice characteristic-0 fibers (`A5-293`, `A5-346`), the non-reduced scheme structure of the E8-bar fiber on the header slice (`A5-449`, `A5-559`), and the identification of header-slice and weight-slice coordinates (`A5-583`) |
 | compatibility | row 2s: 41 chains and 136 sections, and a composed limit lies in a linear section of the direct fiber | todo; open: `hypothesis:` through `VB` the composed limit set is the reduced section, which needs a flat family over `VB`; which planes of a section through `B9` or `V` are composed limits |
-| attaching maps | row 3a of the [ledger](../evidence/a5-kernel-attachments/ledger.md): the links, Euler classes, maps on `H_2` and `c_1(S) = -H` of the circle-bundle model over the eight first-order-resolved incidences, computed; the rank-four Pfaffian vanishing, carried from rows 2c and 2i; the identification of the germ link with the bundle, the radial deformation and the cited theorems, inferred | doing: the seven higher-order rows, the eighteen rows into nullity 16 and the variation along the boundary orbit remain |
+| attaching maps | row 3a of the [ledger](../evidence/a5-kernel-attachments/ledger.md): the links, Euler classes, maps on `H_2` and `c_1(S) = -H` of the circle-bundle model over the eight first-order-resolved incidences, computed; the rank-four Pfaffian vanishing, decided over `Q(i)` and modulo 32009 from every Schur-entry form of row 2x; the identification of the germ link with the bundle, the radial deformation and the cited theorems, inferred | doing: the seven higher-order rows, the eighteen rows into nullity 16 and the variation along the boundary orbit remain |
 
 ### Sub-step 3a: attaching maps of the eight first-order-resolved incidences
 
@@ -438,8 +438,8 @@ the Pluecker hyperplane class.
 | E8-bar to `B9` | `A_1` quadric cone, dimension 2, multiplicity 2 | `RP^3` | an isomorphism of the smooth conic `E` onto the image conic (Pluecker degree 2) |
 | E8-bar to `V`, `X_+` to `V^a_+`, `X_-` to `V^a_-` | two smooth components, dimension 3, multiplicity 2 | `S^5` disjoint union `S^5` | each component a linear isomorphism `P^2 -> P^2` onto one of two disjoint planes |
 
-Producer `attaching_maps_resolved.py`, reading only the retained records 2b, 2c, 2i and 2l, certifies per row:
-0. that the punctured germ has constant nullity 8, so `kappa` is defined on the whole link;
+Producer `attaching_maps_resolved.py`, reading only the retained records 2b, 2c, 2i, 2l and 2x (the table of every Schur-entry form of 2c and 2i, `schur_entry_forms.py`), certifies per row:
+0. that the punctured germ has constant nullity 8, so `kappa` is defined on the whole link: the first-order Schur form is nonzero on the cone and its 35 (7 x 7) and 15 (6 x 6) rank-four Pfaffians lie in the tangent-cone ideal in both fields, so it has rank exactly two;
 1. the conical structure: multiplicity 1 with embedding dimension equal to dimension (smooth); for E8-bar to `B9`, a
    hypersurface in its 3-dimensional embedding space whose quadratic part has rank 3 over `Q(i)`, so the holomorphic
    Morse lemma makes the germ analytically the `A_1` cone; for the two-component rows, each component smooth and the
@@ -458,7 +458,7 @@ form, which must fail the Morse certificate. Independent topology checks recompu
 Pluecker coordinates of 2i. Falsifiers: a rank deficiency of `phi` on a tangent-cone component, a quadratic part of
 rank below 3, two components whose tangent spaces meet outside 0, image invariants that differ from 2i, or a link
 homology that differs from the table. Cost: exact linear algebra on retained polynomials, predicted under 10 s and
-200 MiB against 0.82 s for the 2i replay; it runs on the compute workstation, not on the build host.
+200 MiB against 0.82 s for the 2i replay (2.7 s to 3.4 s and 29 MiB measured; row 2x adds 12.7 s and 89 MiB); it runs on the compute workstation, not on the build host.
 
 What sub-step 3a leaves to later sub-steps: the variation of the datum along the boundary orbit (its monodromy and the
 non-compact directions that do not act on the kernel), the seven higher-order rows of 2c, the eighteen rows into
