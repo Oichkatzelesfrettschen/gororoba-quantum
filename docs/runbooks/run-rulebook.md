@@ -587,7 +587,7 @@ the closest entry and say what changed.
   their last stage, 0.34 and 0.55 GB; the Q(i) run after 14 min). New runs, all in the variable form with
   `option(prot)`: workstation, `ulimit -v` 16 GB for `h-iso-nm-q`, `h-e8-nm-q`, `h-w8-nm-q` (Q(i), N-) and 12 GB
   for `h-e8-nm-p2`, `h-w8-nm-p2` (p = 32029, i = 9115, N-) and `h-e8-np-p`, `h-w8-np-p` (p = 32009, N+), eleven
-  single-thread jobs on 16 cores; MacBook Air (Homebrew Singular 4.4.1, `caffeinate -i`, `nohup`, two of four
+  single-thread jobs on 16 cores; the owner's laptop (Homebrew Singular 4.4.1, `caffeinate -i`, `nohup`, two of four
   performance cores, the owner's interactive session keeps the rest): `h-iso-nm-p2` and `h-iso-np-p`; the OCI A1 lab host
   (apt Singular, one of two cores, `ulimit -v` 8 GB): `h-iso-np-p2`. The build host keeps `r-e8-nm-p` and
   `r-w8-nm-p` under their 7 GiB caps. A cloud machine enters when a Q(i) run's resident set projects past the
@@ -614,7 +614,7 @@ the closest entry and say what changed.
   (RS) = H : u^infinity for any input. The same-sign X control passes both (count 0, colon equal) modulo 32009 in
   24 s and over Q(i) in 188 s with the FIBER line unchanged; `c-iso-nm-p` repeats Iso at N- modulo 32009 with
   the certificate on the workstation. A run started before the certificate existed prints no `CERT` line.
-- Outcome and stop (2026-11-13, 11:55 PST, owner's choice): the two MacBook Iso runs (`h-iso-nm-p2`, N- modulo
+- Outcome and stop (2026-11-13, 11:55 PST, owner's choice): the two laptop Iso runs (`h-iso-nm-p2`, N- modulo
   32029; `h-iso-np-p`, N+ modulo 32009) each printed FIBER dimension 5, multiplicity 23, 68 minimal generators at
   5,353 s, uncertified like the two before them. The ten open workstation runs were stopped without a FIBER line:
   Iso and W8 are closed over Q(i) by A5-446 and A5-448, and no open run carried the certificate. Resident sets at
