@@ -17035,7 +17035,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "The ordering of rejected worlds carries no physical attribution to coupler 8-12. Single batches already exceed a kind limit (batch-09 reads 44.00 against 26.124). The reported block (bridge, parabolas, q4 line) is descriptive; the q4 slope differs from the retained series by 9.7 standard errors, so the q4 points are not pooled across series.",
+      "boundary": "The ordering of rejected worlds carries no physical attribution to coupler 8-12. Single batches already exceed a kind limit (batch-09 reads 44.00 against 26.124). The reported block (bridge, parabolas, q4 line) is descriptive; the q4 slope differs from the retained series by 9.8 standard errors, so the q4 points are not pooled across series.",
       "evidence": [
         {
           "path": "results/quantum_inspire/pathion_null_phase_scan_tuna_17_analysis.json",
