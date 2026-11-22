@@ -421,6 +421,10 @@ def test_a_planted_readout_defect_departs_from_the_hand_computed_fields(
             assert_fixed_readout(report)
 
 
-def test_the_forked_self_test_passes_at_six_slots() -> None:
+def test_the_forked_self_test_passes_at_six_slots(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """The self-test admits its synthetic runs against CASE, which here is the six-slot record in a scratch file."""
+    case = tmp_path / "case.json"
+    case.write_bytes((json.dumps(diag.case_record(), indent=1) + "\n").encode())
+    monkeypatch.setitem(layout.SCOPE, "CASE", case)
     if layout.SCOPE["self_test"]() != 0:
         raise AssertionError("the diagnostic self-test fails at six slots")
