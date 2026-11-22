@@ -3640,11 +3640,22 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_garnet_followup.py analyze results/iqm/runs/2026-11-21T220358Z-garnet-grover-depth-sedenion-walsh-grover results/iqm/runs/2026-11-21T220406Z-garnet-grover-depth-sedenion-walsh-sedenion --out \"${TMPDIR:-/tmp}/garnet-followup-analysis.json\" && cmp \"${TMPDIR:-/tmp}/garnet-followup-analysis.json\" results/iqm/garnet_grover_depth_sedenion_walsh_analysis.json",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_garnet_followup.py analyze results/iqm/runs/2026-11-21T220358Z-garnet-grover-depth-sedenion-walsh-grover results/iqm/runs/2026-11-21T220406Z-garnet-grover-depth-sedenion-walsh-sedenion --out \"${TMPDIR:-/tmp}/garnet-followup-analysis.json\" && cmp \"${TMPDIR:-/tmp}/garnet-followup-analysis.json\" results/iqm/garnet_grover_depth_sedenion_walsh_analysis.json && \"$PYTHON\" -B -W error docs/evidence/iqm-garnet-grover-positions/positions.py \"${TMPDIR:-/tmp}/garnet-grover-positions.json\" && cmp \"${TMPDIR:-/tmp}/garnet-grover-positions.json\" docs/evidence/iqm-garnet-grover-positions/positions.json",
       "name": "core-iqm-garnet-followup-replay",
-      "seconds": 0.6,
+      "seconds": 1.2,
       "replays": [
-        "results/iqm/garnet_grover_depth_sedenion_walsh_analysis.json"
+        "results/iqm/garnet_grover_depth_sedenion_walsh_analysis.json",
+        "docs/evidence/iqm-garnet-grover-positions/positions.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/iqm-garnet-qb12-models/qb12_models.py \"${TMPDIR:-/tmp}/garnet-qb12-models.json\" && cmp \"${TMPDIR:-/tmp}/garnet-qb12-models.json\" docs/evidence/iqm-garnet-qb12-models/qb12_models.json",
+      "name": "core-iqm-garnet-qb12-models-replay",
+      "seconds": 1587.2,
+      "replays": [
+        "docs/evidence/iqm-garnet-qb12-models/qb12_models.json"
       ]
     },
     {
@@ -3863,12 +3874,13 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_packed_pauli_case.py analyze results/iqm/runs/2026-11-21T220346Z-garnet-packed-pauli-response-garnet-packed --out results/iqm/packed_pauli_response_garnet_analysis.json --replay && \"$PYTHON\" -B -W error docs/evidence/iqm-garnet-packed-pauli-run/readout_split.py results/iqm/runs/2026-11-21T220346Z-garnet-packed-pauli-response-garnet-packed \"${TMPDIR:-/tmp}/packed-readout-split.json\" && cmp \"${TMPDIR:-/tmp}/packed-readout-split.json\" docs/evidence/iqm-garnet-packed-pauli-run/readout_split.json",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_packed_pauli_case.py analyze results/iqm/runs/2026-11-21T220346Z-garnet-packed-pauli-response-garnet-packed --out results/iqm/packed_pauli_response_garnet_analysis.json --replay && \"$PYTHON\" -B -W error docs/evidence/iqm-garnet-packed-pauli-run/readout_split.py results/iqm/runs/2026-11-21T220346Z-garnet-packed-pauli-response-garnet-packed \"${TMPDIR:-/tmp}/packed-readout-split.json\" && cmp \"${TMPDIR:-/tmp}/packed-readout-split.json\" docs/evidence/iqm-garnet-packed-pauli-run/readout_split.json && \"$PYTHON\" -B -W error docs/evidence/iqm-garnet-packed-pauli-run/settling.py \"${TMPDIR:-/tmp}/packed-settling.json\" && cmp \"${TMPDIR:-/tmp}/packed-settling.json\" docs/evidence/iqm-garnet-packed-pauli-run/settling.json",
       "name": "core-iqm-packed-pauli-run-replay",
-      "seconds": 1.7,
+      "seconds": 3.0,
       "replays": [
         "results/iqm/packed_pauli_response_garnet_analysis.json",
-        "docs/evidence/iqm-garnet-packed-pauli-run/readout_split.json"
+        "docs/evidence/iqm-garnet-packed-pauli-run/readout_split.json",
+        "docs/evidence/iqm-garnet-packed-pauli-run/settling.json"
       ]
     },
     {
@@ -3932,6 +3944,16 @@
       "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py --self-test",
       "name": "core-700",
       "seconds": 8.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/iqm-garnet-billing-v3/billing_v3.py \"${TMPDIR:-/tmp}/garnet-billing-v3.json\" && cmp \"${TMPDIR:-/tmp}/garnet-billing-v3.json\" docs/evidence/iqm-garnet-billing-v3/billing_v3.json",
+      "name": "core-iqm-billing-v3-replay",
+      "seconds": 1.5,
+      "replays": [
+        "docs/evidence/iqm-garnet-billing-v3/billing_v3.json"
+      ]
     },
     {
       "suite": "core",
@@ -4111,6 +4133,13 @@
       "replays": [
         "results/quandela/bdsc_diagnostic_readout-runner-image.json"
       ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_diagnostic_v2_case.py --check results/quandela/cases/bdsc_diagnostic_v2_qpu_belenos --draw docs/evidence/anu_qrng/draw-2026-11-22T083730Z.json",
+      "name": "core-bdsc-diagnostic-v2-case",
+      "seconds": 15.0
     },
     {
       "suite": "core",
@@ -5867,6 +5896,44 @@
       "replays": [
         "docs/evidence/a5-kernel-attachments/weight-slice-smooth-points-result.json"
       ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/attaching_maps_resolved.py --check",
+      "name": "core-a5-attaching-maps-resolved",
+      "seconds": 4,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/attaching-maps-resolved-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/attaching_maps_resolved.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-attachments/attaching_maps_resolved.py --self-test",
+      "name": "core-a5-attaching-maps-resolved-self-test",
+      "seconds": 14,
+      "workers": "all"
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/schur_entry_forms.py --check docs/evidence/a5-kernel-attachments/schur-entry-forms-result.json",
+      "name": "core-a5-schur-entry-forms",
+      "seconds": 14,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/schur-entry-forms-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/schur_entry_forms.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-attachments/schur_entry_forms.py --self-test",
+      "name": "core-a5-schur-entry-forms-self-test",
+      "seconds": 26,
+      "workers": "all"
     },
     {
       "suite": "core",

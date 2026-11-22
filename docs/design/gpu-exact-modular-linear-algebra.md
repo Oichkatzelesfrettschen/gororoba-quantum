@@ -193,8 +193,8 @@ The workstation's GPU (driver API on 2026-11-01: 16,375 MiB, compute capability 
 `CU_DEVICE_ATTRIBUTE_CONCURRENT_MANAGED_ACCESS = 0` and `CU_DEVICE_ATTRIBUTE_PAGEABLE_MEMORY_ACCESS = 0` under WSL,
 against 1 and 1 on the build host's RTX 4070 Ti. WSL therefore gives no HMM access to pageable memory, and the GPU
 and the CPU cannot touch a managed allocation at the same time. Managed allocations still oversubscribe the device: a
-20 GiB `cuMemAllocManaged` buffer took a full device memset and a CPU read-back in 17.4 s (infrastructure record
-`hosts/alienware.md`). Measured on 2026-11-02 (driver 610.74, WSL 3.0.3, kernel 6.18.54, Ubuntu 26.04): the attributes stand
+20 GiB `cuMemAllocManaged` buffer took a full device memset and a CPU read-back in 17.4 s (the workstation page of the
+gororoba-infrastructure host chart). Measured on 2026-11-02 (driver 610.74, WSL 3.0.3, kernel 6.18.54, Ubuntu 26.04): the attributes stand
 (`PAGEABLE_MEMORY_ACCESS = 0`, `CONCURRENT_MANAGED_ACCESS = 0`, `MANAGED_MEMORY = 1`, `HOST_REGISTER_SUPPORTED = 1`),
 as NVIDIA's WSL user guide states for concurrent access and full managed memory (section 5.1). Both Layer 2 candidates
 work. A 20 GiB managed buffer takes a host touch in 1.0 s, a device memset in 2.4 s and reads back correctly, and a

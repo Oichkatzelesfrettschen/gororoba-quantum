@@ -1,0 +1,10 @@
+nm p=32009 r=10754: detB match; UNIT lines 21, differing []
+np p=32009 r=10754: detB match; UNIT lines 21, differing []
+nm p=32009 r=21255: detB match; UNIT lines 21, differing []
+np p=32009 r=21255: detB match; UNIT lines 21, differing []
+nm p=32029 r=9115: detB match; UNIT lines 21, differing []
+np p=32029 r=9115: detB match; UNIT lines 21, differing []
+nm p=32029 r=22914: detB match; UNIT lines 21, differing []
+np p=32029 r=22914: detB match; UNIT lines 21, differing []
+A5-592 closed forms: match on all eight logs
+EXIT 0

@@ -267,3 +267,5 @@ a reported 300 s, so the doubled 156 to 161 s figure is an open scaling hypothes
 24-iteration shape.
 A resumed or packed successor needs its own written case and approval; the packed qpu:belenos request is proposed in
 [`bdsc_diagnostic_packed_qpu_belenos/CASE.md`](../../results/quandela/cases/bdsc_diagnostic_packed_qpu_belenos/CASE.md).
+The owner chose its shape A on 2026-11-22, and its six-seed-slot builder, analyzer, draw and tree are described in the
+[runbook amendment of that date](../runbooks/bdsc-qualification-case.md#amendment-of-2026-11-22-the-crossed-diagnostic-at-six-seed-slots-in-four-jobs-of-36-iterations).

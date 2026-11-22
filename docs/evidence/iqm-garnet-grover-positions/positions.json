@@ -1,0 +1,162 @@
+{
+ "definition": "p = raw marked frequency over kept shots; f = lambda_3 - lambda_2^2 / lambda_1 with lambda_k = (p - 1/8) / (ideal_k - 1/8), raw, without the readout correction; moved: the k = 2 and 3 arms shifted along a line in position to the k = 1 copies' mean position; block_chi2_df3: Pearson statistic of the four shot blocks against their pooled frequency",
+ "inner_minus_outer": {
+  "arms": [
+   {
+    "arm": "m101-k1",
+    "inner_minus_outer": -0.00467,
+    "se": 0.00811
+   },
+   {
+    "arm": "m101-k1-fused",
+    "inner_minus_outer": 0.00492,
+    "se": 0.00807
+   },
+   {
+    "arm": "m101-k1-generic",
+    "inner_minus_outer": -0.00648,
+    "se": 0.00829
+   },
+   {
+    "arm": "m101-k1-padded",
+    "inner_minus_outer": 0.01075,
+    "se": 0.00817
+   },
+   {
+    "arm": "r-m101-k1",
+    "inner_minus_outer": -0.00716,
+    "se": 0.00802
+   }
+  ],
+  "pooled": -0.00053,
+  "pooled_se": 0.00364
+ },
+ "marks": {
+  "011": {
+   "arms": {
+    "m011-k1": {
+     "block_chi2_df3": 6.75741,
+     "block_p": [
+      0.65807962529274,
+      0.6377491207502931,
+      0.6354044548651817,
+      0.6881594372801876
+     ],
+     "p": 0.65485,
+     "position": 17,
+     "shots": 3413
+    },
+    "m011-k2": {
+     "block_chi2_df3": 8.58414,
+     "block_p": [
+      0.7182770663562281,
+      0.6786961583236322,
+      0.7031431897555297,
+      0.6577415599534342
+     ],
+     "p": 0.68946,
+     "position": 19,
+     "shots": 3436
+    },
+    "m011-k3": {
+     "block_chi2_df3": 2.6398,
+     "block_p": [
+      0.26855123674911663,
+      0.24617196702002356,
+      0.24499411071849234,
+      0.27122641509433965
+     ],
+     "p": 0.25773,
+     "position": 20,
+     "shots": 3395
+    }
+   },
+   "raw_f": 0.06078
+  },
+  "101": {
+   "arms": {
+    "m101-k1-c0": {
+     "block_chi2_df3": 4.70172,
+     "block_p": [
+      0.7051744885679904,
+      0.681107099879663,
+      0.6762936221419976,
+      0.6558363417569194
+     ],
+     "p": 0.6796,
+     "position": 0,
+     "shots": 3324
+    },
+    "m101-k1-c1": {
+     "block_chi2_df3": 0.89769,
+     "block_p": [
+      0.6607773851590106,
+      0.6619552414605419,
+      0.673733804475854,
+      0.652122641509434
+     ],
+     "p": 0.66215,
+     "position": 13,
+     "shots": 3395
+    },
+    "m101-k1-c2": {
+     "block_chi2_df3": 4.67915,
+     "block_p": [
+      0.6437054631828979,
+      0.6805225653206651,
+      0.6884661117717004,
+      0.6813317479191439
+     ],
+     "p": 0.6735,
+     "position": 22,
+     "shots": 3366
+    },
+    "m101-k1-c3": {
+     "block_chi2_df3": 1.49175,
+     "block_p": [
+      0.6769596199524941,
+      0.652794292508918,
+      0.6587395957193817,
+      0.6730083234244947
+     ],
+     "p": 0.66538,
+     "position": 35,
+     "shots": 3365
+    },
+    "m101-k2": {
+     "block_chi2_df3": 6.67232,
+     "block_p": [
+      0.749112426035503,
+      0.7144549763033176,
+      0.7345971563981043,
+      0.6966824644549763
+     ],
+     "p": 0.72372,
+     "position": 15,
+     "shots": 3377
+    },
+    "m101-k3": {
+     "block_chi2_df3": 0.85839,
+     "block_p": [
+      0.2293144208037825,
+      0.22458628841607564,
+      0.2293144208037825,
+      0.24260355029585798
+     ],
+     "p": 0.23145,
+     "position": 16,
+     "shots": 3383
+    }
+   },
+   "k1_mean_position": 17.466,
+   "k1_slope_per_position": -0.000303,
+   "k1_slope_se": 0.000317,
+   "raw_f": -0.12224,
+   "raw_f_moved_along_fitted_line": -0.12281,
+   "raw_f_moved_at_slope_minus_3se": -0.1246,
+   "raw_f_moved_at_slope_plus_3se": -0.12103
+  }
+ },
+ "note": "descriptive reading written after the analysis of the run; it decides nothing",
+ "run": "results/iqm/runs/2026-11-21T220358Z-garnet-grover-depth-sedenion-walsh-grover"
+}

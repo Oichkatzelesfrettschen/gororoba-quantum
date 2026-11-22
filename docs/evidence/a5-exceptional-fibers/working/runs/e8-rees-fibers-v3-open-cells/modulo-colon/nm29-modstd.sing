@@ -1,0 +1,9 @@
+system("--ticks-per-sec",1000); option(redSB); option(noprot);
+link l="ssi:r e8-nm-p32029-r9115.hs.ssi"; def HS=read(l); close(l); def R=basering; attrib(HS,"isSB",1);
+int n=nvars(R); poly U=var(n); int t0=rtimer; ideal QU; ideal X;
+"MODE modulo_std full nm p32029 r9115 size", size(HS), "char", char(R);
+module M=modulo(ideal(U),HS); QU=ideal(matrix(M)); "STAGE first_colon",size(QU),rtimer-t0; "CHECK first_colon_new", size(simplify(reduce(QU,HS),2));
+t0=rtimer; X=std(QU); "STAGE std",size(X),rtimer-t0;
+link lo="ssi:w e8-nm-p32029-r9115.modsat.ssi"; write(lo,X); close(lo); "STAGE saved";
+t0=rtimer; module M2=modulo(ideal(U),X); ideal Q2=ideal(matrix(M2)); "STAGE second_colon",size(Q2),rtimer-t0; "CHECK fixpoint_bad", size(simplify(reduce(Q2,X),2));
+quit;

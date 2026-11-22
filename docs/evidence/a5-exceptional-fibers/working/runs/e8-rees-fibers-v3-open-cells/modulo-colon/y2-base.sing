@@ -1,0 +1,10 @@
+system("--ticks-per-sec",1000); option(redSB); option(noprot);
+link l="ssi:r y2.hs.ssi"; def HS=read(l); close(l); def R=basering; attrib(HS,"isSB",1);
+link l2="ssi:r y2.sat.ssi"; def SAT0=read(l2); close(l2); def R2=basering; setring R; ideal SAT=imap(R2,SAT0); attrib(SAT,"isSB",1);
+int n=nvars(R); poly U=var(n); int k; int t0; ideal X; ideal QU; ideal RR; int cit=0;
+"MODE base size", size(HS);
+if("base"=="base"){ t0=rtimer; while(1){ int tq=rtimer; QU=quotient(HS,ideal(U)); "STAGE quotient",rtimer-tq; if(size(reduce(QU,HS))==0){break;} int ts=rtimer; HS=std(QU); "STAGE std",rtimer-ts; cit++; kill tq; kill ts; } X=HS; "STAGE colon_total",cit,rtimer-t0; }
+if("base"=="incr"){ t0=rtimer; while(1){ int tq=rtimer; QU=quotient(HS,ideal(U)); "STAGE quotient",rtimer-tq; RR=simplify(reduce(QU,HS),2); if(size(RR)==0){break;} int ts=rtimer; HS=std(HS,RR); "STAGE incr_std",size(RR),rtimer-ts; cit++; kill tq; kill ts; } X=HS; "STAGE colon_total",cit,rtimer-t0; }
+if("base"=="elim"){ list rl=ringlist(R); intvec W=rl[3][1][2]; list nm="tt"; rl[2]=nm+rl[2]; rl[3]=list(list("dp",intvec(1)),list("wp",W),list("C",intvec(0))); def Rt=ring(rl); setring Rt; ideal I=imap(R,HS); I=I+ideal(1-tt*var(nvars(basering))); t0=rtimer; ideal G=std(I); "STAGE elim_std",size(G),rtimer-t0; ideal E; for(k=1;k<=size(G);k++){ if(leadexp(G[k])[1]==0){E[size(E)+1]=G[k];} } setring R; X=imap(Rt,E); attrib(X,"isSB",1); "STAGE elim_total",size(X),rtimer-t0; }
+"CHECK sat_in_X", size(reduce(SAT,X)), "X_in_sat", size(reduce(X,SAT)), "sizes", size(X), size(SAT);
+quit;
