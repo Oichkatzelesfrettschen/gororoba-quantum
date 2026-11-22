@@ -441,3 +441,61 @@ through [the scheduled workflow](quandela-scheduled-runs.md), and the
 readout is `scripts/bdsc_drift_series.py --readout SERIES_RUN_DIR...` over
 the completed series runs. The runs enter `docs/state/research_state.json`
 with their claim on the results branch's pull request, before it merges.
+
+## Amendment of 2026-11-22: the crossed diagnostic at six seed slots in four jobs of 36 iterations
+
+The qpu:belenos request that replaces the frozen 96-instance diagnostic is shape A of the
+[packed request](../../results/quandela/cases/bdsc_diagnostic_packed_qpu_belenos/CASE.md), which the owner chose on
+2026-11-22. It is written and committed before any job of it is sent; nothing is submitted, and the pre-flight
+`qd_platform.py plan` and the owner's approval of the written case remain before the first job.
+
+**Design.** The question, the six states, both templates, the two blocks, the empty mitigation list, 40000 eligible
+trials under an 80000-shot cap, the one-hour block gap, the stop conditions, the branches and every threshold of
+`scripts/bdsc_diagnostic.py` are unchanged. The seed slots grow from 4 to 6, so the request holds 6 x 2 x 2 x 6 = 144
+instances in four jobs of 36 iterations (6 groups of 6 states each). Block 1's first job runs the outward groups of
+slots 0 to 2 with the reverse groups of slots 3 to 5, its second job the complement, and block 2 swaps the two
+assignments, so `b2-j1` repeats exactly the groups of `b1-j2` and `--matched-check` compares the 36 matched
+returned circuits. The estimate is 264.24 s per job by the timing rule (6.3 s + 2.6e-05 s per sample for each of 36
+iterations) and about 246 s at the measured 6.83 s per iteration, against the 300 s limit, and 4.32 credits for the
+four jobs.
+
+**Files.** The frozen `bdsc_diagnostic.py`, `bdsc_diagnostic_acquisition_case.py` and
+`bdsc_diagnostic_acquisition_analysis.py` keep their bytes, because six retained manifests bind their digests and
+`ci/gates.json` replays the original readout. The successor is
+[`bdsc_diagnostic_v2.py`](../../scripts/bdsc_diagnostic_v2.py) (the layout and the case record, from a fork of the
+frozen functions at `SLOTS` 6), [`bdsc_diagnostic_v2_case.py`](../../scripts/bdsc_diagnostic_v2_case.py) (the
+builder) and [`bdsc_diagnostic_v2_analysis.py`](../../scripts/bdsc_diagnostic_v2_analysis.py) (the reader). qpu:belenos
+is the only admitted platform: a 36-iteration job needs about 480 s on sim:belenos against its 300 s limit. The case
+record states in `authorization` that approval covers the provider jobs and that the free ANU draw needs none
+([issue 930](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/930)).
+
+**Draw.** [`draw-2026-11-22T083730Z.json`](../evidence/anu_qrng/draw-2026-11-22T083730Z.json) holds 150 uint16
+values from the keyed ANU service. The manifests cite indices 0 to 5 as the seeds of slots 0 to 5 and indices 6 to 77
+as the order of the 72 block-1 instances (a block-2 instance cites its block-1 match's index); the draw belongs to the
+tree's case record, and `draw_claims` refuses it to any other record.
+
+**Power.** Each seed test is a pooled chi-square of seed effects about their group mean. Independent seed effects of
+SD s over equal counting errors e scale its null distribution by 1 + k (s / e)^2, with k = 4 for `seed_common` (the
+offset is shared by the four superposition states, which averages their counting errors) and 1 otherwise, so the test
+at alpha 0.01 reads resolved with probability sf(isf(0.01, df) / (1 + k (s / e)^2), df). The table gives the seed SD,
+in units of e (about 0.0025 for one fraction at p = 1/2 and 40000 trials), at which the test reaches power 0.8 and
+0.95:
+
+| Test | df at 4 slots | s / e at 0.8 | s / e at 0.95 | df at 6 slots | s / e at 0.8 | s / e at 0.95 |
+|---|---|---|---|---|---|---|
+| `seed_superposition` | 48 | 0.927 | 1.107 | 80 | 0.789 | 0.927 |
+| `seed_common` | 12 | 0.768 | 1.002 | 20 | 0.628 | 0.785 |
+| `seed_interaction` | 36 | 1.020 | 1.233 | 60 | 0.863 | 1.023 |
+
+The retained diagnostic stated no power for these tests. The numbers plan the design under the premises of
+independent Bernoulli counting errors, equal errors across the pooled cells and seed effects independent across
+seeds (and across states for two of the tests), which the provider contract does not establish, so they bound the
+design and do not certify a reading. The same statement sits in the case record under `analysis.power`, and
+`scripts/bdsc_diagnostic_v2.py` computes it.
+
+**Order.** Run the steps of [the order of the diagnostic case](#order-of-the-diagnostic-case) with
+`scripts/bdsc_diagnostic_v2_case.py --check results/quandela/cases/bdsc_diagnostic_v2_qpu_belenos` for the check,
+the four directories under that tree for the plan (the estimate is 264.24 s per job),
+`scripts/bdsc_diagnostic_v2_analysis.py --case results/quandela/cases/bdsc_diagnostic_v2_qpu_belenos/case.json` for
+`--matched-check`, `--admit-only` and the readout, and no new draw. A change to any bound source needs a rebuild of
+the tree, because each manifest binds the digests of `SOURCES` in the builder.
