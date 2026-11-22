@@ -212,8 +212,9 @@ Two prior capped attempts stopped before retention: the first exposed an unpickl
 
 ## Every Schur-entry form decides the rank-four Pfaffians in both fields
 
-The 2c and 2i records retain only a basis of the first-order Schur entries: 7 of the 15 forms of the 6 x 6 effective
-form and 7 of the 21 forms of the 7 x 7 holomorphic leading form. [`schur_entry_forms.py`](schur_entry_forms.py)
+The 2c and 2i records retain only a basis of the first-order Schur entries: six or seven of the 15 forms of the 6 x 6
+effective form and six or seven of the 21 forms of the 7 x 7 holomorphic leading form (seven at the three two-component
+incidences, six at the other five). [`schur_entry_forms.py`](schur_entry_forms.py)
 imports both producers, rebuilds each skew matrix at the retained basepoint and slice columns, and writes all 15 and
 all 21 entry forms of the eight incidences to [`schur-entry-forms-result.json`](schur-entry-forms-result.json) as
 coefficient rows over the slice variables, over `Q(i)` and as residues modulo 32009 (`i = 10754`). The 2i matrix
