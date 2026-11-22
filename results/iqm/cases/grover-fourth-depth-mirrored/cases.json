@@ -172,7 +172,7 @@
    "shots": 20000
   }
  ],
- "prediction_sha256": "bbb3f685e87c5b8c2415deac557f6dd9be7b826352556487f5bd154d724cec15",
+ "prediction_sha256": "6bb012e6bbfd190324a0c3e997c4f2ba539d5634b2c41bb5a3751b1a9d071d9b",
  "qcs": [
   "garnet:mock",
   "garnet"

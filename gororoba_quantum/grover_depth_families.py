@@ -43,7 +43,8 @@ BOUND_TOLERANCE = 1e-9
 # A copy that keeps fewer than this fraction of its planned kept shots, and the copy at its mirrored position,
 # leave the pooled depth together.
 COPY_FLOOR = 0.5
-# Significance level of the copy-heterogeneity gate (chi-square over every depth's copies about its pooled frequency).
+# Significance level of the pair-heterogeneity gate (chi-square of every depth's mirror pairs about its pooled
+# frequency).
 HETEROGENEITY_ALPHA = 0.01
 
 
@@ -351,17 +352,21 @@ def heterogeneity_threshold(dof: int, alpha: float = HETEROGENEITY_ALPHA) -> flo
     return float(stats.chi2.isf(alpha, dof))
 
 
-def copy_heterogeneity(copies: Sequence[Copy]) -> tuple[float, int]:
-    """Chi-square of the copies of one depth about the pooled frequency, with len(copies) - 1 degrees of freedom:
-    the sum of (marked - kept p)^2 / (kept p (1 - p)) with p the pooled marked frequency. A pooled frequency of 0
-    or 1 leaves no variance to test and reads 0."""
-    marked, kept = sum(c[1] for c in copies), sum(c[2] for c in copies)
-    if not copies or kept <= 0:
+def pair_heterogeneity(pairs: Sequence[tuple[Copy, Copy]]) -> tuple[float, int]:
+    """Chi-square of the mirror pairs of one depth about the pooled frequency, with len(pairs) - 1 degrees of
+    freedom: the sum over pairs of (M - N p)^2 / (N p (1 - p)), with M and N the marked count and kept shots of the
+    pair's two copies and p the pooled marked frequency. A drift linear in position moves the copy at position q and
+    its image at total - 1 - q in opposite directions, so it leaves every pair's frequency, and this statistic,
+    unchanged. A pooled frequency of 0 or 1 leaves no variance to test and reads 0."""
+    marked = sum(a[1] + b[1] for a, b in pairs)
+    kept = sum(a[2] + b[2] for a, b in pairs)
+    if not pairs or kept <= 0:
         return 0.0, 0
     p = marked / kept
     if p <= 0.0 or p >= 1.0:
-        return 0.0, len(copies) - 1
-    return sum((m - n * p) ** 2 / (n * p * (1 - p)) for _, m, n in copies), len(copies) - 1
+        return 0.0, len(pairs) - 1
+    chi2 = sum((a[1] + b[1] - (a[2] + b[2]) * p) ** 2 / ((a[2] + b[2]) * p * (1 - p)) for a, b in pairs)
+    return chi2, len(pairs) - 1
 
 
 def read_copies(
@@ -378,34 +383,36 @@ def read_copies(
     shots, so the surviving positions of every depth stay centered on the job and a drift linear in position
     leaves each pooled frequency unchanged. A depth without a surviving pair is unusable.
 
-    Heterogeneity. The chi-square of the surviving copies of every depth about that depth's pooled frequency,
-    summed over depths, has sum(copies - 1) degrees of freedom and is compared with
-    gate["threshold_by_dof"][dof], the 1 - alpha chi-square quantile fixed in prediction.json. Above it the copies
-    of a depth differ by more than their binomial scatter, a pooled frequency no longer describes the depth, and
-    the bend and family decisions read "not evaluated". A design with no depth of two surviving copies has no
-    test and reads "not evaluated" as well.
+    Heterogeneity. The chi-square of the surviving mirror pairs of every depth about that depth's pooled frequency
+    (pair_heterogeneity), summed over depths, has sum(pairs - 1) degrees of freedom and is compared with
+    gate["threshold_by_dof"][dof], the 1 - alpha chi-square quantile fixed in prediction.json. The statistic is
+    blind to a drift linear in position, which the pairing cancels from the pooled frequencies, and sees what the
+    pairing leaves: a copy that departs from its image's partner pairs, a symmetric (quadratic) drift, a step.
+    Above the threshold the pairs of a depth differ by more than their binomial scatter, a pooled frequency no
+    longer describes the depth, and the bend and family decisions read "not evaluated". A design with no depth of
+    two surviving pairs has no test and reads "not evaluated" as well.
 
     Otherwise verdict() decides on the pooled counts."""
     if set(copies) != set(DEPTHS):
         raise ValueError(f"copies cover depths {sorted(copies)}, not {list(DEPTHS)}")
     floor = float(gate["copy_floor"]) * planned_kept
-    surviving: dict[int, list[Copy]] = {}
+    surviving: dict[int, list[tuple[Copy, Copy]]] = {}
     dropped: dict[str, list[list[int]]] = {}
     for k in DEPTHS:
-        keep: list[Copy] = []
+        keep: list[tuple[Copy, Copy]] = []
         for first, second in mirror_pairs(copies[k], total):
             if first[2] >= floor and second[2] >= floor:
-                keep += [first, second]
+                keep.append((first, second))
             else:
                 dropped.setdefault(str(k), []).append([first[0], second[0]])
         surviving[k] = keep
-    stats_by_depth = {k: copy_heterogeneity(surviving[k]) for k in DEPTHS}
+    stats_by_depth = {k: pair_heterogeneity(surviving[k]) for k in DEPTHS}
     statistic = sum(s for s, _ in stats_by_depth.values())
     dof = sum(d for _, d in stats_by_depth.values())
     threshold = gate["threshold_by_dof"].get(str(dof)) if dof else None
     block: dict[str, Any] = {
         "per_depth": {
-            str(k): {"chi2": round(s, 6), "dof": d, "copies": len(surviving[k])} for k, (s, d) in stats_by_depth.items()
+            str(k): {"chi2": round(s, 6), "dof": d, "pairs": len(surviving[k])} for k, (s, d) in stats_by_depth.items()
         },
         "chi2": round(statistic, 6),
         "dof": dof,
@@ -413,14 +420,14 @@ def read_copies(
     }
     if threshold is None:
         block["passed"] = False
-        reason = "not evaluated: no depth keeps two copies, so copy heterogeneity cannot be tested"
+        reason = "not evaluated: no depth keeps two mirror pairs, so pair heterogeneity cannot be tested"
     elif statistic > threshold:
         block["passed"] = False
-        reason = "not evaluated: the copies of a depth differ by more than their binomial scatter"
+        reason = "not evaluated: the mirror pairs of a depth differ by more than their binomial scatter"
     else:
         block["passed"] = True
         reason = ""
-    pooled = [(sum(c[1] for c in surviving[k]), sum(c[2] for c in surviving[k])) for k in DEPTHS]
+    pooled = [(sum(a[1] + b[1] for a, b in surviving[k]), sum(a[2] + b[2] for a, b in surviving[k])) for k in DEPTHS]
     out: dict[str, Any] = {"dropped_pairs": dropped, "heterogeneity": block}
     if reason:
         out |= {

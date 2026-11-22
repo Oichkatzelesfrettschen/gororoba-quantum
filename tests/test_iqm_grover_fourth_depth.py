@@ -152,7 +152,7 @@ def test_a_failed_copy_leaves_its_depth_with_its_mirror_image() -> None:
     total = len(prediction["arms"])
     copies = case.layout_copies(MODEL, tweak=lambda k, p, m, n: (m // 20, n // 20) if (k, p) == (1, 2) else (m, n))
     read = families.read_copies(copies, total, case.PLANNED_KEPT_PER_COPY, MODEL, cont, gate_from(prediction))
-    if read["dropped_pairs"] != {"1": [[2, 35]]} or read["heterogeneity"]["per_depth"]["1"]["copies"] != 2:
+    if read["dropped_pairs"] != {"1": [[2, 35]]} or read["heterogeneity"]["per_depth"]["1"]["pairs"] != 1:
         raise AssertionError(read)
     if not read["heterogeneity"]["passed"] or read["usable_depths"] != [1, 2, 3, 4]:
         raise AssertionError(read)
@@ -221,7 +221,7 @@ def test_the_committed_gate_holds_the_chi_square_quantile_of_every_degree_of_fre
     from scipy import stats
 
     positions = case.depth_positions(prediction["arms"])
-    planned = sum(len(x) - 1 for x in positions.values())
+    planned = sum(len(x) // 2 - 1 for x in positions.values())
     if gate["planned_dof"] != planned or sorted(gate["threshold_by_dof"], key=int) != [
         str(d) for d in range(1, planned + 1)
     ]:
@@ -230,12 +230,19 @@ def test_the_committed_gate_holds_the_chi_square_quantile_of_every_degree_of_fre
         if abs(value - float(stats.chi2.isf(gate["alpha"], int(dof)))) > 1e-6:
             raise AssertionError(f"dof {dof}: {value}")
     power = gate["power"]
-    if not 0.0 < power["probability_at_half_the_retained_slope"] < power["probability_at_the_retained_slope"] < 1.0:
+    # Linear drift moves no mirror pair, so the gate fires at its false-alarm level there.
+    for key in (
+        "probability_under_linear_drift_in_retention_at_the_retained_slope",
+        "probability_under_linear_drift_in_marked_frequency_at_the_retained_slope",
+    ):
+        if abs(power[key] - gate["alpha"]) > 1e-6:
+            raise AssertionError(f"{key}: {power[key]}")
+    if not 0.5 < power["probability_for_one_copy_of_depth_1_raised_by_0.04"] <= 1.0:
         raise AssertionError(power)
     if (
-        not power["probability_at_the_retained_slope"]
-        < power["probability_at_the_retained_slope_in_marked_frequency"]
-        <= 1.0
+        not power["one_copy_of_depth_1_shift_at_half_power"]
+        < 0.04
+        < power["one_copy_of_depth_1_shift_at_nine_tenths_power"] * 2
     ):
         raise AssertionError(power)
 
@@ -290,33 +297,45 @@ def test_a_copy_raised_by_four_points_reads_not_evaluated_on_raw_counts(tmp_path
         raise AssertionError(decisions["heterogeneity"])
 
 
+def slope_plant(position: dict[str, int], center: float, per_position: float, depths: str, power: int) -> Any:
+    """A drift of the marked frequency of the depths named: per_position times the offset from center ** power."""
+
+    def plant(name: str, distribution: dict[str, float]) -> dict[str, float]:
+        drifting = name.startswith("m101-k") and name[6] in depths
+        return drifted(distribution, per_position * (position[name] - center) ** power) if drifting else distribution
+
+    return plant
+
+
 @pytest.mark.audit
-def test_a_dropped_copy_and_a_linear_slope_read_not_evaluated_or_the_centered_verdict(tmp_path: Path) -> None:
+def test_a_dropped_copy_and_a_linear_slope_read_the_centered_verdict(tmp_path: Path) -> None:
     prediction = json.loads((CASE_DIR / "prediction.json").read_text(encoding="utf-8"))
     position = {n: a["position"] for n, a in prediction["arms"].items()}
     center = (len(position) - 1) / 2
 
-    def slope(per_position: float, depths: str) -> Any:
-        def plant(name: str, distribution: dict[str, float]) -> dict[str, float]:
-            drifting = name.startswith("m101-k") and name[6] in depths
-            return drifted(distribution, per_position * (position[name] - center)) if drifting else distribution
-
-        return plant
-
     def short(name: str) -> int:
         return 2000 if name == "m101-k1-c0" else 17120
 
-    steep = case.analyze(run_of(tmp_path, "steep", plant=slope(-0.005, "123"), kept_of=short))["decisions"]
-    if steep["dropped_pairs"] != {"1": [[2, 35]]} or not steep["bend"]["reading"].startswith("not evaluated"):
-        raise AssertionError(steep)
-    gentle = case.analyze(run_of(tmp_path, "gentle", plant=slope(-0.00003, "1234"), kept_of=short))["decisions"]
-    if gentle["dropped_pairs"] != {"1": [[2, 35]]} or not gentle["heterogeneity"]["passed"]:
-        raise AssertionError(gentle)
-    if (
-        gentle["bend"]["reading"] != "no bend beyond the model resolved at mirrored positions"
-        or abs(gentle["bend"]["z_against_model"]) > 1.0
-    ):
-        raise AssertionError(gentle["bend"])
+    for per_position, depths in ((-0.005, "123"), (-0.00003, "1234")):
+        plant = slope_plant(position, center, per_position, depths, 1)
+        read = case.analyze(run_of(tmp_path, f"slope{depths}", plant=plant, kept_of=short))["decisions"]
+        if read["dropped_pairs"] != {"1": [[2, 35]]} or not read["heterogeneity"]["passed"]:
+            raise AssertionError(read)
+        if read["bend"]["reading"] != "no bend beyond the model resolved at mirrored positions":
+            raise AssertionError(read["bend"])
+        if abs(read["bend"]["z_against_model"]) > 1.0:
+            raise AssertionError(read["bend"])
+
+
+@pytest.mark.audit
+def test_a_symmetric_quadratic_drift_reads_not_evaluated(tmp_path: Path) -> None:
+    prediction = json.loads((CASE_DIR / "prediction.json").read_text(encoding="utf-8"))
+    position = {n: a["position"] for n, a in prediction["arms"].items()}
+    center = (len(position) - 1) / 2
+    plant = slope_plant(position, center, -0.0003, "123", 2)
+    read = case.analyze(run_of(tmp_path, "quadratic", plant=plant))["decisions"]
+    if read["heterogeneity"]["passed"] or not read["bend"]["reading"].startswith("not evaluated"):
+        raise AssertionError(read)
 
 
 @pytest.mark.audit

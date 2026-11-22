@@ -94,31 +94,44 @@ the bend then needs depths 1 to 3 and reads "not evaluated" if one is missing, a
 depths (one degree of freedom, adequacy 6.63) and is "not evaluated" below three. A copy without its mirror image in the
 record raises.
 
-Copy heterogeneity. The chi-square of the surviving copies of every depth about that depth's pooled marked frequency,
-sum (m - n p)^2 / (n p (1 - p)) with copies - 1 degrees of freedom per depth, is summed over the depths (26 degrees of
-freedom with all 38 circuits kept) and compared with the 0.99 chi-square quantile of its degrees of freedom (45.64 at 26),
-which `prediction.json` holds for every degree of freedom (`decisions.heterogeneity.threshold_by_dof`). Above it the bend and
-the family decisions both read "not evaluated": a depth's pooled frequency no longer describes copies that differ beyond
-binomial scatter. The reviewer's two counterexamples (one depth-1 copy 0.04 above its siblings, which read "geometric" at
-delta chi2 -18.5 under the earlier pooling; a dropped depth-1 copy with a slope of -0.005 per position, which read a bend
-at z -3.68) now read "not evaluated" (tests `test_a_copy_raised_by_four_points_reads_not_evaluated_on_raw_counts` and
-`test_a_dropped_copy_and_a_linear_slope_read_not_evaluated_or_the_centered_verdict`, which also plants a slope of -0.00003
-per position and reads the centered verdict "no bend resolved").
+Pair heterogeneity. The chi-square of the surviving mirror pairs of every depth (a copy and its image about the
+center, pooled) about that depth's pooled marked frequency, sum over pairs of (M - N p)^2 / (N p (1 - p)) with M and N the pair's
+marked count and kept shots and pairs - 1 degrees of freedom per depth, is summed over the depths (11 degrees of freedom with
+all 38 circuits kept: 1, 1, 1 and 8) and compared with the 0.99 chi-square quantile of its degrees of freedom (24.72 at 11),
+which `prediction.json` holds for every degree of freedom (`decisions.heterogeneity.threshold_by_dof`). A drift linear in
+position moves a copy and its image in opposite directions and leaves every pair, hence the statistic, unchanged; the
+statistic sees what the pairing leaves (one copy displaced from its siblings, a quadratic or other symmetric drift, a step).
+Above the threshold the bend and the family decisions both read "not evaluated": a depth's pooled frequency no longer
+describes pairs that differ beyond binomial scatter. An earlier version of the gate took the chi-square of single copies; it
+fired on exactly the linear drift the mirroring cancels (probability 0.30 or 0.99999 at the retained slope, depending on how
+the drift reaches the depths), and the pair statistic replaced it.
 
-Power cost of the gate (`decisions.heterogeneity.power`):
+The reviewer's two counterexamples: one depth-1 copy 0.04 above its siblings (read "geometric" at delta chi2 -18.5 under the
+earlier pooling) reads "not evaluated" (statistic 31.2 on 11 degrees of freedom against 24.72, test
+`test_a_copy_raised_by_four_points_reads_not_evaluated_on_raw_counts`); a dropped depth-1 copy with a slope of -0.005 per
+position (which read a bend at z -3.68) now leaves with its image, the surviving positions stay centered, the linear slope
+cancels in every pair, and the run reads the centered verdict "no bend resolved" with the gate passed (test
+`test_a_dropped_copy_and_a_linear_slope_read_the_centered_verdict`, which also plants -0.00003 per position). A symmetric
+quadratic drift reads "not evaluated" (`test_a_symmetric_quadratic_drift_reads_not_evaluated`).
 
-- Under the model the gate returns "not evaluated" with probability 0.01, the whole run's loss of its two decisions.
-- The gate's firing probability under a drift linear in position (noncentral chi-square at the planned shots) depends on
-  how the drift reaches the depths, and the retained evidence, one raw marked-frequency slope of -0.000303 +- 0.000317
-  per position on depth-1 copies, does not choose. If the drift follows each depth's retention span P_k - 1/8 (the same
-  retention slope at every depth), the gate fires with probability 0.5 at 0.00054 per position and 0.9 at 0.00073; the
-  retained slope is -0.00046 per position in retention, so it fires with probability 0.30 at that point estimate and 0.04
-  at half of it. If the drift is the same marked-frequency slope at every depth, which the 18 depth-4 copies at frequency
-  0.06 feel most, it fires with probability 0.5 at 0.000145 per position and 0.9 at 0.000195; the retained 0.000303 then
-  fires it with probability 0.99999 and half of it with 0.56. A drift of that size is the kind the mirroring cancels in
-  the pooled frequencies, so the gate withholds a decision that the design could have made; the retained slope lies within
-  one standard error of zero, where the gate fires with probability 0.01. Retained copies, where positions 0 to 35 carry the four copies of
-  each depth-1 arm, read 13.3 on 16 degrees of freedom over all the retained copy-bearing arms (p 0.65).
+Power cost of the gate (`decisions.heterogeneity.power`, noncentral chi-square at the planned shots):
+
+- Under the model, and under a drift linear in position of either kind (the same retention slope at every depth, or the same
+  marked-frequency slope at every depth), the gate returns "not evaluated" with probability 0.01: at the retained slope
+  of -0.000303 per position in marked frequency (-0.00046 in retention) the firing probability is 0.01 under both drift
+  models, since no pair moves.
+- One copy of depth 1 displaced from its siblings by 0.04 is detected with probability 0.94; the displacement detected half
+  the time is 0.027 and nine tenths of the time 0.038. A displacement of 0.01 (the pooled-depth bias that 0.04 on one of four
+  copies produces) is therefore the size the gate detects with probability near 0.5 or more; smaller ones pass and enter the
+  pooled depth as a bias of a quarter of themselves.
+- A symmetric quadratic drift (marked frequency moving by c times the squared offset from the center) trips it with
+  probability 0.5 at c = 1.5e-5 per squared position and 0.9 at 2.0e-5 (in retention: 5.5e-5 and 7.6e-5). The retained job's
+  inner copies minus its outer copies read -0.00053 +- 0.00364 in marked frequency, a curvature of 1.9e-6 +- 1.3e-5 per squared
+  position: the gate fires with probability 0.012 at that point estimate and 0.49 at one standard error above it (0.010 and
+  0.039 for a drift that follows the retention span). The data do not exclude a curvature the gate detects half the time.
+- The pooled retention, hence the bend, is unbiased by a drift linear in position; a symmetric drift of curvature below the
+  gate's detection remains in the pooled frequencies (the squared-offset spread of the depths, under a quarter, bounds how
+  differently it enters them).
 
 Domains. The geometric family's rate s is searched over [0.30, 1.20] and the coherent family's over [0.50, 1.10] (its offset
 eps over a full period, the geometric amplitude without bound). A fit whose rate sits on a bound reads "out of domain: the
@@ -140,7 +153,7 @@ The bend repeats (z <= -3) at mirrored positions and "coherent" wins: a coherent
 supported within this family (an oracle phase error); the positional-drift cause is excluded at linear order. No bend
 (|z| < 3): the retained bend came from drift of higher order than the mirroring cancels, or from chance, and the coherent
 reading is unsupported. "Geometric" wins with the bend present: an incoherent depth-dependent loss the model omits.
-"Not evaluated" (a failed heterogeneity gate): the copies of a depth differ by more than binomial scatter, a copy-specific or
+"Not evaluated" (a failed heterogeneity gate): the mirror pairs of a depth differ by more than binomial scatter, a copy-specific or
 non-linear positional effect that the mirroring does not cancel; neither decision is read, and the run shows the drift instead
 of deciding the question. "Out of domain": a rate outside the stated box, reported as such. "Neither family fits": another mechanism (for example a ZZ phase or leakage) remains, and the oracle-phase family is refuted
 as the sole cause.
@@ -156,7 +169,7 @@ PR 980, gives 0.1347 s + 7.62e-6 s per circuit-shot = 5.9 s plus the compiler's 
 case rule of `scripts/iqm_jobs.py` cancels a job that reaches the threshold, and IQM can bill a failed or cancelled job, so
 the ceiling bounds the spend and is not a guarantee of zero cost on a cancellation. The repair of the analyzer and the gates
 leaves the circuits, shots, expected seconds and credits as they were; `cases.json` binds the regenerated prediction and has
-sha256 `1c62502fecde9816c406de8dc54570a0dc7b7799d7377c4973a246f594b03aa9` on calibration set `a0e725eb` (a live rebuild may change
+sha256 `0208b8ed2e9eaddf0126e0005854915ad0e5a591f02c283b0320258d0682d63d` on calibration set `a0e725eb` (a live rebuild may change
 it, and the approvals name the digest after that rebuild).
 
 ## Steps before a submission (owner approval needed for each paid or provider step)
@@ -188,10 +201,9 @@ take no part.
   a podman host's receipts.
 - Mirroring cancels drift linear in position; drift that is not linear stays, balanced to the order of the squared-offset
   spread.
-- The heterogeneity gate also fires on a drift linear in position of the size the retained run's point estimate shows
-  (probability 0.30 for a retention-proportional drift, 0.99999 for an equal marked-frequency drift), which the mirroring
-  would have cancelled; the alternative statistic on mirror-pair sums would not
-  fire on it, and the choice between the two is the owner's (the brief names the per-copy statistic).
+- The pair-heterogeneity gate detects a copy displaced by 0.04 with probability 0.94 and a displacement of 0.027 half the time;
+  smaller single-copy displacements and symmetric drifts under its detection enter the pooled depths unflagged, and the
+  data's curvature estimate (1.9e-6 +- 1.3e-5 per squared position) leaves a gate-detectable curvature within one standard error.
 - The coherent fit's rate bound at 0.50 makes strongly lossy data read "out of domain" rather than "geometric", since the
   coherent fit is cut off by its bound (planted geometric data with amplitude 0.5 read "out of domain" for s of 0.7 and
   below and "geometric" at 0.8; the threshold depends on the amplitude and the plant).

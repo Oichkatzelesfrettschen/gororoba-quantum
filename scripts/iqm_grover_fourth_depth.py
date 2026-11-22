@@ -26,7 +26,7 @@ iqm_garnet_followup.predicted: depolarizing PRX and CZ, idle T1 and T2 over the 
 readout; no coherent error. The case draws no random number, so it takes no seed.
 
 analyze RUN_DIR --out OUT.json reads one collected run of the case (gororoba_quantum/grover_depth_analysis.py): the
-circuit digests and positions bound to the counts, copies dropped in mirror pairs, the copy-heterogeneity gate and
+circuit digests and positions bound to the counts, copies dropped in mirror pairs, the pair-heterogeneity gate and
 the preregistered verdict. A run on garnet:mock is refused.
 
 Usage: "$PYTHON" scripts/iqm_grover_fourth_depth.py (build DIR (--calibration SRC | --live) | check DIR |
@@ -45,7 +45,7 @@ import json
 import re
 import shutil
 import sys
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import Any
 
@@ -235,54 +235,70 @@ def depth_positions(arm_records: dict[str, Any]) -> dict[int, list[int]]:
     }
 
 
-def drift_noncentrality(
-    model: list[float], positions: dict[int, list[int]], slope: float, in_retention: bool = True
+def pair_noncentrality(
+    model: list[float], positions: dict[int, list[int]], total: int, shift: Callable[[int, int], float]
 ) -> float:
-    """Noncentrality of the heterogeneity statistic when every copy drifts linearly in position by slope per position,
-    in retention (a depth's marked frequency then moves by slope times its retention scale P_k - 1/8) or, with
-    in_retention false, in marked frequency at the same rate at every depth: the copies' frequencies scatter about
-    their mean by that amount times their offset from the depth's mean position, and each depth adds kept shots per
-    copy times the squared scatter over p (1 - p)."""
-    total = 0.0
+    """Noncentrality of the pair-heterogeneity statistic when the copy of depth k at a position moves its marked
+    frequency by shift(k, position): a mirror pair moves by the mean of its two copies' shifts, the pairs of a depth
+    scatter about their mean shift, and each depth adds the pair's kept shots times the squared scatter over
+    p (1 - p). A shift odd about the job's center (a drift linear in position) leaves every pair unmoved."""
+    out = 0.0
     for k, m in zip(families.DEPTHS, model, strict=True):
         p = families.probability_of(m, k)
-        x = np.asarray(positions[k], dtype=float)
-        shift = slope * (families.retention_scale(k) if in_retention else 1.0) * (x - x.mean())
-        total += float(np.sum(shift**2)) * PLANNED_KEPT_PER_COPY / (p * (1 - p))
-    return total
+        moves = np.asarray([(shift(k, x) + shift(k, total - 1 - x)) / 2 for x in positions[k] if x < total - 1 - x])
+        out += float(np.sum((moves - moves.mean()) ** 2)) * 2 * PLANNED_KEPT_PER_COPY / (p * (1 - p))
+    return out
 
 
 def heterogeneity_gate(arm_records: dict[str, Any], model: list[float]) -> dict[str, Any]:
-    """The copy-heterogeneity gate fixed in prediction.json: the mirror-pair floor, the chi-square quantile for every
-    degree of freedom the surviving copies can leave, and what the gate costs the design (its false-alarm
-    probability, the linear retention drift that trips it half and nine tenths of the time, its probability at the
-    retained drift, and the sizing after pairs leave)."""
+    """The pair-heterogeneity gate fixed in prediction.json: the mirror-pair floor, the chi-square quantile for every
+    degree of freedom the surviving pairs can leave, and what the gate costs the design: its false-alarm
+    probability, its firing probability under a drift linear in position of either kind (retention-proportional or
+    equal in marked frequency at every depth), under a symmetric quadratic drift, and under one copy displaced from
+    its siblings."""
     from scipy import stats
 
     positions = depth_positions(arm_records)
-    dof = sum(len(x) - 1 for x in positions.values())
+    total = len(arm_records)
+    center = (total - 1) / 2
+    dof = sum(len(x) // 2 - 1 for x in positions.values())
     threshold = families.heterogeneity_threshold(dof)
+    scale = {k: families.retention_scale(k) for k in families.DEPTHS}
+    models: dict[str, Callable[[float], Callable[[int, int], float]]] = {
+        "linear_retention": lambda a: lambda k, x: a * scale[k] * (x - center),
+        "linear_frequency": lambda a: lambda k, x: a * (x - center),
+        "quadratic_retention": lambda a: lambda k, x: a * scale[k] * (x - center) ** 2,
+        "quadratic_frequency": lambda a: lambda k, x: a * (x - center) ** 2,
+        "one_copy_of_depth_1": lambda a: lambda k, x: a if (k, x) == (1, positions[1][0]) else 0.0,
+    }
 
-    def fires(slope: float, in_retention: bool = True) -> float:
-        noncentrality = drift_noncentrality(model, positions, slope, in_retention)
-        return float(stats.ncx2.sf(threshold, dof, noncentrality))
+    def fires(name: str, amount: float) -> float:
+        noncentrality = pair_noncentrality(model, positions, total, models[name](amount))
+        return (
+            float(stats.ncx2.sf(threshold, dof, noncentrality))
+            if noncentrality > 1e-9
+            else families.HETEROGENEITY_ALPHA
+        )
 
-    def slope_at(power: float, in_retention: bool = True) -> float:
-        low, high = 0.0, 0.05
+    def amount_at(name: str, power: float) -> float:
+        low, high = 0.0, 1.0
         for _ in range(100):
             mid = (low + high) / 2
-            low, high = (mid, high) if fires(mid, in_retention) < power else (low, mid)
+            low, high = (mid, high) if fires(name, mid) < power else (low, mid)
         return high
 
-    # The retained job's k = 1 copies, positions 0, 13, 22 and 35, gave a raw marked-frequency slope of -0.000303
-    # +- 0.000317 per position (docs/evidence/iqm-garnet-grover-positions on branch iqm-qb12-fault-models), which is
-    # slope / (P_1 - 1/8) in retention.
-    retained_frequency_slope = 0.000303
-    retained_slope = retained_frequency_slope / families.retention_scale(1)
+    # The retained job's k = 1 copies (positions 0, 13, 22, 35; docs/evidence/iqm-garnet-grover-positions on branch
+    # iqm-qb12-fault-models) gave a raw marked-frequency slope of -0.000303 +- 0.000317 per position, and the inner
+    # copies minus the outer ones -0.00053 +- 0.00364, a curvature of 0.00053 / 286 per squared position (the inner
+    # copies sit at squared offsets 20.25 and the outer at 306.25 from the center 17.5 of the retained job's 36).
+    slope = 0.000303
+    curvature = 0.00053 / 286
+    curvature_se = 0.00364 / 286
     return {
         "statistic": (
-            "sum over depths of the chi-square of the surviving copies' marked counts about the depth's pooled "
-            "marked frequency, sum (m - n p)^2 / (n p (1 - p)), with copies - 1 degrees of freedom per depth"
+            "sum over depths of the chi-square of the surviving mirror pairs about the depth's pooled marked "
+            "frequency, sum over pairs (M - N p)^2 / (N p (1 - p)) with M and N the pair's marked count and kept "
+            "shots, and pairs - 1 degrees of freedom per depth"
         ),
         "alpha": families.HETEROGENEITY_ALPHA,
         "copy_floor": families.COPY_FLOOR,
@@ -292,19 +308,33 @@ def heterogeneity_gate(arm_records: dict[str, Any], model: list[float]) -> dict[
         "threshold_by_dof": {str(d): families.heterogeneity_threshold(d) for d in range(1, dof + 1)},
         "power": {
             "false_not_evaluated_probability": families.HETEROGENEITY_ALPHA,
-            "linear_drift_of_retention_per_position_at_half_power": slope_at(0.5),
-            "linear_drift_of_retention_per_position_at_nine_tenths_power": slope_at(0.9),
-            "retained_slope_of_retention_per_position": retained_slope,
-            "probability_at_the_retained_slope": fires(retained_slope),
-            "probability_at_half_the_retained_slope": fires(retained_slope / 2),
-            # The retained evidence is one raw marked-frequency slope on depth-1 copies, so it does not choose
-            # between a drift that follows each depth's retention span (above) and one of equal marked-frequency
-            # size at every depth (below), which the depth-4 copies, at frequency 0.06, feel most.
-            "equal_frequency_drift_of_marked_frequency_per_position_at_half_power": slope_at(0.5, False),
-            "equal_frequency_drift_of_marked_frequency_per_position_at_nine_tenths_power": slope_at(0.9, False),
-            "retained_slope_of_marked_frequency_per_position": retained_frequency_slope,
-            "probability_at_the_retained_slope_in_marked_frequency": fires(retained_frequency_slope, False),
-            "probability_at_half_the_retained_slope_in_marked_frequency": fires(retained_frequency_slope / 2, False),
+            # A drift linear in position moves a copy and its image in opposite directions: no pair moves.
+            "probability_under_linear_drift_in_retention_at_the_retained_slope": fires(
+                "linear_retention", slope / scale[1]
+            ),
+            "probability_under_linear_drift_in_marked_frequency_at_the_retained_slope": fires(
+                "linear_frequency", slope
+            ),
+            "retained_slope_of_marked_frequency_per_position": slope,
+            "quadratic_drift_of_marked_frequency_per_position2_at_half_power": amount_at("quadratic_frequency", 0.5),
+            "quadratic_drift_of_marked_frequency_per_position2_at_nine_tenths_power": amount_at(
+                "quadratic_frequency", 0.9
+            ),
+            "quadratic_drift_of_retention_per_position2_at_half_power": amount_at("quadratic_retention", 0.5),
+            "quadratic_drift_of_retention_per_position2_at_nine_tenths_power": amount_at("quadratic_retention", 0.9),
+            "retained_curvature_of_marked_frequency_per_position2": curvature,
+            "retained_curvature_standard_error": curvature_se,
+            "probability_at_the_retained_curvature_in_marked_frequency": fires("quadratic_frequency", curvature),
+            "probability_at_one_standard_error_above_in_marked_frequency": fires(
+                "quadratic_frequency", curvature + curvature_se
+            ),
+            "probability_at_the_retained_curvature_in_retention": fires("quadratic_retention", curvature / scale[1]),
+            "probability_at_one_standard_error_above_in_retention": fires(
+                "quadratic_retention", (curvature + curvature_se) / scale[1]
+            ),
+            "one_copy_of_depth_1_shift_at_half_power": amount_at("one_copy_of_depth_1", 0.5),
+            "one_copy_of_depth_1_shift_at_nine_tenths_power": amount_at("one_copy_of_depth_1", 0.9),
+            "probability_for_one_copy_of_depth_1_raised_by_0.04": fires("one_copy_of_depth_1", 0.04),
         },
     }
 
@@ -409,11 +439,12 @@ def decisions(arm_records: dict[str, Any]) -> dict[str, Any]:
                     "without blocking the other"
                 ),
                 "heterogeneity": (
-                    "after the mirror-pair gate, the chi-square of the surviving copies of each depth about that "
-                    "depth's pooled marked frequency, summed over depths, is compared with the 1 - alpha chi-square "
-                    "quantile at its degrees of freedom (decisions.heterogeneity.threshold_by_dof); above it the "
-                    "bend and family decisions both read 'not evaluated', since a depth's pooled frequency no longer "
-                    "describes copies that differ beyond binomial scatter"
+                    "after the mirror-pair gate, the chi-square of the surviving mirror pairs of each depth (a copy "
+                    "and its image about the job's center, pooled) about that depth's pooled marked frequency, "
+                    "summed over depths, is compared with the 1 - alpha chi-square quantile at its degrees of freedom "
+                    "(decisions.heterogeneity.threshold_by_dof); a drift linear in position leaves every pair "
+                    "unmoved; above the quantile the bend and family decisions both read 'not evaluated', since a "
+                    "depth's pooled frequency no longer describes pairs that differ beyond binomial scatter"
                 ),
                 "beside": (
                     "rho_4 against the retained fits' continuations in standard errors, and whether the "
@@ -557,7 +588,7 @@ def counts_of(lam: list[float], kept: list[int]) -> list[int]:
 
 def analyze(run_dir: Path, case_dir: Path | None = None) -> dict[str, Any]:
     """The record of one collected run: circuit digests and positions bound to the counts, mirror-pair gating, the
-    copy-heterogeneity gate and the verdict (gororoba_quantum/grover_depth_analysis.py)."""
+    pair-heterogeneity gate and the verdict (gororoba_quantum/grover_depth_analysis.py)."""
     return run_analysis.analyze(run_dir, run_analysis.CASE_DIR if case_dir is None else case_dir)
 
 
@@ -652,7 +683,7 @@ def self_test() -> str:
     # Mirror pairs and the heterogeneity gate on the arrangement's copies.
     gate = {
         "copy_floor": families.COPY_FLOOR,
-        "threshold_by_dof": {str(d): families.heterogeneity_threshold(d) for d in range(1, 27)},
+        "threshold_by_dof": {str(d): families.heterogeneity_threshold(d) for d in range(1, 12)},
     }
     per_copy = PLANNED_KEPT_PER_COPY
     clean = families.read_copies(layout_copies(model), total, per_copy, model, cont, gate)
