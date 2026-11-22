@@ -24,6 +24,7 @@ mirror is refused.
 
 from __future__ import annotations
 
+import functools
 import json
 import types
 from pathlib import Path
@@ -102,6 +103,7 @@ def rejection(ratio: float, df: int, scale: int = 1, alpha: float = frozen.ALPHA
     return inside + float(chi2.sf(critical, contrast))
 
 
+@functools.cache
 def detectable_ratio(df: int, power: float, scale: int = 1, alpha: float = frozen.ALPHA) -> float:
     """The seed SD, in units of one fraction's counting error, at which `rejection` equals `power`."""
     from scipy.optimize import brentq
