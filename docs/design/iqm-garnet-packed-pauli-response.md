@@ -6,8 +6,8 @@ on Garnet as one 68-circuit job: the 36 circuits of the proposal and 32 buffer c
 built by `scripts/iqm_packed_pauli_case.py build DIR --calibration SRC` from Garnet's default calibration set
 `ea681de1-9661-41e5-bd6f-cb524fa056a6` (a live read on 2026-11-21, copied into the case's `calibration/`).
 `prediction.json`, bound by digest into `cases.json`, holds the per-circuit predictions. The provider jobs so far are two
-`garnet:mock` jobs, `01a1ff98` of the 36-circuit body and `01a1ffe7` of the 68-circuit body (admission items below);
-no paid job is submitted, and it waits for the owner's approval.
+`garnet:mock` jobs, `01a1ff98` of the 36-circuit body and `01a1ffe7` of the 68-circuit body (admission items below),
+and the paid Garnet job `01a20023` that the owner approved on 2026-11-21 ("Result").
 
 ## Question
 
@@ -118,14 +118,70 @@ tests carry `audit` and the unmarked tests cover one pair circuit, one buffer an
 | IQM `barrier` in the job body | closed on the mock | `garnet:mock` job `01a1ff98` (owner AskUserQuestion 2026-11-21T19:31Z) completed the 36-circuit body at 2000 shots with the barrier; run record `results/iqm/runs/2026-11-21T193252Z-garnet_mock-packed-pauli-response-garnet-packed`; its bits are random and are not analyzed. The dynamic architecture lists no `barrier` gate, and acceptance on the mock station is the evidence; Garnet runs the same station-control release |
 | Buffer circuits in the job body | closed on the mock | `garnet:mock` job `01a1ffe7` (owner AskUserQuestion 2026-11-21T20:53Z) completed the 68-circuit body (36 proposal circuits and 32 buffers) at 2000 shots, execution estimate 2.807 s (sweep) and 1.207 s (QPU); run record `results/iqm/runs/2026-11-21T205843Z-garnet_mock-packed-pauli-response-garnet-packed`; its bits are random and are not analyzed |
 | Served order of a job's circuits | closed by documentation | the repository's mirror of iqm-pulse "Concepts and classes" (`docs/notes/iqm/docs/iqm-pulse/concepts.md`, line 83) states that segments run in order and the whole sequence repeats once per shot; the mock estimate of the 36-circuit body reports `playlist_repeats` 2000. The circuits of one job therefore interleave shot by shot, and the buffers make each science circuit's predecessor a buffer |
-| Carryover | open, measured by the diagnostic | the buffer removes lag-one treatment-dependent carryover and leaves lag-two carryover through the buffer; `carryover_after_dense_minus_sparse` reads it per sentinel cell and for the register. The reset pilot measured initialization error after one active-reset cycle |
-| Execution timing and reset | open | the mock execution estimate of the 36-circuit body is 2.251 s (sweep) and 0.651 s (QPU); the real runtime of the 68-circuit job is unmeasured |
-| Enforceable cost | open, best effort | ceiling 5.00 credits against the 24-credit plan, cancel threshold 9.0 s against a 6.711 s plan; cancellation is best effort and bounds spending only while the job runs |
-| Server compilation of 68 twenty-qubit circuits | open | the retained 20-circuit job compiled in 0.098 s; this size is unmeasured and sits inside the 2.289 s of headroom |
+| Carryover | open, measured by the diagnostic | the buffer removes lag-one treatment-dependent carryover and leaves lag-two carryover through the buffer; `carryover_after_dense_minus_sparse` reads it per sentinel cell and for the register, and the post-hoc readout split reads the load cell and single qubits ("Result"). The reset pilot measured initialization error after one active-reset cycle |
+| Execution timing and reset | closed by the run | job `01a20023` executed the 68-circuit body in 1.636 s, against the 68-circuit mock estimate of 2.807 s (sweep) and 1.207 s (QPU) and Garnet's compiled estimate of 2.231 s (`raw/runtime_estimates.json`); reset residue in "Result" |
+| Enforceable cost | open, best effort | ceiling 5.00 credits, cancel threshold 9.0 s; the job billed 2 s, 1.0 credit, below the threshold, so the run measured the cost and did not exercise cancellation |
+| Server compilation of 68 twenty-qubit circuits | closed by the run | 0.196 s |
 | Result identity and raw joint outcomes | closed for the record format | one 20-bit row per shot per circuit, read in locus order; the circuit order of `cases.json` and `prediction.json` is checked by the analysis |
 | Statistical assumptions | open | sharp null, randomization of the generator (seed 20261022, an identifier of the proposal) and carryover limited to the lag the diagnostic reads must hold; shot serial dependence is not tested by the primary test |
-| Current-head review | open | pull request review and resolution |
-| Owner approval | open | the written case above |
+| Current-head review | closed for the case | PR 972 reviewed the case and its analyzer (local reviewers, the Advisor and hosted Codex, no findings on 94fa284a2); the retained run, its analysis and this Result carry their own review record, `docs/archive/reviews/iqm-packed-pauli-garnet-run/README.md` |
+| Owner approval | closed | owner AskUserQuestion 2026-11-21T22:00Z, "Approve run" |
+
+## Result
+
+Run `results/iqm/runs/2026-11-21T220346Z-garnet-packed-pauli-response-garnet-packed`, job
+`01a20023-1aa1-7001-9806-28b92b115b96` (owner AskUserQuestion 2026-11-21T22:00Z, cases.json sha256
+12a17407ac83c02762c3cb90b6e3bfe5a80a8f59f50ca323ad109a78e13b153e), compiled on calibration set ea681de1, the set the
+case pins and the default the IQM service returned at 21:43 UTC, 20 minutes before submission. Analysis:
+`results/iqm/packed_pauli_response_garnet_analysis.json` (`scripts/iqm_packed_pauli_case.py analyze`); post-hoc
+readout split: `docs/evidence/iqm-garnet-packed-pauli-run/readout_split.json` from `readout_split.py` beside it. Gate
+`core-iqm-packed-pauli-run-replay` replays both byte for byte.
+
+- Preregistered test: the sharp null is not rejected. The 16 pair statistics 2(B_Y - K_Y), dense minus sparse, are
+  -229, -74, 49, 64, 28, -9, 149, -60, -21, 85, 115, -51, 45, 116, -57 and 7; the exact paired p-value is
+  22553/32768 = 0.688. The arms differ by 0.0025 (dense 0.6924, sparse 0.6900), a point estimate the test does not
+  separate from zero; a non-rejection is not evidence that the response is unchanged.
+- Descriptive, deciding nothing: both arms read about 0.69 against the independent-cell baseline of 0.823. The
+  shortfall of 0.13 appears in both arms, so the load cell cannot be its sole source; the record does not apportion it
+  among the errors the baseline omits (initialization under active reset, relaxation, leakage, coherent error,
+  coupling between cells and carryover). The X-quadrature response reads -0.110 dense and -0.120 sparse.
+- Carryover, descriptive: the buffer's excited population after a dense predecessor minus after a sparse one reads,
+  per cell (readout split, Welch standard errors over 16 and 15 buffers), 0.0010 +- 0.0011, 0.0028 +- 0.0017,
+  0.0006 +- 0.0014 and 0.0001 +- 0.0012 on sentinel cells 0 to 3, and 0.0118 +- 0.0016 on the load cell 4, which the
+  dense arm alone prepares. Lag-one carryover is resolved on the load cell; on the sentinel cells each estimate lies
+  within 1.7 standard errors of zero, and cell 1 holds QB12 (below). The buffer after the all-ones reference reads
+  0.102 on the register against 0.068 after a sparse predecessor: one all-ones predecessor leaves 0.033 more excited
+  population after one active-reset cycle than a sparse science predecessor does.
+- Reference drift, descriptive: the record's `drift_first_vs_last_reference_error` lists 0.095 for the first all-zero
+  reference (`circuit-000`) and 0.069 for the last (`circuit-034`). The playlist repeats once per shot, so
+  `circuit-000` follows the all-ones `circuit-035` of the previous shot; the difference of 0.026 matches the 0.033
+  all-ones carryover above and reads as carryover, not drift over the job's 1.6 s.
+- QB12, measured (readout split): QB12 reads 1 in 36.2 and 38.8 percent of the all-zero reference shots and 54.8 and
+  52.5 percent of the all-ones ones, against 2.6 to 15.3 percent and 91.9 to 98.8 percent on the other nineteen
+  qubits. Behind the sentinel cell-1 buffer level of 0.13 (against 0.05 to 0.07 on cells 0, 2 and 3) sits QB12 at
+  0.39 after either kind of predecessor. Calibration ea681de1 lists QB12's `metrics.ssro.measure_fidelity.constant` errors as 0.0182 (0 to 1) and
+  0.0142 (1 to 0). QB12 is bit 0 of sentinel cell 1, outside cells 2 and 3 that form the primary statistic, so the
+  primary test does not read it; its own buffer carryover reads 0.0046 +- 0.0051. The same hour's Grover and sedenion
+  jobs are retained separately with their own reading of QB12.
+- Cost: compilation 0.196 s and execution 1.636 s, billed as 2 whole seconds, 1.0 credit (balance 25.75 afterwards).
+  The case planned 5.111 s from 37.5 us per shot (`ACTIVE_SHOT_SECONDS`, measured by the reset and billing pilot on a
+  two-circuit job with one active-reset cycle and no heralding, `results/iqm/cases/reset-billing-pilot`) plus each
+  circuit's path; the job ran 12.0 us per circuit-shot (1.636 s over 68 circuits of 2000 shots). The same hour's
+  heralded Garnet jobs ran 13.9 us (36 circuits of 4000 shots in 1.999 s) and 18.4 us (28 circuits of 1000 shots in
+  0.514 s) per circuit-shot.
+
+Open hypotheses:
+
+- hypothesis: part of the time behind `ACTIVE_SHOT_SECONDS` is paid once per shot of the playlist or once per job,
+  not once per circuit, so 37.5 us per circuit-shot overestimates a many-circuit job. Test: a fit of execution seconds
+  against circuits, shots and heralding over the retained Garnet jobs (the pilot, this job and the Grover and sedenion
+  jobs) before the remaining credits are sized.
+- hypothesis: the lag-two path through a buffer into a science circuit is smaller than the lag-one carryover the
+  sentinel cells show, since it crosses a second reset. Test: a job that places two buffers before each science
+  circuit.
+- hypothesis: the low response of the first science circuit after the all-ones reference (`circuit-002`, pair 0's
+  -229) is the all-ones carryover settling over several circuits. Test: per-position responses of the science
+  circuits in the retained bytes, early against late shot blocks.
 
 ## Procedure
 
@@ -138,6 +194,8 @@ D=$(sha256sum $C/cases.json | cut -d' ' -f1)
 "$PYTHON" scripts/iqm_jobs.py submit $C packed --qc garnet --approval QUOTE --approved-cases-sha256 $D --max-credits 5.0
 "$PYTHON" scripts/iqm_jobs.py collect RUN_DIR
 "$PYTHON" scripts/iqm_packed_pauli_case.py analyze RUN_DIR --out results/iqm/packed_pauli_response_garnet_analysis.json
+"$PYTHON" scripts/iqm_packed_pauli_case.py analyze RUN_DIR --out results/iqm/packed_pauli_response_garnet_analysis.json --replay
 ```
 
-Every command above is not run; the submissions wait for the owner's quoted approval.
+Every command above ran: the two mock submissions and the Garnet submission under the owner's quoted approvals, then
+the collection and the analysis on the compute host; `--replay` is the form gate `core-iqm-packed-pauli-run-replay` runs.
