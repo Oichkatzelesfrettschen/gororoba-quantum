@@ -27,6 +27,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import iqm_packed_pauli_case as case  # noqa: E402
+
 import iqm_records  # noqa: E402
 
 RUN = ROOT / "results/iqm/runs/2026-11-21T220346Z-garnet-packed-pauli-response-garnet-packed"
@@ -103,8 +104,8 @@ def main(out: Path) -> None:
     record = {
         "run": str(RUN.relative_to(ROOT)),
         "definition": (
-            "response = mean over shots of (score(bright Y cell) - score(kernel Y cell)) / 2; residual = response minus "
-            "the mean response of its dense or sparse arm; science_since_all_ones = 1 for the first science circuit "
+            "response = mean over shots of (score(bright Y cell) - score(kernel Y cell)) / 2; residual = response "
+            "minus the mean response of its dense or sparse arm; science_since_all_ones = 1 for the first science circuit "
             "after the all-ones reference, counted across the wrap from one shot to the next"
         ),
         "arm_mean_response": {"dense": round(arm_mean[True], ROUND), "sparse": round(arm_mean[False], ROUND)},

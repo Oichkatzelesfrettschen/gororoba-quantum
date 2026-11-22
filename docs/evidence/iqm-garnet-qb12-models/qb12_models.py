@@ -164,8 +164,8 @@ class Model:
     def probabilities(self, values: dict[str, float], ops: list[dict[str, Any]]) -> np.ndarray:
         p = values.get("p", 0.0)
         rho = np.zeros((SIZE, SIZE), dtype=complex)
-        for level, weight in ((0, 1 - p), (1, p)):
-            index = LEVELS.index((0, level, 0, 0))
+        for start, weight in ((0, 1 - p), (1, p)):
+            index = LEVELS.index((0, start, 0, 0))
             rho[index, index] = weight
         for op in ops:
             where = [QUBITS.index(q) for q in op["locus"]]
@@ -245,8 +245,9 @@ def main(out: Path) -> None:
     identity = {c["name"]: ideal_identity_error(c["ops"]) for c in circuits if "-id-" in c["name"]}
     if max(identity.values()) > 1e-9:
         raise SystemExit(f"a null arm is not the identity: {identity}")
-    saturated = float(sum(c["counts"][c["counts"] > 0] @ np.log(c["counts"][c["counts"] > 0] / c["counts"].sum())
-                          for c in circuits))
+    saturated = float(
+        sum(c["counts"][c["counts"] > 0] @ np.log(c["counts"][c["counts"] > 0] / c["counts"].sum()) for c in circuits)
+    )
     shots = int(sum(c["counts"].sum() for c in circuits))
     cells = 15 * len(circuits)
     fits = ordered_map(fit, [s for kind in SPACE for s in starts(kind)])

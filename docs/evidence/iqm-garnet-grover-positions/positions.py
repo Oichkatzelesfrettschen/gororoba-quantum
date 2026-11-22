@@ -60,6 +60,11 @@ def f_of(p: dict[int, float]) -> float:
     return lam[3] - lam[2] ** 2 / lam[1]
 
 
+def moved(p_raw: dict[int, float], positions: dict[int, int], mean_position: float, slope: float) -> dict[int, float]:
+    """The depth arms' frequencies moved along a line in position to the k = 1 copies' mean position."""
+    return {k: p - (slope * (positions[k] - mean_position) if k > 1 else 0.0) for k, p in p_raw.items()}
+
+
 def main(out: Path) -> None:
     circuits = read()
     report: dict[str, Any] = {}
@@ -68,7 +73,9 @@ def main(out: Path) -> None:
         arms = {
             name: c
             for name, c in circuits.items()
-            if name == f"m{marked}-k1" or name.startswith(f"m{marked}-k1-c") or name in (f"m{marked}-k2", f"m{marked}-k3")
+            if name == f"m{marked}-k1"
+            or name.startswith(f"m{marked}-k1-c")
+            or name in (f"m{marked}-k2", f"m{marked}-k3")
         }
         rows = {}
         for name, c in sorted(arms.items(), key=lambda item: item[1]["position"]):
@@ -95,7 +102,10 @@ def main(out: Path) -> None:
         }
         f_raw = f_of(p_raw)
         report[marked] = {
-            "arms": {name: {k: (round(v, ROUND) if isinstance(v, float) else v) for k, v in r.items()} for name, r in rows.items()},
+            "arms": {
+                name: {k: (round(v, ROUND) if isinstance(v, float) else v) for k, v in r.items()}
+                for name, r in rows.items()
+            },
             "raw_f": round(f_raw, ROUND),
         }
         if len(copies) < 2:
@@ -106,26 +116,22 @@ def main(out: Path) -> None:
         xm = float(np.sum(w * x) / np.sum(w))
         slope = float(np.sum(w * (x - xm) * (y - np.sum(w * y) / np.sum(w))) / np.sum(w * (x - xm) ** 2))
         slope_se = float(1 / math.sqrt(np.sum(w * (x - xm) ** 2)))
-        def moved(s: float) -> dict[int, float]:
-            return {
-                1: p_raw[1],
-                2: p_raw[2] - s * (rows[f"m{marked}-k2"]["position"] - xm),
-                3: p_raw[3] - s * (rows[f"m{marked}-k3"]["position"] - xm),
-            }
+        positions = {2: rows[f"m{marked}-k2"]["position"], 3: rows[f"m{marked}-k3"]["position"]}
 
         report[marked] |= {
             "k1_slope_per_position": round(slope, 6),
             "k1_slope_se": round(slope_se, 6),
             "k1_mean_position": round(xm, 3),
-            "raw_f_moved_along_fitted_line": round(f_of(moved(slope)), ROUND),
-            "raw_f_moved_at_slope_plus_3se": round(f_of(moved(slope + 3 * slope_se)), ROUND),
-            "raw_f_moved_at_slope_minus_3se": round(f_of(moved(slope - 3 * slope_se)), ROUND),
+            "raw_f_moved_along_fitted_line": round(f_of(moved(p_raw, positions, xm, slope)), ROUND),
+            "raw_f_moved_at_slope_plus_3se": round(f_of(moved(p_raw, positions, xm, slope + 3 * slope_se)), ROUND),
+            "raw_f_moved_at_slope_minus_3se": round(f_of(moved(p_raw, positions, xm, slope - 3 * slope_se)), ROUND),
         }
     record = {
         "run": str(RUN.relative_to(ROOT)),
         "definition": (
-            "p = raw marked frequency over kept shots; f = lambda_3 - lambda_2^2 / lambda_1 with lambda_k = (p - 1/8) / "
-            "(ideal_k - 1/8), raw, without the readout correction; moved: the k = 2 and 3 arms shifted along a line in "
+            "p = raw marked frequency over kept shots; f = lambda_3 - lambda_2^2 / lambda_1 with "
+            "lambda_k = (p - 1/8) / (ideal_k - 1/8), raw, without the readout correction; moved: the k = 2 and 3 arms "
+            "shifted along a line in "
             "position to the k = 1 copies' mean position; block_chi2_df3: Pearson statistic of the four shot blocks "
             "against their pooled frequency"
         ),
