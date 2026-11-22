@@ -37,8 +37,9 @@ the value K2 predicted before the run.
 Three findings bound the ladder's value. Every all-degree statement above came from geometry (arcs, component
 containment, blowup planes), never from a rung. The export cost grows about 1.36 times per order on VB with
 `slimgb` (12,150 s at N = 21, 16,500 s at N = 22 on the laptop), so N = 31, degree 10, extrapolates to about three
-days per prime for a value K2 already predicts. E8-bar -> N+- degree 6 is the one cell whose value is unknown.
-The ladder therefore stops at its present rungs except for that cell, and task 113 (W8 degree 6 at N = 19, a value
+days per prime for a value K2 already predicts. E8-bar -> N+- degree 6 was the one cell whose value was unknown;
+formal-arc jet ranks close it and the next degree without a rung (A5-335: h_6 = 1666; A5-339: h_7 = 2718; both over
+F_32009 and F_32029). The ladder therefore stops at its present rungs, and task 113 (W8 degree 6 at N = 19, a value
 A5-066 already proves, 129 to 223 GiB) is withdrawn (owner decision of 2026-11-10, ledger row A5-291).
 
 Three gaps separate the fiber record from item 6:
@@ -85,14 +86,14 @@ Kaggle first, then the Windows compute laptop.
 
 | substrate | CPU, RAM, GPU | job budget | limit and cost |
 |---|---|---|---|
-| Windows workstation laptop (`ALIENWARE`, WSL) | 32 threads, 54 GiB visible, RTX 4090 Laptop 16 GiB | 52.5 GB RAM + 13.4 GiB GPU | free; Singular 4.4.1 from passagemath, engines v11 to v13 |
+| Windows workstation laptop (WSL) | 32 threads, 54 GiB visible, RTX 4090 Laptop 16 GiB | 52.5 GB RAM + 13.4 GiB GPU | free; Singular 4.4.1 from passagemath, engines v11 to v13 |
 | build host | 12 threads, 47 GiB visible, RTX 4070 Ti 12 GiB | 38.6 GiB + 10.1 GiB | free; heavy runs stay off it while Windows is in use |
-| OCI `lab-a1` | A1.Flex, 2 OCPU aarch64, 12 GB | 9.5 GiB | free |
+| OCI A1 lab host | A1.Flex, 4 OCPU aarch64, 24 GB since 2026-11-15 (2 OCPU, 12 GB before) | 19.2 GiB (the host chart's job memory budget) | free |
 | Kaggle CPU session | 4 cores, 30 GB | 0.82 x RAM | 12 h; 5 batch sessions at once; free |
 | Kaggle GPU session | 4 cores, 29 GB, 2 x T4 15 GiB or P100 | 0.84 x GPU + 0.82 x RAM | 12 h; 2 at once; 30 GPU-hours a week |
 | Azure (pay-as-you-go) | `Standard_FX4ms_v2`, 4 vCPU, 84 GB, for jobs above the laptop's RAM; 8-vCPU D-series for CPU batches; 10 vCPUs per region (14 in westus3); no GPU quota | 0.82 x RAM | sign-up credit lapses 2026-11-23, hourly billing after; sizes, prices and the selection rule in gororoba-infrastructure `clouds/azure/README.md`; Singular 1.63 times slower than the laptop on one std (`forecasts/std13-bench/` under the A5 evidence) |
 | GCP trial | 12 vCPU across all regions, no GPU, no Spot | 0.82 x RAM | 300 USD credit to 2027-01-30; e.g. one n2-highmem-8 (8 vCPU, 64 GB) |
-| AWS free plan | 2 vCPU, 8 GiB largest eligible type (`m7i-flex.large`; `aws-avx512` host) | 6.6 GiB | 199.77 USD credit to 2027-04-24 |
+| AWS free plan | 2 vCPU, 8 GiB largest eligible type (`m7i-flex.large`) | 6.6 GiB | 199.77 USD credit to 2027-04-24 |
 
 The Kaggle CPU and GPU pools are independent, so up to five CPU sessions and two GPU sessions run at once, seven in
 all.
@@ -119,7 +120,7 @@ Done since the scope was first written:
 | task | plan step | state | depends on |
 |---|---|---|---|
 | 126 | incidence census, real versus complex, all 33 incidences | done (ledger rows 1 and 1b) | |
-| 127 | limit sets 8 -> 12, 15 incidences, closed Gauss-graph fibers in Gr(4,6) with two-sided real certificates | todo; 14 of 15 at the selected basepoints | 126 |
+| 127 | limit sets 8 -> 12, 15 incidences, closed Gauss-graph fibers in Gr(4,6) with two-sided real certificates | todo; 14 of 15 at the selected basepoints; open: the E8-bar to `VB` real limit set, the variation over the boundary moduli beyond the boosts rows 2r and 2w sample (the boost-direction variation), and arcs that leave the slice on `V` and `VB`; the variation of the attaching datum along the boundary orbit is also a remainder of task 130 | 126 |
 | 128 | limit sets 12 -> 16 (8) and 8 -> 16 (10), from a two-approach path-dependence test | todo; eight computed, ten imported and decided as point sets | 126; the exceptional-fiber supports of task 5 |
 | 129 | compatibility of composed and direct limits | todo; linear sections (row 2s) | 127, 128 |
 | 130 | attaching maps with homotopy data | doing: sub-step 3a, the eight first-order-resolved incidences, ahead of the open remainders of 127 to 129 | 129 for the full poset; 3a uses only rows 2b, 2c, 2i and 2l |
@@ -163,6 +164,11 @@ that model at n = 4 and n = 5. Neither can start on Hilbert functions alone, so 
   owner's decision (ledger row A5-291). Under v11 it needs 129 to 223 GiB and 18 to 27 h, beyond every substrate
   above, and its only output would be a check of the rank engine and the closing law. A later engine test would
   first need the multiplication matrix L streamed by degree, uint16 storage and engine v12's GPU echelon.
+- The Barrett-reduced successor of the fiber-rank engine (the Barrett tile measured in gororoba-infrastructure
+  `docs/compute/modp/`): closed on 2026-11-22 by the owner's decision. Task 113 above was its one named target; the
+  memory-bounded record (`docs/evidence/a5-exceptional-fibers/memory-bounded/README.md`) keeps the engine route useful
+  for falsifying the engine forecast and for unresolved E8 closure cells, and a case for either reopens the successor.
+  The tile stays in that record.
 
 ### Separate changes
 

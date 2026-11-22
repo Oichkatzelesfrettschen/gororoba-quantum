@@ -179,9 +179,16 @@ Open hypotheses:
 - hypothesis: the lag-two path through a buffer into a science circuit is smaller than the lag-one carryover the
   sentinel cells show, since it crosses a second reset. Test: a job that places two buffers before each science
   circuit.
-- hypothesis: the low response of the first science circuit after the all-ones reference (`circuit-002`, pair 0's
-  -229) is the all-ones carryover settling over several circuits. Test: per-position responses of the science
-  circuits in the retained bytes, early against late shot blocks.
+- The low response of the first science circuit after the all-ones reference (`circuit-002`, pair 0's -229) is fixed
+  across the shots. The post-hoc [settling reading](../evidence/iqm-garnet-packed-pauli-run/settling.json)
+  (`settling.py` beside it) puts circuit-002 0.091 below the mean of its arm's other circuits (z -6.86), alike in
+  the first and the second half of the shots (z -5.22 and -4.55); the next five science circuits read
+  -0.02743, -0.01677, -0.03912, -0.02418, -0.03463, not monotone, and from the seventh on the residuals scatter about
+  zero. Each place after the reference holds one circuit, so place, circuit identity and pair are confounded in this
+  job, and circuit-002 also follows two all-ones references across the wrap from one shot to the next
+  (`circuit-035`, `circuit-000`, `circuit-001`). hypothesis: the deficit is carryover from the all-ones references
+  that outlasts one buffer, a step at the first science circuit with a lower plateau after it; a playlist that repeats
+  one science circuit at early and late places, with the order rotated across copies, separates place from identity.
 
 ## Procedure
 
