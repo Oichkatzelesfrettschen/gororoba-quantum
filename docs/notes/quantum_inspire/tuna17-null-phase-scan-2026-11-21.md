@@ -26,9 +26,9 @@ below is a field of a retained record, named in brackets, or a sum over the `res
   analysis is not rerun (hours). Its provenance, the QX replay and every digest are retained in
   [analysis-provenance.json](../../evidence/qi-null-phase-scan/analysis-provenance.json): commit, command, environment,
   exit status, start and end times, the 29 run directories and the sha256 of the sanity output and of both records.
-- Budget: the analysis ran 3.8 hours with 8 workers against the case's estimate of about 50 minutes (3,009 s on 12
-  threads for the tables and the analysis), and the longest batch turnaround on the device was 1,965 s
-  (`retained-context.json`, `max_turnaround_seconds`).
+- Budget: the analysis ran 3.8 hours with 8 workers; the case quotes 3,009 s on a 12-thread host for building the 192
+  damped law tables alone (CASE.md, "Commands"), and the longest batch turnaround on the device was 1,964.69 s
+  (`retained-context.json`, `max_turnaround_seconds` of tuna_17 on 2026-11-21).
 
 ## Jobs, shots and execution time
 

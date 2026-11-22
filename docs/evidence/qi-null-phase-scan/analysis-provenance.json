@@ -19,8 +19,9 @@
   "analyze": {
    "command": "\"$PYTHON\" -B scripts/qi_pathion_null_phase_scan_cases.py --analyze RUNS --out results/quantum_inspire/pathion_null_phase_scan_tuna_17_analysis.json",
    "exit": 0,
-   "started_utc": "2026-11-21T19:41:56Z",
-   "finished_utc": "2026-11-21T23:29:19Z"
+   "started_utc": "2026-11-21T19:42:03Z",
+   "finished_utc": "2026-11-21T23:29:19Z",
+   "started_note": "the analysis began when the sanity step ended (19:42:03Z); the wrapper script started at 19:41:56Z"
   },
   "runs": [
    "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-00",
@@ -53,7 +54,8 @@
    "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-27",
    "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_tuna_17-batch-28"
   ],
-  "source_identity": "scripts/qi_pathion_null_phase_scan_cases.py and its imports are unchanged between b35a867c0 and this branch (git diff --stat b35a867c0 HEAD on the analyzer files is empty)"
+  "source_identity": "scripts/qi_pathion_null_phase_scan_cases.py and its imports are unchanged between b35a867c0 and this branch (git diff --stat b35a867c0 HEAD on the analyzer files is empty)",
+  "script_started_utc": "2026-11-21T19:41:56Z"
  },
  "qx": {
   "record": "results/quantum_inspire/pathion_null_phase_scan_qx_analysis.json",
