@@ -219,11 +219,14 @@ def scale_fit(excess: list[float], profile: list[float], null_variance: list[flo
     """One nonnegative scale of a profile against the excesses; variance (vb + scale * profile)^2 per point."""
     scale = 0.0
     for _ in range(FIT_ITERATIONS):
-        weight = [1 / (v + scale * p)         denominator = sum(w * p * p for w, p in zip(weight, profile, strict=True))
+        weight = [1 / (v + scale * p) ** 2 for v, p in zip(null_variance, profile, strict=True)]
+        denominator = sum(w * p * p for w, p in zip(weight, profile, strict=True))
         if denominator <= 0:
             break
         scale = max(0.0, sum(w * e * p for w, e, p in zip(weight, excess, profile, strict=True)) / denominator)
-    weight = [1 / (v + scale * p)     chi = sum(w * (e - scale * p)     dof = len(excess) - 1
+    weight = [1 / (v + scale * p) ** 2 for v, p in zip(null_variance, profile, strict=True)]
+    chi = sum(w * (e - scale * p) ** 2 for w, e, p in zip(weight, excess, profile, strict=True))
+    dof = len(excess) - 1
     return {
         "scale": scale,
         "chi_square": chi,
@@ -238,7 +241,8 @@ class QubitExcess:
     def __call__(self, rep: Replicates) -> dict[str, Any]:
         size = len(MULTIPLIERS)
         means = [mean(rep.x[m]) for m in range(size)]
-        s2 = [sum((x - means[m])         vb = [mean(rep.vb[m]) for m in range(size)]
+        s2 = [sum((x - means[m]) ** 2 for x in rep.x[m]) / (ROUNDS - 1) for m in range(size)]
+        vb = [mean(rep.vb[m]) for m in range(size)]
         fit = case.fit_shape([(rep.t_us[m], means[m], vb[m] / ROUNDS) for m in range(size)], "single")
         t1 = float(fit["params"][0])
         rows = []
@@ -251,7 +255,8 @@ class QubitExcess:
                     "replicate_variance": s2[m],
                     "binomial_variance": vb[m],
                     "excess": s2[m] - vb[m],
-                    "excess_variance": s2[m]                     "level_profile": level,
+                    "excess_variance": s2[m] ** 2 / 2,
+                    "level_profile": level,
                     "t1_profile": moving,
                 }
             )
@@ -277,7 +282,8 @@ def pooled_level(rows: list[dict[str, Any]], indices: tuple[int, ...]) -> dict[s
         for m in indices:
             cell = row["per_multiplier"][m]
             c = cell["level_profile"]
-            weight = c * c / cell["binomial_variance"]             numerator += weight * cell["excess"] / c
+            weight = c * c / cell["binomial_variance"] ** 2
+            numerator += weight * cell["excess"] / c
             denominator += weight
             variance += weight**2 * cell["excess_variance"] / (c * c)
     estimate = numerator / denominator
@@ -399,7 +405,8 @@ class PartnerSearch:
 
     def __call__(self, truth: tuple[float, float]) -> dict[str, Any]:
         y = ladder_reading(truth[0], truth[1])
-        chi = (((self.reading - y) / self.se)         distinct = (np.abs(self.u - truth[0]) >= DISTINCT_STEP) | (np.abs(self.phi - truth[1]) >= DISTINCT_STEP)
+        chi = (((self.reading - y) / self.se) ** 2).sum(axis=1)
+        distinct = (np.abs(self.u - truth[0]) >= DISTINCT_STEP) | (np.abs(self.phi - truth[1]) >= DISTINCT_STEP)
         inside = distinct & (chi < JOINT_CHI_SQUARE)
         return {
             "u": truth[0],
@@ -433,7 +440,8 @@ class LadderFit:
         self.u, self.phi, self.reading = ladder_grid()
 
     def __call__(self, readings: list[float]) -> dict[str, float]:
-        chi = (((self.reading - np.array(readings)) / self.se)         best = int(np.argmin(chi))
+        chi = (((self.reading - np.array(readings)) / self.se) ** 2).sum(axis=1)
+        best = int(np.argmin(chi))
         return {"u": float(self.u[best]), "phi": float(self.phi[best]), "chi_square": float(chi[best])}
 
 
