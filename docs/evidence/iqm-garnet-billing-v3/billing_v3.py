@@ -28,6 +28,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import iqm_measurement_sequence as ms  # noqa: E402
+
 from parallel import ordered_map  # noqa: E402
 
 ROUND = 6
