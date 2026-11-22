@@ -1,0 +1,6 @@
+MODE modulo_std full np size 5955
+STAGE first_colon 5631 5784797
+STAGE std 5664 2345037
+CHECK sat_in_X 0 X_in_sat 0 sizes 5664 5664
+STAGE second_colon 5652 4953369
+CHECK fixpoint_bad 0

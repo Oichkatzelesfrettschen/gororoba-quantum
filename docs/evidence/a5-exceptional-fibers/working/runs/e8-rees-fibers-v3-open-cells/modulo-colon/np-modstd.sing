@@ -1,0 +1,10 @@
+system("--ticks-per-sec",1000); option(redSB); option(noprot);
+link l="ssi:r e8-np-p.hs.ssi"; def HS=read(l); close(l); def R=basering; attrib(HS,"isSB",1);
+link l2="ssi:r e8-np-p.sat.ssi"; def SAT0=read(l2); close(l2); def R2=basering; setring R; ideal SAT=imap(R2,SAT0); attrib(SAT,"isSB",1);
+int n=nvars(R); poly U=var(n); int t0=rtimer; ideal QU; ideal X;
+"MODE modulo_std full np size", size(HS);
+module M=modulo(ideal(U),HS); QU=ideal(matrix(M)); "STAGE first_colon",size(QU),rtimer-t0;
+t0=rtimer; X=std(QU); "STAGE std",size(X),rtimer-t0;
+"CHECK sat_in_X", size(reduce(SAT,X)), "X_in_sat", size(reduce(X,SAT)), "sizes", size(X), size(SAT);
+t0=rtimer; module M2=modulo(ideal(U),X); ideal Q2=ideal(matrix(M2)); "STAGE second_colon",size(Q2),rtimer-t0; "CHECK fixpoint_bad", size(reduce(Q2,X));
+quit;
