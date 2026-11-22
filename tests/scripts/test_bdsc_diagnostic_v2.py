@@ -143,7 +143,15 @@ def test_the_case_record_differs_from_the_frozen_one_only_in_counts_and_wording(
     if "covers its QRNG read" in authorization or "free ANU" not in authorization:
         raise AssertionError("the authorization still says approval covers the QRNG read")
     text = json.dumps({k: v for k, v in new.items() if k != "jobs"})
-    for stale in ("four seeds", "of the four seeds", "32 residuals", "(3 df each)", "(9 df each)", "0 to 3", "value 4 + i"):
+    for stale in (
+        "four seeds",
+        "of the four seeds",
+        "32 residuals",
+        "(3 df each)",
+        "(9 df each)",
+        "0 to 3",
+        "value 4 + i",
+    ):
         if stale in text:
             raise AssertionError(f"stale wording {stale!r}")
     if "(5 df each)" not in text or "(15 df each)" not in text or "all 48 residuals" not in text:
@@ -167,7 +175,10 @@ def test_the_power_statement_matches_the_chi_square_it_inverts() -> None:
         for power, ratio in row["detectable_seed_sd_over_se"].items():
             if not ratio < statement["frozen_four_slots"][name]["detectable_seed_sd_over_se"][power]:
                 raise AssertionError(f"{name}: six slots do not detect a smaller seed SD at {power}")
-    if (statement["six_slots"]["seed_superposition"]["df"], statement["frozen_four_slots"]["seed_superposition"]["df"]) != (
+    if (
+        statement["six_slots"]["seed_superposition"]["df"],
+        statement["frozen_four_slots"]["seed_superposition"]["df"],
+    ) != (
         80,
         48,
     ):
@@ -419,4 +430,3 @@ def test_a_planted_readout_defect_departs_from_the_hand_computed_fields(
             report = analysis.readout(runs, drawn.case, validate=False)
         with pytest.raises(AssertionError, match="departs from the hand-computed fields"):
             assert_fixed_readout(report)
-
