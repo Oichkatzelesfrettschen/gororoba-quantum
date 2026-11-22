@@ -1,0 +1,1549 @@
+{
+ "arm_mean_response": {
+  "dense": 0.69242,
+  "sparse": 0.68997
+ },
+ "by_science_since_all_ones": {
+  "1": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": -0.09112,
+    "se": 0.01328,
+    "z": -6.86
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": -0.0971,
+    "se": 0.01859,
+    "z": -5.22
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": -0.08513,
+    "se": 0.0187,
+    "z": -4.55
+   }
+  },
+  "10": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.00323,
+    "se": 0.01234,
+    "z": 0.26
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": -0.00767,
+    "se": 0.01729,
+    "z": -0.44
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": 0.01413,
+    "se": 0.01689,
+    "z": 0.84
+   }
+  },
+  "11": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.0179,
+    "se": 0.01198,
+    "z": 1.49
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": 0.03767,
+    "se": 0.01579,
+    "z": 2.39
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": -0.00187,
+    "se": 0.01729,
+    "z": -0.11
+   }
+  },
+  "12": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.01288,
+    "se": 0.01329,
+    "z": 0.97
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": 0.02397,
+    "se": 0.0176,
+    "z": 1.36
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": 0.0018,
+    "se": 0.01768,
+    "z": 0.1
+   }
+  },
+  "13": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": -0.01863,
+    "se": 0.01245,
+    "z": -1.5
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": -0.00713,
+    "se": 0.01686,
+    "z": -0.42
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": -0.03013,
+    "se": 0.0177,
+    "z": -1.7
+   }
+  },
+  "14": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.01848,
+    "se": 0.01303,
+    "z": 1.42
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": 0.03037,
+    "se": 0.01667,
+    "z": 1.82
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": 0.0066,
+    "se": 0.01783,
+    "z": 0.37
+   }
+  },
+  "15": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.00862,
+    "se": 0.01321,
+    "z": 0.65
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": 0.03943,
+    "se": 0.01693,
+    "z": 2.33
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": -0.0222,
+    "se": 0.01783,
+    "z": -1.25
+   }
+  },
+  "16": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.02723,
+    "se": 0.01177,
+    "z": 2.31
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": 0.0238,
+    "se": 0.0159,
+    "z": 1.5
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": 0.03067,
+    "se": 0.01684,
+    "z": 1.82
+   }
+  },
+  "17": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.00728,
+    "se": 0.01318,
+    "z": 0.55
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": -0.00163,
+    "se": 0.01763,
+    "z": -0.09
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": 0.0162,
+    "se": 0.01732,
+    "z": 0.94
+   }
+  },
+  "18": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.0155,
+    "se": 0.01191,
+    "z": 1.3
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": 0.00727,
+    "se": 0.01642,
+    "z": 0.44
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": 0.02373,
+    "se": 0.01658,
+    "z": 1.43
+   }
+  },
+  "19": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": -0.01143,
+    "se": 0.0125,
+    "z": -0.91
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": 0.01367,
+    "se": 0.01651,
+    "z": 0.83
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": -0.03653,
+    "se": 0.01797,
+    "z": -2.03
+   }
+  },
+  "2": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": -0.02743,
+    "se": 0.01273,
+    "z": -2.15
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": -0.0258,
+    "se": 0.01752,
+    "z": -1.47
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": -0.02907,
+    "se": 0.01801,
+    "z": -1.61
+   }
+  },
+  "20": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.00862,
+    "se": 0.0134,
+    "z": 0.64
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": 0.01543,
+    "se": 0.01755,
+    "z": 0.88
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": 0.0018,
+    "se": 0.01805,
+    "z": 0.1
+   }
+  },
+  "21": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": -0.00637,
+    "se": 0.0121,
+    "z": -0.53
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": 0.00993,
+    "se": 0.01615,
+    "z": 0.62
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": -0.02267,
+    "se": 0.01727,
+    "z": -1.31
+   }
+  },
+  "22": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.02168,
+    "se": 0.01308,
+    "z": 1.66
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": 0.00637,
+    "se": 0.0175,
+    "z": 0.36
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": 0.037,
+    "se": 0.0172,
+    "z": 2.15
+   }
+  },
+  "23": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.02163,
+    "se": 0.01202,
+    "z": 1.8
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": 0.01473,
+    "se": 0.01631,
+    "z": 0.9
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": 0.02853,
+    "se": 0.01706,
+    "z": 1.67
+   }
+  },
+  "24": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.00542,
+    "se": 0.01326,
+    "z": 0.41
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": -0.01497,
+    "se": 0.0182,
+    "z": -0.82
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": 0.0258,
+    "se": 0.01685,
+    "z": 1.53
+   }
+  },
+  "25": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": -0.00503,
+    "se": 0.01245,
+    "z": -0.4
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": -0.0178,
+    "se": 0.01742,
+    "z": -1.02
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": 0.00773,
+    "se": 0.01705,
+    "z": 0.45
+   }
+  },
+  "26": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.00435,
+    "se": 0.01326,
+    "z": 0.33
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": -0.01123,
+    "se": 0.01808,
+    "z": -0.62
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": 0.01993,
+    "se": 0.01703,
+    "z": 1.17
+   }
+  },
+  "27": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.02648,
+    "se": 0.01282,
+    "z": 2.07
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": 0.01543,
+    "se": 0.0177,
+    "z": 0.87
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": 0.03753,
+    "se": 0.0163,
+    "z": 2.3
+   }
+  },
+  "28": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": -0.00183,
+    "se": 0.01223,
+    "z": -0.15
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": 0.00833,
+    "se": 0.01651,
+    "z": 0.5
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": -0.012,
+    "se": 0.01732,
+    "z": -0.69
+   }
+  },
+  "29": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.00702,
+    "se": 0.01328,
+    "z": 0.53
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": 0.0229,
+    "se": 0.01691,
+    "z": 1.35
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": -0.00887,
+    "se": 0.01827,
+    "z": -0.49
+   }
+  },
+  "3": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": -0.01677,
+    "se": 0.01243,
+    "z": -1.35
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": -0.0178,
+    "se": 0.01694,
+    "z": -1.05
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": -0.01573,
+    "se": 0.01758,
+    "z": -0.89
+   }
+  },
+  "30": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.02483,
+    "se": 0.01172,
+    "z": 2.12
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": 0.003,
+    "se": 0.01651,
+    "z": 0.18
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": 0.04667,
+    "se": 0.01592,
+    "z": 2.93
+   }
+  },
+  "31": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.01742,
+    "se": 0.01294,
+    "z": 1.35
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": 0.02717,
+    "se": 0.01701,
+    "z": 1.6
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": 0.00767,
+    "se": 0.01728,
+    "z": 0.44
+   }
+  },
+  "32": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.01817,
+    "se": 0.012,
+    "z": 1.51
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": 0.01793,
+    "se": 0.01638,
+    "z": 1.09
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": 0.0184,
+    "se": 0.01693,
+    "z": 1.09
+   }
+  },
+  "4": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": -0.03912,
+    "se": 0.01368,
+    "z": -2.86
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": -0.04217,
+    "se": 0.01864,
+    "z": -2.26
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": -0.03607,
+    "se": 0.01818,
+    "z": -1.98
+   }
+  },
+  "5": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": -0.02418,
+    "se": 0.01362,
+    "z": -1.78
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": -0.02723,
+    "se": 0.01846,
+    "z": -1.48
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": -0.02113,
+    "se": 0.01795,
+    "z": -1.18
+   }
+  },
+  "6": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": -0.03463,
+    "se": 0.01241,
+    "z": -2.79
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": -0.04927,
+    "se": 0.01729,
+    "z": -2.85
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": -0.02,
+    "se": 0.01736,
+    "z": -1.15
+   }
+  },
+  "7": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": -0.00637,
+    "se": 0.01243,
+    "z": -0.51
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": -0.01087,
+    "se": 0.01711,
+    "z": -0.64
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": -0.00187,
+    "se": 0.01735,
+    "z": -0.11
+   }
+  },
+  "8": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.00808,
+    "se": 0.01337,
+    "z": 0.6
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": 0.00477,
+    "se": 0.01812,
+    "z": 0.26
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": 0.0114,
+    "se": 0.01741,
+    "z": 0.65
+   }
+  },
+  "9": {
+   "all": {
+    "circuits": 1,
+    "mean_residual": 0.00808,
+    "se": 0.01341,
+    "z": 0.6
+   },
+   "first_half": {
+    "circuits": 1,
+    "mean_residual": 0.0085,
+    "se": 0.01791,
+    "z": 0.47
+   },
+   "second_half": {
+    "circuits": 1,
+    "mean_residual": 0.00767,
+    "se": 0.01775,
+    "z": 0.43
+   }
+  }
+ },
+ "circuits": [
+  {
+   "all": {
+    "mean": 0.607,
+    "residual": -0.09112,
+    "residual_se": 0.01328,
+    "se": 0.01264,
+    "z": -6.86114
+   },
+   "dense": true,
+   "first_half": {
+    "mean": 0.6045,
+    "residual": -0.0971,
+    "residual_se": 0.01859,
+    "se": 0.01777,
+    "z": -5.22275
+   },
+   "name": "circuit-002",
+   "pair": 0,
+   "position": 3,
+   "science_since_all_ones": 1,
+   "second_half": {
+    "mean": 0.6095,
+    "residual": -0.08513,
+    "residual_se": 0.0187,
+    "se": 0.01799,
+    "z": -4.55262
+   }
+  },
+  {
+   "all": {
+    "mean": 0.66425,
+    "residual": -0.02743,
+    "residual_se": 0.01273,
+    "se": 0.01193,
+    "z": -2.15449
+   },
+   "dense": false,
+   "first_half": {
+    "mean": 0.667,
+    "residual": -0.0258,
+    "residual_se": 0.01752,
+    "se": 0.01676,
+    "z": -1.47302
+   },
+   "name": "circuit-003",
+   "pair": 0,
+   "position": 5,
+   "science_since_all_ones": 2,
+   "second_half": {
+    "mean": 0.6615,
+    "residual": -0.02907,
+    "residual_se": 0.01801,
+    "se": 0.01698,
+    "z": -1.61377
+   }
+  },
+  {
+   "all": {
+    "mean": 0.67425,
+    "residual": -0.01677,
+    "residual_se": 0.01243,
+    "se": 0.01151,
+    "z": -1.34929
+   },
+   "dense": false,
+   "first_half": {
+    "mean": 0.6745,
+    "residual": -0.0178,
+    "residual_se": 0.01694,
+    "se": 0.01611,
+    "z": -1.0507
+   },
+   "name": "circuit-004",
+   "pair": 1,
+   "position": 7,
+   "science_since_all_ones": 3,
+   "second_half": {
+    "mean": 0.674,
+    "residual": -0.01573,
+    "residual_se": 0.01758,
+    "se": 0.01645,
+    "z": -0.89486
+   }
+  },
+  {
+   "all": {
+    "mean": 0.65575,
+    "residual": -0.03912,
+    "residual_se": 0.01368,
+    "se": 0.01184,
+    "z": -2.8596
+   },
+   "dense": true,
+   "first_half": {
+    "mean": 0.656,
+    "residual": -0.04217,
+    "residual_se": 0.01864,
+    "se": 0.01684,
+    "z": -2.26164
+   },
+   "name": "circuit-005",
+   "pair": 1,
+   "position": 9,
+   "science_since_all_ones": 4,
+   "second_half": {
+    "mean": 0.6555,
+    "residual": -0.03607,
+    "residual_se": 0.01818,
+    "se": 0.01667,
+    "z": -1.98391
+   }
+  },
+  {
+   "all": {
+    "mean": 0.66975,
+    "residual": -0.02418,
+    "residual_se": 0.01362,
+    "se": 0.01159,
+    "z": -1.77593
+   },
+   "dense": true,
+   "first_half": {
+    "mean": 0.67,
+    "residual": -0.02723,
+    "residual_se": 0.01846,
+    "se": 0.01649,
+    "z": -1.4755
+   },
+   "name": "circuit-006",
+   "pair": 2,
+   "position": 11,
+   "science_since_all_ones": 5,
+   "second_half": {
+    "mean": 0.6695,
+    "residual": -0.02113,
+    "residual_se": 0.01795,
+    "se": 0.0163,
+    "z": -1.17726
+   }
+  },
+  {
+   "all": {
+    "mean": 0.6575,
+    "residual": -0.03463,
+    "residual_se": 0.01241,
+    "se": 0.01166,
+    "z": -2.79168
+   },
+   "dense": false,
+   "first_half": {
+    "mean": 0.645,
+    "residual": -0.04927,
+    "residual_se": 0.01729,
+    "se": 0.01676,
+    "z": -2.85023
+   },
+   "name": "circuit-007",
+   "pair": 2,
+   "position": 13,
+   "science_since_all_ones": 6,
+   "second_half": {
+    "mean": 0.67,
+    "residual": -0.02,
+    "residual_se": 0.01736,
+    "se": 0.01623,
+    "z": -1.15219
+   }
+  },
+  {
+   "all": {
+    "mean": 0.684,
+    "residual": -0.00637,
+    "residual_se": 0.01243,
+    "se": 0.01146,
+    "z": -0.51233
+   },
+   "dense": false,
+   "first_half": {
+    "mean": 0.681,
+    "residual": -0.01087,
+    "residual_se": 0.01711,
+    "se": 0.01626,
+    "z": -0.63502
+   },
+   "name": "circuit-008",
+   "pair": 3,
+   "position": 15,
+   "science_since_all_ones": 7,
+   "second_half": {
+    "mean": 0.687,
+    "residual": -0.00187,
+    "residual_se": 0.01735,
+    "se": 0.01616,
+    "z": -0.10759
+   }
+  },
+  {
+   "all": {
+    "mean": 0.7,
+    "residual": 0.00808,
+    "residual_se": 0.01337,
+    "se": 0.01119,
+    "z": 0.60466
+   },
+   "dense": true,
+   "first_half": {
+    "mean": 0.7,
+    "residual": 0.00477,
+    "residual_se": 0.01812,
+    "se": 0.01601,
+    "z": 0.26309
+   },
+   "name": "circuit-009",
+   "pair": 3,
+   "position": 17,
+   "science_since_all_ones": 8,
+   "second_half": {
+    "mean": 0.7,
+    "residual": 0.0114,
+    "residual_se": 0.01741,
+    "se": 0.01566,
+    "z": 0.65478
+   }
+  },
+  {
+   "all": {
+    "mean": 0.7,
+    "residual": 0.00808,
+    "residual_se": 0.01341,
+    "se": 0.01124,
+    "z": 0.60276
+   },
+   "dense": true,
+   "first_half": {
+    "mean": 0.7035,
+    "residual": 0.0085,
+    "residual_se": 0.01791,
+    "se": 0.01578,
+    "z": 0.47452
+   },
+   "name": "circuit-010",
+   "pair": 4,
+   "position": 19,
+   "science_since_all_ones": 9,
+   "second_half": {
+    "mean": 0.6965,
+    "residual": 0.00767,
+    "residual_se": 0.01775,
+    "se": 0.01603,
+    "z": 0.43191
+   }
+  },
+  {
+   "all": {
+    "mean": 0.693,
+    "residual": 0.00323,
+    "residual_se": 0.01234,
+    "se": 0.01137,
+    "z": 0.26194
+   },
+   "dense": false,
+   "first_half": {
+    "mean": 0.684,
+    "residual": -0.00767,
+    "residual_se": 0.01729,
+    "se": 0.01644,
+    "z": -0.44337
+   },
+   "name": "circuit-011",
+   "pair": 4,
+   "position": 21,
+   "science_since_all_ones": 10,
+   "second_half": {
+    "mean": 0.702,
+    "residual": 0.01413,
+    "residual_se": 0.01689,
+    "se": 0.0157,
+    "z": 0.83677
+   }
+  },
+  {
+   "all": {
+    "mean": 0.70675,
+    "residual": 0.0179,
+    "residual_se": 0.01198,
+    "se": 0.01103,
+    "z": 1.4947
+   },
+   "dense": false,
+   "first_half": {
+    "mean": 0.7265,
+    "residual": 0.03767,
+    "residual_se": 0.01579,
+    "se": 0.01506,
+    "z": 2.38608
+   },
+   "name": "circuit-012",
+   "pair": 5,
+   "position": 23,
+   "science_since_all_ones": 11,
+   "second_half": {
+    "mean": 0.687,
+    "residual": -0.00187,
+    "residual_se": 0.01729,
+    "se": 0.0161,
+    "z": -0.10795
+   }
+  },
+  {
+   "all": {
+    "mean": 0.7045,
+    "residual": 0.01288,
+    "residual_se": 0.01329,
+    "se": 0.01112,
+    "z": 0.96945
+   },
+   "dense": true,
+   "first_half": {
+    "mean": 0.718,
+    "residual": 0.02397,
+    "residual_se": 0.0176,
+    "se": 0.0155,
+    "z": 1.36176
+   },
+   "name": "circuit-013",
+   "pair": 5,
+   "position": 25,
+   "science_since_all_ones": 12,
+   "second_half": {
+    "mean": 0.691,
+    "residual": 0.0018,
+    "residual_se": 0.01768,
+    "se": 0.01595,
+    "z": 0.10179
+   }
+  },
+  {
+   "all": {
+    "mean": 0.6725,
+    "residual": -0.01863,
+    "residual_se": 0.01245,
+    "se": 0.01155,
+    "z": -1.49674
+   },
+   "dense": false,
+   "first_half": {
+    "mean": 0.6845,
+    "residual": -0.00713,
+    "residual_se": 0.01686,
+    "se": 0.01598,
+    "z": -0.42321
+   },
+   "name": "circuit-014",
+   "pair": 6,
+   "position": 27,
+   "science_since_all_ones": 13,
+   "second_half": {
+    "mean": 0.6605,
+    "residual": -0.03013,
+    "residual_se": 0.0177,
+    "se": 0.01667,
+    "z": -1.70202
+   }
+  },
+  {
+   "all": {
+    "mean": 0.70975,
+    "residual": 0.01848,
+    "residual_se": 0.01303,
+    "se": 0.01084,
+    "z": 1.41899
+   },
+   "dense": true,
+   "first_half": {
+    "mean": 0.724,
+    "residual": 0.03037,
+    "residual_se": 0.01667,
+    "se": 0.01449,
+    "z": 1.82122
+   },
+   "name": "circuit-015",
+   "pair": 6,
+   "position": 29,
+   "science_since_all_ones": 14,
+   "second_half": {
+    "mean": 0.6955,
+    "residual": 0.0066,
+    "residual_se": 0.01783,
+    "se": 0.01612,
+    "z": 0.37008
+   }
+  },
+  {
+   "all": {
+    "mean": 0.7005,
+    "residual": 0.00862,
+    "residual_se": 0.01321,
+    "se": 0.01101,
+    "z": 0.65215
+   },
+   "dense": true,
+   "first_half": {
+    "mean": 0.7325,
+    "residual": 0.03943,
+    "residual_se": 0.01693,
+    "se": 0.01488,
+    "z": 2.32941
+   },
+   "name": "circuit-016",
+   "pair": 7,
+   "position": 31,
+   "science_since_all_ones": 15,
+   "second_half": {
+    "mean": 0.6685,
+    "residual": -0.0222,
+    "residual_se": 0.01783,
+    "se": 0.01617,
+    "z": -1.24516
+   }
+  },
+  {
+   "all": {
+    "mean": 0.7155,
+    "residual": 0.02723,
+    "residual_se": 0.01177,
+    "se": 0.01089,
+    "z": 2.31407
+   },
+   "dense": false,
+   "first_half": {
+    "mean": 0.7135,
+    "residual": 0.0238,
+    "residual_se": 0.0159,
+    "se": 0.01505,
+    "z": 1.49712
+   },
+   "name": "circuit-017",
+   "pair": 7,
+   "position": 33,
+   "science_since_all_ones": 16,
+   "second_half": {
+    "mean": 0.7175,
+    "residual": 0.03067,
+    "residual_se": 0.01684,
+    "se": 0.01575,
+    "z": 1.82061
+   }
+  },
+  {
+   "all": {
+    "mean": 0.69925,
+    "residual": 0.00728,
+    "residual_se": 0.01318,
+    "se": 0.01097,
+    "z": 0.55258
+   },
+   "dense": true,
+   "first_half": {
+    "mean": 0.694,
+    "residual": -0.00163,
+    "residual_se": 0.01763,
+    "se": 0.01545,
+    "z": -0.09266
+   },
+   "name": "circuit-018",
+   "pair": 8,
+   "position": 35,
+   "science_since_all_ones": 17,
+   "second_half": {
+    "mean": 0.7045,
+    "residual": 0.0162,
+    "residual_se": 0.01732,
+    "se": 0.01558,
+    "z": 0.93537
+   }
+  },
+  {
+   "all": {
+    "mean": 0.7045,
+    "residual": 0.0155,
+    "residual_se": 0.01191,
+    "se": 0.01094,
+    "z": 1.30165
+   },
+   "dense": false,
+   "first_half": {
+    "mean": 0.698,
+    "residual": 0.00727,
+    "residual_se": 0.01642,
+    "se": 0.01553,
+    "z": 0.44252
+   },
+   "name": "circuit-019",
+   "pair": 8,
+   "position": 37,
+   "science_since_all_ones": 18,
+   "second_half": {
+    "mean": 0.711,
+    "residual": 0.02373,
+    "residual_se": 0.01658,
+    "se": 0.01542,
+    "z": 1.43134
+   }
+  },
+  {
+   "all": {
+    "mean": 0.67925,
+    "residual": -0.01143,
+    "residual_se": 0.0125,
+    "se": 0.01156,
+    "z": -0.91444
+   },
+   "dense": false,
+   "first_half": {
+    "mean": 0.704,
+    "residual": 0.01367,
+    "residual_se": 0.01651,
+    "se": 0.01564,
+    "z": 0.82767
+   },
+   "name": "circuit-020",
+   "pair": 9,
+   "position": 39,
+   "science_since_all_ones": 19,
+   "second_half": {
+    "mean": 0.6545,
+    "residual": -0.03653,
+    "residual_se": 0.01797,
+    "se": 0.017,
+    "z": -2.03295
+   }
+  },
+  {
+   "all": {
+    "mean": 0.7005,
+    "residual": 0.00862,
+    "residual_se": 0.0134,
+    "se": 0.01123,
+    "z": 0.64323
+   },
+   "dense": true,
+   "first_half": {
+    "mean": 0.71,
+    "residual": 0.01543,
+    "residual_se": 0.01755,
+    "se": 0.0154,
+    "z": 0.87915
+   },
+   "name": "circuit-021",
+   "pair": 9,
+   "position": 41,
+   "science_since_all_ones": 20,
+   "second_half": {
+    "mean": 0.691,
+    "residual": 0.0018,
+    "residual_se": 0.01805,
+    "se": 0.01635,
+    "z": 0.09973
+   }
+  },
+  {
+   "all": {
+    "mean": 0.684,
+    "residual": -0.00637,
+    "residual_se": 0.0121,
+    "se": 0.01111,
+    "z": -0.52615
+   },
+   "dense": false,
+   "first_half": {
+    "mean": 0.7005,
+    "residual": 0.00993,
+    "residual_se": 0.01615,
+    "se": 0.01524,
+    "z": 0.61521
+   },
+   "name": "circuit-022",
+   "pair": 10,
+   "position": 43,
+   "science_since_all_ones": 21,
+   "second_half": {
+    "mean": 0.6675,
+    "residual": -0.02267,
+    "residual_se": 0.01727,
+    "se": 0.01615,
+    "z": -1.31218
+   }
+  },
+  {
+   "all": {
+    "mean": 0.71275,
+    "residual": 0.02168,
+    "residual_se": 0.01308,
+    "se": 0.01093,
+    "z": 1.65775
+   },
+   "dense": true,
+   "first_half": {
+    "mean": 0.7015,
+    "residual": 0.00637,
+    "residual_se": 0.0175,
+    "se": 0.01531,
+    "z": 0.36378
+   },
+   "name": "circuit-023",
+   "pair": 10,
+   "position": 45,
+   "science_since_all_ones": 22,
+   "second_half": {
+    "mean": 0.724,
+    "residual": 0.037,
+    "residual_se": 0.0172,
+    "se": 0.01561,
+    "z": 2.1509
+   }
+  },
+  {
+   "all": {
+    "mean": 0.71025,
+    "residual": 0.02163,
+    "residual_se": 0.01202,
+    "se": 0.0111,
+    "z": 1.80026
+   },
+   "dense": false,
+   "first_half": {
+    "mean": 0.705,
+    "residual": 0.01473,
+    "residual_se": 0.01631,
+    "se": 0.01543,
+    "z": 0.90319
+   },
+   "name": "circuit-024",
+   "pair": 11,
+   "position": 47,
+   "science_since_all_ones": 23,
+   "second_half": {
+    "mean": 0.7155,
+    "residual": 0.02853,
+    "residual_se": 0.01706,
+    "se": 0.01597,
+    "z": 1.67218
+   }
+  },
+  {
+   "all": {
+    "mean": 0.6975,
+    "residual": 0.00542,
+    "residual_se": 0.01326,
+    "se": 0.01105,
+    "z": 0.40859
+   },
+   "dense": true,
+   "first_half": {
+    "mean": 0.6815,
+    "residual": -0.01497,
+    "residual_se": 0.0182,
+    "se": 0.01613,
+    "z": -0.82244
+   },
+   "name": "circuit-025",
+   "pair": 11,
+   "position": 49,
+   "science_since_all_ones": 24,
+   "second_half": {
+    "mean": 0.7135,
+    "residual": 0.0258,
+    "residual_se": 0.01685,
+    "se": 0.01511,
+    "z": 1.53127
+   }
+  },
+  {
+   "all": {
+    "mean": 0.68525,
+    "residual": -0.00503,
+    "residual_se": 0.01245,
+    "se": 0.01148,
+    "z": -0.40435
+   },
+   "dense": false,
+   "first_half": {
+    "mean": 0.6745,
+    "residual": -0.0178,
+    "residual_se": 0.01742,
+    "se": 0.01662,
+    "z": -1.02171
+   },
+   "name": "circuit-026",
+   "pair": 12,
+   "position": 51,
+   "science_since_all_ones": 25,
+   "second_half": {
+    "mean": 0.696,
+    "residual": 0.00773,
+    "residual_se": 0.01705,
+    "se": 0.01585,
+    "z": 0.45349
+   }
+  },
+  {
+   "all": {
+    "mean": 0.6965,
+    "residual": 0.00435,
+    "residual_se": 0.01326,
+    "se": 0.01106,
+    "z": 0.32802
+   },
+   "dense": true,
+   "first_half": {
+    "mean": 0.685,
+    "residual": -0.01123,
+    "residual_se": 0.01808,
+    "se": 0.01599,
+    "z": -0.62114
+   },
+   "name": "circuit-027",
+   "pair": 12,
+   "position": 53,
+   "science_since_all_ones": 26,
+   "second_half": {
+    "mean": 0.708,
+    "residual": 0.01993,
+    "residual_se": 0.01703,
+    "se": 0.01528,
+    "z": 1.17022
+   }
+  },
+  {
+   "all": {
+    "mean": 0.71725,
+    "residual": 0.02648,
+    "residual_se": 0.01282,
+    "se": 0.01067,
+    "z": 2.06511
+   },
+   "dense": true,
+   "first_half": {
+    "mean": 0.71,
+    "residual": 0.01543,
+    "residual_se": 0.0177,
+    "se": 0.01556,
+    "z": 0.8721
+   },
+   "name": "circuit-028",
+   "pair": 13,
+   "position": 55,
+   "science_since_all_ones": 27,
+   "second_half": {
+    "mean": 0.7245,
+    "residual": 0.03753,
+    "residual_se": 0.0163,
+    "se": 0.01461,
+    "z": 2.30248
+   }
+  },
+  {
+   "all": {
+    "mean": 0.68825,
+    "residual": -0.00183,
+    "residual_se": 0.01223,
+    "se": 0.01124,
+    "z": -0.14995
+   },
+   "dense": false,
+   "first_half": {
+    "mean": 0.699,
+    "residual": 0.00833,
+    "residual_se": 0.01651,
+    "se": 0.01563,
+    "z": 0.50464
+   },
+   "name": "circuit-029",
+   "pair": 13,
+   "position": 57,
+   "science_since_all_ones": 28,
+   "second_half": {
+    "mean": 0.6775,
+    "residual": -0.012,
+    "residual_se": 0.01732,
+    "se": 0.01616,
+    "z": -0.69271
+   }
+  },
+  {
+   "all": {
+    "mean": 0.699,
+    "residual": 0.00702,
+    "residual_se": 0.01328,
+    "se": 0.01109,
+    "z": 0.52817
+   },
+   "dense": true,
+   "first_half": {
+    "mean": 0.717,
+    "residual": 0.0229,
+    "residual_se": 0.01691,
+    "se": 0.0147,
+    "z": 1.35438
+   },
+   "name": "circuit-030",
+   "pair": 14,
+   "position": 59,
+   "science_since_all_ones": 29,
+   "second_half": {
+    "mean": 0.681,
+    "residual": -0.00887,
+    "residual_se": 0.01827,
+    "se": 0.0166,
+    "z": -0.48544
+   }
+  },
+  {
+   "all": {
+    "mean": 0.71325,
+    "residual": 0.02483,
+    "residual_se": 0.01172,
+    "se": 0.01081,
+    "z": 2.11894
+   },
+   "dense": false,
+   "first_half": {
+    "mean": 0.694,
+    "residual": 0.003,
+    "residual_se": 0.01651,
+    "se": 0.01561,
+    "z": 0.18176
+   },
+   "name": "circuit-031",
+   "pair": 14,
+   "position": 61,
+   "science_since_all_ones": 30,
+   "second_half": {
+    "mean": 0.7325,
+    "residual": 0.04667,
+    "residual_se": 0.01592,
+    "se": 0.01495,
+    "z": 2.93143
+   }
+  },
+  {
+   "all": {
+    "mean": 0.70875,
+    "residual": 0.01742,
+    "residual_se": 0.01294,
+    "se": 0.01073,
+    "z": 1.34554
+   },
+   "dense": true,
+   "first_half": {
+    "mean": 0.721,
+    "residual": 0.02717,
+    "residual_se": 0.01701,
+    "se": 0.01485,
+    "z": 1.59753
+   },
+   "name": "circuit-032",
+   "pair": 15,
+   "position": 63,
+   "science_since_all_ones": 31,
+   "second_half": {
+    "mean": 0.6965,
+    "residual": 0.00767,
+    "residual_se": 0.01728,
+    "se": 0.0155,
+    "z": 0.44369
+   }
+  },
+  {
+   "all": {
+    "mean": 0.707,
+    "residual": 0.01817,
+    "residual_se": 0.012,
+    "se": 0.01106,
+    "z": 1.51384
+   },
+   "dense": false,
+   "first_half": {
+    "mean": 0.708,
+    "residual": 0.01793,
+    "residual_se": 0.01638,
+    "se": 0.01552,
+    "z": 1.09464
+   },
+   "name": "circuit-033",
+   "pair": 15,
+   "position": 65,
+   "science_since_all_ones": 32,
+   "second_half": {
+    "mean": 0.706,
+    "residual": 0.0184,
+    "residual_se": 0.01693,
+    "se": 0.01576,
+    "z": 1.087
+   }
+  }
+ ],
+ "definition": "response = mean over shots of (score(bright Y cell) - score(kernel Y cell)) / 2; residual = response minus the mean response of the other circuits of its arm over the same shots, z against the combined error; science_since_all_ones = 1 for the first science circuit after the all-ones reference, counted across the wrap from one shot to the next",
+ "note": "descriptive reading written after the analysis of the run; it decides nothing",
+ "run": "results/iqm/runs/2026-11-21T220346Z-garnet-packed-pauli-response-garnet-packed"
+}

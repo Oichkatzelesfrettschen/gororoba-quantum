@@ -94,9 +94,11 @@ lint)
 	checked_files="$checked_files docs/evidence/a5-kernel-attachments/weight_slice_smooth_points.py docs/evidence/a5-kernel-attachments/e8_quadric_nilradical.py docs/evidence/a5-kernel-attachments/e8_component_geometry.py docs/evidence/a5-kernel-attachments/e8_birational_degree.py docs/evidence/a5-kernel-attachments/e8_toric_face_strata.py docs/evidence/a5-kernel-attachments/e8_relation_ideal_orders.py docs/evidence/a5-kernel-attachments/weight_slice_relation_membership.py docs/evidence/a5-kernel-attachments/iso_w8_relation_ideal_orders.py docs/evidence/a5-kernel-attachments/w8_component_models.py docs/evidence/a5-kernel-attachments/g2_derivation_tables.py docs/evidence/a5-char0-transfer/w8_component_arcs_qi.py docs/evidence/a5-char0-transfer/w8_component_arc_matrices_qi.py"
 	checked_files="$checked_files docs/evidence/a5-kernel-attachments/weight_slice_quadric_rings.py docs/evidence/a5-kernel-attachments/attaching_maps_resolved.py docs/evidence/a5-kernel-attachments/schur_entry_forms.py"
 	checked_files="$checked_files docs/evidence/iqm-garnet-packed-pauli-run/readout_split.py"
+	checked_files="$checked_files docs/evidence/iqm-garnet-packed-pauli-run/settling.py docs/evidence/iqm-garnet-grover-positions/positions.py docs/evidence/iqm-garnet-qb12-models/qb12_models.py"
 	checked_files="$checked_files docs/evidence/qi-tuna17-interleaved-rounds/round_fits.py"
 	checked_files="$checked_files docs/evidence/qi-tuna17-interleaved-rounds/q12_batches.py"
 	checked_files="$checked_files docs/evidence/qi-tuna17-interleaved-rounds/hypothesis_tests.py"
+	checked_files="$checked_files docs/evidence/iqm-garnet-billing-v3/billing_v3.py"
 	# shellcheck disable=SC2086
 	"$PYTHON" ci/pinned_tool.py ruff check $code_dirs $checked_files
 	# shellcheck disable=SC2086
@@ -141,9 +143,11 @@ types)
 	typed_files="$typed_files ../docs/evidence/a5-kernel-attachments/weight_slice_smooth_points.py ../docs/evidence/a5-kernel-attachments/e8_quadric_nilradical.py ../docs/evidence/a5-kernel-attachments/e8_component_geometry.py ../docs/evidence/a5-kernel-attachments/e8_birational_degree.py ../docs/evidence/a5-kernel-attachments/e8_toric_face_strata.py ../docs/evidence/a5-kernel-attachments/e8_relation_ideal_orders.py ../docs/evidence/a5-kernel-attachments/weight_slice_relation_membership.py ../docs/evidence/a5-kernel-attachments/iso_w8_relation_ideal_orders.py ../docs/evidence/a5-kernel-attachments/w8_component_models.py ../docs/evidence/a5-kernel-attachments/g2_derivation_tables.py ../docs/evidence/a5-char0-transfer/w8_component_arcs_qi.py ../docs/evidence/a5-char0-transfer/w8_component_arc_matrices_qi.py"
 	typed_files="$typed_files ../docs/evidence/a5-kernel-attachments/weight_slice_quadric_rings.py ../docs/evidence/a5-kernel-attachments/attaching_maps_resolved.py ../docs/evidence/a5-kernel-attachments/schur_entry_forms.py"
 	typed_files="$typed_files ../docs/evidence/iqm-garnet-packed-pauli-run/readout_split.py"
+	typed_files="$typed_files ../docs/evidence/iqm-garnet-packed-pauli-run/settling.py ../docs/evidence/iqm-garnet-grover-positions/positions.py ../docs/evidence/iqm-garnet-qb12-models/qb12_models.py"
 	typed_files="$typed_files ../docs/evidence/qi-tuna17-interleaved-rounds/round_fits.py"
 	typed_files="$typed_files ../docs/evidence/qi-tuna17-interleaved-rounds/q12_batches.py"
 	typed_files="$typed_files ../docs/evidence/qi-tuna17-interleaved-rounds/hypothesis_tests.py"
+	typed_files="$typed_files ../docs/evidence/iqm-garnet-billing-v3/billing_v3.py"
 	cd gororoba_quantum
 	# shellcheck disable=SC2086
 	"$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel $typed_files

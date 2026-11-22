@@ -1,0 +1,4 @@
+MODE modulo_std
+STAGE first_colon 2850 238756
+STAGE std 2839 119954
+CHECK sat_in_X 0 X_in_sat 0 sizes 2839 2839

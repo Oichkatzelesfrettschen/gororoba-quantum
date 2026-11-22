@@ -90,7 +90,7 @@ Outside the label (`reported`, rules 5 to 7 of CASE.md); descriptive fits that d
   center offsets the points of one batch share.
 - q4 line: slope 0.000459 +- 0.000175 per degree, chi-square 7.18 on 7, zero at -31.9 degrees (the slope's error is 38
   percent of the slope, so that angle is poorly located); `q4_slope_against_retained.within_resolve` is false: this
-  series' q4 slope differs from the retained series' by 0.002699 +- 0.000277, 9.7 standard errors, so the bridge's
+  series' q4 slope differs from the retained series' by 0.002699 +- 0.000277, 9.8 standard errors, so the bridge's
   agreement at the center does not extend to the q4 arm (under rule 7 the q4 points are not pooled with the retained
   series).
 - Pooled d2 splits and visibility ratios per arm are in `reported.d2_split` and `reported.visibility_ratio`.
