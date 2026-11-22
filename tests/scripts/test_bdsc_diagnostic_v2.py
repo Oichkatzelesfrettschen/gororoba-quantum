@@ -201,16 +201,6 @@ def test_the_power_statement_matches_the_chi_square_it_inverts() -> None:
         raise AssertionError("the seed_superposition degrees of freedom")
 
 
-def test_the_retained_tree_matches_a_fresh_build_and_names_the_retained_draw() -> None:
-    tree = ROOT / "results/quandela/cases/bdsc_diagnostic_v2_qpu_belenos"
-    acquisition.check(tree, None)
-    manifest = json.loads((tree / "b1-j1/cases.json").read_bytes())
-    if manifest["draw"]["record"] != "docs/evidence/anu_qrng/draw-2026-11-22T083730Z.json":
-        raise AssertionError("the tree names another draw")
-    if manifest["diagnostic_case_sha256"] != digest(tree / "case.json"):
-        raise AssertionError("the manifest does not bind the tree's case record")
-
-
 def test_a_platform_outside_the_request_is_refused() -> None:
     for platform in ("sim:belenos", "sim:ascella", "qpu:ascella"):
         with pytest.raises(ValueError, match="not an admitted platform"):

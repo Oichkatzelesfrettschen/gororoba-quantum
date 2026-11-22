@@ -32,6 +32,7 @@ from typing import Any
 
 import bdsc_diagnostic as frozen
 from billing_rule_v2 import supersede
+from parallel import ordered_map
 
 SLOTS = 6
 LABEL_COUNT = len(frozen.LABELS)
@@ -111,6 +112,11 @@ def detectable_ratio(df: int, power: float, scale: int = 1, alpha: float = froze
     return float(brentq(lambda ratio: rejection(ratio, df, scale, alpha) - power, 0.0, 20.0, xtol=1e-12))
 
 
+def power_cell(cell: tuple[int, float, int]) -> float:
+    """detectable_ratio of one (df, power, scale) cell, the unit ordered_map dispatches."""
+    return detectable_ratio(*cell)
+
+
 def power_rows(slots: int) -> dict[str, Any]:
     """Degrees of freedom and detectable seed SD of the three seed tests of a design with `slots` seed slots."""
     blocks = BLOCK_COUNT
@@ -123,13 +129,13 @@ def power_rows(slots: int) -> dict[str, Any]:
         # blocks x templates fits of (states - 1) x (slots - 1) interaction degrees of freedom.
         "seed_interaction": (blocks * TEMPLATE_COUNT * (STATE_COUNT - 1) * steps, 1),
     }
+    cells = [(df, power, scale) for df, scale in tests.values() for power in POWERS]
+    ratios = iter(ordered_map(power_cell, cells))
     rows: dict[str, Any] = {}
-    for name, (df, scale) in tests.items():
+    for name, (df, _scale) in tests.items():
         rows[name] = {
             "df": df,
-            "detectable_seed_sd_over_se": {
-                f"power_{power}": round(detectable_ratio(df, power, scale), 3) for power in POWERS
-            },
+            "detectable_seed_sd_over_se": {f"power_{power}": round(next(ratios), 3) for power in POWERS},
         }
     return rows
 
