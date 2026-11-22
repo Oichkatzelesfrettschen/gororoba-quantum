@@ -3640,6 +3640,16 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_garnet_followup.py analyze results/iqm/runs/2026-11-21T220358Z-garnet-grover-depth-sedenion-walsh-grover results/iqm/runs/2026-11-21T220406Z-garnet-grover-depth-sedenion-walsh-sedenion --out \"${TMPDIR:-/tmp}/garnet-followup-analysis.json\" && cmp \"${TMPDIR:-/tmp}/garnet-followup-analysis.json\" results/iqm/garnet_grover_depth_sedenion_walsh_analysis.json",
+      "name": "core-iqm-garnet-followup-replay",
+      "seconds": 0.6,
+      "replays": [
+        "results/iqm/garnet_grover_depth_sedenion_walsh_analysis.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/iqm_garnet_followup.py check results/iqm/cases/grover-depth-sedenion-walsh",
       "name": "core-777",
       "seconds": 37.3,
@@ -3849,6 +3859,17 @@
       "cmd": "\"$PYTHON\" -B -W error scripts/iqm_packed_pauli_case.py --self-test",
       "name": "core-iqm-packed-pauli-case-self-test",
       "seconds": 120.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_packed_pauli_case.py analyze results/iqm/runs/2026-11-21T220346Z-garnet-packed-pauli-response-garnet-packed --out results/iqm/packed_pauli_response_garnet_analysis.json --replay && \"$PYTHON\" -B -W error docs/evidence/iqm-garnet-packed-pauli-run/readout_split.py results/iqm/runs/2026-11-21T220346Z-garnet-packed-pauli-response-garnet-packed \"${TMPDIR:-/tmp}/packed-readout-split.json\" && cmp \"${TMPDIR:-/tmp}/packed-readout-split.json\" docs/evidence/iqm-garnet-packed-pauli-run/readout_split.json",
+      "name": "core-iqm-packed-pauli-run-replay",
+      "seconds": 1.7,
+      "replays": [
+        "results/iqm/packed_pauli_response_garnet_analysis.json",
+        "docs/evidence/iqm-garnet-packed-pauli-run/readout_split.json"
+      ]
     },
     {
       "suite": "core",

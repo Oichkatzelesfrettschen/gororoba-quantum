@@ -1,0 +1,304 @@
+{
+ "case": "grover-depth-sedenion-walsh",
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/m101-k1-c0.json",
+     "sha256": "00505a1abae71ae9faf7bbdc7c32f316aed91ede306fa2e5e1a9e6c5c9d16472"
+    },
+    {
+     "file": "circuits/m101-k1-padded-c0.json",
+     "sha256": "5688451fe7548904633d2a2a884a97820b3298dbe576f216a4dc73a7b73e0b16"
+    },
+    {
+     "file": "circuits/m101-k1-fused-c0.json",
+     "sha256": "c08b1af06cd9c5ece50d86248b0b6e9536271e720124b6d4f329f628fcfbf6c8"
+    },
+    {
+     "file": "circuits/m101-k1-generic-c0.json",
+     "sha256": "043b282e97a38021f7c4c62d20469cdbf174fa73e7bd4d4cf9cd7a4f9dc170ea"
+    },
+    {
+     "file": "circuits/ro-000.json",
+     "sha256": "7ac9de616b24f6af14641628c32ad019a75859b3f12788b4c4c054d57c164d36"
+    },
+    {
+     "file": "circuits/ro-001.json",
+     "sha256": "c2a17c2693360c4fdee94203d5c2f50373d8921cbd5c1bea8dab4f7583324028"
+    },
+    {
+     "file": "circuits/ro-010.json",
+     "sha256": "92277bb113396cb15a709db7aedfa17cb012f371c11806c94e4c7b7f2cab6deb"
+    },
+    {
+     "file": "circuits/ro-011.json",
+     "sha256": "866eb9ea2655c8c8e37d1f58a9e527c243a74226ec424b37e74ebfce4f74ce3e"
+    },
+    {
+     "file": "circuits/r-m101-k1-c0.json",
+     "sha256": "a9d778b9cebc12f34e1df47dcd4f89f959abb76f04f27f8b88e56330432e5d07"
+    },
+    {
+     "file": "circuits/r-m011-k1-c0.json",
+     "sha256": "14c43d80c7b650ee763d2568d5035b53e5443e3d1ef97b8f965b0393bc822abc"
+    },
+    {
+     "file": "circuits/m101-k1-generic-c1.json",
+     "sha256": "12ec2c8141adb75c96a29e6f7871857e8f6aa7a766f14269480ac20d48afcfca"
+    },
+    {
+     "file": "circuits/m101-k1-fused-c1.json",
+     "sha256": "2e434fa0378534f77d3bf1a11b74ae7ca31fac0f6e6620ac2e7a778279dbf4e7"
+    },
+    {
+     "file": "circuits/m101-k1-padded-c1.json",
+     "sha256": "e512e9f97c153f50f2fd46b5854621221f66666f2aa9fe8368ac49cb4d38af97"
+    },
+    {
+     "file": "circuits/m101-k1-c1.json",
+     "sha256": "d08481609ac14388996385d54b7e6200b65aee3ce6906deebe08c6ff305bd168"
+    },
+    {
+     "file": "circuits/r-m101-k1-c1.json",
+     "sha256": "c45632a70a39d0c5dc509dca488a4a17335c768efedd0b21b669717797fbb0b3"
+    },
+    {
+     "file": "circuits/m101-k2.json",
+     "sha256": "6f1e6bbcab450df9122ec982cb55f75dbb77a6a20c52400d2f43035f532a2003"
+    },
+    {
+     "file": "circuits/m101-k3.json",
+     "sha256": "f85efb24b0a0b2bd326d54aa5ae2f08c6c0d957f02f6b65ca3a6e55660cf9225"
+    },
+    {
+     "file": "circuits/m011-k1.json",
+     "sha256": "429b0c1bbc4949a77521eae9986a7d97d79222d1342d863729bd1ef5230dbea8"
+    },
+    {
+     "file": "circuits/k0.json",
+     "sha256": "ffb28015c914b4a6dede914a7c82c96a355a6bdb65886108a59bb0feecf8e10c"
+    },
+    {
+     "file": "circuits/m011-k2.json",
+     "sha256": "f1c44974845f7b811be5cf8a3beda4b68e164addfdd45f02b712c455404f6dcb"
+    },
+    {
+     "file": "circuits/m011-k3.json",
+     "sha256": "1c033ffa60edf887d0a335ceb9018f245e73466d88620a7ced8fbdb00cab7413"
+    },
+    {
+     "file": "circuits/r-m101-k1-c2.json",
+     "sha256": "7ba40490b9af5f4187ffb82b77fbc62262be3bb9fa5737d03f5c5334b930592c"
+    },
+    {
+     "file": "circuits/m101-k1-c2.json",
+     "sha256": "84d9794e0e2e9454e13a297a63aba011725ab86da92c70b0af138e45f3fd839d"
+    },
+    {
+     "file": "circuits/m101-k1-padded-c2.json",
+     "sha256": "6ec45ce332cb5efa8951d9f855ebd85667496dc7bc31cd11ad994e55a03c9fcc"
+    },
+    {
+     "file": "circuits/m101-k1-fused-c2.json",
+     "sha256": "823030c69631c7b62236f485ef734d91d3b7da716c14b4bca4ebf03a7845eac8"
+    },
+    {
+     "file": "circuits/m101-k1-generic-c2.json",
+     "sha256": "8435670c30ac3267a21251b60538818d269ca8c8e4c5869ef4bcf917d3d4d8db"
+    },
+    {
+     "file": "circuits/r-m011-k1-c1.json",
+     "sha256": "96cc8be67d8d2bb7c6da4f1791c1cd5ba2d6e6f98fc63a4d0644d5cac4e01f6b"
+    },
+    {
+     "file": "circuits/r-m101-k1-c3.json",
+     "sha256": "6d1bc0d502ebf0c6c6388accbc8eb7a8856ec48d4f0cd0f980a5edb8efc5b450"
+    },
+    {
+     "file": "circuits/ro-100.json",
+     "sha256": "996685eb52fd9647e666c5455ae5e7c9950acfe4539f952d5ae64e5439cafec3"
+    },
+    {
+     "file": "circuits/ro-101.json",
+     "sha256": "8a9d6ffa51aa18e89b45618ecd7d07ee73e115dcc564085f382255a9da7e7bf5"
+    },
+    {
+     "file": "circuits/ro-110.json",
+     "sha256": "0638d660cc1d913bf4aa1927a78f8a14373e2dbe0d854b1c8fc4c8ebab13df68"
+    },
+    {
+     "file": "circuits/ro-111.json",
+     "sha256": "b44cbd475f7630d157fcaf5fad3aa7e9aebc9a8ce2c4e3974235b263854c3ee0"
+    },
+    {
+     "file": "circuits/m101-k1-generic-c3.json",
+     "sha256": "f3c541eb55507b6e2b0ce5eae9d7a2875c577c45ac6f2d7b50b658835ca31bb9"
+    },
+    {
+     "file": "circuits/m101-k1-fused-c3.json",
+     "sha256": "673a9c81a514b3cb014c945a8336a29c51795bdcc2edf181c60ca88c0cebf667"
+    },
+    {
+     "file": "circuits/m101-k1-padded-c3.json",
+     "sha256": "2b1a07c9f2ba8e0869f2f18b5d1fa0c64153974e568a89b9333d877681717fdf"
+    },
+    {
+     "file": "circuits/m101-k1-c3.json",
+     "sha256": "c08fc85e35466d417c23654046a12cacce0ff5281b0081194c2b3bf9550cc1b2"
+    }
+   ],
+   "expected_seconds": 5.4,
+   "job": "grover",
+   "max_credits": {
+    "garnet": 3.5,
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {
+     "garnet": "ea681de1-9661-41e5-bd6f-cb524fa056a6"
+    },
+    "heralding_mode": "zeros"
+   },
+   "shots": 4000
+  },
+  {
+   "circuits": [
+    {
+     "file": "circuits/s5-id-c0.json",
+     "sha256": "981af44e6e0af44f9975bc56a51e25e8e22d4b95063efb150f7a3c32947d9518"
+    },
+    {
+     "file": "circuits/s10-id-c0.json",
+     "sha256": "ee6a97c37290e202fe001351a290c2cf3c4a26a9a8ef0775f1cccbb0a47237b2"
+    },
+    {
+     "file": "circuits/s5-row-c0.json",
+     "sha256": "2b612310fd16d51e493c40df3393ebcb2605132985928afcaf479801d6cdc3b5"
+    },
+    {
+     "file": "circuits/s5-trunc-c0.json",
+     "sha256": "0ebb152db46344414356ffcdbecb3916612fbef657d07b5b3dbbda61bddd3717"
+    },
+    {
+     "file": "circuits/s10-row-c0.json",
+     "sha256": "1412ea711c9d66aed64228cf9011412bd5dc3c5312a7ee96d4b3112b4192d7c5"
+    },
+    {
+     "file": "circuits/s10-trunc-c0.json",
+     "sha256": "2573e1f6ed15aae69fb2477fb8516fd477a98424df7a11bde24956ed181d8d9a"
+    },
+    {
+     "file": "circuits/ro4-0000.json",
+     "sha256": "6188ced9185aa9cc3b0c7859fc883f83bd38eda0818a94222e1c07787de84241"
+    },
+    {
+     "file": "circuits/ro4-0001.json",
+     "sha256": "f3ae92ea3a49dd1f127704918d55b5d592202db96888b49752cb0f6e73617e23"
+    },
+    {
+     "file": "circuits/ro4-0010.json",
+     "sha256": "3eff098e1a3a317f29e89c15cb2e8b62b2e1cb2178d21746ea8f99539837ffce"
+    },
+    {
+     "file": "circuits/ro4-0011.json",
+     "sha256": "e4ffd9d0c1bc208fec4ed3bf928aa365fee42caeea1310a3dac880415887377f"
+    },
+    {
+     "file": "circuits/ro4-0100.json",
+     "sha256": "c33bcc52123a06b69d4eaf7615a51851b923c9571e90a981989a82b2eacd191a"
+    },
+    {
+     "file": "circuits/ro4-0101.json",
+     "sha256": "00e62a1f6d10bf2d2c8ceb2dc251cab39f410ee2edc77189195f9b5db798d028"
+    },
+    {
+     "file": "circuits/ro4-0110.json",
+     "sha256": "7fca9384924f31ad10c7e143c06da11d3987587697183440f9742869f33371c2"
+    },
+    {
+     "file": "circuits/ro4-0111.json",
+     "sha256": "e7374f3be2cb30b95c3fae9aec0c68b3ad4274c95cad059a5350754d90022942"
+    },
+    {
+     "file": "circuits/ro4-1000.json",
+     "sha256": "35cba276120b05f2005f7cfc99366aaf5c272e5cb83e3ded761ab1e4aaa49281"
+    },
+    {
+     "file": "circuits/ro4-1001.json",
+     "sha256": "292f1d26a87ccba6d1fecacc312fe91f0cd39fd5248fe560c6742f0f0ab067a7"
+    },
+    {
+     "file": "circuits/ro4-1010.json",
+     "sha256": "4632993e49f3e0a7853850b869c8ae499ca1cbd426586e11b641c6487f1368dd"
+    },
+    {
+     "file": "circuits/ro4-1011.json",
+     "sha256": "fa1393ad109e2a042eddc3e8bf0567594115357cfae538d584d45c4ec2462655"
+    },
+    {
+     "file": "circuits/ro4-1100.json",
+     "sha256": "79060101c50e8a112f48a939567b56bc4300e5c168ca5cb74f2a8bf5df4064b0"
+    },
+    {
+     "file": "circuits/ro4-1101.json",
+     "sha256": "f693ffb68965d88a6ef6a6e94e2a08e6209a876e540f2b79eb50be178ed2c51b"
+    },
+    {
+     "file": "circuits/ro4-1110.json",
+     "sha256": "88ceb78d800d5f8bfdd778ad66257d85fd7800d56d61ec57c6bef5a1a2e73d08"
+    },
+    {
+     "file": "circuits/ro4-1111.json",
+     "sha256": "5428dd6011e608c951bfda5370b18f274ff97d2358a705039fcc000f5be3b61a"
+    },
+    {
+     "file": "circuits/s10-trunc-c1.json",
+     "sha256": "cfe60264833426bf62152fe2818fe9a8d2a0afb98cf6a4a2a959bd6eb4741d08"
+    },
+    {
+     "file": "circuits/s10-row-c1.json",
+     "sha256": "c6a326bffc4b1b5e458dfecbfa8d0289f68a87fa1baeaa6ee41350030ffdfe54"
+    },
+    {
+     "file": "circuits/s5-trunc-c1.json",
+     "sha256": "76a43f45bffb0d0060447499ba01fcea92ad91e9933fddcf750aee599d101588"
+    },
+    {
+     "file": "circuits/s5-row-c1.json",
+     "sha256": "bf49b86e8b1227cd5f685e8392e220f50015d89985794b460236ef6870201b90"
+    },
+    {
+     "file": "circuits/s10-id-c1.json",
+     "sha256": "ac816479d622d5d28aa1694e33a53f0972e0d394301f1e4d177acb363cc9adf4"
+    },
+    {
+     "file": "circuits/s5-id-c1.json",
+     "sha256": "274d3523550d7c2f0c9712fea43f2c44b187827a58c3e8893903e27a852e1aaa"
+    }
+   ],
+   "expected_seconds": 1.05,
+   "job": "sedenion",
+   "max_credits": {
+    "garnet": 1.5,
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {
+     "garnet": "ea681de1-9661-41e5-bd6f-cb524fa056a6"
+    },
+    "heralding_mode": "zeros"
+   },
+   "shots": 1000
+  }
+ ],
+ "prediction_sha256": "48b615d84122000ea45cd8f542850a39c3ec4e8afad2d8195c04aede2ea66556",
+ "qcs": [
+  "garnet:mock",
+  "garnet"
+ ],
+ "question": "On one Garnet calibration: does the line-native Grover retention stay geometric at a third depth, does fusing the generic compile's single-qubit gates recover its loss, does the per-qubit error profile follow the qubit or the logical role, and does a sedenion left sign row imprint its exact Walsh peak, against its degree-two truncation on the same CZ sequence?",
+ "schema": "iqm-circuit-case-v1"
+}
