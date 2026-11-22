@@ -458,7 +458,7 @@ form, which must fail the Morse certificate. Independent topology checks recompu
 Pluecker coordinates of 2i. Falsifiers: a rank deficiency of `phi` on a tangent-cone component, a quadratic part of
 rank below 3, two components whose tangent spaces meet outside 0, image invariants that differ from 2i, or a link
 homology that differs from the table. Cost: exact linear algebra on retained polynomials, predicted under 10 s and
-200 MiB against 0.82 s for the 2i replay (2.7 s to 3.4 s and 29 MiB measured; row 2x adds 12.7 s and 89 MiB); it runs on the compute workstation, not on the build host.
+200 MiB against 0.82 s for the 2i replay (3.0 s to 3.7 s and 29 MiB measured; row 2x adds 12.7 s and 89 MiB); it runs on the compute workstation, not on the build host.
 
 What sub-step 3a leaves to later sub-steps: the variation of the datum along the boundary orbit (its monodromy and the
 non-compact directions that do not act on the kernel), the seven higher-order rows of 2c, the eighteen rows into

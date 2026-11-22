@@ -5884,7 +5884,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/attaching_maps_resolved.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-attachments/attaching_maps_resolved.py --self-test",
       "name": "core-a5-attaching-maps-resolved-self-test",
-      "seconds": 30,
+      "seconds": 14,
       "workers": "all"
     },
     {

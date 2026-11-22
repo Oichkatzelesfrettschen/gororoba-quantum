@@ -5160,7 +5160,7 @@
   "the identification of the actual germ link L with the unit circle bundle of O_E(-1) through the radial deformation of kappa on the link to phi o p, which gives the attaching datum its homotopy class; the record computes the circle-bundle model"
  ],
  "inputs": {
-  "attaching_maps_resolved.py": "335a464b7a98db15dd1f8ccbc6d821928ff7a0a563948cd94990076949a42347",
+  "attaching_maps_resolved.py": "79cb7e0167769c2658b23a06fac906748f1bab77e05c082c6a0725ec53fc4792",
   "first-order-normal-cones-result.json": "0173462891d377fcf50cd7a88f923ecf8648011f8a0e91cc39a11b32f59d3d49",
   "holomorphic-gauss-fibers-result.json": "4dbd90b752b1c4107f547036b2cf7950c9783c6291f4f1e2a3c8dabd94211d98",
   "path-supported-basepoints-result.json": "eeeb5a03c7ef0cf574d92e4f5aac85a34c3b873102a12be89aa716deeedd813c",
