@@ -232,9 +232,10 @@ it decide nothing):
 Descriptive readings beside the decisions, deciding nothing:
 
 - The readout-corrected 101 depth statistic reads f = -0.121 +- 0.041, z -2.96 against zero, under 3. The depth arms
-  k = 2 and 3 are single circuits at positions 15 and 16 of the 36, and k = 1 pools four copies at positions 0, 13, 22
-  and 35 (mean 17.5), so a drift linear in position cancels in f to first order; a curved drift does not (the four
-  k = 1 copies read 0.680, 0.662, 0.674 and 0.665).
+  k = 2 and 3 are single circuits at positions 16 and 15 of the 36 (k = 3 at 16, k = 2 at 15), and k = 1 pools four copies at
+  positions 0, 13, 22 and 35 (mean 17.5). A small multiplicative drift linear in position perturbs f, to first order, in
+  proportion to t3 - 2 t2 + t1 = 16 - 30 + 17.5 = 3.5 positions, so a linear drift does enter the measured bend; the
+  four k = 1 copies read 0.680, 0.662, 0.674 and 0.665.
 - The forward end-qubit difference D reads +0.0141 against the model's -0.0101, the opposite sign: QB17 reads its bit
   wrong more often than QB20 on the forward path.
 - QB12, measured in the sedenion job: across the sixteen readout preparations, QB12 (logical qubit 1 of the square,
