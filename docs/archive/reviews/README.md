@@ -242,9 +242,8 @@ the case spent credits.
 
 The [sub-step 3a attaching-maps review](a5-attaching-maps-3a/README.md) (pull request 984) records four reviewers' findings on the certificates of `attaching_maps_resolved.py` and ledger row 3a, and the predicate the retained records cannot decide.
 
-The [retained Schur-entry forms review](a5-schur-entry-forms/README.md) (pull request 988) records two reviewers' findings on the successor records and the rank-four Pfaffian decision.
-
-
 The [Belenos six-slot diagnostic review](bdsc-diagnostic-shape-a/README.md) (pull request 983) records four reviewers' findings on the power statement under repeated blocks and the forked four-slot functions.
 
 The [A5 task-closures review](a5-records-task-closures/README.md) (pull request 982) records four reviewers' findings on the Barrett-successor closure and the open clauses of task 127.
+
+The [retained Schur-entry forms review](a5-schur-entry-forms/README.md) (pull request 988) records two reviewers' findings on the successor records and the rank-four Pfaffian decision.
