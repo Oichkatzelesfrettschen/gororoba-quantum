@@ -1,0 +1,2130 @@
+{
+ "fields": [
+  "Q(i)",
+  "F_32009"
+ ],
+ "incidences": [
+  {
+   "boundary_orbit": "B9",
+   "certificates": {
+    "certificate_0_constant_nullity": {
+     "bordered_kernel_dimension_at_the_boundary": 6,
+     "degeneracy_locus_empty_in_projective_space": true,
+     "exceptional_charts_base_free": true,
+     "first_order_form_nonzero_on_the_punctured_cone": true,
+     "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero, hence of rank exactly two, on a punctured neighborhood in Z",
+     "pass": true,
+     "pivot_pfaffian_is_a_unit": true,
+     "rank_four_pfaffians_vanish": true,
+     "real_nullity_off_the_basepoint": 8,
+     "schur_form_rank_on_the_cone": 2
+    },
+    "certificate_1_conical_structure": {
+     "dimension_multiplicity_embedding_components": [
+      2,
+      2,
+      3,
+      1
+     ],
+     "kind": "hypersurface",
+     "morse": true,
+     "pass": true,
+     "quadratic_part_rank": 3,
+     "quadrics_proportional": true
+    },
+    "certificate_2_linear_injective_phi": {
+     "committed_2i_image": [
+      1,
+      2,
+      1
+     ],
+     "component_span_dimensions": [
+      3
+     ],
+     "fiber_2l": [
+      1,
+      2,
+      1
+     ],
+     "first_order_2c": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "rank_on_each_component_span": [
+       3
+      ],
+      "rank_on_the_sum_of_components": 3
+     },
+     "holomorphic_2i": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "rank_on_each_component_span": [
+       3
+      ],
+      "rank_on_the_sum_of_components": 3
+     },
+     "image_matches_2i": true,
+     "image_matches_2l": true,
+     "image_projective_dimension_degree_components": [
+      1,
+      2,
+      1
+     ],
+     "multiplicity_equals_degree_sum": true,
+     "pass": true,
+     "pulled_back_image_generators_vanish_on_E": true
+    },
+    "certificate_3_homotopy_data": {
+     "components": [
+      {
+       "c1_of_S_evaluated_on_the_curve": -2,
+       "c1_of_S_on_the_component": "-H = -h",
+       "degree_of_E_in_its_span": 2,
+       "euler_class_coefficient": -2,
+       "euler_class_equals_minus_pluecker_degree": true,
+       "exceptional_projective_dimension": 1,
+       "h1_of_link": "Z/2",
+       "link": "RP^3",
+       "phi_on_h2_is_an_isomorphism": true,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      }
+     ],
+     "pass": true
+    }
+   },
+   "incidence": "E8bar->B9",
+   "modular_certificates_equal_gaussian": true,
+   "mutation_controls": [
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "component": 0,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "E8bar->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "-13/16",
+      "0",
+      "-11/16",
+      "1",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "E8bar->B9",
+     "morse_certificate_passes": false,
+     "mutated_generator": "779*t2^2-1754*t2*t4+987*t4^2",
+     "mutation": "rank_two_quadratic_part",
+     "quadratic_part_rank": 2
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "component": 0,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "E8bar->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "10002",
+      "0",
+      "6001",
+      "1",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "E8bar->B9",
+     "morse_certificate_passes": false,
+     "mutated_generator": "779*t2^2-1754*t2*t4+987*t4^2",
+     "mutation": "rank_two_quadratic_part",
+     "quadratic_part_rank": 2
+    }
+   ],
+   "pass": true,
+   "predictions": [
+    {
+     "computed": 2,
+     "name": "germ_dimension",
+     "pass": true,
+     "predicted": 2
+    },
+    {
+     "computed": 2,
+     "name": "tangent_cone_multiplicity",
+     "pass": true,
+     "predicted": 2
+    },
+    {
+     "computed": [
+      "RP^3"
+     ],
+     "name": "link",
+     "pass": true,
+     "predicted": [
+      "RP^3"
+     ]
+    },
+    {
+     "computed": [
+      "Z/2"
+     ],
+     "name": "link_h1",
+     "pass": true,
+     "predicted": [
+      "Z/2"
+     ]
+    },
+    {
+     "computed": [
+      -2
+     ],
+     "name": "euler_class_coefficients",
+     "pass": true,
+     "predicted": [
+      -2
+     ]
+    },
+    {
+     "computed": [
+      1
+     ],
+     "name": "exceptional_projective_dimensions",
+     "pass": true,
+     "predicted": [
+      1
+     ]
+    },
+    {
+     "computed": [
+      1,
+      2,
+      1
+     ],
+     "name": "image_projective_dimension_degree_components",
+     "pass": true,
+     "predicted": [
+      1,
+      2,
+      1
+     ]
+    },
+    {
+     "computed": null,
+     "name": "image_components_disjoint",
+     "pass": true,
+     "predicted": null
+    },
+    {
+     "computed": [
+      -2
+     ],
+     "name": "c1_on_curve_components",
+     "pass": true,
+     "predicted": [
+      -2
+     ]
+    }
+   ],
+   "retained_rows_agree": {
+    "cone_summary_matches_germ": true,
+    "germ_invariants_equal_in_2b_2c": true,
+    "slice_columns_equal_in_2b_2c_2i": true,
+    "source_and_boundary_equal": true,
+    "tangent_generators_equal_in_2b_2c_2i": true
+   },
+   "source_orbit": "E8bar"
+  },
+  {
+   "boundary_orbit": "V",
+   "certificates": {
+    "certificate_0_constant_nullity": {
+     "bordered_kernel_dimension_at_the_boundary": 6,
+     "degeneracy_locus_empty_in_projective_space": true,
+     "exceptional_charts_base_free": true,
+     "first_order_form_nonzero_on_the_punctured_cone": true,
+     "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero, hence of rank exactly two, on a punctured neighborhood in Z",
+     "pass": true,
+     "pivot_pfaffian_is_a_unit": true,
+     "rank_four_pfaffians_vanish": true,
+     "real_nullity_off_the_basepoint": 8,
+     "schur_form_rank_on_the_cone": 2
+    },
+    "certificate_1_conical_structure": {
+     "component_dimensions": [
+      3,
+      3
+     ],
+     "components_smooth": true,
+     "dimension_multiplicity_embedding_components": [
+      3,
+      2,
+      6,
+      2
+     ],
+     "kind": "two-components",
+     "multiplicity_equals_component_count": true,
+     "pass": true,
+     "tangent_spaces_joint_rank": 6,
+     "tangent_spaces_meet_only_at_zero": true
+    },
+    "certificate_2_linear_injective_phi": {
+     "committed_2i_image": [
+      2,
+      2,
+      2
+     ],
+     "component_span_dimensions": [
+      3,
+      3
+     ],
+     "fiber_2l": [
+      2,
+      2,
+      2
+     ],
+     "first_order_2c": {
+      "coordinate_count": 7,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "rank_on_each_component_span": [
+       3,
+       3
+      ],
+      "rank_on_the_sum_of_components": 6
+     },
+     "holomorphic_2i": {
+      "coordinate_count": 7,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "rank_on_each_component_span": [
+       3,
+       3
+      ],
+      "rank_on_the_sum_of_components": 6
+     },
+     "image_matches_2i": true,
+     "image_matches_2l": true,
+     "image_projective_dimension_degree_components": [
+      2,
+      2,
+      2
+     ],
+     "multiplicity_equals_degree_sum": true,
+     "pass": true,
+     "pulled_back_image_generators_vanish_on_E": true
+    },
+    "certificate_3_homotopy_data": {
+     "components": [
+      {
+       "c1_of_S_evaluated_on_the_curve": null,
+       "c1_of_S_on_the_component": "-H = -h",
+       "degree_of_E_in_its_span": 1,
+       "euler_class_coefficient": -1,
+       "euler_class_equals_minus_pluecker_degree": null,
+       "exceptional_projective_dimension": 2,
+       "h1_of_link": "0",
+       "link": "S^5",
+       "phi_on_h2_is_an_isomorphism": true,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      },
+      {
+       "c1_of_S_evaluated_on_the_curve": null,
+       "c1_of_S_on_the_component": "-H = -h",
+       "degree_of_E_in_its_span": 1,
+       "euler_class_coefficient": -1,
+       "euler_class_equals_minus_pluecker_degree": null,
+       "exceptional_projective_dimension": 2,
+       "h1_of_link": "0",
+       "link": "S^5",
+       "phi_on_h2_is_an_isomorphism": true,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      }
+     ],
+     "pass": true
+    }
+   },
+   "incidence": "E8bar->V",
+   "modular_certificates_equal_gaussian": true,
+   "mutation_controls": [
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "component": 0,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "E8bar->V",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "component": 1,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "E8bar->V",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "component": 0,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "E8bar->V",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "component": 1,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "E8bar->V",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    }
+   ],
+   "pass": true,
+   "predictions": [
+    {
+     "computed": 3,
+     "name": "germ_dimension",
+     "pass": true,
+     "predicted": 3
+    },
+    {
+     "computed": 2,
+     "name": "tangent_cone_multiplicity",
+     "pass": true,
+     "predicted": 2
+    },
+    {
+     "computed": [
+      "S^5",
+      "S^5"
+     ],
+     "name": "link",
+     "pass": true,
+     "predicted": [
+      "S^5",
+      "S^5"
+     ]
+    },
+    {
+     "computed": [
+      "0",
+      "0"
+     ],
+     "name": "link_h1",
+     "pass": true,
+     "predicted": [
+      "0",
+      "0"
+     ]
+    },
+    {
+     "computed": [
+      -1,
+      -1
+     ],
+     "name": "euler_class_coefficients",
+     "pass": true,
+     "predicted": [
+      -1,
+      -1
+     ]
+    },
+    {
+     "computed": [
+      2,
+      2
+     ],
+     "name": "exceptional_projective_dimensions",
+     "pass": true,
+     "predicted": [
+      2,
+      2
+     ]
+    },
+    {
+     "computed": [
+      2,
+      2,
+      2
+     ],
+     "name": "image_projective_dimension_degree_components",
+     "pass": true,
+     "predicted": [
+      2,
+      2,
+      2
+     ]
+    },
+    {
+     "computed": true,
+     "name": "image_components_disjoint",
+     "pass": true,
+     "predicted": true
+    },
+    {
+     "computed": [
+      null,
+      null
+     ],
+     "name": "c1_on_curve_components",
+     "pass": true,
+     "predicted": [
+      null,
+      null
+     ]
+    }
+   ],
+   "retained_rows_agree": {
+    "cone_summary_matches_germ": true,
+    "germ_invariants_equal_in_2b_2c": true,
+    "slice_columns_equal_in_2b_2c_2i": true,
+    "source_and_boundary_equal": true,
+    "tangent_generators_equal_in_2b_2c_2i": true
+   },
+   "source_orbit": "E8bar"
+  },
+  {
+   "boundary_orbit": "B9",
+   "certificates": {
+    "certificate_0_constant_nullity": {
+     "bordered_kernel_dimension_at_the_boundary": 6,
+     "degeneracy_locus_empty_in_projective_space": true,
+     "exceptional_charts_base_free": true,
+     "first_order_form_nonzero_on_the_punctured_cone": true,
+     "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero, hence of rank exactly two, on a punctured neighborhood in Z",
+     "pass": true,
+     "pivot_pfaffian_is_a_unit": true,
+     "rank_four_pfaffians_vanish": true,
+     "real_nullity_off_the_basepoint": 8,
+     "schur_form_rank_on_the_cone": 2
+    },
+    "certificate_1_conical_structure": {
+     "dimension_multiplicity_embedding_components": [
+      2,
+      1,
+      2,
+      1
+     ],
+     "kind": "smooth",
+     "pass": true,
+     "smooth": true
+    },
+    "certificate_2_linear_injective_phi": {
+     "committed_2i_image": [
+      1,
+      1,
+      1
+     ],
+     "component_span_dimensions": [
+      2
+     ],
+     "fiber_2l": [
+      1,
+      1,
+      1
+     ],
+     "first_order_2c": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "rank_on_each_component_span": [
+       2
+      ],
+      "rank_on_the_sum_of_components": 2
+     },
+     "holomorphic_2i": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "rank_on_each_component_span": [
+       2
+      ],
+      "rank_on_the_sum_of_components": 2
+     },
+     "image_matches_2i": true,
+     "image_matches_2l": true,
+     "image_projective_dimension_degree_components": [
+      1,
+      1,
+      1
+     ],
+     "multiplicity_equals_degree_sum": true,
+     "pass": true,
+     "pulled_back_image_generators_vanish_on_E": true
+    },
+    "certificate_3_homotopy_data": {
+     "components": [
+      {
+       "c1_of_S_evaluated_on_the_curve": -1,
+       "c1_of_S_on_the_component": "-H = -h",
+       "degree_of_E_in_its_span": 1,
+       "euler_class_coefficient": -1,
+       "euler_class_equals_minus_pluecker_degree": true,
+       "exceptional_projective_dimension": 1,
+       "h1_of_link": "0",
+       "link": "S^3",
+       "phi_on_h2_is_an_isomorphism": true,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      }
+     ],
+     "pass": true
+    }
+   },
+   "incidence": "Iso->B9",
+   "modular_certificates_equal_gaussian": true,
+   "mutation_controls": [
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 2,
+     "component": 0,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "Iso->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 1,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 2
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 2,
+     "component": 0,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "Iso->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 1,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 2
+    }
+   ],
+   "pass": true,
+   "predictions": [
+    {
+     "computed": 2,
+     "name": "germ_dimension",
+     "pass": true,
+     "predicted": 2
+    },
+    {
+     "computed": 1,
+     "name": "tangent_cone_multiplicity",
+     "pass": true,
+     "predicted": 1
+    },
+    {
+     "computed": [
+      "S^3"
+     ],
+     "name": "link",
+     "pass": true,
+     "predicted": [
+      "S^3"
+     ]
+    },
+    {
+     "computed": [
+      "0"
+     ],
+     "name": "link_h1",
+     "pass": true,
+     "predicted": [
+      "0"
+     ]
+    },
+    {
+     "computed": [
+      -1
+     ],
+     "name": "euler_class_coefficients",
+     "pass": true,
+     "predicted": [
+      -1
+     ]
+    },
+    {
+     "computed": [
+      1
+     ],
+     "name": "exceptional_projective_dimensions",
+     "pass": true,
+     "predicted": [
+      1
+     ]
+    },
+    {
+     "computed": [
+      1,
+      1,
+      1
+     ],
+     "name": "image_projective_dimension_degree_components",
+     "pass": true,
+     "predicted": [
+      1,
+      1,
+      1
+     ]
+    },
+    {
+     "computed": null,
+     "name": "image_components_disjoint",
+     "pass": true,
+     "predicted": null
+    },
+    {
+     "computed": [
+      -1
+     ],
+     "name": "c1_on_curve_components",
+     "pass": true,
+     "predicted": [
+      -1
+     ]
+    }
+   ],
+   "retained_rows_agree": {
+    "cone_summary_matches_germ": true,
+    "germ_invariants_equal_in_2b_2c": true,
+    "slice_columns_equal_in_2b_2c_2i": true,
+    "source_and_boundary_equal": true,
+    "tangent_generators_equal_in_2b_2c_2i": true
+   },
+   "source_orbit": "Iso"
+  },
+  {
+   "boundary_orbit": "B9",
+   "certificates": {
+    "certificate_0_constant_nullity": {
+     "bordered_kernel_dimension_at_the_boundary": 6,
+     "degeneracy_locus_empty_in_projective_space": true,
+     "exceptional_charts_base_free": true,
+     "first_order_form_nonzero_on_the_punctured_cone": true,
+     "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero, hence of rank exactly two, on a punctured neighborhood in Z",
+     "pass": true,
+     "pivot_pfaffian_is_a_unit": true,
+     "rank_four_pfaffians_vanish": true,
+     "real_nullity_off_the_basepoint": 8,
+     "schur_form_rank_on_the_cone": 2
+    },
+    "certificate_1_conical_structure": {
+     "dimension_multiplicity_embedding_components": [
+      3,
+      1,
+      3,
+      1
+     ],
+     "kind": "smooth",
+     "pass": true,
+     "smooth": true
+    },
+    "certificate_2_linear_injective_phi": {
+     "committed_2i_image": [
+      2,
+      1,
+      1
+     ],
+     "component_span_dimensions": [
+      3
+     ],
+     "fiber_2l": [
+      2,
+      1,
+      1
+     ],
+     "first_order_2c": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "rank_on_each_component_span": [
+       3
+      ],
+      "rank_on_the_sum_of_components": 3
+     },
+     "holomorphic_2i": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "rank_on_each_component_span": [
+       3
+      ],
+      "rank_on_the_sum_of_components": 3
+     },
+     "image_matches_2i": true,
+     "image_matches_2l": true,
+     "image_projective_dimension_degree_components": [
+      2,
+      1,
+      1
+     ],
+     "multiplicity_equals_degree_sum": true,
+     "pass": true,
+     "pulled_back_image_generators_vanish_on_E": true
+    },
+    "certificate_3_homotopy_data": {
+     "components": [
+      {
+       "c1_of_S_evaluated_on_the_curve": null,
+       "c1_of_S_on_the_component": "-H = -h",
+       "degree_of_E_in_its_span": 1,
+       "euler_class_coefficient": -1,
+       "euler_class_equals_minus_pluecker_degree": null,
+       "exceptional_projective_dimension": 2,
+       "h1_of_link": "0",
+       "link": "S^5",
+       "phi_on_h2_is_an_isomorphism": true,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      }
+     ],
+     "pass": true
+    }
+   },
+   "incidence": "W8->B9",
+   "modular_certificates_equal_gaussian": true,
+   "mutation_controls": [
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "component": 0,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "W8->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "component": 0,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "W8->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    }
+   ],
+   "pass": true,
+   "predictions": [
+    {
+     "computed": 3,
+     "name": "germ_dimension",
+     "pass": true,
+     "predicted": 3
+    },
+    {
+     "computed": 1,
+     "name": "tangent_cone_multiplicity",
+     "pass": true,
+     "predicted": 1
+    },
+    {
+     "computed": [
+      "S^5"
+     ],
+     "name": "link",
+     "pass": true,
+     "predicted": [
+      "S^5"
+     ]
+    },
+    {
+     "computed": [
+      "0"
+     ],
+     "name": "link_h1",
+     "pass": true,
+     "predicted": [
+      "0"
+     ]
+    },
+    {
+     "computed": [
+      -1
+     ],
+     "name": "euler_class_coefficients",
+     "pass": true,
+     "predicted": [
+      -1
+     ]
+    },
+    {
+     "computed": [
+      2
+     ],
+     "name": "exceptional_projective_dimensions",
+     "pass": true,
+     "predicted": [
+      2
+     ]
+    },
+    {
+     "computed": [
+      2,
+      1,
+      1
+     ],
+     "name": "image_projective_dimension_degree_components",
+     "pass": true,
+     "predicted": [
+      2,
+      1,
+      1
+     ]
+    },
+    {
+     "computed": null,
+     "name": "image_components_disjoint",
+     "pass": true,
+     "predicted": null
+    },
+    {
+     "computed": [
+      null
+     ],
+     "name": "c1_on_curve_components",
+     "pass": true,
+     "predicted": [
+      null
+     ]
+    }
+   ],
+   "retained_rows_agree": {
+    "cone_summary_matches_germ": true,
+    "germ_invariants_equal_in_2b_2c": true,
+    "slice_columns_equal_in_2b_2c_2i": true,
+    "source_and_boundary_equal": true,
+    "tangent_generators_equal_in_2b_2c_2i": true
+   },
+   "source_orbit": "W8"
+  },
+  {
+   "boundary_orbit": "B9",
+   "certificates": {
+    "certificate_0_constant_nullity": {
+     "bordered_kernel_dimension_at_the_boundary": 6,
+     "degeneracy_locus_empty_in_projective_space": true,
+     "exceptional_charts_base_free": true,
+     "first_order_form_nonzero_on_the_punctured_cone": true,
+     "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero, hence of rank exactly two, on a punctured neighborhood in Z",
+     "pass": true,
+     "pivot_pfaffian_is_a_unit": true,
+     "rank_four_pfaffians_vanish": true,
+     "real_nullity_off_the_basepoint": 8,
+     "schur_form_rank_on_the_cone": 2
+    },
+    "certificate_1_conical_structure": {
+     "dimension_multiplicity_embedding_components": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "kind": "smooth",
+     "pass": true,
+     "smooth": true
+    },
+    "certificate_2_linear_injective_phi": {
+     "committed_2i_image": [
+      0,
+      1,
+      1
+     ],
+     "component_span_dimensions": [
+      1
+     ],
+     "fiber_2l": [
+      0,
+      1,
+      1
+     ],
+     "first_order_2c": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "rank_on_each_component_span": [
+       1
+      ],
+      "rank_on_the_sum_of_components": 1
+     },
+     "holomorphic_2i": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "rank_on_each_component_span": [
+       1
+      ],
+      "rank_on_the_sum_of_components": 1
+     },
+     "image_matches_2i": true,
+     "image_matches_2l": true,
+     "image_projective_dimension_degree_components": [
+      0,
+      1,
+      1
+     ],
+     "multiplicity_equals_degree_sum": true,
+     "pass": true,
+     "pulled_back_image_generators_vanish_on_E": true
+    },
+    "certificate_3_homotopy_data": {
+     "components": [
+      {
+       "c1_of_S_evaluated_on_the_curve": null,
+       "c1_of_S_on_the_component": null,
+       "degree_of_E_in_its_span": 1,
+       "euler_class_coefficient": null,
+       "euler_class_equals_minus_pluecker_degree": null,
+       "exceptional_projective_dimension": 0,
+       "h1_of_link": "Z",
+       "link": "S^1",
+       "phi_on_h2_is_an_isomorphism": true,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      }
+     ],
+     "pass": true
+    }
+   },
+   "incidence": "X+->B9",
+   "modular_certificates_equal_gaussian": true,
+   "mutation_controls": [
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 1,
+     "component": 0,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X+->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 0,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "21/19",
+      "0",
+      "1",
+      "0",
+      "0"
+     ],
+     "span_dimension": 1
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 1,
+     "component": 0,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X+->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 0,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "21902",
+      "0",
+      "1",
+      "0",
+      "0"
+     ],
+     "span_dimension": 1
+    }
+   ],
+   "pass": true,
+   "predictions": [
+    {
+     "computed": 1,
+     "name": "germ_dimension",
+     "pass": true,
+     "predicted": 1
+    },
+    {
+     "computed": 1,
+     "name": "tangent_cone_multiplicity",
+     "pass": true,
+     "predicted": 1
+    },
+    {
+     "computed": [
+      "S^1"
+     ],
+     "name": "link",
+     "pass": true,
+     "predicted": [
+      "S^1"
+     ]
+    },
+    {
+     "computed": [
+      "Z"
+     ],
+     "name": "link_h1",
+     "pass": true,
+     "predicted": [
+      "Z"
+     ]
+    },
+    {
+     "computed": [
+      null
+     ],
+     "name": "euler_class_coefficients",
+     "pass": true,
+     "predicted": [
+      null
+     ]
+    },
+    {
+     "computed": [
+      0
+     ],
+     "name": "exceptional_projective_dimensions",
+     "pass": true,
+     "predicted": [
+      0
+     ]
+    },
+    {
+     "computed": [
+      0,
+      1,
+      1
+     ],
+     "name": "image_projective_dimension_degree_components",
+     "pass": true,
+     "predicted": [
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "computed": null,
+     "name": "image_components_disjoint",
+     "pass": true,
+     "predicted": null
+    },
+    {
+     "computed": [
+      null
+     ],
+     "name": "c1_on_curve_components",
+     "pass": true,
+     "predicted": [
+      null
+     ]
+    }
+   ],
+   "retained_rows_agree": {
+    "cone_summary_matches_germ": true,
+    "germ_invariants_equal_in_2b_2c": true,
+    "slice_columns_equal_in_2b_2c_2i": true,
+    "source_and_boundary_equal": true,
+    "tangent_generators_equal_in_2b_2c_2i": true
+   },
+   "source_orbit": "X+"
+  },
+  {
+   "boundary_orbit": "Va+",
+   "certificates": {
+    "certificate_0_constant_nullity": {
+     "bordered_kernel_dimension_at_the_boundary": 6,
+     "degeneracy_locus_empty_in_projective_space": true,
+     "exceptional_charts_base_free": true,
+     "first_order_form_nonzero_on_the_punctured_cone": true,
+     "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero, hence of rank exactly two, on a punctured neighborhood in Z",
+     "pass": true,
+     "pivot_pfaffian_is_a_unit": true,
+     "rank_four_pfaffians_vanish": true,
+     "real_nullity_off_the_basepoint": 8,
+     "schur_form_rank_on_the_cone": 2
+    },
+    "certificate_1_conical_structure": {
+     "component_dimensions": [
+      3,
+      3
+     ],
+     "components_smooth": true,
+     "dimension_multiplicity_embedding_components": [
+      3,
+      2,
+      6,
+      2
+     ],
+     "kind": "two-components",
+     "multiplicity_equals_component_count": true,
+     "pass": true,
+     "tangent_spaces_joint_rank": 6,
+     "tangent_spaces_meet_only_at_zero": true
+    },
+    "certificate_2_linear_injective_phi": {
+     "committed_2i_image": [
+      2,
+      2,
+      2
+     ],
+     "component_span_dimensions": [
+      3,
+      3
+     ],
+     "fiber_2l": [
+      2,
+      2,
+      2
+     ],
+     "first_order_2c": {
+      "coordinate_count": 7,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "rank_on_each_component_span": [
+       3,
+       3
+      ],
+      "rank_on_the_sum_of_components": 6
+     },
+     "holomorphic_2i": {
+      "coordinate_count": 7,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "rank_on_each_component_span": [
+       3,
+       3
+      ],
+      "rank_on_the_sum_of_components": 6
+     },
+     "image_matches_2i": true,
+     "image_matches_2l": true,
+     "image_projective_dimension_degree_components": [
+      2,
+      2,
+      2
+     ],
+     "multiplicity_equals_degree_sum": true,
+     "pass": true,
+     "pulled_back_image_generators_vanish_on_E": true
+    },
+    "certificate_3_homotopy_data": {
+     "components": [
+      {
+       "c1_of_S_evaluated_on_the_curve": null,
+       "c1_of_S_on_the_component": "-H = -h",
+       "degree_of_E_in_its_span": 1,
+       "euler_class_coefficient": -1,
+       "euler_class_equals_minus_pluecker_degree": null,
+       "exceptional_projective_dimension": 2,
+       "h1_of_link": "0",
+       "link": "S^5",
+       "phi_on_h2_is_an_isomorphism": true,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      },
+      {
+       "c1_of_S_evaluated_on_the_curve": null,
+       "c1_of_S_on_the_component": "-H = -h",
+       "degree_of_E_in_its_span": 1,
+       "euler_class_coefficient": -1,
+       "euler_class_equals_minus_pluecker_degree": null,
+       "exceptional_projective_dimension": 2,
+       "h1_of_link": "0",
+       "link": "S^5",
+       "phi_on_h2_is_an_isomorphism": true,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      }
+     ],
+     "pass": true
+    }
+   },
+   "incidence": "X+->Va+",
+   "modular_certificates_equal_gaussian": true,
+   "mutation_controls": [
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "component": 0,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X+->Va+",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "-1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "component": 1,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X+->Va+",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "component": 0,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X+->Va+",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "32008",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "component": 1,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X+->Va+",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    }
+   ],
+   "pass": true,
+   "predictions": [
+    {
+     "computed": 3,
+     "name": "germ_dimension",
+     "pass": true,
+     "predicted": 3
+    },
+    {
+     "computed": 2,
+     "name": "tangent_cone_multiplicity",
+     "pass": true,
+     "predicted": 2
+    },
+    {
+     "computed": [
+      "S^5",
+      "S^5"
+     ],
+     "name": "link",
+     "pass": true,
+     "predicted": [
+      "S^5",
+      "S^5"
+     ]
+    },
+    {
+     "computed": [
+      "0",
+      "0"
+     ],
+     "name": "link_h1",
+     "pass": true,
+     "predicted": [
+      "0",
+      "0"
+     ]
+    },
+    {
+     "computed": [
+      -1,
+      -1
+     ],
+     "name": "euler_class_coefficients",
+     "pass": true,
+     "predicted": [
+      -1,
+      -1
+     ]
+    },
+    {
+     "computed": [
+      2,
+      2
+     ],
+     "name": "exceptional_projective_dimensions",
+     "pass": true,
+     "predicted": [
+      2,
+      2
+     ]
+    },
+    {
+     "computed": [
+      2,
+      2,
+      2
+     ],
+     "name": "image_projective_dimension_degree_components",
+     "pass": true,
+     "predicted": [
+      2,
+      2,
+      2
+     ]
+    },
+    {
+     "computed": true,
+     "name": "image_components_disjoint",
+     "pass": true,
+     "predicted": true
+    },
+    {
+     "computed": [
+      null,
+      null
+     ],
+     "name": "c1_on_curve_components",
+     "pass": true,
+     "predicted": [
+      null,
+      null
+     ]
+    }
+   ],
+   "retained_rows_agree": {
+    "cone_summary_matches_germ": true,
+    "germ_invariants_equal_in_2b_2c": true,
+    "slice_columns_equal_in_2b_2c_2i": true,
+    "source_and_boundary_equal": true,
+    "tangent_generators_equal_in_2b_2c_2i": true
+   },
+   "source_orbit": "X+"
+  },
+  {
+   "boundary_orbit": "B9",
+   "certificates": {
+    "certificate_0_constant_nullity": {
+     "bordered_kernel_dimension_at_the_boundary": 6,
+     "degeneracy_locus_empty_in_projective_space": true,
+     "exceptional_charts_base_free": true,
+     "first_order_form_nonzero_on_the_punctured_cone": true,
+     "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero, hence of rank exactly two, on a punctured neighborhood in Z",
+     "pass": true,
+     "pivot_pfaffian_is_a_unit": true,
+     "rank_four_pfaffians_vanish": true,
+     "real_nullity_off_the_basepoint": 8,
+     "schur_form_rank_on_the_cone": 2
+    },
+    "certificate_1_conical_structure": {
+     "dimension_multiplicity_embedding_components": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "kind": "smooth",
+     "pass": true,
+     "smooth": true
+    },
+    "certificate_2_linear_injective_phi": {
+     "committed_2i_image": [
+      0,
+      1,
+      1
+     ],
+     "component_span_dimensions": [
+      1
+     ],
+     "fiber_2l": [
+      0,
+      1,
+      1
+     ],
+     "first_order_2c": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "rank_on_each_component_span": [
+       1
+      ],
+      "rank_on_the_sum_of_components": 1
+     },
+     "holomorphic_2i": {
+      "coordinate_count": 6,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "rank_on_each_component_span": [
+       1
+      ],
+      "rank_on_the_sum_of_components": 1
+     },
+     "image_matches_2i": true,
+     "image_matches_2l": true,
+     "image_projective_dimension_degree_components": [
+      0,
+      1,
+      1
+     ],
+     "multiplicity_equals_degree_sum": true,
+     "pass": true,
+     "pulled_back_image_generators_vanish_on_E": true
+    },
+    "certificate_3_homotopy_data": {
+     "components": [
+      {
+       "c1_of_S_evaluated_on_the_curve": null,
+       "c1_of_S_on_the_component": null,
+       "degree_of_E_in_its_span": 1,
+       "euler_class_coefficient": null,
+       "euler_class_equals_minus_pluecker_degree": null,
+       "exceptional_projective_dimension": 0,
+       "h1_of_link": "Z",
+       "link": "S^1",
+       "phi_on_h2_is_an_isomorphism": true,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      }
+     ],
+     "pass": true
+    }
+   },
+   "incidence": "X-->B9",
+   "modular_certificates_equal_gaussian": true,
+   "mutation_controls": [
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 1,
+     "component": 0,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X-->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 0,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "47/41",
+      "0",
+      "1",
+      "0",
+      "0"
+     ],
+     "span_dimension": 1
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 1,
+     "component": 0,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X-->B9",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 0,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "16396",
+      "0",
+      "1",
+      "0",
+      "0"
+     ],
+     "span_dimension": 1
+    }
+   ],
+   "pass": true,
+   "predictions": [
+    {
+     "computed": 1,
+     "name": "germ_dimension",
+     "pass": true,
+     "predicted": 1
+    },
+    {
+     "computed": 1,
+     "name": "tangent_cone_multiplicity",
+     "pass": true,
+     "predicted": 1
+    },
+    {
+     "computed": [
+      "S^1"
+     ],
+     "name": "link",
+     "pass": true,
+     "predicted": [
+      "S^1"
+     ]
+    },
+    {
+     "computed": [
+      "Z"
+     ],
+     "name": "link_h1",
+     "pass": true,
+     "predicted": [
+      "Z"
+     ]
+    },
+    {
+     "computed": [
+      null
+     ],
+     "name": "euler_class_coefficients",
+     "pass": true,
+     "predicted": [
+      null
+     ]
+    },
+    {
+     "computed": [
+      0
+     ],
+     "name": "exceptional_projective_dimensions",
+     "pass": true,
+     "predicted": [
+      0
+     ]
+    },
+    {
+     "computed": [
+      0,
+      1,
+      1
+     ],
+     "name": "image_projective_dimension_degree_components",
+     "pass": true,
+     "predicted": [
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "computed": null,
+     "name": "image_components_disjoint",
+     "pass": true,
+     "predicted": null
+    },
+    {
+     "computed": [
+      null
+     ],
+     "name": "c1_on_curve_components",
+     "pass": true,
+     "predicted": [
+      null
+     ]
+    }
+   ],
+   "retained_rows_agree": {
+    "cone_summary_matches_germ": true,
+    "germ_invariants_equal_in_2b_2c": true,
+    "slice_columns_equal_in_2b_2c_2i": true,
+    "source_and_boundary_equal": true,
+    "tangent_generators_equal_in_2b_2c_2i": true
+   },
+   "source_orbit": "X-"
+  },
+  {
+   "boundary_orbit": "Va-",
+   "certificates": {
+    "certificate_0_constant_nullity": {
+     "bordered_kernel_dimension_at_the_boundary": 6,
+     "degeneracy_locus_empty_in_projective_space": true,
+     "exceptional_charts_base_free": true,
+     "first_order_form_nonzero_on_the_punctured_cone": true,
+     "inferred": "the form is its first-order part plus O(|z|^2); the first-order part has a lower bound on the unit sphere of the cone, so the form stays nonzero, hence of rank exactly two, on a punctured neighborhood in Z",
+     "pass": true,
+     "pivot_pfaffian_is_a_unit": true,
+     "rank_four_pfaffians_vanish": true,
+     "real_nullity_off_the_basepoint": 8,
+     "schur_form_rank_on_the_cone": 2
+    },
+    "certificate_1_conical_structure": {
+     "component_dimensions": [
+      3,
+      3
+     ],
+     "components_smooth": true,
+     "dimension_multiplicity_embedding_components": [
+      3,
+      2,
+      6,
+      2
+     ],
+     "kind": "two-components",
+     "multiplicity_equals_component_count": true,
+     "pass": true,
+     "tangent_spaces_joint_rank": 6,
+     "tangent_spaces_meet_only_at_zero": true
+    },
+    "certificate_2_linear_injective_phi": {
+     "committed_2i_image": [
+      2,
+      2,
+      2
+     ],
+     "component_span_dimensions": [
+      3,
+      3
+     ],
+     "fiber_2l": [
+      2,
+      2,
+      2
+     ],
+     "first_order_2c": {
+      "coordinate_count": 7,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "rank_on_each_component_span": [
+       3,
+       3
+      ],
+      "rank_on_the_sum_of_components": 6
+     },
+     "holomorphic_2i": {
+      "coordinate_count": 7,
+      "images_meet_only_at_zero": true,
+      "injective_on_each_component": true,
+      "rank_on_each_component_span": [
+       3,
+       3
+      ],
+      "rank_on_the_sum_of_components": 6
+     },
+     "image_matches_2i": true,
+     "image_matches_2l": true,
+     "image_projective_dimension_degree_components": [
+      2,
+      2,
+      2
+     ],
+     "multiplicity_equals_degree_sum": true,
+     "pass": true,
+     "pulled_back_image_generators_vanish_on_E": true
+    },
+    "certificate_3_homotopy_data": {
+     "components": [
+      {
+       "c1_of_S_evaluated_on_the_curve": null,
+       "c1_of_S_on_the_component": "-H = -h",
+       "degree_of_E_in_its_span": 1,
+       "euler_class_coefficient": -1,
+       "euler_class_equals_minus_pluecker_degree": null,
+       "exceptional_projective_dimension": 2,
+       "h1_of_link": "0",
+       "link": "S^5",
+       "phi_on_h2_is_an_isomorphism": true,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      },
+      {
+       "c1_of_S_evaluated_on_the_curve": null,
+       "c1_of_S_on_the_component": "-H = -h",
+       "degree_of_E_in_its_span": 1,
+       "euler_class_coefficient": -1,
+       "euler_class_equals_minus_pluecker_degree": null,
+       "exceptional_projective_dimension": 2,
+       "h1_of_link": "0",
+       "link": "S^5",
+       "phi_on_h2_is_an_isomorphism": true,
+       "pluecker_pullback_of_the_hyperplane_class_is_h": true
+      }
+     ],
+     "pass": true
+    }
+   },
+   "incidence": "X-->Va-",
+   "modular_certificates_equal_gaussian": true,
+   "mutation_controls": [
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "component": 0,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X-->Va-",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "-1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "component": 1,
+     "detected": true,
+     "field": "Q(i)",
+     "incidence": "X-->Va-",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "component": 0,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X-->Va-",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "32008",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    },
+    {
+     "all_kernel_points_on_the_cone": true,
+     "baseline_rank_on_component": 3,
+     "component": 1,
+     "detected": true,
+     "field": "F_32009",
+     "incidence": "X-->Va-",
+     "kernel_dimension": 1,
+     "kernel_point_on_the_cone": true,
+     "mutated_phi_kills_the_point": true,
+     "mutated_rank_on_component": 2,
+     "mutation": "lower_the_rank_of_phi_on_a_component",
+     "projective_kernel_point": [
+      "0",
+      "1",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+     ],
+     "span_dimension": 3
+    }
+   ],
+   "pass": true,
+   "predictions": [
+    {
+     "computed": 3,
+     "name": "germ_dimension",
+     "pass": true,
+     "predicted": 3
+    },
+    {
+     "computed": 2,
+     "name": "tangent_cone_multiplicity",
+     "pass": true,
+     "predicted": 2
+    },
+    {
+     "computed": [
+      "S^5",
+      "S^5"
+     ],
+     "name": "link",
+     "pass": true,
+     "predicted": [
+      "S^5",
+      "S^5"
+     ]
+    },
+    {
+     "computed": [
+      "0",
+      "0"
+     ],
+     "name": "link_h1",
+     "pass": true,
+     "predicted": [
+      "0",
+      "0"
+     ]
+    },
+    {
+     "computed": [
+      -1,
+      -1
+     ],
+     "name": "euler_class_coefficients",
+     "pass": true,
+     "predicted": [
+      -1,
+      -1
+     ]
+    },
+    {
+     "computed": [
+      2,
+      2
+     ],
+     "name": "exceptional_projective_dimensions",
+     "pass": true,
+     "predicted": [
+      2,
+      2
+     ]
+    },
+    {
+     "computed": [
+      2,
+      2,
+      2
+     ],
+     "name": "image_projective_dimension_degree_components",
+     "pass": true,
+     "predicted": [
+      2,
+      2,
+      2
+     ]
+    },
+    {
+     "computed": true,
+     "name": "image_components_disjoint",
+     "pass": true,
+     "predicted": true
+    },
+    {
+     "computed": [
+      null,
+      null
+     ],
+     "name": "c1_on_curve_components",
+     "pass": true,
+     "predicted": [
+      null,
+      null
+     ]
+    }
+   ],
+   "retained_rows_agree": {
+    "cone_summary_matches_germ": true,
+    "germ_invariants_equal_in_2b_2c": true,
+    "slice_columns_equal_in_2b_2c_2i": true,
+    "source_and_boundary_equal": true,
+    "tangent_generators_equal_in_2b_2c_2i": true
+   },
+   "source_orbit": "X-"
+  }
+ ],
+ "inferred": [
+  "the germ of E8-bar to B9 is analytically the A_1 cone (holomorphic Morse lemma) and the other germs are analytically their tangent cones",
+  "the radial deformation of kappa on the link to phi o p, which identifies L with the unit circle bundle of O_E(-1) and gives the attaching datum its homotopy class"
+ ],
+ "inputs": {
+  "attaching_maps_resolved.py": "5966af748f5946fd80062c69d144e3d2242fcfbb5d3b771f0bba04cba6217594",
+  "first-order-normal-cones-result.json": "0173462891d377fcf50cd7a88f923ecf8648011f8a0e91cc39a11b32f59d3d49",
+  "holomorphic-gauss-fibers-result.json": "4dbd90b752b1c4107f547036b2cf7950c9783c6291f4f1e2a3c8dabd94211d98",
+  "path-supported-basepoints-result.json": "eeeb5a03c7ef0cf574d92e4f5aac85a34c3b873102a12be89aa716deeedd813c",
+  "real-limit-sets-result.json": "df69cf22229c8d3e5d9f68322e828f5345ac08b888e2dadc75ab5d144d1a4f08"
+ },
+ "pass": true,
+ "prime": 32009,
+ "schema": "gororoba.a5.attaching-maps-resolved/1",
+ "square_root_of_minus_one": 10754,
+ "summary": {
+  "certificates_pass": true,
+  "incidence_count": 8,
+  "mutation_controls": 24,
+  "mutation_controls_detected": 24,
+  "predictions_hold": true
+ }
+}
