@@ -647,7 +647,8 @@ def self_test() -> str:
     raised = layout_copies(model, tweak=lambda k, p, m, n: (m + round(0.04 * n), n) if (k, p) == (1, 2) else (m, n))
     raised_read = families.read_copies(raised, total, per_copy, model, cont, gate)
     require(
-        raised_read["bend"]["reading"].startswith("not evaluated") and raised_read["family"].startswith("not evaluated"),
+        raised_read["bend"]["reading"].startswith("not evaluated")
+        and raised_read["family"].startswith("not evaluated"),
         f"one copy of depth 1 raised by 0.04 reads {raised_read['bend']} and {raised_read['family']}",
     )
     short = layout_copies(model, tweak=lambda k, p, m, n: (m // 20, n // 20) if (k, p) == (1, 2) else (m, n))
