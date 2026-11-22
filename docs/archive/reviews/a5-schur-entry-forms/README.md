@@ -1,0 +1,11 @@
+# Review record: retained Schur-entry forms and the rank-four Pfaffians of sub-step 3a
+
+Reviewers (owner's selection for pull request 988, 2026-11-22): codex on gpt-daybreak-blue at high as reviewer; opencode on opencode-go/deepseek-v4-pro as red-teamer; the Advisor last. Both read one brief at head 97ca0a9fc; raw reports stay outside the tree. An outside verifier (Sonnet) had already injected four mutations into the pull request 984 certificates; this pull request adds the predicate those certificates could not decide.
+
+| # | Reviewers | Finding | Disposition |
+|---|---|---|---|
+| 1 | codex, opencode | The producer docstring, the README and ledger row 2x said rows 2c and 2i retain 7 of 15 and 7 of 21 entry forms; the records retain seven at the three two-component incidences and six at the other five | Fixed in e30a3c8eb: the text states six or seven per incidence; the code already read each incidence's own basis indices. 5161462c0 rebinds both records to the restated producer |
+| 2 | codex, opencode | Confirmed: membership of all 35 (or 15) rank-four Pfaffians is decided by exact reduction against the complete degree-two part of the cone ideal, in Q(i) and modulo 32009, so the Schur form has rank exactly two and the first-order real nullity is exactly 8 at all eight incidences; 64 new controls (an altered entry form that moves a Pfaffian out of the ideal, a dropped form) are detected, 244 in all | No change |
+| 3 | opencode | The rows outside the retained basis have no independent retained copy, so a non-basis entry altered with refreshed digests passes `validate()` | Boundary: the Pfaffian membership is the arbiter, and `alter_a_schur_entry_form` shows each family's Pfaffians move under a non-basis change; the self-test states the case (`refreshed_outside_basis`) |
+| 4 | opencode | The modular decision is the reduction of the Q(i) computation, not independent evidence; the independent cross-check is the one-off Singular `reduce(Pfaffians, std(T))` | Boundary: ledger row 2x names the Singular run; it stays outside the gates |
+| 5 | codex | The passage from the first-order form to constant nullity on the punctured germ stays inferred | Confirmed; ledger row 3a keeps it under Inferred |

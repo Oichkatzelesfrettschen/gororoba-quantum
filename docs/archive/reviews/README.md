@@ -237,3 +237,5 @@ reviewers' and one red-teamer's findings on [the brief](garnet-followup-case/bri
 the case spent credits.
 
 The [sub-step 3a attaching-maps review](a5-attaching-maps-3a/README.md) (pull request 984) records four reviewers' findings on the certificates of `attaching_maps_resolved.py` and ledger row 3a, and the predicate the retained records cannot decide.
+
+The [retained Schur-entry forms review](a5-schur-entry-forms/README.md) (pull request 988) records two reviewers' findings on the successor records and the rank-four Pfaffian decision.
