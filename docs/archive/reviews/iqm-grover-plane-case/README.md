@@ -35,8 +35,17 @@ substitute for agy). Each round read a fixed head; raw reports stay outside the 
 | 20 | 4 and 5 | opencode, codex | The continuation fits the retained run and evaluates it at the case calibration | Boundary: disclosed in CASE.md; the continuation is a reading, not part of the decision |
 | 21 | 4 and 5 | opencode, codex | The case still emits a heterogeneity threshold table that the runtime recomputes | Boundary: harmless, the decision reads the recomputed threshold; the table leaves with the next successor |
 | 22 | 4 and 5 | opencode, codex | The PRX-ratio interval covers its amplitude dependence only, and the readout copy floor is not modeled | Boundary: both limits are stated in CASE.md; the powers are conditional on the gates passing |
+| 23 | 6, f94bdcdb7 | hosted Codex | The response grid ran 11,011 evaluations serially (P1) | Fixed in cec34a5aa: the table is built one row per s through parallel.ordered_map; the grid digest 8c7c597d is unchanged |
+| 24 | 6 | hosted Codex | The always-on ZZ phase applied once per gate step, so overlapping gates counted the same time repeatedly (P2) | Fixed in 857c8c0a3, cases rebuilt in 19ce4109c: ZZ slope 2.0e-6 -> 7.4e-7 per Hz (mark 011 1.7e-7 -> 5.2e-8); ZZ -10 kHz power 0.983 -> 0.193 (0.193 to 0.659 over the corners); the ZZ truths leave the resolved set, the claimed worst resolved power stays 0.964 (PRX +0.8 percent), and the case is not sensitive to a ZZ coupling of 10 kHz |
+| 25 | 6 | hosted Codex | A rotation fit clipped at eps = +-0.3 read in-domain (P2) | Fixed in d41e95c9a: decide() checks E_BOX whenever the rotation fit is selected; a planted rotation of 0.4 reads OUT_OF_DOMAIN |
+| 26 | 6 | hosted Codex | The CLI analyzer always read the default case directory, so a variant B run was refused (P1) | Fixed in 924d6e11a: analyze takes --case-dir and otherwise selects the case the run records; a test drives variant B |
 
 Acceptance at 599ce89d8 (Windows compute workstation): tests/test_iqm_grover_plane.py 38 passed (rerun by the
 orchestrator); the repair worker's case checks of both variants, the retained replay, core-776, core-777, the complement
 and sizing checks and the link check passed. cases.json sha256: A eec4e47f37aad02344a137548875cd673b4d8835cf79846726ca0cacad5f4011,
 B f5d3d4a238fe08fdb85aff8dab142b655dfbd7acc024c9966700a7d470da7653.
+
+Acceptance at 19ce4109c (Windows compute workstation): tests/test_iqm_grover_plane.py 42 passed; the case checks of both
+variants, the retained replay, core-776, core-777, the complement and sizing checks and the link check passed.
+cases.json sha256: A c107c8ba248715edc785b662dd6674642072aa8662ed5c3aa72271d119455806,
+B 82cbb540d96bd70e7c3d745f0d5c13a579a9f879ea39cb276b64ae865b71ccb0.
