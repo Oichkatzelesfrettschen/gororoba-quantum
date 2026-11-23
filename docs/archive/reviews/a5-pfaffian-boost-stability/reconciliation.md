@@ -57,3 +57,14 @@ ten-Pfaffian at five points.
 Leads recorded and not tested: the 11-block histogram as the bidegree histogram of a minimal subset of the 148
 quadrics of A5-457; the exceptional set of s2 modulo 32009 being {0}; a run over Q(i)(s2) as the lift to
 characteristic 0 (the reviewer's estimate is 1.5 to 6 h).
+
+## Advisor, after the second round
+
+The Advisor read head 6976f3b52 with the commit that annotated A5-242.
+
+| Finding | Verdict | Change |
+|---|---|---|
+| the A5-242 note said the twin gap "keeps its sign and shrinks"; the differences are 1.2 and 1.7 SE, and a relaxation of the bit-4 qubit enters with a sign that flips under the exchange | confirmed from the retained t values | the row reads "same sign and compatible sizes", names half the difference as the unresolved state-dependent part and drops the hypothesis sentence |
+| the retained twins are separate compiles (155 against 167 CZ), so A5-606 cannot offer them as a pure state exchange on hardware | confirmed in the findings table | A5-606 says a twin compiled as the primary plus one X is needed |
+| `run_blocks.sh` overwrote the retained logs, whose timing lines differ between runs | confirmed: the first run printed ok and 8 of 12 pinned files then failed their digests on the scratch copy | the script writes to its own directory and compares the run-independent RESULT lines; rerun on an aarch64 host: `run_blocks: ok`, exit 0, 12 of 12 retained files unchanged |
+| the pull-request body described an old head | confirmed | body rewritten |
