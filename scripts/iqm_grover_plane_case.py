@@ -551,18 +551,23 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
             "schema": CASE_SCHEMA,
             "case": CASE,
             "prediction_sha256": sha256(files["prediction.json"].encode()),
-            "question": (
-                "With the line-native Grover of mark 101 at depths 1 to 4 and of mark 011 at depths 1 to 3 placed at "
-                "positions mirrored about the job's center on one Garnet calibration, does the marked probability of "
-                "mark 101 depart from the geometric law of the calibrated model toward a rotation of the Grover plane "
-                "per iteration, whatever gate error causes it, and does mark 011 rotate as a CZ phase (not at all) or "
-                "as a PRX amplitude (1.4 times mark 101) predicts?"
-            ),
+            "question": question(prediction["decisions"]["contrast"]["ratio_prx"]),
             "qcs": QCS,
             "jobs": [job],
         }
     )
     return files, prediction
+
+
+def question(ratio_prx: float) -> str:
+    """The approval question: the PRX arm states the fitted ratio of the decision, as prediction.json records it."""
+    return (
+        "With the line-native Grover of mark 101 at depths 1 to 4 and of mark 011 at depths 1 to 3 placed at "
+        "positions mirrored about the job's center on one Garnet calibration, does the marked probability of "
+        "mark 101 depart from the geometric law of the calibrated model toward a rotation of the Grover plane "
+        "per iteration, whatever gate error causes it, and does mark 011 rotate as a CZ phase (not at all) or "
+        f"as a PRX amplitude ({ratio_prx} times mark 101) predicts?"
+    )
 
 
 def fetch_live(calibration_dir: Path) -> None:

@@ -202,6 +202,11 @@ def decide(fitter: Fitter, y: np.ndarray, cov: np.ndarray, delta: float) -> dict
 
 
 COPY_FLOOR = 0.5
+# A depth with one surviving mirror pair has no pair heterogeneity and no leave-one-pair-out refit, so a displaced
+# circuit in it reaches the fit unchecked: every depth keeps at least this many pairs after the shot floor.
+MIN_PAIRS = 2
+INFLUENCE_FAIL = "not evaluated: the reading depends on one mirror pair"
+NO_PAIRS = "not evaluated: a depth keeps fewer than two mirror pairs, so its pairs cannot be tested against one another"
 
 
 def heterogeneity_thresholds(max_dof: int = 8) -> dict[str, float]:
@@ -238,8 +243,6 @@ def heterogeneity(pairs: Pairs) -> tuple[float, int]:
     total, dof = 0.0, 0
     for k in sorted(pairs):
         means = [pair_mean(p, 1.0) for p in pairs[k]]
-        if len(means) < 2:
-            continue
         m = np.array([x[0] for x in means])
         v = float(np.mean([x[1] for x in means]))
         total += float(np.sum((m - m.mean()) ** 2) / v)
@@ -261,15 +264,12 @@ def read_pairs(
     keep, dropped = surviving_pairs(pairs, planned_kept)
     out: dict[str, Any] = {"dropped_pairs": dropped}
     depths = tuple(sorted(pairs))
-    if any(len(keep[k]) == 0 for k in depths):
-        out["departure"] = "not evaluated: a depth keeps no mirror pair"
+    if any(len(keep[k]) < MIN_PAIRS for k in depths):
+        out["departure"] = NO_PAIRS
         return out
     chi2, dof = heterogeneity(keep)
-    threshold = float(stats.chi2.isf(ALPHA, dof)) if dof else None
+    threshold = float(stats.chi2.isf(ALPHA, dof))
     out["heterogeneity"] = {"chi2": chi2, "dof": dof, "threshold": threshold}
-    if threshold is None:
-        out["departure"] = "not evaluated: no depth keeps two mirror pairs, so pair heterogeneity cannot be tested"
-        return out
     if chi2 > threshold:
         out["departure"] = "not evaluated: the mirror pairs of a depth differ by more than their binomial scatter"
         return out
@@ -279,16 +279,51 @@ def read_pairs(
     refits = []
     for k in depths:
         for i in range(len(keep[k])):
-            if len(keep[k]) < 2:
-                continue
             trial = {j: [p for n, p in enumerate(keep[j]) if (j, n) != (k, i)] for j in depths}
             yy, cc = estimates(trial, shift, readout_cov)
             refits.append({"depth": k, "pair": i, "departure": decide(fitter, yy, cc, delta)["departure"]})
     out["influence"] = {"refits": refits, "stands": all(r["departure"] == full["departure"] for r in refits)}
     if not out["influence"]["stands"]:
-        out["departure_before"] = out["departure"]
-        out["departure"] = "not evaluated: the reading depends on one mirror pair"
+        fail_gate(out, INFLUENCE_FAIL)
     return out
+
+
+VALID_READINGS = ("coherent", "geometric", "unresolved")
+
+
+def fail_gate(out: dict[str, Any], reason: str) -> dict[str, Any]:
+    """A failed gate replaces the departure reading by its reason and keeps the earlier reading beside it."""
+    out["departure_before"] = out.get("departure")
+    out["departure"] = reason
+    return out
+
+
+def gate_failure(fit: dict[str, Any]) -> str:
+    """Why a mark's rotation fit may not enter the contrast: an empty string when every gate passed. The gates are the
+    pair floor, readout, pair heterogeneity and influence (each reads "not evaluated"), the box (out of domain) and
+    the adequacy of the rotation (non-rotation); the fit of a mark that fails one carries no meaning for eps."""
+    reading = str(fit.get("departure", "not evaluated: no reading"))
+    if reading not in VALID_READINGS:
+        return reading
+    if "rotation" not in fit or "rotation_se" not in fit:
+        return "not evaluated: the rotation fit is missing"
+    return ""
+
+
+def mark_contrast(fits: dict[str, dict[str, Any]], ratio: float) -> dict[str, Any]:
+    """The mark contrast of the 101 and 011 fits, read only when both marks pass every gate of gate_failure."""
+    failed = {m: gate_failure(fits[m]) for m in ("101", "011")}
+    if any(failed.values()):
+        why = "; ".join(f"mark {m}: {r}" for m, r in failed.items() if r)
+        return {"reading": f"not evaluated: {why}", "z_cz": float("nan"), "z_prx": float("nan"), "ratio": ratio}
+    a, b = fits["101"], fits["011"]
+    return contrast(
+        a["rotation"]["eps"],
+        a["rotation_se"].get("eps", float("nan")),
+        b["rotation"]["eps"],
+        b["rotation_se"].get("eps", float("nan")),
+        ratio,
+    )
 
 
 def contrast(

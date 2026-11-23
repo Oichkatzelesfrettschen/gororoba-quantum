@@ -199,8 +199,7 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
         fitter = decision.Fitter(response)
         out = decision.read_pairs(fitter, pairs, shift, readout_cov, float(gate["planned_kept_per_copy"]), delta)
         if reason:
-            out["departure_before"] = out.get("departure")
-            out["departure"] = reason
+            decision.fail_gate(out, reason)
         decisions[mark] = out
         fits[mark] = out
         readout_record[mark] = {
@@ -209,16 +208,7 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
             "frequency_shift": rounded(shift),
             "passed": not reason,
         }
-    contrast_block: dict[str, Any] = {"reading": "not evaluated: a mark's rotation fit is missing"}
-    a_fit, b_fit = fits["101"], fits["011"]
-    if "rotation" in a_fit and "rotation" in b_fit:
-        contrast_block = decision.contrast(
-            a_fit["rotation"]["eps"],
-            a_fit["rotation_se"].get("eps", float("nan")),
-            b_fit["rotation"]["eps"],
-            b_fit["rotation_se"].get("eps", float("nan")),
-            float(plan_all["contrast"]["ratio_prx"]),
-        )
+    contrast_block = decision.mark_contrast(fits, float(plan_all["contrast"]["ratio_prx"]))
     return {
         "schema": SCHEMA,
         "case": CASE,

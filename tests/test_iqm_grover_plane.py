@@ -162,6 +162,29 @@ def test_a_depth_independent_offset_is_not_a_per_iteration_loss_and_an_unresolve
     require(reading["departure"] == "unresolved")
 
 
+def sole_pair_probe(response: sim.Response, shift: float = -0.08) -> dict[int, list[Any]]:
+    """Geometric truth a = 0.97, s = 0.98, eps = 0; four depth-3 pairs fall below the shot floor and the surviving
+    pair carries one circuit displaced by shift."""
+    p = response.probabilities(0.97, 0.98, 0.0)
+    pairs = planted(response, p)
+    thin = round(p[2] * 3000), 3000
+    for i in range(4):
+        pairs[3][i] = (thin, thin)
+    pairs[3][4] = ((round((p[2] + shift) * 13440), 13440), (round(p[2] * 13440), 13440))
+    return pairs
+
+
+def test_a_depth_with_one_surviving_pair_reads_not_evaluated(fitter: decision.Fitter, response: sim.Response) -> None:
+    out = decision.read_pairs(fitter, sole_pair_probe(response), np.zeros(4), np.zeros((4, 4)), 13440, 6.64)
+    require(out["dropped_pairs"] == {"3": [0, 1, 2, 3]}, out["dropped_pairs"])
+    require(out["departure"] == decision.NO_PAIRS, out["departure"])
+    require("rotation" not in out and "influence" not in out)
+    intact = decision.read_pairs(
+        fitter, planted(response, response.probabilities(0.97, 0.98, 0.0)), np.zeros(4), np.zeros((4, 4)), 13440, 6.64
+    )
+    require(intact["departure"] in decision.VALID_READINGS, intact["departure"])
+
+
 def test_a_displaced_copy_pair_reads_not_evaluated(fitter: decision.Fitter, response: sim.Response) -> None:
     ro = np.zeros((4, 4))
     p = response.probabilities(0.97, 0.98, 0.0)
@@ -256,13 +279,84 @@ def test_a_fit_on_a_bound_of_the_calibrated_box_reads_out_of_domain(
     require(decision.A_BOX == calibration.NULL_A and decision.S_BOX == calibration.NULL_S)
 
 
+def prx_ratio() -> float:
+    """The fitted PRX ratio of the committed case: the value the decision, the question and these tests share."""
+    return float(
+        json.loads((NEW / "prediction.json").read_text(encoding="utf-8"))["decisions"]["contrast"]["ratio_prx"]
+    )
+
+
+def test_the_approval_question_states_the_fitted_prx_ratio() -> None:
+    cases = json.loads((NEW / "cases.json").read_text(encoding="utf-8"))
+    ratio = prx_ratio()
+    require(case.question(ratio).count(f"{ratio} times mark 101") == 1, case.question(ratio))
+    require(cases["question"] == case.question(ratio))
+    require(ratio == pytest.approx(1.194651206, abs=1e-9))
+
+
 def test_the_mark_contrast_separates_a_cz_phase_from_a_prx_amplitude() -> None:
-    cz = decision.contrast(0.037, 0.004, 0.001, 0.005, 1.43)
-    prx = decision.contrast(0.037, 0.004, 0.053, 0.005, 1.43)
-    flat = decision.contrast(0.037, 0.004, 0.02, 0.02, 1.43)
+    ratio = prx_ratio()
+    cz = decision.contrast(0.037, 0.004, 0.001, 0.005, ratio)
+    prx = decision.contrast(0.037, 0.004, ratio * 0.037, 0.005, ratio)
+    flat = decision.contrast(0.037, 0.004, 0.02, 0.02, ratio)
     require(cz["reading"].startswith("CZ-phase-like"), cz["reading"])
     require(prx["reading"].startswith("PRX-like"), prx["reading"])
     require(flat["reading"] == "unresolved", flat["reading"])
+
+
+@pytest.fixture(scope="module")
+def good(fitter: decision.Fitter, response: sim.Response) -> dict[str, Any]:
+    return coherent_fit(fitter, response)
+
+
+def coherent_fit(fitter: decision.Fitter, response: sim.Response) -> dict[str, Any]:
+    out = decision.read_pairs(
+        fitter, planted(response, response.probabilities(0.97, 0.98, 0.03)), np.zeros(4), np.zeros((4, 4)), 13440, 6.64
+    )
+    require(out["departure"] == "coherent", out["departure"])
+    return out
+
+
+def contrast_with(a: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
+    return decision.mark_contrast({"101": a, "011": b}, prx_ratio())
+
+
+def test_the_mark_contrast_reads_only_when_both_marks_pass_every_gate(good: dict[str, Any]) -> None:
+    read = contrast_with(good, good)
+    require(not read["reading"].startswith("not evaluated"), read["reading"])
+    require(math.isfinite(read["z_cz"]) and math.isfinite(read["z_prx"]))
+
+
+@pytest.mark.parametrize("gate", ["pair_floor", "readout", "heterogeneity", "influence", "domain", "rotation"])
+def test_a_failed_gate_of_either_mark_removes_its_rotation_fit_from_the_contrast(
+    fitter: decision.Fitter, response: sim.Response, good: dict[str, Any], gate: str
+) -> None:
+    zero, ro = np.zeros(4), np.zeros((4, 4))
+    p = response.probabilities(0.97, 0.98, 0.0)
+    if gate == "pair_floor":
+        failed = decision.read_pairs(fitter, sole_pair_probe(response), zero, ro, 13440, 6.64)
+    elif gate == "heterogeneity":
+        pairs = planted(response, p)
+        pairs[3][0] = ((round((p[2] + 0.03) * 13440), 13440), (round((p[2] + 0.03) * 13440), 13440))
+        failed = decision.read_pairs(fitter, pairs, zero, ro, 13440, 6.64)
+        require(failed["departure"].startswith("not evaluated: the mirror pairs"), failed["departure"])
+    elif gate == "readout":
+        failed = decision.fail_gate(dict(good), "not evaluated: a readout preparation kept fewer than half its shots")
+    elif gate == "influence":
+        failed = decision.fail_gate(dict(good), decision.INFLUENCE_FAIL)
+    elif gate == "domain":
+        truth = response.probabilities(0.70, 0.98, 0.0)
+        failed = decision.decide(fitter, truth, np.diag(decision.PHI * truth * (1 - truth) / (4 * 13440.0)), 6.64)
+        require(failed["departure"] == decision.OUT_OF_DOMAIN and "rotation" in failed, failed["departure"])
+    else:
+        bumped = p + np.array([0.0, -0.05, 0.0, 0.0])
+        failed = decision.decide(fitter, bumped, np.diag(decision.PHI * bumped * (1 - bumped) / (4 * 13440.0)), 6.64)
+        require(failed["departure"] == decision.NON_ROTATION and "rotation" in failed, failed["departure"])
+    for first, second, mark in ((failed, good, "101"), (good, failed, "011")):
+        read = contrast_with(first, second)
+        require(read["reading"].startswith("not evaluated"), read["reading"])
+        require(f"mark {mark}" in read["reading"], read["reading"])
+        require(math.isnan(read["z_cz"]) and math.isnan(read["z_prx"]))
 
 
 def plant_of(case_dir: Path, **mechanism: Any) -> Any:
