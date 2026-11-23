@@ -265,11 +265,16 @@ A wider search on 2026-11-22 and 2026-11-23 found no answer either. It covered:
   OpenAlex alone lists BCDI II (math/0702075) and Latre's 2019 thesis on hypercomplex algebras for computation.
   Semantic Scholar alone lists Koebisu's sedenion paper (arXiv 2512.13002), an unlocated 2007 report on
   hypercomputation and a 2003 paper on Siegel modular forms, a false match. Zhilina's arXiv 2611.20105 on Barnes-Wall
-  lattices concerns lattice closure. Every citing passage with a transcription was read. Zhilina's papers (arXiv
+  lattices concerns lattice closure and cites the preprint in a background range citation ("Moreno [15-17]"). Latre's
+  thesis cites it only for the count of distinct eigenvalues of L_x^2 (Moreno's Section 3). Both were filed in
+  gororoba-documents-private with transcriptions on 2026-11-23. Every citing passage with a transcription was read. Zhilina's papers (arXiv
   2608.28176, 2608.28163, 2608.26903, 2608.26893, 2608.26890) cite the preprint as background; 2608.26893 and
   2608.26890 do so in range citations such as "Moreno [14-16]". Koebisu's 2512.13002 cites it as later geometry in higher algebras. The BCDI eigentheory
   paper (arXiv 0905.2987) cites it, as a 2007 preprint of Moreno and González-Flores, for the start of its eigentheory
-  approach. None states an answer to the question. The 2007 report stays unscreened;
+  approach. None states an answer to the question. Guterman and Zhilina's two Journal of Mathematical Sciences papers
+  (zbMATH 1471.17009, 2019, and 1508.05105, 2023) are closed access with no arXiv version, and their Russian originals
+  in Zapiski Nauchnykh Seminarov POMI did not load from this environment (the PDMI site refused the connection,
+  Math-Net.Ru answered 403), so their citing passages are unread. The 2007 report stays unscreened;
 - Moreno's 14 documents in zbMATH Open, where math/0512517 appears only as the arXiv preprint; the later items were
   screened by title, and no title treats the question;
 - zbMATH Open "Cayley-Dickson zero divisors" (39 documents, titles screened) and "Cayley-Dickson Stiefel" (6, among
@@ -282,9 +287,12 @@ A wider search on 2026-11-22 and 2026-11-23 found no answer either. It covered:
   nor its docs/SOURCES.json entry, whose reading scope covers the rights check, records a mathematical reading scope. Every Cayley-Dickson transcription in the documents repositories that mentions a Stiefel element was
   also read.
 
-MathSciNet and Google Scholar were not run: both refuse automated queries from this environment. A record of the paper as
-a CINVESTAV internal report ("Reporte interno - CINVESTAV", listed by biblat.unam.mx behind a browser check) is
-unscreened; it may be the 2007 version that BCDI cite.
+MathSciNet and Google Scholar were not searched. On 2026-11-23 MathSciNet answered with its institutional login page
+and Google Scholar with a JavaScript bot challenge. A record of the paper as a CINVESTAV internal report ("Reporte
+interno - CINVESTAV", listed by biblat.unam.mx behind a browser check) is unscreened; it may be the 2007 version that
+BCDI cite. The 2007 hypercomputation report (Semantic Scholar CorpusId 6523462) has no Crossref or OpenAlex record
+under its title, and the Semantic Scholar API refused the metadata request (HTTP 429). Hypothesis: it belongs to
+Chatelin's CERFACS work on Dickson algebras, which Latre's thesis continues; a CERFACS report listing would settle it.
 
 The queries of 2026-11-23, with their raw counts:
 
@@ -296,6 +304,10 @@ The queries of 2026-11-23, with their raw counts:
 | zbMATH Open | `Cayley-Dickson zero divisors` | 39 | titles screened |
 | zbMATH Open | `Cayley-Dickson Stiefel` | 6 | Reggiani 2024; Moreno 2004 (Hopf construction) and 2005; Lambert-Kibler 1988; Rodriguez-Ordonez 2010; Antolin Camarena-Villarreal 2026 |
 | arXiv API | `all:Stiefel AND (all:"Cayley-Dickson" OR all:sedenion OR all:pathion)` | 3 | math/0512517, 2411.18881, 2512.13002 |
+| zbMATH Open | `au:Zhilina ti:Cayley` | 10 | 1471.17009 and 1508.05105 (Journal of Mathematical Sciences, closed), 1511.17003, 1511.17004, 1537.17010, 1523.17002, arXiv 2611.20105, 2608.26893, 2608.28176, 2608.28163 |
+| arXiv API | `au:Zhilina` | 16 | no arXiv version of 1471.17009 or 1508.05105 |
+| Crossref | `query.bibliographic=Elements of Hypercomputation Dickson-Albert inductive process` | no title match | nearest: Chatelin, "Hypercomputation in Dickson Algebras" (2012 chapter, DOI 10.1142/9789814322935_0002) |
+| OpenAlex | `Elements of Hypercomputation on R and Z2 with the Dickson-Albert inductive process` | 0 | none |
 | arXiv API | `(abs:"zero divisor" OR abs:"zero divisors") AND abs:"Cayley-Dickson" AND submittedDate:[202401010000 TO 202612312359]` | 7 | 2608.28176, 2608.28163, 2608.26893, 2608.08232, 2606.27798, 2505.11747, 2411.18881 |
 
 ## Replay
