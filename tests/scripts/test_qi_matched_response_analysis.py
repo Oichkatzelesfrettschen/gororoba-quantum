@@ -246,3 +246,30 @@ def test_frozen_digests_equal_the_compiler_receipt() -> None:
     _check(
         rows == {f"{batch}/{name}": digest for batch, files in CIRCUIT_SHA256.items() for name, digest in files.items()}
     )
+
+
+def test_reader_reproduces_the_retained_visibility_floor_selector_probabilities() -> None:
+    """The retained raw shots of three Latin batches give the retained selector-zero values with their selectors."""
+    from qi_matched_response import _joint_moments
+
+    analysis = json.loads(
+        (ROOT / "results/quantum_inspire/zero_divisor_tuna_17_visibility_floor_analysis.json").read_text()
+    )
+    rows: dict[str, list[dict[str, Any]]] = {}
+    for row in analysis["replicas"]:
+        rows.setdefault(row["file"], []).append(row)
+    runs = sorted((ROOT / "results/quantum_inspire/runs").glob("2026-10-17T05*-zero_divisor_tuna_17-batch-0*"))
+    _check(len(runs) == 3)
+    for run in runs:
+        manifest = json.loads((run / "cases.json").read_text())
+        witness = next(row["file"] for row in manifest["circuits"] if row["kind"] == "witness")
+        selectors = (rows[witness][0]["roles"]["selector"], rows[witness][1]["roles"]["selector"])
+        raw = {
+            name: json.loads((run / "raw" / f"{name}.json").read_text())
+            for name in (witness, "readout-0.cq", "readout-1.cq")
+        }
+        moments = {name: _joint_moments(shots, selectors, len(shots), name)[0] for name, shots in raw.items()}
+        for index, row in enumerate(rows[witness]):
+            _check(abs((1 - moments[witness][index]) - row["p_selector_zero"]) < 1e-12)
+            _check(abs(moments["readout-0.cq"][index] - row["selector_e01"]) < 1e-12)
+            _check(abs((1 - moments["readout-1.cq"][index]) - row["selector_e10"]) < 1e-12)
