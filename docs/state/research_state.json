@@ -16837,7 +16837,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One calibration and one job; the cohort excludes QB30 and QB44, which fail a gate. Descriptive readings that decide nothing: through this job's own anchors the line is a = 22.9 ns per pulse beyond the nominal 24 ns and b = 3.37 us per train, against a = 21.4 ns and b = 5.84 us in job 01a1ffe5 of 2026-11-21, and the 250 pulse cohort gap lies 5.2 standard errors below the earlier line; without the curvature correction the 2000 pulse cohort deviation reads z -1.75 rather than +1.36. Execution took 9.50 s against an expected 3.9 to 4.4 s. The emerald:mock run returns random bits and enters no endpoint.",
+      "boundary": "One calibration and one job; the cohort excludes QB30 and QB44, which fail a gate. Descriptive readings that decide nothing: through this job's own anchors the line is a = 22.9 ns per pulse beyond the nominal 24 ns and b = 3.37 us per train, against a = 21.4 ns and b = 5.84 us in job 01a1ffe5 of 2026-11-21, and the 250 pulse cohort gap lies 5.2 standard errors below the earlier line; without the curvature correction the 2000 pulse cohort deviation reads z -1.75 rather than +1.36. Execution took 9.505 s against the case's expected 3.9 to 4.4 s. The emerald:mock run returns random bits and enters no endpoint.",
       "evidence": [
         {
           "path": "results/iqm/idle_schedule_third_length_emerald_analysis.json",

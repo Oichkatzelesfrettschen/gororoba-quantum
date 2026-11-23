@@ -249,3 +249,5 @@ The [A5 task-closures review](a5-records-task-closures/README.md) (pull request 
 The [retained Schur-entry forms review](a5-schur-entry-forms/README.md) (pull request 988) records two reviewers' findings on the successor records and the rank-four Pfaffian decision.
 
 The [Emerald third-length case review](iqm-emerald-third-length-case/README.md) (pull request 986) records four rounds of findings on the written case, fixed before any submission.
+
+The [Emerald third-length claim review](research-state-emerald-third-length/README.md) (pull request 991) records two reviewers' findings on the claim.
