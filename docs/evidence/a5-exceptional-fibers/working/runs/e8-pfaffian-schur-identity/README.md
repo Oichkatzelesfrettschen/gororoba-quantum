@@ -18,17 +18,20 @@ Over Q(i)[s1..s9], for N- and for N+:
   an identity of polynomials (`PFAFF RESULT ... checked 126 nonzero 126 failures 0`). It is the Pfaffian form of the
   Schur complement: W / det(B) is the Schur complement S of B in T, Pf_4(S) = Pf_10(T) / Pf(B), and
   Pf_4(W) = det(B)^2 Pf_4(S).
-- Known-bad control: with exponent 2 in place of 3 the identity holds for none of the 126 quadruples
-  (`control_exponent2_equal 0`).
+- Known-bad control: each 4-Pfaffian paired with the 10-Pfaffian of the next quadruple of the enumeration satisfies
+  the identity in none of the 126 cases (`control_shifted_quadruple_equal 0`). A wrong exponent is no control here:
+  it differs from the true identity by the identity itself.
 
 So each generator carries the factor Pf(B)^3, a constant times (s2^2 - 1)^3 (s2 -+ i)^3: the unit polynomial of
 A5-592. Modulo 32009 (i = 10754), with J the slice ideal of the run script:
 
 - the identity holds modulo J on the 21 selected generators (`identity_failures 0`);
 - Pf_10 of the selected quadruple lies in J + (s2^2 - 1) for generators 10 (Pfaffian 51, quadruple 1 5 7 9) and
-  16 (Pfaffian 87, quadruple 2 5 8 9) and for no other selected generator, at both signs; no selected Pf_10 lies in
-  J + (s2 - i) or J + (s2 + i), and none is zero modulo J. The fourth factor (s2^2 - 1) of those two generators comes
-  from Pf_10, not from Pf(B).
+  16 (Pfaffian 87, quadruple 2 5 8 9) and for no other selected generator, at both signs; none lies in
+  J + ((s2^2 - 1)^2), in J + (s2 - i) or in J + (s2 + i), and none is zero modulo J. The fourth factor (s2^2 - 1) of
+  those two generators comes from Pf_10, not from Pf(B), and this test shows one such factor.
+- Controls: the identity with exponent 2 holds modulo J for none of the 21, and no selected Pf_10 lies in
+  J + (s2^2 - 2), a polynomial that is no factor of any unit polynomial.
 
 ## Scope
 
@@ -42,7 +45,10 @@ J + (s2^2 - 1) is the ideal form of the divisibility that the run script finds b
     sh docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/run_pfaffian.sh
 
 from the repository root with Singular 4.4.1 on PATH: it rebuilds the four scripts from lines of the two run scripts
-and the tails of this directory and runs them (4 s per Q(i) script, under 1 s per modular script, 16 MB).
+and the tails of this directory and runs them (4 s per Q(i) script, under 1 s per modular script, 16 MB). Each
+script prints `PFAFF VERDICT ... PASS` only when every count has its expected value, and the driver exits nonzero
+without that line. The matrices come from the run scripts by line range; their entries are integers of absolute
+value at most 15 and the symbol i, so reading them over Q(i) changes no entry.
 
 | File | Content |
 |---|---|

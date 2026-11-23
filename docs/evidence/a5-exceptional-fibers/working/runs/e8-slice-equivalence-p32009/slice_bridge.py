@@ -5,11 +5,18 @@ Usage: slice_bridge.py CELL KA.sing KH.sing OUT.json   (prime 32009, 21 generato
 Both ideals are spans of 148 quadrics in y(1..21) over F_p. For each span the script computes the Lie algebra g of
 matrices A whose derivation y_i -> sum_j A_ij y_j preserves the span, the centralizer c of a pseudo-random element of
 g (a Cartan subalgebra where its dimension is the torus rank, 6 for these ideals by A5-424), joint eigen-coordinates
-of c, and the grading of the span by the weights of c. A linear map carrying one span onto the other can be composed
-with a symmetry so that it carries one torus to the other; it is then a permutation of the eigen-coordinates times a
-diagonal matrix. The script searches the permutations that preserve the weight partition of the quadratic monomials
-and the rank of the span on each class, solves the diagonal entries from the echelon bases of the classes through
-discrete logarithms and a Hermite normal form over Z, and verifies a found map by the rank of the joined spans.
+of c, and the grading of the span by the weights of c.
+
+Where the two centralizers are the Lie algebras of split maximal tori that are conjugate under the symmetry group, a
+linear map carrying one span onto the other can be composed with a symmetry so that it carries one torus to the
+other; it is then a permutation of the eigen-coordinates times a diagonal matrix. The script does not establish
+those conditions: the search is a way of finding a map, and a found map is its own evidence. A search that finds no
+map decides nothing.
+
+The script searches the permutations that preserve the weight partition of the quadratic monomials and the rank of
+the span on each class, solves the diagonal entries from the echelon bases of the classes through discrete logarithms
+and a Hermite normal form over Z, and accepts a map only when the transported span has the rank of the header span
+and their joint rank is the same.
 """
 
 from __future__ import annotations
@@ -64,7 +71,7 @@ def parse(path: Path) -> np.ndarray:
                 raise ValueError(f"not a quadratic term: {monomial}")
             row[MIDX[(min(idx), max(idx))]] += int(coefficient)
             seen += 1
-        if seen == 0:
+        if seen == 0 or TERM.sub("", line).strip("+ ") != "":
             raise ValueError(f"unparsed generator: {line[:60]}")
         rows.append(row % P)
     return np.array(rows, dtype=np.int64)
@@ -158,7 +165,7 @@ def torus_frame(k: np.ndarray, label: str) -> dict:
     for a in cartan:
         for b in cartan:
             if np.any((a @ b - b @ a) % P):
-                raise ValueError("centralizer not abelian")
+                return {"stabilizer_dim": int(len(g)), "centralizer_dim": int(len(cartan)), "frame": False}
     t = sum(stream.next() * a for a in cartan) % P
     roots = nmod_poly([int(v) for v in nm(t).charpoly().coeffs()], P).roots()
     eig = sorted(int(r) for r, _ in roots)
@@ -347,7 +354,7 @@ def transport(fw: dict, fh: dict, perm: list[int], x: list[int], sign: int) -> n
     for col, (a, b) in enumerate(MONS):
         image = MIDX[(min(perm[a], perm[b]), max(perm[a], perm[b]))]
         moved[:, image] = fw["kz"][:, col] * (d[a] * d[b] % P) % P
-    if rank(np.vstack([moved, fh["kz"]])) != rank(fh["kz"]):
+    if rank(moved) != rank(fh["kz"]) or rank(np.vstack([moved, fh["kz"]])) != rank(fh["kz"]):
         return None
     dp = np.zeros((N, N), dtype=np.int64)
     for a in range(N):

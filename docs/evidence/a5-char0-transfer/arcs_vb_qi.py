@@ -1,6 +1,7 @@
 """Arc certificate of E8-bar -> VB over Q(i): both components of V(K2) lie in the fiber, and L = K2.
 
-    $PYTHON docs/evidence/a5-char0-transfer/arcs_vb_qi.py OUT.sing     (then: Singular -q --no-warn OUT.sing)
+    $PYTHON docs/evidence/a5-char0-transfer/arcs_vb_qi.py OUT.sing     (then: Singular -q --no-warn OUT.sing > LOG)
+    $PYTHON docs/evidence/a5-char0-transfer/arcs_vb_qi.py --check LOG  (exit 1 unless every criterion and control holds)
 
 The modular certificate ../a5-exceptional-fibers/arcs-vb substitutes two arc families with rational coefficients
 into the header's J and G. This script writes one Singular script that repeats it in characteristic 0 on the J and
@@ -11,14 +12,19 @@ G of the Q(i) producer (reduction_check._script, slug e8-vb):
 2. the minimal primes of K2 over Q(i) (dimension 4, degrees 3 and 4), and K2 = P1 n P2;
 3. the generic arc family (limits in V(P2)) and the special family through k = -9 (limits in V(P1)), each with the
    order of G, the generators of K2, P1 and P2 that do not vanish on the limit vector F, and the rank of [dF | F] at
-   two rational parameter points; a mutated arc of each family leaves V(J) and is the known-bad control.
+   two rational parameter points. Controls: a mutated arc of each family leaves V(J) (the membership criterion), and
+   the family through the neighboring point k = -8 stays on V(J) and loses rank (the rank criterion).
 
-A limit vector of an arc of V(J) through the origin is a point of V(L); rank 4 at a point makes the family dominant
-onto a component of dimension 4. With both components in V(L), L lies in the radical of K2, which is K2.
+A limit vector of an arc of V(J) through the origin is a point of V(L); rank 4 at a point makes the closure of the
+limits irreducible of dimension 4 inside one component, hence equal to it where that component is a prime of
+dimension 4. With both components in V(L), L lies in the radical of K2, which is K2. Premises: minAssGTZ returns
+every minimal prime and each is prime; the special family uses the parametrization Phi whose identity J(Phi) = 0 the
+generic stage checks, at k = -9, where 1 + k^2 = 82, m = 1 and m^2 + 1 = 2 are units of Q(i)[[x]].
 """
 
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -26,7 +32,6 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 import quadric_lift  # noqa: E402
-import reduction_check as rc  # noqa: E402
 
 ORDER = 14
 SPECIAL_K = -9
@@ -133,13 +138,13 @@ def generic(label: str, mutate: bool) -> list[str]:
     ]
 
 
-def special(label: str, mutate: bool) -> list[str]:
+def special(label: str, mutate: bool, k0: int = SPECIAL_K) -> list[str]:
     t8 = "" if mutate else "/2"
     points = [",".join(("0", *(str(x) for x in point))) for point in POINTS]
     return [
         f"ring S{label}=(0,I),(x,W,Rh,Sg,K),dp; minpoly=I2+1;",
         "intvec sw=1,0,0,0,0;",
-        f"int n={ORDER}; poly kpar={SPECIAL_K}+K*x; poly w=W*x^2; poly rho=Rh*x; poly sig=Sg*x; poly m=1+w;",
+        f"int n={ORDER}; poly kpar={k0}+K*x; poly w=W*x^2; poly rho=Rh*x; poly sig=Sg*x; poly m=1+w;",
         "poly u=inv(m,n); poly zinv=inv(m^2+1,n); poly vinv=inv(1+kpar^2,n);",
         POLYS,
         "poly T1=jet((kpar^2*aq1-aq2)*(u^2)*vinv/4,n,sw); poly T2=jet((T1*w*(w+2)+2*w^2)*zinv,n,sw);",
@@ -150,7 +155,7 @@ def special(label: str, mutate: bool) -> list[str]:
         "ideal Gs=jet(phi(ReducedG),n-3,sw); int nu=lowest(Gs); ideal F=limit(Gs,nu);",
         "matrix M=concat(jacob(F),transpose(matrix(F)));"
         f" map p1=S{label},{points[0]}; map p2=S{label},{points[1]}; map back=Y,F;",
-        f'"RESULT {label} k = {SPECIAL_K} + K x, w = W x^2, rho = Rh x, sig = Sg x: nu", nu,'
+        f'"RESULT {label} k = {k0} + K x, w = W x^2, rho = Rh x, sig = Sg x: nu", nu,'
         ' "nonzero limit entries", size(simplify(F,2));',
         tests(label, "", ""),
         f'"RESULT {label} rank of [dF | F] at two points", rank(p1(M)), rank(p2(M));',
@@ -165,6 +170,7 @@ def script() -> str:
         *generic("genericmutated", True),
         *special("special", False),
         *special("specialmutated", True),
+        *special("neighbor", False, SPECIAL_K + 1),
         '"EXIT 0";',
         "quit;",
         "",
@@ -172,10 +178,62 @@ def script() -> str:
     return "\n".join(lines)
 
 
-def main() -> None:
-    _ = rc
+# RESULT line prefix -> the integers that follow it in a passing log. The neighbor family runs through the point
+# k = -8 of the same line, stays on V(J) and must lose rank: it is the known-bad control of the rank criterion, and
+# the two mutated families, which leave V(J), are the controls of the membership criterion.
+EXPECTED = {
+    "RESULT K2 generators": [2, 21, 4, 7],
+    "RESULT minimal primes of K2": [2, 2],
+    "RESULT P1 dimension degree generators": [1, 4, 3, 7, 2, 4, 4, 12],
+    "RESULT K2 equals P1 n P2: K2 modulo intersection": [2, 1, 2, 2, 0, 2, 0],
+    "RESULT generic generators of J nonzero on Phi modulo the unit relations": [0, 17],
+    "RESULT generic generators of J nonzero on the arc through order": [12, 0],
+    "RESULT generic weights 1 1 1 with K constant: nu": [1, 1, 1, 2, 8],
+    "RESULT generic K2 nonzero on the limit": [2, 0, 1, 7, 7, 2, 0, 12],
+    "RESULT generic rank of [dF | F] at two points": [4, 4],
+    "RESULT special generators of J nonzero on the arc through order": [12, 0],
+    "RESULT special K2 nonzero on the limit": [2, 0, 1, 0, 7, 2, 8, 12],
+    "RESULT special rank of [dF | F] at two points": [4, 4],
+}
+CONTROLS = {
+    "RESULT control K2 without its first quadric: intersection modulo it": lambda v: v[-1] > 0,
+    "RESULT genericmutated generators of J nonzero on Phi modulo the unit relations": lambda v: v[0] > 0,
+    "RESULT specialmutated generators of J nonzero on the arc through order": lambda v: v[-1] > 0,
+    "RESULT neighbor generators of J nonzero on the arc through order": lambda v: v[-1] == 0,
+    "RESULT neighbor rank of [dF | F] at two points": lambda v: max(v) < 4,
+}
+
+
+def check(log: Path) -> int:
+    """Exit status 0 when the log holds every expected line once with its expected integers and every control
+    rejects; a missing, repeated or differing line fails."""
+    lines = log.read_text(encoding="utf-8").splitlines()
+    problems = []
+    if any(line.lstrip().startswith("?") for line in lines):
+        problems.append("a Singular error line")
+    if lines.count("EXIT 0") != 1:
+        problems.append("no single EXIT 0 line")
+    for prefix, test in [*((p, e) for p, e in EXPECTED.items()), *CONTROLS.items()]:
+        found = [line for line in lines if line.startswith(prefix)]
+        if len(found) != 1:
+            problems.append(f"{len(found)} lines: {prefix}")
+            continue
+        values = [int(token) for token in re.findall(r"-?\d+", found[0][len("RESULT ") :])]
+        holds = test(values) if callable(test) else values == test
+        if not holds:
+            problems.append(f"{prefix}: {values}")
+    for problem in problems:
+        print("PROBLEM", problem)
+    print("verdict:", "FAIL" if problems else "PASS")
+    return 1 if problems else 0
+
+
+def main() -> int:
+    if sys.argv[1] == "--check":
+        return check(Path(sys.argv[2]))
     Path(sys.argv[1]).write_text(script(), encoding="utf-8")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

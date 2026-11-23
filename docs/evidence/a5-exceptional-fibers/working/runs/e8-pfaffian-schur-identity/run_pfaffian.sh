@@ -1,8 +1,8 @@
 #!/bin/sh
 # Pfaffian identity of the Schur numerator W of the E8-bar Rees scripts; run from the repository root.
 # Each script is the retained run script cut after its matrices (lines 3 to 145 over Q(i), 1 to 157 modulo 32009)
-# followed by a tail of this directory.
-set -u
+# followed by a tail of this directory. Exits nonzero unless all four scripts print a PASS verdict.
+set -eu
 D=docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity
 S=docs/evidence/a5-exceptional-fibers/working/runs/e8-rees-fibers-v2-p32009
 for c in nm np; do
@@ -22,7 +22,8 @@ for f in pfaffian-schur-nm-qi pfaffian-schur-np-qi pfaffian-schur-nm-p32009 pfaf
     Singular --version < /dev/null | head -n 1
     sha256sum "$D/$f.sing" "$S/e8-nm-p.v2-u-full.sing" "$S/e8-np-p.v2-u-full.sing"
   } > "$D/$f.log"
-  /usr/bin/time -v -o "$D/$f.time" Singular -q "$D/$f.sing" < /dev/null >> "$D/$f.log" 2>&1
-  echo "RC $?" >> "$D/$f.log"
+  /usr/bin/time -v -o "$D/$f.time" Singular -q --no-warn "$D/$f.sing" < /dev/null >> "$D/$f.log" 2>&1
   sed -i "s#$HOME#~#g" "$D/$f.time"
+  grep -q '^PFAFF VERDICT cell n[mp] .* PASS$' "$D/$f.log"
 done
+echo "run_pfaffian: PASS"

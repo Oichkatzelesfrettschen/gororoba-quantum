@@ -18,6 +18,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 RECORD = HERE.parents[1] / "a5-kernel-attachments" / "weight-slice-fiber-relations-result.json"
+SUCCESSOR = HERE.parents[1] / "a5-kernel-attachments" / "weight-slice-modular-cells-result.json"
 
 Poly = list[int]
 
@@ -69,7 +70,8 @@ ONE_MINUS_T = [1, -1]
 
 def reduced_numerators() -> list[dict[str, object]]:
     rows = []
-    for cell in json.loads(RECORD.read_text())["cells"]:
+    cells = json.loads(RECORD.read_text())["cells"] + json.loads(SUCCESSOR.read_text())["cells"]
+    for cell in cells:
         hilbert = cell["hilbert"]
         if hilbert is None:
             continue
@@ -88,6 +90,18 @@ def reduced_numerators() -> list[dict[str, object]]:
             }
         )
     return rows
+
+
+def perturbed_numerator_rejected() -> bool:
+    """Known-bad control: a retained numerator with its constant term raised by one no longer divides by 1 - t."""
+    cell = next(c for c in json.loads(RECORD.read_text())["cells"] if c["hilbert"] is not None)
+    numerator = list(cell["hilbert"]["first_numerator"])
+    numerator[0] += 1
+    try:
+        divide_by_one_minus_t(numerator, 1)
+    except ValueError:
+        return True
+    return False
 
 
 def hilbert_function(reduced: Poly, dimension: int, degree: int) -> int:
@@ -162,15 +176,60 @@ MEASURED = [
 ]
 
 
+def add_characters(a: Character, b: Character) -> Character:
+    return ((a[0] + b[0]) % 2, (a[1] + b[1]) % 2)
+
+
+def polynomial_characters(degree: int, variables: tuple[Character, ...]) -> list[int]:
+    """Characters of the monomials of the given degree in variables of the given characters."""
+    counts = [0, 0, 0, 0]
+    if degree < 0:
+        return counts
+    for exponents in product(range(degree + 1), repeat=len(variables)):
+        if sum(exponents) != degree:
+            continue
+        total: Character = (0, 0)
+        for exponent, ch in zip(exponents, variables, strict=True):
+            if exponent % 2:
+                total = add_characters(total, ch)
+        counts[BLOCK[total]] += 1
+    return counts
+
+
+def quadric_quotient_characters(degree: int, variables: tuple[Character, ...], relation: Character) -> list[int]:
+    """Characters of degree-d forms modulo one quadric of the given character that is a nonzero divisor."""
+    whole = polynomial_characters(degree, variables)
+    lower = polynomial_characters(degree - 2, variables)
+    out = list(whole)
+    for block, count in enumerate(lower):
+        out[BLOCK[add_characters(CHI[block], relation)]] -= count
+    return out
+
+
+def veronese_characters(degree: int, parameters: tuple[Character, Character]) -> list[int]:
+    """Characters of the degree-d part of k[u^2, u v, v^2], the smooth conic with the action linear on (u, v)."""
+    return polynomial_characters(2 * degree, parameters)
+
+
 def character_model(max_degree: int) -> dict[str, object]:
     first = (CHI[1], CHI[1])
     second = (CHI[2], CHI[3])
+    r1 = (CHI[0], CHI[1], CHI[1])
+    r2 = (CHI[0], CHI[2], CHI[3])
     degrees = []
     ok = True
     for d in range(1, max_degree + 1):
         one = nodal_conic_characters(d, first)
-        two = tensor(one, nodal_conic_characters(d, second))
-        match = one == closed_form_one_ruling(d) and two == closed_form_two_rulings(d)
+        other = nodal_conic_characters(d, second)
+        two = tensor(one, other)
+        match = (
+            one == closed_form_one_ruling(d)
+            and two == closed_form_two_rulings(d)
+            # any quadric of trivial character in (a, b, c) gives the character of R1, the smooth a^2 - b c included
+            and one == quadric_quotient_characters(d, r1, CHI[0])
+            # the relation of R2 has character chi_1, and x y is the one quadratic monomial of that character
+            and other == quadric_quotient_characters(d, r2, CHI[1])
+        )
         ok = ok and match
         degrees.append({"degree": d, "one_conic": one, "two_conics": two, "equals_closed_forms": match})
     measured = []
@@ -184,14 +243,21 @@ def character_model(max_degree: int) -> dict[str, object]:
             {"ledger": row, "fiber": fiber, "degree": d, "measured": split, "model": model, "equal": model == split}
         )
         ok = ok and model == split
-    # known-bad control: a smooth conic k[u^2, u v, v^2] with u, v of characters 0 and 1 has another split
-    smooth = [[d + 1, d, 0, 0] for d in range(1, 5)]
-    control = [s != closed_form_one_ruling(d) for d, s in enumerate(smooth, start=1)]
+    chi1_quadrics = sum(1 for i in range(3) for j in range(i, 3) if add_characters(r2[i], r2[j]) == CHI[1])
+    # known-bad control: the smooth conic with the action linear on its parameters misses the measured odd degrees
+    control = [
+        {"degree": d, "veronese": veronese_characters(d, (CHI[0], CHI[1])), "measured": split}
+        for row, fiber, d, split in MEASURED
+        if "VB" in fiber and d % 2
+    ]
+    rejected = bool(control) and all(c["veronese"] != c["measured"] for c in control)
     return {
         "degrees": degrees,
         "measured": measured,
         "all_equal": ok,
-        "control_smooth_conic_differs_at_odd_degree": control,
+        "quadratic_monomials_of_character_chi_1_in_r2": chi1_quadrics,
+        "control_veronese_linear_action": control,
+        "control_rejected": rejected,
     }
 
 
@@ -209,11 +275,16 @@ def main() -> int:
         all(r["sum_equals_multiplicity"] and r["h2_from_relations"] == r["h2_from_numerator"] for r in numerators)
         and bool(identity["equals_reduced_numerator"])
         and bool(characters["all_equal"])
+        and bool(characters["control_rejected"])
+        and characters["quadratic_monomials_of_character_chi_1_in_r2"] == 1
+        and perturbed_numerator_rejected()
     )
+    record["control_perturbed_numerator_rejected"] = perturbed_numerator_rejected()
     record["pass"] = good
     text = json.dumps(record, indent=1) + "\n"
     if len(sys.argv) > 1:
         Path(sys.argv[1]).write_text(text)
+    print("CELLS with Hilbert data", len(numerators))
     seen: set[tuple[str, str]] = set()
     for r in numerators:
         key = (str(r["incidence"]).split("->")[0], str(r["reduced_numerator"]))

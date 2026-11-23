@@ -1,8 +1,9 @@
 Python 3.14.4
 sympy 1.14.0 python-flint 0.9.0
 Singular for aarch64-Linux version 4.4.1 (44105, 64 bit) Dec  6 2025 11:10:58
-ffaf6e994ea30d99afdc3136d75db83abb2f7f7aac63aff3b4ee896785e815b2  docs/evidence/a5-kernel-attachments/weight_slice_modular_cells.py
+0a7ef88a772bafc0e2eb83de6a637ec3b825484ad743d70b065a0d7888fd70bb  docs/evidence/a5-kernel-attachments/weight_slice_modular_cells.py
 7806c8bcd0a04590f55ef5ca185c9c6a0f1637e279e813ba418666265dfd892e  docs/evidence/a5-kernel-attachments/weight_slice_fiber_relations.py
+CONTROL other root 42b1d8ff03d4c505597b39fe303c52ac45fcdc4d35bbf01d0b8e7e23a97367d0 differs 1 equals_calibration 1
 CELL E8bar->N- generators 21 relations 148 sha256 42b1d8ff03d4c505597b39fe303c52ac45fcdc4d35bbf01d0b8e7e23a97367d0 equal 1 dim 5 mult 11
 CELL E8bar->N+ generators 21 relations 148 sha256 b9b7372bce35e7ce286aa572f9b1ebf656d1ac04ba0e63349c640efed88658ee equal 1 dim 5 mult 11
 CELL Iso->N- generators 17 relations 68 sha256 4b9f84948f9ffa00f5e735ccc8943b6be0b7afc4a932f8a3c600b92b6e3e99c5 equal 1 dim 5 mult 23

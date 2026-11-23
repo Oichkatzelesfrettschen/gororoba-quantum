@@ -8,7 +8,6 @@
     "through_origin": true
    }
   ],
-  "control_without_first_relation_differs": true,
   "digest_equal": true,
   "digest_in_weight_slice_record": true,
   "expected_digest_origin": "weight-slice record cell",
@@ -38,6 +37,7 @@
    4,
    5
   ],
+  "generator_weights_equal_run": true,
   "germ_after": {
    "dimension": 5,
    "generators": 13,
@@ -126,6 +126,7 @@
    125,
    126
   ],
+  "selection_equals_run": true,
   "source": "e8"
  },
  "cells": [
@@ -138,7 +139,6 @@
      "through_origin": true
     }
    ],
-   "control_without_first_relation_differs": true,
    "digest_equal": true,
    "expected_digest_origin": "REL lines of the run of A5-573",
    "expected_relations_sha256": "b9b7372bce35e7ce286aa572f9b1ebf656d1ac04ba0e63349c640efed88658ee",
@@ -167,6 +167,7 @@
     4,
     5
    ],
+   "generator_weights_equal_run": true,
    "germ_after": {
     "dimension": 5,
     "generators": 13,
@@ -255,6 +256,7 @@
     125,
     126
    ],
+   "selection_equals_run": true,
    "source": "e8"
   },
   {
@@ -266,7 +268,6 @@
      "through_origin": true
     }
    ],
-   "control_without_first_relation_differs": true,
    "digest_equal": true,
    "expected_digest_origin": "REL lines of the run of A5-574",
    "expected_relations_sha256": "4b9f84948f9ffa00f5e735ccc8943b6be0b7afc4a932f8a3c600b92b6e3e99c5",
@@ -291,6 +292,7 @@
     4,
     5
    ],
+   "generator_weights_equal_run": true,
    "germ_after": {
     "dimension": 5,
     "generators": 4,
@@ -363,9 +365,17 @@
     125,
     126
    ],
+   "selection_equals_run": true,
    "source": "iso"
   }
  ],
+ "control_other_root": {
+  "differs_from_cell_at_10754": true,
+  "equals_calibration_digest": true,
+  "i_root": 21255,
+  "incidence": "E8bar->N+",
+  "relations_sha256": "42b1d8ff03d4c505597b39fe303c52ac45fcdc4d35bbf01d0b8e7e23a97367d0"
+ },
  "i_root": 10754,
  "pass": true,
  "prime": 32009,

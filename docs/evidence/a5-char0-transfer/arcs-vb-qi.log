@@ -1,5 +1,6 @@
 Singular for aarch64-Linux version 4.4.1 (44105, 64 bit) Dec  6 2025 11:10:58
-3c2bd4b9931ff05eb862e6bc220f7dd3fc1c3396aaa305ccab301994d20808bc
+eb5fee58034af8cf3cd302b3acec404cb4cc5ee5b4fe31a4e0a032528eedd9c7  docs/evidence/a5-char0-transfer/arcs-vb-qi.sing
+bf2440f3d4787f9631fb6c1905ce8ea272b269345195440cc6960c59cb6e2362  docs/evidence/a5-char0-transfer/arcs_vb_qi.py
 RESULT germ_dimension 4
 RESULT germ_component_count 1
 RESULT candidate_count 21
@@ -44,7 +45,7 @@ RESULT reduced_g_7 4*t2^2*t4*t6+4*t1*t2*t6^2-4*t3*t5*t7^2-4*t4*t6*t7^2+4*t3*t5*t
 RESULT reduced_g_8 -2*t1*t2*t3*t7-2*t2^2*t5*t7-2*t3*t4*t6*t7-2*t5*t6^2*t7+2*t5*t7^3-4*t3*t6^2*t8-2*t5*t7*t8^2-2*t1*t2*t6-2*t3*t5*t6+4*t3*t6^2+2*t4*t6^2+4*t1*t3*t7+4*t1*t4*t7+8*t2*t5*t7+4*t2*t6*t7+4*t5*t7*t8+2*t6*t7*t8+2*t4*t8^2+4*t2*t3+4*t1*t5+4*t1*t6-10*t6*t7-2*t3*t8-4*t4*t8-6*t3-6*t4
 RESULT reduced_g_9 (2*I)*t2^2*t3*t7+(-2*I)*t3*t4^2*t7+(2*I)*t1*t2*t5*t7+(-2*I)*t4*t5*t6*t7+(-2*I)*t3*t7^3+(-4*I)*t5*t6^2*t8+(2*I)*t3*t7*t8^2+(-2*I)*t1*t2*t4+(-2*I)*t3*t4*t5+(-2*I)*t4^2*t6+(-4*I)*t5^2*t6+(4*I)*t5*t6^2+(-8*I)*t2*t3*t7+(4*I)*t2*t4*t7+(-4*I)*t1*t5*t7+(4*I)*t1*t6*t7+(-4*I)*t3*t7*t8+(2*I)*t4*t7*t8+(2*I)*t6*t8^2+(-4*I)*t1*t3+(4*I)*t1*t4+(-4*I)*t2*t5+(-10*I)*t4*t7+(2*I)*t5*t8+(-4*I)*t6*t8+(6*I)*t5+(-6*I)*t6
 RESULT reduced_g_10 -2*t2*t4*t5*t7-2*t2*t3*t6*t7-4*t2*t5*t6*t8+4*t1*t3*t5+2*t2*t5^2+4*t1*t4*t6+4*t2*t5*t6+2*t2*t6^2-4*t1*t2*t7+4*t4*t5*t7+4*t3*t6*t7+4*t2^2*t8+8*t5*t6*t8-2*t1*t7*t8+2*t2*t8^2-4*t2^2-4*t5^2+8*t5*t6-4*t6^2+10*t1*t7-20*t2*t8-4*t8^2+10*t2+20*t8
-STAGE std_J_done 202
+STAGE std_J_done 199
 RESULT target_1 y(10)^2
 RESULT target_2 y(9)*y(10)
 RESULT target_3 y(8)*y(10)
@@ -100,67 +101,67 @@ RESULT target_52 y(1)*y(3)
 RESULT target_53 y(2)^2
 RESULT target_54 y(1)*y(2)
 RESULT target_55 y(1)^2
-STAGE product 1 of 55 202
-STAGE product 2 of 55 202
-STAGE product 3 of 55 202
-STAGE product 4 of 55 202
-STAGE product 5 of 55 202
-STAGE product 6 of 55 202
-STAGE product 7 of 55 202
-STAGE product 8 of 55 202
-STAGE product 9 of 55 202
-STAGE product 10 of 55 202
-STAGE product 11 of 55 202
-STAGE product 12 of 55 202
-STAGE product 13 of 55 202
-STAGE product 14 of 55 202
-STAGE product 15 of 55 202
-STAGE product 16 of 55 202
-STAGE product 17 of 55 202
-STAGE product 18 of 55 202
-STAGE product 19 of 55 202
-STAGE product 20 of 55 202
-STAGE product 21 of 55 202
-STAGE product 22 of 55 202
-STAGE product 23 of 55 202
-STAGE product 24 of 55 202
-STAGE product 25 of 55 202
-STAGE product 26 of 55 202
-STAGE product 27 of 55 202
-STAGE product 28 of 55 202
-STAGE product 29 of 55 202
-STAGE product 30 of 55 202
-STAGE product 31 of 55 202
-STAGE product 32 of 55 202
-STAGE product 33 of 55 202
-STAGE product 34 of 55 202
-STAGE product 35 of 55 202
-STAGE product 36 of 55 202
-STAGE product 37 of 55 202
-STAGE product 38 of 55 202
-STAGE product 39 of 55 202
-STAGE product 40 of 55 202
-STAGE product 41 of 55 202
-STAGE product 42 of 55 202
-STAGE product 43 of 55 202
-STAGE product 44 of 55 202
-STAGE product 45 of 55 202
-STAGE product 46 of 55 202
-STAGE product 47 of 55 202
-STAGE product 48 of 55 202
-STAGE product 49 of 55 202
-STAGE product 50 of 55 202
-STAGE product 51 of 55 202
-STAGE product 52 of 55 202
-STAGE product 53 of 55 202
-STAGE product 54 of 55 202
-STAGE product 55 of 55 202
-STAGE std_Q_start generators 457 202
+STAGE product 1 of 55 199
+STAGE product 2 of 55 199
+STAGE product 3 of 55 199
+STAGE product 4 of 55 199
+STAGE product 5 of 55 199
+STAGE product 6 of 55 199
+STAGE product 7 of 55 199
+STAGE product 8 of 55 199
+STAGE product 9 of 55 199
+STAGE product 10 of 55 199
+STAGE product 11 of 55 199
+STAGE product 12 of 55 199
+STAGE product 13 of 55 199
+STAGE product 14 of 55 199
+STAGE product 15 of 55 199
+STAGE product 16 of 55 199
+STAGE product 17 of 55 199
+STAGE product 18 of 55 199
+STAGE product 19 of 55 199
+STAGE product 20 of 55 199
+STAGE product 21 of 55 199
+STAGE product 22 of 55 199
+STAGE product 23 of 55 199
+STAGE product 24 of 55 199
+STAGE product 25 of 55 199
+STAGE product 26 of 55 199
+STAGE product 27 of 55 199
+STAGE product 28 of 55 199
+STAGE product 29 of 55 199
+STAGE product 30 of 55 199
+STAGE product 31 of 55 199
+STAGE product 32 of 55 199
+STAGE product 33 of 55 199
+STAGE product 34 of 55 199
+STAGE product 35 of 55 199
+STAGE product 36 of 55 199
+STAGE product 37 of 55 199
+STAGE product 38 of 55 199
+STAGE product 39 of 55 199
+STAGE product 40 of 55 199
+STAGE product 41 of 55 199
+STAGE product 42 of 55 199
+STAGE product 43 of 55 199
+STAGE product 44 of 55 199
+STAGE product 45 of 55 199
+STAGE product 46 of 55 199
+STAGE product 47 of 55 199
+STAGE product 48 of 55 199
+STAGE product 49 of 55 199
+STAGE product 50 of 55 199
+STAGE product 51 of 55 199
+STAGE product 52 of 55 199
+STAGE product 53 of 55 199
+STAGE product 54 of 55 199
+STAGE product 55 of 55 199
+STAGE std_Q_start generators 457 199
 RESULT sq_size 431
-STAGE std_Q_done 373
-STAGE normal_forms_done 373
+STAGE std_Q_done 370
+STAGE normal_forms_done 371
 RESULT monomials 1632
-STAGE syzygies_done 385
+STAGE syzygies_done 383
 RESULT targets 55
 RESULT relations 21
 RESULT rel_1 0;0;0;0;0;2;0;0;0;0;0;0;0;-1;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
@@ -208,4 +209,8 @@ RESULT specialmutated generators of J nonzero on the arc through order 12 16
 RESULT specialmutated k = -9 + K x, w = W x^2, rho = Rh x, sig = Sg x: nu 4 nonzero limit entries 10
 RESULT specialmutated K2 nonzero on the limit 17 P1 5 of 7 P2 11 of 12
 RESULT specialmutated rank of [dF | F] at two points 4 4
+RESULT neighbor generators of J nonzero on the arc through order 12 0
+RESULT neighbor k = -8 + K x, w = W x^2, rho = Rh x, sig = Sg x: nu 3 nonzero limit entries 4
+RESULT neighbor K2 nonzero on the limit 0 P1 2 of 7 P2 0 of 12
+RESULT neighbor rank of [dF | F] at two points 2 2
 EXIT 0

@@ -27,16 +27,21 @@ lines = [
     f"map f=r,{images(g)};",
     f"map fbad=r,{images(bad)};",
     "ideal T=f(KA); ideal sT=std(T); ideal sKH=std(KH); ideal sKA=std(KA);",
+    "int v1=size(reduce(T,sKH)); int v2=size(reduce(KH,sT));",
+    "int c1=size(reduce(KA,sKH)); int c2=size(reduce(KH,sKA));",
+    "ideal B=fbad(KA); ideal sB=std(B); int c3=size(reduce(B,sKH)); int c4=size(reduce(KH,sB));",
+    "ideal FI; int a; for(a=1;a<=21;a++){FI[a]=f[a];} matrix G=jacob(FI); int dn=(det(G)!=0);",
     f'"BRIDGE VERIFY cell {cell} transported_mod_header",size(reduce(T,sKH)),'
     '"header_mod_transported",size(reduce(KH,sT)),"generators",size(minbase(T)),size(minbase(KH)),'
     '"dim",dim(sT),dim(sKH),"mult",mult(sT),mult(sKH);',
     f'"BRIDGE CONTROL cell {cell} identity weight_mod_header",size(reduce(KA,sKH)),'
     '"header_mod_weight",size(reduce(KH,sKA));',
-    "ideal B=fbad(KA); ideal sB=std(B);",
     f'"BRIDGE CONTROL cell {cell} perturbed_entry transported_mod_header",size(reduce(B,sKH)),'
     '"header_mod_transported",size(reduce(KH,sB));',
-    "ideal FI; int a; for(a=1;a<=21;a++){FI[a]=f[a];} matrix G=jacob(FI);",
-    f'"BRIDGE DET cell {cell} nonzero",det(G)!=0;',
+    f'"BRIDGE DET cell {cell} nonzero",dn;',
+    "int good=(v1==0 and v2==0 and size(minbase(T))==148 and size(minbase(KH))==148 and dim(sT)==5 and mult(sT)==11"
+    " and dn==1 and c1>0 and c2>0 and (c3>0 or c4>0));",
+    f'if (good) {{ "BRIDGE VERDICT cell {cell} PASS"; }} else {{ "BRIDGE VERDICT cell {cell} FAIL"; }}',
     '"EXIT 0"; quit;',
 ]
 with open(out, "w", encoding="utf-8") as handle:

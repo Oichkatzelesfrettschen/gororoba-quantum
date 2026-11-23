@@ -1165,8 +1165,10 @@ regenerates E8bar->N- first as the known-good calibration, and requires the dige
 | E8bar->N+ | 21 | 148 | `b9b7372bce35...` | REL lines of the run of A5-573 | 5, 11 |
 | Iso->N- | 17 | 68 | `4b9f84948f9f...` | REL lines of the run of A5-574 | 5, 23 |
 
-All three digests agree, and the relation lines of each cell without their first line read another digest (the
-known-bad control). [weight-slice-modular-cells-result.json](weight-slice-modular-cells-result.json) holds the cells
+All three digests agree, and each cell reproduces the selected Pfaffians and the generator weights of its Rees run
+log. Known-bad control: E8bar->N+ regenerated at the other root of -1, 21255, reads `42b1d8ff03d4...`, another digest
+than the cell at 10754; it equals the calibration digest of E8bar->N- at 10754, the sign pairing of A5-590 seen on the
+producer. [weight-slice-modular-cells-result.json](weight-slice-modular-cells-result.json) holds the cells
 with their selections, generator weights and Hilbert data, and `weight-slice-modular-cells.log` the run (Python
 3.14.4, sympy 1.14.0, python-flint 0.9.0, Singular 4.4.1, aarch64 Linux, 70 s at 90 MB). A5-577 is certified.
 

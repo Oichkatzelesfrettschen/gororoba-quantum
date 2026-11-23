@@ -24,10 +24,13 @@ in Singular 4.4.1. The row is certified.
 
 ## Method
 
-A linear map g with g(K) = K2 conjugates the group of linear symmetries of K onto that of K2. Composed with a symmetry
-of K2 it carries a chosen maximal torus of the first group onto a chosen maximal torus of the second, and in joint
-eigen-coordinates of the two tori such a map is a permutation matrix times a diagonal matrix. `slice_bridge.py`
-computes, for each quadric space over F_32009 with python-flint:
+A linear map g with g(K) = K2 conjugates the group of linear symmetries of K onto that of K2. Where the two chosen
+tori are split maximal tori that are conjugate under the symmetry group of K2, g composed with a symmetry carries one
+onto the other, and in joint eigen-coordinates with one-dimensional weight spaces such a map is a permutation matrix
+times a diagonal matrix. The symmetry algebra here is sl2 over a solvable radical (A5-424), and this directory does
+not establish those conditions: the torus route is the way the map was found, the found map is its own evidence, and
+a search without a result would decide nothing. `slice_bridge.py` computes, for each quadric space over F_32009 with
+python-flint:
 
 1. the Lie algebra of matrices A whose derivation y_i -> sum_j A_ij y_j preserves the space (dimension 34 on both
    sides, the number of A5-347 and A5-424);
@@ -62,9 +65,11 @@ the map is checked by a rank and by the mutual reduction.
 
 ## Replay
 
-    PYTHON=/path/to/python sh docs/evidence/a5-exceptional-fibers/working/runs/e8-slice-equivalence-p32009/run_bridge.sh
+    PYTHON=python3 sh docs/evidence/a5-exceptional-fibers/working/runs/e8-slice-equivalence-p32009/run_bridge.sh
 
-from the repository root, with python-flint and numpy in that interpreter and Singular on PATH. The retained run used
+from the repository root, with python-flint and numpy in that interpreter and Singular on PATH. The Singular check
+prints `BRIDGE VERDICT cell CELL PASS` only on zero remainders, 148 generators, dimension 5, multiplicity 11, a
+nonzero determinant and rejecting controls, and the driver exits nonzero without that line. The retained run used
 Python 3.14.4, python-flint 0.9.0, numpy 2.5.5 and Singular 4.4.1 on an aarch64 Linux host: 29 s (N-) and 88 s (N+)
 for `slice_bridge.py` at 0.36 GB, under 1 s per Singular check. The run copied this tree without git metadata from
 commit `78c5e5c3a` with the scripts of this directory added.

@@ -123,6 +123,37 @@
    "sum_equals_multiplicity": true,
    "h2_from_relations": 83,
    "h2_from_numerator": 83
+  },
+  {
+   "incidence": "E8bar->N+",
+   "field": "GF(32009), i = 10754",
+   "generators": 21,
+   "codimension": 16,
+   "reduced_numerator": [
+    1,
+    16,
+    -12,
+    10,
+    -5,
+    1
+   ],
+   "sum_equals_multiplicity": true,
+   "h2_from_relations": 83,
+   "h2_from_numerator": 83
+  },
+  {
+   "incidence": "Iso->N-",
+   "field": "GF(32009), i = 10754",
+   "generators": 17,
+   "codimension": 12,
+   "reduced_numerator": [
+    1,
+    12,
+    10
+   ],
+   "sum_equals_multiplicity": true,
+   "h2_from_relations": 85,
+   "h2_from_numerator": 85
   }
  ],
  "e8_component_identity": {
@@ -519,12 +550,41 @@
    }
   ],
   "all_equal": true,
-  "control_smooth_conic_differs_at_odd_degree": [
-   true,
-   false,
-   true,
-   false
-  ]
+  "quadratic_monomials_of_character_chi_1_in_r2": 1,
+  "control_veronese_linear_action": [
+   {
+    "degree": 5,
+    "veronese": [
+     6,
+     5,
+     0,
+     0
+    ],
+    "measured": [
+     5,
+     6,
+     0,
+     0
+    ]
+   },
+   {
+    "degree": 7,
+    "veronese": [
+     8,
+     7,
+     0,
+     0
+    ],
+    "measured": [
+     7,
+     8,
+     0,
+     0
+    ]
+   }
+  ],
+  "control_rejected": true
  },
+ "control_perturbed_numerator_rejected": true,
  "pass": true
 }

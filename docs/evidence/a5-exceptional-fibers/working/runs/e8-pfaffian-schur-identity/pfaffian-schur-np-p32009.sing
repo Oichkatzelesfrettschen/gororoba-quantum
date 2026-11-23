@@ -160,10 +160,14 @@ proc pfa(matrix A){ int n=nrows(A); if(n==2){return(A[1,2]);} poly s=0; int j; i
 proc pq(matrix A,int a,int b,int c,int d){ return(A[a,b]*A[c,d]-A[a,c]*A[b,d]+A[a,d]*A[b,c]); }
 poly pB=pfa(B); "PfB",pB; "PfB factors",factorize(pB);
 intvec sel=12,15,16,18,20,30,35,47,49,51,52,54,55,84,86,87,89,123,124,125,126;
-ideal sA=std(J+ideal(s2^2-1)); ideal sB=std(J+ideal(s2-i)); ideal sC=std(J+ideal(s2+i));
-int cnt=0; int a;int b;int c;int d; intvec I; poly P10; int g; int bad=0;
+ideal sA=std(J+ideal(s2^2-1)); ideal sA2=std(J+ideal((s2^2-1)^2)); ideal sM=std(J+ideal(s2-1)); ideal sP=std(J+ideal(s2+1));
+ideal sB=std(J+ideal(s2-i)); ideal sC=std(J+ideal(s2+i)); ideal sN=std(J+ideal(s2^2-2));
+int cnt=0; int a;int b;int c;int d; intvec I; poly P10; int g; int bad=0; int ctl=0; int inA=0; int inA2=0; int inN=0; int inBC=0; int zero=0; intvec who;
 for(a=1;a<=6;a++){for(b=a+1;b<=7;b++){for(c=b+1;c<=8;c++){for(d=c+1;d<=9;d++){ cnt++; for(g=1;g<=21;g++){ if(sel[g]==cnt){ I=1,2,3,4,5,6,6+a,6+b,6+c,6+d; P10=pfa(submat(T,I,I));
-  if(reduce(pq(W,a,b,c,d)-pB^3*P10,J)!=0){bad++;}
-  "GEN",g,"pf",cnt,"quad",a,b,c,d,"Pf10_zero_mod_J",reduce(P10,J)==0,"in_J_plus_s2sq_minus_1",reduce(P10,sA)==0,"in_J_plus_s2_minus_i",reduce(P10,sB)==0,"in_J_plus_s2_plus_i",reduce(P10,sC)==0; } } }}}}
-"PFAFF MODP cell np selected 21 identity_failures",bad;
+  if(reduce(pq(W,a,b,c,d)-pB^3*P10,J)!=0){bad++;} if(reduce(pq(W,a,b,c,d)-pB^2*P10,J)==0){ctl++;}
+  if(reduce(P10,J)==0){zero++;} if(reduce(P10,sA)==0){inA++; who[inA]=g;} if(reduce(P10,sA2)==0){inA2++;} if(reduce(P10,sN)==0){inN++;}
+  if(reduce(P10,sB)==0 or reduce(P10,sC)==0){inBC++;}
+  "GEN",g,"pf",cnt,"quad",a,b,c,d,"Pf10_zero_mod_J",reduce(P10,J)==0,"in_J_plus_s2sq_minus_1",reduce(P10,sA)==0,"in_J_plus_s2sq_minus_1_squared",reduce(P10,sA2)==0,"in_J_plus_s2_minus_1",reduce(P10,sM)==0,"in_J_plus_s2_plus_1",reduce(P10,sP)==0,"in_J_plus_s2_minus_i",reduce(P10,sB)==0,"in_J_plus_s2_plus_i",reduce(P10,sC)==0,"control_in_J_plus_s2sq_minus_2",reduce(P10,sN)==0; } } }}}}
+"PFAFF MODP cell np selected 21 identity_failures",bad,"control_exponent2_holds_mod_J",ctl,"zero_mod_J",zero,"in_J_plus_s2sq_minus_1",inA,"generators",who,"squared",inA2,"in_J_plus_s2_minus_or_plus_i",inBC,"control_nonfactor",inN;
+if (bad==0 and ctl==0 and zero==0 and inA==2 and who[1]==10 and who[2]==16 and inA2==0 and inBC==0 and inN==0) { "PFAFF VERDICT cell np p32009 PASS"; } else { "PFAFF VERDICT cell np p32009 FAIL"; }
 "EXIT 0"; quit;

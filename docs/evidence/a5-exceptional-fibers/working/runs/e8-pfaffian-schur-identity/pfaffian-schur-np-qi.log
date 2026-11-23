@@ -1,5 +1,5 @@
 Singular for aarch64-Linux version 4.4.1 (44105, 64 bit) Dec  6 2025 11:10:58
-c3b4f2d31399756bc9139724eaeed156cfdef9ce8fba3dc2bda9913cbb4619f0  docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-np-qi.sing
+7308d381fc0256aa5b39522f2e6fcef381e2aaaa71e30daa1b3fc1fd18beb7b1  docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-np-qi.sing
 4e88035959ed486dc7fe168dafcc97ca4314a0624616d039535bb071f6294cc2  docs/evidence/a5-exceptional-fibers/working/runs/e8-rees-fibers-v2-p32009/e8-nm-p.v2-u-full.sing
 ee9318b04ec8dcb9e8c09858abc9eeb072da91235d5ac64ec0704633599c43ee  docs/evidence/a5-exceptional-fibers/working/runs/e8-rees-fibers-v2-p32009/e8-np-p.v2-u-full.sing
 PfB (32*i)*s2^3-32*s2^2+(-32*i)*s2+32
@@ -11,6 +11,6 @@ PfB factors [1]:
    _[4]=s2+(i)
 [2]:
    1,1,1,1
-PFAFF RESULT cell np field Q(i) checked 126 nonzero 126 failures 0 control_exponent2_equal 0
+PFAFF RESULT cell np field Q(i) checked 126 nonzero 126 failures 0 control_shifted_quadruple_equal 0
+PFAFF VERDICT cell np field Q(i) PASS
 EXIT 0
-RC 0
