@@ -35,10 +35,10 @@ sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import iqm_measurement_sequence as ms  # noqa: E402
-import iqm_records  # noqa: E402
-from iqm_jobs import CANCEL_MARGIN, JOB_SECONDS, ceiling_credits, ceiling_seconds, cancel_threshold_seconds  # noqa: E402
+from iqm_jobs import CANCEL_MARGIN, JOB_SECONDS, cancel_threshold_seconds, ceiling_credits, ceiling_seconds  # noqa: E402
 from iqm_signed_probe import DURATIONS  # noqa: E402
 
+import iqm_records  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 ROUND = 6
@@ -130,7 +130,9 @@ def row_of(directory: Path) -> dict[str, Any] | None:
 
 
 def jobs() -> list[dict[str, Any]]:
-    directories = sorted(p for p in (ROOT / "results/iqm/runs").iterdir() if p.is_dir() and (p / "submission.json").exists())
+    directories = sorted(
+        p for p in (ROOT / "results/iqm/runs").iterdir() if p.is_dir() and (p / "submission.json").exists()
+    )
     return [r for r in ordered_map(row_of, directories, min_items=1) if r is not None]
 
 
@@ -202,9 +204,7 @@ def fit(rows: list[dict[str, Any]], terms: list[str], held_out: list[dict[str, A
             "within_band": bool(abs(extra[0]["execution"] - predicted[0]) <= band),
         }
     result["held_out"] = {
-        r["job_id"]: float(
-            r["execution"] - r["schedule"] - design([r], terms)[0] @ coefficients
-        )
+        r["job_id"]: float(r["execution"] - r["schedule"] - design([r], terms)[0] @ coefficients)
         for r in held_out or []
     }
     return result
@@ -253,9 +253,9 @@ def case_prediction(
     shots, count = feat["shots"], feat["circuits"]
     durations = feat["durations"]
     longest = max(durations)
-    sched_pred = (
-        sched["terms"]["per_circuit_shot"] * count * shots + sched["terms"]["per_duration_second"] * shots * sum(durations)
-    )
+    sched_pred = sched["terms"]["per_circuit_shot"] * count * shots + sched["terms"][
+        "per_duration_second"
+    ] * shots * sum(durations)
     sched_band = sched["largest_leave_one_out_relative"] * sched_pred
     sched_band_grover = sched["largest_leave_one_out_relative_grover_jobs"] * sched_pred
     values = {
@@ -359,7 +359,9 @@ def main(out: Path) -> None:
             "cases_sha256": feat["cases_sha256"],
             "shots": feat["shots"],
             "circuits": feat["circuits"],
-            "prediction": case_prediction(rows, {**garnet_fits, **{f"pooled_{k}": v for k, v in fits.items()}}, sched, feat),
+            "prediction": case_prediction(
+                rows, {**garnet_fits, **{f"pooled_{k}": v for k, v in fits.items()}}, sched, feat
+            ),
         }
     out.write_text(json.dumps(rounded(record), indent=1, sort_keys=True) + "\n", encoding="utf-8")
 
