@@ -259,7 +259,6 @@ print("RESULT selected "+string(sel));
 intvec gw; for(a=1;a<=g;a++){gw[a]=tdeg(G[a]);}
 print("RESULT generator_weights "+string(gw));
 
-ideal T0=std(J+TR+m*PF);
 ideal HP; int hq=0;
 hq++; HP[hq]=reduce(pf4(NHm,2,6,7,9),J);
 hq++; HP[hq]=reduce(pf4(NHm,2,6,8,9),J);
@@ -282,6 +281,10 @@ hq++; HP[hq]=reduce(pf4(NHm,3,4,6,9),J);
 hq++; HP[hq]=reduce(pf4(NHm,3,6,7,9),J);
 hq++; HP[hq]=reduce(pf4(NHm,3,6,8,9),J);
 hq++; HP[hq]=reduce(pf4(NHm,6,7,8,9),J);
+int hdmax=dmax; for(a=1;a<=ncols(HP);a++){ if(tmax(HP[a])>hdmax){hdmax=tmax(HP[a]);} }
+print("RESULT header_max_weight "+string(hdmax)+" "+string(dmax));
+ideal T0=std(J+TR+m*PF);
+
 ideal NWf=reduce(G,T0); ideal NHf=reduce(HP,T0);
 print("RESULT header_normal_forms_nonzero "+string(size(NHf)));
 ideal hmons; poly hh; ideal hall=NWf,NHf;

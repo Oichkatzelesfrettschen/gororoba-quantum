@@ -763,7 +763,7 @@ Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_imag
 
 #### The Gauss images at a second prime, by the kernel of the bordered matrix
 
-`probes/bordered_kernel_gauss_image.py` (record `probes/bordered-kernel-gauss-image-result.json`, ledger row `A5-601`) repeats the
+`probes/bordered_kernel_gauss_image.py` (record `probes/bordered-kernel-gauss-image-result.json`, ledger row `A5-601`, survives) repeats the
 degree-2 measurement of the preceding section modulo 32009 by another route. It splits the bordered matrix into its
 parts linear in `z` and in `w = conjugate(z)`, draws 7,000 points of each hypersurface from the roots on lines of the
 split coordinates with `w` free, and takes the kernel plane from the nullspace of the 16 x 16 matrix itself, with no
@@ -781,6 +781,6 @@ no tangency failure, has rank 15, the dimension of a family of projective planes
 first version of the probe tied `w` to `z` on the split real slice and read 3,872 on `V(Q)` minus `V(G)`: that
 subfamily has a smaller image. `V(Q) n V(G)`, degree 3 and characteristic 0 are not run.
 
-Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/probes/bordered_kernel_gauss_image.py 7000` (4 min 11 s at
-2.9 GiB; sympy, numpy and python-flint); the script exits nonzero on an unstable rank, a missed prediction, an
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/probes/bordered_kernel_gauss_image.py 7000` (2 min 11 s at
+2.9 GiB a stratum, both in parallel; sympy, numpy and python-flint); the script exits nonzero on an unstable rank, a missed prediction, an
 accepted control or a tangency failure.

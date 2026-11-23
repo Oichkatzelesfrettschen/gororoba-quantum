@@ -40,6 +40,8 @@ sys.path.insert(0, str(EVIDENCE.parents[1] / "gororoba_quantum"))
 
 import kernel_frames as frames  # noqa: E402
 
+import parallel  # noqa: E402
+
 PRIME, ROOT = 32009, 10754
 N = 16
 PAIRS = tuple(itertools.combinations(range(N), 2))
@@ -270,17 +272,19 @@ def stratum(name: str, own: str, other: str, data: dict[str, Any], sample: int) 
     }
 
 
+def stratum_task(item: tuple[str, str, str, int]) -> dict[str, Any]:
+    name, own, other, sample = item
+    return stratum(name, own, other, setup(), sample)
+
+
 def main() -> None:
     sample = int(sys.argv[1]) if len(sys.argv) > 1 else 9000
-    data = setup()
+    items = [("V(Q) minus V(G)", "VQ", "VG", sample), ("V(G) minus V(Q)", "VG", "VQ", sample)]
     record: dict[str, Any] = {
         "schema": "a5-nullity4-gauss-image-probe-v2",
         "prediction": {"V(Q) minus V(G)": 3887, "V(G) minus V(Q)": 4022},
         "field": f"GF({PRIME}), i = {ROOT}",
-        "strata": [
-            stratum("V(Q) minus V(G)", "VQ", "VG", data, sample),
-            stratum("V(G) minus V(Q)", "VG", "VQ", data, sample),
-        ],
+        "strata": parallel.ordered_map(stratum_task, items, min_items=1),
     }
     problems = [
         entry["stratum"]

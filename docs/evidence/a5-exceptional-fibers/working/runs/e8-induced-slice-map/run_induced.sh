@@ -11,7 +11,10 @@ K=$W/runs/e8-rees-fibers-v2-kcompare-p32009
 T=docs/evidence/a5-exceptional-fibers/third-prime
 sing() {
   Singular -q --no-warn --no-rc "$1" < /dev/null > "$2" 2>&1
-  ! grep -q '^ *?' "$2"
+  if grep -q '^ *?' "$2"; then
+    echo "run_induced: Singular error line in $2" >&2
+    exit 1
+  fi
 }
 for t in nm np; do
   o=N-
@@ -20,6 +23,9 @@ for t in nm np; do
     "$PYTHON" "$D/induced_slice_map.py" --emit "$o" 0 0 "$mode" > "$D/$mode-$t-qi.sing"
     sing "$D/$mode-$t-qi.sing" "$D/$mode-$t-qi.log"
   done
+  "$PYTHON" "$D/induced_slice_map.py" --emit "$o" 0 0 high > "$D/high-$t-qi.sing"
+  sing "$D/high-$t-qi.sing" "$D/high-$t-qi.log"
+  grep -q '^RESULT header_high_weight_outside 0$' "$D/high-$t-qi.log"
   "$PYTHON" "$D/induced_slice_map.py" --collect "$D/map-$t-qi.log" "$D/relations-$t-qi.log" "$o" "$D/induced-$t.json"
 done
 check() { # cell prime root header-relations [weight-relations]

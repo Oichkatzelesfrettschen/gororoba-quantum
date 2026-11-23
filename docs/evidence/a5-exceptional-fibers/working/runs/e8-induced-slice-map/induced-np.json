@@ -740,6 +740,9 @@
   "header_adjugate_identity": [
    "1"
   ],
+  "header_max_weight": [
+   "29 10"
+  ],
   "header_normal_forms_nonzero": [
    "21"
   ],

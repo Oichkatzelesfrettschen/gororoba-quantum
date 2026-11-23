@@ -1,0 +1,319 @@
+LIB "matrix.lib"; LIB "linalg.lib"; LIB "primdec.lib";
+ring r=(0,i),(s1,s2,s3,s4,s5,s6,s7,s8,s9,v),(wp(1,1,3,2,2,1,4,4,3,1)); minpoly=i^2+1;
+option(redSB);
+matrix C[15][15];
+C[1,2]=(-1)*((-1)+(-i)*s2+(i)*s7+(-i)*s8); C[2,1]=-C[1,2];
+C[1,3]=(1)*((0)+(-i)*s5); C[3,1]=-C[1,3];
+C[1,4]=(-1)*((0)+(1)*s3+(-1)*s6); C[4,1]=-C[1,4];
+C[1,5]=(1)*((0)+(-1)*s1+(1)*s9); C[5,1]=-C[1,5];
+C[1,6]=(1)*((0)+(-i)*s3+(-i)*s6); C[6,1]=-C[1,6];
+C[1,7]=(-1)*((0)+(-i)*s1+(-i)*s9); C[7,1]=-C[1,7];
+C[1,8]=(-1)*((1)+(-i)*s2+(i)*s7+(i)*s8); C[8,1]=-C[1,8];
+C[1,9]=(1)*((0)+(1)*s4); C[9,1]=-C[1,9];
+C[1,10]=(1)*((i)+(1)*s2+(1)*s7+(1)*s8); C[10,1]=-C[1,10];
+C[1,11]=(-1)*((0)+(1)*s5); C[11,1]=-C[1,11];
+C[1,12]=(1)*((0)+(i)*s3+(-i)*s6); C[12,1]=-C[1,12];
+C[1,13]=(-1)*((0)+(-i)*s1+(i)*s9); C[13,1]=-C[1,13];
+C[1,14]=(-1)*((0)+(1)*s3+(1)*s6); C[14,1]=-C[1,14];
+C[1,15]=(1)*((0)+(1)*s1+(1)*s9); C[15,1]=-C[1,15];
+C[2,3]=(-1)*((i)+(-1)*s2+(-1)*s7+(1)*s8); C[3,2]=-C[2,3];
+C[2,4]=(-1)*((0)+(-i)*s1+(-i)*s9); C[4,2]=-C[2,4];
+C[2,5]=(-1)*((0)+(-i)*s3+(-i)*s6); C[5,2]=-C[2,5];
+C[2,6]=(1)*((0)+(-1)*s1+(1)*s9); C[6,2]=-C[2,6];
+C[2,7]=(1)*((0)+(1)*s3+(-1)*s6); C[7,2]=-C[2,7];
+C[2,8]=(-1)*((0)+(1)*s5); C[8,2]=-C[2,8];
+C[2,9]=(-1)*((i)+(1)*s2+(1)*s7+(1)*s8); C[9,2]=-C[2,9];
+C[2,10]=(1)*((0)+(1)*s4); C[10,2]=-C[2,10];
+C[2,11]=(1)*((1)+(-i)*s2+(i)*s7+(i)*s8); C[11,2]=-C[2,11];
+C[2,12]=(1)*((0)+(1)*s1+(1)*s9); C[12,2]=-C[2,12];
+C[2,13]=(1)*((0)+(1)*s3+(1)*s6); C[13,2]=-C[2,13];
+C[2,14]=(-1)*((0)+(-i)*s1+(i)*s9); C[14,2]=-C[2,14];
+C[2,15]=(-1)*((0)+(i)*s3+(-i)*s6); C[15,2]=-C[2,15];
+C[3,4]=(-1)*((0)+(-i)*s3+(-i)*s6); C[4,3]=-C[3,4];
+C[3,5]=(1)*((0)+(-i)*s1+(-i)*s9); C[5,3]=-C[3,5];
+C[3,6]=(-1)*((0)+(1)*s3+(-1)*s6); C[6,3]=-C[3,6];
+C[3,7]=(1)*((0)+(-1)*s1+(1)*s9); C[7,3]=-C[3,7];
+C[3,8]=(-1)*((i)+(1)*s2+(1)*s7+(1)*s8); C[8,3]=-C[3,8];
+C[3,9]=(1)*((0)+(1)*s5); C[9,3]=-C[3,9];
+C[3,10]=(-1)*((1)+(-i)*s2+(i)*s7+(i)*s8); C[10,3]=-C[3,10];
+C[3,11]=(1)*((0)+(1)*s4); C[11,3]=-C[3,11];
+C[3,12]=(1)*((0)+(1)*s3+(1)*s6); C[12,3]=-C[3,12];
+C[3,13]=(-1)*((0)+(1)*s1+(1)*s9); C[13,3]=-C[3,13];
+C[3,14]=(1)*((0)+(i)*s3+(-i)*s6); C[14,3]=-C[3,14];
+C[3,15]=(-1)*((0)+(-i)*s1+(i)*s9); C[15,3]=-C[3,15];
+C[4,5]=(-1)*((i)+(-1)*s2+(-1)*s7+(1)*s8); C[5,4]=-C[4,5];
+C[4,6]=(-1)*((0)+(-i)*s5); C[6,4]=-C[4,6];
+C[4,7]=(-1)*((-1)+(-i)*s2+(i)*s7+(-i)*s8); C[7,4]=-C[4,7];
+C[4,8]=(-1)*((0)+(-i)*s1+(i)*s9); C[8,4]=-C[4,8];
+C[4,9]=(-1)*((0)+(i)*s3+(-i)*s6); C[9,4]=-C[4,9];
+C[4,10]=(-1)*((0)+(1)*s1+(1)*s9); C[10,4]=-C[4,10];
+C[4,11]=(-1)*((0)+(1)*s3+(1)*s6); C[11,4]=-C[4,11];
+C[4,12]=(1)*((0)+(1)*s4); C[12,4]=-C[4,12];
+C[4,13]=(1)*((1)+(-i)*s2+(i)*s7+(i)*s8); C[13,4]=-C[4,13];
+C[4,14]=(1)*((0)+(1)*s5); C[14,4]=-C[4,14];
+C[4,15]=(1)*((i)+(1)*s2+(1)*s7+(1)*s8); C[15,4]=-C[4,15];
+C[5,6]=(1)*((-1)+(-i)*s2+(i)*s7+(-i)*s8); C[6,5]=-C[5,6];
+C[5,7]=(-1)*((0)+(-i)*s5); C[7,5]=-C[5,7];
+C[5,8]=(-1)*((0)+(i)*s3+(-i)*s6); C[8,5]=-C[5,8];
+C[5,9]=(1)*((0)+(-i)*s1+(i)*s9); C[9,5]=-C[5,9];
+C[5,10]=(-1)*((0)+(1)*s3+(1)*s6); C[10,5]=-C[5,10];
+C[5,11]=(1)*((0)+(1)*s1+(1)*s9); C[11,5]=-C[5,11];
+C[5,12]=(-1)*((1)+(-i)*s2+(i)*s7+(i)*s8); C[12,5]=-C[5,12];
+C[5,13]=(1)*((0)+(1)*s4); C[13,5]=-C[5,13];
+C[5,14]=(-1)*((i)+(1)*s2+(1)*s7+(1)*s8); C[14,5]=-C[5,14];
+C[5,15]=(1)*((0)+(1)*s5); C[15,5]=-C[5,15];
+C[6,7]=(1)*((i)+(-1)*s2+(-1)*s7+(1)*s8); C[7,6]=-C[6,7];
+C[6,8]=(-1)*((0)+(1)*s1+(1)*s9); C[8,6]=-C[6,8];
+C[6,9]=(1)*((0)+(1)*s3+(1)*s6); C[9,6]=-C[6,9];
+C[6,10]=(1)*((0)+(-i)*s1+(i)*s9); C[10,6]=-C[6,10];
+C[6,11]=(-1)*((0)+(i)*s3+(-i)*s6); C[11,6]=-C[6,11];
+C[6,12]=(-1)*((0)+(1)*s5); C[12,6]=-C[6,12];
+C[6,13]=(1)*((i)+(1)*s2+(1)*s7+(1)*s8); C[13,6]=-C[6,13];
+C[6,14]=(1)*((0)+(1)*s4); C[14,6]=-C[6,14];
+C[6,15]=(-1)*((1)+(-i)*s2+(i)*s7+(i)*s8); C[15,6]=-C[6,15];
+C[7,8]=(-1)*((0)+(1)*s3+(1)*s6); C[8,7]=-C[7,8];
+C[7,9]=(-1)*((0)+(1)*s1+(1)*s9); C[9,7]=-C[7,9];
+C[7,10]=(1)*((0)+(i)*s3+(-i)*s6); C[10,7]=-C[7,10];
+C[7,11]=(1)*((0)+(-i)*s1+(i)*s9); C[11,7]=-C[7,11];
+C[7,12]=(-1)*((i)+(1)*s2+(1)*s7+(1)*s8); C[12,7]=-C[7,12];
+C[7,13]=(-1)*((0)+(1)*s5); C[13,7]=-C[7,13];
+C[7,14]=(1)*((1)+(-i)*s2+(i)*s7+(i)*s8); C[14,7]=-C[7,14];
+C[7,15]=(1)*((0)+(1)*s4); C[15,7]=-C[7,15];
+C[8,9]=(-1)*((i)+(-1)*s2+(-1)*s7+(1)*s8); C[9,8]=-C[8,9];
+C[8,10]=(-1)*((0)+(-i)*s5); C[10,8]=-C[8,10];
+C[8,11]=(-1)*((-1)+(-i)*s2+(i)*s7+(-i)*s8); C[11,8]=-C[8,11];
+C[8,12]=(-1)*((0)+(-1)*s1+(1)*s9); C[12,8]=-C[8,12];
+C[8,13]=(-1)*((0)+(1)*s3+(-1)*s6); C[13,8]=-C[8,13];
+C[8,14]=(-1)*((0)+(-i)*s1+(-i)*s9); C[14,8]=-C[8,14];
+C[8,15]=(-1)*((0)+(-i)*s3+(-i)*s6); C[15,8]=-C[8,15];
+C[9,10]=(1)*((-1)+(-i)*s2+(i)*s7+(-i)*s8); C[10,9]=-C[9,10];
+C[9,11]=(-1)*((0)+(-i)*s5); C[11,9]=-C[9,11];
+C[9,12]=(1)*((0)+(1)*s3+(-1)*s6); C[12,9]=-C[9,12];
+C[9,13]=(-1)*((0)+(-1)*s1+(1)*s9); C[13,9]=-C[9,13];
+C[9,14]=(-1)*((0)+(-i)*s3+(-i)*s6); C[14,9]=-C[9,14];
+C[9,15]=(1)*((0)+(-i)*s1+(-i)*s9); C[15,9]=-C[9,15];
+C[10,11]=(1)*((i)+(-1)*s2+(-1)*s7+(1)*s8); C[11,10]=-C[10,11];
+C[10,12]=(1)*((0)+(-i)*s1+(-i)*s9); C[12,10]=-C[10,12];
+C[10,13]=(1)*((0)+(-i)*s3+(-i)*s6); C[13,10]=-C[10,13];
+C[10,14]=(-1)*((0)+(-1)*s1+(1)*s9); C[14,10]=-C[10,14];
+C[10,15]=(-1)*((0)+(1)*s3+(-1)*s6); C[15,10]=-C[10,15];
+C[11,12]=(1)*((0)+(-i)*s3+(-i)*s6); C[12,11]=-C[11,12];
+C[11,13]=(-1)*((0)+(-i)*s1+(-i)*s9); C[13,11]=-C[11,13];
+C[11,14]=(1)*((0)+(1)*s3+(-1)*s6); C[14,11]=-C[11,14];
+C[11,15]=(-1)*((0)+(-1)*s1+(1)*s9); C[15,11]=-C[11,15];
+C[12,13]=(1)*((i)+(-1)*s2+(-1)*s7+(1)*s8); C[13,12]=-C[12,13];
+C[12,14]=(1)*((0)+(-i)*s5); C[14,12]=-C[12,14];
+C[12,15]=(1)*((-1)+(-i)*s2+(i)*s7+(-i)*s8); C[15,12]=-C[12,15];
+C[13,14]=(-1)*((-1)+(-i)*s2+(i)*s7+(-i)*s8); C[14,13]=-C[13,14];
+C[13,15]=(1)*((0)+(-i)*s5); C[15,13]=-C[13,15];
+C[14,15]=(-1)*((i)+(-1)*s2+(-1)*s7+(1)*s8); C[15,14]=-C[14,15];
+matrix F[15][15];
+F[5,1]=(i);
+F[7,1]=(1);
+F[2,2]=(1);
+F[8,3]=(1);
+F[1,4]=(i);
+F[3,4]=(1);
+F[9,5]=(i);
+F[11,5]=(1);
+F[4,6]=(i);
+F[6,6]=(1);
+F[4,7]=(-i);
+F[6,7]=(1);
+F[12,8]=(-i);
+F[14,8]=(1);
+F[1,9]=(-i);
+F[3,9]=(1);
+F[9,10]=(-i);
+F[11,10]=(1);
+F[5,11]=(1);
+F[7,11]=(-i);
+F[13,11]=(i);
+F[15,11]=(1);
+F[2,12]=(-i);
+F[10,12]=(1);
+F[5,13]=(-i);
+F[7,13]=(1);
+F[13,14]=(-i);
+F[15,14]=(1);
+F[4,15]=(1);
+F[6,15]=(-i);
+F[12,15]=(i);
+F[14,15]=(1);
+matrix T=transpose(F)*C*F;
+intvec ra=1..6; intvec rb=7..15;
+matrix B[6][6]=submat(T,ra,ra);
+matrix X[6][9]=submat(T,ra,rb);
+matrix Dm[9][9]=submat(T,rb,rb);
+poly dB=det(B); matrix aB=adjoint(B);
+matrix W=dB*Dm+transpose(X)*aB*X;
+proc pfn(matrix A){ int nn=nrows(A); if(nn==0){return(poly(1));} if(nn==2){return(A[1,2]);}
+  poly acc=0; int jj; int kk; intvec keep; int sg=1;
+  for(jj=2;jj<=nn;jj++){ keep=0; int cnt=0; for(kk=2;kk<=nn;kk++){ if(kk!=jj){cnt++; keep[cnt]=kk;} }
+    acc=acc+sg*A[1,jj]*pfn(submat(A,keep,keep)); sg=-sg; kill cnt; }
+  return(acc); }
+matrix FH[15][15];
+FH[1,1]=(1+(0)*i);
+FH[1,7]=(0+(-1)*i);
+FH[2,2]=(1+(0)*i);
+FH[2,10]=(0+(-1)*i);
+FH[3,7]=(1+(0)*i);
+FH[4,3]=(1+(0)*i);
+FH[4,8]=(0+(-1)*i);
+FH[4,12]=(0+(-1)*i);
+FH[4,14]=(1+(0)*i);
+FH[5,4]=(1+(0)*i);
+FH[5,9]=(0+(-1)*i);
+FH[5,13]=(0+(-1)*i);
+FH[5,15]=(1+(0)*i);
+FH[6,8]=(1+(0)*i);
+FH[7,9]=(1+(0)*i);
+FH[8,5]=(1+(0)*i);
+FH[9,6]=(1+(0)*i);
+FH[9,11]=(0+(-1)*i);
+FH[10,10]=(1+(0)*i);
+FH[11,11]=(1+(0)*i);
+FH[12,12]=(1+(0)*i);
+FH[13,13]=(1+(0)*i);
+FH[14,14]=(1+(0)*i);
+FH[15,15]=(1+(0)*i);
+matrix TH=transpose(FH)*C*FH;
+matrix BH[6][6]=submat(TH,ra,ra); matrix XH[6][9]=submat(TH,ra,rb); matrix DH[9][9]=submat(TH,rb,rb);
+poly pBH=pfn(BH);
+matrix AH[6][6]; int h1; int h2; int h3; intvec hkeep; int hcnt; poly hcof;
+for(h1=1;h1<=6;h1++){for(h2=h1+1;h2<=6;h2++){ hcnt=0; hkeep=0;
+  for(h3=1;h3<=6;h3++){ if(h3!=h1 and h3!=h2){hcnt++; hkeep[hcnt]=h3;} }
+  hcof=pfn(submat(BH,hkeep,hkeep)); if((h1+h2) mod 2==1){hcof=-hcof;}
+  AH[h1,h2]=hcof; AH[h2,h1]=-hcof; }}
+print("RESULT header_adjugate_identity "+string(size(ideal(BH*AH-pBH*unitmat(6)))==0));
+matrix NHm=pBH*DH+transpose(XH)*AH*XH;
+poly pBW=pfn(B);
+print("RESULT weight_pivot_square "+string(dB==pBW*pBW));
+poly pBH0=pBH; poly pBW0=pBW;
+pBH0=subst(pBH0,s1,0); pBW0=subst(pBW0,s1,0);
+pBH0=subst(pBH0,s3,0); pBW0=subst(pBW0,s3,0);
+pBH0=subst(pBH0,s4,0); pBW0=subst(pBW0,s4,0);
+pBH0=subst(pBH0,s5,0); pBW0=subst(pBW0,s5,0);
+pBH0=subst(pBH0,s6,0); pBW0=subst(pBW0,s6,0);
+pBH0=subst(pBH0,s7,0); pBW0=subst(pBW0,s7,0);
+pBH0=subst(pBH0,s8,0); pBW0=subst(pBW0,s8,0);
+pBH0=subst(pBH0,s9,0); pBW0=subst(pBW0,s9,0);
+print("RESULT weight_pivot_on_axis "+string(pBW==pBW0));
+print("RESULT pivot_units_at_origin "+string(subst(pBW0,s2,0)!=0)+" "+string(subst(pBH0,s2,0)!=0));
+poly u0=pBW0*pBH0;
+print("RESULT axis_unit "+string(u0));
+
+intvec tw=1,0,3,2,2,1,4,4,3;
+int k;
+
+proc tdeg(poly p){ int v=0; int k; intvec e=leadexp(p); for(k=1;k<=9;k++){v=v+e[k]*tw[k];} return(v); }
+proc thomog(poly p){ int v=tdeg(p); while(p!=0){ if(tdeg(p)!=v){return(0);} p=p-lead(p); } return(1); }
+proc tmax(poly p){ int v=0; while(p!=0){ if(tdeg(p)>v){v=tdeg(p);} p=p-lead(p); } return(v); }
+// Minimal monomials in the positive-weight variables of weight above E.
+proc trunc(int E){
+  ideal pos; int k; for(k=1;k<=9;k++){ if(tw[k]>0){pos=pos,var(k);} } pos=simplify(pos,2);
+  ideal cur=1; ideal out; ideal nxt; int a; int b; poly q;
+  while(size(cur)>0){
+    nxt=0;
+    for(a=1;a<=ncols(cur);a++){ if(cur[a]!=0){ for(b=1;b<=ncols(pos);b++){
+      q=cur[a]*pos[b]; if(tdeg(q)>E){out=out,q;}else{nxt=nxt,q;} } } }
+    cur=simplify(nxt,6);
+  }
+  return(simplify(out,6));
+}
+proc pf4(matrix A,int a,int b,int c,int d){ return(A[a,b]*A[c,d]-A[a,c]*A[b,d]+A[a,d]*A[b,c]); }
+
+ideal J=(8*s2*s7 + s4^2 + 8*i*s8),(-64*i*s1*s7*s9 + 16*s2^2*s7^2 - 32*i*s2*s7*s8 - 64*i*s3*s6*s7 - 16*i*s5^2*s7 - 16*s8^2),(-16*s2^2*s7^2 + 32*i*s2*s7*s8 + 16*i*s5^2*s7 + 16*s8^2),(-8*s1*s2*s7^2 + 8*i*s1*s2*s7 + 8*i*s1*s7*s8 + 8*s1*s8 + 8*s2*s7^2*s9 - 8*i*s2*s7*s9 + 8*i*s3*s5*s7 + 8*s3*s5 + 8*s5*s6*s7^2 - 8*i*s5*s6*s7 - 8*i*s7*s8*s9 - 8*s8*s9),(8*i*s1*s5*s7^2 + 8*s1*s5*s7 - 8*i*s2*s3*s7^2 - 8*s2*s3*s7 + 8*i*s2*s6*s7^2 + 8*s2*s6*s7 - 8*s3*s7*s8 + 8*i*s3*s8 - 8*s5*s7*s9 + 8*i*s5*s9 + 8*s6*s7*s8 - 8*i*s6*s8),(-8*s1*s2*s7^2 + 8*i*s1*s2*s7 + 8*i*s1*s7*s8 + 8*s1*s8 - 8*s2*s7^2*s9 + 8*i*s2*s7*s9 + 8*i*s3*s5*s7 + 8*s3*s5 - 8*s5*s6*s7^2 + 8*i*s5*s6*s7 + 8*i*s7*s8*s9 + 8*s8*s9),(-8*i*s1*s5*s7^2 - 8*s1*s5*s7 + 8*i*s2*s3*s7^2 + 8*s2*s3*s7 + 8*i*s2*s6*s7^2 + 8*s2*s6*s7 + 8*s3*s7*s8 - 8*i*s3*s8 - 8*s5*s7*s9 + 8*i*s5*s9 + 8*s6*s7*s8 - 8*i*s6*s8),(-16*s1*s5*s7 + 16*s2*s3*s7 - 16*i*s2*s6*s7^2 - 16*i*s3*s8 + 16*s5*s7*s9 - 16*s6*s7*s8),(16*s1*s2*s7^2 - 16*i*s1*s7*s8 + 16*i*s2*s7*s9 - 16*i*s3*s5*s7 + 16*i*s5*s6*s7 + 16*s8*s9),(-16*s1*s5*s7 + 16*s2*s3*s7 + 16*i*s2*s6*s7^2 - 16*i*s3*s8 - 16*s5*s7*s9 + 16*s6*s7*s8),(-16*s1*s2*s7^2 + 16*i*s1*s7*s8 + 16*i*s2*s7*s9 + 16*i*s3*s5*s7 + 16*i*s5*s6*s7 + 16*s8*s9),(8*s1^2*s7^2 - 8*i*s1^2*s7 - 8*s1*s7^2*s9 + 16*i*s1*s7*s9 + 8*s1*s9 - 8*i*s3^2*s7 - 8*s3^2 - 8*s3*s6*s7^2 + 16*i*s3*s6*s7 + 8*s3*s6 + 8*s6^2*s7^2 - 8*i*s6^2*s7 - 8*i*s7*s9^2 - 8*s9^2),(16*i*s1*s6*s7^2 + 16*s1*s6*s7 - 16*s3*s7*s9 + 16*i*s3*s9),(-8*s1^2*s7^2 + 8*i*s1^2*s7 + 8*s1*s7^2*s9 + 8*s1*s9 + 8*i*s3^2*s7 + 8*s3^2 + 8*s3*s6*s7^2 + 8*s3*s6 + 8*s6^2*s7^2 - 8*i*s6^2*s7 - 8*i*s7*s9^2 - 8*s9^2),(-8*s1^2*s7^2 + 8*i*s1^2*s7 - 8*s1*s7^2*s9 - 8*s1*s9 + 8*i*s3^2*s7 + 8*s3^2 - 8*s3*s6*s7^2 - 8*s3*s6 + 8*s6^2*s7^2 - 8*i*s6^2*s7 - 8*i*s7*s9^2 - 8*s9^2),(16*i*s1*s6*s7^2 + 16*s1*s6*s7 - 16*s3*s7*s9 + 16*i*s3*s9),(-8*s1^2*s7^2 + 8*i*s1^2*s7 - 8*s1*s7^2*s9 + 16*i*s1*s7*s9 + 8*s1*s9 + 8*i*s3^2*s7 + 8*s3^2 - 8*s3*s6*s7^2 + 16*i*s3*s6*s7 + 8*s3*s6 - 8*s6^2*s7^2 + 8*i*s6^2*s7 + 8*i*s7*s9^2 + 8*s9^2),(-8*s1*s2*s7^2 - 8*i*s1*s2*s7 + 8*i*s1*s7*s8 - 8*s1*s8 + 8*s2*s7^2*s9 + 8*i*s2*s7*s9 + 8*i*s3*s5*s7 - 8*s3*s5 + 8*s5*s6*s7^2 + 8*i*s5*s6*s7 - 8*i*s7*s8*s9 + 8*s8*s9),(8*i*s1*s5*s7^2 - 8*s1*s5*s7 - 8*i*s2*s3*s7^2 + 8*s2*s3*s7 + 8*i*s2*s6*s7^2 - 8*s2*s6*s7 - 8*s3*s7*s8 - 8*i*s3*s8 - 8*s5*s7*s9 - 8*i*s5*s9 + 8*s6*s7*s8 + 8*i*s6*s8),(-8*s1*s2*s7^2 - 8*i*s1*s2*s7 + 8*i*s1*s7*s8 - 8*s1*s8 - 8*s2*s7^2*s9 - 8*i*s2*s7*s9 + 8*i*s3*s5*s7 - 8*s3*s5 - 8*s5*s6*s7^2 - 8*i*s5*s6*s7 + 8*i*s7*s8*s9 - 8*s8*s9),(-8*i*s1*s5*s7^2 + 8*s1*s5*s7 + 8*i*s2*s3*s7^2 - 8*s2*s3*s7 + 8*i*s2*s6*s7^2 - 8*s2*s6*s7 + 8*s3*s7*s8 + 8*i*s3*s8 - 8*s5*s7*s9 - 8*i*s5*s9 + 8*s6*s7*s8 + 8*i*s6*s8),(-8*s1^2*s7^2 - 8*i*s1^2*s7 + 8*s1*s7^2*s9 + 8*s1*s9 + 8*i*s3^2*s7 - 8*s3^2 + 8*s3*s6*s7^2 + 8*s3*s6 - 8*s6^2*s7^2 - 8*i*s6^2*s7 + 8*i*s7*s9^2 - 8*s9^2),(-16*i*s1*s6*s7^2 + 16*s1*s6*s7 + 16*s3*s7*s9 + 16*i*s3*s9),(8*s1^2*s7^2 + 8*i*s1^2*s7 - 8*s1*s7^2*s9 - 16*i*s1*s7*s9 + 8*s1*s9 - 8*i*s3^2*s7 + 8*s3^2 - 8*s3*s6*s7^2 - 16*i*s3*s6*s7 + 8*s3*s6 - 8*s6^2*s7^2 - 8*i*s6^2*s7 + 8*i*s7*s9^2 - 8*s9^2),(8*s1^2*s7^2 + 8*i*s1^2*s7 + 8*s1*s7^2*s9 + 16*i*s1*s7*s9 - 8*s1*s9 - 8*i*s3^2*s7 + 8*s3^2 + 8*s3*s6*s7^2 + 16*i*s3*s6*s7 - 8*s3*s6 - 8*s6^2*s7^2 - 8*i*s6^2*s7 + 8*i*s7*s9^2 - 8*s9^2),(-16*i*s1*s6*s7^2 + 16*s1*s6*s7 + 16*s3*s7*s9 + 16*i*s3*s9),(8*s1^2*s7^2 + 8*i*s1^2*s7 + 8*s1*s7^2*s9 + 8*s1*s9 - 8*i*s3^2*s7 + 8*s3^2 + 8*s3*s6*s7^2 + 8*s3*s6 + 8*s6^2*s7^2 + 8*i*s6^2*s7 - 8*i*s7*s9^2 + 8*s9^2); J=std(J);
+print("RESULT germ_before "+string(dim(J))+" "+string(mult(J))+" "+string(size(J)));
+
+list L=minAssGTZ(J); ideal JJ=1; ideal Lk; ideal sm=std(maxideal(1)); int kk;
+for(kk=1;kk<=size(L);kk++){
+  Lk=std(L[kk]);
+  print("RESULT component "+string(dim(Lk))+" "+string(mult(Lk))+" "+string(size(reduce(Lk,sm))==0));
+  if(size(reduce(Lk,sm))==0){JJ=intersect(JJ,Lk);}
+}
+J=std(JJ);
+J=std(J+ideal(v*u0-1));
+
+
+print("RESULT germ_after "+string(dim(J))+" "+string(mult(J))+" "+string(size(J)));
+int bad=0; for(k=1;k<=size(J);k++){ if(!thomog(J[k])){bad++;} }
+print("RESULT germ_inhomogeneous "+string(bad));
+ideal m=s1,s2,s3,s4,s5,s6,s7,s8,s9;
+ideal PF; int a; int b; int c; int d; int n=0;
+for(a=1;a<=6;a++){for(b=a+1;b<=7;b++){for(c=b+1;c<=8;c++){for(d=c+1;d<=9;d++){ n++; PF[n]=reduce(pf4(W,a,b,c,d),J); }}}}
+int dmax=0; string inhomogeneous="";
+for(a=1;a<=126;a++){ if(PF[a]!=0){
+  if(tmax(PF[a])>dmax){dmax=tmax(PF[a]);}
+  if(!thomog(PF[a])){inhomogeneous=inhomogeneous+" "+string(a);} } }
+print("RESULT pfaffian_nonzero "+string(size(PF)));
+print("RESULT pfaffian_max_weight "+string(dmax));
+print("RESULT pfaffian_inhomogeneous"+inhomogeneous);
+
+
+ideal TR=trunc(dmax); ideal TT=std(J+TR+m*PF);
+ideal G; intvec sel; int g=0; poly rr;
+for(a=1;a<=126;a++){ rr=reduce(PF[a],TT); if(rr!=0){ g++; G[g]=PF[a]; sel[g]=a; TT=std(TT+ideal(rr)); } }
+print("RESULT generators "+string(g));
+print("RESULT selected "+string(sel));
+intvec gw; for(a=1;a<=g;a++){gw[a]=tdeg(G[a]);}
+print("RESULT generator_weights "+string(gw));
+
+ideal HP; int hq=0;
+hq++; HP[hq]=reduce(pf4(NHm,2,6,7,9),J);
+hq++; HP[hq]=reduce(pf4(NHm,2,6,8,9),J);
+hq++; HP[hq]=reduce(pf4(NHm,2,3,6,9),J);
+hq++; HP[hq]=reduce(pf4(NHm,2,3,6,8),J);
+hq++; HP[hq]=reduce(pf4(NHm,2,4,8,9),J);
+hq++; HP[hq]=reduce(pf4(NHm,2,5,8,9),J);
+hq++; HP[hq]=reduce(pf4(NHm,1,7,8,9),J);
+hq++; HP[hq]=reduce(pf4(NHm,2,3,4,9),J);
+hq++; HP[hq]=reduce(pf4(NHm,2,3,4,8),J);
+hq++; HP[hq]=reduce(pf4(NHm,4,6,8,9),J);
+hq++; HP[hq]=reduce(pf4(NHm,4,7,8,9),J);
+hq++; HP[hq]=reduce(pf4(NHm,1,6,7,9),J);
+hq++; HP[hq]=reduce(pf4(NHm,2,4,7,9),J);
+hq++; HP[hq]=reduce(pf4(NHm,1,6,7,8),J);
+hq++; HP[hq]=reduce(pf4(NHm,2,4,6,9),J);
+hq++; HP[hq]=reduce(pf4(NHm,2,4,6,7),J);
+hq++; HP[hq]=reduce(pf4(NHm,3,4,6,7),J);
+hq++; HP[hq]=reduce(pf4(NHm,3,4,6,9),J);
+hq++; HP[hq]=reduce(pf4(NHm,3,6,7,9),J);
+hq++; HP[hq]=reduce(pf4(NHm,3,6,8,9),J);
+hq++; HP[hq]=reduce(pf4(NHm,6,7,8,9),J);
+int hdmax=dmax; for(a=1;a<=ncols(HP);a++){ if(tmax(HP[a])>hdmax){hdmax=tmax(HP[a]);} }
+print("RESULT header_max_weight "+string(hdmax)+" "+string(dmax));
+ideal T0=std(J+TR+m*PF);
+
+ideal TU=std(J+m*PF); int hbad=0; poly hhi; poly hrest;
+for(a=1;a<=ncols(HP);a++){ hhi=0; hrest=HP[a];
+  while(hrest!=0){ if(tdeg(lead(hrest))>dmax){hhi=hhi+lead(hrest);} hrest=hrest-lead(hrest); }
+  if(reduce(hhi,TU)!=0){hbad++;} }
+print("RESULT header_high_weight_outside "+string(hbad));
+print("RESULT done 1");
+quit;
+
+ideal NWf=reduce(G,T0); ideal NHf=reduce(HP,T0);
+print("RESULT header_normal_forms_nonzero "+string(size(NHf)));
+ideal hmons; poly hh; ideal hall=NWf,NHf;
+for(a=1;a<=ncols(hall);a++){ hh=hall[a]; while(hh!=0){ hmons=hmons,leadmonom(hh); hh=hh-lead(hh); } }
+hmons=simplify(hmons,6);
+matrix CW=coeffs(NWf,hmons); matrix CH=coeffs(NHf,hmons);
+int hsplit=size(ideal(matrix(hmons)*CW-matrix(NWf)))+size(ideal(matrix(hmons)*CH-matrix(NHf)));
+print("RESULT coefficient_split "+string(hsplit));
+print("RESULT header_outside_span "+string(size(reduce(module(CH),std(module(CW))))));
+matrix Lm=lift(module(CW),module(CH));
+print("RESULT lift_residual "+string(size(ideal(CW*Lm-CH))));
+int hdeg=0; for(a=1;a<=nrows(Lm);a++){for(b=1;b<=ncols(Lm);b++){ if(deg(Lm[a,b])>hdeg){hdeg=deg(Lm[a,b]);} }}
+print("RESULT lift_shape "+string(nrows(Lm))+" "+string(ncols(Lm))+" "+string(hdeg));
+print("RESULT lift_determinant_nonzero "+string(det(Lm)!=0));
+matrix Gm=inverse(transpose(Lm));
+string hrow;
+for(a=1;a<=nrows(Gm);a++){ hrow=""; for(b=1;b<=ncols(Gm);b++){ hrow=hrow+" "+string(Gm[a,b]); } print("MAPROW"+hrow); }
+poly hbad=HP[1]+s2; poly hbn=reduce(hbad,T0);
+ideal hm2=hmons; hh=hbn; while(hh!=0){ hm2=hm2,leadmonom(hh); hh=hh-lead(hh); } hm2=simplify(hm2,6);
+matrix CW2=coeffs(NWf,hm2); matrix CB2=coeffs(ideal(hbn),hm2);
+print("RESULT control_nonmember_residual "+string(size(reduce(module(CB2),std(module(CW2))))));
+
+print("RESULT done 1");
+quit;

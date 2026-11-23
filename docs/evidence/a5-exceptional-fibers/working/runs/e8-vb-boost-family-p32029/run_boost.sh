@@ -12,7 +12,10 @@ one() { # tag value
   "$PYTHON" "$D/boost_family.py" --emit "$2" > "$D/bf-$1.sing"
   Singular -q --no-warn --no-rc "$D/bf-$1.sing" < /dev/null > "$D/bf-$1.log" 2>&1
   grep -q '^RESULT done 1$' "$D/bf-$1.log"
-  ! grep -q '^ *?' "$D/bf-$1.log"
+  if grep -q '^ *?' "$D/bf-$1.log"; then
+    echo "run_boost: Singular error line in bf-$1.log" >&2
+    exit 1
+  fi
   grep -q '^RESULT k_generators 21 dim 4 mult 7$' "$D/bf-$1.log"
   grep -q '^RESULT k_numerator 1,0,-21,70,-105,84,-35,6,0$' "$D/bf-$1.log"
   [ "$(grep '^RESULT prime' "$D/bf-$1.log" | sort | tr '\n' ';')" = 'RESULT prime 4 3 4;RESULT prime 4 4 3;RESULT prime_count 2;' ]

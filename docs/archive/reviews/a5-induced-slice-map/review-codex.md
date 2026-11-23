@@ -2,7 +2,7 @@ No FATAL findings. The retained results support the scoped numerical claims, but
 
 ## SERIOUS
 
-1. [run_boost.sh](docs/evidence/a5-exceptional-fibers/working/runs/e8-vb-boost-family-p32029/run_boost.sh:14) can print `run_boost: PASS` while several claimed invariants are false.
+1. `docs/evidence/a5-exceptional-fibers/working/runs/e8-vb-boost-family-p32029/run_boost.sh:14` can print `run_boost: PASS` while several claimed invariants are false.
 
 Evidence: lines 14–21 check completion, Hilbert data, radicality, and frame consistency, but omit:
 
@@ -18,7 +18,7 @@ Fix: check every named predicate and compare all `RESULT prime` lines against an
 
 ## SLOPPY
 
-2. [e8-induced-slice-map/README.md](docs/evidence/a5-exceptional-fibers/working/runs/e8-induced-slice-map/README.md:26) states the localization and truncation argument too strongly.
+2. `docs/evidence/a5-exceptional-fibers/working/runs/e8-induced-slice-map/README.md:26` states the localization and truncation argument too strongly.
 
 Evidence:
 
@@ -30,7 +30,7 @@ The calculation is nevertheless repairable with facts already present: the weigh
 
 Fix: replace lines 26–29 with that argument. State that the full header pivot is a unit only in the local ring, not necessarily in the displayed polynomial localization.
 
-3. [a5-exceptional-fiber-status.md](docs/notes/topics/a5-exceptional-fiber-status.md:37) still lists the E8-bar header/weight slice map as open.
+3. `docs/notes/topics/a5-exceptional-fiber-status.md:37` still lists the E8-bar header/weight slice map as open.
 
 This contradicts the same document at lines 58, 65, and 95, which assign it to A5-598. The line also calls A5-597 “this change,” although this commit adds A5-598 through A5-601.
 
@@ -38,7 +38,7 @@ Fix: remove the E8-bar map from that Open cell, retain the W8/Iso/X maps and the
 
 ## COSMETIC
 
-4. All twelve retained `bf-*.sing` files contain an extra blank line at EOF; for example [bf-w1.sing](docs/evidence/a5-exceptional-fibers/working/runs/e8-vb-boost-family-p32029/bf-w1.sing:212). `git diff --check` reports each one.
+4. All twelve retained `bf-*.sing` files contain an extra blank line at EOF; for example `docs/evidence/a5-exceptional-fibers/working/runs/e8-vb-boost-family-p32029/bf-w1.sing:212`. `git diff --check` reports each one.
 
 Fix: make the generator emit one terminal newline and regenerate the twelve files and manifest.
 

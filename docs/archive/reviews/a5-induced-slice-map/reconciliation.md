@@ -20,3 +20,17 @@ that every recorded number matches its log. Each finding below was checked again
 
 Reruns after the fixes, on the same host and versions: `run_induced.sh` PASS, `run_m2.sh` PASS, `run_boost.sh` PASS,
 the probe pass with ranks 3,887 and 4,022.
+
+## Advisor, last
+
+The Advisor read the head `bee2f23d6` with the two reports and the fixes above.
+
+| Finding | Verdict | Action |
+|---|---|---|
+| The error-line gate of `run_boost.sh` was a negated command in the middle of a function, which `set -e` ignores | confirmed | both drivers use an `if` with an explicit exit; on a copy of the retained logs the gates accept, and with a planted error line they exit 1 |
+| A5-601 read `certified` for a sampled lower bound | confirmed | the row reads `survives`, as A5-460 does; the totals are 118 certified and 114 survives |
+| The probe ran its two strata in a serial loop | confirmed | `parallel.ordered_map` over the two strata; rerun with the same ranks |
+| The archived reviewer reports held links relative to another directory | confirmed | the links are code spans |
+| The truncation of the header Pfaffians rested on prose | confirmed | mode `high` of `induced_slice_map.py` tests the part of weight above 10 of each header Pfaffian against an untruncated standard basis of J + m I: 0 outside at both basepoints over Q(i); truncating at the header weight 29 instead did not finish in 9 min and is not used |
+| The status note said X lacks a slice map | confirmed | X is decided on the header slice (A5-270, A5-305); the note and the README name W8 and Iso |
+| The function-field boost run had no watcher, and "46 min" is not its cost | confirmed | a watcher on its end marker; the record states the cost when the run ends or reaches its cap |

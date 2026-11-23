@@ -14,7 +14,7 @@ that both Pfaffians are invertible; the class of a header Pfaffian minus its com
 in the local ring at the origin, hence in this ring. The degree-2 relations of the weight slice come from the
 script of the weight-slice producer itself (mode relations), and --check transports them by the map.
 
---emit ORBIT CHAR ROOT [map|relations] writes a Singular script (CHAR 0 for Q(i)); --collect MAP_LOG
+--emit ORBIT CHAR ROOT [map|relations|high] writes a Singular script (CHAR 0 for Q(i)); --collect MAP_LOG
 RELATION_LOG ORBIT OUT.json reads the outputs;
 --check OUT.json PRIME ROOT HEADER_REL [WEIGHT_KA] writes to stdout a Singular script that reduces the Q(i) record at
 (PRIME, ROOT) and compares the transported ideal with a retained header relation file.
@@ -45,9 +45,12 @@ POSITIVE = (1, 3, 4, 5, 6, 7, 8, 9)
 
 HEADER_TAIL = Template(
     """
-ideal T0=std(J+TR+m*PF);
 ideal HP; int hq=0;
 $header_pfaffians
+int hdmax=dmax; for(a=1;a<=ncols(HP);a++){ if(tmax(HP[a])>hdmax){hdmax=tmax(HP[a]);} }
+print("RESULT header_max_weight "+string(hdmax)+" "+string(dmax));
+ideal T0=std(J+TR+m*PF);
+$high_test
 ideal NWf=reduce(G,T0); ideal NHf=reduce(HP,T0);
 print("RESULT header_normal_forms_nonzero "+string(size(NHf)));
 ideal hmons; poly hh; ideal hall=NWf,NHf;
@@ -71,6 +74,18 @@ matrix CW2=coeffs(NWf,hm2); matrix CB2=coeffs(ideal(hbn),hm2);
 print("RESULT control_nonmember_residual "+string(size(reduce(module(CB2),std(module(CW2))))));
 """
 )
+
+# Mode high: the components of weight above dmax of each header Pfaffian, tested for membership in J + m I without
+# truncation. The standard basis is not weight-truncated, so the stage is slow; it ends the script.
+HIGH_TEST = """
+ideal TU=std(J+m*PF); int hbad=0; poly hhi; poly hrest;
+for(a=1;a<=ncols(HP);a++){ hhi=0; hrest=HP[a];
+  while(hrest!=0){ if(tdeg(lead(hrest))>dmax){hhi=hhi+lead(hrest);} hrest=hrest-lead(hrest); }
+  if(reduce(hhi,TU)!=0){hbad++;} }
+print("RESULT header_high_weight_outside "+string(hbad));
+print("RESULT done 1");
+quit;
+"""
 
 FRAME_LINES = Template(
     """proc pfn(matrix A){ int nn=nrows(A); if(nn==0){return(poly(1));} if(nn==2){return(A[1,2]);}
@@ -132,11 +147,13 @@ def header_selected(orbit: str) -> list[int]:
 
 
 def emit(orbit: str, characteristic: int, root: int, mode: str = "map") -> str:
-    """mode map: the induced map; relations: the weight-slice producer's own script."""
+    """mode map: the induced map; relations: the weight-slice producer's own script; high: the map script stopped
+    after a membership test of the high-weight components of the header Pfaffians."""
     import weight_slice_fiber_relations as ws
 
     piece = ws.orbit_task(orbit)
-    _require(mode in ("map", "relations"), f"unknown mode {mode}")
+    _require(mode in ("map", "relations", "high"), f"unknown mode {mode}")
+    high = mode == "high"
     if mode == "relations":
         return ws.fiber_script(piece, "e8", characteristic, root)
     _pivot, frame = header_frame(piece.boundary_point)
@@ -167,7 +184,8 @@ def emit(orbit: str, characteristic: int, root: int, mode: str = "map") -> str:
         equations=",".join(piece.equations["e8"]),
         component_step=ws.COMPONENT_STEP + "J=std(J+ideal(v*u0-1));\n",
         pfaffian_stage=stage,
-        tail=ws.SELECTION_STAGE + HEADER_TAIL.substitute(header_pfaffians=pfaffians),
+        tail=ws.SELECTION_STAGE
+        + HEADER_TAIL.substitute(header_pfaffians=pfaffians, high_test=HIGH_TEST if high else ""),
     )
 
 

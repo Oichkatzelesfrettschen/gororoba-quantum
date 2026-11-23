@@ -68,7 +68,7 @@
    ],
    "quadrics_on_image": 3373,
    "generic_point_control_rejected": true,
-   "seconds": 121.3
+   "seconds": 123.2
   },
   {
    "stratum": "V(G) minus V(Q)",
@@ -132,7 +132,7 @@
    ],
    "quadrics_on_image": 3238,
    "generic_point_control_rejected": true,
-   "seconds": 126.1
+   "seconds": 129.0
   }
  ],
  "pass": true

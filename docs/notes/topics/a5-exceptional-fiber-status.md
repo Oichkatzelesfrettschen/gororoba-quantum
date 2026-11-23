@@ -27,14 +27,14 @@ X+, X-, Iso, W8 and E8-bar into N+ and N-). The program answers in four layers:
 
 ## Status by layer (2026-11-23)
 
-Ledger totals: 216 proved, 119 certified, 113 survives, 62 refuted, 37 superseded, 12 open, 9 stalled, 7 rejected, 4 boundary.
+Ledger totals: 216 proved, 118 certified, 114 survives, 62 refuted, 37 superseded, 12 open, 9 stalled, 7 rejected, 4 boundary.
 Reproduce with `"$PYTHON" docs/evidence/a5-exceptional-fibers/ledger.py --summary`.
 
 | Layer | State | Deciding rows | Open |
 |---|---|---|---|
 | 1, per-degree h_d | complete at both primes for the six fiber classes | A5-001, A5-005 to A5-009, A5-335 (E8-bar degree 6, the last cell of the earlier count) | none |
 | 2, F(I) = k[y] / K2 in every degree | complete at both primes: VB (A5-005, A5-015, A5-016), same-sign X (A5-304), Iso (A5-067), W8 (A5-066), E8-bar -> N+- on the header slices (A5-559) and by direct Rees saturation on the weight slice at all eight sign, prime and root cells (A5-572, A5-573, A5-587) | as listed | a receipt only: X+ -> N+ at 32009 has no retained K2 file (A5-304) |
-| 3, characteristic 0 | all 33 incidences have a fiber cone over Q(i) on a retained slice: the 22 incidences of nullity 8 to 12 and 12 to 16 (A5-402, A5-405, A5-408), opposite-sign X (A5-270), same-sign X (A5-305), Iso, W8 and E8-bar into N+- on the weight slice (A5-446, A5-448, A5-457 with A5-474 and A5-475), and E8-bar -> VB (A5-597) | as listed | the map between the header slice and the weight slice for W8, Iso and X (A5-598 gives it for E8-bar over Q(i)); the boost direction of the V and VB orbits |
+| 3, characteristic 0 | all 33 incidences have a fiber cone over Q(i) on a retained slice: the 22 incidences of nullity 8 to 12 and 12 to 16 (A5-402, A5-405, A5-408), opposite-sign X (A5-270), same-sign X (A5-305), Iso, W8 and E8-bar into N+- on the weight slice (A5-446, A5-448, A5-457 with A5-474 and A5-475), and E8-bar -> VB (A5-597) | as listed | the map between the header slice and the weight slice for W8 and Iso (A5-598 gives it for E8-bar over Q(i)); the boost direction of the V and VB orbits |
 | 4, real limit sets | proved on the retained slice germ at 26 of 33 incidences: 14 of nullity 8 to 12 (A5-411), 8 of nullity 12 to 16 (A5-412), the four X incidences into N+- (A5-417); G_2(C) x C^* equivariance moves the basepoint on B9, V^a+-, N+ and N- (A5-415) | as listed | E8-bar -> VB; Iso, W8 and E8-bar into N+- (A5-418, survives); the boost direction on V and VB (A5-419, survives); A5-250 stays open for these |
 | Kernel bundles and gluing | nullity-8 ordinary classes computed (A5-396, survives); composed limits lie in linear sections (A5-420) | as listed | nullity-4 classification (A5-389, open); the flat-family clause of A5-420; the global attaching maps |
 | Machine-checked | the algebra (signs, nullity doubling, two-term nullity, the G_2 derivation span) and the eight W8 arc-matrix ranks (gororoba-math `rocq/quantum/A5W8ArcMatrixRanks.v`) | A5-453, A5-500, A5-448 | no fiber-cone, Rees or Hilbert-function statement is formalized |
@@ -62,7 +62,7 @@ D done, P partial, O open; the cell names the deciding row. Sign-conjugate incid
 
 | Theorem | Content | Missing |
 |---|---|---|
-| T1 | characteristic-0 fiber cones for all 33 incidences, independent of the transverse slice | for E8-bar, A5-598 computes the induced slice map over Q(i) and checks it at three primes; open: the same map for the W8, Iso and X cells, and a machine-checked form of the Pfaffian-ideal step that makes it the induced map |
+| T1 | characteristic-0 fiber cones for all 33 incidences, independent of the transverse slice | for E8-bar, A5-598 computes the induced slice map over Q(i) and checks it at three primes; open: the same map for the W8 and Iso cells (X is decided on the header slice, A5-270 and A5-305), and a machine-checked form of the Pfaffian-ideal step that makes it the induced map |
 | T2 | the fibers along each whole boundary orbit | a family over the boost parameter for the six incidences into V and VB (A5-419, A5-428 and A5-600 sample VB, the last at twelve values; a general value of the parameter and the boost of E8-bar -> V are undecided, A5-414) |
 | T3 | the two-sided real limit theorem at all 33 incidences (A5-250) | E8-bar -> VB; A5-418 for Iso, W8 and E8-bar into N+-; the boost direction |
 | T4 | compatibility of composed limits 8 -> 12 -> 16 | the flat-family clause of A5-420 |
@@ -95,7 +95,7 @@ The reviews that selected these computations, with each finding checked against 
 | The map that the change of slice induces on the 21 generators of E8-bar -> N+-, over Q(i): each header Pfaffian is a constant combination of the weight-slice generators modulo J + m I, and the transported weight-slice ideal reduces to the retained header ideal at 32009 (both roots), 32029 and 32057, six cells of six, with three rejecting controls; that it is the induced map rests on a deduction in prose | A5-598, certified | [e8-induced-slice-map](../../evidence/a5-exceptional-fibers/working/runs/e8-induced-slice-map/README.md) |
 | Macaulay2 1.25.11 reproduces the invariants, minimal primes, three primary components and nilradical data of the E8-bar quadric ideals on both slices and the primality of the Iso ideal, modulo 32009 | A5-599, certified | [quadric-ideals-macaulay2-p32009](../../evidence/a5-exceptional-fibers/working/runs/quadric-ideals-macaulay2-p32009/README.md) |
 | E8-bar -> VB at twelve values of the boost parameter modulo 32029: the same invariants and one normal form of the quadric ideal | A5-600, certified | [e8-vb-boost-family-p32029](../../evidence/a5-exceptional-fibers/working/runs/e8-vb-boost-family-p32029/README.md) |
-| The degree-2 ranks 3,887 and 4,022 of the two open nullity-4 Gauss images at a second prime, from the kernel of the bordered matrix; the differential has rank 15 | A5-601, certified | [a5-kernel-bundles-residuals](../../evidence/a5-kernel-bundles-residuals/README.md) |
+| The degree-2 ranks 3,887 and 4,022 of the two open nullity-4 Gauss images at a second prime, from the kernel of the bordered matrix; the differential has rank 15 | A5-601, survives | [a5-kernel-bundles-residuals](../../evidence/a5-kernel-bundles-residuals/README.md) |
 
 The review of these records is in [a5-induced-slice-map](../../archive/reviews/a5-induced-slice-map/reconciliation.md).
 
@@ -103,7 +103,7 @@ The review of these records is in [a5-induced-slice-map](../../archive/reviews/a
 
 | Layer | Computation | Decides | Estimate from retained timings |
 |---|---|---|---|
-| T1 | `induced_slice_map.py` with the header selections of W8, Iso and X, each checked against its retained header relation files | the slice map of the other eight cells into N+- | 5 s a map and about 70 s a relation script for E8-bar (A5-598) |
+| T1 | `induced_slice_map.py` with the header selections of W8 and Iso, each checked against its retained header relation files | the slice map of the four W8 and Iso cells into N+- | 5 s a map and about 70 s a relation script for E8-bar (A5-598) |
 | T2 | the relations of E8-bar -> VB over F_p(w), by interpolation in w from point runs or a standard basis with a degree bound, then the arc certificate of A5-597 along the family; the same for the incidences into V | fibers along the whole orbit | 11 s a point (A5-600); the direct standard basis over F_32029(w) did not finish in 46 min |
 | T3 | the closure argument of A5-417 on the weight-slice fiber cones over Q(i) for Iso, W8 and E8-bar, which needs no header slice, then the product theorem for the boost direction | A5-418, A5-250 | symbolic; unmeasured |
 | T5 | the degree-3 part of the Gauss images in Gr(2, 15) and the image of z -> K(z), then charts and transition functions over the moduli | A5-389 | degree 2 takes 4 min at 2.9 GiB for 7,000 points (A5-601); the degree-3 monomials on 105 coordinates number 198,485 |
@@ -137,7 +137,7 @@ certificates that the kernel checks.
   of A5-457 depends on `primdecGTZ` returning every associated prime.
 - **Slice dependence.** A row marked characteristic 0 for Iso, W8 or E8-bar into N+- is a statement on the weight
   slice. A5-598 joins the two E8-bar presentations over Q(i) by the induced map; its identification of the relation
-  ideals is a deduction in prose, and W8, Iso and X have no such map yet.
+  ideals is a deduction in prose, and W8 and Iso have no such map yet.
 - **Basepoint dependence.** On V and VB the group G_2(C) x C^* misses the boost direction, so a result at the
   retained basepoint is a result at that point of the orbit. A5-600 samples twelve values of the boost for
   E8-bar -> VB and decides no general value.

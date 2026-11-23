@@ -32,8 +32,9 @@ and need not be one in R. Three facts make the constant combination the class in
    the 10-Pfaffians of C(z) lie in the ideal of the weight-slice Pfaffians once the weight pivot is inverted. So every
    header Pfaffian lies in the weight-graded ideal I R, although it is not weight-homogeneous.
 2. I is generated in weights up to the largest weight d of a weight-slice Pfaffian, so the components of weight
-   above d of an element of I lie in m I. Discarding them, as the truncation of the weight-slice producer does,
-   leaves the class modulo J + m I unchanged.
+   above d of an element of I lie in m I. The script does not rely on this: it truncates at the largest weight that
+   occurs in a header Pfaffian (`header_max_weight`), so no component of a header Pfaffian is discarded, and
+   `header_outside_span 0` tests the statement.
 3. I / (J + m I) is killed by all of m, so it is supported at the origin, and its localization there is itself.
    A class that vanishes in the local ring vanishes in R.
 
@@ -73,7 +74,8 @@ polynomial outside I (the first header Pfaffian plus s2) leaves a nonzero residu
 - The six reductions compare ideals, and the symmetry group of the ideal has dimension 34, so they cannot by
   themselves single out the induced map among the equivalences. That G is the induced map rests on the three facts
   above and the product structure, which are prose; a kernel-checked form is a target for gororoba-math.
-- E8-bar only. The same script applies to W8, Iso and X with their header selections; those cells are not run.
+- E8-bar only. The same script applies to W8 and Iso with their header selections; those cells are not run. The X
+  cells are decided on the header slice over Q(i) (A5-270, A5-305) and need no map.
 
 ## Replay
 

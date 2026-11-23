@@ -13,6 +13,7 @@ RESULT pfaffian_inhomogeneous
 RESULT generators 21
 RESULT selected 12,15,16,18,20,30,35,47,49,51,52,54,55,84,86,87,89,123,124,125,126
 RESULT generator_weights 5,4,7,5,6,5,7,5,3,4,4,5,5,3,4,4,5,3,3,4,5
+RESULT header_max_weight 29 10
 RESULT header_normal_forms_nonzero 21
 RESULT coefficient_split 0
 RESULT header_outside_span 0

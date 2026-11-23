@@ -159,7 +159,7 @@ STAGE product 55 of 55 0
 STAGE std_Q_start generators 457 1
 RESULT sq_size 431
 STAGE std_Q_done 6
-STAGE normal_forms_done 6
+STAGE normal_forms_done 7
 RESULT monomials 1632
 STAGE syzygies_done 11
 RESULT targets 55
