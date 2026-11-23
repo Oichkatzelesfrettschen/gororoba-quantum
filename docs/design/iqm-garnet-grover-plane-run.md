@@ -12,10 +12,15 @@ case directory.
 
 ## Calibration set
 
-The case was built on calibration set `ef4df2bb`. Garnet recalibrated between the build and the submission, and the
-job ran on calibration set `2951733a-f569-452e-92bc-44397d6a192e`, which is the set the run's `prediction.json`
-records. The case directory `results/iqm/cases/grover-plane-mirrored-101/` keeps the bytes of the build on
-`ef4df2bb`; the run directory carries the rebuilt, submitted bytes.
+Three sets appear in these records:
+
+- The committed case directory `results/iqm/cases/grover-plane-mirrored-101/` holds the build on calibration set
+  `a0e725eb`.
+- The live rebuild before the submissions read Garnet's current set,
+  `2951733a-f569-452e-92bc-44397d6a192e`. Both run directories carry its bytes (cases.json sha256 ccdff667...), and the
+  Garnet job compiled and ran on that set, so the model response of the analysis matches the calibration of the run.
+- `ef4df2bb` is the calibration the `garnet:mock` station reports for its own compilation (the mock job record), not
+  a build of the case.
 
 ## Result
 
@@ -28,6 +33,8 @@ gate core-iqm-grover-plane-run-replay recomputes it and compares every byte. The
 - Before the gates the reading is "geometric": T = 1.797 against delta 8.0.
 - The rotation fit gives eps = -0.00305 +- 0.00256 per iteration, and rotation_adequate is false.
 - Heterogeneity is 8.09 on 7 degrees of freedom (threshold 18.48).
+- The fixed calibrated response gives chi2_model = 270.49. The geometric fit, with a and s free, lowers it to 104.27
+  (a = 0.9074, s = 1.0497); the rotation fit gives 102.47 (a = 0.9172, s = 1.0423, eps as above).
 - The readout check passed.
 - The mark 011 contrast is "not evaluated: the case carries no mark 011 arms".
 

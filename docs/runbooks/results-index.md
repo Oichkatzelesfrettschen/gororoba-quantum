@@ -128,8 +128,10 @@ make no assertion about the environment running the query.
   results/quantum_inspire/runs/ (circuits matching cases.json, one raw shot
   list per completed job, failed jobs included) bound to the ledger in
   docs/evidence/quantum_inspire/usage.json. A retained run therefore enters
-  the registry, with a claim citing it and a refreshed ledger or inventory,
-  in the change that retains it. The ledger is account-wide, so sessions
+  the registry, with a refreshed ledger or inventory, in the change that
+  retains it; the claim that interprets it is a later change (AGENTS.md,
+  "Records"), and until then the run is listed among the acquisitions
+  without claim citations. The ledger is account-wide, so sessions
   that share the account land runs from separate branches: `qi_platform.py
   snapshot` writes `unretained`, the sorted ids of the ledger jobs that no
   run directory of the tree holds, and research_state.py requires every
