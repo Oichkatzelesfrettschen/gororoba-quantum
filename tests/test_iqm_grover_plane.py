@@ -424,6 +424,26 @@ def test_a_rotation_fit_clipped_at_the_rotation_bound_reads_out_of_domain(
     require(out["departure"] == decision.OUT_OF_DOMAIN, out["departure"])
 
 
+def test_the_always_on_zz_phase_follows_the_elapsed_schedule_time(cal: iqm_sim.Calibration) -> None:
+    def prx(q: str) -> dict[str, Any]:
+        return {"name": "prx", "locus": [q], "args": {"angle": math.pi, "phase": 0.0}}
+
+    def total(circuit: dict[str, Any], noisy: bool) -> float:
+        steps, _ = sim.build_steps(circuit, cal, PATH, noisy)
+        return sum(s.zz for s in sim.with_coherent_error(steps, zz_hz=1e6))
+
+    per_ns = 2 * math.pi * 1e6 * 1e-9
+    parallel = {"instructions": [prx(q) for q in PATH]}
+    for noisy in (False, True):
+        require(total(parallel, noisy) == pytest.approx(16 * per_ns), "three parallel 16 ns gates accrue 16 ns")
+    gated = {
+        "instructions": [prx(q) for q in PATH]
+        + [{"name": "cz", "locus": [PATH[0], PATH[1]], "args": {}}, prx(PATH[2]), prx(PATH[2])]
+    }
+    for noisy in (False, True):
+        require(total(gated, noisy) == pytest.approx((16 + 40) * per_ns), "the phase sums to the schedule length")
+
+
 def prx_ratio() -> float:
     """The fitted PRX ratio of the committed case: the value the decision, the question and these tests share."""
     return float(

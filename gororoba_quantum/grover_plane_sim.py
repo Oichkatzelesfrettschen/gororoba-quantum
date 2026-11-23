@@ -59,7 +59,8 @@ def cz_signs(a: int, b: int) -> np.ndarray:
 @dataclass(frozen=True)
 class Step:
     """One gate with its depolarizing parameter, or one idle interval with its decay factors, in schedule order;
-    part is the 1-based iteration cut the step belongs to (the tail after the last cut has part k + 1)."""
+    part is the 1-based iteration cut the step belongs to (the tail after the last cut has part k + 1); end is the
+    step's end time in ns on the ASAP schedule."""
 
     kind: str
     qubits: tuple[int, ...]
@@ -72,6 +73,7 @@ class Step:
     phase_error: float = 0.0
     ns: int = 0
     zz: float = 0.0
+    end: int = 0
 
 
 def build_steps(
@@ -97,6 +99,7 @@ def build_steps(
                     population=math.exp(-seconds / t1),
                     coherence=math.exp(-seconds / t2),
                     ns=until - clock[p],
+                    end=until,
                 )
             )
         clock[p] = until
@@ -107,7 +110,16 @@ def build_steps(
         if op["name"] == "prx":
             lam = calibration.prx_p(op["locus"][0]) if noisy else 0.0
             steps.append(
-                Step("prx", (where[0],), part, lam=lam, angle=op["args"]["angle"], phase=op["args"]["phase"], ns=PRX_NS)
+                Step(
+                    "prx",
+                    (where[0],),
+                    part,
+                    lam=lam,
+                    angle=op["args"]["angle"],
+                    phase=op["args"]["phase"],
+                    ns=PRX_NS,
+                    end=clock[where[0]] + PRX_NS,
+                )
             )
             clock[where[0]] += PRX_NS
         elif op["name"] == "cz":
@@ -115,7 +127,7 @@ def build_steps(
             for w in where:
                 idle(w, start)
             lam = 4 * (1 - calibration.cz[frozenset(op["locus"])]) / 3 if noisy else 0.0
-            steps.append(Step("cz", (where[0], where[1]), part, lam=lam, ns=CZ_NS))
+            steps.append(Step("cz", (where[0], where[1]), part, lam=lam, ns=CZ_NS, end=start + CZ_NS))
             for w in where:
                 clock[w] = start + CZ_NS
             cz_done += 1
@@ -132,10 +144,16 @@ def with_coherent_error(
 ) -> list[Step]:
     """The steps with every cz applying the conditional phase pi + cz_phase, every prx rotating by angle
     (1 + prx_scale) and the two path couplers carrying the always-on |11><11| phase of rotating-frame ZZ coupling
-    zz_hz (cycles per second) during every step (gate or idle) of the ASAP schedule."""
+    zz_hz (cycles per second) over the elapsed time of the ASAP schedule. Gates of different qubits overlap in time,
+    so each step carries the ZZ phase of the schedule time its end adds beyond every earlier step's end (the
+    non-overlapping interval it closes, an idle gap included): the phases of all steps sum to the schedule length times
+    2 pi zz_hz, and three parallel 16 ns gates accrue 16 ns."""
     out = []
+    frontier = 0
     for s in steps:
-        zz = 2 * math.pi * zz_hz * s.ns * 1e-9
+        elapsed = max(s.end - frontier, 0)
+        frontier = max(frontier, s.end)
+        zz = 2 * math.pi * zz_hz * elapsed * 1e-9
         if s.kind == "cz":
             out.append(replace(s, phase_error=cz_phase, zz=zz))
         elif s.kind == "prx":
