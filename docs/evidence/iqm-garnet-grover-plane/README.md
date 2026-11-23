@@ -18,6 +18,15 @@
   (z_PRX -3.14 from the exact fits and -2.99 from the joint fit; z_CZ -0.93), with the PRX ratio of the case's `prediction.json`.
 - `priors`: the calibration infidelities and relaxation times of the path and the average-fidelity cost of a coherent error.
 
+`complement.json` (schema `iqm-grover-plane-complement-v1`) is written by
+`"$PYTHON" scripts/iqm_grover_plane_complement.py --out docs/evidence/iqm-garnet-grover-plane/complement.json` and refits the
+same retained runs on all eight outcome cells (`grover_plane_complement.FullResponse`: the calibrated noisy path with the plane
+rotation eps, the contraction s toward a fixed point Sigma and the offset a on every cell) under four fixed points: the uniform
+state, three weights of the S3-invariant sector of the marked vertex (shell weights), per-qubit populations, and every cell free.
+Each fit carries a per group offset a, a per mark s and a per mark eps; the marked-cell fit with the uniform state reproduces the
+joint fit of `fits.json` (chi2 1.474, eps 0.0373 and -0.0129) and calibrates the reader. Replay: `--check` recomputes it and
+compares to 1e-4 relative (gate `core-iqm-grover-plane-complement`); the depths of a group are independent, as in `fits.json`.
+
 Replay: `"$PYTHON" scripts/iqm_grover_plane_retained.py --check docs/evidence/iqm-garnet-grover-plane/fits.json` recomputes the record
 and compares it with the file to 1e-6 relative (gate `core-iqm-grover-plane-retained`).
 

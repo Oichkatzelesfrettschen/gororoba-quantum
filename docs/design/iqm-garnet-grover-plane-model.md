@@ -9,6 +9,19 @@ retained Garnet Grover acquisition, and records where it fails. Its decision for
 (engine and response), `grover_plane.py` (affine plane family), `grover_plane_decision.py`, `grover_plane_calibration.py`,
 `grover_plane_analysis.py`, `scripts/iqm_grover_plane_case.py`, `scripts/iqm_grover_plane_retained.py`.
 
+## Prior work
+
+Khan and Faryad, "Loss of the quadratic speedup in Grover search under local and coherent noise" (arXiv 2611.16398,
+12 November 2026), reduce noisy Grover search to Bloch-type equations for the part of the state that stays in the
+two-dimensional search plane, with the noise appearing as leakage and dephasing, derive the rates for bit-flip, phase-flip,
+depolarizing and amplitude-damping noise, and bound the success probability under a coherent error in the rotation angle by a
+band that widens linearly with depth. This note's plane reduction, its rotation error eps and its affine map with a leak
+are that frame applied to the committed line-native circuits of one device; the plane model is an analysis frame here and is
+claimed as no new result. What the repository adds is the exact density-matrix response of the committed circuits under the
+calibrated noise, the fits to the retained Garnet acquisitions and the decision rule of the case below. (hypothesis: the
+paper's closed-form rates and bands could replace the numerical response for the depolarizing part; they were not
+compared with the circuit-derived response in this round.)
+
 ## Mechanism
 
 Let |m> be the marked basis state and |p> the uniform superposition of the other seven, sin theta = 1/sqrt 8. The ideal
@@ -105,6 +118,41 @@ No single parameter set fits all runs: the three families without a rotation per
 quantiles (11.07, 9.49, 9.49); the two with a rotation per mark fit (p 0.08 and 0.48), and the better one needs an s that
 differs by 0.07 between marks.
 
+## Eight-cell refit with a nonuniform complement
+
+The fits above read the marked cell only. `scripts/iqm_grover_plane_complement.py` (evidence `complement.json`) refits the same four
+(run, mark) groups on all eight outcome cells of every depth (seven independent cells per depth, the delta-method covariance of
+the corrected counts, depths independent), with the exact noisy path of the committed circuits, a per group offset a, a per mark
+contraction s and rotation eps, and the contraction `rho -> s rho + (1 - s) tr(rho) Sigma` ending at a fixed point Sigma: the
+uniform state (the plane family), the S3-invariant sector of the marked vertex (weights of the marked state and the Hamming shells
+of distance 1, 2 and 3, per mark), per-qubit populations (shared by both marks), or every cell free (per mark). The marked-cell
+fit reproduces the joint fit of the table above (chi2 1.474 on 2 dof, eps 0.0373 and -0.0129, s 1.016 and 0.943).
+
+| Fixed point Sigma | chi2 without eps (dof) | chi2 with eps (dof) | eps_101 | eps_011 | rotation T (2 dof, p) |
+|---|---|---|---|---|---|
+| uniform | 699.7 (64) | 688.2 (62) | 0.0268 +- 0.0113 (z 2.4) | -0.0330 +- 0.0138 | 11.5 (0.003) |
+| S3 shell weights | 624.8 (58) | 621.0 (56) | 0.0169 +- 0.0172 (z 1.0) | -0.068 +- 0.171 | 3.8 (0.15) |
+| per-qubit populations | 486.4 (61) | 473.2 (59) | 0.0208 +- 0.0062 (z 3.4) | -0.0097 +- 0.0090 | 13.2 (0.001) |
+| every cell free | 385.8 (50) | 382.7 (48) | 0.007 +- 0.138 (z 0.05) | -0.016 +- 0.188 | 3.1 (0.21) |
+
+Readings (computed from the retained counts; hypothesis marks an interpretation).
+
+- The uniform complement is contradicted: shell weights lower chi2 by 74.8 for six parameters (p 4e-14) and per-qubit populations
+  by 213.2 for three (p 6e-46), at one rotation each.
+- No tested fixed point fits. The best form, every cell free, leaves chi2 386 on 50 dof (250 on 50 after dividing by phi = 1.54), so
+  the eight-cell structure of the retained depths is not a diagonal fixed point of one contraction, and no nonuniform form earns
+  the role of the model the decision rests on. The case's decision therefore keeps the marked-probability plane family, whose
+  response is the exact noisy path and whose excess contraction (s, a) is only an effective description. hypothesis: the unmarked
+  cells carry a per-qubit, depth-dependent term (wrong-bit probabilities 0.154, 0.180 and 0.178 on QB20, QB16 and QB17 in the
+  earlier review) that the circuit model lacks.
+- The depth-3 rotation of mark 101 survives the uniform form (z 2.4) and the per-qubit form (z 3.4, eps 0.021) and is not identified
+  once the complement may take other shapes (z 1.0 for shell weights, 0.05 for free cells, whose standard errors of 0.017 and 0.14
+  exceed the effect). The marked probabilities alone cannot separate a rotation from a nonuniform return of the leaked weight, so
+  the retained eps = 0.041 is a depth-3 anomaly of one mark under the plane family and no more.
+- The leak L = s - mu is not identifiable from the marked probabilities: the weight that leaves the plane returns through the
+  complement's functional (1 - n_k) h_k, which the depths measured fix only together with eps, as the loss of identification of eps
+  above shows.
+
 ## Falsification log
 
 1. The parent's formulation (one rotation eps with a calibrated nested test) holds as a reduction and fails as a law of
@@ -128,8 +176,10 @@ differs by 0.07 between marks.
    is replayed by a gate.
 6. The closure assumes the leaked weight returns as the uniform state of the complement. The retained depth run rejected
    uniform unmarked error (Wald 95.7 on 6 degrees of freedom against the model's uniform prediction, design note of the
-   follow-up case), so that assumption is contradicted by the data; the plane family absorbs it into (a, s) and eps and does
-   not model it.
+   follow-up case), so that assumption is contradicted by the data; the plane family absorbs it into (a, s) and eps. The
+   section "Eight-cell refit with a nonuniform complement" fits all eight outcome cells and reads the consequence: the
+   uniform fixed point is rejected, no tested nonuniform fixed point fits, and the depth-3 rotation survives in two of
+   the four forms and is not identified in the other two.
 7. Coherent error is not seen by calibration benchmarking at this size: a CZ phase of 0.0286 rad costs an average gate
    infidelity of 1.2e-4 per CZ against the calibrated 4.2e-3 (3 percent), and a PRX amplitude error of 1.0 percent on a
    pi/2 rotation costs 4.3e-5 against 2.8e-4 to 5.5e-4. The calibration neither supports nor refutes eps = 0.04.
@@ -223,8 +273,9 @@ Retained mark contrast (post hoc, replayed by a gate on `fits.json`): see the fi
   and zero-divisor strata; none bears on a three-qubit circuit's noise, and they were read by name only.
 - The circuit's own symmetry is the group of the six cube automorphisms that fix the marked vertex, which gives the
   four-dimensional invariant sector noted under the limit of validity.
-- No novelty claim and no literature check: `docs/notes/prior_work_synthesis.md` records no Grover noise literature, and none
-  was searched in this round.
+- No novelty claim. The plane reduction of noisy Grover search with leakage and dephasing, and bounds on a rotation-angle error,
+  are prior work (Khan and Faryad, arXiv 2611.16398, see "Prior work"); `docs/notes/prior_work_synthesis.md` records no Grover
+  noise literature, and only that one paper was read against this note.
 - Open problems of mathematics resolved: none. The case is an engineering test of a rotation term in one device.
 
 ## Open design points
