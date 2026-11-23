@@ -84,13 +84,15 @@ def sides_chi2(a: np.ndarray, b: np.ndarray) -> tuple[float, int]:
 
 
 def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
-    job = followup.read_job(run_dir, case_dir, case=CASE, jobs=JOBS)
+    case = json.loads((case_dir / "cases.json").read_text(encoding="utf-8"))["case"]
+    job = followup.read_job(run_dir, case_dir, case=case, jobs=JOBS)
     arms = job.prediction["arms"]
     plan_all = job.prediction["decisions"]
+    marks = tuple(job.prediction["marks"])
     total = len(job.names)
     files = {Path(c["file"]).stem: c for c in job.run.row["circuits"]}
-    pairs_at: dict[str, dict[int, dict[int, tuple[int, int]]]] = {m: {} for m in MARKS}
-    circuits: dict[str, dict[int, dict[str, Any]]] = {m: {} for m in MARKS}
+    pairs_at: dict[str, dict[int, dict[int, tuple[int, int]]]] = {m: {} for m in marks}
+    circuits: dict[str, dict[int, dict[str, Any]]] = {m: {} for m in marks}
     digests: dict[tuple[str, int], set[str]] = {}
     readouts: dict[int, list[tuple[int, np.ndarray]]] = {}
     table: list[dict[str, Any]] = []
@@ -157,7 +159,7 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
     decisions: dict[str, Any] = {}
     readout_record: dict[str, Any] = {}
     fits: dict[str, dict[str, Any]] = {}
-    for mark in MARKS:
+    for mark in marks:
         block = plan_all if mark == "101" else plan_all["mark_011"]
         plan = block["readout"]
         r_model = np.asarray(plan["r_model"], dtype=float)
@@ -208,10 +210,14 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
             "frequency_shift": rounded(shift),
             "passed": not reason,
         }
-    contrast_block = decision.mark_contrast(fits, float(plan_all["contrast"]["ratio_prx"]))
+    contrast_block = (
+        decision.mark_contrast(fits, float(plan_all["contrast"]["ratio_prx"]), plan_all["contrast"]["ratio_interval"])
+        if "011" in marks
+        else decision.mark_contrast(fits, float("nan"))
+    )
     return {
         "schema": SCHEMA,
-        "case": CASE,
+        "case": case,
         "run": {
             "job_id": job.run.submission["job_id"],
             "qc": job.run.submission["qc"],

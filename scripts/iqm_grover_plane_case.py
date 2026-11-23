@@ -32,6 +32,7 @@ import math
 import shutil
 import sys
 from collections.abc import Sequence
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -52,6 +53,7 @@ import grover_plane_decision as decision  # noqa: E402
 import grover_plane_sim as sim  # noqa: E402
 
 CASE = "grover-plane-mirrored"
+CASE_101 = "grover-plane-mirrored-101"
 QCS = ["garnet:mock", "garnet"]
 PRICE = grover.PRICE
 PATH = followup.FORWARD_PATH
@@ -60,10 +62,8 @@ SHOTS = 16000
 COPIES = {1: 4, 2: 4, 3: 10, 4: 4}
 COPIES_011 = {1: 4, 2: 4, 3: 6}
 MARKS = ("101", "011")
-# Kinds of the job's circuits: 0 a readout preparation, 1 to 4 depths 1 to 4 of mark 101,
-# 5 to 7 depths 1 to 3 of mark 011.
-KIND = {**{k: ("101", k) for k in COPIES}, **{4 + k: ("011", k) for k in COPIES_011}}
-KIND_COPIES = {**COPIES, **{4 + k: n for k, n in COPIES_011.items()}}
+# Kinds of the job's circuits (Design.kind): 0 a readout preparation, 1 to 4 depths 1 to 4 of mark 101, 5 to 7 depths 1
+# to 3 of mark 011.
 SEPARATION = 11
 READOUTS = 8
 READOUT_COPIES = 2
@@ -77,25 +77,56 @@ RETAINED_EXECUTION_SECONDS = 1.998523
 RETAINED_COMPILATION_SECONDS = 0.436857
 RETAINED_FIXED_SECONDS = 0.13
 GATE_DURATIONS = {"prx": 16, "cz": 40, "measure": 480}
+PRX_RATIO_AMPLITUDES = (0.002, 0.008, 0.016, 0.03)
 # Kinds of the first half (0 a readout preparation, k a copy of depth k), the local optimum of single exchanges of
 # best_first_half(); a test reruns the search.
 FIRST_HALF: tuple[int, ...] = (3, 7, 0, 0, 0, 0, 1, 5, 2, 6, 4, 0, 3, 4, 6, 3, 2, 0, 5, 3, 1, 7, 3, 7, 0, 0)
-ARRIVAL_LOG2N = 10
+FIRST_HALF_101: tuple[int, ...] = (3, 0, 4, 1, 3, 2, 0, 3, 2, 0, 0, 1, 3, 4, 0, 0, 3, 0, 0)
+ARRIVAL_LOG2N = 12
 CELL_LOG2N = 5
-POWER_LOG2N = 9
+POWER_LOG2N = 11
 INFLUENCE_LOG2N = 8
 
 
-def kinds_multiset() -> list[int]:
-    return [0] * READOUTS + [k for k, n in KIND_COPIES.items() for _ in range(n // 2)]
+@dataclass(frozen=True)
+class Design:
+    """One arrangement of a case: the copies of every depth of every mark and the kinds of its first half (0 a readout
+    preparation, k a copy of depth kind k). Kinds count from 1 over the marks in order and their depths."""
+
+    case: str
+    copies: dict[str, dict[int, int]]
+    first_half: tuple[int, ...]
+
+    @property
+    def marks(self) -> tuple[str, ...]:
+        return tuple(self.copies)
+
+    @property
+    def kind(self) -> dict[int, tuple[str, int]]:
+        entries = [(m, k) for m, depths in self.copies.items() for k in depths]
+        return {n: entry for n, entry in enumerate(entries, start=1)}
+
+    @property
+    def kind_copies(self) -> dict[int, int]:
+        return {n: self.copies[m][k] for n, (m, k) in self.kind.items()}
 
 
-def feasible(order: Sequence[int]) -> bool:
+DESIGN = Design(CASE, {"101": COPIES, "011": COPIES_011}, FIRST_HALF)
+# The mark 101 arms of DESIGN alone: 38 circuits (the 22 depth copies and the 16 readout preparations).
+DESIGN_101 = Design(CASE_101, {"101": COPIES}, FIRST_HALF_101)
+DESIGNS = {d.case: d for d in (DESIGN, DESIGN_101)}
+
+
+def kinds_multiset(design: Design = DESIGN) -> list[int]:
+    return [0] * READOUTS + [k for k, n in design.kind_copies.items() for _ in range(n // 2)]
+
+
+def feasible(order: Sequence[int], design: Design = DESIGN) -> bool:
     """Kinds of two pairs sit at least SEPARATION positions from their mirror images, the position next to the center
     holds a readout, kinds of more pairs stay off the last two positions, and no depth appears at adjacent positions."""
     half = len(order)
     for p, k in enumerate(order):
-        if k and KIND_COPIES[k] == 4 and 2 * half - 1 - 2 * p < SEPARATION:
+        if k and design.kind_copies[k] == 4 and 2 * half - 1 - 2 * p < SEPARATION:
             return False
         if k and p > half - 3:
             return False
@@ -106,24 +137,24 @@ def feasible(order: Sequence[int]) -> bool:
     return True
 
 
-def depth_spread(order: Sequence[int]) -> float:
+def depth_spread(order: Sequence[int], design: Design = DESIGN) -> float:
     """Largest minus smallest over the depth kinds of the mean squared offset of their positions from the center."""
     center = len(order) - 0.5
     means = []
-    for k in KIND_COPIES:
+    for k in design.kind_copies:
         offsets = [(p - center) ** 2 for p, kind in enumerate(order) if kind == k]
         means.append(sum(offsets) / len(offsets))
     return max(means) - min(means)
 
 
-def start_orders() -> list[tuple[int, ...]]:
+def start_orders(design: Design = DESIGN) -> list[tuple[int, ...]]:
     """Feasible starting orders: the depth copies in the order of a greedy rearrangement (most copies left first, never
     the previous kind), readouts at every fourth position and at the last two, then single exchanges of kinds that
     break the separation rule with kinds of more pairs until the order is feasible."""
-    half = sum(kinds_count().values())
+    half = sum(kinds_count(design).values())
     out: list[tuple[int, ...]] = []
-    for shift in range(len(KIND_COPIES)):
-        left = {k: n // 2 for k, n in KIND_COPIES.items()}
+    for shift in range(len(design.kind_copies)):
+        left = {k: n // 2 for k, n in design.kind_copies.items()}
         depth: list[int] = []
         while any(left.values()):
             kinds = sorted(
@@ -140,27 +171,30 @@ def start_orders() -> list[tuple[int, ...]]:
         slots = iter(depth)
         for p in range(half):
             order.append(0 if (p % 4 == 3 and p < half - 2) or p >= half - 2 else next(slots, 0))
-        if sorted(order) != sorted(kinds_multiset()):
+        if sorted(order) != sorted(kinds_multiset(design)):
             continue
         for _ in range(200):
-            bad = [p for p, k in enumerate(order) if k and KIND_COPIES[k] == 4 and 2 * half - 1 - 2 * p < SEPARATION]
+            bad = [
+                p for p, k in enumerate(order) if k and design.kind_copies[k] == 4 and 2 * half - 1 - 2 * p < SEPARATION
+            ]
             if not bad:
                 break
-            donors = [p for p, k in enumerate(order) if k and KIND_COPIES[k] > 4 and p < bad[0]]
+            donors = [p for p, k in enumerate(order) if k and design.kind_copies[k] > 4 and p < bad[0]]
             if not donors:
                 break
             q = donors[-1]
             order[bad[0]], order[q] = order[q], order[bad[0]]
-        if feasible(order) and tuple(order) not in out:
+        if feasible(order, design) and tuple(order) not in out:
             out.append(tuple(order))
     return out
 
 
-def kinds_count() -> dict[int, int]:
-    return {0: READOUTS, **{k: n // 2 for k, n in KIND_COPIES.items()}}
+def kinds_count(design: Design = DESIGN) -> dict[int, int]:
+    return {0: READOUTS, **{k: n // 2 for k, n in design.kind_copies.items()}}
 
 
-def descend(order: tuple[int, ...]) -> tuple[int, ...]:
+def descend(item: tuple[Design, tuple[int, ...]]) -> tuple[int, ...]:
+    design, order = item
     best = order
     improved = True
     while improved:
@@ -170,30 +204,33 @@ def descend(order: tuple[int, ...]) -> tuple[int, ...]:
                 continue
             trial = list(best)
             trial[i], trial[j] = trial[j], trial[i]
-            if feasible(trial) and (depth_spread(trial), tuple(trial)) < (depth_spread(best), tuple(best)):
+            if feasible(trial, design) and (depth_spread(trial, design), tuple(trial)) < (
+                depth_spread(best, design),
+                tuple(best),
+            ):
                 best, improved = tuple(trial), True
     return best
 
 
-def best_first_half() -> tuple[int, ...]:
+def best_first_half(design: Design = DESIGN) -> tuple[int, ...]:
     from parallel import ordered_map
 
-    found = ordered_map(descend, start_orders(), min_items=1)
-    return min(found, key=lambda o: (depth_spread(o), o))
+    found = ordered_map(descend, [(design, o) for o in start_orders(design)], min_items=1)
+    return min(found, key=lambda o: (depth_spread(o, design), o))
 
 
-def arrangement() -> list[int]:
-    if sorted(FIRST_HALF) != sorted(kinds_multiset()):
-        raise AssertionError("FIRST_HALF does not hold the planned copies")
-    if not feasible(FIRST_HALF):
-        raise AssertionError("FIRST_HALF breaks the placement constraints")
-    return [*FIRST_HALF, *FIRST_HALF[::-1]]
+def arrangement(design: Design = DESIGN) -> list[int]:
+    if sorted(design.first_half) != sorted(kinds_multiset(design)):
+        raise AssertionError("the first half does not hold the planned copies")
+    if not feasible(design.first_half, design):
+        raise AssertionError("the first half breaks the placement constraints")
+    return [*design.first_half, *design.first_half[::-1]]
 
 
-def depth_arms() -> list[dict[str, Any]]:
-    order = arrangement()
+def depth_arms(design: Design = DESIGN) -> list[dict[str, Any]]:
+    order = arrangement(design)
     total = len(order)
-    seen = {k: 0 for k in KIND_COPIES}
+    seen = {k: 0 for k in design.kind_copies}
     out: list[dict[str, Any]] = []
     bits = ["".join(b) for b in itertools.product("01", repeat=3)]
     readout = 0
@@ -209,7 +246,7 @@ def depth_arms() -> list[dict[str, Any]]:
                 circuit = {**circuit, "name": f"{circuit['name']}-m"}
             out.append({"name": circuit["name"], "circuit": circuit, "marked": None, "k": None, "kind": 0})
             continue
-        mark, depth = KIND[kind]
+        mark, depth = design.kind[kind]
         name = f"m{mark}-k{depth}-c{seen[kind]}"
         seen[kind] += 1
         out.append(
@@ -221,9 +258,9 @@ def depth_arms() -> list[dict[str, Any]]:
                 "kind": kind,
             }
         )
-    if seen != KIND_COPIES or readout != READOUTS:
+    if seen != design.kind_copies or readout != READOUTS:
         raise AssertionError(f"arrangement holds {seen} and {readout} readouts")
-    for kind in [*KIND_COPIES, 0]:
+    for kind in [*design.kind_copies, 0]:
         at = [n for n, a in enumerate(out) if a["kind"] == kind]
         if sum(at) != len(at) * (total - 1) / 2 or any(out[total - 1 - n]["kind"] != kind for n in at):
             raise AssertionError(f"kind {kind} circuits are not mirrored: positions {at}")
@@ -300,6 +337,12 @@ def cost_estimates(arms: list[dict[str, Any]]) -> dict[str, Any]:
         "billed_seconds_of_ceiling": billed,
         "max_credits_garnet": billed * PRICE["garnet"],
         "emerald_stress_execution_seconds": 2.2 * best,
+        "cancel_threshold_seconds": billed - CANCEL_MARGIN,
+        "cancel_margin_seconds_at_overrun": {
+            f"{factor:g}x": billed - CANCEL_MARGIN - factor * run for factor in (1.0, 1.5, 2.2)
+        },
+        "executions": len(arms) * SHOTS,
+        "circuits": len(arms),
         "mock_compile_estimate": "required before approval; not read",
     }
 
@@ -350,21 +393,55 @@ def mechanism_slopes(
     return out
 
 
+def prx_ratio_range(
+    fitters: dict[str, decision.Fitter], circuits: dict[str, dict[int, dict[str, Any]]], cal: Any
+) -> dict[str, float]:
+    """eps of mark 011 over eps of mark 101 for a PRX amplitude error of each size, from the noise-free fit of the
+    exact response at plus and minus the amplitude (the slope the contrast tests against): the ratio is a model
+    quantity that varies with the amplitude, so the contrast carries this range."""
+    out = {}
+    for x in PRX_RATIO_AMPLITUDES:
+        slope = {}
+        for mark in ("101", "011"):
+            eps = []
+            for sign in (-1, 1):
+                response = sim.Response(circuits[mark], cal, PATH, mark, prx_scale=sign * x)
+                fit = fitters[mark].fit(
+                    response.probabilities(1, 1, 0.0), np.diag(np.full(len(circuits[mark]), 1e-8)), True
+                )
+                eps.append(fit["eps"])
+            slope[mark] = (eps[1] - eps[0]) / (2 * x)
+        out[f"{x:g}"] = slope["011"] / slope["101"]
+    return out
+
+
 def mark_block(
-    mark: str, arms: list[dict[str, Any]], cal: Any, distributions: dict[str, np.ndarray]
+    mark: str, arms: list[dict[str, Any]], cal: Any, distributions: dict[str, np.ndarray], design: Design
 ) -> tuple[dict[int, dict[str, Any]], sim.Response, decision.Fitter, dict[str, Any], dict[int, int]]:
-    copies = COPIES if mark == "101" else COPIES_011
+    copies = design.copies[mark]
     first = {k: next(a["name"] for a in arms if a["marked"] == mark and a["k"] == k) for k in copies}
     circuits = {k: next(a["circuit"] for a in arms if a["marked"] == mark and a["k"] == k) for k in copies}
     response = sim.Response(circuits, cal, PATH, mark)
     return circuits, response, decision.Fitter(response), readout_plan(distributions, first, mark, copies), copies
 
 
-def decisions(arms: list[dict[str, Any]], cal: Any, distributions: dict[str, np.ndarray]) -> dict[str, Any]:
-    circuits, response, fitter, plan, copies = mark_block("101", arms, cal, distributions)
-    circuits_b, response_b, fitter_b, plan_b, copies_b = mark_block("011", arms, cal, distributions)
+def response_digest(resp: sim.Response) -> dict[str, Any]:
+    grid_s, grid_e = [0.9, 1.0], [-0.04, 0.0, 0.04]
+    table = [[list(resp.centered(s, e)) for e in grid_e] for s in grid_s]
+    return {
+        "s": grid_s,
+        "eps": grid_e,
+        "centered": table,
+        "sha256": hashlib.sha256(json.dumps(rounded(table)).encode()).hexdigest(),
+    }
+
+
+def decisions(
+    arms: list[dict[str, Any]], cal: Any, distributions: dict[str, np.ndarray], design: Design = DESIGN
+) -> dict[str, Any]:
+    circuits, response, fitter, plan, copies = mark_block("101", arms, cal, distributions, design)
+    with_011 = "011" in design.marks
     kept = [copies[k] * PLANNED_KEPT_PER_COPY for k in copies]
-    kept_b = [copies_b[k] * PLANNED_KEPT_PER_COPY for k in copies_b]
     readout_cov = plan["planned_covariance"]
     cal_block = calibration.calibrate(fitter, kept, readout_cov, ARRIVAL_LOG2N, CELL_LOG2N)
     delta = cal_block["delta_resolve"]
@@ -404,19 +481,62 @@ def decisions(arms: list[dict[str, Any]], cal: Any, distributions: dict[str, np.
     ]
     pairs = [n // 2 for n in copies.values()]
     gated = {
-        label: calibration.influence_power(
-            fitter, gated_truths, pairs, PLANNED_KEPT_PER_COPY, readout_cov, delta, INFLUENCE_LOG2N, noise_phi
+        f"gate_phi_{gate_phi:g}_noise_phi_{noise_phi:g}": calibration.influence_power(
+            fitter, gated_truths, pairs, PLANNED_KEPT_PER_COPY, readout_cov, delta, INFLUENCE_LOG2N, noise_phi, gate_phi
         )
-        for label, noise_phi in (("binomial_phi_1", 1.0), ("overdispersed_phi_bound", decision.PHI))
+        for gate_phi in (1.0, decision.PHI)
+        for noise_phi in (1.0, decision.PHI)
     }
-    slopes = {
-        "101": mechanism_slopes(fitter, circuits, cal, "101"),
-        "011": mechanism_slopes(fitter_b, circuits_b, cal, "011"),
+    block: dict[str, Any] = {
+        "model_probabilities": response.probabilities(1.0, 1.0, 0.0),
+        "response": response_digest(response),
+        "readout": plan,
+        "gate": {
+            "copy_floor": decision.COPY_FLOOR,
+            "min_pairs_per_depth": decision.MIN_PAIRS,
+            "heterogeneity_phi": decision.PHI,
+            "planned_kept_per_copy": PLANNED_KEPT_PER_COPY,
+            "heterogeneity_threshold_by_dof": decision.heterogeneity_thresholds(12),
+        },
+        "rule": {
+            "primary": (
+                "departure of the marked probabilities of mark 101 from the geometric law toward a plane rotation eps"
+            ),
+            "delta_resolve": delta,
+            "eps_equivalence": decision.EPS_EQUIV,
+            "z_equivalence": decision.Z_EQUIV,
+            "z_loss": decision.Z_LOSS,
+            "phi": decision.PHI,
+            "boxes": {"a": decision.A_BOX, "s": decision.S_BOX, "eps": decision.E_BOX},
+            "boxes_note": (
+                "the fitting box of a and s equals the calibrated null box; a fit on a bound reads out of domain"
+            ),
+        },
+        "calibration": cal_block,
+        "power": {
+            "design_effect_eps": 0.02,
+            "worst_resolved_truth": worst,
+            "truths": power,
+            "note": "rates at the listed truths with block error estimates; no bound over the claimed region",
+        },
+        "gated_power": gated,
+        "readout_gates": {"101": calibration.readout_gate_rates(plan)},
+        "cost": None,
     }
+    slopes = {"101": mechanism_slopes(fitter, circuits, cal, "101")}
+    block["mechanism_slopes"] = slopes["101"]
+    if not with_011:
+        block["contrast"] = None
+        return block
+    circuits_b, response_b, fitter_b, plan_b, copies_b = mark_block("011", arms, cal, distributions, design)
+    kept_b = [copies_b[k] * PLANNED_KEPT_PER_COPY for k in copies_b]
+    slopes["011"] = mechanism_slopes(fitter_b, circuits_b, cal, "011")
+    ratios = prx_ratio_range({"101": fitter, "011": fitter_b}, {"101": circuits, "011": circuits_b}, cal)
     ratio = (
         slopes["011"]["prx_amplitude_fraction"]["eps_per_unit"]
         / slopes["101"]["prx_amplitude_fraction"]["eps_per_unit"]
     )
+    interval = [min(ratios.values()), max(ratios.values())]
     contrast_truths = []
     for label, key, x in (
         ("cz -0.03 rad", "cz_phase", -0.03),
@@ -438,65 +558,34 @@ def decisions(arms: list[dict[str, Any]], cal: Any, distributions: dict[str, np.
         readout_cov,
         plan_b["planned_covariance"],
         ratio,
+        delta,
+        interval,
         POWER_LOG2N - 1,
     )
-    grid_s, grid_e = [0.9, 1.0], [-0.04, 0.0, 0.04]
-
-    def digest(resp: sim.Response) -> dict[str, Any]:
-        table = [[list(resp.centered(s, e)) for e in grid_e] for s in grid_s]
-        return {
-            "s": grid_s,
-            "eps": grid_e,
-            "centered": table,
-            "sha256": hashlib.sha256(json.dumps(rounded(table)).encode()).hexdigest(),
-        }
-
-    return {
-        "model_probabilities": response.probabilities(1.0, 1.0, 0.0),
-        "response": digest(response),
-        "readout": plan,
-        "mark_011": {
-            "model_probabilities": response_b.probabilities(1.0, 1.0, 0.0),
-            "response": digest(response_b),
-            "readout": plan_b,
-            "copies": {str(k): n for k, n in copies_b.items()},
-        },
-        "gate": {
-            "copy_floor": decision.COPY_FLOOR,
-            "planned_kept_per_copy": PLANNED_KEPT_PER_COPY,
-            "heterogeneity_threshold_by_dof": decision.heterogeneity_thresholds(12),
-        },
-        "rule": {
-            "primary": (
-                "departure of the marked probabilities of mark 101 from the geometric law toward a plane rotation eps"
-            ),
-            "delta_resolve": delta,
-            "eps_equivalence": decision.EPS_EQUIV,
-            "z_equivalence": decision.Z_EQUIV,
-            "z_loss": decision.Z_LOSS,
-            "phi": decision.PHI,
-            "boxes": {"a": decision.A_BOX, "s": decision.S_BOX, "eps": decision.E_BOX},
-            "boxes_note": (
-                "the fitting box of a and s equals the calibrated null box; a fit on a bound reads out of domain"
-            ),
-        },
-        "calibration": cal_block,
-        "power": {"design_effect_eps": 0.02, "worst_resolved_truth": worst, "truths": power},
-        "gated_power": gated,
-        "mechanism_slopes": slopes["101"],
-        "contrast": {
-            "rule": "eps_011 against 0 (CZ phase) and against ratio times eps_101 (PRX amplitude); decides nothing",
-            "ratio_prx": ratio,
-            "slopes": slopes,
-            "power": contrast_block,
-        },
-        "cost": None,
+    block["mark_011"] = {
+        "model_probabilities": response_b.probabilities(1.0, 1.0, 0.0),
+        "response": response_digest(response_b),
+        "readout": plan_b,
+        "copies": {str(k): n for k, n in copies_b.items()},
     }
+    block["readout_gates"]["011"] = calibration.readout_gate_rates(plan_b)
+    block["contrast"] = {
+        "rule": (
+            "eps_011 against 0 (CZ phase) and against ratio times eps_101 (PRX amplitude), the amplitude rejected only "
+            "when rejected at every ratio of the interval; decides nothing"
+        ),
+        "ratio_prx": ratio,
+        "ratio_interval": interval,
+        "ratio_by_amplitude": ratios,
+        "slopes": slopes,
+        "power": contrast_block,
+    }
+    return block
 
 
-def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
+def build_from(calibration_dir: Path, design: Design = DESIGN) -> tuple[dict[str, str], dict[str, Any]]:
     cal = iqm_sim.Calibration.from_directory(calibration_dir)
-    arms = depth_arms()
+    arms = depth_arms(design)
     files = {f"circuits/{a['name']}.json": dump(a["circuit"]) for a in arms}
     distributions = {a["name"]: final_distribution(a["circuit"], cal) for a in arms}
     arm_records: dict[str, Any] = {}
@@ -520,7 +609,7 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
             }
         arm_records[arm["name"]] = record
     cost = cost_estimates(arms)
-    block = decisions(arms, cal, distributions)
+    block = decisions(arms, cal, distributions, design)
     block["cost"] = cost
     job = {
         "job": "grover",
@@ -536,8 +625,9 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
     prediction = {
         "calibration_set": cal.set_id,
         "forward_path": PATH,
-        "copies": {str(k): n for k, n in COPIES.items()},
-        "copies_011": {str(k): n for k, n in COPIES_011.items()},
+        "marks": list(design.marks),
+        "copies": {str(k): n for k, n in design.copies["101"].items()},
+        **({"copies_011": {str(k): n for k, n in design.copies["011"].items()}} if "011" in design.marks else {}),
         "arms": arm_records,
         "decisions": rounded(block),
         "model": (
@@ -549,9 +639,9 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
     files["cases.json"] = dump(
         {
             "schema": CASE_SCHEMA,
-            "case": CASE,
+            "case": design.case,
             "prediction_sha256": sha256(files["prediction.json"].encode()),
-            "question": question(prediction["decisions"]["contrast"]["ratio_prx"]),
+            "question": question((prediction["decisions"]["contrast"] or {}).get("ratio_prx")),
             "qcs": QCS,
             "jobs": [job],
         }
@@ -559,8 +649,16 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
     return files, prediction
 
 
-def question(ratio_prx: float) -> str:
-    """The approval question: the PRX arm states the fitted ratio of the decision, as prediction.json records it."""
+def question(ratio_prx: float | None) -> str:
+    """The approval question: the PRX arm states the fitted ratio of the decision, as prediction.json records it; a
+    case without mark 011 arms (ratio_prx None) asks the primary question alone."""
+    if ratio_prx is None:
+        return (
+            "With the line-native Grover of mark 101 at depths 1 to 4 placed at positions mirrored about the job's "
+            "center on one Garnet calibration, does the marked probability of mark 101 depart from the geometric law "
+            "of the calibrated model toward a rotation of the Grover plane per iteration, whatever gate error "
+            "causes it?"
+        )
     return (
         "With the line-native Grover of mark 101 at depths 1 to 4 and of mark 011 at depths 1 to 3 placed at "
         "positions mirrored about the job's center on one Garnet calibration, does the marked probability of "
@@ -586,7 +684,7 @@ def write(directory: Path, source: Path | None, live: bool = False) -> None:
     elif source is not None:
         for name in CALIBRATION_FILES:
             shutil.copyfile(source / name, calibration_dir / name)
-    files, prediction = build_from(calibration_dir)
+    files, prediction = build_from(calibration_dir, design_of(directory))
     for stale in (directory / "circuits").glob("*.json"):
         if stale.relative_to(directory).as_posix() not in files:
             stale.unlink()
@@ -597,8 +695,15 @@ def write(directory: Path, source: Path | None, live: bool = False) -> None:
     print(json.dumps({k: prediction["decisions"][k] for k in ("rule", "calibration", "cost")}, indent=1))
 
 
+def design_of(directory: Path) -> Design:
+    """The design a case directory carries, by its name."""
+    if directory.name not in DESIGNS:
+        raise ValueError(f"{directory}: no design of {sorted(DESIGNS)} carries this name")
+    return DESIGNS[directory.name]
+
+
 def check(directory: Path) -> None:
-    files, _ = build_from(directory / "calibration")
+    files, _ = build_from(directory / "calibration", design_of(directory))
     present = {p.relative_to(directory).as_posix() for p in directory.rglob("*") if p.is_file()}
     expected = set(files) | {f"calibration/{name}" for name in CALIBRATION_FILES}
     if present != expected:
@@ -621,7 +726,8 @@ def main() -> int:
     a = sub.add_parser("analyze")
     a.add_argument("run_dir", type=Path)
     a.add_argument("--out", type=Path, required=True)
-    sub.add_parser("search")
+    s = sub.add_parser("search")
+    s.add_argument("--case", default=CASE, choices=sorted(DESIGNS))
     args = parser.parse_args()
     if args.command == "build":
         write(args.directory, args.calibration, args.live)
@@ -631,7 +737,7 @@ def main() -> int:
     elif args.command == "analyze":
         run_analysis.write_record(run_analysis.analyze(args.run_dir), args.out)
     elif args.command == "search":
-        print(best_first_half())
+        print(best_first_half(DESIGNS[args.case]))
     else:
         parser.print_help()
         return 2

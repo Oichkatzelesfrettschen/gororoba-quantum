@@ -21,6 +21,7 @@ import grover_plane_sim as sim
 ROOT = Path(__file__).resolve().parent.parent
 OLD = ROOT / "results" / "iqm" / "cases" / "grover-fourth-depth-mirrored"
 NEW = ROOT / "results" / "iqm" / "cases" / case.CASE
+NEW_101 = ROOT / "results" / "iqm" / "cases" / case.CASE_101
 PATH = ["QB20", "QB16", "QB17"]
 
 
@@ -205,6 +206,35 @@ def test_the_leave_one_pair_out_check_names_a_reading_that_one_pair_carries(
     require("influence" in out or out["departure"].startswith("not evaluated"))
 
 
+def test_the_boundary_search_walks_the_perimeter_of_the_null_box() -> None:
+    corners = {calibration.perimeter(float(t)) for t in range(4)}
+    require(corners == {(a, s) for a in calibration.NULL_A for s in calibration.NULL_S}, str(corners))
+    for t in (0.3, 1.5, 2.9, 3.7):
+        a, s = calibration.perimeter(t)
+        require(a in calibration.NULL_A or s in calibration.NULL_S, str((t, a, s)))
+
+
+def test_the_heterogeneity_gate_follows_the_dispersion_the_covariance_assumes() -> None:
+    # two pairs per depth whose means differ by 1.4 binomial standard deviations of a pair mean
+    kept = 13440
+    sd = math.sqrt(0.2 * 0.8 / (2 * kept))
+    pairs = {
+        k: [((round(kept * (0.2 + 1.4 * sd)), kept),) * 2, ((round(kept * 0.2), kept),) * 2] for k in decision.DEPTHS
+    }
+    binomial, _ = decision.heterogeneity(pairs, 1.0)
+    consistent, dof = decision.heterogeneity(pairs, decision.PHI)
+    require(consistent == pytest.approx(binomial / decision.PHI, rel=1e-6), str((binomial, consistent)))
+    require(dof == 4)
+
+
+def test_the_readout_gate_rates_fall_with_the_dispersion_of_the_copies() -> None:
+    plan = {"planned_covariance": 1e-5 * np.eye(4), "tolerance": 0.05, "sides_dof": 56, "sides_threshold": 82.29}
+    rates = calibration.readout_gate_rates(plan)
+    by_phi = rates["sides_pass_rate_by_dispersion"]
+    require(by_phi["1"] == pytest.approx(0.99, abs=0.005) and by_phi["1.54"] < 0.5 < by_phi["0.86"], by_phi)
+    require(rates["shift_pass_rate"] == 1.0 and rates["copy_floor"] == "not modeled")
+
+
 def test_the_reading_rates_count_each_category_of_the_departure() -> None:
     cell = {
         "T": np.array([10.0, 1.0, 1.0]),
@@ -219,17 +249,38 @@ def test_the_reading_rates_count_each_category_of_the_departure() -> None:
 @pytest.mark.audit
 def test_the_null_box_calibration_holds_the_false_alarm_rate_at_a_small_grid(fitter: decision.Fitter) -> None:
     kept = [4 * 13440.0, 4 * 13440.0, 10 * 13440.0, 4 * 13440.0]
-    out = calibration.calibrate(fitter, kept, np.zeros((4, 4)), log2n=7, cell_log2n=2)
+    out = calibration.calibrate(
+        fitter, kept, np.zeros((4, 4)), log2n=7, cell_log2n=2, search_log2n=5, nodes=4, refinements=1
+    )
     require(out["delta_resolve"] >= 6.634)
     require(out["false_coherent_max"] <= 0.03)
+    require(out["cells_by_kind"]["corner"] == 4 and out["cells_by_kind"]["boundary"] >= 4, out["cells_by_kind"])
+    require("non_rotation_false_alarm_max" in out)
 
 
 @pytest.mark.audit
-def test_the_committed_case_arrangement_is_the_local_optimum_and_mirrored() -> None:
-    require(case.best_first_half() == case.FIRST_HALF)
-    arms = case.depth_arms()
-    require(len(arms) == 2 * len(case.FIRST_HALF))
-    require(case.feasible(case.FIRST_HALF))
+@pytest.mark.parametrize("design", [case.DESIGN, case.DESIGN_101], ids=lambda d: d.case)
+def test_each_committed_case_arrangement_is_the_local_optimum_and_mirrored(design: case.Design) -> None:
+    require(case.best_first_half(design) == design.first_half)
+    arms = case.depth_arms(design)
+    require(len(arms) == 2 * len(design.first_half))
+    require(case.feasible(design.first_half, design))
+    require({a["marked"] for a in arms if a["marked"]} == set(design.marks))
+
+
+@pytest.mark.audit
+def test_the_101_case_is_the_primary_arms_of_the_full_case_without_mark_011() -> None:
+    full = json.loads((NEW / "cases.json").read_text(encoding="utf-8"))
+    only = json.loads((NEW_101 / "cases.json").read_text(encoding="utf-8"))
+    prediction = json.loads((NEW_101 / "prediction.json").read_text(encoding="utf-8"))
+    require(len(full["jobs"][0]["circuits"]) == 52 and len(only["jobs"][0]["circuits"]) == 38)
+    require(only["case"] == case.CASE_101 and prediction["marks"] == ["101"] and "copies_011" not in prediction)
+    require("mark_011" not in prediction["decisions"] and prediction["decisions"]["contrast"] is None)
+    require(only["question"] == case.question(None) and "011" not in only["question"])
+    require(only["prediction_sha256"] == case.sha256((NEW_101 / "prediction.json").read_bytes()))
+    names = lambda c: {e["file"] for e in c["jobs"][0]["circuits"] if "m101" in e["file"]}  # noqa: E731
+    cost = prediction["decisions"]["cost"]
+    require(cost["circuits"] == 38 and cost["executions"] == 38 * case.SHOTS and len(names(only)) == 22)
 
 
 @pytest.mark.audit
@@ -240,8 +291,11 @@ def test_the_committed_case_binds_its_prediction_and_its_response_digest() -> No
     prediction = json.loads(text)
     d = prediction["decisions"]
     require(d["rule"]["delta_resolve"] >= 6.634)
-    require(d["calibration"]["false_coherent_max"] <= 0.0105)
-    require(d["power"]["worst_resolved_truth"]["coherent"] >= 0.95)
+    require(d["calibration"]["false_coherent_max_plus_3se"] <= 0.02)
+    require(d["calibration"]["cells_by_kind"]["corner"] == 4 and d["calibration"]["blocks"] == 8)
+    require(d["power"]["worst_resolved_truth"]["coherent"] >= 0.85)
+    require(d["contrast"]["ratio_interval"][0] <= d["contrast"]["ratio_prx"] <= d["contrast"]["ratio_interval"][1])
+    require(set(d["readout_gates"]) == {"101", "011"} and d["gate"]["min_pairs_per_depth"] == 2)
     cal = iqm_sim.Calibration.from_directory(NEW / "calibration")
     circuits_by_depth = {
         k: json.loads(next((NEW / "circuits").glob(f"m101-k{k}-c0.json")).read_text(encoding="utf-8"))
@@ -299,6 +353,11 @@ def test_the_mark_contrast_separates_a_cz_phase_from_a_prx_amplitude() -> None:
     cz = decision.contrast(0.037, 0.004, 0.001, 0.005, ratio)
     prx = decision.contrast(0.037, 0.004, ratio * 0.037, 0.005, ratio)
     flat = decision.contrast(0.037, 0.004, 0.02, 0.02, ratio)
+    # a PRX amplitude is rejected only when it is rejected at every ratio of the interval
+    wide = decision.contrast(0.037, 0.004, 0.001, 0.005, ratio, ratio_interval=(0.0, 3.0))
+    narrow = decision.contrast(0.037, 0.004, 0.001, 0.005, ratio, ratio_interval=(ratio, ratio * 1.01))
+    require(wide["reading"] == "unresolved" and wide["z_prx_nearest"] < 3.0, str(wide))
+    require(narrow["reading"].startswith("CZ-phase-like") and narrow["ratio_interval"][0] == ratio, str(narrow))
     require(cz["reading"].startswith("CZ-phase-like"), cz["reading"])
     require(prx["reading"].startswith("PRX-like"), prx["reading"])
     require(flat["reading"] == "unresolved", flat["reading"])

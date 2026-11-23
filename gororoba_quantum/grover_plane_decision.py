@@ -236,13 +236,14 @@ def estimates(pairs: Pairs, shift: np.ndarray, readout_cov: np.ndarray) -> tuple
     return y, np.diag([e[1] for e in est]) + readout_cov
 
 
-def heterogeneity(pairs: Pairs) -> tuple[float, int]:
-    """Chi-square of the pair means of each depth about the depth's mean (binomial variances, phi = 1): a drift linear
-    in position leaves every pair mean unchanged, so the statistic sees what remains: one displaced copy, a symmetric
-    drift, a step."""
+def heterogeneity(pairs: Pairs, phi: float = PHI) -> tuple[float, int]:
+    """Chi-square of the pair means of each depth about the depth's mean (binomial variances times phi, the dispersion
+    the covariance of the fit assumes): a drift linear in position leaves every pair mean unchanged, so the statistic
+    sees what remains: one displaced copy, a symmetric drift, a step. phi = 1 is the binomial gate, which fires on a
+    copy of dispersion above 1 whatever the circuit does."""
     total, dof = 0.0, 0
     for k in sorted(pairs):
-        means = [pair_mean(p, 1.0) for p in pairs[k]]
+        means = [pair_mean(p, phi) for p in pairs[k]]
         m = np.array([x[0] for x in means])
         v = float(np.mean([x[1] for x in means]))
         total += float(np.sum((m - m.mean()) ** 2) / v)
@@ -257,6 +258,7 @@ def read_pairs(
     readout_cov: np.ndarray,
     planned_kept: float,
     delta: float,
+    gate_phi: float = PHI,
 ) -> dict[str, Any]:
     """The preregistered readings on the mirror pairs of the four depths: pair floor, pair-mean heterogeneity gate,
     the readings of decide(), and the leave-one-pair-out influence check (every refit must read the same departure
@@ -267,9 +269,9 @@ def read_pairs(
     if any(len(keep[k]) < MIN_PAIRS for k in depths):
         out["departure"] = NO_PAIRS
         return out
-    chi2, dof = heterogeneity(keep)
+    chi2, dof = heterogeneity(keep, gate_phi)
     threshold = float(stats.chi2.isf(ALPHA, dof))
-    out["heterogeneity"] = {"chi2": chi2, "dof": dof, "threshold": threshold}
+    out["heterogeneity"] = {"chi2": chi2, "dof": dof, "threshold": threshold, "phi": gate_phi}
     if chi2 > threshold:
         out["departure"] = "not evaluated: the mirror pairs of a depth differ by more than their binomial scatter"
         return out
@@ -310,8 +312,16 @@ def gate_failure(fit: dict[str, Any]) -> str:
     return ""
 
 
-def mark_contrast(fits: dict[str, dict[str, Any]], ratio: float) -> dict[str, Any]:
+def mark_contrast(
+    fits: dict[str, dict[str, Any]], ratio: float, ratio_interval: Sequence[float] | None = None
+) -> dict[str, Any]:
     """The mark contrast of the 101 and 011 fits, read only when both marks pass every gate of gate_failure."""
+    if "011" not in fits:
+        return {
+            "reading": "not evaluated: the case carries no mark 011 arms",
+            "z_cz": float("nan"),
+            "z_prx": float("nan"),
+        }
     failed = {m: gate_failure(fits[m]) for m in ("101", "011")}
     if any(failed.values()):
         why = "; ".join(f"mark {m}: {r}" for m, r in failed.items() if r)
@@ -323,22 +333,49 @@ def mark_contrast(fits: dict[str, dict[str, Any]], ratio: float) -> dict[str, An
         b["rotation"]["eps"],
         b["rotation_se"].get("eps", float("nan")),
         ratio,
+        ratio_interval=ratio_interval,
     )
 
 
 def contrast(
-    eps_a: float, se_a: float, eps_b: float, se_b: float, ratio: float, z_consistent: float = 2.0, z_reject: float = 3.0
+    eps_a: float,
+    se_a: float,
+    eps_b: float,
+    se_b: float,
+    ratio: float,
+    z_consistent: float = 2.0,
+    z_reject: float = 3.0,
+    ratio_interval: Sequence[float] | None = None,
 ) -> dict[str, Any]:
     """The mark contrast beside the departure: a CZ conditional phase leaves the plane of mark 011 unrotated
-    (eps_011 = 0) while a PRX amplitude error rotates it by ratio times eps_101. It decides nothing."""
+    (eps_011 = 0) while a PRX amplitude rotates it by ratio times eps_101. The ratio is a model slope that varies with
+    the size of the amplitude error: ratio_interval (low, high) carries that range, a PRX amplitude counts as rejected
+    only when it is rejected at every ratio of the interval and as consistent when some ratio of it is consistent.
+    It decides nothing."""
     if not all(math.isfinite(x) and x > 0 for x in (se_a, se_b)):
         return {"reading": "unresolved: a standard error is not defined", "z_cz": float("nan"), "z_prx": float("nan")}
+    low, high = (ratio, ratio) if ratio_interval is None else (min(ratio_interval), max(ratio_interval))
+
+    def z_at(r: float) -> float:
+        return (eps_b - r * eps_a) / math.hypot(se_b, r * se_a)
+
     z_cz = eps_b / se_b
-    z_prx = (eps_b - ratio * eps_a) / math.hypot(se_b, ratio * se_a)
-    if abs(z_cz) <= z_consistent and abs(z_prx) >= z_reject:
+    z_prx = z_at(ratio)
+    grid = [z_at(low + (high - low) * i / 8) for i in range(9)]
+    # the ratio of the interval that the data like best (zero when z changes sign inside the interval)
+    best = 0.0 if min(grid) < 0 < max(grid) else min(abs(z) for z in grid)
+    if abs(z_cz) <= z_consistent and best >= z_reject:
         reading = "CZ-phase-like (PRX amplitude rejected)"
-    elif abs(z_prx) <= z_consistent and abs(z_cz) >= z_reject:
+    elif best <= z_consistent and abs(z_cz) >= z_reject:
         reading = "PRX-like (CZ phase rejected)"
     else:
         reading = "unresolved"
-    return {"reading": reading, "z_cz": z_cz, "z_prx": z_prx, "ratio": ratio}
+    return {
+        "reading": reading,
+        "z_cz": z_cz,
+        "z_prx": z_prx,
+        "z_prx_nearest": best,
+        "z_prx_range": [min(grid), max(grid)],
+        "ratio": ratio,
+        "ratio_interval": [low, high],
+    }
