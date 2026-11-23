@@ -5533,7 +5533,7 @@
       "domain": "algebra",
       "evidence_class": "mathematical claim",
       "status": "established",
-      "boundary": "Two-term elements only. Prior work: BCDI Proposition 7.4 gives the spectrum of the sedenion Stiefel zero divisors (42 index pairs); Skiouris 2026 (Zenodo 22082732) Proposition 2.2 gives the D = 32 nullities 12, 4 and 0 of the pairs e_i + e_j with i in 1..15, j in 17..31; BDI II Proposition 8.2 gives the elements reaching 2^(n-1) - 4. The rest of the split (the pairs with e_16, the same-half pairs, every other dimension, the recursion) is the repository's; de Marrais's three box-kite papers do not state it in the portions read, so its novelty is unassessed. Any hardware echo contrast remains open.",
+      "boundary": "Two-term elements only; the de Marrais higher-dimensional comparison and any hardware echo contrast remain open.",
       "evidence": [],
       "documents": [
         "docs/notes/singular_sector_dynamics.md"
