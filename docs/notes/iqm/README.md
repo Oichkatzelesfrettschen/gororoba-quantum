@@ -243,9 +243,12 @@ granularity, compatible instructions and fast-feedback sources.
 
 Pay-as-you-go jobs cost `billed_seconds` times the QC's price per second:
 Emerald 0.75, Garnet 0.50, Sirius 0.30 credits/s. A one-hour timeslot costs
-2400.00 (Emerald), 1800.00 (Garnet) or 1080.00 (Sirius) credits. The 30.00
-credits of this account buy 40 s on Emerald, 60 s on Garnet or 100 s on
-Sirius, and expire 2026-11-01.
+2400.00 (Emerald), 1800.00 (Garnet) or 1080.00 (Sirius) credits. The facts
+block above is the capture of 2026-10-22 (30.00 credits expiring
+2026-11-01). The last retained job records 23.75 credits expiring
+2026-12-01T00:00Z (`credit_after` in `results.json` of the 2026-11-21
+sedenion run); they buy about 31 s on Emerald, 47 s on Garnet or 79 s on
+Sirius.
 
 Execution time of an active-reset Garnet job follows the compiled schedule plus a cost per circuit-shot, and each
 executed mid-circuit measure record adds more. Over twelve retained QPU jobs (the seven active-reset jobs
@@ -253,7 +256,9 @@ executed mid-circuit measure record adds more. Over twelve retained QPU jobs (th
 `01a1707f-6157`; the window probes `01a174be-d1f7` and `01a174be-e68b`; the diagnostic `01a1753f-3b98`; the pre-flight
 probe `01a175ac-522d`; and the main pinching run `01a175ac-da6c`), `execution_seconds` = the record's
 `execution_runtime_estimate_seconds` less 1.6 s + 0.162 s + 7.862 us per circuit-shot + 6.338 us per executed
-mid-circuit measure record (records = shots x the mid-circuit measures of the circuits), with residuals of at most
+mid-circuit measure record (records = shots x the mid-circuit measures of the circuits; this fit, `check_billing_fit`, reads
+the server's compiled estimate, while `billing()` substitutes a local estimate of the schedule that counts prx layers,
+delays and mid-circuit measures and so serves measurement-sequence circuits only), with residuals of at most
 0.168 s; `runtime_seconds` exceeded `execution_seconds` by 0.04 to 0.411 s, and `billed_seconds` is
 `ceil(runtime_seconds)` with no fixed 1.6 s term.
 
@@ -271,8 +276,23 @@ circuits is 9.41 s, which needs a threshold of 10.41 s and so `max_credits` of 6
 retained fit and its check are `scripts/iqm_measurement_sequence.py`, `BILLING_MODELS` and `check_billing_fit`; a case
 built before the correction keeps its predicted billing (`billing_model_of`).
 
-The [read-only API audit](../../evidence/provider-api-audit/README.md) refreshes those rates and balances
-on 22 October 2026. `runtime_seconds` includes compilation plus execution; `billed_seconds` rounds that
+The four later active-reset Garnet jobs test v2 out of sample ([billing-v3](../../evidence/iqm-garnet-billing-v3/README.md)):
+it over-predicts every one of them, by 0.039 to 0.289 s, and the packed Pauli job (0.226 s) and the Grover depth job
+(0.289 s) fall outside its 0.17 s band; runtime exceeded execution by up to 0.437 s, above its 0.42 s margin. A refit of
+the same three terms over all sixteen jobs gives 0.135 s + 7.620 us per circuit-shot + 6.462 us per mid-circuit
+record, largest residual 0.227 s. Leaving the main pinching run out mispredicts it by 4.0 s, so the per-record term
+still rests on that run. Of five candidate fourth terms, a cohort term (the four later jobs run 0.173 s faster), a
+per-circuit term and a per-schedule-second term lower the largest leave-one-out residual over the other jobs from
+0.252 s to 0.18 to 0.19 s, and the heralding and curvature terms raise it; no selection rule was fixed in advance, so
+the refit adopts none. Runtime exceeds execution by exactly the compilation seconds on all sixteen jobs.
+`BILLING_MODELS` gains a refit in the change that first sizes a Garnet case from it.
+
+The [billing-v4](../../evidence/iqm-billing-v4/README.md) refit adds per-shot circuit-duration terms over the Garnet and
+Emerald jobs: none predicts the 9.505 s Emerald third-length job (residual 5.0 to 5.8 s), and on Garnet the shots times
+the summed circuit duration lowers the largest leave-one-out residual over the other jobs from 0.252 s to 0.199 s.
+
+The [read-only API audit](../../evidence/provider-api-audit/README.md) of 22 October 2026 retains the rates
+and the balance of that date. `runtime_seconds` includes compilation plus execution; `billed_seconds` rounds that
 sum upward separately for each job. The balance therefore buys billed runtime, not pure pulse execution.
 Client-side transpilation does not establish zero server compilation. Circuit batching can amortize
 compilation and rounding, but reset/readout/repetition time, failure exposure and acquisition ordering

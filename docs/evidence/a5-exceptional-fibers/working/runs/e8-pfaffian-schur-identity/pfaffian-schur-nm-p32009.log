@@ -1,0 +1,41 @@
+Singular for aarch64-Linux version 4.4.1 (44105, 64 bit) Dec  6 2025 11:10:58
+0c76707075cf900de815d930fe9165e56cf6fc842d85a633bb08d748b5bd7378  docs/evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/pfaffian-schur-nm-p32009.sing
+4e88035959ed486dc7fe168dafcc97ca4314a0624616d039535bb071f6294cc2  docs/evidence/a5-exceptional-fibers/working/runs/e8-rees-fibers-v2-p32009/e8-nm-p.v2-u-full.sing
+ee9318b04ec8dcb9e8c09858abc9eeb072da91235d5ac64ec0704633599c43ee  docs/evidence/a5-exceptional-fibers/working/runs/e8-rees-fibers-v2-p32009/e8-np-p.v2-u-full.sing
+detB -1024*s2^6+2000*s2^5+3072*s2^4-4000*s2^3-3072*s2^2+2000*s2+1024
+WEIGHTS [1, 0, 3, 2, 2, 1, 4, 4, 3]
+J dim mult size 5 10 13
+COMPONENT 1 dim 5 mult 10 through origin 1
+J local dim mult size 5 10 13
+PfB 7971*s2^3-32*s2^2-7971*s2+32
+PfB factors [1]:
+   _[1]=7971
+   _[2]=s2+1
+   _[3]=s2-10754
+   _[4]=s2-1
+[2]:
+   1,1,1,1
+GEN 1 pf 12 quad 1 2 5 6 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 0 in_J_plus_s2_plus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 2 pf 15 quad 1 2 5 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 0 in_J_plus_s2_plus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 3 pf 16 quad 1 2 6 7 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 0 in_J_plus_s2_plus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 4 pf 18 quad 1 2 6 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 0 in_J_plus_s2_plus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 5 pf 20 quad 1 2 7 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 0 in_J_plus_s2_plus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 6 pf 30 quad 1 3 5 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 0 in_J_plus_s2_plus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 7 pf 35 quad 1 3 7 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 0 in_J_plus_s2_plus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 8 pf 47 quad 1 5 6 7 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 0 in_J_plus_s2_plus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 9 pf 49 quad 1 5 6 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 0 in_J_plus_s2_plus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 10 pf 51 quad 1 5 7 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 1 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 1 in_J_plus_s2_plus_1 1 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 11 pf 52 quad 1 5 8 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 0 in_J_plus_s2_plus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 12 pf 54 quad 1 6 7 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 0 in_J_plus_s2_plus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 13 pf 55 quad 1 6 8 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 0 in_J_plus_s2_plus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 14 pf 84 quad 2 5 6 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 0 in_J_plus_s2_plus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 15 pf 86 quad 2 5 7 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 0 in_J_plus_s2_plus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 16 pf 87 quad 2 5 8 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 1 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 1 in_J_plus_s2_plus_1 1 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 17 pf 89 quad 2 6 7 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 0 in_J_plus_s2_plus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 18 pf 123 quad 5 6 7 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 0 in_J_plus_s2_plus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 19 pf 124 quad 5 6 8 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 0 in_J_plus_s2_plus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 20 pf 125 quad 5 7 8 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 0 in_J_plus_s2_plus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+GEN 21 pf 126 quad 6 7 8 9 Pf10_zero_mod_J 0 in_J_plus_s2sq_minus_1 0 in_J_plus_s2sq_minus_1_squared 0 in_J_plus_s2_minus_1 0 in_J_plus_s2_plus_1 0 in_J_plus_s2_minus_i 0 in_J_plus_s2_plus_i 0 control_in_J_plus_s2sq_minus_2 0
+PFAFF MODP cell nm selected 21 identity_failures 0 control_exponent2_holds_mod_J 0 zero_mod_J 0 in_J_plus_s2sq_minus_1 2 generators 10,16 squared 0 in_J_plus_s2_minus_or_plus_i 0 control_nonfactor 0
+PFAFF VERDICT cell nm p32009 PASS
+EXIT 0

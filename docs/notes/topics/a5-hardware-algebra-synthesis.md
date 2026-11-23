@@ -311,7 +311,7 @@ proved block swap would save at most 4/3 of the products, rank and closure, not 
 Quantum and free resources. No quantum allotment shrinks the N = 19 export: it is exact linear algebra over F_p with
 a forecast near 137 GiB, and the free quantum tiers (Open Quantum Spark, IQM Resonance, Quantum Inspire, Quandela) run
 circuits of at most a few hundred qubits with sampling noise. The always-free classical hosts in gororoba-infrastructure
-(`clouds/oci-free-services.md`, `hosts/gcp-free-micro.md`, the lab VMs) hold 24 GiB or less. Their role is the
+(its host chart and cloud pages) hold 24 GiB or less. Their role is the
 hardware side of the atlas: an operand whose nullity folding fixes exactly (a half operand, a two-term element) is a
 probe with a known ideal value and a mutation that changes it.
 

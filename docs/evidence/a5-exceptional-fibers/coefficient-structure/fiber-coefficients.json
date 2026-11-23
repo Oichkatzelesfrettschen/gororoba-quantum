@@ -1,0 +1,590 @@
+{
+ "reduced_numerators": [
+  {
+   "incidence": "W8->N+",
+   "field": "Q(i)",
+   "generators": 24,
+   "codimension": 18,
+   "reduced_numerator": [
+    1,
+    18,
+    27,
+    4
+   ],
+   "sum_equals_multiplicity": true,
+   "h2_from_relations": 156,
+   "h2_from_numerator": 156
+  },
+  {
+   "incidence": "E8bar->N+",
+   "field": "Q(i)",
+   "generators": 21,
+   "codimension": 16,
+   "reduced_numerator": [
+    1,
+    16,
+    -12,
+    10,
+    -5,
+    1
+   ],
+   "sum_equals_multiplicity": true,
+   "h2_from_relations": 83,
+   "h2_from_numerator": 83
+  },
+  {
+   "incidence": "Iso->N+",
+   "field": "Q(i)",
+   "generators": 17,
+   "codimension": 12,
+   "reduced_numerator": [
+    1,
+    12,
+    10
+   ],
+   "sum_equals_multiplicity": true,
+   "h2_from_relations": 85,
+   "h2_from_numerator": 85
+  },
+  {
+   "incidence": "W8->N-",
+   "field": "Q(i)",
+   "generators": 24,
+   "codimension": 18,
+   "reduced_numerator": [
+    1,
+    18,
+    27,
+    4
+   ],
+   "sum_equals_multiplicity": true,
+   "h2_from_relations": 156,
+   "h2_from_numerator": 156
+  },
+  {
+   "incidence": "E8bar->N-",
+   "field": "Q(i)",
+   "generators": 21,
+   "codimension": 16,
+   "reduced_numerator": [
+    1,
+    16,
+    -12,
+    10,
+    -5,
+    1
+   ],
+   "sum_equals_multiplicity": true,
+   "h2_from_relations": 83,
+   "h2_from_numerator": 83
+  },
+  {
+   "incidence": "Iso->N-",
+   "field": "Q(i)",
+   "generators": 17,
+   "codimension": 12,
+   "reduced_numerator": [
+    1,
+    12,
+    10
+   ],
+   "sum_equals_multiplicity": true,
+   "h2_from_relations": 85,
+   "h2_from_numerator": 85
+  },
+  {
+   "incidence": "W8->N-",
+   "field": "GF(32009), i = 10754",
+   "generators": 24,
+   "codimension": 18,
+   "reduced_numerator": [
+    1,
+    18,
+    27,
+    4
+   ],
+   "sum_equals_multiplicity": true,
+   "h2_from_relations": 156,
+   "h2_from_numerator": 156
+  },
+  {
+   "incidence": "E8bar->N-",
+   "field": "GF(32009), i = 10754",
+   "generators": 21,
+   "codimension": 16,
+   "reduced_numerator": [
+    1,
+    16,
+    -12,
+    10,
+    -5,
+    1
+   ],
+   "sum_equals_multiplicity": true,
+   "h2_from_relations": 83,
+   "h2_from_numerator": 83
+  },
+  {
+   "incidence": "E8bar->N+",
+   "field": "GF(32009), i = 10754",
+   "generators": 21,
+   "codimension": 16,
+   "reduced_numerator": [
+    1,
+    16,
+    -12,
+    10,
+    -5,
+    1
+   ],
+   "sum_equals_multiplicity": true,
+   "h2_from_relations": 83,
+   "h2_from_numerator": 83
+  },
+  {
+   "incidence": "Iso->N-",
+   "field": "GF(32009), i = 10754",
+   "generators": 17,
+   "codimension": 12,
+   "reduced_numerator": [
+    1,
+    12,
+    10
+   ],
+   "sum_equals_multiplicity": true,
+   "h2_from_relations": 85,
+   "h2_from_numerator": 85
+  }
+ ],
+ "e8_component_identity": {
+  "prime_11": [
+   1,
+   7,
+   3
+  ],
+  "scroll": [
+   1,
+   2,
+   -3
+  ],
+  "plane": [
+   1,
+   -2,
+   1
+  ],
+  "nilradical": [
+   0,
+   5,
+   -11,
+   10,
+   -5,
+   1
+  ],
+  "sum": [
+   1,
+   16,
+   -12,
+   10,
+   -5,
+   1
+  ],
+  "equals_reduced_numerator": true
+ },
+ "last_jump_characters": {
+  "degrees": [
+   {
+    "degree": 1,
+    "one_conic": [
+     1,
+     2,
+     0,
+     0
+    ],
+    "two_conics": [
+     1,
+     2,
+     3,
+     3
+    ],
+    "equals_closed_forms": true
+   },
+   {
+    "degree": 2,
+    "one_conic": [
+     3,
+     2,
+     0,
+     0
+    ],
+    "two_conics": [
+     9,
+     6,
+     5,
+     5
+    ],
+    "equals_closed_forms": true
+   },
+   {
+    "degree": 3,
+    "one_conic": [
+     3,
+     4,
+     0,
+     0
+    ],
+    "two_conics": [
+     9,
+     12,
+     14,
+     14
+    ],
+    "equals_closed_forms": true
+   },
+   {
+    "degree": 4,
+    "one_conic": [
+     5,
+     4,
+     0,
+     0
+    ],
+    "two_conics": [
+     25,
+     20,
+     18,
+     18
+    ],
+    "equals_closed_forms": true
+   },
+   {
+    "degree": 5,
+    "one_conic": [
+     5,
+     6,
+     0,
+     0
+    ],
+    "two_conics": [
+     25,
+     30,
+     33,
+     33
+    ],
+    "equals_closed_forms": true
+   },
+   {
+    "degree": 6,
+    "one_conic": [
+     7,
+     6,
+     0,
+     0
+    ],
+    "two_conics": [
+     49,
+     42,
+     39,
+     39
+    ],
+    "equals_closed_forms": true
+   },
+   {
+    "degree": 7,
+    "one_conic": [
+     7,
+     8,
+     0,
+     0
+    ],
+    "two_conics": [
+     49,
+     56,
+     60,
+     60
+    ],
+    "equals_closed_forms": true
+   },
+   {
+    "degree": 8,
+    "one_conic": [
+     9,
+     8,
+     0,
+     0
+    ],
+    "two_conics": [
+     81,
+     72,
+     68,
+     68
+    ],
+    "equals_closed_forms": true
+   },
+   {
+    "degree": 9,
+    "one_conic": [
+     9,
+     10,
+     0,
+     0
+    ],
+    "two_conics": [
+     81,
+     90,
+     95,
+     95
+    ],
+    "equals_closed_forms": true
+   },
+   {
+    "degree": 10,
+    "one_conic": [
+     11,
+     10,
+     0,
+     0
+    ],
+    "two_conics": [
+     121,
+     110,
+     105,
+     105
+    ],
+    "equals_closed_forms": true
+   },
+   {
+    "degree": 11,
+    "one_conic": [
+     11,
+     12,
+     0,
+     0
+    ],
+    "two_conics": [
+     121,
+     132,
+     138,
+     138
+    ],
+    "equals_closed_forms": true
+   },
+   {
+    "degree": 12,
+    "one_conic": [
+     13,
+     12,
+     0,
+     0
+    ],
+    "two_conics": [
+     169,
+     156,
+     150,
+     150
+    ],
+    "equals_closed_forms": true
+   }
+  ],
+  "measured": [
+   {
+    "ledger": "A5-244",
+    "fiber": "X-",
+    "degree": 2,
+    "measured": [
+     9,
+     6,
+     5,
+     5
+    ],
+    "model": [
+     9,
+     6,
+     5,
+     5
+    ],
+    "equal": true
+   },
+   {
+    "ledger": "A5-244",
+    "fiber": "X-",
+    "degree": 3,
+    "measured": [
+     9,
+     12,
+     14,
+     14
+    ],
+    "model": [
+     9,
+     12,
+     14,
+     14
+    ],
+    "equal": true
+   },
+   {
+    "ledger": "A5-244",
+    "fiber": "X-",
+    "degree": 4,
+    "measured": [
+     25,
+     20,
+     18,
+     18
+    ],
+    "model": [
+     25,
+     20,
+     18,
+     18
+    ],
+    "equal": true
+   },
+   {
+    "ledger": "A5-244",
+    "fiber": "X-",
+    "degree": 6,
+    "measured": [
+     49,
+     42,
+     39,
+     39
+    ],
+    "model": [
+     49,
+     42,
+     39,
+     39
+    ],
+    "equal": true
+   },
+   {
+    "ledger": "A5-244",
+    "fiber": "Iso",
+    "degree": 6,
+    "measured": [
+     49,
+     42,
+     39,
+     39
+    ],
+    "model": [
+     49,
+     42,
+     39,
+     39
+    ],
+    "equal": true
+   },
+   {
+    "ledger": "A5-269",
+    "fiber": "E8-bar -> VB",
+    "degree": 4,
+    "measured": [
+     5,
+     4,
+     0,
+     0
+    ],
+    "model": [
+     5,
+     4,
+     0,
+     0
+    ],
+    "equal": true
+   },
+   {
+    "ledger": "A5-269",
+    "fiber": "E8-bar -> VB",
+    "degree": 5,
+    "measured": [
+     5,
+     6,
+     0,
+     0
+    ],
+    "model": [
+     5,
+     6,
+     0,
+     0
+    ],
+    "equal": true
+   },
+   {
+    "ledger": "A5-269",
+    "fiber": "E8-bar -> VB",
+    "degree": 6,
+    "measured": [
+     7,
+     6,
+     0,
+     0
+    ],
+    "model": [
+     7,
+     6,
+     0,
+     0
+    ],
+    "equal": true
+   },
+   {
+    "ledger": "A5-269",
+    "fiber": "E8-bar -> VB",
+    "degree": 7,
+    "measured": [
+     7,
+     8,
+     0,
+     0
+    ],
+    "model": [
+     7,
+     8,
+     0,
+     0
+    ],
+    "equal": true
+   }
+  ],
+  "all_equal": true,
+  "quadratic_monomials_of_character_chi_1_in_r2": 1,
+  "control_veronese_linear_action": [
+   {
+    "degree": 5,
+    "veronese": [
+     6,
+     5,
+     0,
+     0
+    ],
+    "measured": [
+     5,
+     6,
+     0,
+     0
+    ]
+   },
+   {
+    "degree": 7,
+    "veronese": [
+     8,
+     7,
+     0,
+     0
+    ],
+    "measured": [
+     7,
+     8,
+     0,
+     0
+    ]
+   }
+  ],
+  "control_rejected": true
+ },
+ "control_perturbed_numerator_rejected": true,
+ "pass": true
+}

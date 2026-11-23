@@ -1,0 +1,8 @@
+Singular for aarch64-Linux version 4.4.1 (44105, 64 bit) Dec  6 2025 11:10:58
+596f2b3c65542cfb151ff5fc8fb3bb0d589edd58d42d681f686dcaac23562cdc  docs/evidence/a5-exceptional-fibers/working/runs/e8-slice-equivalence-p32009/bridge-verify-e8-np.sing
+BRIDGE VERIFY cell e8-np transported_mod_header 0 header_mod_transported 0 generators 148 148 dim 5 5 mult 11 11
+BRIDGE CONTROL cell e8-np identity weight_mod_header 141 header_mod_weight 133
+BRIDGE CONTROL cell e8-np perturbed_entry transported_mod_header 22 header_mod_transported 132
+BRIDGE DET cell e8-np nonzero 1
+BRIDGE VERDICT cell e8-np PASS
+EXIT 0

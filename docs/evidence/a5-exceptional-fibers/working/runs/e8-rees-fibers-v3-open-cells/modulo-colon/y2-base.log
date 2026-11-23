@@ -1,0 +1,6 @@
+MODE base size 2853
+STAGE quotient 578305
+STAGE std 122048
+STAGE quotient 573478
+STAGE colon_total 1 1273899
+CHECK sat_in_X 0 X_in_sat 0 sizes 2839 2839

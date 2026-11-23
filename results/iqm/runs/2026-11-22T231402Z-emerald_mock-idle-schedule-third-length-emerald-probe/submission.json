@@ -1,0 +1,17 @@
+{
+ "approval": "owner AskUserQuestion 2026-11-22T22:49Z: Approve procedure (Recommended), PR 986 idle-schedule-third-length-emerald: live rebuild and check, emerald:mock of that digest, then the same digest on iqm:emerald, max_credits 9.00",
+ "body_sha256": "79e0012064787ceff468a4c146ec2c49f0cb09f55bb847cdfacc373f277f2136",
+ "cases_sha256": "2c118f7b1ebfaa6782ded87aa650512b4c0fbda7a256ad68356ef66ee0591e4c",
+ "credit_before": {
+  "currentBalance": "23.75",
+  "expiresAt": "2026-12-01T00:00:00+00:00"
+ },
+ "expected_seconds": 4.734,
+ "job": "probe",
+ "job_id": "01a20589-c97d-7332-96f2-8280c4702522",
+ "max_credits": 9.0,
+ "price_per_second": 0.0,
+ "qc": "emerald:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-11-22T23:14:05Z"
+}

@@ -13,7 +13,7 @@
   },
   "scope": "Evidence bundle docs/evidence/a5-kernel-attachments (scripts, records, README, ledger) and the program file docs/design/a5-kernel-attachments-program.md; the 33 incidences between the nullity-8, nullity-12 and nullity-16 orbits. Same-nullity incidences are recorded once by the constant-rank lemma. Nullity 4 and roadmap items 7-8 proper stay out of scope.",
   "owner": "repository maintainer",
-  "next_action": "Sub-step 3a of the program file: attaching_maps_resolved.py on the eight first-order-resolved incidences.",
+  "next_action": "Sub-step 3a holds over Q(i) and modulo 32009, with the rank-four Pfaffian vanishing decided from every Schur-entry form of ledger row 2x; next, the variation of the attaching datum along the boundary orbit and the seven higher-order rows of 2c.",
   "related": [
     "a5-kernel-bundles",
     "a5-kernel-bundles-nullity8",
