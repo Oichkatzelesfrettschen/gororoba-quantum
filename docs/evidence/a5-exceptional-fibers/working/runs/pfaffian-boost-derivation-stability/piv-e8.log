@@ -1,0 +1,14 @@
+RESULT adjugate_identity 1
+RESULT pivot_pfaffian_degree 4
+RESULT schur_entries 21 degree 5
+RESULT closure_generators 37
+RESULT pair_basis_degree5 57
+RESULT k0 e8 boost outside 21
+RESULT k0 e8 rotation outside 21
+RESULT k0 e8 g2_1 outside 21
+RESULT pair_basis_degree9 1428
+RESULT k1 e8 boost outside 18
+RESULT k1 e8 rotation outside 21
+RESULT k1 e8 g2_1 outside 0
+RESULT done 1
+EXIT 0

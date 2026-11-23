@@ -1,0 +1,51 @@
+{
+ "schema": "a5-hardware-twin-sign-relation-v1",
+ "pairs": [
+  {
+   "primary": [
+    1,
+    18,
+    1
+   ],
+   "twin": [
+    17,
+    2,
+    -1
+   ],
+   "xor_mask": 19,
+   "twin_is_primary_times_e16": true,
+   "split_coordinates_times_i": true,
+   "sign_relation_negated_bit4_flip": true,
+   "aligned_pairs": [
+    12,
+    12
+   ],
+   "aligned_sets_equal": true,
+   "signs_equal_without_the_flip": 28
+  },
+  {
+   "primary": [
+    1,
+    26,
+    1
+   ],
+   "twin": [
+    17,
+    10,
+    -1
+   ],
+   "xor_mask": 27,
+   "twin_is_primary_times_e16": true,
+   "split_coordinates_times_i": true,
+   "sign_relation_negated_bit4_flip": true,
+   "aligned_pairs": [
+    4,
+    4
+   ],
+   "aligned_sets_equal": true,
+   "signs_equal_without_the_flip": 28
+  }
+ ],
+ "control_primary_against_itself_fails_the_relation": true,
+ "pass": true
+}

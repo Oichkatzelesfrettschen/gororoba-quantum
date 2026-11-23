@@ -1,7 +1,7 @@
 # A_5 exceptional fibers: goal, status by layer and open theorems
 
 This page states what the A_5 fiber program is for, where each layer stands on 2026-11-23 by the claim ledger
-([`ledger.tsv`](../../evidence/a5-exceptional-fibers/ledger.tsv), 583 rows), which theorems remain between the
+([`ledger.tsv`](../../evidence/a5-exceptional-fibers/ledger.tsv), 585 rows), which theorems remain between the
 record and the registry claim, and what the next computations and formal proofs are. The measurements and methods
 live in [a5-exceptional-fiber-findings.md](a5-exceptional-fiber-findings.md) and in the evidence directories; this
 page counts and orders them. It replaces the status of 2026-11-11 (313 rows), whose open items the rows named below
@@ -27,7 +27,7 @@ X+, X-, Iso, W8 and E8-bar into N+ and N-). The program answers in four layers:
 
 ## Status by layer (2026-11-23)
 
-Ledger totals: 217 proved, 119 certified, 115 survives, 62 refuted, 37 superseded, 12 open, 10 stalled, 7 rejected, 4 boundary.
+Ledger totals: 218 proved, 119 certified, 116 survives, 62 refuted, 37 superseded, 12 open, 10 stalled, 7 rejected, 4 boundary.
 Reproduce with `"$PYTHON" docs/evidence/a5-exceptional-fibers/ledger.py --summary`.
 
 | Layer | State | Deciding rows | Open |
