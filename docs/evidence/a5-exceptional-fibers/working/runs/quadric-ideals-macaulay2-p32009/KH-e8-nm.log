@@ -1,0 +1,8 @@
+RESULT KH-e8-nm K generators 148 dim 5 degree 11 numerator 1+16*T-12*T^2+10*T^3-5*T^4+T^5
+RESULT KH-e8-nm minimal_primes {{4, 4, 14}, {5, 11, 9}}
+RESULT KH-e8-nm radical_equal false
+RESULT KH-e8-nm A=K:rad generators 17 dim 4 degree 2 numerator 1+T
+RESULT KH-e8-nm A_prime true K:A_equals_rad true rad_squared_in_K true nil_linear_forms 5
+RESULT KH-e8-nm control dim 4 degree 22 differs true
+RESULT KH-e8-nm primary_components {{4, 4, 4, 2}, {4, 4, 4, 4}, {5, 11, 5, 11}} intersect_equal true
+DONE KH-e8-nm

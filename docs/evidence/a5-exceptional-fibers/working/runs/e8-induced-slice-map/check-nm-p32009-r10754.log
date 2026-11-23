@@ -1,0 +1,6 @@
+RESULT transported modulo header 0 header modulo transported 0
+RESULT generators 148 dim 5 mult 11 det nonzero 1
+RESULT control identity 141 134 control perturbed 22 60 control header generators 1 and 2 swapped 47 35
+RESULT reduced Q(i) weight relations against the retained modular file 0 0
+INDUCED VERDICT p 32009 root 10754 PASS
+EXIT 0
