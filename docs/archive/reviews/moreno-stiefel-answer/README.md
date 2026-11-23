@@ -19,5 +19,8 @@ counterexample by exact computation. Raw reports stay outside the tree.
 | 5 | codex | verification.md said the independent verifier was not retained, while it is | Fixed: the sentence links the retained verifier |
 | 6 | codex, opencode | The A_5 proof is exact computation and written argument; its Rocq formalization is owed (claims ledger) | Boundary: open |
 
-Literature: no prior answer is known to the searches recorded in the proof README (2026-10-25 and 2026-11-22);
-MathSciNet and Google Scholar remain unsearched.
+Literature: no prior answer is known to the searches recorded in the proof README (2026-10-25, 2026-11-22 and
+2026-11-23), which screen every transcribed citing passage of math/0512517; MathSciNet and Google Scholar were not
+run, since both refuse automated queries from this environment. Priority inside the repository: Theorem 1 follows
+the DAS MERGUS companion, whose Theorem G10 (alternativity route) and Theorem G12 (the cofactor identity
+P_j = Q G z_j) the [2026-10-25 algebra review](../2026-10-25-das-mergus-algebra-review.md) audited.

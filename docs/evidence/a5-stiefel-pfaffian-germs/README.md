@@ -259,12 +259,26 @@ registered sources bear on it:
   On doubly pure elements Theorem 1 gives D_14 = N |Q G|^2, which the paper does not state; its explicit
   factorization covers only the embedded sedenions (a, 0).
 
-The search used no MathSciNet or Google Scholar access, and it screened the Zhilina and Guterman
-zero-divisor-graph papers among the citations by title and abstract only. A wider search on 2026-11-22 found no
-answer either: the twelve works citing math/0512517 in OpenAlex (the only one newer than the earlier search,
-Zhilina's arXiv 2611.20105 on Barnes-Wall lattices, concerns lattice closure), Moreno's companions math/0404172 and
-math/0512516, BDI, BCDI and Koebisu read in full, and every Cayley-Dickson transcription in the documents
-repositories that mentions a Stiefel element. MathSciNet and Google Scholar remain unsearched.
+A wider search on 2026-11-22 and 2026-11-23 found no answer either. It covered:
+
+- the works citing math/0512517: twelve in OpenAlex and thirteen in Semantic Scholar. The lists differ by Latre's
+  2019 thesis on hypercomplex algebras for computation (OpenAlex only), an unlocated 2007 report on
+  hypercomputation and a 2003 paper on Siegel modular forms, a false match (Semantic Scholar only). Zhilina's arXiv
+  2611.20105 on Barnes-Wall lattices concerns lattice closure. Every citing passage with a transcription was read:
+  Zhilina's papers (arXiv 2608.28176, 2608.28163, 2608.26903) cite the preprint as background, 2608.26893 and
+  2608.26890 only in their reference lists, and the BCDI eigentheory paper (arXiv 0905.2987) cites it, as a 2007
+  preprint of Moreno and González-Flores, for the start of its eigentheory approach. None mentions a Stiefel
+  element. The 2007 report stays unscreened;
+- Moreno's 14 documents in zbMATH Open, where math/0512517 appears only as the arXiv preprint and no later item
+  treats the question;
+- zbMATH Open "Cayley-Dickson zero divisors" (39 documents, titles screened) and "Cayley-Dickson Stiefel" (6, among
+  them Reggiani's sedenion geometry and Moreno's Hopf-construction paper);
+- arXiv abstracts with Stiefel and Cayley-Dickson, sedenion or pathion (3: math/0512517 and two sedenion papers),
+  and the 7 Cayley-Dickson zero-divisor abstracts of 2024 to 2026;
+- Moreno's companions math/0404172 and math/0512516, BDI, BCDI and Koebisu, read in full, and every
+  Cayley-Dickson transcription in the documents repositories that mentions a Stiefel element.
+
+MathSciNet and Google Scholar were not run: both refuse automated queries from this environment.
 
 ## Replay
 
