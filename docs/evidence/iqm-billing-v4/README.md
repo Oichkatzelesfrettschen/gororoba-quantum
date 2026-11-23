@@ -79,6 +79,10 @@ so the pooled offset fits carry no independent band.
 
 ## PR 987 case (52 circuits, 16000 shots, heralding zeros, `garnet`, 0.50 credits per second)
 
+These prices belong to the PR 987 case at commit 1e9493ebe (cases.json c382feb0), which a repair of that pull request
+supersedes; the successor case is priced in its own CASE.md with these models, and the feature file here stays the
+record of this pricing.
+
 The Garnet fits price the case; the pooled fits, pulled up by the Emerald job, read 14.2 to 22.3 s of worst-case runtime
 and stay out of the sizing. The surviving models are `v3` (the reference), `v4_sum` and `v4_max`; `v4_pad` raises
 the residual and is dropped. Execution is the modeled schedule (6.33 s) plus the model's excess; the band adds the
@@ -101,8 +105,9 @@ for spend. It is the conservative choice: with the all-jobs schedule band `v3` n
 ## What this adopts and why
 
 - For a Garnet case: `v4_sum` and `v4_max` as sizing alongside `v3`, taking the largest of the three credit values
-  (13.0 for the PR 987 case under the all-jobs band, 11 under the Grover-only band). Both lower the leave-one-out residual on the Garnet
-  jobs, and the largest costs one fixed credit step at most. `BILLING_MODELS` stays as it is; the change that builds
+  (13.0 for the PR 987 case under the all-jobs band, 11 under the Grover-only band). Both lower the largest leave-one-out residual over the
+  Garnet jobs other than the anchor job; over all jobs only `v4_sum` does. The largest credit value costs one fixed
+  credit step at most. `BILLING_MODELS` stays as it is; the change that builds
   the next Garnet case from a refit makes the entry.
 - For Emerald: nothing. The 9.505 s of `01a2058a` remain unexplained by any circuit-duration term, and an Emerald case
   prices from `v3`'s coefficients plus a margin for the third-length job's 6.56 s excess over its schedule (84000
