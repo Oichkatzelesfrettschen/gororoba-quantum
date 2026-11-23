@@ -13,11 +13,11 @@ substitute for agy). Each round read a fixed head; raw reports stay outside the 
 
 | # | Round, head | Reviewers | Finding | Disposition |
 |---|---|---|---|---|
-| 1 | 1 to 3, three-family case | codex, agy | The family contest could not name a mechanism: ZZ and coherent leakage both read "coherent" | Fixed in 446bd43e4: the plane model reduces one noisy iteration to rotation (ideal plus eps), contraction and leak, the decision tests eps = 0 against eps != 0, and mechanism labels are readings |
-| 2 | 1 to 3 | codex, agy | Unequal mirror-pair weights broke drift cancellation | Fixed in 446bd43e4: equal-weight mirror-pair means |
-| 3 | 1 to 3 | codex | The response tables were a noiseless factorization and were not frozen | Fixed in 1e9493ebe: the response comes from the digest-bound circuit files at analysis |
-| 4 | 1 to 3 | agy | Overdispersion was missing from the gates | Fixed in 1e9493ebe: the heterogeneity gate and covariance use phi = 1.54 |
-| 5 | 1 to 3 | codex | The runtime estimate had no support | Fixed: billing v4 (PR 992) sizes both variants (scripts/iqm_grover_plane_sizing.py) |
+| 1 | 1 to 3, three-family case | codex (rounds 1 to 3), agy (round 3) | The family contest could not name a mechanism: ZZ and coherent leakage both read "coherent" | Fixed by the plane redesign (merged at 1e9493ebe): one noisy iteration is a rotation (ideal plus eps), a contraction and a leak, the decision tests eps = 0 against eps != 0, and mechanism labels are readings |
+| 2 | 3 | codex | The analyzer pooled raw counts, so unequal copy weights inside a mirror pair broke the palindrome's drift cancellation | Fixed by the plane redesign: equal-weight mirror-pair means with propagated binomial variances |
+| 3 | 1 and 3 | agy | The response was a noiseless factorization, and the frozen model omitted the exact readout inversion | Fixed by the plane redesign: the response comes from the digest-bound circuit files at analysis |
+| 4 | 3 | codex | Every z, chi-square and power was conditional on homogeneous copies (no overdispersion term) | Fixed by the plane redesign: the heterogeneity gate and covariance use the bound phi = 1.54 |
+| 5 | 1 to 3 | codex, agy | The runtime estimate had no support | Fixed: billing v4 (PR 992) sizes both variants (scripts/iqm_grover_plane_sizing.py) |
 | 6 | 4, 1e9493ebe | codex | A sole surviving mirror pair could not be tested by heterogeneity or influence | Fixed in 9c8a03714: every depth keeps two pairs after the shot floor, else "not evaluated" |
 | 7 | 4 | codex | The mark contrast read after failed gates | Fixed in 9c8a03714 and acdd03d19: it reads only when both marks pass every gate and rotation adequacy |
 | 8 | 4 | codex, opencode | "At most 0.0088 over the box" and the power wording claimed bounds the calibration does not give | Fixed in 5c43fbd77, a9a1b4781 and acdd03d19: rates are estimates at 99 evaluated cells, now read on held-out points |
@@ -32,6 +32,9 @@ substitute for agy). Each round read a fixed head; raw reports stay outside the 
 | 17 | 5 | codex | Tests that injected fail_gate() and a vacuous leave-one-pair-out test; the boundary-cell count in the design note | Fixed in acdd03d19 and 599ce89d8: the tests drive the real gates; the note says 1,024 points |
 | 18 | 4 and 5 | codex, opencode | Neither credit ceiling covers a 2.2-times overrun; the garnet:mock compile estimate is unread | Boundary: the owner decides the ceiling and the cancellation risk; garnet:mock runs first after approval |
 | 19 | 4 | opencode | Contrast power omits the pair and readout gates | Boundary: variant A's paid question asks the primary test only; the contrast is a reading |
+| 20 | 4 and 5 | opencode, codex | The continuation fits the retained run and evaluates it at the case calibration | Boundary: disclosed in CASE.md; the continuation is a reading, not part of the decision |
+| 21 | 4 and 5 | opencode, codex | The case still emits a heterogeneity threshold table that the runtime recomputes | Boundary: harmless, the decision reads the recomputed threshold; the table leaves with the next successor |
+| 22 | 4 and 5 | opencode, codex | The PRX-ratio interval covers its amplitude dependence only, and the readout copy floor is not modeled | Boundary: both limits are stated in CASE.md; the powers are conditional on the gates passing |
 
 Acceptance at 599ce89d8 (Windows compute workstation): tests/test_iqm_grover_plane.py 38 passed (rerun by the
 orchestrator); the repair worker's case checks of both variants, the retained replay, core-776, core-777, the complement
