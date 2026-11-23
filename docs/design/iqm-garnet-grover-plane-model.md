@@ -239,10 +239,15 @@ at depths 1 to 4 in 4, 4, 10 and 4 copies, mark 011 at depths 1 to 3 in 4, 4 and
 copy. Variant B drops the 14 mark 011 circuits (38 circuits, 608,000 executions) and keeps the primary test unchanged: its Fisher
 standard error of eps in the worst (a, s) cell stays 0.0035 rad with phi = 1.54.
 
-Calibration and power are estimates at listed cells, each with a block error estimate; none is a bound over the continuous box.
-The null evaluation covers 41 Sobol' and offset-line cells, the four corners of the box and 54 cells of a boundary search at 4,096 points
-(8 blocks): delta = 8.0 (the boundary cell a 1.20, s 0.75 has 0.99 quantile 7.76; the 41 cells alone gave 7.5), false "coherent" at most
-0.0078 +- 0.0015 (0.0122 at three standard errors), "non-geometric, not a rotation" at most 0.00024 under the null. Power at |eps| = 0.02:
+Calibration and power are estimates at listed cells, each with an exact binomial interval (approximate, since the quasi-Monte-Carlo
+points are not independent draws); none is a bound over the continuous box. The null evaluation covers 41 Sobol' and offset-line
+cells, the four corners of the box and 54 cells of a boundary search, each with 4,096 selection points per cell and 1,024 on the boundary
+search: delta = 8.0 (the boundary cell a 1.20, s 0.75 has 0.99 quantile 7.76; the 41 cells alone gave 7.5). The false-alarm rates are
+read on validation points that share no point with the selection points (Sobol' indices 2^n + 1 to 2^(n + 1) - 1 of the same draw,
+4,095 per cell, 1,024 on the boundary search): false "coherent" 8 of 1,024 (0.0078, interval 0.0034 to 0.0153) at the cell of the
+largest selection rate, which is also the largest validation rate over the 99 cells; "non-geometric, not a rotation" at most 1 of 4,095
+(interval 0.000006 to 0.0014). The intervals exclude the dependence between points, the box between cells and the model. The build of
+variant A took 924 s on the Windows workstation under load from other jobs, the held-out evaluation included. Power at |eps| = 0.02:
 0.985 to 0.992 over the corners and 28 cells of the claimed region; at 0.015: 0.874 to 0.992; at 0.01: 0.435 to 0.938 (no resolution is
 claimed below 0.015). Mechanism corners (CZ 0.015 rad, PRX 0.8 percent, ZZ 10 kHz): 0.964 to 0.992. Through the pair gates (two-pair floor,
 heterogeneity at the covariance's phi, leave-one-pair-out) 0.949 to 1.000 at binomial copies and 0.805 to 0.953 at the dispersion bound

@@ -21,8 +21,9 @@ carry the plane reduction and the rotation-angle bounds).
 - No mark 011 arms, no `mark_011` block, no contrast: `analyze` reads the contrast as "not evaluated: the case carries no mark 011 arms".
   The mechanism patterns of the retained depth run (z -0.93 against a CZ phase, -3.14 against a PRX amplitude, post hoc) stay untested.
 - The primary test is the same: the mark 101 arms, copies, planned shots and covariance are those of A, so the calibration (delta 8.0,
-  false "coherent" at most 0.0078 +- 0.0015 over 99 cells, 0.00024 for "non-geometric, not a rotation") and the power (plane rotation
-  |eps| = 0.02: 0.985 to 0.992; worst resolved truth PRX +0.8 percent at a 0.92, s 0.92: 0.964 +- 0.002; |eps| = 0.01: at worst 0.435) are
+  false "coherent" validated on held-out points at most 0.0078, interval 0.0034 to 0.0153, over 99 cells, 0.00024 for "non-geometric, not a
+  rotation") and the power (plane rotation |eps| = 0.02: 0.985 to 0.992; worst resolved truth PRX +0.8 percent at a 0.92, s 0.92: 0.964,
+  interval 0.955 to 0.972; |eps| = 0.01: at worst 0.435) are
   equal to A's to the digit (a test compares the two prediction files).
 - Cost, billing v4 sizing: 8.47 to 9.30 s of execution (v4_sum, v4_max, v3), expected billed 5.5 credits; `max_credits` 9.5 (19 billed
   seconds, cancel threshold 18 s) under the all-jobs schedule error, 8.5 under the Grover-jobs error. Margin of the threshold over the

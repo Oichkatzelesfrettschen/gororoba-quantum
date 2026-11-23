@@ -23,10 +23,12 @@ circuits at 16,000 shots (832,000 executions; the limits are 100 circuits and 2,
    whatever gate error causes it? The primary decision names no gate: a CZ phase, a PRX amplitude and a ZZ coupling each rotate
    the plane to first order, and the response of each, computed in the calibrated noisy path, is fitted by the one family
    P_k = 1/8 + a (Q_k(s, eps) - 1/8).
-2. Does mark 011 (depths 1 to 3) rotate as a CZ phase (eps_011 = 0) or as a PRX amplitude (eps_011 = 1.194651206 eps_101,
-   the ratio of the case's fitted slopes) predicts?
+The approval question asks question 1 alone. The 14 mark 011 circuits buy a reading beside it, which the spend approval
+does not rest on: does mark 011 (depths 1 to 3) rotate as a CZ phase (eps_011 = 0) or as a PRX amplitude (eps_011 = 1.194651206
+eps_101, the ratio of the case's fitted slopes) predicts?
    This contrast is the test of a pattern read post hoc from the retained depth run (z -0.93 against CZ, -3.14 against PRX
-   from the exact fits); it decides nothing and a ZZ coupling reads like a CZ phase.
+   from the exact fits); it decides nothing and a ZZ coupling reads like a CZ phase. Its power below omits the pair and readout
+   gates (see the contrast bullet below); simulating them inside the contrast power would cost about 15 minutes of compute and is not done.
 
 ## Why a simulation cannot answer it
 
@@ -79,18 +81,29 @@ the readouts.
 
 ## Calibration and power
 
-Every rate below is an estimate at the cells and truths listed, from unscrambled Sobol' points of the normal quantile in 8 blocks
-(no seed); its error is the standard error of the block rates, an estimate and no bound. No claim covers the continuous box.
+Every rate below is an estimate at the cells and truths listed, from unscrambled Sobol' points of the normal quantile (no seed).
+delta is chosen on the selection points (Sobol' indices 1 to 2^n); the false-alarm rates are read on validation points that share
+no point with them (indices 2^n + 1 to 2^(n + 1) - 1, the half of the same draw that the selection leaves out), so a rate is not
+the tail fraction that delta was fitted to. Each interval is the exact (Clopper-Pearson) 95 percent binomial interval of the
+counts, which treats quasi-Monte-Carlo points as independent draws and is therefore approximate. The intervals exclude the
+dependence between the points, the cells between the evaluated cells (the maximum is a maximum over evaluated cells, biased upward
+by taking the maximum of noisy rates) and the model itself (the response, phi and the readout covariance as planned). No claim
+covers the continuous box.
 
 - Null cells: 41 (32 Sobol' cells of the fitting box and nine of the offset line s = 1), the four corners of the box
   (a 0.80 or 1.20, s 0.75 or 1.15) and 54 cells of a search of the box boundary (24 equal steps of the perimeter, then five
-  bisections around the three highest false-alarm rates), 99 in all, each at 4,096 points (1,024 on the boundary search).
+  bisections around the three highest false-alarm rates), 99 in all, each with 4,096 selection points (1,024 on the boundary search) and 4,095 validation points (the first 1,024 on the boundary
+  search).
 - delta = 8.0. The worst cell is a boundary cell (a 1.20, s 0.75) with 0.99 quantile 7.76; the 41 null cells alone gave 7.5 and the
   boundary search raised it. The chi-square(1) quantile is 6.63 and its tail at 8.0 is 0.0047.
-- False "coherent": at most 0.0078 +- 0.0015 over the 99 cells (at a 1.20, s 0.75), 0.0122 at three standard errors; 0.0034 to 0.0071 at the
-  four corners; at most 0.0051 on the offset line.
-- False "non-geometric, not a rotation": at most 0.00024 (one point in 4,096) in any cell, 1.5e-5 on average.
-- Power through the departure rule at delta (the pooled rule), mark 101, 2,048 points per truth, standard error at most 0.006:
+- False "coherent", validated on the held-out points: 8 of 1,024 (0.0078, interval 0.0034 to 0.0153) at the boundary cell of the
+  largest selection rate (a 1.20, s 0.75), which is also the largest validation rate over the 99 cells; 0.0039 to 0.0061 at the four
+  corners (4,095 points each, upper interval ends up to 0.0090); at most 0.0056 on the offset line (23 of 4,095, interval 0.0036 to
+  0.0084). The mean over the cells is 0.0054. The in-sample tail fractions that chose delta read 0.0078 at most.
+- False "non-geometric, not a rotation", validated: 0 of 4,095 at the cell of the largest selection rate (interval 0 to 0.0009); at
+  most 1 of 4,095 in any cell (0.00024, interval 0.000006 to 0.0014), 7e-6 on average.
+- Power through the departure rule at delta (the pooled rule), mark 101, 2,048 points per truth, exact 95 percent intervals of
+  half-width at most 0.022 (at a rate near one half; 0.955 to 0.972 for the lowest resolved truth):
 
 | Truth | Estimated "coherent" rate |
 |---|---|
@@ -121,7 +134,8 @@ Every rate below is an estimate at the cells and truths listed, from unscrambled
   dof) passes with 0.9995 at phi 0.86 (the retained estimate), 0.99 at phi 1 and 0.458 at the dispersion bound 1.54, where the
   analysis then reads "not evaluated". The copy floor (a preparation keeping under half its planned shots) is not modeled; it
   needs a herald loss rate the retained jobs bound only from above. The powers above are conditional on these gates passing.
-- Contrast, through the departure rule of each mark at delta (box and adequacy gates; not the pair or readout gates), binomial
+- Contrast, through the departure rule of each mark at delta (box and adequacy gates, the adequacy tested at every T so that a fit failing it reads "not evaluated"; not the pair or readout gates;
+  the approval does not rest on this reading), binomial
   copies: a CZ phase of -0.03 rad reads "CZ-phase-like" 0.942 to 0.951; a PRX amplitude of -1.6 percent reads "PRX-like" 0.925 to
   0.939; a ZZ coupling of +20 kHz reads "CZ-phase-like" 0.734 to 0.864 (its mark 011 slope is a tenth of its mark 101 slope), so the
   contrast does not separate ZZ from a CZ phase; "not evaluated" 0.007 to 0.015.
@@ -154,9 +168,9 @@ DECISION NEEDED (owner): read the mock estimate and either keep 13.0 credits or 
 | expected billed credits (v3, v4) | 7.5, 7.0 | 5.5, 5.5 |
 | max_credits (all-jobs band), cancel threshold | 13.0, 25 s | 9.5, 18 s |
 | max_credits (Grover-jobs band) | 11.0 | 8.5 |
-| primary test, worst resolved truth (PRX +0.8 percent, a 0.92, s 0.92) | 0.964 +- 0.002 | 0.964 +- 0.002 |
+| primary test, worst resolved truth (PRX +0.8 percent, a 0.92, s 0.92) | 0.964 (0.955 to 0.972) | 0.964 (0.955 to 0.972) |
 | margin at 1.5 times / 2.2 times the expected runtime | 5.1 s / -4.1 s | 3.4 s / -3.4 s |
-| mark contrast | yes | none |
+| mark contrast reading (outside the approval question) | yes | none |
 
 The primary test is the same in both: the mark 101 arms, their copies and the covariance do not change, so the power does not.
 B drops the contrast, the 14 mark 011 circuits and about a quarter of the credits; its `max_credits` is 9.5 where the earlier
