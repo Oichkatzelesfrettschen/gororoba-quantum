@@ -55,6 +55,29 @@ REJECTION = "abs(z)>=3"
 WEIGHTS = (0, 0, -1, 1, 1, -1)
 PROPOSAL_SHA256 = "31e9e55a77767afd21ff01bebed55d71db76eae7d421a8c79342a6d050070568"
 SELECTORS = (4, 11)
+READOUT_ERROR_LIMIT = 0.2
+CASES_SHA256 = {
+    "batch-00": "c7d7d3cc9d63b906a3c3bfc91f264c4b91bc8d7ab662ac0a6555062747999fe1",
+    "batch-01": "c9584d230265692068b86cf0ec56b7ef774b8d43655744c9e68bbc7961f93485",
+    "batch-02": "176805b48f052b5e9f68a7c2923600803d9a554abdbfceb2dbcb4da92cbf1fff",
+}
+CIRCUIT_SHA256 = {
+    "batch-00": {
+        "readout-0.cq": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3",
+        "readout-1.cq": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff",
+        "witness.cq": "582aacf9ac3bd2aaa29be2ff44b2ac8502663029a6899adc799d0ba3256b037e",
+    },
+    "batch-01": {
+        "readout-0.cq": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3",
+        "readout-1.cq": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff",
+        "witness.cq": "50946fe9d7e5211d841efad20fab79ee163335b7428726a413ba54fbb36d70c2",
+    },
+    "batch-02": {
+        "readout-0.cq": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3",
+        "readout-1.cq": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff",
+        "witness.cq": "2c1f0b172b8834f2ce44fc704c8ecb2f75b89a80520f7d3bd4eb483e49b57232",
+    },
+}
 ORDER = ("D_R1_b0", "B_R2_b0", "B_R1_b1", "F_R2_b1", "F_R1_b2", "D_R2_b2")
 CASE_LETTER = {"dark": "D", "bright": "B", "fixture": "F"}
 LABEL = re.compile(r"[DBF]_R[12]_b\d+")
@@ -116,6 +139,9 @@ def proposal_digests(directory: Path) -> dict[str, Any]:
     _require(
         _digest(directory / "proposal.json") == PROPOSAL_SHA256, "proposal.json differs from the approved proposal"
     )
+    observed = {name: {"cases.json": row["cases.json"], "circuits": row["circuits"]} for name, row in batches.items()}
+    frozen = {name: {"cases.json": CASES_SHA256[name], "circuits": CIRCUIT_SHA256[name]} for name in CASES_SHA256}
+    _require(observed == frozen, "a batch manifest or circuit differs from the approved proposal")
     return {"proposal.json": PROPOSAL_SHA256, "batches": batches}
 
 
@@ -198,6 +224,10 @@ def analyze_matched_series(
         mean_one, cov_one = _joint_moments(shots.get((name, READOUT_ONE)), selectors, expected, f"{name} {READOUT_ONE}")
         denominator = mean_one - mean_zero
         _require(bool((denominator > 0).all()), f"{name}: the readout assignment is singular or reversed")
+        _require(
+            bool((mean_zero + 1 - mean_one <= READOUT_ERROR_LIMIT).all()),
+            f"{name}: a selector readout error e01 + e10 exceeds {READOUT_ERROR_LIMIT}",
+        )
         corrected = (mean_one - mean_witness) / denominator
         gradient = np.zeros((2, 6))
         for region in range(2):

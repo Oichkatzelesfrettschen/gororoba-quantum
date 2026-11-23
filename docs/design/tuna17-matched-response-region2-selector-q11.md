@@ -40,8 +40,12 @@ before, inside the 20 percent bound the producer enforces.
 From `results/quantum_inspire/zero_divisor_tuna_17_visibility_floor_analysis.json` (`replicas`, region
 {10,11,13,14,16}): q11 read e01 0.0200 and e10 0.0472 in `latin-1` and 0.0176 and 0.0486 in `latin-3`; q14 read
 e01 0.0368 and e10 0.0306 in `latin-2`. The readout factor 1 - e01 - e10 is 0.9328 and 0.9338 for q11 and 0.9326
-for q14, equal within the sampling error. q11 is selected because it was measured as a selector in two retained
-circuits and because its layout reproduces the retained data roles.
+for q14, equal within the sampling error. q14 is one of the two qubits (with q1) measured to read alike in
+isolated and all-excited contexts ([readout context](../notes/quantum_inspire/tuna-17.md)), while q11 has no
+retained context probe. q11 was chosen because only the q11-selector layout has retained dark and bright
+measurements (`latin-3` and `latin-1`) to anchor region 2, and because it reproduces the retained data roles. The
+unprobed readout context of q11 stays an open risk; the readout-context gap between batches is the leading
+alternative below.
 
 ## Certification scope
 
@@ -53,18 +57,32 @@ establish software conformance only.
 
 ## Predicted residual (hypothesis)
 
-Model: each region's endpoint contrast decays by a factor `r` per CZ, anchored at the retained region contrasts
-0.0504 +- 0.0055 at 75 CZ and -0.0100 +- 0.0055 at 87 CZ, with `r` from 0.913 to 0.962. For the new routes
-(81 and 96 CZ) the contrasts are `0.0504 r^6` and `-0.0100 r^9`, and the residual is half their difference.
+Anchors. The region contrasts come from the `replicas` rows of
+`results/quantum_inspire/zero_divisor_tuna_17_visibility_floor_analysis.json`: bright minus dark of region 1
+({1,2,4,8,12}, selector q4, 75 CZ; `latin-2` and `latin-1`) and of region 2 ({10,11,13,14,16}, selector q11,
+87 CZ; `latin-1` and `latin-3`). The raw (uncorrected) selector-zero contrasts are 0.0504 and -0.0100
+(standard error 0.0055 each); the readout-corrected contrasts of the same rows are 0.0528 and -0.0088. The
+region-1 anchor was measured under roles d0 = 1, d1 = 8, d2 = 12, d3 = 2, while this proposal routes region 1
+with d0 = 8, d1 = 2, d2 = 12, d3 = 1; the prediction assumes the contrast is role-neutral. The region-2 anchor
+used the roles of this proposal.
 
-| r | region 1 contrast | region 2 contrast | residual |
-|---|---|---|---|
-| 0.913 | 0.0292 | -0.0044 | -0.0168 |
-| 0.962 | 0.0399 | -0.0071 | -0.0235 |
+Decay. The retained per-CZ retention is r = 0.9654 with a 99 percent interval [0.9638, 0.9671]
+(`docs/notes/quantum_inspire/tuna-17.md`, box-kite T0 depth ladder). The earlier band 0.913 to 0.962 has no
+retained source and is dropped. For the new routes (81 and 96 CZ) the contrasts are anchor times `r^6` and
+`r^9`, and the residual is half their difference.
 
-The retained uncertainties add 0.0020 to 0.0029 to each residual. The binomial standard error of the residual at
-16384 shots and readout factor 0.933 is about 0.0084, so the predicted residual is z of about -2.0 to -2.8: below
-the rejection threshold and close to it. A rejection remains plausible from depth alone, and the contrast
+| anchors | r | region 1 contrast | region 2 contrast | residual | P(abs(z) >= 3) |
+|---|---|---|---|---|---|
+| corrected | 0.9654 | 0.0427 | -0.0064 | -0.0246 | 0.47 |
+| raw | 0.9654 | 0.0408 | -0.0073 | -0.0240 | 0.45 |
+
+Over the 99 percent interval of r the residual spans -0.0238 to -0.0249 and the probability 0.44 to 0.49. The
+probability treats the observed residual as normal about the predicted one, with the binomial standard error
+0.0084 (16384 shots, readout factor 0.933) and the anchor uncertainty 0.003 added in quadrature, and rejects at
+abs(residual) >= 3 x 0.0084. The prediction is a rejection of the common-affine response with probability near
+one half, so the case does not expect a non-rejection. When the residual rejects, the leading alternative to a
+region-dependent visibility is a readout-context gap that drifts between batch-01 and batch-02 (the all-excited
+readout-1 circuit differs from the context of the witness, and q11 has no context probe); the contrast
 identifies no mechanism (see the [analysis record](tuna17-matched-response-analysis.md)).
 
 ## Submission settings and budget

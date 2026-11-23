@@ -184,7 +184,10 @@ def test_run_binding_refuses_changed_circuit_or_manifest(tmp_path: Path, mutatio
         _run_directory(tmp_path, mutation)
 
 
-@pytest.mark.parametrize("fault", ["short-witness", "short-readout", "missing-readout", "missing-batch", "bad-order"])
+@pytest.mark.parametrize(
+    "fault",
+    ["short-witness", "short-readout", "missing-readout", "missing-batch", "bad-order", "backend", "readout-error"],
+)
 def test_incomplete_batches_are_refused(fault: str) -> None:
     proposal, manifests = _load(256)
     rng = np.random.default_rng(TEST_SEEDS[0])
@@ -197,9 +200,18 @@ def test_incomplete_batches_are_refused(fault: str) -> None:
         del shots["batch-00", "readout-0.cq"]
     elif fault == "missing-batch":
         manifests.pop("batch-02")
+    elif fault == "backend":
+        manifests["batch-01"]["backend"] = "qx"
+    elif fault == "readout-error":
+        selector = proposal["regions"][1]["roles"]["selector"]
+        rows = shots["batch-02", "readout-0.cq"]
+        shots["batch-02", "readout-0.cq"] = [
+            shot[: 16 - selector] + "1" + shot[17 - selector :] if index < len(rows) // 4 else shot
+            for index, shot in enumerate(rows)
+        ]
     else:
         proposal["primary_contrast"]["order"][0] = "D_R1_b1"
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="exceeds" if fault == "readout-error" else None):
         _analyze(proposal, manifests, shots)
 
 
@@ -208,3 +220,29 @@ def test_series_keeps_one_shot_count_per_circuit() -> None:
     shots = _series(np.random.default_rng(TEST_SEEDS[1]), proposal, manifests)
     _check({len(rows) for rows in shots.values()} == {256})
     _check(Counter(len(row) for rows in shots.values() for row in rows) == {17: 9 * 256})
+
+
+def test_proposal_directory_with_a_changed_circuit_is_refused(tmp_path: Path) -> None:
+    from qi_matched_response import proposal_digests
+
+    copy = tmp_path / "proposal"
+    shutil.copytree(PROPOSAL, copy)
+    _check(proposal_digests(copy)["proposal.json"])
+    witness = copy / "batch-02" / "witness.cq"
+    data = bytearray(witness.read_bytes())
+    data[-5] ^= 1
+    witness.write_bytes(bytes(data))
+    with pytest.raises(ValueError, match="differs"):
+        proposal_digests(copy)
+
+
+def test_frozen_digests_equal_the_compiler_receipt() -> None:
+    from qi_matched_response import CIRCUIT_SHA256
+
+    receipt = json.loads(
+        (ROOT / "docs/evidence/quantum_inspire/matched-zero-divisor-toolchain-region2-selector-q11.json").read_text()
+    )
+    rows = {row["file"]: row["source_sha256"] for row in receipt["circuits"]}
+    _check(
+        rows == {f"{batch}/{name}": digest for batch, files in CIRCUIT_SHA256.items() for name, digest in files.items()}
+    )
