@@ -40,8 +40,18 @@ exp(t D) maps J_d onto J_d and I(Y)_d onto I(Y)_d for every complex t. The boost
 of the scheme Y that carries the ideal sheaf J / I(Y) to itself, and g_w^* is an isomorphism of the local ring at
 g_w z0 onto the local ring at z0 that carries J to J and the maximal ideal to the maximal ideal. The Rees algebra
 and the fiber cone of J at g_w z0 are then isomorphic, as graded algebras, to those at z0: in every degree, for
-every w other than 0, at every point z0 of Y. The four incidences of these sources into VB that A5-419 samples,
-and their incidences into V, carry one fiber cone along the boost. The automorphism carries the radical of the
+every w other than 0, at every point z0 of Y. The four incidences of these sources into VB carry one fiber cone
+along the boost. The sources have no incidence into V; E8-bar -> V and E8-bar -> VB are the other two incidences
+on which G_2 and the scaling miss a direction.
+
+The retained fiber cones are computed on a slice germ. At a basepoint of VB the tangent span of G_2, the scaling
+and the boost has the dimension 7 of the orbit and rank 15 together with the retained slice (A5-419). Each of the
+three preserves the pair, so (g, s) -> g s is a local biholomorphism under which the pair is the product of the
+orbit germ with the slice pair, and the slice fiber cone is the ambient one. A5-419 is the retained test: at the
+retained basepoint and at the boosts (5/4, 3/4), (5/3, 4/3) and (13/12, -5/12) it reads the whole projective
+space of the generators (P^3 for Iso, P^4 for W8, P^2 for X+ and X-) over Q(i) and modulo 32003. The statement
+is about fiber cones. Limiting kernel planes and real limit sets need a lift of the boost to the kernel bundle,
+which A5-414 excludes for congruences. The automorphism carries the radical of the
 closure ideal to itself as well, so the statement holds for the reduced germs that the retained records use.
 This step is an argument on top of the computation; it is not machine-checked.
 
@@ -79,8 +89,9 @@ conditions on the 225 coefficients under which the field maps an ideal into itse
 
 The closure stabilizers use every generator and are exact modulo 32009. The Pfaffian conditions use every 13th
 Pfaffian (231 of 3,003), which gives upper bounds 15 and 31; the lower bounds come from the fields named in the
-right column, each of which stabilizes the full ideal (G_2 and the scaling by A5-414, the boost by the table
-above, mu d/dz_a because mu lies in the closure ideal). On W8 the boost scales u + v by w and u - v by 1 / w.
+right column, each of which stabilizes the full ideal (G_2 and the scaling on the Pfaffians by A5-414, the 14
+derivations on every closure ideal by the symmetry computation of `verify_regularity_independent.py`, the boost by
+the table above, mu d/dz_a because mu lies in the closure ideal). On W8 the boost scales u + v by w and u - v by 1 / w.
 The run reached its 2 h limit (2.0 GiB) after W8 and Iso; E8-bar, X+ and X- carry no stabilizer line.
 
 ## Cost

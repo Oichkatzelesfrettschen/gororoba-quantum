@@ -1,4 +1,4 @@
-Reviewer: opencode 1.x on `opencode-go/glm-5.3`, briefed as a red-teamer, read-only, on head bc6b65e34. The text below is the report as returned, from its title on; the tool narration before it is omitted.
+Reviewer: opencode 2.1.2 on `opencode-go/glm-5.3`, briefed as a red-teamer, read-only, on head bc6b65e34. The text below is the report as returned, from its title on; the tool narration before it is omitted.
 
 # Red-team review: PR 996 (head bc6b65e34) — boost-derivation stability of the ten-Pfaffian ideal
 

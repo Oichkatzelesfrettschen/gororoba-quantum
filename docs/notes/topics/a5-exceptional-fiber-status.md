@@ -47,7 +47,7 @@ D done, P partial, O open; the cell names the deciding row. Sign-conjugate incid
 |---|---|---|---|
 | E8-bar, Iso, W8, X+- -> B9; X+ -> V^a+, X- -> V^a- (7) | D A5-402 | D A5-402 | D A5-411, A5-415 |
 | E8-bar -> V (1) | D A5-402 | D A5-402 | P A5-411; boost open (A5-414) |
-| X+-, Iso, W8 -> VB (4) | D A5-405 | D A5-405 | P A5-411; boost sampled (A5-419) |
+| X+-, Iso, W8 -> VB (4) | D A5-405 | D A5-405 | P A5-411; boost sampled (A5-419) and argued for every value (A5-603) |
 | E8-bar -> V^a+- (2) | D A5-405 | D A5-405, A5-413 | D A5-411, A5-415 |
 | E8-bar -> VB (1) | D A5-005 | D A5-597 at the retained basepoint; boost sampled modulo 32029 (A5-428) | O A5-250 |
 | B9, V, VB -> N+-; V^a+ -> N+, V^a- -> N- (8) | D A5-408 | D A5-408 | D A5-412, A5-415 |
@@ -63,7 +63,7 @@ D done, P partial, O open; the cell names the deciding row. Sign-conjugate incid
 | Theorem | Content | Missing |
 |---|---|---|
 | T1 | characteristic-0 fiber cones for all 33 incidences, independent of the transverse slice | for E8-bar, A5-598 computes the induced slice map over Q(i) and checks it at three primes; open: the same map for the W8 and Iso cells (X is decided on the header slice, A5-270 and A5-305), and a machine-checked form of the Pfaffian-ideal step that makes it the induced map |
-| T2 | the fibers along each whole boundary orbit | for W8, Iso, X+ and X- the ten-Pfaffian ideal is stable under the boost derivation modulo the closure ideal over Q(i) (A5-602), from which A5-603 argues that the fiber cone is constant along the boost in every degree (the argument is not machine-checked and rests on identifying each retained generating set with the ten-Pfaffian ideal); for E8-bar the ideal is not stable, so E8-bar -> VB rests on twelve sampled values (A5-600) and E8-bar -> V is undecided (A5-414, A5-605) |
+| T2 | the fibers along each whole boundary orbit | for the four incidences of W8, Iso, X+ and X- into VB the ten-Pfaffian ideal is stable under the boost derivation modulo the closure ideal over Q(i) (A5-602), from which A5-603 argues that the fiber cone is constant along the boost in every degree (the argument is not machine-checked and rests on identifying each retained generating set with the ten-Pfaffian ideal); for E8-bar the ideal is not stable, so E8-bar -> VB rests on twelve sampled values (A5-600) and E8-bar -> V is undecided (A5-414, A5-605) |
 | T3 | the two-sided real limit theorem at all 33 incidences (A5-250) | E8-bar -> VB; A5-418 for Iso, W8 and E8-bar into N+-; the boost direction |
 | T4 | compatibility of composed limits 8 -> 12 -> 16 | the flat-family clause of A5-420 |
 | T5 | classification of the kernel bundles | nullity 4 (A5-389; the degree-2 part of the Gauss images is measured at two primes, A5-460 and A5-601); the ordinary class in nullity 8 (A5-396) |
@@ -140,7 +140,7 @@ certificates that the kernel checks.
   slice. A5-598 joins the two E8-bar presentations over Q(i) by the induced map; its identification of the relation
   ideals is a deduction in prose, and W8 and Iso have no such map yet.
 - **Basepoint dependence.** On V and VB the group G_2(C) x C^* misses the boost direction, so a result at the
-  retained basepoint is a result at that point of the orbit. A5-603 argues the dependence away for W8, Iso, X+ and X-, subject to its identification step. A5-600 samples twelve
+  retained basepoint is a result at that point of the orbit. A5-603 argues the dependence of the fiber cone away for W8, Iso, X+ and X- into VB, subject to its identification step; limiting kernel planes are not covered. A5-600 samples twelve
   values of the boost for E8-bar -> VB and decides no general value.
 - **Ledger wording.** A5-005 to A5-009 read proved with primes `both`: they are modular statements, and the
   characteristic-0 forms are the rows of the table above.
