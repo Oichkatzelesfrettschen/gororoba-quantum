@@ -155,7 +155,7 @@ def leave_one_out_residual(item: tuple[np.ndarray, np.ndarray, int]) -> float:
     return float(target[i] - x[i] @ c)
 
 
-def fit(rows: list[dict[str, Any]], terms: list[str]) -> dict[str, Any]:
+def fit(rows: list[dict[str, Any]], terms: list[str], held_out: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     target = np.array([r["execution"] - r["schedule"] for r in rows])
     x = design(rows, terms)
     coefficients = np.linalg.lstsq(x, target, rcond=None)[0]
@@ -163,27 +163,51 @@ def fit(rows: list[dict[str, Any]], terms: list[str]) -> dict[str, Any]:
     loo = ordered_map(leave_one_out_residual, [(x, target, i) for i in range(len(rows))], min_items=1)
     anchor = max(range(len(rows)), key=lambda i: rows[i]["mid_records"])
     others = [abs(v) for i, v in enumerate(loo) if i != anchor]
-    focus = next(i for i, r in enumerate(rows) if r["job_id"] == TARGET_JOB)
-    # The band of the focus job is the largest leave-one-out residual of the other jobs, the anchor aside.
-    band = max(abs(v) for i, v in enumerate(loo) if i not in (anchor, focus))
-    return {
+    # A held-out job is predicted by the fit of the rows alone; the band is the largest leave-one-out residual of the
+    # rows other than the anchor. A job inside the rows is predicted with itself left out, and its band excludes it.
+    focus = next((i for i, r in enumerate(rows) if r["job_id"] == TARGET_JOB), None)
+    if focus is None:
+        band = max(others)
+        extra = [r for r in held_out or [] if r["job_id"] == TARGET_JOB]
+    else:
+        band = max(abs(v) for i, v in enumerate(loo) if i not in (anchor, focus))
+        extra = []
+    predicted = [float(r["schedule"] + design([r], terms)[0] @ coefficients) for r in extra]
+    result = {
         "terms": dict(zip(terms, (float(c) for c in coefficients), strict=True)),
         "largest_residual": float(np.max(np.abs(residuals))),
         "largest_leave_one_out_residual": float(np.max(np.abs(loo))),
         "mid_record_anchor": rows[anchor]["job_id"],
         "largest_leave_one_out_residual_without_anchor": max(others),
         "rms_leave_one_out_residual_without_anchor": math.sqrt(sum(v * v for v in others) / len(others)),
-        "focus_job": {
+        "residuals": {r["job_id"]: float(v) for r, v in zip(rows, residuals, strict=True)},
+        "leave_one_out": {r["job_id"]: v for r, v in zip(rows, loo, strict=True)},
+    }
+    if focus is not None:
+        result["focus_job"] = {
             "job_id": TARGET_JOB,
             "leave_one_out_residual": float(loo[focus]),
             "predicted_execution": float(rows[focus]["execution"] - loo[focus]),
             "executed": rows[focus]["execution"],
             "band": band,
             "within_band": bool(abs(loo[focus]) <= band),
-        },
-        "residuals": {r["job_id"]: float(v) for r, v in zip(rows, residuals, strict=True)},
-        "leave_one_out": {r["job_id"]: v for r, v in zip(rows, loo, strict=True)},
+        }
+    elif extra:
+        result["focus_job"] = {
+            "job_id": TARGET_JOB,
+            "leave_one_out_residual": float(extra[0]["execution"] - predicted[0]),
+            "predicted_execution": predicted[0],
+            "executed": extra[0]["execution"],
+            "band": band,
+            "within_band": bool(abs(extra[0]["execution"] - predicted[0]) <= band),
+        }
+    result["held_out"] = {
+        r["job_id"]: float(
+            r["execution"] - r["schedule"] - design([r], terms)[0] @ coefficients
+        )
+        for r in held_out or []
     }
+    return result
 
 
 def schedule_model(rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -295,8 +319,11 @@ def main(out: Path) -> None:
     every = jobs()
     rows = [r for r in every if r["active_reset"]]
     passive = [r for r in every if not r["active_reset"]]
+    garnet = [r for r in rows if r["qc"] == "garnet"]
+    emerald = [r for r in rows if r["qc"] == "emerald"]
     fits = {name: fit(rows, terms) for name, terms in TERMS.items()}
-    sched = schedule_model(rows)
+    garnet_fits = {name: fit(garnet, terms, emerald) for name, terms in SPECS.items()}
+    sched = schedule_model(garnet)
     record: dict[str, Any] = {
         "definition": (
             "schedule = execution_runtime_estimate_seconds - JOB_SECONDS; residual = execution - schedule - model; "
@@ -306,8 +333,13 @@ def main(out: Path) -> None:
         "jobs": rows,
         "passive_jobs": passive,
         "fits": fits,
-        "schedule_model": sched,
-        "padding_hypothesis": {"device_pooled": padding_reading(fits, ""), "device_offset": padding_reading(fits, "_dev")},
+        "garnet_fits": garnet_fits,
+        "schedule_model_garnet": sched,
+        "padding_hypothesis": {
+            "device_pooled": padding_reading(fits, ""),
+            "device_offset": padding_reading(fits, "_dev"),
+            "garnet_fit_held_out": padding_reading(garnet_fits, ""),
+        },
         "largest_runtime_over_execution": max(r["runtime"] - r["execution"] for r in rows),
         "note": "descriptive refit; BILLING_MODELS changes in the change that first sizes a case from it",
     }
@@ -320,7 +352,7 @@ def main(out: Path) -> None:
             "cases_sha256": feat["cases_sha256"],
             "shots": feat["shots"],
             "circuits": feat["circuits"],
-            "prediction": case_prediction(rows, fits, sched, feat),
+            "prediction": case_prediction(rows, {**garnet_fits, **{f"pooled_{k}": v for k, v in fits.items()}}, sched, feat),
         }
     out.write_text(json.dumps(rounded(record), indent=1, sort_keys=True) + "\n", encoding="utf-8")
 
