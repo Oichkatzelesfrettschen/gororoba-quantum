@@ -50,8 +50,8 @@ from iqm_signed_probe import CALIBRATION_FILES, OPTIONS  # noqa: E402
 import grover_plane_analysis as run_analysis  # noqa: E402
 import grover_plane_calibration as calibration  # noqa: E402
 import grover_plane_decision as decision  # noqa: E402
-import grover_plane_sizing as sizing  # noqa: E402
 import grover_plane_sim as sim  # noqa: E402
+import grover_plane_sizing as sizing  # noqa: E402
 
 CASE = "grover-plane-mirrored"
 CASE_101 = "grover-plane-mirrored-101"

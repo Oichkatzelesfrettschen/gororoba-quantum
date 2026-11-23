@@ -1,12 +1,13 @@
-"""Billing v4 sizing of the two PR 987 case variants, written to docs/evidence/iqm-garnet-grover-plane/variant_sizing.json.
+"""Billing v4 sizing of the PR 987 case variants, written to variant_sizing.json in the plane evidence directory.
 
-The variants are grover-plane-mirrored (mark 101 and mark 011 arms, 52 circuits) and grover-plane-mirrored-101 (the mark 101
-arms alone, 38 circuits). Each is priced by the three Garnet models of docs/evidence/iqm-billing-v4 (v3, v4_sum, v4_max; the
-coefficients are pinned in billing_v4_inputs.json with the commit and digest of billing_v4.json): the schedule of the case
-comes from the schedule model of that record, the models add their excess, and the band adds the model's largest
-leave-one-out residual and the schedule model's relative error times the schedule, under the all-jobs error (the sizing
-adopted) and under the Grover-jobs error (reported beside). The credits buy 1.5 times the worst case; the margins state how
-many seconds of the cancel threshold remain at a runtime overrun of 1.5 and of 2.2 times the expected runtime.
+The variants are grover-plane-mirrored (mark 101 and mark 011 arms, 52 circuits) and
+grover-plane-mirrored-101 (the mark 101 arms alone, 38 circuits). Each is priced by
+gororoba_quantum/grover_plane_sizing.py: the three Garnet models of docs/evidence/iqm-billing-v4 (v3,
+v4_sum, v4_max; the coefficients are pinned in billing_v4_inputs.json with the commit and digest of
+billing_v4.json), the schedule from that record's schedule model, the band under the all-jobs schedule error
+(the sizing adopted) and under the Grover-jobs error (reported beside). The credits buy 1.5 times the worst
+case; the margins state how many seconds of the cancel threshold remain at a runtime overrun of 1, 1.5 and
+2.2 times the longest expected runtime.
 
 Usage: "$PYTHON" scripts/iqm_grover_plane_sizing.py --out docs/evidence/iqm-garnet-grover-plane/variant_sizing.json
        "$PYTHON" scripts/iqm_grover_plane_sizing.py --check docs/evidence/iqm-garnet-grover-plane/variant_sizing.json
@@ -23,8 +24,9 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
-import grover_plane_sizing as sizing  # noqa: E402
 import iqm_grover_plane_case as case  # noqa: E402
+
+import grover_plane_sizing as sizing  # noqa: E402
 
 SCHEMA = "iqm-grover-plane-variant-sizing-v1"
 EVIDENCE = ROOT / "docs/evidence/iqm-garnet-grover-plane"

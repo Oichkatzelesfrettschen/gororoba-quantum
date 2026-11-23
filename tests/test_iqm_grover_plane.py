@@ -434,7 +434,8 @@ def plant_of(case_dir: Path, **mechanism: Any) -> Any:
             for k in (1, 2, 3, 4)
             if next((case_dir / "circuits").glob(f"m{mark}-k{k}-c0.json"), None)
         }
-        responses[mark] = sim.Response(found, cal_dir, PATH, mark, **mechanism)
+        if found:
+            responses[mark] = sim.Response(found, cal_dir, PATH, mark, **mechanism)
     _ = builder
 
     def plant(name: str, distribution: dict[str, float]) -> dict[str, float]:
@@ -474,3 +475,20 @@ def test_analyze_reads_a_synthetic_collected_record_end_to_end(tmp_path: Path) -
     mock = followup.synthetic_run(NEW, tmp_path / "mock", "grover", qc="garnet:mock")
     with pytest.raises(analysis.AnalysisError):
         analysis.analyze(mock, NEW)
+
+
+@pytest.mark.audit
+def test_analyze_reads_the_mark_101_case_without_a_contrast(tmp_path: Path) -> None:
+    import iqm_garnet_followup as followup
+
+    import grover_plane_analysis as analysis
+
+    model = followup.synthetic_run(NEW_101, tmp_path / "model", "grover")
+    record = analysis.analyze(model, NEW_101)
+    require(record["case"] == case.CASE_101 and set(record["decisions"]) == {"101"}, str(record["case"]))
+    require(
+        record["decisions"]["101"]["departure"] in ("geometric", "unresolved"), record["decisions"]["101"]["departure"]
+    )
+    require(record["contrast"]["reading"].startswith("not evaluated"), record["contrast"]["reading"])
+    cz = followup.synthetic_run(NEW_101, tmp_path / "cz", "grover", plant_of(NEW_101, cz_phase=-0.03))
+    require(analysis.analyze(cz, NEW_101)["decisions"]["101"]["departure"] == "coherent")
