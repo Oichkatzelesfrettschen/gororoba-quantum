@@ -289,6 +289,13 @@ A wider search on 2026-11-22 and 2026-11-23 found no answer either. It covered:
   nor its docs/SOURCES.json entry, whose reading scope covers the rights check, records a mathematical reading scope. Every Cayley-Dickson transcription in the documents repositories that mentions a Stiefel element was
   also read.
 
+OpenAIRE and BASE were searched on 2026-11-23. OpenAIRE found two CC BY Zenodo preprints by Zhou and Zhou, now in
+gororoba-documents-public. Their stratified catalogue of trigintaduonion zero divisors (Zenodo 23451124, 2026-10-18)
+reports 500 constructed equal-norm orthogonal samples, all zero divisors, and places the parallel Stiefel family
+((u, 0), (0, εu)) at left-annihilator dimension 12; it states no theorem about every A_5 Stiefel element, so it is
+consistent with Theorem 1 and does not answer the question. BASE returned only math/0512517 and Reggiani's sedenion
+geometry.
+
 MathSciNet and Google Scholar were not searched. On 2026-11-23 MathSciNet answered with its institutional login page,
 also in a visible Firefox session, and no working sign-in was available; Google Scholar answered with a JavaScript bot
 challenge, and in the visible Firefox session its CAPTCHA repeated after each solution. The Semantic Scholar website
@@ -312,6 +319,9 @@ The queries of 2026-11-23, with their raw counts:
 | arXiv API | `au:Zhilina` | 16 | no arXiv version of 1471.17009 or 1508.05105 |
 | Crossref | `query.bibliographic=Elements of Hypercomputation Dickson-Albert inductive process` | no title match | nearest: Chatelin, "Hypercomputation in Dickson Algebras" (2012 chapter, DOI 10.1142/9789814322935_0002) |
 | OpenAlex | `Elements of Hypercomputation on R and Z2 with the Dickson-Albert inductive process` | 0 | none |
+| OpenAIRE | `graph/v1/researchProducts?search=Stiefel Cayley-Dickson` | 9 | Lambert-Kibler 1988, math/0512517, 2411.18881, Rodriguez-Ordonez 2010, Zenodo 23451124 and 23151835 (Zhou and Zhou), three unrelated |
+| BASE | `Stiefel "Cayley-Dickson"` | 4 | math/0512517 and 2411.18881, each from arXiv and DataCite |
+| libgen.li | DOI search, then edition page MD5 | 5 of 10 DOIs carry a file | MD5s used for the Anna's Archive downloads filed in gororoba-documents-private |
 | arXiv API | `(abs:"zero divisor" OR abs:"zero divisors") AND abs:"Cayley-Dickson" AND submittedDate:[202401010000 TO 202612312359]` | 7 | 2608.28176, 2608.28163, 2608.26893, 2608.08232, 2606.27798, 2505.11747, 2411.18881 |
 
 ## Replay
