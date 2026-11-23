@@ -33,6 +33,7 @@ import numpy as np
 from scipy import optimize, stats
 
 import grover_plane_sim as sim
+import parallel
 
 Pairs = dict[int, list[Any]]
 
@@ -72,6 +73,18 @@ def depth_estimate(pairs: Sequence[Sequence[Sequence[int]]], phi: float = PHI) -
     return sum(m for m, _ in means) / len(means), sum(v for _, v in means) / len(means) ** 2
 
 
+class ResponseRow:
+    """The row of the response table at one s: Q_k(s, eps) - 1/8 for every eps of the grid, a picklable callable that
+    parallel.ordered_map sends to the workers."""
+
+    def __init__(self, response: sim.Response, eps: np.ndarray) -> None:
+        self.response = response
+        self.eps = eps
+
+    def __call__(self, s: float) -> list[np.ndarray]:
+        return [self.response.centered(s, float(e)) for e in self.eps]
+
+
 class Fitter:
     """Least squares of the four depth frequencies on the response of a Response, over the table of
     Q_k(s, eps) - 1/8 on a grid of the boxes, refined by a local search; a follows in closed form at each (s, eps)."""
@@ -81,7 +94,7 @@ class Fitter:
         self.s = np.linspace(*S_BOX, s_points)
         self.e = np.linspace(*E_BOX, e_points)
         self.zero = int(np.argmin(np.abs(self.e)))
-        self.table = np.array([[response.centered(s, e) for e in self.e] for s in self.s])
+        self.table = np.array(parallel.ordered_map(ResponseRow(response, self.e), list(self.s), min_items=2))
 
     def best_a(self, d: np.ndarray, w: np.ndarray, q: np.ndarray) -> np.ndarray:
         num = np.einsum("...i,ij,j->...", q, w, d)

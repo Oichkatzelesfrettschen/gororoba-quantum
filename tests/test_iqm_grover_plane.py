@@ -403,6 +403,13 @@ def test_a_fit_on_a_bound_of_the_calibrated_box_reads_out_of_domain(
     require(decision.A_BOX == calibration.NULL_A and decision.S_BOX == calibration.NULL_S)
 
 
+def test_the_response_grid_equals_the_serial_evaluation_row_by_row(
+    fitter: decision.Fitter, response: sim.Response
+) -> None:
+    serial = np.array([[response.centered(s, e) for e in fitter.e] for s in fitter.s])
+    require(np.array_equal(fitter.table, serial))
+
+
 def prx_ratio() -> float:
     """The fitted PRX ratio of the committed case: the value the decision, the question and these tests share."""
     return float(
@@ -596,6 +603,7 @@ def test_a_change_of_the_response_away_from_six_points_breaks_the_analysis(
 
     import grover_plane_analysis as analysis
 
+    monkeypatch.setenv("GOROROBA_WORKERS", "1")  # a patched method reaches the grid only in this process
     run = followup.synthetic_run(NEW, tmp_path / "model", "grover")
     require(analysis.analyze(run, NEW)["readout"]["101"]["passed"])
     original = sim.Response.centered
