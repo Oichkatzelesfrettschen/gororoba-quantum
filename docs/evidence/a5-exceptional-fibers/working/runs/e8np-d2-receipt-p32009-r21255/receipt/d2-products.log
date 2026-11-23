@@ -1,0 +1,13 @@
+RESULT generators 21
+RESULT targets 231
+RESULT products_ms 17837
+RESULT std_ms 10563050 size 980
+RESULT reduce_ms 55061
+
+--- stderr ---
+Running as unit: run-p906387-i904285.service; invocation ID: 67dad89dbf524b029f235c03944d263c
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 2h 57min 19.734s
+             CPU time consumed: 2h 57min 17.574s
+                   Memory peak: 4.9G (swap: 0B)

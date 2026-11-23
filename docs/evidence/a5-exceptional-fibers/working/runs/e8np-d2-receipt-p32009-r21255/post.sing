@@ -1,0 +1,12 @@
+ring r=32009,(y(1..21)),dp; option(redSB);
+execute("ideal A0="+read("docs/evidence/a5-exceptional-fibers/working/runs/e8np-d2-receipt-p32009-r21255/receipt/relations-upto-d2.rel")+";");
+execute("ideal KP="+read("docs/evidence/a5-exceptional-fibers/working/runs/e8_a2/e8_k2.rel")+";");
+execute("ideal KM="+read("docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p1/d2/relations-upto-d2.rel")+";");
+ideal sA=std(A0); ideal sP=std(KP); ideal sM=std(KM);
+"RESULT receipt generators",size(minbase(A0)),"dim",dim(sA),"mult",mult(sA);
+"RESULT hilb",hilb(sA,2);
+"RESULT against N+ K2 at root 10754",size(reduce(A0,sP)),size(reduce(KP,sA));
+"RESULT against N- relations at root 10754",size(reduce(A0,sM)),size(reduce(KM,sA));
+ideal C=A0; C[1]=C[1]+y(1)^2; ideal sC=std(C);
+"RESULT control receipt with y(1)^2 added: dim mult",dim(sC),mult(sC),"receipt modulo it",size(reduce(A0,sC)),"it modulo receipt",size(reduce(C,sA));
+"EXIT 0"; quit;
