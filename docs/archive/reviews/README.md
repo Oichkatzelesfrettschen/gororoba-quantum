@@ -144,6 +144,7 @@ repository-relative; a branch name stands for its worktree.
 | [iqm-garnet-followup-run/README.md](iqm-garnet-followup-run/README.md) | Local review (codex, grok, agy) and red team (agy Flash, opencode Nemotron) of the Grover-depth and sedenion Walsh analyzer and runs (PR 976): the refuted QB12 account of e_10, the corrected-f gradient, the provenance wording and the replay gate |
 | [review-record-backfill-937-843/reconciliation.md](review-record-backfill-937-843/reconciliation.md) | Local codex round on the backfilled records of PRs 937 and 843 (PR 958): the contradictory no-finding summaries, record shape, source locator and the full hashes; with the brief |
 | [iqm-emerald-idle-schedule-t1-run/](iqm-emerald-idle-schedule-t1-run/README.md) | grok review and opencode Nemotron red team of the Emerald idle-schedule successor run's retention (PR 973): thirteen findings on the result note's descriptive readings and hypotheses, each with its disposition |
+| [iqm-grover-plane-case/](iqm-grover-plane-case/README.md) | codex review (five rounds), agy Neon and opencode red team of the Grover-plane case for a fourth Grover depth on Garnet (PR 987): the plane model, gates, held-out false alarms, response binding and the two variants |
 
 The [Tuna projector campaign review](tuna-projector-campaign-review.md) and its
 [model provenance](tuna-projector-campaign-review.json) separate QX conformance, bounded hardware qualification and causal successors.
