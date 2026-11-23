@@ -210,7 +210,11 @@ def decide(fitter: Fitter, y: np.ndarray, cov: np.ndarray, delta: float) -> dict
     adequate = dof <= 0 or fit1["chi2"] <= float(stats.chi2.isf(ALPHA, dof))
     reading, t = departure(fit0, fit1, err1, delta, adequate)
     chosen, err = (fit1, err1) if reading in ("coherent", NON_ROTATION) else (fit0, fitter.errors(fit0, cov))
-    if any(on_bound(chosen[n], box) for n, box in (("a", A_BOX), ("s", S_BOX))):
+    boxes = [("a", A_BOX), ("s", S_BOX)]
+    if chosen is fit1:
+        # Fitter.fit constrains eps to E_BOX, so a rotation fit clipped there is limited by the search domain.
+        boxes.append(("eps", E_BOX))
+    if any(on_bound(chosen[n], box) for n, box in boxes):
         reading = OUT_OF_DOMAIN
     s_se = err.get("s", float("nan"))
     loss = math.isfinite(s_se) and (chosen["s"] - 1) <= -Z_LOSS * s_se

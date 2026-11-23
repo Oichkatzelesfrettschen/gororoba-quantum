@@ -410,6 +410,20 @@ def test_the_response_grid_equals_the_serial_evaluation_row_by_row(
     require(np.array_equal(fitter.table, serial))
 
 
+def test_a_rotation_fit_clipped_at_the_rotation_bound_reads_out_of_domain(
+    fitter: decision.Fitter, response: sim.Response
+) -> None:
+    truth = response.probabilities(0.97, 0.98, 0.4)
+    cov = np.diag(decision.PHI * truth * (1 - truth) / (4 * 13440.0))
+    out = decision.decide(fitter, truth, cov, 6.64)
+    rotation = out["rotation"]
+    require(abs(rotation["eps"]) >= decision.E_BOX[1] - 1e-6, str(rotation))
+    require(
+        not decision.on_bound(rotation["a"], decision.A_BOX) and not decision.on_bound(rotation["s"], decision.S_BOX)
+    )
+    require(out["departure"] == decision.OUT_OF_DOMAIN, out["departure"])
+
+
 def prx_ratio() -> float:
     """The fitted PRX ratio of the committed case: the value the decision, the question and these tests share."""
     return float(
