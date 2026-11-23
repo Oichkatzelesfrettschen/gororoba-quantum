@@ -49,3 +49,17 @@ Acceptance at 19ce4109c (Windows compute workstation): tests/test_iqm_grover_pla
 variants, the retained replay, core-776, core-777, the complement and sizing checks and the link check passed.
 cases.json sha256: A c107c8ba248715edc785b662dd6674642072aa8662ed5c3aa72271d119455806,
 B 82cbb540d96bd70e7c3d745f0d5c13a579a9f879ea39cb276b64ae865b71ccb0.
+
+## Retention of the Garnet run (pull request 995)
+
+The seats read 6837f7d18: codex on gpt-daybreak-blue at high effort (reviewer) and opencode on
+opencode-go/deepseek-v4-pro (red team). Raw reports stay outside the tree.
+
+| # | Round | Seats | Finding | Disposition |
+|---|---|---|---|---|
+| 27 | 7 | codex, opencode | The result note said the case was built on calibration set ef4df2bb. The committed case binds a0e725eb, both run directories and the Garnet job bind 2951733a, and ef4df2bb is the garnet:mock station's own compilation | Fixed in f9472349c: the note names the three sets and what each record binds |
+| 28 | 7 | opencode | "Garnet recalibrated between the build and the submission" has no support: the live rebuild read the current set and the job ran on that set | Fixed in f9472349c: the sentence is removed |
+| 29 | 7 | codex, opencode | The note omitted the model and fit chi2 values (270.49 fixed, 104.27 geometric, 102.47 rotation) and the fitted a and s | Fixed in f9472349c: stated as measured, with no causal reading |
+| 30 | 7 | codex | docs/runbooks/results-index.md still required a claim in the retaining change, against AGENTS.md "Records" | Fixed on main by another change before this branch merged it; the merge 5dc5f628a takes main's text |
+| 31 | 7 | opencode | With the run directory as its own case directory, the analyzer's case-digest comparison is self-referential | Boundary: the reader first requires cases.json to match the submission's approved digest (gororoba_quantum/iqm_records.py), so the analysis reads the approved bytes; the committed case directory holds the earlier build and would be refused by design |
+| 32 | 7 | codex, opencode | Raw files, job ids, billed credits (9 s at 0.5 credit/s), the replay's recomputation, the reading, the acquisitions and the runner-image exemption | Confirmed sound by both seats |
