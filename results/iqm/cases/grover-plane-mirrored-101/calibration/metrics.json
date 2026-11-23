@@ -1,0 +1,4025 @@
+{
+ "calibration_set_id": "a0e725eb-a020-43d3-8aaf-072b926e425a",
+ "dut_label": "M194_F0W2114_P08_B15",
+ "created_timestamp": "2026-11-22T03:02:20.301254Z",
+ "_observation": {
+  "request_started_utc": "2026-11-22T16:38:56.398368+00:00",
+  "retrieved_utc": "2026-11-22T16:38:57.615347+00:00",
+  "path": "api/v1/calibration-sets/garnet/a0e725eb-a020-43d3-8aaf-072b926e425a/metrics"
+ },
+ "observations": [
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB15.error_0_to_1",
+   "value": 0.0194,
+   "unit": "",
+   "uncertainty": 0.0019456368496269683,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB1.error_0_to_1",
+   "value": 0.0062,
+   "unit": "",
+   "uncertainty": 0.001115305367230572,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB12.error_1_to_0",
+   "value": 0.3126,
+   "unit": "",
+   "uncertainty": 0.006518278947204359,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB3.error_1_to_0",
+   "value": 0.0234,
+   "unit": "",
+   "uncertainty": 0.002131218413138708,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB16.error_1_to_0",
+   "value": 0.024,
+   "unit": "",
+   "uncertainty": 0.002157553000074884,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB11.error_1_to_0",
+   "value": 0.0148,
+   "unit": "",
+   "uncertainty": 0.0017051711983340446,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB19.error_0_to_1",
+   "value": 0.0322,
+   "unit": "",
+   "uncertainty": 0.0024868315209763837,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB20.error_1_to_0",
+   "value": 0.045,
+   "unit": "",
+   "uncertainty": 0.0029186314892918758,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB16.error_0_to_1",
+   "value": 0.021,
+   "unit": "",
+   "uncertainty": 0.0020221021645700533,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB12.fidelity",
+   "value": 0.802,
+   "unit": "",
+   "uncertainty": 0.0037953952835760984,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB2.fidelity",
+   "value": 0.9847,
+   "unit": "",
+   "uncertainty": 0.0012252685088887793,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB13.error_0_to_1",
+   "value": 0.0154,
+   "unit": "",
+   "uncertainty": 0.0017385600053326815,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB18.fidelity",
+   "value": 0.977,
+   "unit": "",
+   "uncertainty": 0.0014932521933445338,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB1.error_1_to_0",
+   "value": 0.0182,
+   "unit": "",
+   "uncertainty": 0.0018860787509282235,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB13.fidelity",
+   "value": 0.9742,
+   "unit": "",
+   "uncertainty": 0.0015766481152405922,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB12.error_0_to_1",
+   "value": 0.0834,
+   "unit": "",
+   "uncertainty": 0.0038900052700220344,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB6.error_1_to_0",
+   "value": 0.0398,
+   "unit": "",
+   "uncertainty": 0.002752816653408017,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB15.error_1_to_0",
+   "value": 0.0254,
+   "unit": "",
+   "uncertainty": 0.0022176598938596827,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB10.fidelity",
+   "value": 0.9871,
+   "unit": "",
+   "uncertainty": 0.0011271913107705922,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB6.fidelity",
+   "value": 0.9696,
+   "unit": "",
+   "uncertainty": 0.0017078419636517462,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB18.error_1_to_0",
+   "value": 0.029,
+   "unit": "",
+   "uncertainty": 0.002364464870647079,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB4.fidelity",
+   "value": 0.9884,
+   "unit": "",
+   "uncertainty": 0.001068244681938016,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB7.error_1_to_0",
+   "value": 0.0352,
+   "unit": "",
+   "uncertainty": 0.002595609798608258,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB19.error_1_to_0",
+   "value": 0.0352,
+   "unit": "",
+   "uncertainty": 0.002595609798608258,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB9.fidelity",
+   "value": 0.9723,
+   "unit": "",
+   "uncertainty": 0.0016350399662852966,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB5.fidelity",
+   "value": 0.9619,
+   "unit": "",
+   "uncertainty": 0.0018919718298843176,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB4.error_0_to_1",
+   "value": 0.0046,
+   "unit": "",
+   "uncertainty": 0.0009649666430518089,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB11.fidelity",
+   "value": 0.9867,
+   "unit": "",
+   "uncertainty": 0.0011443528417540022,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB8.error_1_to_0",
+   "value": 0.0174,
+   "unit": "",
+   "uncertainty": 0.0018452200757242652,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB7.error_0_to_1",
+   "value": 0.009,
+   "unit": "",
+   "uncertainty": 0.0013374539129443145,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB15.fidelity",
+   "value": 0.9776,
+   "unit": "",
+   "uncertainty": 0.0014750862818374468,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB3.error_0_to_1",
+   "value": 0.008,
+   "unit": "",
+   "uncertainty": 0.0012627506402006381,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB10.error_0_to_1",
+   "value": 0.0102,
+   "unit": "",
+   "uncertainty": 0.0014217434239319274,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB17.error_1_to_0",
+   "value": 0.021,
+   "unit": "",
+   "uncertainty": 0.0020221021645700533,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB13.error_1_to_0",
+   "value": 0.0362,
+   "unit": "",
+   "uncertainty": 0.002630719716165991,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB8.error_0_to_1",
+   "value": 0.0048,
+   "unit": "",
+   "uncertainty": 0.0009850425581260148,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB9.error_1_to_0",
+   "value": 0.0306,
+   "unit": "",
+   "uncertainty": 0.002426523938652593,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB8.fidelity",
+   "value": 0.9889,
+   "unit": "",
+   "uncertainty": 0.0010458424796755135,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB11.error_0_to_1",
+   "value": 0.0118,
+   "unit": "",
+   "uncertainty": 0.0015266187769361018,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB1.fidelity",
+   "value": 0.9878,
+   "unit": "",
+   "uncertainty": 0.0010955819363329573,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB17.fidelity",
+   "value": 0.9817,
+   "unit": "",
+   "uncertainty": 0.0013369539824515388,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB5.error_0_to_1",
+   "value": 0.0146,
+   "unit": "",
+   "uncertainty": 0.001693886019505128,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB5.error_1_to_0",
+   "value": 0.0616,
+   "unit": "",
+   "uncertainty": 0.003383634107469117,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB16.fidelity",
+   "value": 0.9775,
+   "unit": "",
+   "uncertainty": 0.0014785070267072649,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB20.error_0_to_1",
+   "value": 0.0204,
+   "unit": "",
+   "uncertainty": 0.0019938010962245473,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB18.error_0_to_1",
+   "value": 0.017,
+   "unit": "",
+   "uncertainty": 0.0018244216418330872,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB10.error_1_to_0",
+   "value": 0.0156,
+   "unit": "",
+   "uncertainty": 0.0017495389795066651,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB2.error_1_to_0",
+   "value": 0.0174,
+   "unit": "",
+   "uncertainty": 0.0018452200757242652,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB17.error_0_to_1",
+   "value": 0.0156,
+   "unit": "",
+   "uncertainty": 0.0017495389795066651,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB4.error_1_to_0",
+   "value": 0.0186,
+   "unit": "",
+   "uncertainty": 0.0019061548152636328,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB19.fidelity",
+   "value": 0.9663,
+   "unit": "",
+   "uncertainty": 0.0017973258775436994,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB14.fidelity",
+   "value": 0.9793,
+   "unit": "",
+   "uncertainty": 0.0014183120453366877,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB14.error_1_to_0",
+   "value": 0.0274,
+   "unit": "",
+   "uncertainty": 0.002300512577101418,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB7.fidelity",
+   "value": 0.9779,
+   "unit": "",
+   "uncertainty": 0.0014599634580941794,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB6.error_0_to_1",
+   "value": 0.021,
+   "unit": "",
+   "uncertainty": 0.0020221021645700533,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB20.fidelity",
+   "value": 0.9673,
+   "unit": "",
+   "uncertainty": 0.0017673180657137187,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB14.error_0_to_1",
+   "value": 0.014,
+   "unit": "",
+   "uncertainty": 0.0016595415374092764,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB9.error_0_to_1",
+   "value": 0.0248,
+   "unit": "",
+   "uncertainty": 0.0021921232493969864,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB2.error_0_to_1",
+   "value": 0.0132,
+   "unit": "",
+   "uncertainty": 0.0016125428824196476,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB3.fidelity",
+   "value": 0.9843,
+   "unit": "",
+   "uncertainty": 0.0012386112287385209,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB1.assignment_error",
+   "value": 0.012199999999999989,
+   "unit": "",
+   "uncertainty": 0.0010955819363329573,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB2.assignment_error",
+   "value": 0.01529999999999998,
+   "unit": "",
+   "uncertainty": 0.0012252685088887793,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB3.assignment_error",
+   "value": 0.015700000000000047,
+   "unit": "",
+   "uncertainty": 0.0012386112287385209,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB4.assignment_error",
+   "value": 0.011600000000000055,
+   "unit": "",
+   "uncertainty": 0.001068244681938016,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB5.assignment_error",
+   "value": 0.03810000000000002,
+   "unit": "",
+   "uncertainty": 0.0018919718298843176,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB6.assignment_error",
+   "value": 0.030399999999999983,
+   "unit": "",
+   "uncertainty": 0.0017078419636517462,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB7.assignment_error",
+   "value": 0.02210000000000001,
+   "unit": "",
+   "uncertainty": 0.0014599634580941794,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB8.assignment_error",
+   "value": 0.011099999999999999,
+   "unit": "",
+   "uncertainty": 0.0010458424796755135,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB9.assignment_error",
+   "value": 0.027699999999999947,
+   "unit": "",
+   "uncertainty": 0.0016350399662852966,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB10.assignment_error",
+   "value": 0.012900000000000023,
+   "unit": "",
+   "uncertainty": 0.0011271913107705922,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB11.assignment_error",
+   "value": 0.013299999999999979,
+   "unit": "",
+   "uncertainty": 0.0011443528417540022,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB12.assignment_error",
+   "value": 0.19799999999999995,
+   "unit": "",
+   "uncertainty": 0.0037953952835760984,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB13.assignment_error",
+   "value": 0.025800000000000045,
+   "unit": "",
+   "uncertainty": 0.0015766481152405922,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB14.assignment_error",
+   "value": 0.02070000000000005,
+   "unit": "",
+   "uncertainty": 0.0014183120453366877,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB15.assignment_error",
+   "value": 0.022399999999999975,
+   "unit": "",
+   "uncertainty": 0.0014750862818374468,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB16.assignment_error",
+   "value": 0.022499999999999964,
+   "unit": "",
+   "uncertainty": 0.0014785070267072649,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB17.assignment_error",
+   "value": 0.018299999999999983,
+   "unit": "",
+   "uncertainty": 0.0013369539824515388,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB18.assignment_error",
+   "value": 0.02300000000000002,
+   "unit": "",
+   "uncertainty": 0.0014932521933445338,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB19.assignment_error",
+   "value": 0.03369999999999995,
+   "unit": "",
+   "uncertainty": 0.0017973258775436994,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB20.assignment_error",
+   "value": 0.03269999999999995,
+   "unit": "",
+   "uncertainty": 0.0017673180657137187,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB14.fidelity",
+   "value": 0.9873,
+   "unit": "",
+   "uncertainty": 0.0011189285126023793,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB2.error_1_to_0",
+   "value": 0.0192,
+   "unit": "",
+   "uncertainty": 0.0019358479583768025,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB19.fidelity",
+   "value": 0.984,
+   "unit": "",
+   "uncertainty": 0.0012524268887035216,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB18.assignment_error",
+   "value": 0.023499999999999965,
+   "unit": "",
+   "uncertainty": 0.001505163171430156,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB17.assignment_error",
+   "value": 0.018199999999999994,
+   "unit": "",
+   "uncertainty": 0.0013324970936695747,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB5.error_1_to_0",
+   "value": 0.0144,
+   "unit": "",
+   "uncertainty": 0.0016825204527462232,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB3.error_1_to_0",
+   "value": 0.0178,
+   "unit": "",
+   "uncertainty": 0.001865769734959461,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB17.fidelity",
+   "value": 0.9818,
+   "unit": "",
+   "uncertainty": 0.0013324970936695747,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB4.fidelity",
+   "value": 0.9914,
+   "unit": "",
+   "uncertainty": 0.0009244881590167627,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB12.error_0_to_1",
+   "value": 0.0562,
+   "unit": "",
+   "uncertainty": 0.003241544835410764,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB6.error_1_to_0",
+   "value": 0.0158,
+   "unit": "",
+   "uncertainty": 0.0017604449960709765,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB8.assignment_error",
+   "value": 0.009499999999999953,
+   "unit": "",
+   "uncertainty": 0.0009701645680814758,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB18.fidelity",
+   "value": 0.9765,
+   "unit": "",
+   "uncertainty": 0.001505163171430156,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB19.error_1_to_0",
+   "value": 0.0148,
+   "unit": "",
+   "uncertainty": 0.0017051711983340446,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB17.error_1_to_0",
+   "value": 0.0238,
+   "unit": "",
+   "uncertainty": 0.002148814343098781,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB7.fidelity",
+   "value": 0.9824,
+   "unit": "",
+   "uncertainty": 0.0013082848121612992,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB9.error_1_to_0",
+   "value": 0.0448,
+   "unit": "",
+   "uncertainty": 0.002912462488824503,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB5.fidelity",
+   "value": 0.9901,
+   "unit": "",
+   "uncertainty": 0.0009897644027880579,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB16.fidelity",
+   "value": 0.9833,
+   "unit": "",
+   "uncertainty": 0.0012787414593591,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB12.assignment_error",
+   "value": 0.18490000000000006,
+   "unit": "",
+   "uncertainty": 0.0036424386798817186,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB1.error_0_to_1",
+   "value": 0.006,
+   "unit": "",
+   "uncertainty": 0.0010976647841432017,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB9.error_0_to_1",
+   "value": 0.0186,
+   "unit": "",
+   "uncertainty": 0.0019061548152636328,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB13.assignment_error",
+   "value": 0.015100000000000002,
+   "unit": "",
+   "uncertainty": 0.0012174864847932048,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB4.error_0_to_1",
+   "value": 0.0056,
+   "unit": "",
+   "uncertainty": 0.001061482242135937,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB2.fidelity",
+   "value": 0.9833,
+   "unit": "",
+   "uncertainty": 0.001278670385033041,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB17.error_0_to_1",
+   "value": 0.0126,
+   "unit": "",
+   "uncertainty": 0.001576321965032654,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB10.assignment_error",
+   "value": 0.010299999999999976,
+   "unit": "",
+   "uncertainty": 0.001010016173315882,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB6.error_0_to_1",
+   "value": 0.0218,
+   "unit": "",
+   "uncertainty": 0.0020591782343743394,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB1.error_1_to_0",
+   "value": 0.0248,
+   "unit": "",
+   "uncertainty": 0.0021921232493969864,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB1.fidelity",
+   "value": 0.9846,
+   "unit": "",
+   "uncertainty": 0.001225792837197108,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB10.error_1_to_0",
+   "value": 0.0118,
+   "unit": "",
+   "uncertainty": 0.0015266187769361018,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB16.assignment_error",
+   "value": 0.016700000000000048,
+   "unit": "",
+   "uncertainty": 0.0012787414593591,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB11.assignment_error",
+   "value": 0.016800000000000037,
+   "unit": "",
+   "uncertainty": 0.0012826011936765496,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB14.assignment_error",
+   "value": 0.012700000000000045,
+   "unit": "",
+   "uncertainty": 0.0011189285126023793,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB9.assignment_error",
+   "value": 0.03169999999999995,
+   "unit": "",
+   "uncertainty": 0.0017403924793392546,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB9.fidelity",
+   "value": 0.9683,
+   "unit": "",
+   "uncertainty": 0.0017403924793392546,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB3.fidelity",
+   "value": 0.9859,
+   "unit": "",
+   "uncertainty": 0.001176983185931119,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB14.error_1_to_0",
+   "value": 0.0122,
+   "unit": "",
+   "uncertainty": 0.0015516795795575923,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB15.fidelity",
+   "value": 0.9692,
+   "unit": "",
+   "uncertainty": 0.0017163505776216865,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB7.error_1_to_0",
+   "value": 0.0276,
+   "unit": "",
+   "uncertainty": 0.0023086154824528884,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB15.error_0_to_1",
+   "value": 0.0178,
+   "unit": "",
+   "uncertainty": 0.001865769734959461,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB6.fidelity",
+   "value": 0.9812,
+   "unit": "",
+   "uncertainty": 0.0013545646519373265,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB19.assignment_error",
+   "value": 0.016000000000000014,
+   "unit": "",
+   "uncertainty": 0.0012524268887035216,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB18.error_1_to_0",
+   "value": 0.0358,
+   "unit": "",
+   "uncertainty": 0.002616741341842827,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB7.assignment_error",
+   "value": 0.01759999999999995,
+   "unit": "",
+   "uncertainty": 0.0013082848121612992,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB10.fidelity",
+   "value": 0.9897,
+   "unit": "",
+   "uncertainty": 0.001010016173315882,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB20.assignment_error",
+   "value": 0.03720000000000001,
+   "unit": "",
+   "uncertainty": 0.0018741326797205972,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB12.error_1_to_0",
+   "value": 0.3136,
+   "unit": "",
+   "uncertainty": 0.006523942460415766,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB11.fidelity",
+   "value": 0.9832,
+   "unit": "",
+   "uncertainty": 0.0012826011936765496,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB6.assignment_error",
+   "value": 0.01880000000000004,
+   "unit": "",
+   "uncertainty": 0.0013545646519373265,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB7.error_0_to_1",
+   "value": 0.0076,
+   "unit": "",
+   "uncertainty": 0.0012315563946107056,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB18.error_0_to_1",
+   "value": 0.0112,
+   "unit": "",
+   "uncertainty": 0.0014881967075656838,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB20.error_0_to_1",
+   "value": 0.0172,
+   "unit": "",
+   "uncertainty": 0.0018348524819620706,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB1.assignment_error",
+   "value": 0.01539999999999997,
+   "unit": "",
+   "uncertainty": 0.001225792837197108,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB5.error_0_to_1",
+   "value": 0.0054,
+   "unit": "",
+   "uncertainty": 0.001042909017218783,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB20.fidelity",
+   "value": 0.9628,
+   "unit": "",
+   "uncertainty": 0.0018741326797205972,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB14.error_0_to_1",
+   "value": 0.0132,
+   "unit": "",
+   "uncertainty": 0.0016125428824196476,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB16.error_0_to_1",
+   "value": 0.0188,
+   "unit": "",
+   "uncertainty": 0.0019161077820572716,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB16.error_1_to_0",
+   "value": 0.0146,
+   "unit": "",
+   "uncertainty": 0.001693886019505128,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB4.assignment_error",
+   "value": 0.008600000000000052,
+   "unit": "",
+   "uncertainty": 0.0009244881590167627,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB13.error_1_to_0",
+   "value": 0.0168,
+   "unit": "",
+   "uncertainty": 0.0018139264642808009,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB13.fidelity",
+   "value": 0.9849,
+   "unit": "",
+   "uncertainty": 0.0012174864847932048,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB13.error_0_to_1",
+   "value": 0.0134,
+   "unit": "",
+   "uncertainty": 0.0016244273282600887,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB12.fidelity",
+   "value": 0.8150999999999999,
+   "unit": "",
+   "uncertainty": 0.0036424386798817186,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB15.error_1_to_0",
+   "value": 0.0438,
+   "unit": "",
+   "uncertainty": 0.0028813782322559614,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB8.fidelity",
+   "value": 0.9905,
+   "unit": "",
+   "uncertainty": 0.0009701645680814758,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB20.error_1_to_0",
+   "value": 0.0572,
+   "unit": "",
+   "uncertainty": 0.0032684567572823196,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB2.error_0_to_1",
+   "value": 0.0142,
+   "unit": "",
+   "uncertainty": 0.0016710728578642363,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB5.assignment_error",
+   "value": 0.00990000000000002,
+   "unit": "",
+   "uncertainty": 0.0009897644027880579,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB3.error_0_to_1",
+   "value": 0.0104,
+   "unit": "",
+   "uncertainty": 0.0014352912512683863,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB11.error_0_to_1",
+   "value": 0.0158,
+   "unit": "",
+   "uncertainty": 0.0017604449960709765,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB19.error_0_to_1",
+   "value": 0.0172,
+   "unit": "",
+   "uncertainty": 0.0018348524819620706,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB11.error_1_to_0",
+   "value": 0.0178,
+   "unit": "",
+   "uncertainty": 0.001865769734959461,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB10.error_0_to_1",
+   "value": 0.0088,
+   "unit": "",
+   "uncertainty": 0.0013228627258127547,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB8.error_1_to_0",
+   "value": 0.0136,
+   "unit": "",
+   "uncertainty": 0.0016362206264580025,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB8.error_0_to_1",
+   "value": 0.0054,
+   "unit": "",
+   "uncertainty": 0.001042909017218783,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB2.assignment_error",
+   "value": 0.016700000000000048,
+   "unit": "",
+   "uncertainty": 0.001278670385033041,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB4.error_1_to_0",
+   "value": 0.0116,
+   "unit": "",
+   "uncertainty": 0.0015139249896473986,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB3.assignment_error",
+   "value": 0.014100000000000001,
+   "unit": "",
+   "uncertainty": 0.001176983185931119,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB15.assignment_error",
+   "value": 0.03080000000000005,
+   "unit": "",
+   "uncertainty": 0.0017163505776216865,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB1.fidelity:herald=measure.constant",
+   "value": 0.9897979797979798,
+   "unit": "",
+   "uncertainty": 0.001008150199392985,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB1.assignment_error:herald=measure.constant",
+   "value": 0.010202020202020212,
+   "unit": "",
+   "uncertainty": 0.001008150199392985,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB1.error_0_to_1:herald=measure.constant",
+   "value": 0.0032323232323232323,
+   "unit": "",
+   "uncertainty": 0.0008185298534371193,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB1.error_1_to_0:herald=measure.constant",
+   "value": 0.01717171717171717,
+   "unit": "",
+   "uncertainty": 0.0018426817894516322,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB1.init_error:herald=measure.constant:measure=measure.constant",
+   "value": 0.0051915290501388656,
+   "unit": "",
+   "uncertainty": 0.018099753305852492,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB2.fidelity:herald=measure.constant",
+   "value": 0.9956993651443784,
+   "unit": "",
+   "uncertainty": 0.0006676087165101926,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB2.assignment_error:herald=measure.constant",
+   "value": 0.004300634855621599,
+   "unit": "",
+   "uncertainty": 0.0006676087165101926,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB2.error_0_to_1:herald=measure.constant",
+   "value": 0.0006143764079459349,
+   "unit": "",
+   "uncertainty": 0.00038994773297036276,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB2.error_1_to_0:herald=measure.constant",
+   "value": 0.007986893303297153,
+   "unit": "",
+   "uncertainty": 0.0012770067967684518,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB2.init_error:herald=measure.constant:measure=measure.constant",
+   "value": 0.006368636421092311,
+   "unit": "",
+   "uncertainty": 0.0008276167558915615,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB3.fidelity:herald=measure.constant",
+   "value": 0.9879408188082691,
+   "unit": "",
+   "uncertainty": 0.0010931832774618891,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB3.assignment_error:herald=measure.constant",
+   "value": 0.012059181191730883,
+   "unit": "",
+   "uncertainty": 0.0010931832774618891,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB3.error_0_to_1:herald=measure.constant",
+   "value": 0.0014187271990271585,
+   "unit": "",
+   "uncertainty": 0.0005575205578408277,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB3.error_1_to_0:herald=measure.constant",
+   "value": 0.022699635184434536,
+   "unit": "",
+   "uncertainty": 0.0021140883472726777,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB4.fidelity:herald=measure.constant",
+   "value": 0.9908229124647036,
+   "unit": "",
+   "uncertainty": 0.0009571364762317476,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB4.assignment_error:herald=measure.constant",
+   "value": 0.009177087535296446,
+   "unit": "",
+   "uncertainty": 0.0009571364762317476,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB4.error_0_to_1:herald=measure.constant",
+   "value": 0.0034288019362646227,
+   "unit": "",
+   "uncertainty": 0.0008412835697909876,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB4.error_1_to_0:herald=measure.constant",
+   "value": 0.014925373134328358,
+   "unit": "",
+   "uncertainty": 0.0017195007681687843,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB4.init_error:herald=measure.constant:measure=measure.constant",
+   "value": 0.0009977394238834814,
+   "unit": "",
+   "uncertainty": 0.0008629170021507976,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB5.fidelity:herald=measure.constant",
+   "value": 0.9725173682059665,
+   "unit": "",
+   "uncertainty": 0.0016270675137326854,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB5.assignment_error:herald=measure.constant",
+   "value": 0.02748263179403354,
+   "unit": "",
+   "uncertainty": 0.0016270675137326854,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB5.error_0_to_1:herald=measure.constant",
+   "value": 0.0022476501838986514,
+   "unit": "",
+   "uncertainty": 0.0006930259124826493,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB5.error_1_to_0:herald=measure.constant",
+   "value": 0.05271761340416837,
+   "unit": "",
+   "uncertainty": 0.003179482640557209,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB5.init_error:herald=measure.constant:measure=measure.constant",
+   "value": 0.004856694639577719,
+   "unit": "",
+   "uncertainty": 0.001108915516268611,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB6.fidelity:herald=measure.constant",
+   "value": 0.983697853381936,
+   "unit": "",
+   "uncertainty": 0.0012652078918958904,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB6.assignment_error:herald=measure.constant",
+   "value": 0.01630214661806395,
+   "unit": "",
+   "uncertainty": 0.0012652078918958904,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB6.error_0_to_1:herald=measure.constant",
+   "value": 0.0032401782098015392,
+   "unit": "",
+   "uncertainty": 0.000820514954142566,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB6.error_1_to_0:herald=measure.constant",
+   "value": 0.029364115026326448,
+   "unit": "",
+   "uncertainty": 0.002393691552579612,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB6.init_error:herald=measure.constant:measure=measure.constant",
+   "value": 0.0038084883695070904,
+   "unit": "",
+   "uncertainty": 0.008541318572075622,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB7.fidelity:herald=measure.constant",
+   "value": 0.9883485309017224,
+   "unit": "",
+   "uncertainty": 0.0010765017241929705,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB7.assignment_error:herald=measure.constant",
+   "value": 0.011651469098277634,
+   "unit": "",
+   "uncertainty": 0.0010765017241929705,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB7.error_0_to_1:herald=measure.constant",
+   "value": 0.00303951367781155,
+   "unit": "",
+   "uncertainty": 0.0007960849841516934,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB7.error_1_to_0:herald=measure.constant",
+   "value": 0.020263424518743668,
+   "unit": "",
+   "uncertainty": 0.00200041809299205,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB7.init_error:herald=measure.constant:measure=measure.constant",
+   "value": 0.0012241285425006465,
+   "unit": "",
+   "uncertainty": 0.0005549408246383147,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB8.fidelity:herald=measure.constant",
+   "value": 0.9926618415761962,
+   "unit": "",
+   "uncertainty": 0.0008557566059631131,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB8.assignment_error:herald=measure.constant",
+   "value": 0.007338158423803809,
+   "unit": "",
+   "uncertainty": 0.0008557566059631131,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB8.error_0_to_1:herald=measure.constant",
+   "value": 0.0006031363088057901,
+   "unit": "",
+   "uncertainty": 0.0003828186040470698,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB8.error_1_to_0:herald=measure.constant",
+   "value": 0.01407318053880177,
+   "unit": "",
+   "uncertainty": 0.0016681508897559236,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB8.init_error:herald=measure.constant:measure=measure.constant",
+   "value": 0.0016835699331084752,
+   "unit": "",
+   "uncertainty": 0.0005253116242272217,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB9.fidelity:herald=measure.constant",
+   "value": 0.9860545602605864,
+   "unit": "",
+   "uncertainty": 0.0011779575818808745,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB9.assignment_error:herald=measure.constant",
+   "value": 0.013945439739413645,
+   "unit": "",
+   "uncertainty": 0.0011779575818808745,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB9.error_0_to_1:herald=measure.constant",
+   "value": 0.004478827361563518,
+   "unit": "",
+   "uncertainty": 0.0009613310677757301,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB9.error_1_to_0:herald=measure.constant",
+   "value": 0.023412052117263844,
+   "unit": "",
+   "uncertainty": 0.002150855373327487,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB9.init_error:herald=measure.constant:measure=measure.constant",
+   "value": 0.003715381043375321,
+   "unit": "",
+   "uncertainty": 0.0011269898923824259,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB10.fidelity:herald=measure.constant",
+   "value": 0.9900797709142974,
+   "unit": "",
+   "uncertainty": 0.0010013881106186206,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB10.assignment_error:herald=measure.constant",
+   "value": 0.009920229085702559,
+   "unit": "",
+   "uncertainty": 0.0010013881106186206,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB10.error_0_to_1:herald=measure.constant",
+   "value": 0.0040908161178155045,
+   "unit": "",
+   "uncertainty": 0.0009224387631782413,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB10.error_1_to_0:herald=measure.constant",
+   "value": 0.01574964205358969,
+   "unit": "",
+   "uncertainty": 0.0017777005711141344,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB10.init_error:herald=measure.constant:measure=measure.constant",
+   "value": 0.005207141042330887,
+   "unit": "",
+   "uncertainty": 0.0007564095274230195,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB11.fidelity:herald=measure.constant",
+   "value": 0.9941919706541675,
+   "unit": "",
+   "uncertainty": 0.0007693826739950167,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB11.assignment_error:herald=measure.constant",
+   "value": 0.005808029345832466,
+   "unit": "",
+   "uncertainty": 0.0007693826739950167,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB11.error_0_to_1:herald=measure.constant",
+   "value": 0.0002037905033625433,
+   "unit": "",
+   "uncertainty": 0.0002623980181542403,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB11.error_1_to_0:herald=measure.constant",
+   "value": 0.011412268188302425,
+   "unit": "",
+   "uncertainty": 0.0015162275806235737,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB11.init_error:herald=measure.constant:measure=measure.constant",
+   "value": 0.011580337154527998,
+   "unit": "",
+   "uncertainty": 0.025571250285695745,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB13.fidelity:herald=measure.constant",
+   "value": 0.9782430213464697,
+   "unit": "",
+   "uncertainty": 0.0014642117589141576,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB13.assignment_error:herald=measure.constant",
+   "value": 0.021756978653530323,
+   "unit": "",
+   "uncertainty": 0.0014642117589141576,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB13.error_0_to_1:herald=measure.constant",
+   "value": 0.0051313628899835794,
+   "unit": "",
+   "uncertainty": 0.0010310270361733403,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB13.error_1_to_0:herald=measure.constant",
+   "value": 0.03838259441707718,
+   "unit": "",
+   "uncertainty": 0.0027409209310831247,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB13.init_error:herald=measure.constant:measure=measure.constant",
+   "value": 0.00615886617569017,
+   "unit": "",
+   "uncertainty": 0.001142136691086247,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB14.fidelity:herald=measure.constant",
+   "value": 0.9907501524700142,
+   "unit": "",
+   "uncertainty": 0.0009635581247948923,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB14.assignment_error:herald=measure.constant",
+   "value": 0.00924984752998581,
+   "unit": "",
+   "uncertainty": 0.0009635581247948923,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB14.error_0_to_1:herald=measure.constant",
+   "value": 0.001829640170766416,
+   "unit": "",
+   "uncertainty": 0.0006277767573504222,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB14.error_1_to_0:herald=measure.constant",
+   "value": 0.016670054889205123,
+   "unit": "",
+   "uncertainty": 0.001821997086266492,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB14.init_error:herald=measure.constant:measure=measure.constant",
+   "value": 0.005790421822767788,
+   "unit": "",
+   "uncertainty": 0.0013626592972265084,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB15.fidelity:herald=measure.constant",
+   "value": 0.9899856938483548,
+   "unit": "",
+   "uncertainty": 0.0010042934862880782,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB15.assignment_error:herald=measure.constant",
+   "value": 0.010014306151645225,
+   "unit": "",
+   "uncertainty": 0.0010042934862880782,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB15.error_0_to_1:herald=measure.constant",
+   "value": 0.002248109544246883,
+   "unit": "",
+   "uncertainty": 0.0006931673313713767,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB15.error_1_to_0:herald=measure.constant",
+   "value": 0.017780502759043533,
+   "unit": "",
+   "uncertainty": 0.0018851898252224188,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB15.init_error:herald=measure.constant:measure=measure.constant",
+   "value": 0.006562971872938417,
+   "unit": "",
+   "uncertainty": 0.0012025963865080792,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB16.fidelity:herald=measure.constant",
+   "value": 0.9923442996068694,
+   "unit": "",
+   "uncertainty": 0.0008878706298486883,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB16.assignment_error:herald=measure.constant",
+   "value": 0.007655700393130571,
+   "unit": "",
+   "uncertainty": 0.0008878706298486883,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB16.error_0_to_1:herald=measure.constant",
+   "value": 0.0028967515001034555,
+   "unit": "",
+   "uncertainty": 0.0007865682591506886,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB16.error_1_to_0:herald=measure.constant",
+   "value": 0.012414649286157667,
+   "unit": "",
+   "uncertainty": 0.0015920324730005608,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB16.init_error:herald=measure.constant:measure=measure.constant",
+   "value": 0.017692087064062223,
+   "unit": "",
+   "uncertainty": 0.022664882054847717,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB17.fidelity:herald=measure.constant",
+   "value": 0.9933700530395757,
+   "unit": "",
+   "uncertainty": 0.000821651916968321,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB17.assignment_error:herald=measure.constant",
+   "value": 0.006629946960424293,
+   "unit": "",
+   "uncertainty": 0.000821651916968321,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB17.error_0_to_1:herald=measure.constant",
+   "value": 0.0018359853121175031,
+   "unit": "",
+   "uncertainty": 0.000629950981363598,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB17.error_1_to_0:herald=measure.constant",
+   "value": 0.01142390860873113,
+   "unit": "",
+   "uncertainty": 0.0015177645574033895,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB17.init_error:herald=measure.constant:measure=measure.constant",
+   "value": 0.00883595363552403,
+   "unit": "",
+   "uncertainty": 0.0018052656759004163,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB18.fidelity:herald=measure.constant",
+   "value": 0.9936734693877551,
+   "unit": "",
+   "uncertainty": 0.0008023968924214883,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB18.assignment_error:herald=measure.constant",
+   "value": 0.006326530612244863,
+   "unit": "",
+   "uncertainty": 0.0008023968924214883,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB18.error_0_to_1:herald=measure.constant",
+   "value": 0.00020408163265306123,
+   "unit": "",
+   "uncertainty": 0.00026277268124509504,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB18.error_1_to_0:herald=measure.constant",
+   "value": 0.012448979591836735,
+   "unit": "",
+   "uncertainty": 0.0015831341098788533,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB18.init_error:herald=measure.constant:measure=measure.constant",
+   "value": 0.009150192822339753,
+   "unit": "",
+   "uncertainty": 0.0015198770874424172,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB19.fidelity:herald=measure.constant",
+   "value": 0.9822540473225405,
+   "unit": "",
+   "uncertainty": 0.0013415388924372486,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB19.assignment_error:herald=measure.constant",
+   "value": 0.017745952677459487,
+   "unit": "",
+   "uncertainty": 0.0013415388924372486,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB19.error_0_to_1:herald=measure.constant",
+   "value": 0.0136986301369863,
+   "unit": "",
+   "uncertainty": 0.0016730087437569884,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB19.error_1_to_0:herald=measure.constant",
+   "value": 0.021793275217932753,
+   "unit": "",
+   "uncertainty": 0.002097605335376439,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB19.init_error:herald=measure.constant:measure=measure.constant",
+   "value": 0.00764598347130363,
+   "unit": "",
+   "uncertainty": 0.0014980450996617384,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB20.fidelity:herald=measure.constant",
+   "value": 0.9915063446582071,
+   "unit": "",
+   "uncertainty": 0.0009270042858462633,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB20.assignment_error:herald=measure.constant",
+   "value": 0.008493655341792916,
+   "unit": "",
+   "uncertainty": 0.0009270042858462633,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB20.error_0_to_1:herald=measure.constant",
+   "value": 0.0008186655751125665,
+   "unit": "",
+   "uncertainty": 0.0004394888940775107,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure.constant.QB20.error_1_to_0:herald=measure.constant",
+   "value": 0.016168645108473188,
+   "unit": "",
+   "uncertainty": 0.0018011655381701842,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB20.init_error:herald=measure.constant:measure=measure.constant",
+   "value": 0.007652600163584267,
+   "unit": "",
+   "uncertainty": 0.001243000487115591,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB1.fidelity:herald=measure.constant",
+   "value": 0.9881818181818182,
+   "unit": "",
+   "uncertainty": 0.0010830122756157246,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB1.assignment_error:herald=measure.constant",
+   "value": 0.011818181818181839,
+   "unit": "",
+   "uncertainty": 0.0010830122756157246,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB1.error_0_to_1:herald=measure.constant",
+   "value": 0.00404040404040404,
+   "unit": "",
+   "uncertainty": 0.000911098972183875,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB1.error_1_to_0:herald=measure.constant",
+   "value": 0.019595959595959597,
+   "unit": "",
+   "uncertainty": 0.001965085499265334,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB1.init_error:herald=measure.constant:measure=measure_fidelity.constant",
+   "value": 0.0018696858244435788,
+   "unit": "",
+   "uncertainty": 0.0006166740285814726,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB2.fidelity:herald=measure.constant",
+   "value": 0.9944558521560575,
+   "unit": "",
+   "uncertainty": 0.0007559505312567888,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB2.assignment_error:herald=measure.constant",
+   "value": 0.005544147843942526,
+   "unit": "",
+   "uncertainty": 0.0007559505312567888,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB2.error_0_to_1:herald=measure.constant",
+   "value": 0.001437371663244353,
+   "unit": "",
+   "uncertainty": 0.0005648390411698424,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB2.error_1_to_0:herald=measure.constant",
+   "value": 0.009650924024640658,
+   "unit": "",
+   "uncertainty": 0.0014024270677650292,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB2.init_error:herald=measure.constant:measure=measure_fidelity.constant",
+   "value": 0.008074612203114673,
+   "unit": "",
+   "uncertainty": 0.0013060399043791284,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB3.fidelity:herald=measure.constant",
+   "value": 0.9940476190476191,
+   "unit": "",
+   "uncertainty": 0.0007761890380973068,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB3.assignment_error:herald=measure.constant",
+   "value": 0.005952380952380931,
+   "unit": "",
+   "uncertainty": 0.0007761890380973068,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB3.error_0_to_1:herald=measure.constant",
+   "value": 0.003228410008071025,
+   "unit": "",
+   "uncertainty": 0.0008175409006846461,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB3.error_1_to_0:herald=measure.constant",
+   "value": 0.00867635189669088,
+   "unit": "",
+   "uncertainty": 0.0013196607773050721,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB3.init_error:herald=measure.constant:measure=measure_fidelity.constant",
+   "value": 0.0017705358061503862,
+   "unit": "",
+   "uncertainty": 0.0006629582915545695,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB4.fidelity:herald=measure.constant",
+   "value": 0.9924456083803385,
+   "unit": "",
+   "uncertainty": 0.0008704162062557927,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB4.assignment_error:herald=measure.constant",
+   "value": 0.007554391619661538,
+   "unit": "",
+   "uncertainty": 0.0008704162062557927,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB4.error_0_to_1:herald=measure.constant",
+   "value": 0.0032232070910556,
+   "unit": "",
+   "uncertainty": 0.0008162260083579131,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB4.error_1_to_0:herald=measure.constant",
+   "value": 0.011885576148267527,
+   "unit": "",
+   "uncertainty": 0.0015376191309069403,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB4.init_error:herald=measure.constant:measure=measure_fidelity.constant",
+   "value": 0.0010114042913179633,
+   "unit": "",
+   "uncertainty": 0.00048796496498424173,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB5.fidelity:herald=measure.constant",
+   "value": 0.9935349322210636,
+   "unit": "",
+   "uncertainty": 0.0008201233493818839,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB5.assignment_error:herald=measure.constant",
+   "value": 0.006465067778936406,
+   "unit": "",
+   "uncertainty": 0.0008201233493818839,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB5.error_0_to_1:herald=measure.constant",
+   "value": 0.0006256517205422315,
+   "unit": "",
+   "uncertainty": 0.00039709900851334025,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB5.error_1_to_0:herald=measure.constant",
+   "value": 0.012304483837330552,
+   "unit": "",
+   "uncertainty": 0.0015914526729510874,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB5.init_error:herald=measure.constant:measure=measure_fidelity.constant",
+   "value": 0.008052820692821094,
+   "unit": "",
+   "uncertainty": 0.0008768645142988056,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB6.fidelity:herald=measure.constant",
+   "value": 0.996963986599665,
+   "unit": "",
+   "uncertainty": 0.0005721329538858828,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB6.assignment_error:herald=measure.constant",
+   "value": 0.0030360134003349915,
+   "unit": "",
+   "uncertainty": 0.0005721329538858828,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB6.error_0_to_1:herald=measure.constant",
+   "value": 0.0016750418760469012,
+   "unit": "",
+   "uncertainty": 0.0006122703473255823,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB6.error_1_to_0:herald=measure.constant",
+   "value": 0.0043969849246231155,
+   "unit": "",
+   "uncertainty": 0.0009666796209057856,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB6.init_error:herald=measure.constant:measure=measure_fidelity.constant",
+   "value": 0.0054624427629808014,
+   "unit": "",
+   "uncertainty": 0.0010121147092375718,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB7.fidelity:herald=measure.constant",
+   "value": 0.9887051230334812,
+   "unit": "",
+   "uncertainty": 0.0010571311427328366,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB7.assignment_error:herald=measure.constant",
+   "value": 0.011294876966518763,
+   "unit": "",
+   "uncertainty": 0.0010571311427328366,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB7.error_0_to_1:herald=measure.constant",
+   "value": 0.002016942315449778,
+   "unit": "",
+   "uncertainty": 0.0006541922234837468,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB7.error_1_to_0:herald=measure.constant",
+   "value": 0.020572811617587738,
+   "unit": "",
+   "uncertainty": 0.002010506788468003,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB7.init_error:herald=measure.constant:measure=measure_fidelity.constant",
+   "value": 0.005339554522629908,
+   "unit": "",
+   "uncertainty": 0.014393311989885662,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB8.fidelity:herald=measure.constant",
+   "value": 0.9950809592129535,
+   "unit": "",
+   "uncertainty": 0.0007125841569794071,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB8.assignment_error:herald=measure.constant",
+   "value": 0.004919040787046525,
+   "unit": "",
+   "uncertainty": 0.0007125841569794071,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB8.error_0_to_1:herald=measure.constant",
+   "value": 0.000819840131174421,
+   "unit": "",
+   "uncertainty": 0.00044011892095683415,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB8.error_1_to_0:herald=measure.constant",
+   "value": 0.00901824144291863,
+   "unit": "",
+   "uncertainty": 0.0013555073067040256,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB8.init_error:herald=measure.constant:measure=measure_fidelity.constant",
+   "value": 0.004583551287960841,
+   "unit": "",
+   "uncertainty": 0.024103082441384708,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB9.fidelity:herald=measure.constant",
+   "value": 0.9776160395495743,
+   "unit": "",
+   "uncertainty": 0.0017152409313927655,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB9.assignment_error:herald=measure.constant",
+   "value": 0.022383960450425677,
+   "unit": "",
+   "uncertainty": 0.0017152409313927655,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB9.error_0_to_1:herald=measure.constant",
+   "value": 0.0030211480362537764,
+   "unit": "",
+   "uncertainty": 0.0009310295076659716,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB9.error_1_to_0:herald=measure.constant",
+   "value": 0.04174677286459764,
+   "unit": "",
+   "uncertainty": 0.0033017252863852473,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB9.init_error:herald=measure.constant:measure=measure_fidelity.constant",
+   "value": 0.006325305131356207,
+   "unit": "",
+   "uncertainty": 0.0011450544663660009,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB10.fidelity:herald=measure.constant",
+   "value": 0.9954296160877514,
+   "unit": "",
+   "uncertainty": 0.0006855269199914511,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB10.assignment_error:herald=measure.constant",
+   "value": 0.004570383912248621,
+   "unit": "",
+   "uncertainty": 0.0006855269199914511,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB10.error_0_to_1:herald=measure.constant",
+   "value": 0.0032500507820434695,
+   "unit": "",
+   "uncertainty": 0.0008230099112737309,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB10.error_1_to_0:herald=measure.constant",
+   "value": 0.005890717042453788,
+   "unit": "",
+   "uncertainty": 0.0010965597649362606,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB10.init_error:herald=measure.constant:measure=measure_fidelity.constant",
+   "value": 0.0059407146046631665,
+   "unit": "",
+   "uncertainty": 0.0008136434517323955,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB11.fidelity:herald=measure.constant",
+   "value": 0.9922654182780378,
+   "unit": "",
+   "uncertainty": 0.0008844869819645232,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB11.assignment_error:herald=measure.constant",
+   "value": 0.007734581721962175,
+   "unit": "",
+   "uncertainty": 0.0008844869819645232,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB11.error_0_to_1:herald=measure.constant",
+   "value": 0.0022389578668837776,
+   "unit": "",
+   "uncertainty": 0.0006903498750182669,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB11.error_1_to_0:herald=measure.constant",
+   "value": 0.013230205577040504,
+   "unit": "",
+   "uncertainty": 0.0016287068290889882,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB11.init_error:herald=measure.constant:measure=measure_fidelity.constant",
+   "value": 0.008703431425331365,
+   "unit": "",
+   "uncertainty": 0.001206453053023386,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB13.fidelity:herald=measure.constant",
+   "value": 0.9924412094064949,
+   "unit": "",
+   "uncertainty": 0.0010286751650162077,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB13.assignment_error:herald=measure.constant",
+   "value": 0.00755879059350506,
+   "unit": "",
+   "uncertainty": 0.0010286751650162077,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB13.error_0_to_1:herald=measure.constant",
+   "value": 0.0016797312430011197,
+   "unit": "",
+   "uncertainty": 0.0007179540615226841,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB13.error_1_to_0:herald=measure.constant",
+   "value": 0.013437849944008958,
+   "unit": "",
+   "uncertainty": 0.0019280125378294535,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB13.init_error:herald=measure.constant:measure=measure_fidelity.constant",
+   "value": 0.016148137030477128,
+   "unit": "",
+   "uncertainty": 0.002006632981979302,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB14.fidelity:herald=measure.constant",
+   "value": 0.9949546952224053,
+   "unit": "",
+   "uncertainty": 0.0007239933519706867,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB14.assignment_error:herald=measure.constant",
+   "value": 0.0050453047775946835,
+   "unit": "",
+   "uncertainty": 0.0007239933519706867,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB14.error_0_to_1:herald=measure.constant",
+   "value": 0.002883031301482702,
+   "unit": "",
+   "uncertainty": 0.0007828496664538257,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB14.error_1_to_0:herald=measure.constant",
+   "value": 0.0072075782537067545,
+   "unit": "",
+   "uncertainty": 0.001218118177569047,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB14.init_error:herald=measure.constant:measure=measure_fidelity.constant",
+   "value": 0.01120625607682657,
+   "unit": "",
+   "uncertainty": 0.0016129709529573305,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB15.fidelity:herald=measure.constant",
+   "value": 0.9811204596757644,
+   "unit": "",
+   "uncertainty": 0.001366141106801654,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB15.assignment_error:herald=measure.constant",
+   "value": 0.018879540324235555,
+   "unit": "",
+   "uncertainty": 0.001366141106801654,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB15.error_0_to_1:herald=measure.constant",
+   "value": 0.003078185922429715,
+   "unit": "",
+   "uncertainty": 0.0008061939260879129,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB15.error_1_to_0:herald=measure.constant",
+   "value": 0.03468089472604145,
+   "unit": "",
+   "uncertainty": 0.002610635449141061,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB15.init_error:herald=measure.constant:measure=measure_fidelity.constant",
+   "value": 0.01325739390021341,
+   "unit": "",
+   "uncertainty": 0.0011424878144165119,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB16.fidelity:herald=measure.constant",
+   "value": 0.995981866886462,
+   "unit": "",
+   "uncertainty": 0.0006488299327515196,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB16.assignment_error:herald=measure.constant",
+   "value": 0.004018133113538047,
+   "unit": "",
+   "uncertainty": 0.0006488299327515196,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB16.error_0_to_1:herald=measure.constant",
+   "value": 0.0020605810838656502,
+   "unit": "",
+   "uncertainty": 0.0006683259617825753,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB16.error_1_to_0:herald=measure.constant",
+   "value": 0.005975685143210385,
+   "unit": "",
+   "uncertainty": 0.0011123225860085561,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB16.init_error:herald=measure.constant:measure=measure_fidelity.constant",
+   "value": 0.010543791290384519,
+   "unit": "",
+   "uncertainty": 0.02305423406972075,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB17.fidelity:herald=measure.constant",
+   "value": 0.9921620521172638,
+   "unit": "",
+   "uncertainty": 0.0008916783222020034,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB17.assignment_error:herald=measure.constant",
+   "value": 0.007837947882736174,
+   "unit": "",
+   "uncertainty": 0.0008916783222020034,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB17.error_0_to_1:herald=measure.constant",
+   "value": 0.005293159609120521,
+   "unit": "",
+   "uncertainty": 0.001042280157273789,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB17.error_1_to_0:herald=measure.constant",
+   "value": 0.010382736156351791,
+   "unit": "",
+   "uncertainty": 0.0014470704871889428,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB17.init_error:herald=measure.constant:measure=measure_fidelity.constant",
+   "value": 0.009996669986894635,
+   "unit": "",
+   "uncertainty": 0.021519649702550964,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB18.fidelity:herald=measure.constant",
+   "value": 0.9862244897959184,
+   "unit": "",
+   "uncertainty": 0.0011696317658192873,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB18.assignment_error:herald=measure.constant",
+   "value": 0.013775510204081631,
+   "unit": "",
+   "uncertainty": 0.0011696317658192873,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB18.error_0_to_1:herald=measure.constant",
+   "value": 0.0014285714285714286,
+   "unit": "",
+   "uncertainty": 0.0005613847251140368,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB18.error_1_to_0:herald=measure.constant",
+   "value": 0.026122448979591838,
+   "unit": "",
+   "uncertainty": 0.002270903137710372,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB18.init_error:herald=measure.constant:measure=measure_fidelity.constant",
+   "value": 0.008926158929386419,
+   "unit": "",
+   "uncertainty": 0.0016266689484756968,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB19.fidelity:herald=measure.constant",
+   "value": 0.9936507936507937,
+   "unit": "",
+   "uncertainty": 0.001009464632313465,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB19.assignment_error:herald=measure.constant",
+   "value": 0.006349206349206327,
+   "unit": "",
+   "uncertainty": 0.001009464632313465,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB19.error_0_to_1:herald=measure.constant",
+   "value": 0.0019047619047619048,
+   "unit": "",
+   "uncertainty": 0.000813984436249502,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB19.error_1_to_0:herald=measure.constant",
+   "value": 0.010793650793650795,
+   "unit": "",
+   "uncertainty": 0.0018475672418373891,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB20.fidelity:herald=measure.constant",
+   "value": 0.9775890298812935,
+   "unit": "",
+   "uncertainty": 0.0014802269066851565,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB20.assignment_error:herald=measure.constant",
+   "value": 0.02241097011870652,
+   "unit": "",
+   "uncertainty": 0.0014802269066851565,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB20.error_0_to_1:herald=measure.constant",
+   "value": 0.0030699959066721244,
+   "unit": "",
+   "uncertainty": 0.0008040530938172852,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.ssro.measure_fidelity.constant.QB20.error_1_to_0:herald=measure.constant",
+   "value": 0.04175194433074089,
+   "unit": "",
+   "uncertainty": 0.0028491727577354235,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB20.init_error:herald=measure.constant:measure=measure_fidelity.constant",
+   "value": 0.009759062708975974,
+   "unit": "",
+   "uncertainty": 0.0013375650704993366,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB1.qndness",
+   "value": 0.9719999802940851,
+   "unit": "",
+   "uncertainty": 0.0002364023069229161,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB1.leakage",
+   "value": 0.00044452488345845495,
+   "unit": "",
+   "uncertainty": 0.0001253680664831511,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB1.seepage",
+   "value": 0.03047012312150897,
+   "unit": "",
+   "uncertainty": 0.00782943116924294,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB1.local_correlation_steady_state",
+   "value": 0.9572851621432708,
+   "unit": "",
+   "uncertainty": 0.0004745382718590555,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB2.qndness",
+   "value": 0.9803429163910199,
+   "unit": "",
+   "uncertainty": 0.0000782079669479168,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB2.leakage",
+   "value": 0.00030019944035510586,
+   "unit": "",
+   "uncertainty": 0.00005212937511387476,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB2.seepage",
+   "value": 0.01740942614936758,
+   "unit": "",
+   "uncertainty": 0.003934259519746833,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB2.local_correlation_steady_state",
+   "value": 0.9719179678298973,
+   "unit": "",
+   "uncertainty": 0.0007892927271571946,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB3.qndness",
+   "value": 0.9726444462539037,
+   "unit": "",
+   "uncertainty": 0.0001363976814938555,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB3.leakage",
+   "value": 0,
+   "unit": "",
+   "uncertainty": 0,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB3.seepage",
+   "value": 0,
+   "unit": "",
+   "uncertainty": 0,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB3.local_correlation_steady_state",
+   "value": 0.96868896484375,
+   "unit": "",
+   "uncertainty": 0.00013100103780769434,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB4.qndness",
+   "value": 0.9515949001662505,
+   "unit": "",
+   "uncertainty": 0.0017406807387317668,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB4.leakage",
+   "value": 0.022984836605925967,
+   "unit": "",
+   "uncertainty": 0.0033878275244419538,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB4.seepage",
+   "value": 0.23863324592480287,
+   "unit": "",
+   "uncertainty": 0.018760542926432998,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB4.local_correlation_steady_state",
+   "value": 0.9290000218131916,
+   "unit": "",
+   "uncertainty": 0.00021598593576038704,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB5.qndness",
+   "value": 0.938642950630319,
+   "unit": "",
+   "uncertainty": 0.0007410099684624211,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB5.leakage",
+   "value": 0.0005442833923502453,
+   "unit": "",
+   "uncertainty": 0.0000878681621174535,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB5.seepage",
+   "value": 0.004067013263615866,
+   "unit": "",
+   "uncertainty": 0.002993222746133808,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB5.local_correlation_steady_state",
+   "value": 0.8891959456424408,
+   "unit": "",
+   "uncertainty": 0.027255075736626687,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB6.qndness",
+   "value": 0.947949005687394,
+   "unit": "",
+   "uncertainty": 0.00038420047742776883,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB6.leakage",
+   "value": 0.006430908992087852,
+   "unit": "",
+   "uncertainty": 0,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB6.seepage",
+   "value": 0.1099234659970037,
+   "unit": "",
+   "uncertainty": 0,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB6.local_correlation_steady_state",
+   "value": 0.8751174429581147,
+   "unit": "",
+   "uncertainty": 0.0033402659523586323,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB7.qndness",
+   "value": 0.9689374847411191,
+   "unit": "",
+   "uncertainty": 0.00015568453653333066,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB7.leakage",
+   "value": 0.004250659996609882,
+   "unit": "",
+   "uncertainty": 0,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB7.seepage",
+   "value": 0.09075142353514087,
+   "unit": "",
+   "uncertainty": 0,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB7.local_correlation_steady_state",
+   "value": 0.9179575699479173,
+   "unit": "",
+   "uncertainty": 0.007400474874786937,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB8.qndness",
+   "value": 0.9704871252438738,
+   "unit": "",
+   "uncertainty": 0.0002606116573709443,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB8.leakage",
+   "value": 0.0010786112231192938,
+   "unit": "",
+   "uncertainty": 0.00012673560049239694,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB8.seepage",
+   "value": 0.027228999117743725,
+   "unit": "",
+   "uncertainty": 0.0030829270345150987,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB8.local_correlation_steady_state",
+   "value": 0.9504708487689901,
+   "unit": "",
+   "uncertainty": 0.0006019981560692481,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB9.qndness",
+   "value": 0.9739257364328089,
+   "unit": "",
+   "uncertainty": 0.00012523938434347547,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB9.leakage",
+   "value": 0.0006979413504099565,
+   "unit": "",
+   "uncertainty": 0.00008428418634306288,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB9.seepage",
+   "value": 0.015803012246852793,
+   "unit": "",
+   "uncertainty": 0.0026549377093799645,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB9.local_correlation_steady_state",
+   "value": 0.9463268633692005,
+   "unit": "",
+   "uncertainty": 0.001479413131449009,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB10.qndness",
+   "value": 0.9754062505226418,
+   "unit": "",
+   "uncertainty": 0.00011843403253939614,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB10.leakage",
+   "value": 0.001365957345929101,
+   "unit": "",
+   "uncertainty": 0.00009595278063442672,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB10.seepage",
+   "value": 0.01955553392900379,
+   "unit": "",
+   "uncertainty": 0.0016250650147160057,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB10.local_correlation_steady_state",
+   "value": 0.9408184834836738,
+   "unit": "",
+   "uncertainty": 0.0009630088587380986,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB11.qndness",
+   "value": 0.9744737648407382,
+   "unit": "",
+   "uncertainty": 0.00011905894190026946,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB11.leakage",
+   "value": 0.004122899930785825,
+   "unit": "",
+   "uncertainty": 0.00014084387372191947,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB11.seepage",
+   "value": 0.02818142650479364,
+   "unit": "",
+   "uncertainty": 0.0008883063371669798,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB11.local_correlation_steady_state",
+   "value": 0.9198592307597591,
+   "unit": "",
+   "uncertainty": 0.0005175430942613009,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB13.qndness",
+   "value": 0.935284047401113,
+   "unit": "",
+   "uncertainty": 0.0007847272653318517,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB13.leakage",
+   "value": 0.00048598725030366864,
+   "unit": "",
+   "uncertainty": 0.00007114568589776386,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB13.seepage",
+   "value": 0.0033500696280108267,
+   "unit": "",
+   "uncertainty": 0.0026908966708329273,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB13.local_correlation_steady_state",
+   "value": 0.8830530128919912,
+   "unit": "",
+   "uncertainty": 0.03261069371050403,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB14.qndness",
+   "value": 0.951246640239408,
+   "unit": "",
+   "uncertainty": 0.0004727807713772773,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB14.leakage",
+   "value": 0.010486519865081654,
+   "unit": "",
+   "uncertainty": 0,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB14.seepage",
+   "value": 0.06601628655091765,
+   "unit": "",
+   "uncertainty": 0,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB14.local_correlation_steady_state",
+   "value": 0.8553962123504176,
+   "unit": "",
+   "uncertainty": 0.09464911281755954,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB15.qndness",
+   "value": 0.9695135661143485,
+   "unit": "",
+   "uncertainty": 0.0002707179945980976,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB15.leakage",
+   "value": 0.0016007574000742985,
+   "unit": "",
+   "uncertainty": 0.00009690477065145563,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB15.seepage",
+   "value": 0.02112075288647879,
+   "unit": "",
+   "uncertainty": 0.0014324674100037792,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB15.local_correlation_steady_state",
+   "value": 0.9373329525922446,
+   "unit": "",
+   "uncertainty": 0.0007947645959137153,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB16.qndness",
+   "value": 0.9771788312780655,
+   "unit": "",
+   "uncertainty": 0.00005414699975105851,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB16.leakage",
+   "value": 0.01046812177044588,
+   "unit": "",
+   "uncertainty": 0,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB16.seepage",
+   "value": 0.17658703280456522,
+   "unit": "",
+   "uncertainty": 0,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB16.local_correlation_steady_state",
+   "value": 0.5779228906349919,
+   "unit": "",
+   "uncertainty": 4.55201028638466,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB17.qndness",
+   "value": 0.9787083553457502,
+   "unit": "",
+   "uncertainty": 0.00009460289697547473,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB17.leakage",
+   "value": 0.0005107035676649856,
+   "unit": "",
+   "uncertainty": 0.000053627156169534315,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB17.seepage",
+   "value": 0.013040004650558644,
+   "unit": "",
+   "uncertainty": 0.0022186490026198046,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB17.local_correlation_steady_state",
+   "value": 0.960240138232958,
+   "unit": "",
+   "uncertainty": 0.0015488443697373613,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB18.qndness",
+   "value": 0.9693308230785016,
+   "unit": "",
+   "uncertainty": 0.00027322659819970006,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB18.leakage",
+   "value": 0.004030036014042816,
+   "unit": "",
+   "uncertainty": 0.000210725486645939,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB18.seepage",
+   "value": 0.04472883946078161,
+   "unit": "",
+   "uncertainty": 0.0017712590087083924,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB18.local_correlation_steady_state",
+   "value": 0.9365910154918778,
+   "unit": "",
+   "uncertainty": 0.000301298369522332,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB19.qndness",
+   "value": 0.9517297462319633,
+   "unit": "",
+   "uncertainty": 0.006202289960993196,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB19.leakage",
+   "value": 0.04826537479386381,
+   "unit": "",
+   "uncertainty": 0.012403507134098891,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB19.seepage",
+   "value": 0.3781408870394136,
+   "unit": "",
+   "uncertainty": 0.04190083140526508,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB19.local_correlation_steady_state",
+   "value": 0.9211550414478462,
+   "unit": "",
+   "uncertainty": 0.00029345404534987545,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB20.qndness",
+   "value": 0.9668385548526226,
+   "unit": "",
+   "uncertainty": 0.00016186721233755444,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB20.leakage",
+   "value": 0.00651255296867943,
+   "unit": "",
+   "uncertainty": 0,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB20.seepage",
+   "value": 0.22673523240674479,
+   "unit": "",
+   "uncertainty": 0,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rrc.measure.constant.QB20.local_correlation_steady_state",
+   "value": 0.5000000000000664,
+   "unit": "",
+   "uncertainty": 0,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB4__QB9.fidelity:par=d2",
+   "value": 0.9920863127981666,
+   "unit": "",
+   "uncertainty": 0.00008288094206872923,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB4__QB9.fidelity:par=d2",
+   "value": 0.9975078211998385,
+   "unit": "",
+   "uncertainty": 0.00013915767461256042,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB6__QB11.fidelity:par=d2",
+   "value": 0.9889799485064362,
+   "unit": "",
+   "uncertainty": 0.0001250373371728995,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB6__QB11.fidelity:par=d2",
+   "value": 0.9945077067389428,
+   "unit": "",
+   "uncertainty": 0.0002270421072854115,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB15__QB19.fidelity:par=d2",
+   "value": 0.9921215914154002,
+   "unit": "",
+   "uncertainty": 0.00012949827733098646,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB19__QB15.fidelity:par=d2",
+   "value": 0.9952117858318122,
+   "unit": "",
+   "uncertainty": 0.00024924212202286734,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB2__QB5.fidelity:par=d2",
+   "value": 0.9911876131409734,
+   "unit": "",
+   "uncertainty": 0.00012751151847176855,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB2__QB5.fidelity:par=d2",
+   "value": 0.9967950284810376,
+   "unit": "",
+   "uncertainty": 0.00021857269395399924,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB9__QB14.fidelity:par=d2",
+   "value": 0.9939030230803323,
+   "unit": "",
+   "uncertainty": 0.00012664696990529766,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB14__QB9.fidelity:par=d2",
+   "value": 0.9982271684237791,
+   "unit": "",
+   "uncertainty": 0.00021178875153083087,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB11__QB16.fidelity:par=d2",
+   "value": 0.9926646910198855,
+   "unit": "",
+   "uncertainty": 0.00015396275287865552,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB16__QB11.fidelity:par=d2",
+   "value": 0.995197505922754,
+   "unit": "",
+   "uncertainty": 0.0003036743005311007,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB4__QB5.fidelity:par=d2",
+   "value": 0.9910425174265337,
+   "unit": "",
+   "uncertainty": 0.00012136191876822902,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB4__QB5.fidelity:par=d2",
+   "value": 0.9964433220353587,
+   "unit": "",
+   "uncertainty": 0.0002112359045925626,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB14__QB15.fidelity:par=d2",
+   "value": 0.9872134349638318,
+   "unit": "",
+   "uncertainty": 0.00026947728181766237,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB14__QB15.fidelity:par=d2",
+   "value": 0.9919628154122684,
+   "unit": "",
+   "uncertainty": 0.000516968217624432,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB1__QB4.fidelity:par=d2",
+   "value": 0.9913338377360684,
+   "unit": "",
+   "uncertainty": 0.00009598669021148782,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB4__QB1.fidelity:par=d2",
+   "value": 0.9961537137510802,
+   "unit": "",
+   "uncertainty": 0.00017089096897040154,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB8__QB13.fidelity:par=d2",
+   "value": 0.990901840779204,
+   "unit": "",
+   "uncertainty": 0.00011353145198510415,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB8__QB13.fidelity:par=d2",
+   "value": 0.9962886602882107,
+   "unit": "",
+   "uncertainty": 0.0001985351272537756,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB10__QB15.fidelity:par=d2",
+   "value": 0.983852912911193,
+   "unit": "",
+   "uncertainty": 0.0002617204350923937,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB10__QB15.fidelity:par=d2",
+   "value": 0.9916622051343732,
+   "unit": "",
+   "uncertainty": 0.000478277689053169,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB3__QB4.fidelity:par=d2",
+   "value": 0.9861025426615424,
+   "unit": "",
+   "uncertainty": 0.0001734447791350114,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB4__QB3.fidelity:par=d2",
+   "value": 0.9925628292028668,
+   "unit": "",
+   "uncertainty": 0.0003195516309727556,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB10__QB11.fidelity:par=d2",
+   "value": 0.9841271934040223,
+   "unit": "",
+   "uncertainty": 0.00032946143210071184,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB10__QB11.fidelity:par=d2",
+   "value": 0.9901702324924625,
+   "unit": "",
+   "uncertainty": 0.0006289091587242473,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB13__QB14.fidelity:par=d2",
+   "value": 0.9908371295740634,
+   "unit": "",
+   "uncertainty": 0.00016051103403729117,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB14__QB13.fidelity:par=d2",
+   "value": 0.9957354573922399,
+   "unit": "",
+   "uncertainty": 0.0002881664600433652,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB19__QB20.fidelity:par=d2",
+   "value": 0.9912623524269529,
+   "unit": "",
+   "uncertainty": 0.00015730457840720132,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB19__QB20.fidelity:par=d2",
+   "value": 0.993036942698955,
+   "unit": "",
+   "uncertainty": 0.00032669544134191874,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB5__QB6.fidelity:par=d2",
+   "value": 0.9864442766504644,
+   "unit": "",
+   "uncertainty": 0.00018685481011127366,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB6__QB5.fidelity:par=d2",
+   "value": 0.9931977083003837,
+   "unit": "",
+   "uncertainty": 0.00033932239350080147,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB8__QB9.fidelity:par=d2",
+   "value": 0.991450365181147,
+   "unit": "",
+   "uncertainty": 0.00009822975185649592,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB8__QB9.fidelity:par=d2",
+   "value": 0.9972333114183436,
+   "unit": "",
+   "uncertainty": 0.00016530747365016898,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB15__QB16.fidelity:par=d2",
+   "value": 0.9960049561405424,
+   "unit": "",
+   "uncertainty": 0.00008217255806446786,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB16__QB15.fidelity:par=d2",
+   "value": 0.9983758732005176,
+   "unit": "",
+   "uncertainty": 0.00014848687106538204,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB1__QB2.fidelity:par=d2",
+   "value": 0.992750948618766,
+   "unit": "",
+   "uncertainty": 0.00011019839583111104,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB2__QB1.fidelity:par=d2",
+   "value": 0.9974921529325939,
+   "unit": "",
+   "uncertainty": 0.000188372661425182,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB6__QB7.fidelity:par=d2",
+   "value": 0.9923157317797056,
+   "unit": "",
+   "uncertainty": 0.0000895477530065812,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB6__QB7.fidelity:par=d2",
+   "value": 0.9963152147793699,
+   "unit": "",
+   "uncertainty": 0.0001627932093479926,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB9__QB10.fidelity:par=d2",
+   "value": 0.9906260480299351,
+   "unit": "",
+   "uncertainty": 0.00013254057183889435,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB10__QB9.fidelity:par=d2",
+   "value": 0.9952008946338959,
+   "unit": "",
+   "uncertainty": 0.00024287088386208154,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB16__QB17.fidelity:par=d2",
+   "value": 0.9925093053805665,
+   "unit": "",
+   "uncertainty": 0.00010070757109739099,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB16__QB17.fidelity:par=d2",
+   "value": 0.9958385234522278,
+   "unit": "",
+   "uncertainty": 0.000189813013531258,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB18__QB19.fidelity:par=d2",
+   "value": 0.9939301101591207,
+   "unit": "",
+   "uncertainty": 0.0001349906090160293,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB19__QB18.fidelity:par=d2",
+   "value": 0.9984884126901346,
+   "unit": "",
+   "uncertainty": 0.0002208434663940104,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB3__QB8.fidelity:par=d2",
+   "value": 0.9914522982619312,
+   "unit": "",
+   "uncertainty": 0.00012282401372164028,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB8__QB3.fidelity:par=d2",
+   "value": 0.9969084055888717,
+   "unit": "",
+   "uncertainty": 0.00021049415542220251,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB5__QB10.fidelity:par=d2",
+   "value": 0.9848686207118236,
+   "unit": "",
+   "uncertainty": 0.00020329273197122673,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB10__QB5.fidelity:par=d2",
+   "value": 0.9928674603715468,
+   "unit": "",
+   "uncertainty": 0.00036429384063997307,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB14__QB18.fidelity:par=d2",
+   "value": 0.9919860187867143,
+   "unit": "",
+   "uncertainty": 0.00013561462463091906,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB14__QB18.fidelity:par=d2",
+   "value": 0.9949339372267846,
+   "unit": "",
+   "uncertainty": 0.000263620962759062,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.uz_cz.QB16__QB20.fidelity:par=d2",
+   "value": 0.9927470623507115,
+   "unit": "",
+   "uncertainty": 0.00012758425402745635,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.irb.cz.slepian_crf.QB16__QB20.fidelity:par=d2",
+   "value": 0.9957707654176273,
+   "unit": "",
+   "uncertainty": 0.00024390121445260737,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.xy_sx.QB1.fidelity:par=d2",
+   "value": 0.9991626838403495,
+   "unit": "",
+   "uncertainty": 0.00002130135241848216,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.prx.drag_crf_sx.QB1.fidelity:par=d2",
+   "value": 0.9996135463878536,
+   "unit": "",
+   "uncertainty": 0.000009831393423914845,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.xy_sx.QB3.fidelity:par=d2",
+   "value": 0.9991065036615707,
+   "unit": "",
+   "uncertainty": 0.000017926117976829692,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.prx.drag_crf_sx.QB3.fidelity:par=d2",
+   "value": 0.9995876170745711,
+   "unit": "",
+   "uncertainty": 0.000008273592912382935,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.xy_sx.QB5.fidelity:par=d2",
+   "value": 0.9989714523392514,
+   "unit": "",
+   "uncertainty": 0.00003107030251939277,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.prx.drag_crf_sx.QB5.fidelity:par=d2",
+   "value": 0.9995252856950392,
+   "unit": "",
+   "uncertainty": 0.000014340139624335124,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.xy_sx.QB7.fidelity:par=d2",
+   "value": 0.9944529447669599,
+   "unit": "",
+   "uncertainty": 0.0004999896444675727,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.prx.drag_crf_sx.QB7.fidelity:par=d2",
+   "value": 0.9974398206616738,
+   "unit": "",
+   "uncertainty": 0.00023076445129272587,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.xy_sx.QB9.fidelity:par=d2",
+   "value": 0.9987932297748736,
+   "unit": "",
+   "uncertainty": 0.00003652916597723257,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.prx.drag_crf_sx.QB9.fidelity:par=d2",
+   "value": 0.9994430291268648,
+   "unit": "",
+   "uncertainty": 0.000016859615066415035,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.xy_sx.QB11.fidelity:par=d2",
+   "value": 0.9989823692604218,
+   "unit": "",
+   "uncertainty": 0.00005972310590406985,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.prx.drag_crf_sx.QB11.fidelity:par=d2",
+   "value": 0.9995303242740409,
+   "unit": "",
+   "uncertainty": 0.00002756451041726301,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.xy_sx.QB13.fidelity:par=d2",
+   "value": 0.9986786405576,
+   "unit": "",
+   "uncertainty": 0.00006035724565487919,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.prx.drag_crf_sx.QB13.fidelity:par=d2",
+   "value": 0.9993901417958154,
+   "unit": "",
+   "uncertainty": 0.000027857190302251934,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.xy_sx.QB15.fidelity:par=d2",
+   "value": 0.9993246245580556,
+   "unit": "",
+   "uncertainty": 0.000044478588787805475,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.prx.drag_crf_sx.QB15.fidelity:par=d2",
+   "value": 0.9996882882575642,
+   "unit": "",
+   "uncertainty": 0.000020528579440525604,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.xy_sx.QB17.fidelity:par=d2",
+   "value": 0.9988064885259456,
+   "unit": "",
+   "uncertainty": 0.0000550780936325907,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.prx.drag_crf_sx.QB17.fidelity:par=d2",
+   "value": 0.9994491485504364,
+   "unit": "",
+   "uncertainty": 0.000025420658599657247,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.xy_sx.QB18.fidelity:par=d2",
+   "value": 0.9994409471076482,
+   "unit": "",
+   "uncertainty": 0.00002611539713988319,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.prx.drag_crf_sx.QB18.fidelity:par=d2",
+   "value": 0.9997419755881454,
+   "unit": "",
+   "uncertainty": 0.000012053260218407628,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.xy_sx.QB20.fidelity:par=d2",
+   "value": 0.9991580036577502,
+   "unit": "",
+   "uncertainty": 0.00003195647742802903,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.prx.drag_crf_sx.QB20.fidelity:par=d2",
+   "value": 0.999611386303577,
+   "unit": "",
+   "uncertainty": 0.000014749143428321094,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.xy_sx.QB2.fidelity:par=d2",
+   "value": 0.9991963051671439,
+   "unit": "",
+   "uncertainty": 0.000013379516647733042,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.prx.drag_crf_sx.QB2.fidelity:par=d2",
+   "value": 0.9996290639232972,
+   "unit": "",
+   "uncertainty": 0.000006175161529722943,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.xy_sx.QB4.fidelity:par=d2",
+   "value": 0.9985829454605976,
+   "unit": "",
+   "uncertainty": 0.00003986900022469149,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.prx.drag_crf_sx.QB4.fidelity:par=d2",
+   "value": 0.999345974827968,
+   "unit": "",
+   "uncertainty": 0.000018401077026780688,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.xy_sx.QB6.fidelity:par=d2",
+   "value": 0.9993279181017556,
+   "unit": "",
+   "uncertainty": 0.000031180453980346936,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.prx.drag_crf_sx.QB6.fidelity:par=d2",
+   "value": 0.9996898083546564,
+   "unit": "",
+   "uncertainty": 0.000014390978760160125,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.xy_sx.QB8.fidelity:par=d2",
+   "value": 0.9986532251466473,
+   "unit": "",
+   "uncertainty": 0.000025722300534830426,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.prx.drag_crf_sx.QB8.fidelity:par=d2",
+   "value": 0.9993784116061449,
+   "unit": "",
+   "uncertainty": 0.000011871831016075583,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.xy_sx.QB10.fidelity:par=d2",
+   "value": 0.9992772362027637,
+   "unit": "",
+   "uncertainty": 0.00003490213284946978,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.prx.drag_crf_sx.QB10.fidelity:par=d2",
+   "value": 0.9996664167089678,
+   "unit": "",
+   "uncertainty": 0.000016108676699755285,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.xy_sx.QB14.fidelity:par=d2",
+   "value": 0.9992719401483605,
+   "unit": "",
+   "uncertainty": 0.00004223556996786739,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.prx.drag_crf_sx.QB14.fidelity:par=d2",
+   "value": 0.9996639723761664,
+   "unit": "",
+   "uncertainty": 0.000019493339985169566,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.xy_sx.QB16.fidelity:par=d2",
+   "value": 0.9993952935843355,
+   "unit": "",
+   "uncertainty": 0.00001949502351890718,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.prx.drag_crf_sx.QB16.fidelity:par=d2",
+   "value": 0.9997209047312318,
+   "unit": "",
+   "uncertainty": 0.000008997703162572547,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.clifford.xy_sx.QB19.fidelity:par=d2",
+   "value": 0.9994478429606901,
+   "unit": "",
+   "uncertainty": 0.000021632345801668667,
+   "invalid": false
+  },
+  {
+   "dut_field": "metrics.rb.prx.drag_crf_sx.QB19.fidelity:par=d2",
+   "value": 0.9997451582895492,
+   "unit": "",
+   "uncertainty": 0.000009984159600770155,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB15.t1_time",
+   "value": 0.000036727535904582195,
+   "unit": "s",
+   "uncertainty": 0.000005506281214098055,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB5.t1_time",
+   "value": 0.00002883311918482111,
+   "unit": "s",
+   "uncertainty": 0.000002318757970745855,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB11.t1_time",
+   "value": 0.00004711760401039527,
+   "unit": "s",
+   "uncertainty": 0.0000030524520469393497,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB17.t1_time",
+   "value": 0.00003527205175457054,
+   "unit": "s",
+   "uncertainty": 0.000002041162695395736,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB1.t1_time",
+   "value": 0.00002764342413342991,
+   "unit": "s",
+   "uncertainty": 0.0000016536473794443113,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB13.t1_time",
+   "value": 0.00003573504907264586,
+   "unit": "s",
+   "uncertainty": 0.0000049393413066240464,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB7.t1_time",
+   "value": 0.00003817192853431133,
+   "unit": "s",
+   "uncertainty": 0.000001547379698909118,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB18.t1_time",
+   "value": 0.000052629054835373886,
+   "unit": "s",
+   "uncertainty": 0.0000020524082917613223,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB20.t1_time",
+   "value": 0.000031458286853514354,
+   "unit": "s",
+   "uncertainty": 0.0000025494751914096664,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB9.t1_time",
+   "value": 0.00004069984040386783,
+   "unit": "s",
+   "uncertainty": 0.000006406855209742581,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB3.t1_time",
+   "value": 0.00003362674673468676,
+   "unit": "s",
+   "uncertainty": 0.000002944760244225056,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB19.t1_time",
+   "value": 0.0000581918993737215,
+   "unit": "s",
+   "uncertainty": 0.000004205106343256319,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB6.t1_time",
+   "value": 0.00006406659080015185,
+   "unit": "s",
+   "uncertainty": 0.000008078712534267352,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB8.t1_time",
+   "value": 0.000021620115287913174,
+   "unit": "s",
+   "uncertainty": 7.362411175932686e-7,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB2.t1_time",
+   "value": 0.00003807694418592675,
+   "unit": "s",
+   "uncertainty": 0.0000030480032999298983,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB10.t1_time",
+   "value": 0.000031880188404205444,
+   "unit": "s",
+   "uncertainty": 0.000003824784820177351,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB16.t1_time",
+   "value": 0.00004762516514444093,
+   "unit": "s",
+   "uncertainty": 0.000004342566247444177,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB14.t1_time",
+   "value": 0.000058100340124188325,
+   "unit": "s",
+   "uncertainty": 0.000006648147606037588,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB4.t1_time",
+   "value": 0.000020915974899172653,
+   "unit": "s",
+   "uncertainty": 0.000001260063928703839,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB7.t2_echo_time",
+   "value": 0.000021076782368945182,
+   "unit": "s",
+   "uncertainty": 0.000001426400730545963,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB5.t2_echo_time",
+   "value": 0.000018455715508490027,
+   "unit": "s",
+   "uncertainty": 9.590379316629228e-7,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB13.t2_echo_time",
+   "value": 0.00002499542750703802,
+   "unit": "s",
+   "uncertainty": 0.0000019907202090272133,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB9.t2_echo_time",
+   "value": 0.000018059693684947772,
+   "unit": "s",
+   "uncertainty": 0.0000020973146679659057,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB15.t2_echo_time",
+   "value": 0.00002439240006674205,
+   "unit": "s",
+   "uncertainty": 0.0000016816249041914056,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB1.t2_echo_time",
+   "value": 0.000015793270720241383,
+   "unit": "s",
+   "uncertainty": 9.119481567355131e-7,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB18.t2_echo_time",
+   "value": 0.000026503014699095904,
+   "unit": "s",
+   "uncertainty": 0.000001226984217381555,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB11.t2_echo_time",
+   "value": 0.000024177139007174724,
+   "unit": "s",
+   "uncertainty": 0.0000013160533709834284,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB17.t2_echo_time",
+   "value": 0.000026962704015461122,
+   "unit": "s",
+   "uncertainty": 0.0000017933694194862882,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB3.t2_echo_time",
+   "value": 0.00002440356809046022,
+   "unit": "s",
+   "uncertainty": 0.0000015602846946598106,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB20.t2_echo_time",
+   "value": 0.00003431839495355011,
+   "unit": "s",
+   "uncertainty": 0.000002423093560732655,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB10.t2_time",
+   "value": 0.00001026843140467987,
+   "unit": "s",
+   "uncertainty": 7.205650059149315e-7,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB19.t2_time",
+   "value": 0.00000960915148695764,
+   "unit": "s",
+   "uncertainty": 3.5011381885612705e-7,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB16.t2_time",
+   "value": 0.000008435320980512008,
+   "unit": "s",
+   "uncertainty": 5.167259177507602e-7,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB2.t2_time",
+   "value": 0.0000074024530708342394,
+   "unit": "s",
+   "uncertainty": 4.4007139701295556e-7,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB14.t2_time",
+   "value": 0.000008376177457026266,
+   "unit": "s",
+   "uncertainty": 6.448923057417013e-7,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB4.t2_time",
+   "value": 0.000008522911573829556,
+   "unit": "s",
+   "uncertainty": 4.6442148205572773e-7,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB8.t2_time",
+   "value": 0.000007977656482583043,
+   "unit": "s",
+   "uncertainty": 4.976716840211594e-7,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB6.t2_time",
+   "value": 0.000009704833932766218,
+   "unit": "s",
+   "uncertainty": 6.610388303386028e-7,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB18.t2_time",
+   "value": 0.000012879399993553951,
+   "unit": "s",
+   "uncertainty": 7.983547187922435e-7,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB9.t2_time",
+   "value": 0.00001195626333598488,
+   "unit": "s",
+   "uncertainty": 7.016724584112622e-7,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB1.t2_time",
+   "value": 0.000010405549789780874,
+   "unit": "s",
+   "uncertainty": 7.260798305701129e-7,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB17.t2_time",
+   "value": 0.000014197161071051282,
+   "unit": "s",
+   "uncertainty": 0.0000011915215102148652,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB15.t2_time",
+   "value": 0.00001513206716880848,
+   "unit": "s",
+   "uncertainty": 0.0000010713881841195686,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB3.t2_time",
+   "value": 0.000013520532270315635,
+   "unit": "s",
+   "uncertainty": 8.763331393087298e-7,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB11.t2_time",
+   "value": 0.000011694676654413284,
+   "unit": "s",
+   "uncertainty": 6.134284567271367e-7,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB7.t2_time",
+   "value": 0.00001049778419403513,
+   "unit": "s",
+   "uncertainty": 6.646311786329903e-7,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB5.t2_time",
+   "value": 0.000008633770490640236,
+   "unit": "s",
+   "uncertainty": 4.6833801682359483e-7,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB20.t2_time",
+   "value": 0.000023754356734184608,
+   "unit": "s",
+   "uncertainty": 0.0000015588688590129215,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB13.t2_time",
+   "value": 0.000013265707314479225,
+   "unit": "s",
+   "uncertainty": 0.0000010346838029884679,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB4.t2_echo_time",
+   "value": 0.000014824972898412546,
+   "unit": "s",
+   "uncertainty": 9.446774642672775e-7,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB10.t2_echo_time",
+   "value": 0.00002333763154334847,
+   "unit": "s",
+   "uncertainty": 0.0000012557314761495472,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB6.t2_echo_time",
+   "value": 0.000022975087764440287,
+   "unit": "s",
+   "uncertainty": 0.0000013145999749002516,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB16.t2_echo_time",
+   "value": 0.000021224034647311216,
+   "unit": "s",
+   "uncertainty": 0.0000013817323060143167,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB8.t2_echo_time",
+   "value": 0.000015051835539011982,
+   "unit": "s",
+   "uncertainty": 0.0000017019915780181184,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB19.t2_echo_time",
+   "value": 0.00002322299527673944,
+   "unit": "s",
+   "uncertainty": 0.0000013612307247431292,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB14.t2_echo_time",
+   "value": 0.00002315499628607676,
+   "unit": "s",
+   "uncertainty": 0.000001314884234767807,
+   "invalid": false
+  },
+  {
+   "dut_field": "characterization.model.QB2.t2_echo_time",
+   "value": 0.000014905245291906975,
+   "unit": "s",
+   "uncertainty": 9.474699612083768e-7,
+   "invalid": false
+  }
+ ],
+ "describes_id": "a0e725eb-a020-43d3-8aaf-072b926e425a",
+ "observation_set_id": null
+}

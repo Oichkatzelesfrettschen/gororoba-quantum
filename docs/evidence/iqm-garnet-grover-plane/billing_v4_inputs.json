@@ -1,0 +1,44 @@
+{
+ "margin": 1.5,
+ "models": {
+  "v3": {
+   "largest_leave_one_out_residual_without_anchor": 0.252403,
+   "terms": {
+    "fixed": 0.13471,
+    "per_circuit_shot": 7.62001e-06,
+    "per_mid_record": 6.46197e-06
+   }
+  },
+  "v4_max": {
+   "largest_leave_one_out_residual_without_anchor": 0.196901,
+   "terms": {
+    "fixed": 0.133755,
+    "per_circuit_shot": 6.82283e-06,
+    "per_mid_record": 5.75052e-06,
+    "per_shot_duration_max": 1.17734
+   }
+  },
+  "v4_sum": {
+   "largest_leave_one_out_residual_without_anchor": 0.198561,
+   "terms": {
+    "fixed": 0.191331,
+    "per_circuit_shot": 5.89101e-06,
+    "per_mid_record": 6.09733e-06,
+    "per_shot_duration_sum": 0.165684
+   }
+  }
+ },
+ "price_garnet": 0.5,
+ "runtime_over_execution_seconds": 0.436857,
+ "schedule_model": {
+  "relative_error_all_jobs": 0.43999,
+  "relative_error_grover_jobs": 0.0206911,
+  "terms": {
+   "per_circuit_shot": 5.38732e-06,
+   "per_duration_second": 1.257
+  }
+ },
+ "source": "docs/evidence/iqm-billing-v4/billing_v4.json on branch iqm-billing-shot-duration",
+ "source_commit": "7e7be1f32ed6ac6e7f0a340ad19b4fb911d1b297",
+ "source_sha256": "e9cae7d413844fa741a6c782a22cbefb435475f36b29ec5547346a7e07e66859"
+}

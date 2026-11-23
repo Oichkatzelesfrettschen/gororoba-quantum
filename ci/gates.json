@@ -3673,6 +3673,74 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_fourth_depth.py --self-test",
+      "name": "core-iqm-grover-fourth-depth-selftest",
+      "seconds": 3.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_fourth_depth.py check results/iqm/cases/grover-fourth-depth-mirrored",
+      "name": "core-iqm-grover-fourth-depth-case",
+      "seconds": 830.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_plane_case.py check results/iqm/cases/grover-plane-mirrored",
+      "name": "core-iqm-grover-plane-case",
+      "seconds": 3600.0,
+      "replays": [
+        "results/iqm/cases/grover-plane-mirrored/cases.json",
+        "results/iqm/cases/grover-plane-mirrored/circuits",
+        "results/iqm/cases/grover-plane-mirrored/prediction.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_plane_case.py check results/iqm/cases/grover-plane-mirrored-101",
+      "name": "core-iqm-grover-plane-101-case",
+      "seconds": 1800.0,
+      "replays": [
+        "results/iqm/cases/grover-plane-mirrored-101/cases.json",
+        "results/iqm/cases/grover-plane-mirrored-101/circuits",
+        "results/iqm/cases/grover-plane-mirrored-101/prediction.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_plane_sizing.py --check docs/evidence/iqm-garnet-grover-plane/variant_sizing.json",
+      "name": "core-iqm-grover-plane-sizing",
+      "seconds": 60.0,
+      "replays": [
+        "docs/evidence/iqm-garnet-grover-plane/variant_sizing.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_plane_retained.py --check docs/evidence/iqm-garnet-grover-plane/fits.json",
+      "name": "core-iqm-grover-plane-retained",
+      "seconds": 10.0,
+      "replays": [
+        "docs/evidence/iqm-garnet-grover-plane/fits.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_plane_complement.py --check docs/evidence/iqm-garnet-grover-plane/complement.json",
+      "name": "core-iqm-grover-plane-complement",
+      "seconds": 30.0,
+      "replays": [
+        "docs/evidence/iqm-garnet-grover-plane/complement.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --self-test",
       "name": "core-457",
       "seconds": 0.1

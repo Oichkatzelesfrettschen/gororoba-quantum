@@ -1,0 +1,238 @@
+{
+ "case": "grover-plane-mirrored",
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/m101-k3-c0.json",
+     "sha256": "548eeed02d832884b1bee58a2bd84446028df88ef9c50172ef8f4bbe289e83ef"
+    },
+    {
+     "file": "circuits/m011-k3-c0.json",
+     "sha256": "3190ee8613217aa76e052b322ce1e20bb580c402b70da3416365d0145d02d9cf"
+    },
+    {
+     "file": "circuits/ro-000.json",
+     "sha256": "7ac9de616b24f6af14641628c32ad019a75859b3f12788b4c4c054d57c164d36"
+    },
+    {
+     "file": "circuits/ro-001.json",
+     "sha256": "c2a17c2693360c4fdee94203d5c2f50373d8921cbd5c1bea8dab4f7583324028"
+    },
+    {
+     "file": "circuits/ro-010.json",
+     "sha256": "92277bb113396cb15a709db7aedfa17cb012f371c11806c94e4c7b7f2cab6deb"
+    },
+    {
+     "file": "circuits/ro-011.json",
+     "sha256": "866eb9ea2655c8c8e37d1f58a9e527c243a74226ec424b37e74ebfce4f74ce3e"
+    },
+    {
+     "file": "circuits/m101-k1-c0.json",
+     "sha256": "00505a1abae71ae9faf7bbdc7c32f316aed91ede306fa2e5e1a9e6c5c9d16472"
+    },
+    {
+     "file": "circuits/m011-k1-c0.json",
+     "sha256": "95beca6bf9c59b7636f7a9cbb81f37c0a8af8b5dbfbb29eba523870a8837f5a7"
+    },
+    {
+     "file": "circuits/m101-k2-c0.json",
+     "sha256": "de19795da985e92986beb251341c80d14956befdc4e1def8193d9ce6527e1f74"
+    },
+    {
+     "file": "circuits/m011-k2-c0.json",
+     "sha256": "ed4eb6c40d42c65d9a6108fbdceea35f115368e65b9a4c53eb79055bf010f872"
+    },
+    {
+     "file": "circuits/m101-k4-c0.json",
+     "sha256": "e46edbd41c64aed72e3fa7009038fa2312dcda9b4767adfacef0edabb9a027b3"
+    },
+    {
+     "file": "circuits/ro-100.json",
+     "sha256": "996685eb52fd9647e666c5455ae5e7c9950acfe4539f952d5ae64e5439cafec3"
+    },
+    {
+     "file": "circuits/m101-k3-c1.json",
+     "sha256": "9bf47b47951e901a8951a633e4127b6331f4f6b3834d40d24c989c832912295f"
+    },
+    {
+     "file": "circuits/m101-k4-c1.json",
+     "sha256": "43fbb99cfaa1f641830aa359aee52b60b969c2eb4d338946b5e364f87f8356ea"
+    },
+    {
+     "file": "circuits/m011-k2-c1.json",
+     "sha256": "b677bccfa0d1842d7640f217d625a8fabc509cc53ac2259aa521de99bca0883a"
+    },
+    {
+     "file": "circuits/m101-k3-c2.json",
+     "sha256": "91e5a0f4e582b5e6289971cae0f72d7e8964ea106ed501b96648aa4439e25549"
+    },
+    {
+     "file": "circuits/m101-k2-c1.json",
+     "sha256": "d6cfa2281bc0e960f767196978c865234e65b8f957c52cda563299a81e79a41f"
+    },
+    {
+     "file": "circuits/ro-101.json",
+     "sha256": "8a9d6ffa51aa18e89b45618ecd7d07ee73e115dcc564085f382255a9da7e7bf5"
+    },
+    {
+     "file": "circuits/m011-k1-c1.json",
+     "sha256": "fe476c6eee6ce084a7e0649ce68a6496a5948ca259a7d868c116914b3bd4484f"
+    },
+    {
+     "file": "circuits/m101-k3-c3.json",
+     "sha256": "741025dd1b8582dc5f29bba81388ed5b1b07c01dfb884cc3e9faa5471e72ff77"
+    },
+    {
+     "file": "circuits/m101-k1-c1.json",
+     "sha256": "d08481609ac14388996385d54b7e6200b65aee3ce6906deebe08c6ff305bd168"
+    },
+    {
+     "file": "circuits/m011-k3-c1.json",
+     "sha256": "4495d145286c5ab5e1e13ac59604cb3e5030c8081396ebecd8adaabe1ed4f4d1"
+    },
+    {
+     "file": "circuits/m101-k3-c4.json",
+     "sha256": "2d88bfb49e4505f596d085267adfae349d1191dc14ff06018386d4d8d8c58525"
+    },
+    {
+     "file": "circuits/m011-k3-c2.json",
+     "sha256": "9615a0f67c3cc719a4aef6baaa23bac3554008c216051e448ccbc843975a7180"
+    },
+    {
+     "file": "circuits/ro-110.json",
+     "sha256": "0638d660cc1d913bf4aa1927a78f8a14373e2dbe0d854b1c8fc4c8ebab13df68"
+    },
+    {
+     "file": "circuits/ro-111.json",
+     "sha256": "b44cbd475f7630d157fcaf5fad3aa7e9aebc9a8ce2c4e3974235b263854c3ee0"
+    },
+    {
+     "file": "circuits/ro-111-m.json",
+     "sha256": "3a39aa36498c36cf10824dbebdb795ee9d736b5ece1b6980d1037a9c2772d34f"
+    },
+    {
+     "file": "circuits/ro-110-m.json",
+     "sha256": "e19d6eab92a246fac286c3139208d084fb1ce290eb2bbfb352fcb77de30443e3"
+    },
+    {
+     "file": "circuits/m011-k3-c3.json",
+     "sha256": "9f0f2b02ef2bfee6e88e5a3fbce6de0affbe2c1a86b6ea296f7e0ec8e8149264"
+    },
+    {
+     "file": "circuits/m101-k3-c5.json",
+     "sha256": "df08169cce74694ed4de640eb621ceb0b5dd565c8c551938cf8bef9bfcdbdca1"
+    },
+    {
+     "file": "circuits/m011-k3-c4.json",
+     "sha256": "2d88dcf3e458c5b6d2f785cb44470172dfad94206d4039d833d1062000e0ce5e"
+    },
+    {
+     "file": "circuits/m101-k1-c2.json",
+     "sha256": "84d9794e0e2e9454e13a297a63aba011725ab86da92c70b0af138e45f3fd839d"
+    },
+    {
+     "file": "circuits/m101-k3-c6.json",
+     "sha256": "a05651230a5d3a2994692b44175ab774dad57bdec3743bee8bafc07a7c24327a"
+    },
+    {
+     "file": "circuits/m011-k1-c2.json",
+     "sha256": "a7f038d4655c7b2845b4025e7152946dadaaaade963ed641bb76fe9faeb1294a"
+    },
+    {
+     "file": "circuits/ro-101-m.json",
+     "sha256": "1b85290f0b84a204455a43d0cb01e1b7e1ef92b61e621d8feb8af6c2a50f4e90"
+    },
+    {
+     "file": "circuits/m101-k2-c2.json",
+     "sha256": "7c3145482f3d3de810a7c7de35e4ea3b27912bd8ee55a5e0b0dc8b3466fbff56"
+    },
+    {
+     "file": "circuits/m101-k3-c7.json",
+     "sha256": "8a90c02b8aae3456fe69a35928201dce07a89c01599015891b7ee619a39b3289"
+    },
+    {
+     "file": "circuits/m011-k2-c2.json",
+     "sha256": "00ed40ab28564b8e9560b6a00be415e5f3da310690723c414c75d7da63420d93"
+    },
+    {
+     "file": "circuits/m101-k4-c2.json",
+     "sha256": "3631911beb40abf329cd4ebe9126bb426ee3c229faa8f8fdb5bcb98a5b8f2a23"
+    },
+    {
+     "file": "circuits/m101-k3-c8.json",
+     "sha256": "b3018f8adec4cf8cc68367b571ed7f6bb31f29a53311c8c579752c65079007f5"
+    },
+    {
+     "file": "circuits/ro-100-m.json",
+     "sha256": "4aa52e862ec93cfe1bd7259571dfa67d77be8b03aca2988f606df4d5fdb3b46d"
+    },
+    {
+     "file": "circuits/m101-k4-c3.json",
+     "sha256": "11f38f8cc3fb28668e31e49460f997ea205dd5707599ad30c4293f8ede35ba5d"
+    },
+    {
+     "file": "circuits/m011-k2-c3.json",
+     "sha256": "2c244eb55173fe8848ec9bfd5621b99218ed78269df51b00cc29791b4d31c92a"
+    },
+    {
+     "file": "circuits/m101-k2-c3.json",
+     "sha256": "adb8ab258f34d4ae0cecfb70b5508dfbbf3b7405bd8171ce2d36015002622cc3"
+    },
+    {
+     "file": "circuits/m011-k1-c3.json",
+     "sha256": "d8ed5f7e1e398b50f6d1f77507a30313e4f42e5e1d152f5fc01dda680e8100c0"
+    },
+    {
+     "file": "circuits/m101-k1-c3.json",
+     "sha256": "c08fc85e35466d417c23654046a12cacce0ff5281b0081194c2b3bf9550cc1b2"
+    },
+    {
+     "file": "circuits/ro-011-m.json",
+     "sha256": "2ab292f68f3a3c90b1d2d965214ad4bb32db8eea4c61b0c9adceb6db72bd8465"
+    },
+    {
+     "file": "circuits/ro-010-m.json",
+     "sha256": "42c8124172c6c1595606b544bf917ebbda4288f8693a9547c45d49df2a80909d"
+    },
+    {
+     "file": "circuits/ro-001-m.json",
+     "sha256": "879ab83b8c7b1f2c63f1a4339d88e8075445fba83f8505e3231dde4b20f263f2"
+    },
+    {
+     "file": "circuits/ro-000-m.json",
+     "sha256": "0af90a213342449ff7096d9f6b53a744443b3c982d02d5bb7b34df87660c2e50"
+    },
+    {
+     "file": "circuits/m011-k3-c5.json",
+     "sha256": "ea26bb2fd2cb5927fc8a1195dcbae95ca8f2ec63503bc7bd34a4d2bc433cb5cb"
+    },
+    {
+     "file": "circuits/m101-k3-c9.json",
+     "sha256": "40c0939c2625dd48c777bebbff735fe5be38b3e4ec5545f64fc5c7a5e1efc3a2"
+    }
+   ],
+   "expected_seconds": 12.806,
+   "job": "grover",
+   "max_credits": {
+    "garnet": 13.0,
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {
+     "garnet": "a0e725eb-a020-43d3-8aaf-072b926e425a"
+    },
+    "heralding_mode": "zeros"
+   },
+   "shots": 16000
+  }
+ ],
+ "prediction_sha256": "5fe26fff2f2aae94791030970a43372f8e431422759a82b452e21b4baaf8414d",
+ "qcs": [
+  "garnet:mock",
+  "garnet"
+ ],
+ "question": "With the line-native Grover of mark 101 at depths 1 to 4 placed at positions mirrored about the job's center on one Garnet calibration, does the marked probability of mark 101 depart from the geometric law of the calibrated model toward a rotation of the Grover plane per iteration, whatever gate error causes it? The job also carries 14 circuits of mark 011 at depths 1 to 3; they buy a contrast reading beside the answer (a CZ phase leaves mark 011 unrotated, a PRX amplitude rotates it by the ratio of prediction.json times mark 101) that this question does not ask and the approval does not rest on.",
+ "schema": "iqm-circuit-case-v1"
+}

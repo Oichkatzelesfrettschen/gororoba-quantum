@@ -1,0 +1,2059 @@
+{
+ "arms": {
+  "m101-k1-c0": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 5,
+   "predicted": {
+    "000": 0.040448533,
+    "001": 0.054881442,
+    "010": 0.040261702,
+    "011": 0.041602485,
+    "100": 0.052216918,
+    "101": 0.686938143,
+    "110": 0.039690217,
+    "111": 0.043960559
+   },
+   "predicted_marked": 0.686938143,
+   "prx": 22
+  },
+  "m101-k1-c1": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 11,
+   "predicted": {
+    "000": 0.040448533,
+    "001": 0.054881442,
+    "010": 0.040261702,
+    "011": 0.041602485,
+    "100": 0.052216918,
+    "101": 0.686938143,
+    "110": 0.039690217,
+    "111": 0.043960559
+   },
+   "predicted_marked": 0.686938143,
+   "prx": 22
+  },
+  "m101-k1-c2": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 26,
+   "predicted": {
+    "000": 0.040448533,
+    "001": 0.054881442,
+    "010": 0.040261702,
+    "011": 0.041602485,
+    "100": 0.052216918,
+    "101": 0.686938143,
+    "110": 0.039690217,
+    "111": 0.043960559
+   },
+   "predicted_marked": 0.686938143,
+   "prx": 22
+  },
+  "m101-k1-c3": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 32,
+   "predicted": {
+    "000": 0.040448533,
+    "001": 0.054881442,
+    "010": 0.040261702,
+    "011": 0.041602485,
+    "100": 0.052216918,
+    "101": 0.686938143,
+    "110": 0.039690217,
+    "111": 0.043960559
+   },
+   "predicted_marked": 0.686938143,
+   "prx": 22
+  },
+  "m101-k2-c0": {
+   "cz": 28,
+   "ideal_marked": 0.9453125000000001,
+   "iterations": 2,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 4,
+   "predicted": {
+    "000": 0.029297447,
+    "001": 0.047783145,
+    "010": 0.028392102,
+    "011": 0.030609496,
+    "100": 0.043619309,
+    "101": 0.755730452,
+    "110": 0.028745424,
+    "111": 0.035822624
+   },
+   "predicted_marked": 0.755730452,
+   "prx": 42
+  },
+  "m101-k2-c1": {
+   "cz": 28,
+   "ideal_marked": 0.9453125000000001,
+   "iterations": 2,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 13,
+   "predicted": {
+    "000": 0.029297447,
+    "001": 0.047783145,
+    "010": 0.028392102,
+    "011": 0.030609496,
+    "100": 0.043619309,
+    "101": 0.755730452,
+    "110": 0.028745424,
+    "111": 0.035822624
+   },
+   "predicted_marked": 0.755730452,
+   "prx": 42
+  },
+  "m101-k2-c2": {
+   "cz": 28,
+   "ideal_marked": 0.9453125000000001,
+   "iterations": 2,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 24,
+   "predicted": {
+    "000": 0.029297447,
+    "001": 0.047783145,
+    "010": 0.028392102,
+    "011": 0.030609496,
+    "100": 0.043619309,
+    "101": 0.755730452,
+    "110": 0.028745424,
+    "111": 0.035822624
+   },
+   "predicted_marked": 0.755730452,
+   "prx": 42
+  },
+  "m101-k2-c3": {
+   "cz": 28,
+   "ideal_marked": 0.9453125000000001,
+   "iterations": 2,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 33,
+   "predicted": {
+    "000": 0.029297447,
+    "001": 0.047783145,
+    "010": 0.028392102,
+    "011": 0.030609496,
+    "100": 0.043619309,
+    "101": 0.755730452,
+    "110": 0.028745424,
+    "111": 0.035822624
+   },
+   "predicted_marked": 0.755730452,
+   "prx": 42
+  },
+  "m101-k3-c0": {
+   "cz": 42,
+   "ideal_marked": 0.330078125,
+   "iterations": 3,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 3,
+   "predicted": {
+    "000": 0.104936,
+    "001": 0.111933775,
+    "010": 0.098814424,
+    "011": 0.099782972,
+    "100": 0.11233987,
+    "101": 0.269992529,
+    "110": 0.099763265,
+    "111": 0.102437164
+   },
+   "predicted_marked": 0.269992529,
+   "prx": 62
+  },
+  "m101-k3-c1": {
+   "cz": 42,
+   "ideal_marked": 0.330078125,
+   "iterations": 3,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 18,
+   "predicted": {
+    "000": 0.104936,
+    "001": 0.111933775,
+    "010": 0.098814424,
+    "011": 0.099782972,
+    "100": 0.11233987,
+    "101": 0.269992529,
+    "110": 0.099763265,
+    "111": 0.102437164
+   },
+   "predicted_marked": 0.269992529,
+   "prx": 62
+  },
+  "m101-k3-c2": {
+   "cz": 42,
+   "ideal_marked": 0.330078125,
+   "iterations": 3,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 19,
+   "predicted": {
+    "000": 0.104936,
+    "001": 0.111933775,
+    "010": 0.098814424,
+    "011": 0.099782972,
+    "100": 0.11233987,
+    "101": 0.269992529,
+    "110": 0.099763265,
+    "111": 0.102437164
+   },
+   "predicted_marked": 0.269992529,
+   "prx": 62
+  },
+  "m101-k3-c3": {
+   "cz": 42,
+   "ideal_marked": 0.330078125,
+   "iterations": 3,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 34,
+   "predicted": {
+    "000": 0.104936,
+    "001": 0.111933775,
+    "010": 0.098814424,
+    "011": 0.099782972,
+    "100": 0.11233987,
+    "101": 0.269992529,
+    "110": 0.099763265,
+    "111": 0.102437164
+   },
+   "predicted_marked": 0.269992529,
+   "prx": 62
+  },
+  "m101-k4-c0": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 1,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c1": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 6,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c2": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 9,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c3": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 12,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c4": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 16,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c5": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 21,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c6": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 25,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c7": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 28,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c8": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 31,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "m101-k4-c9": {
+   "cz": 56,
+   "ideal_marked": 0.012207031249999894,
+   "iterations": 4,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "101",
+   "position": 36,
+   "predicted": {
+    "000": 0.135601825,
+    "001": 0.142669579,
+    "010": 0.124811008,
+    "011": 0.127193318,
+    "100": 0.145440519,
+    "101": 0.059527515,
+    "110": 0.129478456,
+    "111": 0.13527778
+   },
+   "predicted_marked": 0.059527515,
+   "prx": 82
+  },
+  "ro-000": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 0,
+   "predicted": {
+    "000": 0.994457786,
+    "001": 0.001829168,
+    "010": 0.002889066,
+    "011": 5.314e-06,
+    "100": 0.000814795,
+    "101": 1.499e-06,
+    "110": 2.367e-06,
+    "111": 4e-09
+   },
+   "prx": 0
+  },
+  "ro-000-m": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 37,
+   "predicted": {
+    "000": 0.994457786,
+    "001": 0.001829168,
+    "010": 0.002889066,
+    "011": 5.314e-06,
+    "100": 0.000814795,
+    "101": 1.499e-06,
+    "110": 2.367e-06,
+    "111": 4e-09
+   },
+   "prx": 0
+  },
+  "ro-001": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 2,
+   "predicted": {
+    "000": 0.01192302,
+    "001": 0.984363934,
+    "010": 3.4638e-05,
+    "011": 0.002859742,
+    "100": 9.769e-06,
+    "101": 0.000806525,
+    "110": 2.8e-08,
+    "111": 2.343e-06
+   },
+   "prx": 1
+  },
+  "ro-001-m": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 35,
+   "predicted": {
+    "000": 0.01192302,
+    "001": 0.984363934,
+    "010": 3.4638e-05,
+    "011": 0.002859742,
+    "100": 9.769e-06,
+    "101": 0.000806525,
+    "110": 2.8e-08,
+    "111": 2.343e-06
+   },
+   "prx": 1
+  },
+  "ro-010": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 7,
+   "predicted": {
+    "000": 0.012655804,
+    "001": 2.3279e-05,
+    "010": 0.984691048,
+    "011": 0.001811204,
+    "100": 1.0369e-05,
+    "101": 1.9e-08,
+    "110": 0.000806793,
+    "111": 1.484e-06
+   },
+   "prx": 1
+  },
+  "ro-010-m": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 30,
+   "predicted": {
+    "000": 0.012655804,
+    "001": 2.3279e-05,
+    "010": 0.984691048,
+    "011": 0.001811204,
+    "100": 1.0369e-05,
+    "101": 1.9e-08,
+    "110": 0.000806793,
+    "111": 1.484e-06
+   },
+   "prx": 1
+  },
+  "ro-011": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 8,
+   "predicted": {
+    "000": 0.000151736,
+    "001": 0.012527346,
+    "010": 0.011805922,
+    "011": 0.97469633,
+    "100": 1.24e-07,
+    "101": 1.0264e-05,
+    "110": 9.673e-06,
+    "111": 0.000798604
+   },
+   "prx": 2
+  },
+  "ro-011-m": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 29,
+   "predicted": {
+    "000": 0.000151736,
+    "001": 0.012527346,
+    "010": 0.011805922,
+    "011": 0.97469633,
+    "100": 1.24e-07,
+    "101": 1.0264e-05,
+    "110": 9.673e-06,
+    "111": 0.000798604
+   },
+   "prx": 2
+  },
+  "ro-100": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 10,
+   "predicted": {
+    "000": 0.016472415,
+    "001": 3.0299e-05,
+    "010": 4.7855e-05,
+    "011": 8.8e-08,
+    "100": 0.978800166,
+    "101": 0.001800368,
+    "110": 0.002843578,
+    "111": 5.23e-06
+   },
+   "prx": 1
+  },
+  "ro-100-m": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 27,
+   "predicted": {
+    "000": 0.016472415,
+    "001": 3.0299e-05,
+    "010": 4.7855e-05,
+    "011": 8.8e-08,
+    "100": 0.978800166,
+    "101": 0.001800368,
+    "110": 0.002843578,
+    "111": 5.23e-06
+   },
+   "prx": 1
+  },
+  "ro-101": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 14,
+   "predicted": {
+    "000": 0.000197496,
+    "001": 0.016305219,
+    "010": 5.74e-07,
+    "011": 4.7369e-05,
+    "100": 0.011735294,
+    "101": 0.968865241,
+    "110": 3.4093e-05,
+    "111": 0.002814715
+   },
+   "prx": 2
+  },
+  "ro-101-m": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 23,
+   "predicted": {
+    "000": 0.000197496,
+    "001": 0.016305219,
+    "010": 5.74e-07,
+    "011": 4.7369e-05,
+    "100": 0.011735294,
+    "101": 0.968865241,
+    "110": 3.4093e-05,
+    "111": 0.002814715
+   },
+   "prx": 2
+  },
+  "ro-110": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 15,
+   "predicted": {
+    "000": 0.000209633,
+    "001": 3.86e-07,
+    "010": 0.016310637,
+    "011": 3.0001e-05,
+    "100": 0.01245654,
+    "101": 2.2912e-05,
+    "110": 0.969187204,
+    "111": 0.001782686
+   },
+   "prx": 2
+  },
+  "ro-110-m": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 22,
+   "predicted": {
+    "000": 0.000209633,
+    "001": 3.86e-07,
+    "010": 0.016310637,
+    "011": 3.0001e-05,
+    "100": 0.01245654,
+    "101": 2.2912e-05,
+    "110": 0.969187204,
+    "111": 0.001782686
+   },
+   "prx": 2
+  },
+  "ro-111": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 17,
+   "predicted": {
+    "000": 2.513e-06,
+    "001": 0.000207506,
+    "010": 0.000195556,
+    "011": 0.016145082,
+    "100": 0.000149347,
+    "101": 0.012330105,
+    "110": 0.011620039,
+    "111": 0.959349851
+   },
+   "prx": 3
+  },
+  "ro-111-m": {
+   "cz": 0,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "position": 20,
+   "predicted": {
+    "000": 2.513e-06,
+    "001": 0.000207506,
+    "010": 0.000195556,
+    "011": 0.016145082,
+    "100": 0.000149347,
+    "101": 0.012330105,
+    "110": 0.011620039,
+    "111": 0.959349851
+   },
+   "prx": 3
+  }
+ },
+ "calibration_set": "a0e725eb-a020-43d3-8aaf-072b926e425a",
+ "copies": {
+  "1": 4,
+  "2": 4,
+  "3": 4,
+  "4": 10
+ },
+ "decisions": {
+  "calibration": {
+   "delta_resolve": 9.5,
+   "grid": [
+    1.0,
+    1.5,
+    2.0,
+    2.5,
+    3.0,
+    3.5,
+    4.0,
+    4.5,
+    5.0,
+    5.5,
+    6.0,
+    6.5,
+    7.0,
+    7.5,
+    8.0,
+    8.5,
+    9.0,
+    9.5,
+    10.0,
+    10.5,
+    11.0,
+    11.5,
+    12.0,
+    12.5,
+    13.0,
+    13.5,
+    14.0,
+    14.5,
+    15.0,
+    15.5,
+    16.0,
+    16.5,
+    17.0,
+    17.5,
+    18.0,
+    18.5,
+    19.0,
+    19.5,
+    20.0,
+    20.5,
+    21.0,
+    21.5,
+    22.0,
+    22.5,
+    23.0,
+    23.5,
+    24.0,
+    24.5,
+    25.0,
+    25.5,
+    26.0,
+    26.5,
+    27.0,
+    27.5,
+    28.0,
+    28.5,
+    29.0,
+    29.5,
+    30.0
+   ],
+   "influence_power": {
+    "coherent_cz": {
+     "bend_power_pooled": 0.994141,
+     "bend_power_pooled_first_half": 0.992188,
+     "bend_power_with_every_leave_one_out": 0.994141,
+     "bend_power_with_every_leave_one_out_first_half": 0.992188,
+     "bend_refits_that_differ": {
+      "1": 0.0,
+      "2": 0.0,
+      "3": 0.0,
+      "4": 0.0
+     },
+     "expected_bend": "beyond",
+     "expected_family": "coherent",
+     "family_power_pooled": 0.988281,
+     "family_power_pooled_first_half": 0.989258,
+     "family_power_with_every_leave_one_out": 0.976074,
+     "family_power_with_every_leave_one_out_first_half": 0.981445,
+     "family_refits_that_differ": {
+      "1": 0.002441,
+      "2": 0.000977,
+      "3": 0.004883,
+      "4": 0.006836
+     }
+    },
+    "coherent_prx": {
+     "bend_power_pooled": 0.994141,
+     "bend_power_pooled_first_half": 0.992188,
+     "bend_power_with_every_leave_one_out": 0.994141,
+     "bend_power_with_every_leave_one_out_first_half": 0.992188,
+     "bend_refits_that_differ": {
+      "1": 0.0,
+      "2": 0.0,
+      "3": 0.0,
+      "4": 0.0
+     },
+     "expected_bend": "beyond",
+     "expected_family": "coherent",
+     "family_power_pooled": 0.988281,
+     "family_power_pooled_first_half": 0.987305,
+     "family_power_with_every_leave_one_out": 0.979492,
+     "family_power_with_every_leave_one_out_first_half": 0.978516,
+     "family_refits_that_differ": {
+      "1": 0.001465,
+      "2": 0.001465,
+      "3": 0.004883,
+      "4": 0.003906
+     }
+    },
+    "dimension": 11,
+    "geometric": {
+     "bend_power_pooled": 0.991211,
+     "bend_power_pooled_first_half": 0.989258,
+     "bend_power_with_every_leave_one_out": 0.984863,
+     "bend_power_with_every_leave_one_out_first_half": 0.987305,
+     "bend_refits_that_differ": {
+      "1": 0.000977,
+      "2": 0.002441,
+      "3": 0.004395,
+      "4": 0.0
+     },
+     "expected_bend": "none",
+     "expected_family": "geometric",
+     "family_power_pooled": 0.984863,
+     "family_power_pooled_first_half": 0.985352,
+     "family_power_with_every_leave_one_out": 0.961914,
+     "family_power_with_every_leave_one_out_first_half": 0.96582,
+     "family_refits_that_differ": {
+      "1": 0.006836,
+      "2": 0.006348,
+      "3": 0.008789,
+      "4": 0.009766
+     }
+    },
+    "heterogeneity_gate": 18.475307,
+    "points": 2048,
+    "threshold": 9.5
+   },
+   "method": "unscrambled Sobol' quadrature (scipy.stats.qmc, points 1 to 2^n, mapped through the normal quantile) of the four corrected marked frequencies, Gaussian with the binomial and readout covariance at each truth",
+   "points": 8192,
+   "stated_rate": 0.01,
+   "truths": {
+    "coherent_cz": {
+     "at_delta_resolve": {
+      "coherent": 0.994019,
+      "geometric": 0.0,
+      "neither family fits": 0.005981,
+      "not evaluated": 0.0,
+      "out of domain": 0.0,
+      "unresolved": 0.0
+     },
+     "bend_at_planned_shots": {
+      "beyond": 1.0,
+      "none": 0.0,
+      "not evaluated": 0.0,
+      "upward": 0.0
+     },
+     "first_half_at_delta_resolve": {
+      "coherent": 0.993896,
+      "geometric": 0.0,
+      "neither family fits": 0.006104,
+      "not evaluated": 0.0,
+      "out of domain": 0.0,
+      "unresolved": 0.0
+     },
+     "first_half_wrong_family_by_grid": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "frequencies": [
+      0.678794,
+      0.736613,
+      0.235278,
+      0.069509
+     ],
+     "ratios": [
+      0.985507,
+      0.96969,
+      0.760578,
+      0.847546
+     ],
+     "wrong_family_by_grid": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "coherent_prx": {
+     "at_delta_resolve": {
+      "coherent": 0.994385,
+      "geometric": 0.0,
+      "neither family fits": 0.005615,
+      "not evaluated": 0.0,
+      "out of domain": 0.0,
+      "unresolved": 0.0
+     },
+     "bend_at_planned_shots": {
+      "beyond": 1.0,
+      "none": 0.0,
+      "not evaluated": 0.0,
+      "upward": 0.0
+     },
+     "first_half_at_delta_resolve": {
+      "coherent": 0.994385,
+      "geometric": 0.0,
+      "neither family fits": 0.005615,
+      "not evaluated": 0.0,
+      "out of domain": 0.0,
+      "unresolved": 0.0
+     },
+     "first_half_wrong_family_by_grid": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "frequencies": [
+      0.678789,
+      0.736625,
+      0.235306,
+      0.070495
+     ],
+     "ratios": [
+      0.985498,
+      0.969708,
+      0.760769,
+      0.832486
+     ],
+     "wrong_family_by_grid": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "geometric": {
+     "at_delta_resolve": {
+      "coherent": 0.001709,
+      "geometric": 0.990112,
+      "neither family fits": 0.004272,
+      "not evaluated": 0.0,
+      "out of domain": 0.0,
+      "unresolved": 0.003906
+     },
+     "bend_at_planned_shots": {
+      "beyond": 0.002441,
+      "none": 0.99707,
+      "not evaluated": 0.0,
+      "upward": 0.000488
+     },
+     "first_half_at_delta_resolve": {
+      "coherent": 0.001709,
+      "geometric": 0.990723,
+      "neither family fits": 0.003906,
+      "not evaluated": 0.0,
+      "out of domain": 0.0,
+      "unresolved": 0.003662
+     },
+     "first_half_wrong_family_by_grid": [
+      0.329102,
+      0.233154,
+      0.163086,
+      0.120117,
+      0.090088,
+      0.066162,
+      0.045654,
+      0.035889,
+      0.0271,
+      0.020508,
+      0.015869,
+      0.012207,
+      0.008545,
+      0.005615,
+      0.004395,
+      0.003662,
+      0.002441,
+      0.001709,
+      0.001221,
+      0.000732,
+      0.000732,
+      0.000732,
+      0.000732,
+      0.000488,
+      0.000488,
+      0.000488,
+      0.000488,
+      0.000488,
+      0.000488,
+      0.000488,
+      0.000488,
+      0.000488,
+      0.000488,
+      0.000244,
+      0.000244,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "frequencies": [
+      0.680428,
+      0.725595,
+      0.25801,
+      0.067138
+     ],
+     "ratios": [
+      0.988414,
+      0.952222,
+      0.917354,
+      0.883764
+     ],
+     "wrong_family_by_grid": [
+      0.329346,
+      0.232544,
+      0.162109,
+      0.119629,
+      0.088623,
+      0.066162,
+      0.047729,
+      0.036621,
+      0.026733,
+      0.020264,
+      0.016479,
+      0.011841,
+      0.008423,
+      0.005981,
+      0.005127,
+      0.003906,
+      0.002686,
+      0.001709,
+      0.001465,
+      0.000854,
+      0.000854,
+      0.000732,
+      0.000732,
+      0.000366,
+      0.000244,
+      0.000244,
+      0.000244,
+      0.000244,
+      0.000244,
+      0.000244,
+      0.000244,
+      0.000244,
+      0.000244,
+      0.000122,
+      0.000122,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "model": {
+     "at_delta_resolve": {
+      "coherent": 0.001953,
+      "geometric": 0.007935,
+      "neither family fits": 0.003784,
+      "not evaluated": 0.0,
+      "out of domain": 0.0,
+      "unresolved": 0.986328
+     },
+     "bend_at_planned_shots": {
+      "beyond": 0.001221,
+      "none": 0.997681,
+      "not evaluated": 0.0,
+      "upward": 0.001099
+     },
+     "first_half_at_delta_resolve": {
+      "coherent": 0.001709,
+      "geometric": 0.006348,
+      "neither family fits": 0.003174,
+      "not evaluated": 0.0,
+      "out of domain": 0.0,
+      "unresolved": 0.98877
+     },
+     "first_half_wrong_family_by_grid": [
+      0.735352,
+      0.597412,
+      0.471436,
+      0.37085,
+      0.295166,
+      0.232666,
+      0.175049,
+      0.137451,
+      0.108154,
+      0.082031,
+      0.066406,
+      0.05127,
+      0.037109,
+      0.027344,
+      0.022461,
+      0.016846,
+      0.012451,
+      0.008057,
+      0.006836,
+      0.005859,
+      0.004639,
+      0.003418,
+      0.003174,
+      0.002197,
+      0.002197,
+      0.001465,
+      0.000977,
+      0.000977,
+      0.000977,
+      0.000977,
+      0.000977,
+      0.000977,
+      0.000977,
+      0.000488,
+      0.000244,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "frequencies": [
+      0.686938,
+      0.75573,
+      0.269993,
+      0.059528
+     ],
+     "ratios": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "wrong_family_by_grid": [
+      0.733398,
+      0.594604,
+      0.471069,
+      0.371216,
+      0.292603,
+      0.229614,
+      0.176025,
+      0.136841,
+      0.106934,
+      0.082153,
+      0.065186,
+      0.050659,
+      0.038574,
+      0.030029,
+      0.024902,
+      0.018799,
+      0.01355,
+      0.009888,
+      0.007812,
+      0.005615,
+      0.004761,
+      0.00354,
+      0.00293,
+      0.001709,
+      0.001343,
+      0.000854,
+      0.00061,
+      0.00061,
+      0.00061,
+      0.00061,
+      0.00061,
+      0.00061,
+      0.000488,
+      0.000244,
+      0.000122,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   }
+  },
+  "continuation": {
+   "chi2_geometric_fit_to_coherent_cz_values": 232.309184,
+   "chi2_geometric_fit_to_coherent_prx_values": 238.362259,
+   "chi2_model_on_geometric_values": 465.691161,
+   "coherent_lambda_4": 0.491972,
+   "coherent_prx_lambda_4": 0.48323,
+   "delta_resolve": 9.5,
+   "geometric_lambda_4": 0.512995,
+   "lambda_4_difference": 0.021023,
+   "model_lambda_4": 0.580466,
+   "rule": "the retained ratios rho = lambda / model lambda at depths 1 to 3 fitted by each family and continued to depth 4, scaled by this calibration's model lambda_4; z is their difference over the standard error of rho_4 from the planned kept shots (binomial and the readout preparations' covariance), the larger of the two; each chi-square is what the other family leaves when the four depths equal one family's values at the planned shots, to be compared with the calibrated delta_resolve",
+   "se_rho_4_at_planned_shots": 0.009623,
+   "z": 3.763757,
+   "z_binomial_only": 3.821717,
+   "z_prx": 5.295217
+  },
+  "heterogeneity": {
+   "alpha": 0.01,
+   "copy_floor": 0.5,
+   "planned_dof": 7,
+   "planned_kept_per_copy": 16800.0,
+   "planned_threshold": 18.475307,
+   "power": {
+    "false_not_evaluated_probability": 0.01,
+    "one_copy_of_depth_1_shift_at_half_power": 0.025206,
+    "one_copy_of_depth_1_shift_at_nine_tenths_power": 0.035227,
+    "probability_at_one_standard_error_above_in_marked_frequency": 0.325586,
+    "probability_at_one_standard_error_above_in_retention": 0.03242,
+    "probability_at_the_retained_curvature_in_marked_frequency": 0.011524,
+    "probability_at_the_retained_curvature_in_retention": 0.010254,
+    "probability_for_one_copy_of_depth_1_raised_by_0.04": 0.971722,
+    "probability_under_linear_drift_in_marked_frequency_at_the_retained_slope": 0.01,
+    "probability_under_linear_drift_in_retention_at_the_retained_slope": 0.01,
+    "quadratic_drift_of_marked_frequency_per_position2_at_half_power": 1.7e-05,
+    "quadratic_drift_of_marked_frequency_per_position2_at_nine_tenths_power": 2.4e-05,
+    "quadratic_drift_of_retention_per_position2_at_half_power": 6.3e-05,
+    "quadratic_drift_of_retention_per_position2_at_nine_tenths_power": 8.8e-05,
+    "retained_curvature_of_marked_frequency_per_position2": 2e-06,
+    "retained_curvature_standard_error": 1.3e-05,
+    "retained_slope_of_marked_frequency_per_position": 0.000303
+   },
+   "statistic": "sum over depths of the chi-square of the surviving mirror pairs about the depth's pooled marked frequency, sum over pairs (M - N p)^2 / (N p (1 - p)) with M and N the pair's marked count and kept shots, and pairs - 1 degrees of freedom per depth",
+   "threshold_by_dof": {
+    "1": 6.634897,
+    "2": 9.21034,
+    "3": 11.344867,
+    "4": 13.276704,
+    "5": 15.086272,
+    "6": 16.811894,
+    "7": 18.475307
+   }
+  },
+  "mirror_pair_loss": {
+   "bend_se_all_copies": 0.009385,
+   "bend_se_one_pair_lost_from_depth_1": 0.009639,
+   "bend_se_one_pair_lost_from_depth_2": 0.010062,
+   "bend_se_one_pair_lost_from_depth_3": 0.012563,
+   "bend_se_one_pair_lost_from_depth_4": 0.009385,
+   "depth_4_pairs_lost_0_cz": 3.763757,
+   "depth_4_pairs_lost_0_prx": 5.295217,
+   "depth_4_pairs_lost_1_cz": 3.376586,
+   "depth_4_pairs_lost_1_prx": 4.750327,
+   "depth_4_pairs_lost_2_cz": 2.933106,
+   "depth_4_pairs_lost_2_prx": 4.126261,
+   "depth_4_pairs_lost_3_cz": 2.402201,
+   "depth_4_pairs_lost_3_prx": 3.379259
+  },
+  "model": {
+   "f": 0.016597,
+   "f_se_at_planned_shots": 0.009385,
+   "lambda": {
+    "1": 0.856287,
+    "2": 0.76889,
+    "3": 0.707011,
+    "4": 0.580466
+   },
+   "verdict_on_the_model_at_planned_shots": {
+    "bend": {
+     "f": 0.016559,
+     "reading": "no bend beyond the model resolved at mirrored positions",
+     "se": 0.009385,
+     "z_against_model": -0.004
+    },
+    "beside": {
+     "better_coherent_error": "cz_phase",
+     "fits_on_a_bound": [],
+     "retention_decreases_with_depth": true,
+     "rho4_against_retained_coherent_cz_z": 16.985,
+     "rho4_against_retained_coherent_prx_z": 18.6632,
+     "rho4_against_retained_geometric_z": 12.9491
+    },
+    "coherent_cz": {
+     "a": 1.000038,
+     "at_bound": false,
+     "chi2": 6.2e-05,
+     "kind": "cz_phase",
+     "s": 0.999975,
+     "x": 0.0
+    },
+    "coherent_prx": {
+     "a": 1.000038,
+     "at_bound": false,
+     "chi2": 6.2e-05,
+     "kind": "prx_amplitude",
+     "s": 0.999975,
+     "x": 0.0
+    },
+    "delta_chi2": -0.0,
+    "family": "unresolved",
+    "geometric": {
+     "A": 1.000006,
+     "at_bound": false,
+     "chi2": 1.9e-05,
+     "r": 0.999993
+    },
+    "lambda": {
+     "1": 0.856281,
+     "2": 0.768889,
+     "3": 0.706975,
+     "4": 0.580446
+    },
+    "null_chi2": 0.0,
+    "rho": [
+     0.999994,
+     0.999998,
+     0.999949,
+     0.999966
+    ],
+    "se": {
+     "1": 0.002912,
+     "2": 0.002212,
+     "3": 0.008455,
+     "4": 0.005209
+    },
+    "usable_depths": [
+     1,
+     2,
+     3,
+     4
+    ]
+   }
+  },
+  "planned_kept_shots": {
+   "1": 67200.0,
+   "2": 67200.0,
+   "3": 67200.0,
+   "4": 168000.0
+  },
+  "readout": {
+   "heterogeneity_threshold": 20.090235,
+   "marked_index": 5,
+   "planned_frequency_sd": [
+    0.000672,
+    0.000739,
+    0.000272,
+    0.000109
+   ],
+   "planned_kept_per_preparation": 33600.0,
+   "q": [
+    [
+     0.03876,
+     0.044303,
+     0.039594,
+     0.040241,
+     0.043406,
+     0.708338,
+     0.041723,
+     0.043635
+    ],
+    [
+     0.027942,
+     0.034819,
+     0.027892,
+     0.029087,
+     0.03518,
+     0.779476,
+     0.030631,
+     0.034974
+    ],
+    [
+     0.101079,
+     0.110061,
+     0.097146,
+     0.101253,
+     0.107633,
+     0.277026,
+     0.100109,
+     0.105692
+    ],
+    [
+     0.130615,
+     0.146075,
+     0.122623,
+     0.131376,
+     0.142052,
+     0.059258,
+     0.127516,
+     0.140484
+    ]
+   ],
+   "q_minimum": 0.027892,
+   "r_model": [
+    1e-06,
+    0.0018,
+    0.0,
+    2.3e-05,
+    0.000807,
+    0.968865,
+    1e-05,
+    0.01233
+   ],
+   "statistic": "the marked frequency of depth k, p_k, is corrected to the model's readout by y_k = p_k - sum_j q_kj (r_j - r_j model) with r_j the marked fraction of readout preparation j; the covariance of the four corrected frequencies is the binomial diagonal plus sum_j q_kj q_lj r_j (1 - r_j) / n_j, each preparation pooled over its two copies at mirrored positions; the job reads 'not evaluated' when the two sides of the readout block differ by more than their binomial scatter (heterogeneity_threshold, the 0.99 chi-square quantile at 8 degrees of freedom), when a preparation keeps under half its planned shots, or when a corrected frequency moves by more than tolerance",
+   "tolerance": 0.05
+  },
+  "retained": {
+   "coherent_cz_fit": {
+    "a": 0.934675,
+    "at_bound": false,
+    "chi2": 6e-06,
+    "kind": "cz_phase",
+    "s": 1.0323,
+    "x": -0.0309
+   },
+   "coherent_prx_fit": {
+    "a": 0.949847,
+    "at_bound": false,
+    "chi2": 2.6e-05,
+    "kind": "prx_amplitude",
+    "s": 1.021575,
+    "x": -0.01725
+   },
+   "coherent_prx_rho_4": 0.832486,
+   "coherent_rho_4": 0.847546,
+   "f_raw": -0.122238,
+   "geometric_fit": {
+    "A": 1.025983,
+    "at_bound": false,
+    "chi2": 11.294602,
+    "r": 0.963383
+   },
+   "geometric_rho_4": 0.883764,
+   "kept_shots": {
+    "1": 13450,
+    "2": 3377,
+    "3": 3383
+   },
+   "lambda_raw": {
+    "1": 0.830646,
+    "2": 0.729867,
+    "3": 0.519077
+   },
+   "model_lambda": {
+    "1": 0.842867,
+    "2": 0.752663,
+    "3": 0.682541
+   },
+   "rho": {
+    "1": 0.9855,
+    "2": 0.969712,
+    "3": 0.760506
+   },
+   "rho_covariance": [
+    [
+     5.4e-05,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.000155,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.002684
+    ]
+   ],
+   "source": "results/iqm/garnet_grover_depth_sedenion_walsh_analysis.json"
+  },
+  "retained_uncertainty": {
+   "difference_of_rho_4_geometric_minus_coherent_cz": [
+    0.040829,
+    0.027892
+   ],
+   "hypotheses": {
+    "coherent_cz": {
+     "probability_of_reading_a_family": [
+      0.998962,
+      0.008236
+     ],
+     "probability_of_the_true_family": [
+      0.996094,
+      0.031005
+     ],
+     "readings": {
+      "coherent": 0.996094,
+      "geometric": 0.002869,
+      "neither family fits": 0.0,
+      "not evaluated": 0.0,
+      "out of domain": 0.0,
+      "unresolved": 0.001038
+     },
+     "rho_4": [
+      0.843765,
+      0.043004
+     ],
+     "valid_samples": 64
+    },
+    "coherent_prx": {
+     "probability_of_reading_a_family": [
+      0.995972,
+      0.00655
+     ],
+     "probability_of_the_true_family": [
+      0.993164,
+      0.028705
+     ],
+     "readings": {
+      "coherent": 0.993164,
+      "geometric": 0.002808,
+      "neither family fits": 0.003235,
+      "not evaluated": 0.0,
+      "out of domain": 0.0,
+      "unresolved": 0.000793
+     },
+     "rho_4": [
+      0.829022,
+      0.044641
+     ],
+     "valid_samples": 64
+    },
+    "geometric": {
+     "probability_of_reading_a_family": [
+      0.996094,
+      0.0
+     ],
+     "probability_of_the_true_family": [
+      0.996094,
+      0.0
+     ],
+     "readings": {
+      "coherent": 0.0,
+      "geometric": 0.996094,
+      "neither family fits": 0.0,
+      "not evaluated": 0.0,
+      "out of domain": 0.0,
+      "unresolved": 0.003906
+     },
+     "rho_4": [
+      0.884593,
+      0.03114
+     ],
+     "valid_samples": 64
+    }
+   },
+   "noise_points": 256,
+   "probability_the_run_resolves_the_families": 0.995117,
+   "retained_rho": [
+    0.9855,
+    0.969712,
+    0.760506
+   ],
+   "samples": 64
+  },
+  "rule": {
+   "analyzer": "grover_depth_analysis.analyze",
+   "bend": "f = lambda_3 - lambda_2^2 / lambda_1 from the pooled marked frequencies of the depth arms (copies pooled after the mirror-pair and heterogeneity gates below), each corrected to the model's readout by the eight readout preparations (decisions.readout), with the binomial variances at the observed frequencies and the readout covariance, delta method over the three arms; z = (f - model.f) / SE; z <= -3 reads 'the retention law bends beyond the model at mirrored positions', which excludes positional drift linear in position as the cause; z >= 3 reads 'bends upward of the model'; otherwise 'no bend beyond the model resolved at mirrored positions'",
+   "beside": "rho_4 against the retained fits' continuations in standard errors, the fits that end on a rate bound, and whether the retention decreases with depth; none decides",
+   "family": "generalized least squares (the full covariance of the four corrected frequencies) of three nested families to rho_k = lambda_k / model.lambda_k at k = 1 to 4 (gororoba_quantum/grover_depth_families.py): the geometric family a s^k, and the coherent families a s^k R_k(x), R_k(x) the marked probability of the committed depth-k circuit above the uniform floor, relative to its ideal value, by exact simulation with every CZ applying the conditional phase pi + x (cz_phase, |x| <= 0.3 rad) or every PRX rotating by theta (1 + x) (prx_amplitude, |x| <= 0.10); the prefactor a is free in all three and s lies in [0.30, 1.20]. 'neither family fits' when the geometric chi-square exceeds its 0.99 quantile at two degrees of freedom (9.21) and the better coherent one exceeds its quantile at one (6.63); else 'coherent' when the better coherent fit is adequate and the geometric chi-square exceeds its own by delta_resolve; else 'geometric' when the geometric fit is adequate and the model's chi-square (rho = 1) exceeds the geometric one by delta_resolve; else 'unresolved'. delta_resolve is the smallest threshold at which the geometric truth read as coherent, either coherent truth read as geometric and the model read as either family each have probability at most 0.01 (decisions.calibration). A fit on a bound blocks a reading only when the reading rests on it: 'coherent' blocks when the coherent fit sits on a bound, every other reading when either fit does, as 'out of domain'. Gating: a copy below half its planned kept shots leaves its depth together with the copy at its mirrored position, a depth without kept shots is unusable, the bend needs depths 1 to 3 and stands on its own, the family comparison needs all four depths, and a decision whose depths are unusable reads 'not evaluated' without blocking the other",
+   "function": "grover_depth_families.read_copies",
+   "heterogeneity": "after the mirror-pair gate, the chi-square of the surviving mirror pairs of each depth (a copy and its image about the job's center, pooled) about that depth's pooled marked frequency, summed over depths, is compared with the 1 - alpha chi-square quantile at its degrees of freedom (decisions.heterogeneity.threshold_by_dof); a drift linear in position leaves every pair unmoved; above the quantile the bend and family decisions both read 'not evaluated', since a depth's pooled frequency no longer describes pairs that differ beyond binomial scatter",
+   "influence": "each of the bend and family readings stands only when every leave-one-mirror-pair-out refit (the same verdict on the pooled counts without one surviving pair, with the same readout correction) reads the same category: the family category of the rule, and the bend's resolved direction or none; a reading that changes reads 'not evaluated: the reading depends on one mirror pair'"
+  },
+  "z_resolve": 3.0
+ },
+ "forward_path": [
+  "QB20",
+  "QB16",
+  "QB17"
+ ],
+ "model": "exact density matrix: iqm_sim depolarizing PRX and CZ, ASAP idle T1/T2, herald-conditioned readout assignment; no coherent error, leakage or crosstalk"
+}
