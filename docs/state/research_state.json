@@ -16832,6 +16832,34 @@
       "related_claims": []
     },
     {
+      "id": "iqm-emerald-idle-schedule-third-length-verdicts",
+      "statement": "On IQM Emerald (calibration set 7d7ebe74; job 01a2058a, 21 circuits x 4000 shots, active reset, 7.50 credits), the preregistered third-length test reads on-line for the ten-qubit cohort and for QB24: after the quadratic delay-decay correction, the within-job deviation of the per-pulse gap from the line through the same job's 500 and 1000 pulse gaps is -0.05 +- 1.47 ns at 250 pulses and +0.86 +- 0.63 ns at 2000 for the cohort, and +4.8 +- 4.2 ns and +0.07 +- 1.87 ns for QB24, so the four train lengths are consistent with g(N) = a + b / N within these errors. The schedule test reads asap. On-line tests the form a + b / N and attributes b to no mechanism.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration and one job; the cohort excludes QB30 and QB44, which fail a gate. Descriptive readings that decide nothing: through this job's own anchors the line is a = 22.9 ns per pulse beyond the nominal 24 ns and b = 3.37 us per train, against a = 21.4 ns and b = 5.84 us in job 01a1ffe5 of 2026-11-21, and the 250 pulse cohort gap lies 5.2 standard errors below the earlier line; without the curvature correction the 2000 pulse cohort deviation reads z -1.75 rather than +1.36. Execution took 9.50 s against an expected 3.9 to 4.4 s. The emerald:mock run returns random bits and enters no endpoint.",
+      "evidence": [
+        {
+          "path": "results/iqm/idle_schedule_third_length_emerald_analysis.json",
+          "sha256": "4d24a4f5ff977edceec9c2fea07aa8b5a3a98309dd6f35ec274479b5cc24c2ae"
+        },
+        {
+          "path": "results/iqm/runs/2026-11-22T231417Z-emerald-idle-schedule-third-length-emerald-probe/results.json",
+          "sha256": "101b2336057040b966340c4ae7b59fe737bdb303636ab17c1ade7cfbb6bacf7e"
+        }
+      ],
+      "documents": [
+        "docs/notes/iqm/emerald-idle-schedule-third-length-result.md"
+      ],
+      "acquisitions": [
+        "iqm-emerald-mock-idle-schedule-third-length",
+        "iqm-emerald-idle-schedule-third-length"
+      ],
+      "related_claims": [
+        "iqm-emerald-idle-schedule-t1-verdicts"
+      ]
+    },
+    {
       "id": "iqm-garnet-packed-pauli-response-null",
       "statement": "On IQM Garnet (calibration set ea681de1; job 01a20023-1aa1, 68 circuits x 2000 shots, active reset, no heralding, 1.0 credit), the preregistered paired test of the packed Pauli response does not reject the sharp null: the 16 dense-minus-sparse pair statistics give an exact p-value of 22553/32768 = 0.688, with arm responses 0.6924 (dense) and 0.6900 (sparse). The non-rejection is not evidence that the response is unchanged.",
       "domain": "hardware",
