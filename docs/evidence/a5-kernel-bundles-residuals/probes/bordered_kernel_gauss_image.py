@@ -287,6 +287,9 @@ def main() -> None:
         for entry in record["strata"]
         if not entry["degree_2_rank_stable"]
         or not entry["generic_point_control_rejected"]
+        or entry["hilbert_function_degree_1"] != 105
+        or entry["coordinates_zero_on_every_kernel_zero_based"] != [0]
+        or entry["gauss_image_dimension_lower_bound"] != 15
         or entry["hilbert_function_degree_2_by_sample"][str(entry["points"])] != record["prediction"][entry["stratum"]]
         or any(failures for _, failures in entry["differential_rank_and_tangency_failures"])
     ]

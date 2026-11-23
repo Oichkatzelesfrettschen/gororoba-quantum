@@ -15,7 +15,11 @@ one() { # tag value
   ! grep -q '^ *?' "$D/bf-$1.log"
   grep -q '^RESULT k_generators 21 dim 4 mult 7$' "$D/bf-$1.log"
   grep -q '^RESULT k_numerator 1,0,-21,70,-105,84,-35,6,0$' "$D/bf-$1.log"
-  [ "$(grep -c '^RESULT prime 4 [34] [43]$' "$D/bf-$1.log")" = 2 ]
+  [ "$(grep '^RESULT prime' "$D/bf-$1.log" | sort | tr '\n' ';')" = 'RESULT prime 4 3 4;RESULT prime 4 4 3;RESULT prime_count 2;' ]
+  for line in 'adjugate_identity 1' 'pivot_pfaffian_at_origin_nonzero 1' 'selected_count 10' 'germ_component_count 1' \
+    'germ_dimension 4' 'candidate_count 21' 'normal_form_size 21'; do
+    grep -q "^RESULT $line\$" "$D/bf-$1.log"
+  done
   grep -q '^RESULT radical 1$' "$D/bf-$1.log"
   grep -q '^RESULT frame_consistent 1$' "$D/bf-$1.log"
   grep -q '^RESULT frame_determinant_nonzero 1$' "$D/bf-$1.log"

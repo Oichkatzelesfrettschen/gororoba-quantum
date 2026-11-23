@@ -192,7 +192,9 @@ for(i=1;i<=size(PL);i++){ pc=std(PL[i]); lin=0; lc=0;
   for(k=1;k<=size(pc);k++){ if(deg(pc[k])==1){ lc++; lin[lc]=pc[k]; } }
   "RESULT prime",dim(pc),mult(pc),lc;
   if(lc==4){ four=std(lin); } }
-"RESULT radical",size(reduce(intersect(PL[1],PL[size(PL)]),sK))==0;
+ideal allp=PL[1]; for(i=2;i<=size(PL);i++){ allp=intersect(allp,PL[i]); }
+"RESULT prime_count",size(PL);
+"RESULT radical",size(reduce(allp,sK))==0;
 poly n1=reduce(y(1),four); poly n5=reduce(y(5),four); poly n2=reduce(y(2),four); poly n4=reduce(y(4),four);
 number fa=-1/leadcoef(diff(n1,y(10))); number fb=-1/leadcoef(diff(n5,y(9)));
 number fd=-fa*leadcoef(diff(n4,y(10)));
@@ -209,4 +211,3 @@ ideal CK=std(K);
 for(i=1;i<=size(CK);i++){"KBASIS "+string(CK[i]);}
 "RESULT done 1";
 quit;
-

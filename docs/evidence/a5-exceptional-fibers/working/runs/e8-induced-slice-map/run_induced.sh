@@ -9,7 +9,10 @@ D=docs/evidence/a5-exceptional-fibers/working/runs/e8-induced-slice-map
 W=docs/evidence/a5-exceptional-fibers/working
 K=$W/runs/e8-rees-fibers-v2-kcompare-p32009
 T=docs/evidence/a5-exceptional-fibers/third-prime
-sing() { Singular -q --no-warn --no-rc "$1" < /dev/null > "$2" 2>&1; }
+sing() {
+  Singular -q --no-warn --no-rc "$1" < /dev/null > "$2" 2>&1
+  ! grep -q '^ *?' "$2"
+}
 for t in nm np; do
   o=N-
   [ "$t" = np ] && o=N+

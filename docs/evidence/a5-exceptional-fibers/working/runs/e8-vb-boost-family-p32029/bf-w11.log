@@ -158,8 +158,8 @@ STAGE product 54 of 55 0
 STAGE product 55 of 55 0
 STAGE std_Q_start generators 457 1
 RESULT sq_size 431
-STAGE std_Q_done 6
-STAGE normal_forms_done 6
+STAGE std_Q_done 7
+STAGE normal_forms_done 7
 RESULT monomials 1632
 STAGE syzygies_done 11
 RESULT targets 55
@@ -189,6 +189,7 @@ RESULT k_generators 21 dim 4 mult 7
 RESULT k_numerator 1,0,-21,70,-105,84,-35,6,0
 RESULT prime 4 3 4
 RESULT prime 4 4 3
+RESULT prime_count 2
 RESULT radical 1
 RESULT frame_a -2469
 RESULT frame_b -13072

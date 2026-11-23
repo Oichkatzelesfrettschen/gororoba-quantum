@@ -23,10 +23,19 @@ their composite is the map of generators that identifies the two fiber cones. It
 alone: `induced_slice_map.py` restricts the header frame's 21 selected Pfaffians to the weight slice and solves for
 each as a constant combination of the 21 weight-slice generators modulo J + m I.
 
-The computation runs in Q(i)[s1..s9, v] / (v u - 1), where u is the product of the two pivot Pfaffians on the axis of
-the one weight-zero coordinate s2, so both Pfaffians are invertible there. The class of a header Pfaffian minus its
-combination is killed by s2, and an element killed by s2 that vanishes in the local ring at the origin is zero. The
-ideal J + m I is graded by the torus weight, so the truncation of the weight-slice producer applies unchanged.
+The computation runs in R = Q(i)[s1..s9, v] / (v u - 1), where u is the product of the two pivot Pfaffians restricted
+to the axis of the one weight-zero coordinate s2. The weight pivot Pfaffian is a polynomial in s2 alone
+(`weight_pivot_on_axis 1`), so it is a unit of R; the header pivot Pfaffian is a unit of the local ring at the origin
+and need not be one in R. Three facts make the constant combination the class in I / m I, with m = (s1, ..., s9):
+
+1. Each header Pfaffian is, by the identity of A5-593 in the header frame, a multiple of a 10-Pfaffian of C(z), and
+   the 10-Pfaffians of C(z) lie in the ideal of the weight-slice Pfaffians once the weight pivot is inverted. So every
+   header Pfaffian lies in the weight-graded ideal I R, although it is not weight-homogeneous.
+2. I is generated in weights up to the largest weight d of a weight-slice Pfaffian, so the components of weight
+   above d of an element of I lie in m I. Discarding them, as the truncation of the weight-slice producer does,
+   leaves the class modulo J + m I unchanged.
+3. I / (J + m I) is killed by all of m, so it is supported at the origin, and its localization there is itself.
+   A class that vanishes in the local ring vanishes in R.
 
 ## Result
 
@@ -61,8 +70,9 @@ polynomial outside I (the first header Pfaffian plus s2) leaves a nonzero residu
   primes, so the agreement tests the Pfaffian-ideal lemma, the product structure and the frame conventions together.
 - The map of A5-583 is another equivalence of the same two ideals at (32009, 10754); the symmetry group of the ideal
   has dimension 34, so the two maps need not be equal, and this directory does not compare them.
-- The deduction that the induced map identifies the relation ideals is prose. The computation establishes the matrix
-  and its six reductions; a kernel-checked form of the Pfaffian-ideal step is a target for gororoba-math.
+- The six reductions compare ideals, and the symmetry group of the ideal has dimension 34, so they cannot by
+  themselves single out the induced map among the equivalences. That G is the induced map rests on the three facts
+  above and the product structure, which are prose; a kernel-checked form is a target for gororoba-math.
 - E8-bar only. The same script applies to W8, Iso and X with their header selections; those cells are not run.
 
 ## Replay
