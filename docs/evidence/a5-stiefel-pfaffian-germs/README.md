@@ -219,7 +219,13 @@ local germs at the twelve recorded witnesses only. It does not cover:
   `a5-nullity12-quadric-germ`);
 - the U = 0 or n = 0 parts of the incidence equations.
 
-Neither result is formalized in Rocq.
+Theorem 1's zero-divisor statement is formalized in Rocq in gororoba-math (commit f69cf7506, the pin of
+`ci/gororoba_math.pin`): `gororoba-math:rocq/quantum/StiefelA5ZeroDivisor.v` proves `stiefel_zero_divisor` over any field
+that contains an i with i^2 = -1 and in which 2 is invertible, and `gororoba-math:rocq/quantum/StiefelA5Real.v` proves
+`real_stiefel_zero_divisor` over R. The Pfaffian expansion and its symplectic kernel lemma are in `Pfaffian.v`, the
+coefficient certificate in `StiefelA5Certificate.v` (checked by `vm_compute`), its evaluation in `StiefelA5Pfaffian.v`
+and the transport identities in `StiefelA5Transport.v`. The nullity bound of Theorem 1, the identity D_14 = N |Q G|^2
+and Theorem 2 are not formalized.
 
 ## Relation to the companion and the earlier review
 
@@ -265,11 +271,18 @@ A wider search on 2026-11-22 and 2026-11-23 found no answer either. It covered:
   OpenAlex alone lists BCDI II (math/0702075) and Latre's 2019 thesis on hypercomplex algebras for computation.
   Semantic Scholar alone lists Koebisu's sedenion paper (arXiv 2512.13002), an unlocated 2007 report on
   hypercomputation and a 2003 paper on Siegel modular forms, a false match. Zhilina's arXiv 2611.20105 on Barnes-Wall
-  lattices concerns lattice closure. Every citing passage with a transcription was read. Zhilina's papers (arXiv
+  lattices concerns lattice closure and cites the preprint in a background range citation ("Moreno [15-17]"). Latre's
+  thesis cites it only for the count of distinct eigenvalues of L_x^2 (Moreno's Section 3). Both were filed in
+  gororoba-documents-private with transcriptions on 2026-11-23. Every citing passage with a transcription was read. Zhilina's papers (arXiv
   2608.28176, 2608.28163, 2608.26903, 2608.26893, 2608.26890) cite the preprint as background; 2608.26893 and
   2608.26890 do so in range citations such as "Moreno [14-16]". Koebisu's 2512.13002 cites it as later geometry in higher algebras. The BCDI eigentheory
   paper (arXiv 0905.2987) cites it, as a 2007 preprint of Moreno and González-Flores, for the start of its eigentheory
-  approach. None states an answer to the question. The 2007 report stays unscreened;
+  approach. None states an answer to the question. Guterman and Zhilina's two Journal of Mathematical Sciences papers
+  (zbMATH 1471.17009, 2019, and 1508.05105, 2023) have no arXiv version. The 2019 paper, its Zapiski POMI 472 original
+  (already filed) and the Fundam. Prikl. Mat. 23:3 original of the 2023 paper, filed on 2026-11-23, cite the preprint
+  only in their reference lists and in a background sentence on attempts to classify zero divisors. Chatelin's
+  Dickson-algebra chapter (Qualitative Computing, 2012) credits Moreno's reports of 2001 and 2003 and drafts of his
+  2004 and 2006 papers, and states nothing about Stiefel elements. The 2007 report stays unscreened;
 - Moreno's 14 documents in zbMATH Open, where math/0512517 appears only as the arXiv preprint; the later items were
   screened by title, and no title treats the question;
 - zbMATH Open "Cayley-Dickson zero divisors" (39 documents, titles screened) and "Cayley-Dickson Stiefel" (6, among
@@ -282,9 +295,34 @@ A wider search on 2026-11-22 and 2026-11-23 found no answer either. It covered:
   nor its docs/SOURCES.json entry, whose reading scope covers the rights check, records a mathematical reading scope. Every Cayley-Dickson transcription in the documents repositories that mentions a Stiefel element was
   also read.
 
-MathSciNet and Google Scholar were not run: both refuse automated queries from this environment. A record of the paper as
-a CINVESTAV internal report ("Reporte interno - CINVESTAV", listed by biblat.unam.mx behind a browser check) is
-unscreened; it may be the 2007 version that BCDI cite.
+OpenAIRE and BASE were searched on 2026-11-23. OpenAIRE found two CC BY Zenodo preprints by Zhou and Zhou, now in
+gororoba-documents-public. Their stratified catalogue of trigintaduonion zero divisors (Zenodo 23451124, 2026-10-18)
+places the parallel Stiefel family ((u, 0), (0, εu)) of A_5 at left-annihilator dimension 12; its "500 equal-norm
+orthogonal samples, all zero divisors" calibrate the sedenion (n = 4) criterion, not A_5. It states no theorem about
+every A_5 Stiefel element and does not answer the question. BASE returned only math/0512517 and Reggiani's sedenion
+geometry.
+
+The Internet Archive's Wayback Machine holds the CERFACS report server and settles the Chatelin leads, all read on
+2026-11-23. The "unlocated 2007 report" of Semantic Scholar is F. Chaitin-Chatelin, *Elements of Hypercomputation on R and
+Z2 with the Dickson-Albert inductive process*, CERFACS TR/PA/03/34 (2003; captures of 2005 to 2007). It and her reports
+TR/PA/05/56, TR/PA/06/07 and TR/PA/07/55 credit Moreno's weak alternativity, his complexification of the singular values of
+L_a and private communications of 2004, and state nothing about Stiefel elements. Their references identify the Moreno
+manuscripts her book cites: *Alternative elements in the Cayley-Dickson algebras* (arXiv math/0404395), *The exponential
+map on the Cayley-Dickson algebras* (math/0405424) and *Hopf construction map in higher dimensions* (math/0404172), all
+already read; *The higher dimensional Cayley-Dickson algebras* (CINVESTAV manuscript, 2001) has no public copy found.
+TR/PA/07/55 (2007) is dedicated to the memory of Guillermo Moreno. Chatelin's
+2007 chapter (Randomness and Complexity, from Leibniz to Chaitin, World Scientific, DOI 10.1142/9789812770837_0002) does not
+cite Moreno. Her book *Qualitative Computing* (2012) is a lending-only item at archive.org (qualitativecompu0000chai).
+archive.org's item search for Cayley-Dickson, sedenion and Moreno returns only arXiv mirrors already read.
+
+MathSciNet and Google Scholar were not searched. On 2026-11-23 MathSciNet answered with its institutional login page,
+also in a visible Firefox session, and no working sign-in was available; Google Scholar answered with a JavaScript bot
+challenge, and in the visible Firefox session its CAPTCHA repeated after each solution. The Semantic Scholar website
+asks for a human check as well. A record of the paper as a CINVESTAV internal report ("Reporte
+interno - CINVESTAV", listed by biblat.unam.mx behind a browser check) is unscreened; it may be the 2007 version that
+BCDI cite. The 2007 hypercomputation report (Semantic Scholar CorpusId 6523462) has no Crossref or OpenAlex record
+under its title, and the Semantic Scholar API refused the metadata request (HTTP 429). Hypothesis: it belongs to
+Chatelin's CERFACS work on Dickson algebras, which Latre's thesis continues; a CERFACS report listing would settle it.
 
 The queries of 2026-11-23, with their raw counts:
 
@@ -296,6 +334,14 @@ The queries of 2026-11-23, with their raw counts:
 | zbMATH Open | `Cayley-Dickson zero divisors` | 39 | titles screened |
 | zbMATH Open | `Cayley-Dickson Stiefel` | 6 | Reggiani 2024; Moreno 2004 (Hopf construction) and 2005; Lambert-Kibler 1988; Rodriguez-Ordonez 2010; Antolin Camarena-Villarreal 2026 |
 | arXiv API | `all:Stiefel AND (all:"Cayley-Dickson" OR all:sedenion OR all:pathion)` | 3 | math/0512517, 2411.18881, 2512.13002 |
+| zbMATH Open | `au:Zhilina ti:Cayley` | 10 | 1471.17009 and 1508.05105 (Journal of Mathematical Sciences, closed), 1511.17003, 1511.17004, 1537.17010, 1523.17002, arXiv 2611.20105, 2608.26893, 2608.28176, 2608.28163 |
+| arXiv API | `au:Zhilina` | 16 | no arXiv version of 1471.17009 or 1508.05105 |
+| Crossref | `query.bibliographic=Elements of Hypercomputation Dickson-Albert inductive process` | no title match | nearest: Chatelin, "Hypercomputation in Dickson Algebras" (2012 chapter, DOI 10.1142/9789814322935_0002) |
+| OpenAlex | `Elements of Hypercomputation on R and Z2 with the Dickson-Albert inductive process` | 0 | none |
+| OpenAIRE | `graph/v1/researchProducts?search=Stiefel Cayley-Dickson` | 9 | Lambert-Kibler 1988, math/0512517, 2411.18881, Rodriguez-Ordonez 2010, Zenodo 23451124 and 23151835 (Zhou and Zhou), three unrelated |
+| BASE | `Stiefel "Cayley-Dickson"` | 4 | math/0512517 and 2411.18881, each from arXiv and DataCite |
+| Wayback CDX | `cerfacs.fr/algor/reports/<year>/TR_PA_*` and the report lists `algo_reports_<year>.html`, 2000 to 2008 | 6 Chatelin hypercomplex reports | TR/PA/00/74, 03/08, 03/34, 05/56, 06/07, 07/55 |
+| archive.org advancedsearch | `Moreno AND "Cayley-Dickson"`; `"Qualitative computing" AND Chatelin` | 5; 1 | q-alg/9710013, math/0404172, math/0404395, math/0405424, math/0511691; qualitativecompu0000chai (lending only) |
 | arXiv API | `(abs:"zero divisor" OR abs:"zero divisors") AND abs:"Cayley-Dickson" AND submittedDate:[202401010000 TO 202612312359]` | 7 | 2608.28176, 2608.28163, 2608.26893, 2608.08232, 2606.27798, 2505.11747, 2411.18881 |
 
 ## Replay
