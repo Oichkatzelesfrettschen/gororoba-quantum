@@ -251,6 +251,5 @@ The [retained Schur-entry forms review](a5-schur-entry-forms/README.md) (pull re
 The [Emerald third-length case review](iqm-emerald-third-length-case/README.md) (pull request 986) records four rounds of findings on the written case, fixed before any submission.
 
 The [billing refit review](iqm-billing-v4/README.md) (pull request 992) records the findings on the per-shot duration terms.
-||||||| 05f99ece3
 
 The [Emerald third-length claim review](research-state-emerald-third-length/README.md) (pull request 991) records two reviewers' findings on the claim.
