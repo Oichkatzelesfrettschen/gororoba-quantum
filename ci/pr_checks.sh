@@ -98,7 +98,7 @@ lint)
 	checked_files="$checked_files docs/evidence/qi-tuna17-interleaved-rounds/round_fits.py"
 	checked_files="$checked_files docs/evidence/qi-tuna17-interleaved-rounds/q12_batches.py"
 	checked_files="$checked_files docs/evidence/qi-tuna17-interleaved-rounds/hypothesis_tests.py"
-	checked_files="$checked_files docs/evidence/iqm-garnet-billing-v3/billing_v3.py"
+	checked_files="$checked_files docs/evidence/iqm-garnet-billing-v3/billing_v3.py docs/evidence/iqm-billing-v4/billing_v4.py"
 	# shellcheck disable=SC2086
 	"$PYTHON" ci/pinned_tool.py ruff check $code_dirs $checked_files
 	# shellcheck disable=SC2086
@@ -147,7 +147,7 @@ types)
 	typed_files="$typed_files ../docs/evidence/qi-tuna17-interleaved-rounds/round_fits.py"
 	typed_files="$typed_files ../docs/evidence/qi-tuna17-interleaved-rounds/q12_batches.py"
 	typed_files="$typed_files ../docs/evidence/qi-tuna17-interleaved-rounds/hypothesis_tests.py"
-	typed_files="$typed_files ../docs/evidence/iqm-garnet-billing-v3/billing_v3.py"
+	typed_files="$typed_files ../docs/evidence/iqm-garnet-billing-v3/billing_v3.py ../docs/evidence/iqm-billing-v4/billing_v4.py"
 	cd gororoba_quantum
 	# shellcheck disable=SC2086
 	"$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel $typed_files

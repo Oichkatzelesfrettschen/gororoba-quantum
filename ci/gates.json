@@ -3958,6 +3958,16 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/iqm-billing-v4/billing_v4.py \"${TMPDIR:-/tmp}/iqm-billing-v4.json\" && cmp \"${TMPDIR:-/tmp}/iqm-billing-v4.json\" docs/evidence/iqm-billing-v4/billing_v4.json",
+      "name": "core-iqm-billing-v4-replay",
+      "seconds": 6.0,
+      "replays": [
+        "docs/evidence/iqm-billing-v4/billing_v4.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py check results/iqm/cases/measurement-sequence-pinching",
       "name": "core-701",
       "seconds": 2.0,
