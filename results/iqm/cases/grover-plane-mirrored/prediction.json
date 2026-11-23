@@ -1,5 +1,355 @@
 {
  "arms": {
+  "m011-k1-c0": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "011",
+   "position": 7,
+   "predicted": {
+    "000": 0.041848734,
+    "001": 0.052597401,
+    "010": 0.052708073,
+    "011": 0.691001609,
+    "100": 0.039803234,
+    "101": 0.04111425,
+    "110": 0.038257328,
+    "111": 0.042669371
+   },
+   "predicted_marked": 0.691001609,
+   "prx": 22
+  },
+  "m011-k1-c1": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "011",
+   "position": 18,
+   "predicted": {
+    "000": 0.041848734,
+    "001": 0.052597401,
+    "010": 0.052708073,
+    "011": 0.691001609,
+    "100": 0.039803234,
+    "101": 0.04111425,
+    "110": 0.038257328,
+    "111": 0.042669371
+   },
+   "predicted_marked": 0.691001609,
+   "prx": 22
+  },
+  "m011-k1-c2": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "011",
+   "position": 33,
+   "predicted": {
+    "000": 0.041848734,
+    "001": 0.052597401,
+    "010": 0.052708073,
+    "011": 0.691001609,
+    "100": 0.039803234,
+    "101": 0.04111425,
+    "110": 0.038257328,
+    "111": 0.042669371
+   },
+   "predicted_marked": 0.691001609,
+   "prx": 22
+  },
+  "m011-k1-c3": {
+   "cz": 14,
+   "ideal_marked": 0.7812499999999999,
+   "iterations": 1,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "011",
+   "position": 44,
+   "predicted": {
+    "000": 0.041848734,
+    "001": 0.052597401,
+    "010": 0.052708073,
+    "011": 0.691001609,
+    "100": 0.039803234,
+    "101": 0.04111425,
+    "110": 0.038257328,
+    "111": 0.042669371
+   },
+   "predicted_marked": 0.691001609,
+   "prx": 22
+  },
+  "m011-k2-c0": {
+   "cz": 28,
+   "ideal_marked": 0.9453125000000001,
+   "iterations": 2,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "011",
+   "position": 9,
+   "predicted": {
+    "000": 0.030354841,
+    "001": 0.044769605,
+    "010": 0.044006224,
+    "011": 0.76013712,
+    "100": 0.028063545,
+    "101": 0.030230311,
+    "110": 0.027629673,
+    "111": 0.034808682
+   },
+   "predicted_marked": 0.76013712,
+   "prx": 42
+  },
+  "m011-k2-c1": {
+   "cz": 28,
+   "ideal_marked": 0.9453125000000001,
+   "iterations": 2,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "011",
+   "position": 14,
+   "predicted": {
+    "000": 0.030354841,
+    "001": 0.044769605,
+    "010": 0.044006224,
+    "011": 0.76013712,
+    "100": 0.028063545,
+    "101": 0.030230311,
+    "110": 0.027629673,
+    "111": 0.034808682
+   },
+   "predicted_marked": 0.76013712,
+   "prx": 42
+  },
+  "m011-k2-c2": {
+   "cz": 28,
+   "ideal_marked": 0.9453125000000001,
+   "iterations": 2,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "011",
+   "position": 37,
+   "predicted": {
+    "000": 0.030354841,
+    "001": 0.044769605,
+    "010": 0.044006224,
+    "011": 0.76013712,
+    "100": 0.028063545,
+    "101": 0.030230311,
+    "110": 0.027629673,
+    "111": 0.034808682
+   },
+   "predicted_marked": 0.76013712,
+   "prx": 42
+  },
+  "m011-k2-c3": {
+   "cz": 28,
+   "ideal_marked": 0.9453125000000001,
+   "iterations": 2,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "011",
+   "position": 42,
+   "predicted": {
+    "000": 0.030354841,
+    "001": 0.044769605,
+    "010": 0.044006224,
+    "011": 0.76013712,
+    "100": 0.028063545,
+    "101": 0.030230311,
+    "110": 0.027629673,
+    "111": 0.034808682
+   },
+   "predicted_marked": 0.76013712,
+   "prx": 42
+  },
+  "m011-k3-c0": {
+   "cz": 42,
+   "ideal_marked": 0.330078125,
+   "iterations": 3,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "011",
+   "position": 1,
+   "predicted": {
+    "000": 0.104963227,
+    "001": 0.10929748,
+    "010": 0.113523252,
+    "011": 0.272098849,
+    "100": 0.097710061,
+    "101": 0.098675713,
+    "110": 0.09965702,
+    "111": 0.104074398
+   },
+   "predicted_marked": 0.272098849,
+   "prx": 62
+  },
+  "m011-k3-c1": {
+   "cz": 42,
+   "ideal_marked": 0.330078125,
+   "iterations": 3,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "011",
+   "position": 21,
+   "predicted": {
+    "000": 0.104963227,
+    "001": 0.10929748,
+    "010": 0.113523252,
+    "011": 0.272098849,
+    "100": 0.097710061,
+    "101": 0.098675713,
+    "110": 0.09965702,
+    "111": 0.104074398
+   },
+   "predicted_marked": 0.272098849,
+   "prx": 62
+  },
+  "m011-k3-c2": {
+   "cz": 42,
+   "ideal_marked": 0.330078125,
+   "iterations": 3,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "011",
+   "position": 23,
+   "predicted": {
+    "000": 0.104963227,
+    "001": 0.10929748,
+    "010": 0.113523252,
+    "011": 0.272098849,
+    "100": 0.097710061,
+    "101": 0.098675713,
+    "110": 0.09965702,
+    "111": 0.104074398
+   },
+   "predicted_marked": 0.272098849,
+   "prx": 62
+  },
+  "m011-k3-c3": {
+   "cz": 42,
+   "ideal_marked": 0.330078125,
+   "iterations": 3,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "011",
+   "position": 28,
+   "predicted": {
+    "000": 0.104963227,
+    "001": 0.10929748,
+    "010": 0.113523252,
+    "011": 0.272098849,
+    "100": 0.097710061,
+    "101": 0.098675713,
+    "110": 0.09965702,
+    "111": 0.104074398
+   },
+   "predicted_marked": 0.272098849,
+   "prx": 62
+  },
+  "m011-k3-c4": {
+   "cz": 42,
+   "ideal_marked": 0.330078125,
+   "iterations": 3,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "011",
+   "position": 30,
+   "predicted": {
+    "000": 0.104963227,
+    "001": 0.10929748,
+    "010": 0.113523252,
+    "011": 0.272098849,
+    "100": 0.097710061,
+    "101": 0.098675713,
+    "110": 0.09965702,
+    "111": 0.104074398
+   },
+   "predicted_marked": 0.272098849,
+   "prx": 62
+  },
+  "m011-k3-c5": {
+   "cz": 42,
+   "ideal_marked": 0.330078125,
+   "iterations": 3,
+   "job": "grover",
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "marked": "011",
+   "position": 50,
+   "predicted": {
+    "000": 0.104963227,
+    "001": 0.10929748,
+    "010": 0.113523252,
+    "011": 0.272098849,
+    "100": 0.097710061,
+    "101": 0.098675713,
+    "110": 0.09965702,
+    "111": 0.104074398
+   },
+   "predicted_marked": 0.272098849,
+   "prx": 62
+  },
   "m101-k1-c0": {
    "cz": 14,
    "ideal_marked": 0.7812499999999999,
@@ -11,7 +361,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 4,
+   "position": 6,
    "predicted": {
     "000": 0.040448533,
     "001": 0.054881442,
@@ -36,7 +386,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 8,
+   "position": 20,
    "predicted": {
     "000": 0.040448533,
     "001": 0.054881442,
@@ -61,7 +411,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 29,
+   "position": 31,
    "predicted": {
     "000": 0.040448533,
     "001": 0.054881442,
@@ -86,7 +436,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 33,
+   "position": 45,
    "predicted": {
     "000": 0.040448533,
     "001": 0.054881442,
@@ -111,7 +461,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 2,
+   "position": 8,
    "predicted": {
     "000": 0.029297447,
     "001": 0.047783145,
@@ -136,7 +486,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 12,
+   "position": 16,
    "predicted": {
     "000": 0.029297447,
     "001": 0.047783145,
@@ -161,7 +511,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 25,
+   "position": 35,
    "predicted": {
     "000": 0.029297447,
     "001": 0.047783145,
@@ -186,7 +536,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 35,
+   "position": 43,
    "predicted": {
     "000": 0.029297447,
     "001": 0.047783145,
@@ -211,7 +561,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 1,
+   "position": 0,
    "predicted": {
     "000": 0.104936,
     "001": 0.111933775,
@@ -236,7 +586,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 3,
+   "position": 12,
    "predicted": {
     "000": 0.104936,
     "001": 0.111933775,
@@ -261,7 +611,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 6,
+   "position": 15,
    "predicted": {
     "000": 0.104936,
     "001": 0.111933775,
@@ -286,7 +636,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 9,
+   "position": 19,
    "predicted": {
     "000": 0.104936,
     "001": 0.111933775,
@@ -311,7 +661,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 16,
+   "position": 22,
    "predicted": {
     "000": 0.104936,
     "001": 0.111933775,
@@ -336,7 +686,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 21,
+   "position": 29,
    "predicted": {
     "000": 0.104936,
     "001": 0.111933775,
@@ -361,7 +711,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 28,
+   "position": 32,
    "predicted": {
     "000": 0.104936,
     "001": 0.111933775,
@@ -386,7 +736,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 31,
+   "position": 36,
    "predicted": {
     "000": 0.104936,
     "001": 0.111933775,
@@ -411,7 +761,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 34,
+   "position": 39,
    "predicted": {
     "000": 0.104936,
     "001": 0.111933775,
@@ -436,7 +786,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 36,
+   "position": 51,
    "predicted": {
     "000": 0.104936,
     "001": 0.111933775,
@@ -461,7 +811,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 5,
+   "position": 10,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -486,7 +836,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 7,
+   "position": 13,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -511,7 +861,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 30,
+   "position": 38,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -536,7 +886,7 @@
     "QB17"
    ],
    "marked": "101",
-   "position": 32,
+   "position": 41,
    "predicted": {
     "000": 0.135601825,
     "001": 0.142669579,
@@ -558,7 +908,7 @@
     "QB16",
     "QB17"
    ],
-   "position": 0,
+   "position": 2,
    "predicted": {
     "000": 0.994457786,
     "001": 0.001829168,
@@ -579,7 +929,7 @@
     "QB16",
     "QB17"
    ],
-   "position": 37,
+   "position": 49,
    "predicted": {
     "000": 0.994457786,
     "001": 0.001829168,
@@ -600,7 +950,7 @@
     "QB16",
     "QB17"
    ],
-   "position": 10,
+   "position": 3,
    "predicted": {
     "000": 0.01192302,
     "001": 0.984363934,
@@ -621,7 +971,7 @@
     "QB16",
     "QB17"
    ],
-   "position": 27,
+   "position": 48,
    "predicted": {
     "000": 0.01192302,
     "001": 0.984363934,
@@ -642,7 +992,7 @@
     "QB16",
     "QB17"
    ],
-   "position": 11,
+   "position": 4,
    "predicted": {
     "000": 0.012655804,
     "001": 2.3279e-05,
@@ -663,7 +1013,7 @@
     "QB16",
     "QB17"
    ],
-   "position": 26,
+   "position": 47,
    "predicted": {
     "000": 0.012655804,
     "001": 2.3279e-05,
@@ -684,7 +1034,7 @@
     "QB16",
     "QB17"
    ],
-   "position": 13,
+   "position": 5,
    "predicted": {
     "000": 0.000151736,
     "001": 0.012527346,
@@ -705,7 +1055,7 @@
     "QB16",
     "QB17"
    ],
-   "position": 24,
+   "position": 46,
    "predicted": {
     "000": 0.000151736,
     "001": 0.012527346,
@@ -726,7 +1076,7 @@
     "QB16",
     "QB17"
    ],
-   "position": 14,
+   "position": 11,
    "predicted": {
     "000": 0.016472415,
     "001": 3.0299e-05,
@@ -747,7 +1097,7 @@
     "QB16",
     "QB17"
    ],
-   "position": 23,
+   "position": 40,
    "predicted": {
     "000": 0.016472415,
     "001": 3.0299e-05,
@@ -768,7 +1118,7 @@
     "QB16",
     "QB17"
    ],
-   "position": 15,
+   "position": 17,
    "predicted": {
     "000": 0.000197496,
     "001": 0.016305219,
@@ -789,7 +1139,7 @@
     "QB16",
     "QB17"
    ],
-   "position": 22,
+   "position": 34,
    "predicted": {
     "000": 0.000197496,
     "001": 0.016305219,
@@ -810,7 +1160,7 @@
     "QB16",
     "QB17"
    ],
-   "position": 17,
+   "position": 24,
    "predicted": {
     "000": 0.000209633,
     "001": 3.86e-07,
@@ -831,7 +1181,7 @@
     "QB16",
     "QB17"
    ],
-   "position": 20,
+   "position": 27,
    "predicted": {
     "000": 0.000209633,
     "001": 3.86e-07,
@@ -852,7 +1202,7 @@
     "QB16",
     "QB17"
    ],
-   "position": 18,
+   "position": 25,
    "predicted": {
     "000": 2.513e-06,
     "001": 0.000207506,
@@ -873,7 +1223,7 @@
     "QB16",
     "QB17"
    ],
-   "position": 19,
+   "position": 26,
    "predicted": {
     "000": 2.513e-06,
     "001": 0.000207506,
@@ -894,256 +1244,520 @@
   "3": 10,
   "4": 4
  },
+ "copies_011": {
+  "1": 4,
+  "2": 4,
+  "3": 6
+ },
  "decisions": {
   "calibration": {
-   "cells": 39,
+   "cells": 41,
    "chi2_1_quantile": 6.634896601,
-   "delta_resolve": 6.634896601,
-   "false_coherent_max": 0.009765625,
+   "delta_resolve": 7.5,
+   "false_coherent_max": 0.008789062,
    "false_coherent_offset_line_max": 0.008789062,
-   "geometric_reading_min_over_null_cells": 0.5859375,
+   "geometric_reading_min_over_null_cells": 0.16796875,
    "method": "unscrambled Sobol' quadrature, no seed",
    "points": 1024,
    "worst_cell": {
-    "a": 1.0875,
-    "quantile": 6.47421915,
-    "s": 0.865625
+    "a": 1.2,
+    "quantile": 7.072417484,
+    "s": 1.0
+   }
+  },
+  "contrast": {
+   "power": [
+    {
+     "CZ-phase-like": 0.95703125,
+     "PRX-like": 0.0,
+     "truth": "cz -0.03 rad a=0.92 s=0.92",
+     "unresolved": 0.04296875
+    },
+    {
+     "CZ-phase-like": 0.94921875,
+     "PRX-like": 0.0,
+     "truth": "cz -0.03 rad a=0.92 s=1.04",
+     "unresolved": 0.05078125
+    },
+    {
+     "CZ-phase-like": 0.94921875,
+     "PRX-like": 0.0,
+     "truth": "cz -0.03 rad a=1.06 s=0.92",
+     "unresolved": 0.05078125
+    },
+    {
+     "CZ-phase-like": 0.94921875,
+     "PRX-like": 0.0,
+     "truth": "cz -0.03 rad a=1.06 s=1.04",
+     "unresolved": 0.05078125
+    },
+    {
+     "CZ-phase-like": 0.0,
+     "PRX-like": 0.94140625,
+     "truth": "prx -1.6 % a=0.92 s=0.92",
+     "unresolved": 0.05859375
+    },
+    {
+     "CZ-phase-like": 0.0,
+     "PRX-like": 0.9453125,
+     "truth": "prx -1.6 % a=0.92 s=1.04",
+     "unresolved": 0.0546875
+    },
+    {
+     "CZ-phase-like": 0.0,
+     "PRX-like": 0.94140625,
+     "truth": "prx -1.6 % a=1.06 s=0.92",
+     "unresolved": 0.05859375
+    },
+    {
+     "CZ-phase-like": 0.0,
+     "PRX-like": 0.9375,
+     "truth": "prx -1.6 % a=1.06 s=1.04",
+     "unresolved": 0.0625
+    },
+    {
+     "CZ-phase-like": 0.890625,
+     "PRX-like": 0.0,
+     "truth": "zz +20 kHz a=0.92 s=0.92",
+     "unresolved": 0.109375
+    },
+    {
+     "CZ-phase-like": 0.8125,
+     "PRX-like": 0.0,
+     "truth": "zz +20 kHz a=0.92 s=1.04",
+     "unresolved": 0.1875
+    },
+    {
+     "CZ-phase-like": 0.875,
+     "PRX-like": 0.0,
+     "truth": "zz +20 kHz a=1.06 s=0.92",
+     "unresolved": 0.125
+    },
+    {
+     "CZ-phase-like": 0.73828125,
+     "PRX-like": 0.0,
+     "truth": "zz +20 kHz a=1.06 s=1.04",
+     "unresolved": 0.26171875
+    }
+   ],
+   "ratio_prx": 1.194651206,
+   "rule": "eps_011 against 0 (CZ phase) and against ratio times eps_101 (PRX amplitude); decides nothing",
+   "slopes": {
+    "011": {
+     "cz_phase_rad": {
+      "eps_per_unit": 0.005086425
+     },
+     "prx_amplitude_fraction": {
+      "eps_per_unit": -2.677438054
+     },
+     "zz_hz": {
+      "eps_per_unit": 1.7e-07
+     }
+    },
+    "101": {
+     "cz_phase_rad": {
+      "eps_per_unit": -1.293781636
+     },
+     "prx_amplitude_fraction": {
+      "eps_per_unit": -2.24118809
+     },
+     "zz_hz": {
+      "eps_per_unit": 1.997e-06
+     }
+    }
    }
   },
   "cost": {
-   "best_execution_seconds": 10.793407261,
-   "billed_seconds_of_ceiling": 18,
+   "best_execution_seconds": 15.894135859,
+   "billed_seconds_of_ceiling": 26,
    "compilation_seconds": 0.436857,
-   "emerald_stress_execution_seconds": 23.745495974,
-   "fixed_part_removed_execution_seconds": 10.221317296,
+   "emerald_stress_execution_seconds": 34.967098889,
+   "fixed_part_removed_execution_seconds": 14.990253506,
    "headroom": 1.5,
-   "max_credits_garnet": 9.0,
+   "max_credits_garnet": 13.0,
    "mock_compile_estimate": "required before approval; not read",
-   "scaled_execution_seconds": 10.793407261,
-   "schedule_ratio": 5.400692042
+   "scaled_execution_seconds": 15.894135859,
+   "schedule_ratio": 7.952941176
   },
   "gate": {
    "copy_floor": 0.5,
    "heterogeneity_threshold_by_dof": {
     "1": 6.634896601,
+    "10": 23.209251159,
+    "11": 24.724970311,
+    "12": 26.216967306,
     "2": 9.210340372,
     "3": 11.34486673,
     "4": 13.276704136,
     "5": 15.086272469,
     "6": 16.81189383,
     "7": 18.475306907,
-    "8": 20.09023503
+    "8": 20.09023503,
+    "9": 21.665994333
    },
    "planned_kept_per_copy": 13440.0
   },
   "gated_power": {
    "binomial_phi_1": [
     {
-     "coherent": 0.9609375,
+     "coherent": 0.953125,
      "geometric": 0.0,
-     "other": 0.0390625,
+     "non_rotation": 0.0,
+     "other": 0.046875,
      "truth": "cz -0.015 rad a=0.92 s=0.92",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.98828125,
+     "coherent": 0.984375,
      "geometric": 0.0,
-     "other": 0.01171875,
+     "non_rotation": 0.0,
+     "other": 0.015625,
      "truth": "cz -0.015 rad a=0.92 s=1.04",
      "unresolved": 0.0
     },
     {
      "coherent": 0.98828125,
      "geometric": 0.0,
+     "non_rotation": 0.0,
      "other": 0.01171875,
      "truth": "cz -0.015 rad a=1.06 s=0.92",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.98828125,
+     "coherent": 0.984375,
      "geometric": 0.0,
-     "other": 0.01171875,
+     "non_rotation": 0.0,
+     "other": 0.015625,
      "truth": "cz -0.015 rad a=1.06 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.94921875,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.04296875,
+     "truth": "prx +0.8 % a=0.92 s=0.92",
+     "unresolved": 0.0078125
+    },
+    {
+     "coherent": 0.9765625,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.0234375,
+     "truth": "prx +0.8 % a=0.92 s=1.04",
      "unresolved": 0.0
     },
     {
      "coherent": 0.96875,
      "geometric": 0.0,
+     "non_rotation": 0.0,
      "other": 0.03125,
-     "truth": "prx +0.8 % a=0.92 s=0.92",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 0.98828125,
-     "geometric": 0.0,
-     "other": 0.01171875,
-     "truth": "prx +0.8 % a=0.92 s=1.04",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 0.98046875,
-     "geometric": 0.0,
-     "other": 0.01953125,
      "truth": "prx +0.8 % a=1.06 s=0.92",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.98828125,
+     "coherent": 0.96484375,
      "geometric": 0.0,
-     "other": 0.01171875,
+     "non_rotation": 0.0,
+     "other": 0.03515625,
      "truth": "prx +0.8 % a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.9765625,
+     "coherent": 0.97265625,
      "geometric": 0.0,
-     "other": 0.0234375,
+     "non_rotation": 0.0,
+     "other": 0.02734375,
      "truth": "zz -10 kHz a=0.92 s=0.92",
      "unresolved": 0.0
     },
     {
      "coherent": 0.98828125,
      "geometric": 0.0,
+     "non_rotation": 0.0,
      "other": 0.01171875,
      "truth": "zz -10 kHz a=0.92 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.98828125,
+     "coherent": 0.98046875,
      "geometric": 0.0,
-     "other": 0.01171875,
+     "non_rotation": 0.0,
+     "other": 0.01953125,
      "truth": "zz -10 kHz a=1.06 s=0.92",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.98828125,
+     "coherent": 0.97265625,
      "geometric": 0.0,
-     "other": 0.01171875,
+     "non_rotation": 0.0,
+     "other": 0.02734375,
      "truth": "zz -10 kHz a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.9765625,
+     "coherent": 0.97265625,
      "geometric": 0.0,
-     "other": 0.0234375,
+     "non_rotation": 0.0,
+     "other": 0.02734375,
      "truth": "plane eps=-0.02 a=0.92 s=0.92",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.9765625,
+     "coherent": 0.96875,
      "geometric": 0.0,
-     "other": 0.0234375,
+     "non_rotation": 0.0,
+     "other": 0.03125,
      "truth": "plane eps=0.02 a=0.92 s=0.92",
      "unresolved": 0.0
     }
    ],
    "overdispersed_phi_bound": [
     {
-     "coherent": 0.87109375,
+     "coherent": 0.828125,
      "geometric": 0.0,
-     "other": 0.12890625,
+     "non_rotation": 0.0,
+     "other": 0.1640625,
      "truth": "cz -0.015 rad a=0.92 s=0.92",
-     "unresolved": 0.0
+     "unresolved": 0.0078125
     },
     {
-     "coherent": 0.92578125,
+     "coherent": 0.89453125,
      "geometric": 0.0,
-     "other": 0.07421875,
+     "non_rotation": 0.0,
+     "other": 0.10546875,
      "truth": "cz -0.015 rad a=0.92 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.91796875,
+     "coherent": 0.87890625,
      "geometric": 0.0,
-     "other": 0.08203125,
-     "truth": "cz -0.015 rad a=1.06 s=0.92",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 0.92578125,
-     "geometric": 0.0,
-     "other": 0.07421875,
-     "truth": "cz -0.015 rad a=1.06 s=1.04",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 0.87109375,
-     "geometric": 0.0,
+     "non_rotation": 0.0,
      "other": 0.12109375,
-     "truth": "prx +0.8 % a=0.92 s=0.92",
-     "unresolved": 0.0078125
-    },
-    {
-     "coherent": 0.92578125,
-     "geometric": 0.0,
-     "other": 0.07421875,
-     "truth": "prx +0.8 % a=0.92 s=1.04",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 0.91796875,
-     "geometric": 0.0,
-     "other": 0.08203125,
-     "truth": "prx +0.8 % a=1.06 s=0.92",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 0.92578125,
-     "geometric": 0.0,
-     "other": 0.07421875,
-     "truth": "prx +0.8 % a=1.06 s=1.04",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 0.91796875,
-     "geometric": 0.0,
-     "other": 0.08203125,
-     "truth": "zz -10 kHz a=0.92 s=0.92",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 0.92578125,
-     "geometric": 0.0,
-     "other": 0.07421875,
-     "truth": "zz -10 kHz a=0.92 s=1.04",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 0.92578125,
-     "geometric": 0.0,
-     "other": 0.07421875,
-     "truth": "zz -10 kHz a=1.06 s=0.92",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 0.92578125,
-     "geometric": 0.0,
-     "other": 0.07421875,
-     "truth": "zz -10 kHz a=1.06 s=1.04",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 0.91796875,
-     "geometric": 0.0,
-     "other": 0.08203125,
-     "truth": "plane eps=-0.02 a=0.92 s=0.92",
+     "truth": "cz -0.015 rad a=1.06 s=0.92",
      "unresolved": 0.0
     },
     {
      "coherent": 0.89453125,
      "geometric": 0.0,
+     "non_rotation": 0.0,
      "other": 0.10546875,
+     "truth": "cz -0.015 rad a=1.06 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.79296875,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.19921875,
+     "truth": "prx +0.8 % a=0.92 s=0.92",
+     "unresolved": 0.0078125
+    },
+    {
+     "coherent": 0.87109375,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.12890625,
+     "truth": "prx +0.8 % a=0.92 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.875,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.125,
+     "truth": "prx +0.8 % a=1.06 s=0.92",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.86328125,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.13671875,
+     "truth": "prx +0.8 % a=1.06 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.8671875,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.1328125,
+     "truth": "zz -10 kHz a=0.92 s=0.92",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.87890625,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.12109375,
+     "truth": "zz -10 kHz a=0.92 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.87890625,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.12109375,
+     "truth": "zz -10 kHz a=1.06 s=0.92",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.8671875,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.1328125,
+     "truth": "zz -10 kHz a=1.06 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.8828125,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.1171875,
+     "truth": "plane eps=-0.02 a=0.92 s=0.92",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.85546875,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.14453125,
      "truth": "plane eps=0.02 a=0.92 s=0.92",
      "unresolved": 0.0
     }
    ]
   },
+  "mark_011": {
+   "copies": {
+    "1": 4,
+    "2": 4,
+    "3": 6
+   },
+   "model_probabilities": [
+    0.691001609,
+    0.76013712,
+    0.272098849
+   ],
+   "readout": {
+    "marked_index": 6,
+    "planned_covariance": [
+     [
+      7.11e-07,
+      7.81e-07,
+      2.83e-07
+     ],
+     [
+      7.81e-07,
+      8.59e-07,
+      3.09e-07
+     ],
+     [
+      2.83e-07,
+      3.09e-07,
+      1.22e-07
+     ]
+    ],
+    "q": [
+     [
+      0.040214291,
+      0.039629874,
+      0.044266301,
+      0.038788008,
+      0.04364464,
+      0.041760963,
+      0.708002907,
+      0.043693017
+     ],
+     [
+      0.0290683,
+      0.027917482,
+      0.034791115,
+      0.027962749,
+      0.03499444,
+      0.030660108,
+      0.779112966,
+      0.03549284
+     ],
+     [
+      0.101187873,
+      0.097234807,
+      0.109966598,
+      0.101149876,
+      0.105634129,
+      0.100201054,
+      0.276854734,
+      0.10777093
+     ]
+    ],
+    "r_model": [
+     5.314e-06,
+     8.8e-08,
+     0.001811204,
+     3.0001e-05,
+     0.002859742,
+     4.7369e-05,
+     0.97469633,
+     0.016145082
+    ],
+    "sides_dof": 56,
+    "sides_threshold": 83.513429932,
+    "tolerance": 0.05
+   },
+   "response": {
+    "centered": [
+     [
+      [
+       0.496251244,
+       0.524533958,
+       0.135668682
+      ],
+      [
+       0.509328163,
+       0.514258721,
+       0.106846853
+      ],
+      [
+       0.522058659,
+       0.502199991,
+       0.0792221
+      ]
+     ],
+     [
+      [
+       0.551471699,
+       0.647823698,
+       0.186633523
+      ],
+      [
+       0.566001609,
+       0.63513712,
+       0.147098849
+      ],
+      [
+       0.580146605,
+       0.620248793,
+       0.109206638
+      ]
+     ]
+    ],
+    "eps": [
+     -0.04,
+     0.0,
+     0.04
+    ],
+    "s": [
+     0.9,
+     1.0
+    ],
+    "sha256": "3ec25a5036a798de3abfffa7d23f82954ee688329c3d33f0cb47fde157e0ac80"
+   }
+  },
   "mechanism_slopes": {
    "cz_phase_rad": {
-    "eps_per_unit": -1.293825398
+    "eps_per_unit": -1.293781636
    },
    "prx_amplitude_fraction": {
-    "eps_per_unit": -2.241307461
+    "eps_per_unit": -2.24118809
    },
    "zz_hz": {
     "eps_per_unit": 1.997e-06
@@ -1159,539 +1773,628 @@
    "design_effect_eps": 0.02,
    "truths": [
     {
-     "coherent": 0.994140625,
+     "coherent": 0.98828125,
      "geometric": 0.0,
+     "non_rotation": 0.00390625,
      "truth": "cz -0.015 rad a=0.92 s=0.92",
-     "unresolved": 0.005859375
+     "unresolved": 0.0078125
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "cz -0.015 rad a=0.92 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.99609375,
      "geometric": 0.0,
+     "non_rotation": 0.00390625,
      "truth": "cz -0.015 rad a=1.06 s=0.92",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "cz -0.015 rad a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.998046875,
+     "coherent": 0.9921875,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "cz +0.015 rad a=0.92 s=0.92",
      "unresolved": 0.001953125
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.99609375,
      "geometric": 0.0,
+     "non_rotation": 0.00390625,
      "truth": "cz +0.015 rad a=0.92 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "cz +0.015 rad a=1.06 s=0.92",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.99609375,
      "geometric": 0.0,
+     "non_rotation": 0.00390625,
      "truth": "cz +0.015 rad a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.990234375,
+     "coherent": 0.96875,
      "geometric": 0.0,
+     "non_rotation": 0.013671875,
      "truth": "prx -0.8 % a=0.92 s=0.92",
-     "unresolved": 0.009765625
+     "unresolved": 0.017578125
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.984375,
      "geometric": 0.0,
+     "non_rotation": 0.015625,
      "truth": "prx -0.8 % a=0.92 s=1.04",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 1.0,
-     "geometric": 0.0,
-     "truth": "prx -0.8 % a=1.06 s=0.92",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 1.0,
-     "geometric": 0.0,
-     "truth": "prx -0.8 % a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
      "coherent": 0.986328125,
      "geometric": 0.0,
-     "truth": "prx +0.8 % a=0.92 s=0.92",
-     "unresolved": 0.013671875
-    },
-    {
-     "coherent": 1.0,
-     "geometric": 0.0,
-     "truth": "prx +0.8 % a=0.92 s=1.04",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 1.0,
-     "geometric": 0.0,
-     "truth": "prx +0.8 % a=1.06 s=0.92",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 1.0,
-     "geometric": 0.0,
-     "truth": "prx +0.8 % a=1.06 s=1.04",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 0.998046875,
-     "geometric": 0.0,
-     "truth": "zz -10 kHz a=0.92 s=0.92",
-     "unresolved": 0.001953125
-    },
-    {
-     "coherent": 1.0,
-     "geometric": 0.0,
-     "truth": "zz -10 kHz a=0.92 s=1.04",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 1.0,
-     "geometric": 0.0,
-     "truth": "zz -10 kHz a=1.06 s=0.92",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 1.0,
-     "geometric": 0.0,
-     "truth": "zz -10 kHz a=1.06 s=1.04",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 0.998046875,
-     "geometric": 0.0,
-     "truth": "zz +10 kHz a=0.92 s=0.92",
-     "unresolved": 0.001953125
-    },
-    {
-     "coherent": 1.0,
-     "geometric": 0.0,
-     "truth": "zz +10 kHz a=0.92 s=1.04",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 1.0,
-     "geometric": 0.0,
-     "truth": "zz +10 kHz a=1.06 s=0.92",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 1.0,
-     "geometric": 0.0,
-     "truth": "zz +10 kHz a=1.06 s=1.04",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 1.0,
-     "geometric": 0.0,
-     "truth": "plane eps=-0.03 a=0.92 s=0.92",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 1.0,
-     "geometric": 0.0,
-     "truth": "plane eps=-0.03 a=0.92 s=1.04",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 1.0,
-     "geometric": 0.0,
-     "truth": "plane eps=-0.03 a=1.06 s=0.92",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 1.0,
-     "geometric": 0.0,
-     "truth": "plane eps=-0.03 a=1.06 s=1.04",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 0.998046875,
-     "geometric": 0.0,
-     "truth": "plane eps=-0.02 a=0.92 s=0.92",
-     "unresolved": 0.001953125
-    },
-    {
-     "coherent": 1.0,
-     "geometric": 0.0,
-     "truth": "plane eps=-0.02 a=0.92 s=1.04",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 1.0,
-     "geometric": 0.0,
-     "truth": "plane eps=-0.02 a=1.06 s=0.92",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 1.0,
-     "geometric": 0.0,
-     "truth": "plane eps=-0.02 a=1.06 s=1.04",
-     "unresolved": 0.0
-    },
-    {
-     "coherent": 0.92578125,
-     "geometric": 0.0,
-     "truth": "plane eps=-0.015 a=0.92 s=0.92",
-     "unresolved": 0.07421875
-    },
-    {
-     "coherent": 1.0,
-     "geometric": 0.0,
-     "truth": "plane eps=-0.015 a=0.92 s=1.04",
+     "non_rotation": 0.013671875,
+     "truth": "prx -0.8 % a=1.06 s=0.92",
      "unresolved": 0.0
     },
     {
      "coherent": 0.984375,
      "geometric": 0.0,
-     "truth": "plane eps=-0.015 a=1.06 s=0.92",
-     "unresolved": 0.015625
+     "non_rotation": 0.015625,
+     "truth": "prx -0.8 % a=1.06 s=1.04",
+     "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.974609375,
      "geometric": 0.0,
+     "non_rotation": 0.0078125,
+     "truth": "prx +0.8 % a=0.92 s=0.92",
+     "unresolved": 0.017578125
+    },
+    {
+     "coherent": 0.984375,
+     "geometric": 0.0,
+     "non_rotation": 0.015625,
+     "truth": "prx +0.8 % a=0.92 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.990234375,
+     "geometric": 0.0,
+     "non_rotation": 0.0078125,
+     "truth": "prx +0.8 % a=1.06 s=0.92",
+     "unresolved": 0.001953125
+    },
+    {
+     "coherent": 0.982421875,
+     "geometric": 0.0,
+     "non_rotation": 0.017578125,
+     "truth": "prx +0.8 % a=1.06 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.9921875,
+     "geometric": 0.0,
+     "non_rotation": 0.005859375,
+     "truth": "zz -10 kHz a=0.92 s=0.92",
+     "unresolved": 0.001953125
+    },
+    {
+     "coherent": 0.986328125,
+     "geometric": 0.0,
+     "non_rotation": 0.013671875,
+     "truth": "zz -10 kHz a=0.92 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.990234375,
+     "geometric": 0.0,
+     "non_rotation": 0.009765625,
+     "truth": "zz -10 kHz a=1.06 s=0.92",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.982421875,
+     "geometric": 0.0,
+     "non_rotation": 0.017578125,
+     "truth": "zz -10 kHz a=1.06 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.986328125,
+     "geometric": 0.0,
+     "non_rotation": 0.0078125,
+     "truth": "zz +10 kHz a=0.92 s=0.92",
+     "unresolved": 0.005859375
+    },
+    {
+     "coherent": 0.990234375,
+     "geometric": 0.0,
+     "non_rotation": 0.009765625,
+     "truth": "zz +10 kHz a=0.92 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.9921875,
+     "geometric": 0.0,
+     "non_rotation": 0.0078125,
+     "truth": "zz +10 kHz a=1.06 s=0.92",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.98828125,
+     "geometric": 0.0,
+     "non_rotation": 0.01171875,
+     "truth": "zz +10 kHz a=1.06 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.994140625,
+     "geometric": 0.0,
+     "non_rotation": 0.005859375,
+     "truth": "plane eps=-0.03 a=0.92 s=0.92",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.99609375,
+     "geometric": 0.0,
+     "non_rotation": 0.00390625,
+     "truth": "plane eps=-0.03 a=0.92 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.994140625,
+     "geometric": 0.0,
+     "non_rotation": 0.005859375,
+     "truth": "plane eps=-0.03 a=1.06 s=0.92",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.99609375,
+     "geometric": 0.0,
+     "non_rotation": 0.00390625,
+     "truth": "plane eps=-0.03 a=1.06 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.9921875,
+     "geometric": 0.0,
+     "non_rotation": 0.005859375,
+     "truth": "plane eps=-0.02 a=0.92 s=0.92",
+     "unresolved": 0.001953125
+    },
+    {
+     "coherent": 0.994140625,
+     "geometric": 0.0,
+     "non_rotation": 0.005859375,
+     "truth": "plane eps=-0.02 a=0.92 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.994140625,
+     "geometric": 0.0,
+     "non_rotation": 0.005859375,
+     "truth": "plane eps=-0.02 a=1.06 s=0.92",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.99609375,
+     "geometric": 0.0,
+     "non_rotation": 0.00390625,
+     "truth": "plane eps=-0.02 a=1.06 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.884765625,
+     "geometric": 0.0,
+     "non_rotation": 0.0078125,
+     "truth": "plane eps=-0.015 a=0.92 s=0.92",
+     "unresolved": 0.107421875
+    },
+    {
+     "coherent": 0.994140625,
+     "geometric": 0.0,
+     "non_rotation": 0.00390625,
+     "truth": "plane eps=-0.015 a=0.92 s=1.04",
+     "unresolved": 0.001953125
+    },
+    {
+     "coherent": 0.966796875,
+     "geometric": 0.0,
+     "non_rotation": 0.0078125,
+     "truth": "plane eps=-0.015 a=1.06 s=0.92",
+     "unresolved": 0.025390625
+    },
+    {
+     "coherent": 0.99609375,
+     "geometric": 0.0,
+     "non_rotation": 0.00390625,
      "truth": "plane eps=-0.015 a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.55078125,
+     "coherent": 0.48046875,
      "geometric": 0.05078125,
+     "non_rotation": 0.00390625,
      "truth": "plane eps=-0.01 a=0.92 s=0.92",
-     "unresolved": 0.3984375
+     "unresolved": 0.46484375
     },
     {
-     "coherent": 0.884765625,
+     "coherent": 0.83203125,
      "geometric": 0.05078125,
+     "non_rotation": 0.00390625,
      "truth": "plane eps=-0.01 a=0.92 s=1.04",
-     "unresolved": 0.064453125
+     "unresolved": 0.11328125
     },
     {
-     "coherent": 0.6953125,
+     "coherent": 0.63671875,
      "geometric": 0.05078125,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=-0.01 a=1.06 s=0.92",
-     "unresolved": 0.25390625
+     "unresolved": 0.306640625
     },
     {
-     "coherent": 0.970703125,
-     "geometric": 0.029296875,
+     "coherent": 0.947265625,
+     "geometric": 0.046875,
+     "non_rotation": 0.00390625,
      "truth": "plane eps=-0.01 a=1.06 s=1.04",
-     "unresolved": 0.0
+     "unresolved": 0.001953125
     },
     {
-     "coherent": 0.533203125,
+     "coherent": 0.462890625,
      "geometric": 0.05078125,
+     "non_rotation": 0.0,
      "truth": "plane eps=0.01 a=0.92 s=0.92",
-     "unresolved": 0.416015625
+     "unresolved": 0.486328125
     },
     {
-     "coherent": 0.857421875,
+     "coherent": 0.828125,
      "geometric": 0.046875,
+     "non_rotation": 0.001953125,
      "truth": "plane eps=0.01 a=0.92 s=1.04",
-     "unresolved": 0.095703125
+     "unresolved": 0.123046875
     },
     {
-     "coherent": 0.712890625,
+     "coherent": 0.62890625,
      "geometric": 0.046875,
+     "non_rotation": 0.0,
      "truth": "plane eps=0.01 a=1.06 s=0.92",
-     "unresolved": 0.240234375
+     "unresolved": 0.32421875
     },
     {
-     "coherent": 0.966796875,
-     "geometric": 0.033203125,
+     "coherent": 0.94921875,
+     "geometric": 0.04296875,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.01 a=1.06 s=1.04",
-     "unresolved": 0.0
+     "unresolved": 0.001953125
     },
     {
-     "coherent": 0.919921875,
+     "coherent": 0.890625,
      "geometric": 0.0,
+     "non_rotation": 0.00390625,
      "truth": "plane eps=0.015 a=0.92 s=0.92",
-     "unresolved": 0.080078125
+     "unresolved": 0.10546875
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.015 a=0.92 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.978515625,
+     "coherent": 0.966796875,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.015 a=1.06 s=0.92",
-     "unresolved": 0.021484375
+     "unresolved": 0.02734375
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.015 a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.998046875,
+     "coherent": 0.990234375,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=0.92 s=0.92",
-     "unresolved": 0.001953125
+     "unresolved": 0.00390625
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=0.92 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=1.06 s=0.92",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.03 a=0.92 s=0.92",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.03 a=0.92 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.03 a=1.06 s=0.92",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.03 a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.99609375,
      "geometric": 0.0,
+     "non_rotation": 0.00390625,
      "truth": "plane eps=-0.02 a=1.0000 s=0.9750",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=-0.02 a=1.0500 s=0.9375",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.99609375,
      "geometric": 0.0,
+     "non_rotation": 0.00390625,
      "truth": "plane eps=-0.02 a=0.9500 s=1.0125",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.99609375,
      "geometric": 0.0,
+     "non_rotation": 0.00390625,
      "truth": "plane eps=-0.02 a=0.9750 s=0.9563",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.99609375,
      "geometric": 0.0,
+     "non_rotation": 0.00390625,
      "truth": "plane eps=-0.02 a=1.0750 s=1.0312",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=-0.02 a=1.0250 s=0.9188",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.99609375,
      "geometric": 0.0,
+     "non_rotation": 0.00390625,
      "truth": "plane eps=-0.02 a=0.9250 s=0.9938",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=-0.02 a=0.9375 s=0.9469",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.99609375,
      "geometric": 0.0,
+     "non_rotation": 0.00390625,
      "truth": "plane eps=-0.02 a=1.0375 s=1.0219",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.9921875,
      "geometric": 0.0,
+     "non_rotation": 0.0078125,
      "truth": "plane eps=-0.02 a=1.0875 s=0.9094",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.99609375,
      "geometric": 0.0,
+     "non_rotation": 0.00390625,
      "truth": "plane eps=-0.02 a=0.9875 s=0.9844",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=-0.02 a=0.9625 s=0.9281",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.99609375,
      "geometric": 0.0,
+     "non_rotation": 0.00390625,
      "truth": "plane eps=-0.02 a=1.0625 s=1.0031",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.99609375,
      "geometric": 0.0,
+     "non_rotation": 0.00390625,
      "truth": "plane eps=-0.02 a=1.0125 s=0.9656",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=-0.02 a=0.9125 s=1.0406",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.99609375,
      "geometric": 0.0,
+     "non_rotation": 0.00390625,
      "truth": "plane eps=-0.02 a=0.9188 s=0.9703",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=1.0000 s=0.9750",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=1.0500 s=0.9375",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=0.9500 s=1.0125",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=0.9750 s=0.9563",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=1.0750 s=1.0312",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=1.0250 s=0.9188",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=0.9250 s=0.9938",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=0.9375 s=0.9469",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=1.0375 s=1.0219",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=1.0875 s=0.9094",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=0.9875 s=0.9844",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=0.9625 s=0.9281",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=1.0625 s=1.0031",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=1.0125 s=0.9656",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=0.9125 s=1.0406",
      "unresolved": 0.0
     },
     {
-     "coherent": 1.0,
+     "coherent": 0.994140625,
      "geometric": 0.0,
+     "non_rotation": 0.005859375,
      "truth": "plane eps=0.02 a=0.9188 s=0.9703",
      "unresolved": 0.0
     }
    ],
    "worst_resolved_truth": {
-    "coherent": 0.986328125,
+    "coherent": 0.96875,
     "geometric": 0.0,
-    "truth": "prx +0.8 % a=0.92 s=0.92",
-    "unresolved": 0.013671875
+    "non_rotation": 0.013671875,
+    "truth": "prx -0.8 % a=0.92 s=0.92",
+    "unresolved": 0.017578125
    }
   },
   "readout": {
@@ -1835,22 +2538,23 @@
   "rule": {
    "boxes": {
     "a": [
-     0.5,
-     1.5
+     0.8,
+     1.2
     ],
     "eps": [
      -0.3,
      0.3
     ],
     "s": [
-     0.3,
-     1.2
+     0.75,
+     1.15
     ]
    },
-   "delta_resolve": 6.634896601,
+   "boxes_note": "the fitting box of a and s equals the calibrated null box; a fit on a bound reads out of domain",
+   "delta_resolve": 7.5,
    "eps_equivalence": 0.01,
    "phi": 1.54,
-   "primary": "departure of the four marked probabilities from the geometric law toward a plane rotation eps",
+   "primary": "departure of the marked probabilities of mark 101 from the geometric law toward a plane rotation eps",
    "z_equivalence": 1.645,
    "z_loss": 3.0
   }

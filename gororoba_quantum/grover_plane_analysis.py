@@ -40,9 +40,9 @@ CASE = "grover-plane-mirrored"
 JOBS = ("grover",)
 SCHEMA = "iqm-grover-plane-analysis-v1"
 CASE_DIR = iqm_records.ROOT / "results" / "iqm" / "cases" / CASE
-MARKED = "101"
 CZ_PER_ITERATION = 14
-ARM = re.compile(r"m101-k([1-4])-c(\d+)")
+MARKS = ("101", "011")
+ARM = re.compile(r"m(101|011)-k([1-4])-c(\d+)")
 READOUT = re.compile(r"ro-[01]{3}(-m)?")
 
 
@@ -89,10 +89,9 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
     plan_all = job.prediction["decisions"]
     total = len(job.names)
     files = {Path(c["file"]).stem: c for c in job.run.row["circuits"]}
-    index = followup.outcome_index(MARKED)
-    pairs_at: dict[int, dict[int, tuple[int, int]]] = {k: {} for k in decision.DEPTHS}
-    circuits: dict[int, dict[str, Any]] = {}
-    digests: dict[int, set[str]] = {k: set() for k in decision.DEPTHS}
+    pairs_at: dict[str, dict[int, dict[int, tuple[int, int]]]] = {m: {} for m in MARKS}
+    circuits: dict[str, dict[int, dict[str, Any]]] = {m: {} for m in MARKS}
+    digests: dict[tuple[str, int], set[str]] = {}
     readouts: dict[int, list[tuple[int, np.ndarray]]] = {}
     table: list[dict[str, Any]] = []
     kinds: list[str] = []
@@ -110,65 +109,41 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
             readouts.setdefault(prepared, []).append((position, job.counts[name]))
             table.append(row)
             continue
-        k = int(arm[1])
-        if arms[name]["iterations"] != k or arms[name]["marked"] != MARKED or cz_count(circuit) != CZ_PER_ITERATION * k:
-            raise AnalysisError(f"{run_dir}: {name} is not the line-native Grover of mark {MARKED} at depth {k}")
+        mark, k = arm[1], int(arm[2])
+        if arms[name]["iterations"] != k or arms[name]["marked"] != mark or cz_count(circuit) != CZ_PER_ITERATION * k:
+            raise AnalysisError(f"{run_dir}: {name} is not the line-native Grover of mark {mark} at depth {k}")
         digest = normalized_sha256(circuit)
-        digests[k].add(digest)
-        circuits.setdefault(k, circuit)
+        digests.setdefault((mark, k), set()).add(digest)
+        circuits[mark].setdefault(k, circuit)
         counts = job.counts[name]
-        pairs_at[k][position] = (int(counts[index]), int(counts.sum()))
-        kinds.append(f"depth {k}")
+        pairs_at[mark].setdefault(k, {})[position] = (int(counts[followup.outcome_index(mark)]), int(counts.sum()))
+        kinds.append(f"{mark} depth {k}")
         table.append(
-            row | {"depth": k, "circuit_sha256": digest, "marked": int(counts[index]), "kept_shots": int(counts.sum())}
+            row
+            | {
+                "mark": mark,
+                "depth": k,
+                "circuit_sha256": digest,
+                "marked": pairs_at[mark][k][position][0],
+                "kept_shots": int(counts.sum()),
+            }
         )
-    if any(len(d) != 1 for d in digests.values()) or len({next(iter(d)) for d in digests.values()}) != len(
-        decision.DEPTHS
-    ):
+    if any(len(d) != 1 for d in digests.values()) or len({next(iter(d)) for d in digests.values()}) != len(digests):
         raise AnalysisError(f"{run_dir}: the copies of a depth do not share one circuit, or two depths share one")
     if kinds != kinds[::-1]:
         raise AnalysisError(f"{run_dir}: the job's arms are not images of one another about its center")
-    pairs: dict[int, list[Any]] = {}
-    for k in decision.DEPTHS:
-        pairs[k] = []
-        for position in sorted(pairs_at[k]):
-            mirror = total - 1 - position
-            if position < mirror:
-                if mirror not in pairs_at[k]:
-                    raise AnalysisError(f"{run_dir}: the depth {k} copy at {position} has no image at {mirror}")
-                pairs[k].append((pairs_at[k][position], pairs_at[k][mirror]))
-    plan = plan_all["readout"]
     gate = plan_all["gate"]
     if sorted(readouts) != list(range(8)) or any(
         len(v) != 2 or v[0][0] + v[1][0] != total - 1 for v in readouts.values()
     ):
         raise AnalysisError(f"{run_dir}: the readout preparations are not all eight, each at mirrored positions")
     floor = decision.COPY_FLOOR * float(gate["planned_kept_per_copy"])
-    r_model = np.asarray(plan["r_model"], dtype=float)
     sides = [(min(readouts[j])[1], max(readouts[j])[1]) for j in range(8)]
     lost = any(a.sum() < floor or b.sum() < floor for a, b in sides)
-    marked_at = int(plan["marked_index"])
-    r_hat, r_var = np.zeros(8), np.zeros(8)
-    for j, (a, b) in enumerate(sides):
-        r_hat[j], r_var[j] = decision.pair_mean(((int(a[marked_at]), int(a.sum())), (int(b[marked_at]), int(b.sum()))))
-    q = np.asarray(plan["q"], dtype=float)
-    shift = q @ (r_hat - r_model)
-    readout_cov = (q * r_var) @ q.T
     stat, dof = 0.0, 0
     for a, b in sides:
         s, d = sides_chi2(a, b)
         stat, dof = stat + s, dof + d
-    reason = ""
-    if lost:
-        reason = "not evaluated: a readout preparation kept fewer than half its planned shots"
-    elif stat > float(decision.stats.chi2.isf(decision.ALPHA, dof)):
-        reason = (
-            "not evaluated: the readout preparations differ between the two sides of the job by more than their scatter"
-        )
-    elif float(np.max(np.abs(shift))) > float(plan["tolerance"]):
-        reason = (
-            "not evaluated: the job's readout departs from the case model's by more than the preregistered tolerance"
-        )
     calibration_dir = (
         run_dir / "calibration" if (run_dir / "calibration" / "metrics.json").exists() else case_dir / "calibration"
     )
@@ -177,18 +152,73 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
     cal = iqm_sim.Calibration.from_directory(calibration_dir)
     if cal.set_id != job.prediction["calibration_set"]:
         raise AnalysisError(f"{run_dir}: the calibration copy is set {cal.set_id}, not the prediction's")
-    response = sim.Response(circuits, cal, followup_path(job), MARKED)
-    if response_digest(response, plan_all["response"]) != plan_all["response"]["sha256"]:
-        raise AnalysisError(f"{run_dir}: the response rebuilt from the run's circuits differs from prediction.json")
-    model = response.probabilities(1.0, 1.0, 0.0)
-    if float(np.max(np.abs(model - np.asarray(plan_all["model_probabilities"])))) > 2e-9:
-        raise AnalysisError(f"{run_dir}: the rebuilt model probabilities differ from prediction.json")
-    fitter = decision.Fitter(response)
+    path = followup_path(job)
     delta = float(plan_all["rule"]["delta_resolve"])
-    out = decision.read_pairs(fitter, pairs, shift, readout_cov, float(gate["planned_kept_per_copy"]), delta)
-    if reason:
-        out["departure_before"] = out.get("departure")
-        out["departure"] = reason
+    decisions: dict[str, Any] = {}
+    readout_record: dict[str, Any] = {}
+    fits: dict[str, dict[str, Any]] = {}
+    for mark in MARKS:
+        block = plan_all if mark == "101" else plan_all["mark_011"]
+        plan = block["readout"]
+        r_model = np.asarray(plan["r_model"], dtype=float)
+        marked_at = int(plan["marked_index"])
+        r_hat, r_var = np.zeros(8), np.zeros(8)
+        for j, (a, b) in enumerate(sides):
+            r_hat[j], r_var[j] = decision.pair_mean(
+                ((int(a[marked_at]), int(a.sum())), (int(b[marked_at]), int(b.sum())))
+            )
+        q = np.asarray(plan["q"], dtype=float)
+        shift = q @ (r_hat - r_model)
+        readout_cov = (q * r_var) @ q.T
+        reason = ""
+        if lost:
+            reason = "not evaluated: a readout preparation kept fewer than half its planned shots"
+        elif stat > float(decision.stats.chi2.isf(decision.ALPHA, dof)):
+            reason = "not evaluated: the two sides of the readout block differ by more than their scatter"
+        elif float(np.max(np.abs(shift))) > float(plan["tolerance"]):
+            reason = "not evaluated: the job's readout departs from the model's by more than the tolerance"
+        response = sim.Response(circuits[mark], cal, path, mark)
+        if response_digest(response, block["response"]) != block["response"]["sha256"]:
+            raise AnalysisError(
+                f"{run_dir}: the mark {mark} response rebuilt from the run's circuits differs from prediction.json"
+            )
+        model = response.probabilities(1.0, 1.0, 0.0)
+        if float(np.max(np.abs(model - np.asarray(block["model_probabilities"])))) > 2e-9:
+            raise AnalysisError(f"{run_dir}: the rebuilt mark {mark} model probabilities differ from prediction.json")
+        pairs: dict[int, list[Any]] = {}
+        for k in sorted(pairs_at[mark]):
+            pairs[k] = []
+            for position in sorted(pairs_at[mark][k]):
+                mirror = total - 1 - position
+                if position < mirror:
+                    if mirror not in pairs_at[mark][k]:
+                        raise AnalysisError(
+                            f"{run_dir}: the mark {mark} depth {k} copy at {position} has no image at {mirror}"
+                        )
+                    pairs[k].append((pairs_at[mark][k][position], pairs_at[mark][k][mirror]))
+        fitter = decision.Fitter(response)
+        out = decision.read_pairs(fitter, pairs, shift, readout_cov, float(gate["planned_kept_per_copy"]), delta)
+        if reason:
+            out["departure_before"] = out.get("departure")
+            out["departure"] = reason
+        decisions[mark] = out
+        fits[mark] = out
+        readout_record[mark] = {
+            "marked_row": rounded(r_hat),
+            "model_marked_row": rounded(r_model),
+            "frequency_shift": rounded(shift),
+            "passed": not reason,
+        }
+    contrast_block: dict[str, Any] = {"reading": "not evaluated: a mark's rotation fit is missing"}
+    a_fit, b_fit = fits["101"], fits["011"]
+    if "rotation" in a_fit and "rotation" in b_fit:
+        contrast_block = decision.contrast(
+            a_fit["rotation"]["eps"],
+            a_fit["rotation_se"].get("eps", float("nan")),
+            b_fit["rotation"]["eps"],
+            b_fit["rotation_se"].get("eps", float("nan")),
+            float(plan_all["contrast"]["ratio_prx"]),
+        )
     return {
         "schema": SCHEMA,
         "case": CASE,
@@ -199,17 +229,10 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
             "prediction_sha256": job.run.case["prediction_sha256"],
             "calibration_set": job.prediction["calibration_set"],
         },
-        "model_probabilities": rounded(model),
-        "readout": {
-            "marked_row": rounded(r_hat),
-            "model_marked_row": rounded(r_model),
-            "frequency_shift": rounded(shift),
-            "sides_chi2": round(stat, 4),
-            "sides_dof": dof,
-            "passed": not reason,
-        },
+        "readout": {**readout_record, "sides_chi2": round(stat, 4), "sides_dof": dof},
         "circuits": table,
-        "decisions": rounded(out),
+        "decisions": rounded(decisions),
+        "contrast": rounded(contrast_block),
         "mechanism_attribution": {
             "note": "a reading beside the departure; it decides nothing",
             "eps_per_unit": plan_all["mechanism_slopes"],

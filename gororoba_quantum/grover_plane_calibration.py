@@ -26,8 +26,11 @@ from scipy import stats
 import grover_plane_decision as dec
 from parallel import ordered_map
 
-NULL_A = (0.90, 1.10)
-NULL_S = (0.85, 1.10)
+# The null box is the fitting box of grover_plane_decision (A_BOX, S_BOX). Power is claimed over the region around the
+# retained fits, a in POWER_A and s in POWER_S, which lies inside it.
+NULL_A = (0.80, 1.20)
+NULL_S = (0.75, 1.15)
+POWER_A = (0.90, 1.10)
 POWER_S = (0.90, 1.05)
 DELTA_STEP = 0.5
 
@@ -46,7 +49,7 @@ def sobol_box(low: Sequence[float], high: Sequence[float], log2n: int) -> np.nda
 def null_cells(log2n: int = 6) -> list[tuple[float, float]]:
     """Sobol' cells of the null box plus the offset line (a, s = 1) and the model."""
     cells = [(float(a), float(s)) for a, s in sobol_box((NULL_A[0], NULL_S[0]), (NULL_A[1], NULL_S[1]), log2n)]
-    cells += [(a, 1.0) for a in (0.9, 0.95, 0.98, 1.0, 1.02, 1.05, 1.1)]
+    cells += [(a, 1.0) for a in (0.8, 0.9, 0.95, 0.98, 1.0, 1.02, 1.05, 1.1, 1.2)]
     return cells
 
 
@@ -55,30 +58,34 @@ def covariance(truth: np.ndarray, kept: Sequence[float], readout_cov: np.ndarray
     return np.asarray(np.diag(dec.PHI * var * (1 - var) / np.asarray(kept, dtype=float)) + readout_cov)
 
 
-def run_cell(item: tuple[Any, ...]) -> dict[str, np.ndarray]:
+def run_cell(item: tuple[Any, ...]) -> dict[str, Any]:
     """T, eps and its standard error at every normal point for one truth: (fitter, truth, kept, readout_cov, points)."""
     fitter, truth, kept, readout_cov, points = item
     cov = covariance(truth, kept, readout_cov)
     factor = np.linalg.cholesky(cov)
-    t, eps, se = [], [], []
+    t, eps, se, chi1 = [], [], [], []
     for z in points:
         y = truth + factor @ z
         f0 = fitter.fit(y, cov, False)
         f1 = fitter.fit(y, cov, True)
         t.append(f0["chi2"] - f1["chi2"])
+        chi1.append(f1["chi2"])
         eps.append(f1["eps"])
         se.append(fitter.errors(f1, cov).get("eps", float("nan")))
-    return {"T": np.array(t), "eps": np.array(eps), "se": np.array(se)}
+    return {"T": np.array(t), "eps": np.array(eps), "se": np.array(se), "chi1": np.array(chi1), "dof": len(truth) - 3}
 
 
 def readings(cell: dict[str, np.ndarray], delta: float) -> dict[str, float]:
     t, eps, se = cell["T"], cell["eps"], cell["se"]
-    coherent = t >= delta
-    geometric = ~coherent & np.isfinite(se) & (np.abs(eps) + dec.Z_EQUIV * se <= dec.EPS_EQUIV)
+    dof = cell.get("dof", 1)
+    adequate = cell["chi1"] <= stats.chi2.isf(dec.ALPHA, dof) if "chi1" in cell and dof > 0 else np.ones_like(t, bool)
+    departs = t >= delta
+    geometric = ~departs & np.isfinite(se) & (np.abs(eps) + dec.Z_EQUIV * se <= dec.EPS_EQUIV)
     return {
-        "coherent": float(np.mean(coherent)),
+        "coherent": float(np.mean(departs & adequate)),
+        "non_rotation": float(np.mean(departs & ~adequate)),
         "geometric": float(np.mean(geometric)),
-        "unresolved": float(np.mean(~coherent & ~geometric)),
+        "unresolved": float(np.mean(~departs & ~geometric)),
     }
 
 
@@ -127,13 +134,14 @@ def run_pair_cell(item: tuple[Any, ...]) -> dict[str, Any]:
     copy, readout_cov, delta, points, noise_phi). The four depths share the readout common-mode draw; the dimension of
     a point is the two sides of every pair plus the four depths."""
     fitter, truth, pairs_per_depth, kept, readout_cov, delta, points, noise_phi = item
-    factor = np.linalg.cholesky(readout_cov + 1e-18 * np.eye(len(dec.DEPTHS)))
-    counts = {"coherent": 0, "geometric": 0, "unresolved": 0, "other": 0}
+    n_depths = len(pairs_per_depth)
+    factor = np.linalg.cholesky(readout_cov + 1e-18 * np.eye(n_depths))
+    counts = {"coherent": 0, "non_rotation": 0, "geometric": 0, "unresolved": 0, "other": 0}
     for z in points:
-        common = factor @ z[: len(dec.DEPTHS)]
-        cursor = len(dec.DEPTHS)
+        common = factor @ z[:n_depths]
+        cursor = n_depths
         pairs: dict[int, list[Any]] = {}
-        for i, k in enumerate(dec.DEPTHS):
+        for i, k in enumerate(range(1, n_depths + 1)):
             p = float(np.clip(truth[i] + common[i], dec.FREQUENCY_FLOOR, 1 - dec.FREQUENCY_FLOOR))
             sd = math.sqrt(noise_phi * p * (1 - p) / kept)
             pairs[k] = []
@@ -144,8 +152,9 @@ def run_pair_cell(item: tuple[Any, ...]) -> dict[str, Any]:
                     cursor += 1
                     sides.append((round(f * kept), round(kept)))
                 pairs[k].append(tuple(sides))
-        out = dec.read_pairs(fitter, pairs, np.zeros(len(dec.DEPTHS)), readout_cov, kept, delta)
+        out = dec.read_pairs(fitter, pairs, np.zeros(n_depths), readout_cov, kept, delta)
         reading = out["departure"]
+        reading = "non_rotation" if reading == dec.NON_ROTATION else reading
         counts[reading if reading in counts else "other"] += 1
     n = len(points)
     return {key: value / n for key, value in counts.items()}
@@ -164,7 +173,7 @@ def influence_power(
     """The reading rates of every labeled truth through the whole gated rule: heterogeneity gate, the full reading
     and the leave-one-pair-out refits (a reading that changes with one pair leaves the "other" bucket). The pair
     frequencies carry the binomial variance times noise_phi; the rule's covariance always carries dec.PHI."""
-    dim = len(dec.DEPTHS) + 2 * sum(pairs_per_depth)
+    dim = len(pairs_per_depth) + 2 * sum(pairs_per_depth)
     points = sobol_normals(dim, log2n)
     runs = ordered_map(
         run_pair_cell,
@@ -172,3 +181,42 @@ def influence_power(
         min_items=1,
     )
     return [{"truth": label, **r} for (label, _), r in zip(truths, runs, strict=True)]
+
+
+def run_contrast_cell(item: tuple[Any, ...]) -> dict[str, float]:
+    """Readings of dec.contrast for one pair of truths (mark 101 and mark 011): the two marks' frequencies are
+    independent Gaussians with the binomial variance times PHI and the readout covariance."""
+    f_a, f_b, truth_a, truth_b, kept_a, kept_b, cov_a, cov_b, ratio, points = item
+    cova = covariance(truth_a, kept_a, cov_a)
+    covb = covariance(truth_b, kept_b, cov_b)
+    la, lb = np.linalg.cholesky(cova), np.linalg.cholesky(covb)
+    na = len(truth_a)
+    counts = {"CZ-phase-like": 0, "PRX-like": 0, "unresolved": 0}
+    for z in points:
+        fa = f_a.fit(truth_a + la @ z[:na], cova, True)
+        fb = f_b.fit(truth_b + lb @ z[na:], covb, True)
+        ea = f_a.errors(fa, cova).get("eps", float("nan"))
+        eb = f_b.errors(fb, covb).get("eps", float("nan"))
+        reading = dec.contrast(fa["eps"], ea, fb["eps"], eb, ratio)["reading"]
+        counts[next((k for k in counts if reading.startswith(k)), "unresolved")] += 1
+    return {k: v / len(points) for k, v in counts.items()}
+
+
+def contrast_power(
+    fitter_a: dec.Fitter,
+    fitter_b: dec.Fitter,
+    truths: Sequence[tuple[str, np.ndarray, np.ndarray]],
+    kept_a: Sequence[float],
+    kept_b: Sequence[float],
+    cov_a: np.ndarray,
+    cov_b: np.ndarray,
+    ratio: float,
+    log2n: int = 8,
+) -> list[dict[str, Any]]:
+    points = sobol_normals(len(kept_a) + len(kept_b), log2n)
+    runs = ordered_map(
+        run_contrast_cell,
+        [(fitter_a, fitter_b, pa, pb, kept_a, kept_b, cov_a, cov_b, ratio, points) for _, pa, pb in truths],
+        min_items=1,
+    )
+    return [{"truth": label, **r} for (label, _, _), r in zip(truths, runs, strict=True)]

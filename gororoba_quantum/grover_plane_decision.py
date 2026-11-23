@@ -8,10 +8,14 @@ and a depth-independent factor a). Any coherent error of a gate acts on the plan
 eps is the mechanism-free measure of the departure: the reading names no gate. A depth-independent offset (a != 1,
 s = 1) is not a per-iteration loss, and a coherent term that is merely unresolved is not "geometric".
 
-Readings of the departure, from T = chi2(a, s) - chi2(a, s, eps) over the four depths with the full covariance:
-  coherent    T >= delta (delta calibrated over the box of null truths, worst cell);
-  geometric   T < delta and |eps| + 1.645 SE(eps) <= EPS_EQUIV: the coherent term is bounded by EPS_EQUIV;
-  unresolved  otherwise: a coherent term up to EPS_EQUIV is not excluded.
+Readings of the departure, from T = chi2(a, s) - chi2(a, s, eps) over the depths with the full covariance:
+  coherent        T >= delta (calibrated over the box of null truths, worst cell) and the rotation fit adequate
+                  (chi2(a, s, eps) below the 0.99 chi-square quantile of its degrees of freedom);
+  non-rotation    T >= delta and the rotation fit inadequate: the depths depart from geometric by something a
+                  plane rotation does not describe (an incoherent depth-dependent loss, say);
+  geometric       T < delta and |eps| + 1.645 SE(eps) <= EPS_EQUIV: the coherent term is bounded by EPS_EQUIV;
+  unresolved      otherwise: a coherent term up to EPS_EQUIV is not excluded;
+  out of domain   the selected fit sits on a bound of the fitting box, which equals the calibrated truth box.
 The per-iteration loss reads "resolved" only when s - 1 is below -3 SE(s) in the fit the departure reading selects;
 the offset a is reported with its SE and decides nothing. The mechanism attribution (grover_plane_sim slopes of eps
 against a CZ phase, a PRX amplitude and a ZZ coupling) is reported beside and decides nothing.
@@ -31,8 +35,9 @@ import grover_plane_sim as sim
 Pairs = dict[int, list[Any]]
 
 DEPTHS = (1, 2, 3, 4)
-A_BOX = (0.5, 1.5)
-S_BOX = (0.3, 1.2)
+# The fitting box equals the box the calibration covers (grover_plane_calibration.NULL_A and NULL_S).
+A_BOX = (0.80, 1.20)
+S_BOX = (0.75, 1.15)
 E_BOX = (-0.3, 0.3)
 FREQUENCY_FLOOR = 1e-4
 EPS_EQUIV = 0.01
@@ -141,15 +146,25 @@ class Fitter:
         return out
 
 
-def departure(fit0: dict[str, Any], fit1: dict[str, Any], err1: dict[str, float], delta: float) -> tuple[str, float]:
+NON_ROTATION = "non-geometric, not a rotation"
+OUT_OF_DOMAIN = "out of domain: a fit sits on a bound of the calibrated box"
+
+
+def departure(
+    fit0: dict[str, Any], fit1: dict[str, Any], err1: dict[str, float], delta: float, adequate: bool = True
+) -> tuple[str, float]:
     """The reading of the departure from the geometric law and the statistic T."""
     t = fit0["chi2"] - fit1["chi2"]
     if t >= delta:
-        return "coherent", t
+        return ("coherent" if adequate else NON_ROTATION), t
     se = err1.get("eps", float("nan"))
     if math.isfinite(se) and abs(fit1["eps"]) + Z_EQUIV * se <= EPS_EQUIV:
         return "geometric", t
     return "unresolved", t
+
+
+def on_bound(value: float, box: tuple[float, float]) -> bool:
+    return bool(value <= box[0] + 1e-6 or value >= box[1] - 1e-6)
 
 
 def decide(fitter: Fitter, y: np.ndarray, cov: np.ndarray, delta: float) -> dict[str, Any]:
@@ -157,8 +172,12 @@ def decide(fitter: Fitter, y: np.ndarray, cov: np.ndarray, delta: float) -> dict
     fit0 = fitter.fit(y, cov, False)
     fit1 = fitter.fit(y, cov, True)
     err1 = fitter.errors(fit1, cov)
-    reading, t = departure(fit0, fit1, err1, delta)
-    chosen, err = (fit1, err1) if reading == "coherent" else (fit0, fitter.errors(fit0, cov))
+    dof = len(y) - 3
+    adequate = dof <= 0 or fit1["chi2"] <= float(stats.chi2.isf(ALPHA, dof))
+    reading, t = departure(fit0, fit1, err1, delta, adequate)
+    chosen, err = (fit1, err1) if reading in ("coherent", NON_ROTATION) else (fit0, fitter.errors(fit0, cov))
+    if any(on_bound(chosen[n], box) for n, box in (("a", A_BOX), ("s", S_BOX))):
+        reading = OUT_OF_DOMAIN
     s_se = err.get("s", float("nan"))
     loss = math.isfinite(s_se) and (chosen["s"] - 1) <= -Z_LOSS * s_se
     w = np.linalg.inv(cov)
@@ -178,7 +197,7 @@ def decide(fitter: Fitter, y: np.ndarray, cov: np.ndarray, delta: float) -> dict
         "per_iteration_loss": "resolved" if loss else "not resolved",
         "offset_a": chosen["a"],
         "offset_a_se": err.get("a", float("nan")),
-        "rotation_adequate": fit1["chi2"] <= float(stats.chi2.isf(ALPHA, max(len(y) - 3, 1))),
+        "rotation_adequate": adequate,
     }
 
 
@@ -194,7 +213,7 @@ def surviving_pairs(pairs: Pairs, planned_kept: float) -> tuple[Pairs, dict[str,
     surviving pairs stay centered on the job."""
     keep: Pairs = {}
     dropped: dict[str, list[int]] = {}
-    for k in DEPTHS:
+    for k in sorted(pairs):
         keep[k] = []
         for i, pair in enumerate(pairs[k]):
             if all(kept >= COPY_FLOOR * planned_kept for _, kept in pair):
@@ -207,7 +226,7 @@ def surviving_pairs(pairs: Pairs, planned_kept: float) -> tuple[Pairs, dict[str,
 def estimates(pairs: Pairs, shift: np.ndarray, readout_cov: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """The four depth frequencies (pair means with equal weights, corrected to the model's readout) and their
     covariance: the pair variances scaled by PHI on the diagonal and the readout common-mode covariance."""
-    est = [depth_estimate(pairs[k]) for k in DEPTHS]
+    est = [depth_estimate(pairs[k]) for k in sorted(pairs)]
     y = np.array([e[0] for e in est]) - shift
     return y, np.diag([e[1] for e in est]) + readout_cov
 
@@ -217,7 +236,7 @@ def heterogeneity(pairs: Pairs) -> tuple[float, int]:
     in position leaves every pair mean unchanged, so the statistic sees what remains: one displaced copy, a symmetric
     drift, a step."""
     total, dof = 0.0, 0
-    for k in DEPTHS:
+    for k in sorted(pairs):
         means = [pair_mean(p, 1.0) for p in pairs[k]]
         if len(means) < 2:
             continue
@@ -241,7 +260,8 @@ def read_pairs(
     category)."""
     keep, dropped = surviving_pairs(pairs, planned_kept)
     out: dict[str, Any] = {"dropped_pairs": dropped}
-    if any(len(keep[k]) == 0 for k in DEPTHS):
+    depths = tuple(sorted(pairs))
+    if any(len(keep[k]) == 0 for k in depths):
         out["departure"] = "not evaluated: a depth keeps no mirror pair"
         return out
     chi2, dof = heterogeneity(keep)
@@ -257,11 +277,11 @@ def read_pairs(
     full = decide(fitter, y, cov, delta)
     out |= full
     refits = []
-    for k in DEPTHS:
+    for k in depths:
         for i in range(len(keep[k])):
             if len(keep[k]) < 2:
                 continue
-            trial = {j: [p for n, p in enumerate(keep[j]) if (j, n) != (k, i)] for j in DEPTHS}
+            trial = {j: [p for n, p in enumerate(keep[j]) if (j, n) != (k, i)] for j in depths}
             yy, cc = estimates(trial, shift, readout_cov)
             refits.append({"depth": k, "pair": i, "departure": decide(fitter, yy, cc, delta)["departure"]})
     out["influence"] = {"refits": refits, "stands": all(r["departure"] == full["departure"] for r in refits)}
@@ -269,3 +289,21 @@ def read_pairs(
         out["departure_before"] = out["departure"]
         out["departure"] = "not evaluated: the reading depends on one mirror pair"
     return out
+
+
+def contrast(
+    eps_a: float, se_a: float, eps_b: float, se_b: float, ratio: float, z_consistent: float = 2.0, z_reject: float = 3.0
+) -> dict[str, Any]:
+    """The mark contrast beside the departure: a CZ conditional phase leaves the plane of mark 011 unrotated
+    (eps_011 = 0) while a PRX amplitude error rotates it by ratio times eps_101. It decides nothing."""
+    if not all(math.isfinite(x) and x > 0 for x in (se_a, se_b)):
+        return {"reading": "unresolved: a standard error is not defined", "z_cz": float("nan"), "z_prx": float("nan")}
+    z_cz = eps_b / se_b
+    z_prx = (eps_b - ratio * eps_a) / math.hypot(se_b, ratio * se_a)
+    if abs(z_cz) <= z_consistent and abs(z_prx) >= z_reject:
+        reading = "CZ-phase-like (PRX amplitude rejected)"
+    elif abs(z_prx) <= z_consistent and abs(z_cz) >= z_reject:
+        reading = "PRX-like (CZ phase rejected)"
+    else:
+        reading = "unresolved"
+    return {"reading": reading, "z_cz": z_cz, "z_prx": z_prx, "ratio": ratio}

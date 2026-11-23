@@ -337,21 +337,65 @@ def priors() -> dict[str, Any]:
     return out
 
 
+def retained_contrast(per_run: list[dict[str, Any]], joint: dict[str, Any]) -> dict[str, Any]:
+    """The mark contrast of the retained depth run, read post hoc: the exact three-point fits of marks 101 and 011
+    and the eight-parameter joint fit, against a CZ phase (eps_011 = 0) and a PRX amplitude
+    (eps_011 = ratio eps_101)."""
+    import grover_plane_decision as decision
+
+    ratio = json.loads((CASE / "prediction.json").read_text(encoding="utf-8"))["decisions"]["contrast"]["ratio_prx"]
+    fits = {r["mark"]: r["fits"]["rotation_a_s_eps"] for r in per_run if r["run"] == "depth"}
+    out: dict[str, Any] = {"post_hoc": True, "ratio_prx": ratio}
+    out["depth_run_exact_fits"] = decision.contrast(
+        fits["101"]["params"]["eps"],
+        fits["101"]["sd"]["eps"],
+        fits["011"]["params"]["eps"],
+        fits["011"]["sd"]["eps"],
+        ratio,
+    )
+    both = joint["a per group, s per mark, rotation per mark"]
+    out["joint_fit_s_and_eps_per_mark"] = decision.contrast(
+        both["params"]["eps:101"], both["sd"]["eps:101"], both["params"]["eps:011"], both["sd"]["eps:011"], ratio
+    )
+    return out
+
+
+def close(a: Any, b: Any, tol: float = 1e-6) -> bool:
+    if isinstance(a, dict) and isinstance(b, dict):
+        return a.keys() == b.keys() and all(close(a[k], b[k], tol) for k in a)
+    if isinstance(a, list) and isinstance(b, list):
+        return len(a) == len(b) and all(close(x, y, tol) for x, y in zip(a, b, strict=True))
+    if isinstance(a, (int, float)) and isinstance(b, (int, float)) and not isinstance(a, bool):
+        return bool(abs(a - b) <= tol * max(1.0, abs(b)))
+    return bool(a == b)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--out", type=Path, required=True)
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("--out", type=Path)
+    group.add_argument("--check", type=Path, help="recompute and compare with this record to 1e-6 relative")
     args = parser.parse_args()
     data = {run: points_of(run)[1] for run in RUNS}
+    per_run = per_run_fits(data)
+    joint = joint_fits(data)
     record = {
         "schema": "iqm-garnet-grover-plane-fits-v1",
-        "per_run": per_run_fits(data),
-        "joint": joint_fits(data),
+        "per_run": per_run,
+        "joint": joint,
+        "mark_contrast": retained_contrast(per_run, joint),
         "continuation_to_depth_4": continuation(data),
         "engine_checks": engine_checks({}),
         "priors": priors(),
     }
+    text = json.dumps(record, indent=1, sort_keys=True, default=float) + "\n"
+    if args.check is not None:
+        if not close(json.loads(text), json.loads(args.check.read_text(encoding="utf-8"))):
+            raise SystemExit(f"{args.check}: differs from the recomputed record")
+        print(f"{args.check}: matches the recomputed record")
+        return 0
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(record, indent=1, sort_keys=True, default=float) + "\n", encoding="utf-8")
+    args.out.write_text(text, encoding="utf-8")
     print(
         json.dumps(
             {k: record[k] for k in ("joint", "continuation_to_depth_4", "engine_checks")}, indent=1, default=float

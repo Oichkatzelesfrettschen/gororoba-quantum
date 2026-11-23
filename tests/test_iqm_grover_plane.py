@@ -230,3 +230,89 @@ def test_the_committed_case_binds_its_prediction_and_its_response_digest() -> No
     require(analysis.response_digest(response, d["response"]) == d["response"]["sha256"])
     job = cases["jobs"][0]
     require(job["max_credits"]["garnet"] >= d["cost"]["headroom"] * 0.5 * (d["cost"]["best_execution_seconds"] + 0.4))
+    require(d["contrast"]["power"] and d["mark_011"]["response"]["sha256"])
+
+
+def test_an_inadequate_departure_reads_non_geometric_not_a_rotation(
+    fitter: decision.Fitter, response: sim.Response
+) -> None:
+    truth = response.probabilities(0.97, 0.98, 0.0)
+    bumped = truth + np.array([0.0, -0.05, 0.0, 0.0])
+    cov = np.diag(decision.PHI * bumped * (1 - bumped) / (4 * 13440.0))
+    out = decision.decide(fitter, bumped, cov, 6.64)
+    require(out["departure"] == decision.NON_ROTATION, out["departure"])
+    require(not out["rotation_adequate"])
+    rotated = decision.decide(fitter, response.probabilities(0.97, 0.98, 0.03), cov, 6.64)
+    require(rotated["departure"] == "coherent" and rotated["rotation_adequate"], rotated["departure"])
+
+
+def test_a_fit_on_a_bound_of_the_calibrated_box_reads_out_of_domain(
+    fitter: decision.Fitter, response: sim.Response
+) -> None:
+    truth = response.probabilities(0.70, 0.98, 0.0)
+    cov = np.diag(decision.PHI * truth * (1 - truth) / (4 * 13440.0))
+    out = decision.decide(fitter, truth, cov, 6.64)
+    require(out["departure"] == decision.OUT_OF_DOMAIN, out["departure"])
+    require(decision.A_BOX == calibration.NULL_A and decision.S_BOX == calibration.NULL_S)
+
+
+def test_the_mark_contrast_separates_a_cz_phase_from_a_prx_amplitude() -> None:
+    cz = decision.contrast(0.037, 0.004, 0.001, 0.005, 1.43)
+    prx = decision.contrast(0.037, 0.004, 0.053, 0.005, 1.43)
+    flat = decision.contrast(0.037, 0.004, 0.02, 0.02, 1.43)
+    require(cz["reading"].startswith("CZ-phase-like"), cz["reading"])
+    require(prx["reading"].startswith("PRX-like"), prx["reading"])
+    require(flat["reading"] == "unresolved", flat["reading"])
+
+
+def plant_of(case_dir: Path, **mechanism: Any) -> Any:
+    import iqm_grover_plane_case as builder
+
+    cal_dir = iqm_sim.Calibration.from_directory(case_dir / "calibration")
+    responses = {}
+    for mark in ("101", "011"):
+        found = {
+            k: json.loads(next((case_dir / "circuits").glob(f"m{mark}-k{k}-c0.json")).read_text(encoding="utf-8"))
+            for k in (1, 2, 3, 4)
+            if next((case_dir / "circuits").glob(f"m{mark}-k{k}-c0.json"), None)
+        }
+        responses[mark] = sim.Response(found, cal_dir, PATH, mark, **mechanism)
+    _ = builder
+
+    def plant(name: str, distribution: dict[str, float]) -> dict[str, float]:
+        parts = name.split("-")
+        if not name.startswith("m"):
+            return distribution
+        mark, k = parts[0][1:], int(parts[1][1:])
+        marked = "".join(mark)
+        p = float(responses[mark].probabilities(1.0, 1.0, 0.0)[k - 1])
+        rest = 1 - distribution[marked]
+        return {key: (p if key == marked else v * (1 - p) / rest) for key, v in distribution.items()}
+
+    return plant
+
+
+@pytest.mark.audit
+def test_analyze_reads_a_synthetic_collected_record_end_to_end(tmp_path: Path) -> None:
+    import iqm_garnet_followup as followup
+
+    import grover_plane_analysis as analysis
+
+    model = followup.synthetic_run(NEW, tmp_path / "model", "grover")
+    record = analysis.analyze(model, NEW)
+    require(record["schema"] == analysis.SCHEMA and record["case"] == case.CASE)
+    require(
+        record["decisions"]["101"]["departure"] in ("geometric", "unresolved"), record["decisions"]["101"]["departure"]
+    )
+    require(record["readout"]["101"]["passed"] and record["readout"]["011"]["passed"])
+    cz = followup.synthetic_run(NEW, tmp_path / "cz", "grover", plant_of(NEW, cz_phase=-0.03))
+    read = analysis.analyze(cz, NEW)
+    require(read["decisions"]["101"]["departure"] == "coherent", read["decisions"]["101"]["departure"])
+    require(read["contrast"]["reading"].startswith("CZ-phase-like"), read["contrast"]["reading"])
+    prx = followup.synthetic_run(NEW, tmp_path / "prx", "grover", plant_of(NEW, prx_scale=-0.016))
+    read = analysis.analyze(prx, NEW)
+    require(read["decisions"]["101"]["departure"] == "coherent", read["decisions"]["101"]["departure"])
+    require(read["contrast"]["reading"].startswith("PRX-like"), read["contrast"]["reading"])
+    mock = followup.synthetic_run(NEW, tmp_path / "mock", "grover", qc="garnet:mock")
+    with pytest.raises(analysis.AnalysisError):
+        analysis.analyze(mock, NEW)
