@@ -1,0 +1,18 @@
+Singular for aarch64-Linux version 4.4.1 (44105, 64 bit) Dec  6 2025 11:10:58
+0c3e97488cb409a77c5eb151d58fe8a960b3eca2811d1f491adc7f397cc913db  docs/evidence/a5-exceptional-fibers/working/runs/e8np-d2-receipt-p32009-r21255/receipt/relations-upto-d2.rel
+bbe9bb734af739d735ca4ca4938b85fce9ed87c07b7373ec5353c47335be0652  docs/evidence/a5-exceptional-fibers/working/runs/e8_a2/e8_k2.rel
+e047f996ad609a40ca9d65a64cb7f28755cbaeea3013a9ada7ff71e76e708de6  docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p1/d2/relations-upto-d2.rel
+6af66487f989114504cad588f02ff729a512f4ae0fb5eb4ef611d79b7f46f774  docs/evidence/a5-exceptional-fibers/working/runs/e8-slice-equivalence-p32009/slice_bridge.py
+receipt status degree-certified generators 21 relations 148 rank_h_d 83
+membership_check {'checked': 148, 'failures': 0}
+RESULT receipt generators 148 dim 5 mult 11
+RESULT hilb 1,16,-12,10,-5,1,0
+RESULT against N+ K2 at root 10754 110 103
+RESULT against N- relations at root 10754 113 113
+RESULT control receipt with y(1)^2 added: dim mult 4 22 receipt modulo it 1 it modulo receipt 1
+RESULT hilb type bigintvec
+POST VERDICT PASS
+EXIT 0
+BRIDGE e8-np-weight-vs-np-r21255 stabilizer 34 34 centralizer 6 6 profiles_equal True matchings 2 verdict map_found
+BRIDGE e8-nm-weight-vs-np-r21255 stabilizer 34 34 centralizer 6 6 profiles_equal True matchings 2 verdict map_found
+post_check: PASS

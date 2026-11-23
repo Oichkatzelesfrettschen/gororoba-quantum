@@ -1,0 +1,11 @@
+SOURCE commit 78c5e5c3a1eca10cb68389c6a6b722233eb2dc87 (rsync copy, no git metadata)
+Python 3.14.4
+Singular for aarch64-Linux version 4.4.1 (44105, 64 bit) Dec  6 2025 11:10:58
+f437c9ea4f9e8861b8cb30dcadf1d667b2d444473d630dc88c8e82072c4423c6  docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/xm-nm.sing
+71c22c7a967eadf1e25a136d0e9b414e75db89f4775c4dac68a4262d143de877  docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r21255/e8-np.sing
+START calibration 2026-11-22T21:41:15Z
+calibration driver rc 0
+CALIBRATION xm-nm relations sha256 596c48a75c5101f4aeca9da7cd89888f5270abf628aa6f1567160f778e583245 want 596c48a75c5101f4aeca9da7cd89888f5270abf628aa6f1567160f778e583245
+CALIBRATION PASS
+START e8-np 2026-11-22T21:41:34Z
+END e8-np rc 0 2026-11-23T00:56:37Z

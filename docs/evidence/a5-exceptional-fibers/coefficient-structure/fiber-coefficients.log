@@ -1,0 +1,12 @@
+Python 3.14.4
+095549df42d45af19097abc36d01a3e4eca4cf245402361ff518ffb2d4c2d911  docs/evidence/a5-exceptional-fibers/coefficient-structure/fiber_coefficients.py
+686a02ccf2ced4c51ece694ec2a31756604409ec7b154169b9ae371550e0520d  docs/evidence/a5-kernel-attachments/weight-slice-fiber-relations-result.json
+c2bc28ea1283e0d05570a0fdc2c1cb52f26f52021b827cb20c719076d20f7598  docs/evidence/a5-kernel-attachments/weight-slice-modular-cells-result.json
+CELLS with Hilbert data 10
+NUMERATOR W8 codimension 18 reduced [1, 18, 27, 4] h2 156
+NUMERATOR E8bar codimension 16 reduced [1, 16, -12, 10, -5, 1] h2 83
+NUMERATOR Iso codimension 12 reduced [1, 12, 10] h2 85
+E8 COMPONENT IDENTITY [1, 16, -12, 10, -5, 1] equal True
+CHARACTERS degrees 1..12 equal True measured rows 9
+verdict: PASS
+EXIT 0

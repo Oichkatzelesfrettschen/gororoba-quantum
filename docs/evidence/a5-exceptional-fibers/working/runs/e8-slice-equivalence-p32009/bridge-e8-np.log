@@ -1,0 +1,7 @@
+Python 3.14.4
+python-flint 0.9.0 numpy 2.5.4
+6af66487f989114504cad588f02ff729a512f4ae0fb5eb4ef611d79b7f46f774  docs/evidence/a5-exceptional-fibers/working/runs/e8-slice-equivalence-p32009/slice_bridge.py
+6beae5ed53be76df284857ab5c8ebd4a02cccf9abd85b67e7f711ee8f8b9db18  docs/evidence/a5-exceptional-fibers/working/runs/e8-rees-fibers-v2-kcompare-p32009/KA-e8-np.sing
+ed8d579079b7c22772edcaf603109b0cf0856fd917dd645c0ff6a659fb3f23a8  docs/evidence/a5-exceptional-fibers/working/runs/e8-rees-fibers-v2-kcompare-p32009/KH-e8-np.sing
+BRIDGE e8-np stabilizer 34 34 centralizer 6 6 profiles_equal True matchings 2 verdict map_found
+EXIT 0
