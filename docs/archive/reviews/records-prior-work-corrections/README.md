@@ -8,8 +8,8 @@ outside the tree.
 
 | # | Seats | Finding | Disposition |
 |---|---|---|---|
-| 1 | codex, opencode | The prior-work credit exceeded its propositions. BCDI Prop. 7.4 covers the sedenion Stiefel zero divisors (42 index pairs), not every two-term element. Skiouris Prop. 2.2 covers e_i + e_j with i in 1..15, j in 17..31 (126 of nullity 12, 84 of nullity 4, 15 of nullity 0) and excludes e_16 and the same-half pairs. Prop. 2.2 is in the pathion preprint, published 2026-08-24, not 2026-08-19 | Fixed: both texts narrow each credit to its domain and give the date and Zenodo record; the remaining split is the repository's |
-| 2 | opencode | BDI II Prop. 8.2 (the elements reaching 2^(n-1) - 4) was dropped from the credit | Fixed: credited in both texts |
+| 1 | codex, opencode | The prior-work credit exceeded its propositions. BCDI Prop. 7.4 covers the sedenion Stiefel zero divisors (42 index pairs), not every two-term element. Skiouris Prop. 2.2 covers e_i + e_j with i in 1..15, j in 17..31 (126 of nullity 12, 84 of nullity 4, 15 of nullity 0) and excludes e_16 and the same-half pairs. Prop. 2.2 is in the pathion preprint, published 2026-08-24, not 2026-08-19 | Fixed in docs/notes/prior_work_synthesis.md: each credit is narrowed to its domain with the date and Zenodo record. The claim singular-sector-split keeps its bytes, since the algebra-device-conjectures bundles 2, 8 and 15 bind it |
+| 2 | opencode | BDI II Prop. 8.2 (the elements reaching 2^(n-1) - 4) was dropped from the credit | Fixed: credited in docs/notes/prior_work_synthesis.md |
 | 3 | codex | "de Marrais read in full" conflicts with the reading scopes their notes record | Fixed: the claim is narrowed to the portions read, and the novelty of the rest is unassessed |
 | 4 | codex, opencode | Moreno review rows 2 and 3 cite reviewer computations (384 and 840 elements) that the tree does not retain | Fixed: both rows read "Reviewer-reported: the computation was not retained in the tree" |
 | 5 | opencode | Row 4 read as if the reviewers had re-run the Rocq kernel check of the A_6 witness | Fixed: the row credits the gororoba-math gate's rocq check, not a reviewer run |
