@@ -12,7 +12,7 @@ OUT=${OUT:-$D/rerun}
 mkdir -p "$OUT"
 WANT='4,2:2 5,1:1 5,2:6 5,3:6 5,4:1 6,2:3 6,3:5 6,4:3 7,3:2 7,4:2 8,4:1 '
 facts() { # log: the RESULT lines that do not depend on the run
-  grep '^RESULT' "$1" | grep -v -e '_ms = ' -e 'vmhwm_kb' | sed 's/ ms_span.*//'
+  grep '^RESULT' "$1" | grep -v -e '_ms' -e 'vmhwm_kb' | sed 's/ ms_span.*//'
 }
 sing() { # stem
   rc=0
