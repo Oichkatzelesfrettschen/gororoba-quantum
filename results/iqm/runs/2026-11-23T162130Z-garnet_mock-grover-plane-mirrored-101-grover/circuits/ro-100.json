@@ -1,0 +1,26 @@
+{
+ "instructions": [
+  {
+   "args": {
+    "angle": 3.1415926536,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB20"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m"
+   },
+   "locus": [
+    "QB20",
+    "QB16",
+    "QB17"
+   ],
+   "name": "measure"
+  }
+ ],
+ "name": "ro-100"
+}

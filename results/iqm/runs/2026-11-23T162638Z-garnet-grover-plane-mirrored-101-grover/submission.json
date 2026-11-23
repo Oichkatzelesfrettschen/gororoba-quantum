@@ -1,0 +1,17 @@
+{
+ "approval": "Owner, 2026-11-23: Submit at 9.5 - submit this exact digest to Garnet now, collect, retain and analyze, accepting that a runtime beyond 18 s is cancelled and billed (at most 9.5 credits).",
+ "body_sha256": "45d4562316992df586b59e6596626b6871b2edf8791ea77ca43bef56dbb5c8d3",
+ "cases_sha256": "ccdff667ff4ee4ac4c55f6d22632a7b3661f4dde816874f6f3c64c90082b1763",
+ "credit_before": {
+  "currentBalance": "16.25",
+  "expiresAt": "2026-12-01T00:00:00+00:00"
+ },
+ "expected_seconds": 9.299,
+ "job": "grover",
+ "job_id": "01a2093b-2503-756c-ab56-6621c703e128",
+ "max_credits": 9.5,
+ "price_per_second": 0.5,
+ "qc": "garnet",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-11-23T16:26:40Z"
+}
