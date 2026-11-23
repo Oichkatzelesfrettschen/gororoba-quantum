@@ -251,6 +251,10 @@ The [retained Schur-entry forms review](a5-schur-entry-forms/README.md) (pull re
 
 The [Emerald third-length case review](iqm-emerald-third-length-case/README.md) (pull request 986) records four rounds of findings on the written case, fixed before any submission.
 
+The [Moreno Stiefel answer review](moreno-stiefel-answer/README.md) records two adversarial reviews of the A_5 proof and the A_6 to A_8 witnesses.
+
+The [records-corrections review](records-prior-work-corrections/README.md) (pull request 993) records the two seats' findings on the prior-work credits and the Moreno record.
+
 The [billing refit review](iqm-billing-v4/README.md) (pull request 992) records the findings on the per-shot duration terms.
 
 The [Emerald third-length claim review](research-state-emerald-third-length/README.md) (pull request 991) records two reviewers' findings on the claim.
