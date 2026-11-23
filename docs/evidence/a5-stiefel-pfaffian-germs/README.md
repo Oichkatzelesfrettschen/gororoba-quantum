@@ -241,7 +241,7 @@ on imported transitivity. The present computations replace both with exact ident
 
 Moreno asks (math/0512517, Section 5) whether every Stiefel element of A_(n+1) is a zero divisor;
 [the A_6 witness](../moreno_stiefel/README.md) answers no at A_6. A search on 2026-10-25 of arXiv, the
-twelve citations of math/0512517 that Semantic Scholar lists, and zbMATH Open found no answer for A_5. Two
+twelve citations of math/0512517 that Semantic Scholar listed on that date, and zbMATH Open found no answer for A_5. Two
 registered sources bear on it:
 
 - [Biss, Christensen, Dugger and Isaksen](../../notes/math-0702075.md), Theorem 1.5, settles a
@@ -278,7 +278,21 @@ A wider search on 2026-11-22 and 2026-11-23 found no answer either. It covered:
 - Moreno's companions math/0404172 and math/0512516, BDI, BCDI and Koebisu, read in full, and every
   Cayley-Dickson transcription in the documents repositories that mentions a Stiefel element.
 
-MathSciNet and Google Scholar were not run: both refuse automated queries from this environment.
+MathSciNet and Google Scholar were not run: both refuse automated queries from this environment. A record of the paper as
+a CINVESTAV internal report ("Reporte interno - CINVESTAV", listed by biblat.unam.mx behind a browser check) is
+unscreened; it may be the 2007 version that BCDI cite.
+
+The queries of 2026-11-23, with their raw counts:
+
+| Index | Query | Hits | Identifiers |
+|---|---|---|---|
+| Semantic Scholar | `GET /graph/v1/paper/arXiv:math/0512517/citations` | 13 | arXiv 2611.20105, 2512.13002, 2608.26890, 2608.26893, 2608.28163, 2608.28176, 2608.26903, 0905.2987, math/0511691; DOI 10.1007/s10958-023-06285-5, 10.1007/s10958-019-04390-y; math/0304432 (a false match); CorpusId 6523462 (the unlocated 2007 report) |
+| OpenAlex | citing works of W1666677827 | 12 | the Semantic Scholar works without the false match and the 2007 report, plus W7148922902 (Latre 2019) |
+| zbMATH Open | `ai:moreno.guillermo-romero` | 14 (a later replay returned 15, one by a different author) | math/0512517 indexed as the arXiv preprint (zbMATH 900026941) |
+| zbMATH Open | `Cayley-Dickson zero divisors` | 39 | titles screened |
+| zbMATH Open | `Cayley-Dickson Stiefel` | 6 | Reggiani 2024; Moreno 2004 (Hopf construction) and 2005; Lambert-Kibler 1988; Rodriguez-Ordonez 2010; Antolin Camarena-Villarreal 2026 |
+| arXiv API | `all:Stiefel AND (all:"Cayley-Dickson" OR all:sedenion OR all:pathion)` | 3 | math/0512517, 2411.18881, 2512.13002 |
+| arXiv API | `(abs:"zero divisor" OR abs:"zero divisors") AND abs:"Cayley-Dickson" AND submittedDate:[202401010000 TO 202612312359]` | 7 | 2608.28176, 2608.28163, 2608.26893, 2608.08232, 2606.27798, 2505.11747, 2411.18881 |
 
 ## Replay
 

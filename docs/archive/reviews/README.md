@@ -252,4 +252,6 @@ The [Emerald third-length case review](iqm-emerald-third-length-case/README.md) 
 
 The [Moreno Stiefel answer review](moreno-stiefel-answer/README.md) records two adversarial reviews of the A_5 proof and the A_6 to A_8 witnesses.
 
+The [records-corrections review](records-prior-work-corrections/README.md) (pull request 993) records the two seats' findings on the prior-work credits and the Moreno record.
+
 The [Emerald third-length claim review](research-state-emerald-third-length/README.md) (pull request 991) records two reviewers' findings on the claim.
