@@ -37,3 +37,23 @@ The Advisor read the reconciled head 6d8285594.
 | A5-604 needs all 14 G_2 derivations on each closure ideal | confirmed | the row cites the symmetry computation of the strata-regularity record |
 | the reviewer version read "1.x" | confirmed | opencode 2.1.2 |
 | hold the hosted review until the E8-bar stabilizer rerun ends | accepted | |
+
+## Second round: rows A5-542, A5-604, A5-606 and A5-607
+
+The same red-teamer read head 0c5f311d3 ([report](review-opencode-second-round.md), [brief](brief-second-round.md)).
+It broke no claim. It recomputed the rank of the 210 E8-bar constraints (210 over GF(32009)), the twin relations on
+all 32 basis states and on the ideal six-qubit circuit (p_twin(a, x) = p_primary(a, x XOR 16) for all 64 outcomes),
+the pivot, the membership of the test point in VB and both closures, and the identity of each Schur entry with a
+ten-Pfaffian at five points.
+
+| Finding | Verdict | Change |
+|---|---|---|
+| F1: the split of the 32 over bidegrees assumes the standard-monomial count respects t3 | accepted as a stated assumption | README scope and the row say so |
+| F2: a generator outside the box (14, 8) would not be seen | confirmed | README scope and the row say so |
+| F3: that the 21 Schur entries generate the ten-Pfaffian ideal where the pivot Pfaffian is invertible is classical and not rechecked here | accepted; A5-607 already scopes it through A5-593 | none |
+| F4: 11 of the 14 G_2 derivations are not rerun modulo 32009 | accepted; A5-604 cites A5-414 and the symmetry computation for them | none |
+| F5: the header comment of the block scripts, a docstring of pivot_stability.py, the k = 0 split coordinate | confirmed | README note; docstring corrected (the emitted script is unchanged) |
+
+Leads recorded and not tested: the 11-block histogram as the bidegree histogram of a minimal subset of the 148
+quadrics of A5-457; the exceptional set of s2 modulo 32009 being {0}; a run over Q(i)(s2) as the lift to
+characteristic 0 (the reviewer's estimate is 1.5 to 6 h).

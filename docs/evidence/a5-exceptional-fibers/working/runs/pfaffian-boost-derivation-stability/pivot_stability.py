@@ -89,7 +89,7 @@ table = {
 
 
 def sing(e: sp.Expr) -> str:
-    """One sympy polynomial in Singular syntax, at z0 + x."""
+    """One sympy polynomial in Singular syntax, in the ambient coordinates x."""
     return "(" + re.sub(r"z(\d+)", r"ZV[\1,1]", str(sp.expand(e)).replace("**", "^")) + ")"
 
 

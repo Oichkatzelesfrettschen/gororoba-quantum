@@ -39,6 +39,15 @@ One core of an aarch64 host, Singular 4.4.1: stage A 3 s; a point value 21 s at 
 - Two primes, one root of -1 each; y-degree 1; the basepoint N-.
 - The count over GF(p)(z) holds at all but finitely many values of s2 in the algebraic closure of GF(p); the
   exceptional set is not computed, and s2 = 0 is in it (A5-506).
+- The box. The blocks read are those with tw at most 14 and t3 at most 8, twice the largest bidegree (7, 4) of a
+  generator G, which covers the 2 x 2 minors. A minimal generator of y-degree 1 outside the box would not be seen,
+  and no logged quantity bounds the bidegrees of the kernel.
+- The split over bidegrees. The total 32 is a rank identity. The count per block reads standard monomials of
+  M + m K in an ordering that sees tw only; the same reading for the kernel module is checked block by block
+  against the evaluation rank (counter 0 in all eight units), and the t3-homogeneity of the kernel generators is
+  not logged.
+- The header comment of each generated script names "entry 0" of the value list whatever the value; the value
+  substituted is the right one.
 - Characteristic 0 is not computed. Two primes with one answer are evidence for it, not a proof.
 - The parametrization and the block reading are those of the scratch runs of 2026-11-14; no second system
   recomputes them.
