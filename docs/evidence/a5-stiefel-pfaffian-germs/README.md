@@ -266,8 +266,8 @@ A wider search on 2026-11-22 and 2026-11-23 found no answer either. It covered:
   Semantic Scholar alone lists Koebisu's sedenion paper (arXiv 2512.13002), an unlocated 2007 report on
   hypercomputation and a 2003 paper on Siegel modular forms, a false match. Zhilina's arXiv 2611.20105 on Barnes-Wall
   lattices concerns lattice closure. Every citing passage with a transcription was read. Zhilina's papers (arXiv
-  2608.28176, 2608.28163, 2608.26903, 2608.26893, 2608.26890) cite the preprint as background, in range citations
-  such as "Moreno [14-16]". Koebisu's 2512.13002 cites it as later geometry in higher algebras. The BCDI eigentheory
+  2608.28176, 2608.28163, 2608.26903, 2608.26893, 2608.26890) cite the preprint as background; 2608.26893 and
+  2608.26890 do so in range citations such as "Moreno [14-16]". Koebisu's 2512.13002 cites it as later geometry in higher algebras. The BCDI eigentheory
   paper (arXiv 0905.2987) cites it, as a 2007 preprint of Moreno and González-Flores, for the start of its eigentheory
   approach. None states an answer to the question. The 2007 report stays unscreened;
 - Moreno's 14 documents in zbMATH Open, where math/0512517 appears only as the arXiv preprint; the later items were
@@ -278,8 +278,8 @@ A wider search on 2026-11-22 and 2026-11-23 found no answer either. It covered:
   and the 7 Cayley-Dickson zero-divisor abstracts of 2024 to 2026;
 - the papers read in full, per the reading scopes their notes record: Moreno's companions math/0404172 (22 pages) and
   math/0512516 (12 pages), BDI (math/0511691, 29 pages), BCDI 2007 (math/0702075, 22 pages) and BCDI 2009 (0905.2987,
-  17 pages). Koebisu's A_5 paper (arXiv 2608.08232) was read where its note cites it, and that note records no
-  reading scope. Every Cayley-Dickson transcription in the documents repositories that mentions a Stiefel element was
+  17 pages). Koebisu's A_5 paper (arXiv 2608.08232, 11 pages) was read where its note cites it; neither the note
+  nor its docs/SOURCES.json entry, whose reading scope covers the rights check, records a mathematical reading scope. Every Cayley-Dickson transcription in the documents repositories that mentions a Stiefel element was
   also read.
 
 MathSciNet and Google Scholar were not run: both refuse automated queries from this environment. A record of the paper as
