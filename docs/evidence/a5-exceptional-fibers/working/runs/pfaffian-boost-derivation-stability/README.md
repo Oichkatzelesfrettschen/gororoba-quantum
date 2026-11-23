@@ -21,7 +21,15 @@ one sha256):
 | modulo the E8-bar closure ideal (37 generators, 11, 24) | 1,470 | rotation 3,003; G_2 0 |
 
 D maps every generator of every one of the five closure ideals into that ideal (`boost_moves 0`). The closure
-equations are those of `weight_slice_fiber_relations.source_equations`.
+equations are the ambient homogeneous cone equations, member by member the table that
+`weight_slice_fiber_relations.source_equations` pulls back to a slice; the test runs on the cones, not on slice
+germs. Every ideal in the test is homogeneous, so the reduction against a standard basis with degree bound 5
+decides membership in degree 5 exactly.
+
+The identity control is vacuous: the identity field is the Euler operator, which multiplies a quintic by 5. The
+rotation is the discriminating control. It also maps the Iso closure ideal into itself and moves two of the three
+W8 generators (`rotation_moves 0` and `2`), which is what the stabilizer algebras below predict: the rotation
+lies in the gl(2) that mixes u and v and exchanges the two eigenspaces u + v and u - v of the boost.
 
 ## Consequence for W8, Iso, X+ and X-
 
@@ -33,18 +41,28 @@ of the scheme Y that carries the ideal sheaf J / I(Y) to itself, and g_w^* is an
 g_w z0 onto the local ring at z0 that carries J to J and the maximal ideal to the maximal ideal. The Rees algebra
 and the fiber cone of J at g_w z0 are then isomorphic, as graded algebras, to those at z0: in every degree, for
 every w other than 0, at every point z0 of Y. The four incidences of these sources into VB that A5-419 samples,
-and their incidences into V, carry one fiber cone along the boost. This step is an argument on top of the
-computation; it is not machine-checked.
+and their incidences into V, carry one fiber cone along the boost. The automorphism carries the radical of the
+closure ideal to itself as well, so the statement holds for the reduced germs that the retained records use.
+This step is an argument on top of the computation; it is not machine-checked.
 
 ## E8-bar
 
 The same test fails for the 37-generator E8-bar closure ideal: 1,470 boost derivatives stay outside the span.
 The argument above gives no statement there, in either direction. A5-600 reads one normal form of the quadric
-ideal at twelve values of w, so the fiber may still be constant along the boost by a mechanism other than a
-linear symmetry of this pair. Two readings remain open: the 37 generators may define a scheme whose radical or
-equidimensional hull is larger (the check of that, `e8rad-p32009.log`, reached its 1 h limit at 4.3 GiB after
-printing dimension 11 and multiplicity 24), and a vector field other than D may stabilize the pair and move the
-basepoint in the same direction.
+ideal at twelve values of w, so the fiber may still be constant along the boost. Four readings remain open, each
+with a test:
+
+- Radical. The retained fiber-cone records replace the source germ by the intersection of its minimal primes
+  through the basepoint, and the instability here is for the 37 generators as given. D maps that ideal into
+  itself, hence its radical too, and the Pfaffians may be D-stable modulo the radical. The check of the radical
+  (`e8rad-p32009.log`) reached its 1 h limit at 4.3 GiB after printing dimension 11 and multiplicity 24.
+- Local against global. The 1,470 derivatives lie outside the homogeneous ideal; the fiber cone at a basepoint
+  sees the localization there, which can be larger. A standard basis in a local ordering at the retained VB
+  basepoint decides D-stability of the local pair. The failure locus is closed and invariant under G_2 and the
+  scaling, which commute with D, so on the boost orbit of VB it is a finite set of values of w or the whole orbit.
+- Another linear field. The stabilizer algebra of the E8-bar pair decides it (A5-605).
+- An isomorphism of the fibers that no symmetry of the pair induces. Degree-3 relation counts at further values of
+  w test it (A5-428 holds one count at one boost).
 
 ## Stabilizer algebras modulo 32009
 
@@ -84,5 +102,7 @@ question over the function field F_32029(w) reached a 4 h limit at 1.5 GiB witho
     sh docs/evidence/a5-exceptional-fibers/working/runs/pfaffian-boost-derivation-stability/run_stability.sh
     sh docs/evidence/a5-exceptional-fibers/working/runs/pfaffian-boost-derivation-stability/run_stability.sh algebra
 
-The first form takes about 13 minutes and regenerates `stab-*.sing` (about 276 kB each, not retained; their
-sha256 are in `sha256.txt`). The second repeats the W8 and Iso stabilizers and takes about 1 h 50 min.
+The first form takes about 13 minutes, regenerates `stab-*.sing` (about 276 kB each, not retained; their sha256
+are in `sha256.txt`) and rewrites the two stability logs with the pinned bytes. The second repeats the W8 and Iso
+stabilizers in about 1 h 50 min and writes `alg-w8-iso-p32009.*`; the retained `alg-p32009.log` and the pin of
+`alg-p32009.sing` belong to the invocation with no closure list, which stopped at its 2 h limit after Iso.
