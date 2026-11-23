@@ -3661,6 +3661,16 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_plane_case.py analyze results/iqm/runs/2026-11-23T162638Z-garnet-grover-plane-mirrored-101-grover --case-dir results/iqm/runs/2026-11-23T162638Z-garnet-grover-plane-mirrored-101-grover --out \"${TMPDIR:-/tmp}/grover-plane-analysis.json\" && cmp \"${TMPDIR:-/tmp}/grover-plane-analysis.json\" results/iqm/grover_plane_mirrored_101_analysis.json",
+      "name": "core-iqm-grover-plane-run-replay",
+      "seconds": 3.0,
+      "replays": [
+        "results/iqm/grover_plane_mirrored_101_analysis.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/iqm_garnet_followup.py check results/iqm/cases/grover-depth-sedenion-walsh",
       "name": "core-777",
       "seconds": 37.3,
