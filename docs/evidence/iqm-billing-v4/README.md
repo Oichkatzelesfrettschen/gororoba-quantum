@@ -35,8 +35,10 @@ and writes `billing_v4.json`. Gate `core-iqm-billing-v4-replay` reruns it and co
 - No duration term predicts `01a2058a`. Held out of the Garnet fits, the third-length Emerald job executes 9.505 s
   and is predicted 3.72 to 4.49 s under the four Garnet models, a residual of 5.0 to 5.8 s; its excess over
   the schedule is 6.56 s. In the pooled fits the job's leave-one-out residual is 5.2 to 5.8 s under every model
-  and indicator choice. The band is 0.20 to 0.27 s (Garnet fits) or 0.66 to 3.4 s (pooled), so the padding hypothesis
-  and the per-shot duration sum both fail the falsifier; the verdict field of the record reads "neither duration term
+  and indicator choice. The band is 0.20 to 0.27 s (Garnet fits) or 0.66 to 3.4 s (pooled), so the linear duration terms
+  fitted on Garnet (the maximum-duration term that carries the padding hypothesis, and the per-shot duration sum) both
+  fail to predict it; an Emerald-specific or nonlinear padding mechanism stays open, since two Emerald jobs cannot
+  reject it; the verdict field of the record reads "neither duration term
   predicts the job within the band" for the pooled, the offset and the Garnet-held-out family alike.
 - The duration is not what separates the two Emerald jobs. The t1 job (`01a1ffe5-b55a`) has a summed duration of
   200.5 us and a longest circuit of 64.50 us and an excess of 0.866 s; the third-length job has
@@ -44,11 +46,13 @@ and writes `billing_v4.json`. Gate `core-iqm-billing-v4-replay` reruns it and co
   prx to the 46.9 ns spacing the result note measures adds at most 0.3 s to the maximum model's term (1.177 s per
   shot-second times 4000 shots times 48 us). A nonlinear mechanism in train length (the third job adds the 250 and
   2000 pulse trains) or a change between the two days stays open; two Emerald jobs cannot separate them.
-- On Garnet the duration terms help modestly. The sum term lowers the largest leave-one-out residual without the anchor
+- On Garnet the duration terms help modestly on the criteria that exclude the anchor job and in sample. The sum term lowers the largest leave-one-out residual without the anchor
   from 0.2524 to 0.1986 s and its root mean square from 0.135 to 0.0902 s; the maximum term gives 0.1969 s and 0.103 s,
   and predicts the Emerald t1 job to -0.008 s where v3 reads 0.243 s. The padded term raises the residual to 0.274 s and
   fails. Over all jobs the anchor decides: the sum term gives 1.953 s, v3 4.043 s, the maximum term 4.168 s.
-  Sixteen jobs and four terms leave the difference near the size of the band, so it stays a reading.
+  Over all jobs the maximum term's leave-one-out root mean square also worsens, 1.019 to 1.047 s,
+  while its AICc improves from -62.8 to -73.0. Sixteen jobs and four terms leave the difference near the size of the
+  band, so it stays a reading.
 
 | Garnet fit (16 jobs) | largest residual | largest LOO, all | largest LOO, no anchor | rms LOO, no anchor | Emerald t1 held out | 01a2058a predicted (9.505 executed) | its residual |
 |---|---|---|---|---|---|---|---|
@@ -90,13 +94,14 @@ worst case adds the largest retained runtime over execution, 0.436857 s. The cre
 | v4_max | 12.21 | 2.98 | 15.63 | 12.5 | 0.328 | 10.5 |
 | v4_pad | 12.16 | 3.06 | 15.65 | 12.5 | 0.405 | 10.5 |
 
-The approved ceiling of the case is 13.0 credits (26 s billed, a 25 s cancel threshold). It covers 1.5 times the worst
-case of `v4_sum` and `v4_max` with the conservative band, and equals the `v3` requirement.
+The case's ceiling is 13.0 credits (26 s billed, a 25 s cancel threshold), set in its cases.json and not yet approved
+for spend. It is the conservative choice: with the all-jobs schedule band `v3` needs 13, `v4_sum` 12 and `v4_max`
+12.5; with the Grover-only band they need 11, 10 and 10.5.
 
 ## What this adopts and why
 
 - For a Garnet case: `v4_sum` and `v4_max` as sizing alongside `v3`, taking the largest of the three credit values
-  (13.0 for the PR 987 case, so no change to the approved ceiling). Both lower the leave-one-out residual on the Garnet
+  (13.0 for the PR 987 case under the all-jobs band, 11 under the Grover-only band). Both lower the leave-one-out residual on the Garnet
   jobs, and the largest costs one fixed credit step at most. `BILLING_MODELS` stays as it is; the change that builds
   the next Garnet case from a refit makes the entry.
 - For Emerald: nothing. The 9.505 s of `01a2058a` remain unexplained by any circuit-duration term, and an Emerald case

@@ -240,7 +240,7 @@ def case_features(case_dir: Path, commit: str) -> dict[str, Any]:
         "shots": row["shots"],
         "circuits": len(circuits),
         "expected_seconds": row["expected_seconds"],
-        "approved_max_credits": row["max_credits"]["garnet"],
+        "case_max_credits": row["max_credits"]["garnet"],
         "heralding_mode": row["options"]["heralding_mode"],
         "durations": feats["durations"],
         "mid_measures": feats["mid_measures"],
@@ -295,7 +295,7 @@ def case_prediction(
     out["garnet_active_jobs"] = len(garnet)
     out["runtime_over_execution_seconds"] = over
     out["longest_circuit_seconds"] = longest
-    out["ceiling_seconds_check"] = ceiling_seconds(feat["approved_max_credits"], price)
+    out["ceiling_seconds_check"] = ceiling_seconds(feat["case_max_credits"], price)
     return out
 
 
