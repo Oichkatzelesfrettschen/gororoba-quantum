@@ -15,7 +15,7 @@ returned no report. Each finding was checked against the tree.
 | F7: the E8-bar section omits the radicalized germ and the local ring | confirmed | `weight_slice_fiber_relations.py` docstring; the reviewer's example (z1 z2), z1 at (1, 1) | the README lists four open readings with a test each; A5-605 names the local test |
 | F8: "the closure equations are those of source_equations" | confirmed as wording | the test uses the ambient cone equations | the README and A5-602 say so |
 | F9: pins, gates, totals and the parametrization reproduce | no defect | reviewer's commands | none |
-| F10: prediction that the E8-bar pair stabilizer is 15 and the closure stabilizer at least 16 | hypothesis, recorded | the rerun of A5-605 decides it | none |
+| F10: prediction that the E8-bar pair stabilizer is 15 and the closure stabilizer at least 16 | confirmed after the review | `alg-e8-p32009.log`: closure 16, pair 15, boost outside | A5-604 extended to E8-bar |
 | N1: boost and scaling span a 2-torus acting on u + v and u - v | restates A5-604 | D(u + v) = u + v, D(u - v) = -(u - v) | none |
 | N2: the boost is the one linear supply of the direction A5-414 misses on W8 and Iso | restates A5-604 | | none |
 | N3: the coordinate involutions u <-> v and v -> -v exchange X+ and X- and may be the Klein group of A5-032 | hypothesis, not tested | a table lookup against the sweep of A5-032 | none; a row if tested |

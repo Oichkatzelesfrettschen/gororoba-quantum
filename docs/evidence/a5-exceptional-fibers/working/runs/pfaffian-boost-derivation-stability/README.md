@@ -71,7 +71,7 @@ with a test:
   basepoint decides D-stability of the local pair. The failure locus is closed and invariant under G_2 and the
   scaling, which commute with D, so on the boost orbit of VB it is a finite set of values of w or the whole orbit.
 - The chart test below reads 18 of 21 outside at k = 1, where the G_2 control passes; k = 2 is not computed.
-- Another linear field. The stabilizer algebra of the E8-bar pair decides it (A5-605).
+- Another linear field. Excluded: the stabilizer algebra of the E8-bar pair is G_2 and the scaling (A5-604).
 - An isomorphism of the fibers that no symmetry of the pair induces. Degree-3 relation counts at further values of
   w test it (A5-428 holds one count at one boost).
 
@@ -108,13 +108,17 @@ conditions on the 225 coefficients under which the field maps an ideal into itse
 | the Iso closure ideal | 40 | the same 15, and 25 = 21 + 4: so(7) on the pair (u, v) with gl(2) mixing u and v |
 | the pair (W8 closure, Pfaffians) | 31 | the same 15, G_2, the scaling and the boost: 15 + 14 + 1 + 1 |
 | the pair (Iso closure, Pfaffians) | 31 | the same decomposition |
+| the E8-bar closure ideal | 16 | G_2, the scaling and the boost; no field vanishes on the closure |
+| the pair (E8-bar closure, Pfaffians) | 15 | G_2 and the scaling; the boost is outside |
 
 The closure stabilizers use every generator and are exact modulo 32009. The Pfaffian conditions use every 13th
 Pfaffian (231 of 3,003), which gives upper bounds 15 and 31; the lower bounds come from the fields named in the
 right column, each of which stabilizes the full ideal (G_2 and the scaling on the Pfaffians by A5-414, the 14
 derivations on every closure ideal by the symmetry computation of `verify_regularity_independent.py`, the boost by
 the table above, mu d/dz_a because mu lies in the closure ideal). On W8 the boost scales u + v by w and u - v by 1 / w.
-The run reached its 2 h limit (2.0 GiB) after W8 and Iso; E8-bar, X+ and X- carry no stabilizer line.
+The run reached its 2 h limit (2.0 GiB) after W8 and Iso. A second run for E8-bar alone (`alg-e8-p32009.log`,
+2 h 6 min, 2.0 GiB) gives the last two lines: no linear vector field beyond G_2 and the scaling preserves the
+kernel-coordinate ideal on E8-bar. X+ and X- carry no stabilizer line.
 
 ## Cost
 
