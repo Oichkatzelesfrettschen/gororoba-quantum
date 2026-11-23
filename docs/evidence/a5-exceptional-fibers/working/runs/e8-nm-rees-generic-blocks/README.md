@@ -56,5 +56,6 @@ One core of an aarch64 host, Singular 4.4.1: stage A 3 s; a point value 21 s at 
 
     sh docs/evidence/a5-exceptional-fibers/working/runs/e8-nm-rees-generic-blocks/run_blocks.sh
 
-About 40 minutes. The `.sing` files are regenerated and not retained; `sing-sha256.txt` holds their digests from
-the retained run.
+About 40 minutes. The run writes its scripts and logs under `rerun/` beside the script (or the directory named by
+`OUT`) and compares the RESULT lines of each log with the retained one, leaving out the timing and memory lines,
+which differ between runs. `sing-sha256.txt` holds the digests of the scripts of the retained run.
