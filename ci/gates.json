@@ -3698,6 +3698,16 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_plane_complement.py --check docs/evidence/iqm-garnet-grover-plane/complement.json",
+      "name": "core-iqm-grover-plane-complement",
+      "seconds": 30.0,
+      "replays": [
+        "docs/evidence/iqm-garnet-grover-plane/complement.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --self-test",
       "name": "core-457",
       "seconds": 0.1
