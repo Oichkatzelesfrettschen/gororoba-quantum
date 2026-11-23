@@ -5707,11 +5707,19 @@
       "domain": "algebra",
       "evidence_class": "mathematical claim",
       "status": "established",
-      "boundary": "Written proof in docs/evidence/a5-stiefel-pfaffian-germs/README.md. The gate checks over Z[z, t] every coefficient of the 15 cofactor identities P_j = Q G z_j and of Pf A(z, t) = -(z.t) Q G, and the transport on all 30 imaginary basis elements against all 32 basis vectors; no density, genericity or random-point step enters. An independent route checks z (z x) = -Q x on the eight vectors (h, 0), (0, h), h in {1, u, v, uv}, which with irreducibility of the quadric Q = 0 gives the same bound. The statement is under the cd_core doubling convention and is not formalized in Rocq. Literature: on the slice H_5^perp (y_0 = y_8 = y_16 = y_24 = 0) the Stiefel conditions equal C-orthogonality of the pair {a, b} of Biss, Christensen, Dugger and Isaksen (math/0702075, Theorem 1.5), which already makes every Stiefel element there a zero divisor for every n; a search of arXiv, the citations of math/0512517 and zbMATH Open on 2026-10-25 found no answer for the full A_5 Stiefel set, whose e_8 and e_24 directions that theorem leaves out. Koebisu's criterion D_14 = 0 (arXiv 2608.08232) decides zero divisors in A_5 without evaluating D_14 on the Stiefel set; the factorization here gives D_14 = N |Q G|^2 on doubly pure elements.",
+      "boundary": "Written proof in docs/evidence/a5-stiefel-pfaffian-germs/README.md. The gate checks over Z[z, t] every coefficient of the 15 cofactor identities P_j = Q G z_j and of Pf A(z, t) = -(z.t) Q G, and the transport on all 30 imaginary basis elements against all 32 basis vectors; no density, genericity or random-point step enters. An independent route checks z (z x) = -Q x on the eight vectors (h, 0), (0, h), h in {1, u, v, uv}, which with irreducibility of the quadric Q = 0 gives the same bound. The statement is under the cd_core doubling convention. Its zero-divisor part is formalized in Rocq in gororoba-math at f69cf7506: rocq/quantum/StiefelA5ZeroDivisor.v (stiefel_zero_divisor, over any field with an i squaring to -1 and 2 invertible) and rocq/quantum/StiefelA5Real.v (real_stiefel_zero_divisor, over R); nullity at least 4 and the identity D_14 = N |Q G|^2 are not formalized. Literature: on the slice H_5^perp (y_0 = y_8 = y_16 = y_24 = 0) the Stiefel conditions equal C-orthogonality of the pair {a, b} of Biss, Christensen, Dugger and Isaksen (math/0702075, Theorem 1.5), which already makes every Stiefel element there a zero divisor for every n; a search of arXiv, the citations of math/0512517 and zbMATH Open on 2026-10-25 found no answer for the full A_5 Stiefel set, whose e_8 and e_24 directions that theorem leaves out. Koebisu's criterion D_14 = 0 (arXiv 2608.08232) decides zero divisors in A_5 without evaluating D_14 on the Stiefel set; the factorization here gives D_14 = N |Q G|^2 on doubly pure elements.",
       "evidence": [
         {
           "path": "docs/evidence/a5-stiefel-pfaffian-germs/result.json",
           "sha256": "a964c4efaa9ede6a1ee09af7f678156955e58dbfd1321b44a39ec8a2cc1225cf"
+        },
+        {
+          "path": "gororoba-math:rocq/quantum/StiefelA5Real.v",
+          "sha256": "af01bd4850ad73a32ab363b575e92e209971998e6c170d86ed040db4089533db"
+        },
+        {
+          "path": "gororoba-math:rocq/quantum/StiefelA5ZeroDivisor.v",
+          "sha256": "0cda772d731c143d0b6690dcb7dd99146a5db14a6964881a921fee917f8a24ee"
         }
       ],
       "documents": [

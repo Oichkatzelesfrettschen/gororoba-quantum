@@ -219,7 +219,13 @@ local germs at the twelve recorded witnesses only. It does not cover:
   `a5-nullity12-quadric-germ`);
 - the U = 0 or n = 0 parts of the incidence equations.
 
-Neither result is formalized in Rocq.
+Theorem 1's zero-divisor statement is formalized in Rocq in gororoba-math (commit f69cf7506, the pin of
+`ci/gororoba_math.pin`): `gororoba-math:rocq/quantum/StiefelA5ZeroDivisor.v` proves `stiefel_zero_divisor` over any field
+that contains an i with i^2 = -1 and in which 2 is invertible, and `gororoba-math:rocq/quantum/StiefelA5Real.v` proves
+`real_stiefel_zero_divisor` over R. The Pfaffian expansion and its symplectic kernel lemma are in `Pfaffian.v`, the
+coefficient certificate in `StiefelA5Certificate.v` (checked by `vm_compute`), its evaluation in `StiefelA5Pfaffian.v`
+and the transport identities in `StiefelA5Transport.v`. The nullity bound of Theorem 1, the identity D_14 = N |Q G|^2
+and Theorem 2 are not formalized.
 
 ## Relation to the companion and the earlier review
 
