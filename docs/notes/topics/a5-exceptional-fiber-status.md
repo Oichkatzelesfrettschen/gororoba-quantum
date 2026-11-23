@@ -27,7 +27,7 @@ X+, X-, Iso, W8 and E8-bar into N+ and N-). The program answers in four layers:
 
 ## Status by layer (2026-11-23)
 
-Ledger totals: 218 proved, 119 certified, 116 survives, 62 refuted, 37 superseded, 12 open, 10 stalled, 7 rejected, 4 boundary.
+Ledger totals: 218 proved, 119 certified, 117 survives, 62 refuted, 37 superseded, 11 open, 10 stalled, 7 rejected, 4 boundary.
 Reproduce with `"$PYTHON" docs/evidence/a5-exceptional-fibers/ledger.py --summary`.
 
 | Layer | State | Deciding rows | Open |
