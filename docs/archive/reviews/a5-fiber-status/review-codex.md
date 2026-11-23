@@ -126,4 +126,3 @@ DAG: algebra and closure poset → T1; kernel-bundle classification T4 runs in p
 6. **Medium:** A5-591 computes C/F/J identities, while consequences for \(T,W\), and Pfaffians are algebraic deductions rather than separately checked instances.
 7. **Medium:** A5-411/412 rely on constructible closure, curve selection, and source-orbit density; global V/VB directions remain outside the proved local product.
 8. **Ledger integrity:** A5-260 and A5-269 still contain falsifier prose saying degree 7 is untested even though their bases record completed degree-7 runs. This is stale metadata, not a mathematical contradiction.
-

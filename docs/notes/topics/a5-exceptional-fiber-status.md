@@ -27,17 +27,17 @@ X+, X-, Iso, W8 and E8-bar into N+ and N-). The program answers in four layers:
 
 ## Status by layer (2026-11-22)
 
-Ledger totals: 216 proved, 114 certified, 113 survives, 62 refuted, 37 superseded, 13 open, 9 stalled, 7 rejected, 4 boundary.
+Ledger totals: 216 proved, 115 certified, 113 survives, 62 refuted, 37 superseded, 12 open, 9 stalled, 7 rejected, 4 boundary.
 Reproduce with `"$PYTHON" docs/evidence/a5-exceptional-fibers/ledger.py --summary`.
 
 | Layer | State | Deciding rows | Open |
 |---|---|---|---|
 | 1, per-degree h_d | complete at both primes for the six fiber classes | A5-001, A5-005 to A5-009, A5-335 (E8-bar degree 6, the last cell of the earlier count) | none |
-| 2, F(I) = k[y] / K2 in every degree | complete at both primes: VB (A5-005, A5-015, A5-016), same-sign X (A5-304), Iso (A5-067), W8 (A5-066), E8-bar -> N+- on the header slices (A5-559) and by direct Rees saturation on the weight slice at all eight sign, prime and root cells (A5-572, A5-573, A5-587) | as listed | receipts only: X+ -> N+ at 32009 has no retained K2 file (A5-304); the degree-2 receipt of E8-bar -> N+ at the root 21255 of 32009 is open (A5-571) |
+| 2, F(I) = k[y] / K2 in every degree | complete at both primes: VB (A5-005, A5-015, A5-016), same-sign X (A5-304), Iso (A5-067), W8 (A5-066), E8-bar -> N+- on the header slices (A5-559) and by direct Rees saturation on the weight slice at all eight sign, prime and root cells (A5-572, A5-573, A5-587) | as listed | a receipt only: X+ -> N+ at 32009 has no retained K2 file (A5-304) |
 | 3, characteristic 0 | all 33 incidences have a fiber cone over Q(i) on a retained slice: the 22 incidences of nullity 8 to 12 and 12 to 16 (A5-402, A5-405, A5-408), opposite-sign X (A5-270), same-sign X (A5-305), Iso, W8 and E8-bar into N+- on the weight slice (A5-446, A5-448, A5-457 with A5-474 and A5-475), and E8-bar -> VB (A5-597, this change) | as listed | the map between the header slice and the weight slice of E8-bar over Q(i) (it exists modulo 32009, A5-583); the boost direction of the V and VB orbits |
 | 4, real limit sets | proved on the retained slice germ at 26 of 33 incidences: 14 of nullity 8 to 12 (A5-411), 8 of nullity 12 to 16 (A5-412), the four X incidences into N+- (A5-417); G_2(C) x C^* equivariance moves the basepoint on B9, V^a+-, N+ and N- (A5-415) | as listed | E8-bar -> VB; Iso, W8 and E8-bar into N+- (A5-418, survives); the boost direction on V and VB (A5-419, survives); A5-250 stays open for these |
 | Kernel bundles and gluing | nullity-8 ordinary classes computed (A5-396, survives); composed limits lie in linear sections (A5-420) | as listed | nullity-4 classification (A5-389, open); the flat-family clause of A5-420; the global attaching maps |
-| Machine-checked | the algebra (signs, nullity doubling, two-term nullity, the G_2 derivation span) and the eight W8 arc-matrix ranks (gororoba-math `rocq/quantum/A5W8ArcMatrixRanks.v`) | A5-453, A5-500 | no fiber-cone, Rees or Hilbert-function statement is formalized |
+| Machine-checked | the algebra (signs, nullity doubling, two-term nullity, the G_2 derivation span) and the eight W8 arc-matrix ranks (gororoba-math `rocq/quantum/A5W8ArcMatrixRanks.v`) | A5-453, A5-500, A5-448 | no fiber-cone, Rees or Hilbert-function statement is formalized |
 
 ## Completion by incidence
 
@@ -50,11 +50,11 @@ D done, P partial, O open; the cell names the deciding row. Sign-conjugate incid
 | X+-, Iso, W8 -> VB (4) | D A5-405 | D A5-405 | P A5-411; boost sampled (A5-419) |
 | E8-bar -> V^a+- (2) | D A5-405 | D A5-405, A5-413 | D A5-411, A5-415 |
 | E8-bar -> VB (1) | D A5-005 | D A5-597 at the retained basepoint; boost sampled modulo 32029 (A5-428) | O A5-250 |
-| B9, V, VB, V^a+- -> N+- (8) | D A5-408 | D A5-408 | D A5-412, A5-415 |
+| B9, V, VB -> N+-; V^a+ -> N+, V^a- -> N- (8) | D A5-408 | D A5-408 | D A5-412, A5-415 |
 | X opposite sign -> N+- (2) | D A5-001 | D A5-270 | D A5-417 |
-| X same sign -> N+- (2) | D A5-304 | D A5-305 | D A5-417 |
-| Iso -> N+- (2) | D A5-067 | D on the weight slice, A5-446, A5-475 | P A5-418 |
-| W8 -> N+- (2) | D A5-066 | D on the weight slice, A5-448, A5-475 | P A5-418 |
+| X same sign -> N+- (2) | D A5-304 (X+ -> N+ at 32009 without a retained K2 file) | D A5-305 | D A5-417 |
+| Iso -> N+- (2) | D A5-067 at N-, N+ by the sign isomorphism A5-013 | D on the weight slice, A5-446, A5-475 | P A5-418 |
+| W8 -> N+- (2) | D A5-066 at N-, N+ by A5-013 | D on the weight slice, A5-448, A5-475 | P A5-418 |
 | E8-bar -> N+- (2) | D A5-559, A5-587 | D on the weight slice, A5-457; slice map modulo 32009, A5-583 | P A5-418 |
 | Nullity-4 kernel bundles | not a fiber-cone question | | O A5-389 |
 
@@ -63,7 +63,7 @@ D done, P partial, O open; the cell names the deciding row. Sign-conjugate incid
 | Theorem | Content | Missing |
 |---|---|---|
 | T1 | characteristic-0 fiber cones for all 33 incidences, independent of the transverse slice | the E8-bar slice map over Q(i) (A5-583 gives it modulo 32009; the header-slice quadrics are retained modulo p only), and a statement that the map found is the one the slice isomorphism induces |
-| T2 | the fibers along each whole boundary orbit | a family over the boost parameter for the six incidences into V and VB (A5-414, A5-419, A5-428 sample it) |
+| T2 | the fibers along each whole boundary orbit | a family over the boost parameter for the six incidences into V and VB (A5-419 and A5-428 sample VB; the boost of E8-bar -> V is unstudied, A5-414) |
 | T3 | the two-sided real limit theorem at all 33 incidences (A5-250) | E8-bar -> VB; A5-418 for Iso, W8 and E8-bar into N+-; the boost direction |
 | T4 | compatibility of composed limits 8 -> 12 -> 16 | the flat-family clause of A5-420 |
 | T5 | classification of the kernel bundles | nullity 4 (A5-389); the ordinary class in nullity 8 (A5-396) |
@@ -79,11 +79,12 @@ closes and removes the dependence on one computer-algebra system.
 |---|---|---|
 | The eight E8-bar weight-slice cells by direct Rees saturation, the modulo colon, the conjugation map Phi and the closed forms of det B and the unit polynomials | A5-587 to A5-592 | [e8-rees-fibers-v3-open-cells](../../evidence/a5-exceptional-fibers/working/runs/e8-rees-fibers-v3-open-cells/README.md) |
 | An invertible 21 x 21 map carries the weight-slice quadric ideal of E8-bar onto the header-slice ideal, at N- and N+ modulo 32009; found through the maximal tori of the two symmetry algebras, verified by mutual reduction with two controls | A5-583, certified | [e8-slice-equivalence-p32009](../../evidence/a5-exceptional-fibers/working/runs/e8-slice-equivalence-p32009/README.md) |
-| Each of the 126 Pfaffian generators equals Pf(B)^3 times a 10-Pfaffian of T over Q(i), which derives the unit polynomials of A5-592; the fourth factor of generators 10 and 16 comes from the 10-Pfaffian | A5-593, A5-594 | [e8-pfaffian-schur-identity](../../evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/README.md) |
-| E8-bar -> VB over Q(i): the 21 quadrics, K2 = P1 n P2, both arc families with rank 4, so L = K2 in characteristic 0 | A5-597 | [a5-char0-transfer](../../evidence/a5-char0-transfer/README.md) |
+| Each of the 126 Pfaffian generators equals Pf(B)^3 times a 10-Pfaffian of T over Q(i), which derives the unit polynomials of A5-592; modulo 32009 the fourth factor of generators 10 and 16 comes from the 10-Pfaffian | A5-593, A5-594 | [e8-pfaffian-schur-identity](../../evidence/a5-exceptional-fibers/working/runs/e8-pfaffian-schur-identity/README.md) |
+| E8-bar -> VB over Q(i): the 21 quadrics, K2 = P1 n P2, both arc families with rank 4 and a neighbor family of rank 2 as control, so L = K2 in characteristic 0 at the retained basepoint | A5-597 | [a5-char0-transfer](../../evidence/a5-char0-transfer/README.md) |
 | The modular weight-slice cells of E8-bar -> N+ and Iso -> N- regenerate with the digests of the runs | A5-577, certified | [a5-kernel-attachments](../../evidence/a5-kernel-attachments/README.md) |
+| The degree-2 receipt of the E8-bar -> N+ header at the second root 21255 of 32009: 148 relations, 0 failures, dimension 5, multiplicity 11 | A5-571, certified | [e8np-d2-receipt-p32009-r21255](../../evidence/a5-exceptional-fibers/working/runs/e8np-d2-receipt-p32009-r21255/README.md) |
 | Reduced Hilbert numerators (1, 12, 10), (1, 18, 27, 4) and (1, 16, -12, 10, -5, 1); the E8-bar numerator as the sum of its two primes, their intersection and the nilradical module | A5-595 | [coefficient-structure](../../evidence/a5-exceptional-fibers/coefficient-structure/README.md) |
-| The block splits of the last jump are the characters of a nodal conic and of the Segre product of two nodal conics, with no twist; a hypothesis for the final layer | A5-596, survives | the same |
+| The block splits of the last jump are the characters of a conic ring and of its Segre product with a nodal conic, with no twist; the characters leave the first conic nodal or smooth; a hypothesis for the final layer | A5-596, survives | the same |
 The reviews that selected these computations, with each finding checked against the ledger, are in
 [a5-fiber-status](../../archive/reviews/a5-fiber-status/reconciliation.md).
 
@@ -93,9 +94,9 @@ The reviews that selected these computations, with each finding checked against 
 |---|---|---|---|
 | T1 | the header-slice quadrics of E8-bar over Q(i), then `slice_bridge.py` over Q(i) or at a second prime with rational reconstruction | the slice map in characteristic 0 | the Q(i) quadric stage of a 21-generator header is the long step (the 15-generator header of X- -> N- took 30,481 s, A5-248) |
 | T2 | one-parameter boost family over Q(i)(t) for the V and VB incidences | fibers along the whole orbit | `boost_e8_vb_quadrics.py` took 20 min for four points |
-| T3 | the reduced-support argument of A5-418 with the retained map of A5-583, then the product theorem for the boost direction | A5-418, A5-250 | symbolic, minutes to hours |
+| T3 | the closure argument of A5-417 on the weight-slice fiber cones over Q(i) for Iso, W8 and E8-bar, which needs no header slice, then the product theorem for the boost direction | A5-418, A5-250 | symbolic; unmeasured |
 | T5 | one stratum, one Pfaffian chart, one prime of the nullity-4 Gauss image, as a cost probe | A5-389 | unmeasured; a 1 h probe first |
-| A5-596 | retain the final-layer quotient of an existing degree (an engine change) and test the multiplication of the nodal-conic model | A5-278, A5-596 | minutes at d = 2, 3 once the engine writes the quotient |
+| A5-596 | retain the final-layer quotient of an existing degree (an engine change) and test the multiplication of the conic model, which also decides nodal against smooth for the first conic | A5-278, A5-596 | minutes at d = 2, 3 once the engine writes the quotient |
 | Independence | the invariants behind A5-457, A5-474 and A5-475 in a second system | single-engine risk | not run: Macaulay2 is not installed on the compute hosts (package `macaulay2`) |
 
 ## Formal proof targets (gororoba-math)
