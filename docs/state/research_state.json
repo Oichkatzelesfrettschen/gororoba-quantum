@@ -5533,7 +5533,7 @@
       "domain": "algebra",
       "evidence_class": "mathematical claim",
       "status": "established",
-      "boundary": "Two-term elements only; the de Marrais higher-dimensional comparison and any hardware echo contrast remain open.",
+      "boundary": "Two-term elements only. The D = 16 spectrum is BCDI Proposition 7.4 and the D = 32 nullities 12 and 4 of the cross-half pairs are Skiouris 2026 Proposition 2.2, both prior work; the all-dimension split and recursion are the repository's, bounded by those texts and de Marrais's three box-kite papers, which do not state the split. Any hardware echo contrast remains open.",
       "evidence": [],
       "documents": [
         "docs/notes/singular_sector_dynamics.md"

@@ -260,7 +260,11 @@ registered sources bear on it:
   factorization covers only the embedded sedenions (a, 0).
 
 The search used no MathSciNet or Google Scholar access, and it screened the Zhilina and Guterman
-zero-divisor-graph papers among the citations by title and abstract only.
+zero-divisor-graph papers among the citations by title and abstract only. A wider search on 2026-11-22 found no
+answer either: the twelve works citing math/0512517 in OpenAlex (the only one newer than the earlier search,
+Zhilina's arXiv 2611.20105 on Barnes-Wall lattices, concerns lattice closure), Moreno's companions math/0404172 and
+math/0512516, BDI, BCDI and Koebisu read in full, and every Cayley-Dickson transcription in the documents
+repositories that mentions a Stiefel element. MathSciNet and Google Scholar remain unsearched.
 
 ## Replay
 
