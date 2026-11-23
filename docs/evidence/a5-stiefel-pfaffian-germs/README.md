@@ -261,22 +261,26 @@ registered sources bear on it:
 
 A wider search on 2026-11-22 and 2026-11-23 found no answer either. It covered:
 
-- the works citing math/0512517: twelve in OpenAlex and thirteen in Semantic Scholar. The lists differ by Latre's
-  2019 thesis on hypercomplex algebras for computation (OpenAlex only), an unlocated 2007 report on
-  hypercomputation and a 2003 paper on Siegel modular forms, a false match (Semantic Scholar only). Zhilina's arXiv
-  2611.20105 on Barnes-Wall lattices concerns lattice closure. Every citing passage with a transcription was read:
-  Zhilina's papers (arXiv 2608.28176, 2608.28163, 2608.26903) cite the preprint as background, 2608.26893 and
-  2608.26890 only in their reference lists, and the BCDI eigentheory paper (arXiv 0905.2987) cites it, as a 2007
-  preprint of Moreno and González-Flores, for the start of its eigentheory approach. None mentions a Stiefel
-  element. The 2007 report stays unscreened;
-- Moreno's 14 documents in zbMATH Open, where math/0512517 appears only as the arXiv preprint and no later item
-  treats the question;
+- the works citing math/0512517: twelve in OpenAlex and thirteen in Semantic Scholar. Ten works are in both lists.
+  OpenAlex alone lists BCDI II (math/0702075) and Latre's 2019 thesis on hypercomplex algebras for computation.
+  Semantic Scholar alone lists Koebisu's sedenion paper (arXiv 2512.13002), an unlocated 2007 report on
+  hypercomputation and a 2003 paper on Siegel modular forms, a false match. Zhilina's arXiv 2611.20105 on Barnes-Wall
+  lattices concerns lattice closure. Every citing passage with a transcription was read. Zhilina's papers (arXiv
+  2608.28176, 2608.28163, 2608.26903, 2608.26893, 2608.26890) cite the preprint as background, in range citations
+  such as "Moreno [14-16]". Koebisu's 2512.13002 cites it as later geometry in higher algebras. The BCDI eigentheory
+  paper (arXiv 0905.2987) cites it, as a 2007 preprint of Moreno and González-Flores, for the start of its eigentheory
+  approach. None states an answer to the question. The 2007 report stays unscreened;
+- Moreno's 14 documents in zbMATH Open, where math/0512517 appears only as the arXiv preprint; the later items were
+  screened by title, and no title treats the question;
 - zbMATH Open "Cayley-Dickson zero divisors" (39 documents, titles screened) and "Cayley-Dickson Stiefel" (6, among
   them Reggiani's sedenion geometry and Moreno's Hopf-construction paper);
 - arXiv abstracts with Stiefel and Cayley-Dickson, sedenion or pathion (3: math/0512517 and two sedenion papers),
   and the 7 Cayley-Dickson zero-divisor abstracts of 2024 to 2026;
-- Moreno's companions math/0404172 and math/0512516, BDI, BCDI and Koebisu, read in full, and every
-  Cayley-Dickson transcription in the documents repositories that mentions a Stiefel element.
+- the papers read in full, per the reading scopes their notes record: Moreno's companions math/0404172 (22 pages) and
+  math/0512516 (12 pages), BDI (math/0511691, 29 pages), BCDI 2007 (math/0702075, 22 pages) and BCDI 2009 (0905.2987,
+  17 pages). Koebisu's A_5 paper (arXiv 2608.08232) was read where its note cites it, and that note records no
+  reading scope. Every Cayley-Dickson transcription in the documents repositories that mentions a Stiefel element was
+  also read.
 
 MathSciNet and Google Scholar were not run: both refuse automated queries from this environment. A record of the paper as
 a CINVESTAV internal report ("Reporte interno - CINVESTAV", listed by biblat.unam.mx behind a browser check) is
@@ -287,7 +291,7 @@ The queries of 2026-11-23, with their raw counts:
 | Index | Query | Hits | Identifiers |
 |---|---|---|---|
 | Semantic Scholar | `GET /graph/v1/paper/arXiv:math/0512517/citations` | 13 | arXiv 2611.20105, 2512.13002, 2608.26890, 2608.26893, 2608.28163, 2608.28176, 2608.26903, 0905.2987, math/0511691; DOI 10.1007/s10958-023-06285-5, 10.1007/s10958-019-04390-y; math/0304432 (a false match); CorpusId 6523462 (the unlocated 2007 report) |
-| OpenAlex | citing works of W1666677827 | 12 | the Semantic Scholar works without the false match and the 2007 report, plus W7148922902 (Latre 2019) |
+| OpenAlex | citing works of W1666677827 | 12 | the ten works both lists share, plus BCDI II (math/0702075) and W7148922902 (Latre 2019); without Koebisu 2512.13002, the false match and the 2007 report |
 | zbMATH Open | `ai:moreno.guillermo-romero` | 14 (a later replay returned 15, one by a different author) | math/0512517 indexed as the arXiv preprint (zbMATH 900026941) |
 | zbMATH Open | `Cayley-Dickson zero divisors` | 39 | titles screened |
 | zbMATH Open | `Cayley-Dickson Stiefel` | 6 | Reggiani 2024; Moreno 2004 (Hopf construction) and 2005; Lambert-Kibler 1988; Rodriguez-Ordonez 2010; Antolin Camarena-Villarreal 2026 |
