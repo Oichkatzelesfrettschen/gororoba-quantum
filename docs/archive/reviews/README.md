@@ -249,3 +249,5 @@ The [A5 task-closures review](a5-records-task-closures/README.md) (pull request 
 The [retained Schur-entry forms review](a5-schur-entry-forms/README.md) (pull request 988) records two reviewers' findings on the successor records and the rank-four Pfaffian decision.
 
 The [Emerald third-length case review](iqm-emerald-third-length-case/README.md) (pull request 986) records four rounds of findings on the written case, fixed before any submission.
+
+The [Moreno Stiefel answer review](moreno-stiefel-answer/README.md) records two adversarial reviews of the A_5 proof and the A_6 to A_8 witnesses.

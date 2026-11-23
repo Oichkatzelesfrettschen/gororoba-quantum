@@ -7,8 +7,8 @@ script that builds every matrix from `cd_core.cd_multiply_exact` alone: the full
 C_z is the e_a coefficient of z e_b in A_(n-1) from the same table. It shares no code with the producer except the
 `disjoint_stiefel` constructor, used only to obtain the witness vectors, whose Stiefel conditions and ranks it then
 checks itself. Modular computations use p = 4611686018427386981 (p = 1 mod 4, distinct from the producer's
-2^61 - 1, which has no square root of -1), with i mapped to a fixed square root of -1 mod p. The verifier script is
-not retained in the tree; its outputs are quoted below.
+2^61 - 1, which has no square root of -1), with i mapped to a fixed square root of -1 mod p. The verifier is retained as
+[verify_independent.py](verify_independent.py) (see "Replay data" below); its outputs are quoted below.
 
 The producer gates were also run: `--check` exits 0 against `result.json`, and `--self-test` exits 0 in normal
 and `-O` modes. `measure()` `_require`s every mathematical outcome the README calls a gate decision (C_z identities,
