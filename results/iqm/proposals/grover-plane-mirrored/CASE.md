@@ -14,9 +14,8 @@ that rebuild).
 
 With the line-native Grover of mark 101 at depths 1 to 4 at positions mirrored about the job's center, does the marked
 probability depart from the geometric law of the calibrated model toward a rotation of the Grover plane per iteration,
-whatever gate error causes it? The primary decision names no gate: a CZ phase, a PRX amplitude, a ZZ coupling and coherent
-leakage each rotate the plane to first order, and the response of each (computed in the calibrated noisy path) is fitted by
-the one family P_k = 1/8 + a (Q_k(s, eps) - 1/8). A mechanism attribution (eps per unit error: CZ -1.294 per rad, PRX
+whatever gate error causes it? The primary decision names no gate: a CZ phase, a PRX amplitude and a ZZ coupling each
+rotate the plane to first order, and the response of each (computed in the calibrated noisy path) is fitted by the one family P_k = 1/8 + a (Q_k(s, eps) - 1/8). A mechanism attribution (eps per unit error: CZ -1.294 per rad, PRX
 -2.24 per fraction, ZZ 2.0e-6 per Hz at mark 101) is reported beside and decides nothing.
 
 ## Why a simulation cannot answer it
@@ -31,8 +30,8 @@ COPIES 4, 4, 10, 4 of depths 1 to 4 and the eight readout preparations in two co
 of two mirror pairs (1, 2, 4) sit at first-half positions up to 13, so their pairs lie at least 11 positions apart and no pair
 is back to back at the center; the position next to the center holds a readout. Each pair enters as the mean of its two copy
 frequencies with equal side weights and propagated binomial variances (a linear drift cancels whatever the kept shots of
-each side); the readout preparations pair the same way. The squared-offset spread of the four depths is the cost of the
-placement rules and is not cancelled by mirroring.
+each side); the readout preparations pair the same way. Mean squared offsets from the center: depths 160.3, 157.3, 159.8, 157.3 (spread 3.0), readout
+preparations 67.0, so a quadratic drift is balanced among the depths and not between the depths and the readouts.
 
 ## Preregistered rule
 
@@ -64,7 +63,8 @@ Power (512 points per truth) at |eps_eff| = 0.02 over CZ -0.015 and +0.015 rad, 
 four corners of (a, s) in {0.92, 1.06} x {0.92, 1.04}, and the plane rotation at 32 Sobol' cells: at least 0.986 (worst cell PRX +0.8
 percent, a 0.92, s 0.92). At |eps| 0.015: at least 0.92; at 0.01: at least 0.53 (the case does not claim resolution there). Through
 the gated rule (256 points): 0.961 to 0.988 with binomial copies, 0.871 to 0.926 at the dispersion bound (the remainder "not
-evaluated"). The plane family reproduces the exact noisy response of a coherent error to at most 1.5e-3 in P; its error
+evaluated"). The rule's fit box (a 0.5 to 1.5, s 0.3 to 1.2) is wider than the calibrated truth box above; outside the calibrated box
+the false-alarm rate and power are not established. The plane family reproduces the exact noisy response of a coherent error to at most 1.5e-3 in P; its error
 at the planned standard error of depth 3 (0.0017) is the limit of the "mechanism-free" claim.
 
 ## Cost
@@ -91,6 +91,9 @@ iteration at the data's SE, and the retained bend came from drift of higher orde
 
 ## Residual risk
 
+- DECISION NEEDED: "coherent" follows T >= delta; `rotation_adequate` gates nothing, so an incoherent non-geometric loss would read
+  "coherent". Folding adequacy in changes the digest. The owner also decides on the mock estimate, mark 011 arms, and an
+  end-to-end `analyze` run, which has not been executed on any record (the decision layer is tested on planted counts).
 - The plane family is a first-order reduction; it fits exact noisy responses to 1.5e-3 in P up to eps 0.1 and is untested for
   coherent leakage (qutrit), tilt of order eps, or a non-uniform complement.
 - The retained evidence for a rotation is one depth-3 point of mark 101 (eps 0.041 +- 0.011); the 011 arms show no rotation.

@@ -32,9 +32,11 @@ eps != 0 is a coherent rotation. The marked probability reads v_k through the ci
 P_k = e_k . v_k + (1 - n_k) h_k.
 
 The scalar closed form lambda_k = a [ (3/4) mu^k - s^k cos(2 theta + k omega) ] / [ 3/4 - cos((4k + 2) theta) ] holds
-when M is a rotation block plus a decoupled weight and the fixed point is the maximally mixed state. It misses the model by
-6 to 74 percent (a = 1) because the relaxation of Garnet's qubits moves the fixed point to n* = 0.2249 and the tail and
-readout functional weights n and z by 0.485 and 0.483; the matrix form is the derivation that this note checks and uses.
+when M is a rotation block plus a decoupled weight and the fixed point is the maximally mixed state. It misses the exact
+model by 6 to 74 percent (a = 1; computed). hypothesis: the cause is the fixed point n* = 0.2249 (computed from the plane map
+by n* = w_n / (1 - M_nn + w_n), against 0.25) that the idle relaxation of Garnet's qubits produces, together with the tail
+and readout functional (n and z weights 0.485 and 0.483 at depth 4, computed); the scalar form was not repaired. The matrix
+form is the derivation that this note checks and uses.
 
 ## Checks against exact simulation (known-good before use)
 
@@ -44,7 +46,7 @@ All values from `scripts/iqm_grover_plane_retained.py` (evidence `fits.json`, `e
 |---|---|
 | engine (depolarizing PRX and CZ, ASAP idle T1 and T2, herald-conditioned readout) against the committed `prediction.json` arms | max 4.97e-10 (the file's 9-digit rounding) |
 | noiseless Lambda_j against G, depths 1 to 4 | max 4.7e-15 |
-| noisy Lambda_2, Lambda_3, Lambda_4 against one another | max 3.7e-13 (Lambda_1 differs by 1.6e-3: it carries the preparation) |
+| noisy Lambda_2, Lambda_3, Lambda_4 against one another | max 3.7e-13 (Lambda_1 differs from Lambda_2 by 2.6e-3 in the largest entry of M: it carries the preparation) |
 | affine plane closure of the model, lambda error at k = 1, 2, 3, 4 | -3.7e-6, -7.3e-5, -6.4e-4, +3.2e-3 |
 | Bloch residual of the closure at k = 4 | 5.9e-4 |
 
@@ -86,8 +88,8 @@ iteration, radians).
 | depth, 101 | 1, 2, 3 | 11.64 on 1 dof (a 1.024, s 0.961) | exact: a 0.924, s 1.034 +- 0.026, eps +0.0410 +- 0.0112 | chi2 5.02 on 1: eps 0.0194 +- 0.0069 |
 | depth, 011 | 1, 2, 3 | 0.90 on 1 dof | exact: eps -0.0138 +- 0.0149 | chi2 0.13 on 1: eps -0.0096 +- 0.0091 |
 
-Leak L is not identifiable from marked probabilities: mu and s enter P_k only through the unmarked-uniformity
-statistic, so the fits keep the model's mu/s and carry no per-run L.
+L was not fitted. Marked probabilities alone do not separate the weight contraction mu from the Bloch contraction s, and the
+unmarked counts that would constrain it were not used; the fits keep the model's mu/s ratio and report no per-run L.
 
 Joint fits over the four groups (10 points; a per group):
 
@@ -119,7 +121,11 @@ differs by 0.07 between marks.
    eps_011 = 0 (slope -2e-6) against the measured -0.013 +- 0.014 (0.9 sigma); a PRX-amplitude origin predicts eps_011 about
    1.4 times eps_101 = +0.053, which the measurement contradicts at 4.7 sigma. ZZ was not computed for mark 011. The
    retained 011 arms therefore already carry information the case of PR 987 (mark 101 only) does not use.
-6. Coherent error is not seen by calibration benchmarking at this size: a CZ phase of 0.0286 rad costs an average gate
+6. The closure assumes the leaked weight returns as the uniform state of the complement. The retained depth run rejected
+   uniform unmarked error (Wald 95.7 on 6 degrees of freedom against the model's uniform prediction, design note of the
+   follow-up case), so that assumption is contradicted by the data; the plane family absorbs it into (a, s) and eps and does
+   not model it.
+7. Coherent error is not seen by calibration benchmarking at this size: a CZ phase of 0.0286 rad costs an average gate
    infidelity of 1.2e-4 per CZ against the calibrated 4.2e-3 (3 percent), and a PRX amplitude error of 1.0 percent on a
    pi/2 rotation costs 4.3e-5 against 2.8e-4 to 5.5e-4. The calibration neither supports nor refutes eps = 0.04.
 
@@ -169,9 +175,12 @@ Calibration over the null box (39 Sobol' cells of a in [0.90, 1.10], s in [0.85,
 points each): delta = 6.635 (the chi-square(1) 0.99 quantile; the worst cell's own quantile is 6.47), false "coherent"
 at most 0.0098, at most 0.0088 on the offset line. Power at |eps_eff| = 0.02 (CZ, PRX and ZZ truths at four corners of
 the box and 32 Sobol' cells of the plane rotation): at least 0.986; at 0.015 at least 0.92; at 0.01 at least 0.53.
-Through the whole gated rule (pair heterogeneity, leave-one-pair-out): 0.961 to 0.988 for binomial copies (the retained
-dispersion is 0.86) and 0.871 to 0.926 at the 95 percent dispersion bound, the remainder reading "not evaluated" and none
-reading a wrong category. Expected execution 10.79 s (retained job 1.9985 s scaled by the schedule-duration ratio
+Power is three numbers: the pooled rule alone 0.986 or more; through the whole gated rule (pair heterogeneity, leave-one-pair-out)
+0.961 to 0.988 for binomial copies (the retained dispersion is 0.86); and 0.871 to 0.926 at the 95 percent dispersion bound,
+the remainder reading "not evaluated" (the heterogeneity gate runs at phi = 1 and fires in about 10 percent of runs when the
+copies carry the bound; the two assumptions are inconsistent by construction). The design reaches 0.95 through the gates only for
+binomial copies. The calibrated truth box (a 0.90 to 1.10, s 0.85 to 1.10) is narrower than the fit's admissible box (a 0.5 to
+1.5, s 0.3 to 1.2): outside it the false-alarm rate and power are not established. Expected execution 10.79 s (retained job 1.9985 s scaled by the schedule-duration ratio
 5.40; 10.22 s with the retained fixed 0.13 s removed), compilation 0.44 s; ceiling 18 billed seconds, 9.0 credits, which
 holds 1.5 times the estimate; the sibling Emerald run took 2.2 times its estimate (23.7 s here), which the ceiling does not
 cover. The `garnet:mock` compile estimate is required before approval and was not read.
@@ -187,11 +196,22 @@ cover. The `garnet:mock` compile estimate is required before approval and was no
   and zero-divisor strata; none bears on a three-qubit circuit's noise, and they were read by name only.
 - The circuit's own symmetry is the group of the six cube automorphisms that fix the marked vertex, which gives the
   four-dimensional invariant sector noted under the limit of validity.
-- No novelty claim. `docs/notes/prior_work_synthesis.md` records no Grover noise literature. Unverified leads from memory:
-  Shapira, Mozes and Biham (2003) on unitary noise in Grover search and Regev and Schiff (2008) on a faulty oracle.
+- No novelty claim and no literature check: `docs/notes/prior_work_synthesis.md` records no Grover noise literature, and none
+  was searched in this round.
 - Open problems of mathematics resolved: none. The case is an engineering test of a rotation term in one device.
 
+## Open design points
+
+- DECISION NEEDED: the reading "coherent" follows T >= delta alone; `rotation_adequate` is reported and gates nothing, so an
+  incoherent loss that departs from geometric would be read "coherent". Folding adequacy into the reading changes
+  `prediction.json` and the case digest.
+- Quadratic drift is balanced among the depths (mean squared offsets 160.3, 157.3, 159.8, 157.3 from the center, spread 3.0) and
+  not between the depths and the readout preparations (67.0): the placement rules put the readouts at the center.
+
 ## Not done
+
+The QB12 fault-model, positions and Heron records (the first two are not on any remote branch of this clone); the Tuna-17 TLS
+note.
 
 Qutrit simulation of coherent leakage; mark 011 arms; the S3-symmetric four-dimensional extension; mock compile estimate;
 an end-to-end `analyze` run on a collected record (none exists; the decision layer is tested on planted counts).

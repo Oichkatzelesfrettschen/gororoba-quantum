@@ -19,7 +19,7 @@ rebuilds it from the circuit files the run carries and compares its digest with 
 random number.
 
 Usage: "$PYTHON" scripts/iqm_grover_plane_case.py (build DIR (--calibration SRC | --live) | check DIR |
-       analyze RUN_DIR --out OUT.json | --self-test)
+       analyze RUN_DIR --out OUT.json | search)
 """
 
 from __future__ import annotations
