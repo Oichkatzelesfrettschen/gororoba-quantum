@@ -218,10 +218,12 @@ def schedule_model(rows: list[dict[str, Any]]) -> dict[str, Any]:
     c = np.linalg.lstsq(x, target, rcond=None)[0]
     loo = ordered_map(leave_one_out_residual, [(x, target, i) for i in range(len(rows))], min_items=1)
     relative = [abs(v) / r["schedule"] for v, r in zip(loo, rows, strict=True)]
+    grover = [x for x, r in zip(relative, rows, strict=True) if "grover" in r["run"]]
     return {
         "terms": {"per_circuit_shot": float(c[0]), "per_duration_second": float(c[1])},
         "largest_leave_one_out_residual": float(max(abs(v) for v in loo)),
         "largest_leave_one_out_relative": float(max(relative)),
+        "largest_leave_one_out_relative_grover_jobs": float(max(grover)),
         "leave_one_out": {r["job_id"]: v for r, v in zip(rows, loo, strict=True)},
     }
 
@@ -255,6 +257,7 @@ def case_prediction(
         sched["terms"]["per_circuit_shot"] * count * shots + sched["terms"]["per_duration_second"] * shots * sum(durations)
     )
     sched_band = sched["largest_leave_one_out_relative"] * sched_pred
+    sched_band_grover = sched["largest_leave_one_out_relative_grover_jobs"] * sched_pred
     values = {
         "fixed": 1.0,
         "per_circuit_shot": float(count * shots),
@@ -275,7 +278,11 @@ def case_prediction(
         worst = execution + band + over
         seconds = math.ceil(MARGIN * worst)
         credits = price * (seconds + CANCEL_MARGIN)
+        narrow = f["largest_leave_one_out_residual_without_anchor"] + sched_band_grover
+        narrow_credits = price * (math.ceil(MARGIN * (execution + narrow + over)) + CANCEL_MARGIN)
         out[name] = {
+            "max_credits_for_margin_grover_schedule_band": narrow_credits,
+            "band_seconds_grover_schedule_band": narrow,
             "schedule_seconds": sched_pred,
             "excess_seconds": excess,
             "execution_seconds": execution,
