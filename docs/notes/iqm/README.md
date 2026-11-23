@@ -287,6 +287,10 @@ per-circuit term and a per-schedule-second term lower the largest leave-one-out 
 the refit adopts none. Runtime exceeds execution by exactly the compilation seconds on all sixteen jobs.
 `BILLING_MODELS` gains a refit in the change that first sizes a Garnet case from it.
 
+The [billing-v4](../../evidence/iqm-billing-v4/README.md) refit adds per-shot circuit-duration terms over the Garnet and
+Emerald jobs: none predicts the 9.505 s Emerald third-length job (residual 5.0 to 5.8 s), and on Garnet the shots times
+the summed circuit duration lowers the largest leave-one-out residual over the other jobs from 0.252 s to 0.199 s.
+
 The [read-only API audit](../../evidence/provider-api-audit/README.md) of 22 October 2026 retains the rates
 and the balance of that date. `runtime_seconds` includes compilation plus execution; `billed_seconds` rounds that
 sum upward separately for each job. The balance therefore buys billed runtime, not pure pulse execution.
