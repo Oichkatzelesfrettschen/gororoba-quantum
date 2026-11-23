@@ -1,0 +1,21 @@
+RESULT pfaffians 3003 3003
+RESULT span_dimension 2647
+RESULT stable identity outside 0 nonzero_derivatives 3003 joint_span 2647
+RESULT stable g2_1 outside 0 nonzero_derivatives 2800 joint_span 2647
+RESULT stable g2_7 outside 0 nonzero_derivatives 2800 joint_span 2647
+RESULT stable g2_13 outside 0 nonzero_derivatives 2800 joint_span 2647
+RESULT stable boost outside 1960 nonzero_derivatives 2982 joint_span 3307
+RESULT stable rotation outside 3003 nonzero_derivatives 3003 joint_span 3881
+RESULT stable boost_perturbed outside 3003 nonzero_derivatives 3003 joint_span 4666
+RESULT stable scale_u_only outside 3003 nonzero_derivatives 3003 joint_span 3804
+RESULT closure w8 generators 3 dim 12 mult 4 boost_moves 0 rotation_moves 2 g2_moves 0
+RESULT modulo w8 pfaffians_outside_closure 2002 boost_outside 0 rotation_outside 1960 g2_outside 0
+RESULT closure iso generators 4 dim 11 mult 8 boost_moves 0 rotation_moves 0 g2_moves 0
+RESULT modulo iso pfaffians_outside_closure 1960 boost_outside 0 rotation_outside 1470 g2_outside 0
+RESULT closure e8 generators 37 dim 11 mult 24 boost_moves 0 rotation_moves 1 g2_moves 0
+RESULT modulo e8 pfaffians_outside_closure 3003 boost_outside 1470 rotation_outside 3003 g2_outside 0
+RESULT closure xp generators 39 dim 10 mult 12 boost_moves 0 rotation_moves 1 g2_moves 0
+RESULT modulo xp pfaffians_outside_closure 2982 boost_outside 0 rotation_outside 2002 g2_outside 0
+RESULT closure xm generators 39 dim 10 mult 12 boost_moves 0 rotation_moves 1 g2_moves 0
+RESULT modulo xm pfaffians_outside_closure 2982 boost_outside 0 rotation_outside 2002 g2_outside 0
+RESULT done 1
