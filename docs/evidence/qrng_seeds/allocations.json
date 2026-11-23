@@ -1443,6 +1443,34 @@
    "value": 9353,
    "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
    "index": 3
+  },
+  {
+   "path": "tests/scripts/test_qi_matched_response_analysis.py",
+   "name": "TEST_SEEDS",
+   "value": 57531,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 4
+  },
+  {
+   "path": "tests/scripts/test_qi_matched_response_analysis.py",
+   "name": "TEST_SEEDS",
+   "value": 54461,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 5
+  },
+  {
+   "path": "tests/scripts/test_qi_matched_response_analysis.py",
+   "name": "TEST_SEEDS",
+   "value": 19728,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 6
+  },
+  {
+   "path": "tests/scripts/test_qi_matched_response_analysis.py",
+   "name": "TEST_SEEDS",
+   "value": 4799,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 7
   }
  ],
  "runtime": [
