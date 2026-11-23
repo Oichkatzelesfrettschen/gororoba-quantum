@@ -195,15 +195,65 @@ def test_a_displaced_copy_pair_reads_not_evaluated(fitter: decision.Fitter, resp
     require(out["departure"].startswith("not evaluated"))
 
 
-def test_the_leave_one_pair_out_check_names_a_reading_that_one_pair_carries(
+INFLUENCE_DELTA = 8.0
+
+
+def one_displaced_circuit(response: sim.Response) -> dict[int, list[Any]]:
+    """Truth a = 0.97, s = 0.98, eps = 0.004 (a coherent term below the equivalence bound); one circuit of one depth-1
+    pair sits 0.03 below the truth. The pair means still pass the heterogeneity gate (chi-square 8.7 against 18.5), and
+    the refit without the displaced pair reads "geometric" where the full fit reads "unresolved"."""
+    p = response.probabilities(0.97, 0.98, 0.004)
+    pairs = planted(response, p)
+    pairs[1][0] = ((round((p[0] - 0.03) * 13440), 13440), pairs[1][0][1])
+    return pairs
+
+
+def test_the_leave_one_pair_out_check_names_a_reading_that_one_circuit_carries(
     fitter: decision.Fitter, response: sim.Response
 ) -> None:
-    ro = np.zeros((4, 4))
-    p = response.probabilities(0.97, 0.98, 0.0)
-    pairs = planted(response, p)
-    pairs[1] = [((round((p[0] + 0.04) * 3000), 3000), (round((p[0] + 0.04) * 3000), 3000)), pairs[1][0]]
-    out = decision.read_pairs(fitter, pairs, np.zeros(4), ro, 13440, 6.64)
-    require("influence" in out or out["departure"].startswith("not evaluated"))
+    ro, zero = np.zeros((4, 4)), np.zeros(4)
+    out = decision.read_pairs(fitter, one_displaced_circuit(response), zero, ro, 13440, INFLUENCE_DELTA)
+    het = out["heterogeneity"]
+    require(het["chi2"] < het["threshold"], str(het))
+    require(
+        out["departure_before"] == "unresolved" and out["departure"] == decision.INFLUENCE_FAIL, str(out["departure"])
+    )
+    refits = {r["departure"] for r in out["influence"]["refits"]}
+    require(not out["influence"]["stands"] and refits == {"geometric", "unresolved"}, str(refits))
+    intact = decision.read_pairs(
+        fitter, planted(response, response.probabilities(0.97, 0.98, 0.004)), zero, ro, 13440, INFLUENCE_DELTA
+    )
+    require(intact["influence"]["stands"] and intact["departure"] in decision.VALID_READINGS, str(intact["departure"]))
+
+
+def test_the_contrast_reads_only_a_rotation_fit_that_describes_the_depths(
+    fitter: decision.Fitter, response: sim.Response, good: dict[str, Any]
+) -> None:
+    """T below delta leaves the reading "geometric" or "unresolved" whatever the fit adequacy: the truth is displaced
+    along the direction that the weighted Jacobian of (a, s, eps) cannot absorb, so chi-square of the rotation fit is
+    15.2 (the 0.99 quantile on one degree of freedom is 6.63) and T is zero."""
+    from scipy import linalg
+
+    base = np.array([0.97, 0.98, 0.0])
+    h = 1e-5
+    jac = np.column_stack(
+        [
+            (response.probabilities(*(base + h * e)) - response.probabilities(*(base - h * e))) / (2 * h)
+            for e in np.eye(3)
+        ]
+    )
+    p = response.probabilities(*base)
+    cov = np.diag(decision.PHI * p * (1 - p) / (4 * 13440.0))
+    w = np.linalg.inv(cov)
+    direction = linalg.null_space(jac.T @ w)[:, 0]
+    y = p + 3.9 * direction / np.sqrt(direction @ w @ direction)
+    fit = decision.decide(fitter, y, cov, 8.0)
+    require(fit["T"] < 1e-3 and fit["chi2_rotation"] > 15.0 and not fit["rotation_adequate"], str(fit["T"]))
+    require(fit["departure"] in ("geometric", "unresolved"), fit["departure"])
+    require(decision.gate_failure(fit) == decision.ADEQUACY_FAIL, decision.gate_failure(fit))
+    for first, second, mark in ((fit, good, "101"), (good, fit, "011")):
+        read = contrast_with(first, second)
+        require(read["reading"].startswith("not evaluated") and f"mark {mark}" in read["reading"], read["reading"])
 
 
 def test_the_boundary_search_walks_the_perimeter_of_the_null_box() -> None:
@@ -253,9 +303,24 @@ def test_the_null_box_calibration_holds_the_false_alarm_rate_at_a_small_grid(fit
         fitter, kept, np.zeros((4, 4)), log2n=7, cell_log2n=2, search_log2n=5, nodes=4, refinements=1
     )
     require(out["delta_resolve"] >= 6.634)
-    require(out["false_coherent_max"] <= 0.03)
+    held = out["validation"]["false_coherent"]
+    require(held["max_over_cells"]["n"] <= out["validation_points"] == 127, str(held))
+    # a 32-point boundary cell with one hit reads 0.031, so the checks are the interval's lower end and the mean
+    require(held["at_selection_worst_cell"]["ci95"][0] <= 0.03 and held["max_over_cells"]["ci95"][0] <= 0.03, str(held))
+    require(held["mean_rate_over_cells"] <= 0.02, str(held))
     require(out["cells_by_kind"]["corner"] == 4 and out["cells_by_kind"]["boundary"] >= 4, out["cells_by_kind"])
-    require("non_rotation_false_alarm_max" in out)
+    require(out["validation"]["non_rotation"]["max_over_cells"]["n"] > 0)
+
+
+def test_the_validation_points_share_no_point_with_the_selection_points() -> None:
+    selection = calibration.sobol_normals(4, 6)
+    validation = calibration.validation_normals(4, 6)
+    require(len(selection) == 64 and len(validation) == 63)
+    seen = {tuple(row) for row in selection}
+    require(not any(tuple(row) in seen for row in validation))
+    require(calibration.binomial_interval(0, 100)[0] == 0.0 and calibration.binomial_interval(100, 100)[1] == 1.0)
+    low, high = calibration.binomial_interval(10, 1000)
+    require(low < 0.01 < high)
 
 
 @pytest.mark.audit
@@ -276,7 +341,7 @@ def test_the_101_case_is_the_primary_arms_of_the_full_case_without_mark_011() ->
     require(len(full["jobs"][0]["circuits"]) == 52 and len(only["jobs"][0]["circuits"]) == 38)
     require(only["case"] == case.CASE_101 and prediction["marks"] == ["101"] and "copies_011" not in prediction)
     require("mark_011" not in prediction["decisions"] and prediction["decisions"]["contrast"] is None)
-    require(only["question"] == case.question(None) and "011" not in only["question"])
+    require(only["question"] == case.question(False) and "011" not in only["question"])
     require(only["prediction_sha256"] == case.sha256((NEW_101 / "prediction.json").read_bytes()))
     full_prediction = json.loads((NEW / "prediction.json").read_text(encoding="utf-8"))["decisions"]
     for key in ("calibration", "power", "gated_power", "rule", "gate", "model_probabilities"):
@@ -294,8 +359,9 @@ def test_the_committed_case_binds_its_prediction_and_its_response_digest() -> No
     prediction = json.loads(text)
     d = prediction["decisions"]
     require(d["rule"]["delta_resolve"] >= 6.634)
-    require(d["calibration"]["false_coherent_max_plus_3se"] <= 0.02)
-    require(d["calibration"]["cells_by_kind"]["corner"] == 4 and d["calibration"]["blocks"] == 8)
+    held = d["calibration"]["validation"]["false_coherent"]
+    require(held["at_selection_worst_cell"]["ci95"][1] <= 0.02 and held["max_over_cells"]["ci95"][1] <= 0.03, str(held))
+    require(d["calibration"]["cells_by_kind"]["corner"] == 4 and "blocks" not in d["calibration"])
     require(d["power"]["worst_resolved_truth"]["coherent"] >= 0.85)
     require(d["contrast"]["ratio_interval"][0] <= d["contrast"]["ratio_prx"] <= d["contrast"]["ratio_interval"][1])
     require(set(d["readout_gates"]) == {"101", "011"} and d["gate"]["min_pairs_per_depth"] == 2)
@@ -304,10 +370,9 @@ def test_the_committed_case_binds_its_prediction_and_its_response_digest() -> No
         k: json.loads(next((NEW / "circuits").glob(f"m101-k{k}-c0.json")).read_text(encoding="utf-8"))
         for k in (1, 2, 3, 4)
     }
-    import grover_plane_analysis as analysis
-
     response = sim.Response(circuits_by_depth, cal, PATH, "101")
-    require(analysis.response_digest(response, d["response"]) == d["response"]["sha256"])
+    require(decision.response_grid_digest(decision.Fitter(response)) == d["response"])
+    require((d["response"]["s_points"], d["response"]["eps_points"]) == (91, 121))
     job = cases["jobs"][0]
     require(job["max_credits"]["garnet"] == d["cost"]["max_credits_garnet"])
     require(job["max_credits"]["garnet"] >= d["cost"]["max_credits_grover_band"])
@@ -345,12 +410,12 @@ def prx_ratio() -> float:
     )
 
 
-def test_the_approval_question_states_the_fitted_prx_ratio() -> None:
+def test_the_approval_question_asks_the_primary_test_and_the_decision_keeps_the_fitted_prx_ratio() -> None:
     cases = json.loads((NEW / "cases.json").read_text(encoding="utf-8"))
     ratio = prx_ratio()
-    require(case.question(ratio).count(f"{ratio} times mark 101") == 1, case.question(ratio))
-    require(cases["question"] == case.question(ratio))
     require(ratio == pytest.approx(1.194651206, abs=1e-9))
+    require("does mark 011 rotate" not in case.question(True) and "contrast reading" in case.question(True))
+    require(cases["question"] == case.question(True) and "011" not in case.question(False))
 
 
 def test_the_mark_contrast_separates_a_cz_phase_from_a_prx_amplitude() -> None:
@@ -391,7 +456,7 @@ def test_the_mark_contrast_reads_only_when_both_marks_pass_every_gate(good: dict
     require(math.isfinite(read["z_cz"]) and math.isfinite(read["z_prx"]))
 
 
-@pytest.mark.parametrize("gate", ["pair_floor", "readout", "heterogeneity", "influence", "domain", "rotation"])
+@pytest.mark.parametrize("gate", ["pair_floor", "heterogeneity", "influence", "domain", "rotation"])
 def test_a_failed_gate_of_either_mark_removes_its_rotation_fit_from_the_contrast(
     fitter: decision.Fitter, response: sim.Response, good: dict[str, Any], gate: str
 ) -> None:
@@ -404,10 +469,9 @@ def test_a_failed_gate_of_either_mark_removes_its_rotation_fit_from_the_contrast
         pairs[3][0] = ((round((p[2] + 0.03) * 13440), 13440), (round((p[2] + 0.03) * 13440), 13440))
         failed = decision.read_pairs(fitter, pairs, zero, ro, 13440, 6.64)
         require(failed["departure"].startswith("not evaluated: the mirror pairs"), failed["departure"])
-    elif gate == "readout":
-        failed = decision.fail_gate(dict(good), "not evaluated: a readout preparation kept fewer than half its shots")
     elif gate == "influence":
-        failed = decision.fail_gate(dict(good), decision.INFLUENCE_FAIL)
+        failed = decision.read_pairs(fitter, one_displaced_circuit(response), zero, ro, 13440, INFLUENCE_DELTA)
+        require(failed["departure"] == decision.INFLUENCE_FAIL, failed["departure"])
     elif gate == "domain":
         truth = response.probabilities(0.70, 0.98, 0.0)
         failed = decision.decide(fitter, truth, np.diag(decision.PHI * truth * (1 - truth) / (4 * 13440.0)), 6.64)
@@ -492,3 +556,64 @@ def test_analyze_reads_the_mark_101_case_without_a_contrast(tmp_path: Path) -> N
     require(record["contrast"]["reading"].startswith("not evaluated"), record["contrast"]["reading"])
     cz = followup.synthetic_run(NEW_101, tmp_path / "cz", "grover", plant_of(NEW_101, cz_phase=-0.03))
     require(analysis.analyze(cz, NEW_101)["decisions"]["101"]["departure"] == "coherent")
+
+
+@pytest.mark.audit
+@pytest.mark.parametrize("gate", ["sides", "shift"])
+def test_a_failed_readout_gate_of_the_analysis_removes_both_marks_from_the_contrast(tmp_path: Path, gate: str) -> None:
+    """The readout gates run in analyze: one side of every preparation mixed with the uniform state separates the two
+    sides of the readout block, and both sides mixed alike move the corrected frequencies by more than the tolerance."""
+    import iqm_garnet_followup as followup
+
+    import grover_plane_analysis as analysis
+
+    base = plant_of(NEW, cz_phase=-0.03)
+
+    def plant(name: str, distribution: dict[str, float]) -> dict[str, float]:
+        out = base(name, distribution)
+        if not name.startswith("ro-") or (gate == "sides" and not name.endswith("-m")):
+            return out
+        x = 0.3 if gate == "sides" else 0.12
+        return {key: (1 - x) * v + x / len(out) for key, v in out.items()}
+
+    run = followup.synthetic_run(NEW, tmp_path / gate, "grover", plant)
+    record = analysis.analyze(run, NEW)
+    expected = "not evaluated: the two sides" if gate == "sides" else "not evaluated: the job's readout departs"
+    for mark in ("101", "011"):
+        require(record["decisions"][mark]["departure"].startswith(expected), record["decisions"][mark]["departure"])
+        require(not record["readout"][mark]["passed"])
+    require(record["contrast"]["reading"].startswith("not evaluated"), record["contrast"]["reading"])
+
+
+@pytest.mark.audit
+def test_a_change_of_the_response_away_from_six_points_breaks_the_analysis(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The retained digest hashed six points (s 0.9 and 1.0, eps -0.04, 0 and 0.04); the digest now hashes the grid of
+    the fit. A bump of 2e-3 at s 0.8, eps 0.2 leaves those six points and the model probabilities unchanged and
+    changes the grid digest."""
+    import iqm_garnet_followup as followup
+
+    import grover_plane_analysis as analysis
+
+    run = followup.synthetic_run(NEW, tmp_path / "model", "grover")
+    require(analysis.analyze(run, NEW)["readout"]["101"]["passed"])
+    original = sim.Response.centered
+
+    def bumped(self: sim.Response, s: float, eps: float) -> np.ndarray:
+        return np.asarray(original(self, s, eps)) + 2e-3 * math.exp(
+            -(((s - 0.8) ** 2 + (eps - 0.2) ** 2) / (2 * 0.01**2))
+        )
+
+    old_points = [(s, e) for s in (0.9, 1.0) for e in (-0.04, 0.0, 0.04)]
+    monkeypatch.setattr(sim.Response, "centered", bumped)
+    cal = iqm_sim.Calibration.from_directory(NEW / "calibration")
+    found = {
+        k: json.loads(next((NEW / "circuits").glob(f"m101-k{k}-c0.json")).read_text(encoding="utf-8"))
+        for k in (1, 2, 3, 4)
+    }
+    response = sim.Response(found, cal, PATH, "101")
+    for s, e in old_points:
+        require(abs(bumped(response, s, e) - original(response, s, e)).max() < 1e-12, str((s, e)))
+    with pytest.raises(analysis.AnalysisError, match="differs from prediction.json"):
+        analysis.analyze(run, NEW)

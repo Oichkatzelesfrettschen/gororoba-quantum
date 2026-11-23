@@ -7,9 +7,10 @@ and position to its counts and applies the preregistered rule of grover_plane_de
 Admission. Beyond read_job: the depth arms and the readout preparations are images of one another about the job's
 center; every copy of a depth carries one circuit (14 CZ per iteration) and the four depths carry four circuits. The
 response tables are not read from a file: the analysis rebuilds the noisy plane response from the circuit files the run
-carries and the calibration copy beside them (grover_plane_sim.Response) and refuses a run whose response digest or
-model
-probabilities differ from prediction.json, so a later change of the builder cannot change what a retained run reads.
+carries and the calibration copy beside them (grover_plane_sim.Response) and refuses a run whose digest of the fitter's
+whole response grid (decision.response_grid_digest: 91 by 121 points of the fitting box) or model probabilities differ
+from prediction.json, so a later change of the builder or of the response anywhere in the fitting box cannot change
+what a retained run reads.
 
 Readout. Each preparation runs on both sides of the center; its marked fraction is the mean of the two sides with equal
 weights, so a drift linear in position cancels from the row whatever the kept shots of each side. The eight rows and the
@@ -21,7 +22,6 @@ quantile, or a corrected frequency moves by more than the tolerance.
 
 from __future__ import annotations
 
-import hashlib
 import json
 import math
 import re
@@ -68,11 +68,6 @@ def rounded(x: Any) -> Any:
     if isinstance(x, (float, np.floating)):
         return None if math.isnan(float(x)) else round(float(x), 9)
     return x
-
-
-def response_digest(response: sim.Response, plan: dict[str, Any]) -> str:
-    table = [[list(response.centered(s, e)) for e in plan["eps"]] for s in plan["s"]]
-    return hashlib.sha256(json.dumps(rounded(table)).encode()).hexdigest()
 
 
 def sides_chi2(a: np.ndarray, b: np.ndarray) -> tuple[float, int]:
@@ -180,7 +175,8 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
         elif float(np.max(np.abs(shift))) > float(plan["tolerance"]):
             reason = "not evaluated: the job's readout departs from the model's by more than the tolerance"
         response = sim.Response(circuits[mark], cal, path, mark)
-        if response_digest(response, block["response"]) != block["response"]["sha256"]:
+        fitter = decision.Fitter(response)
+        if decision.response_grid_digest(fitter) != block["response"]:
             raise AnalysisError(
                 f"{run_dir}: the mark {mark} response rebuilt from the run's circuits differs from prediction.json"
             )
@@ -198,7 +194,6 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
                             f"{run_dir}: the mark {mark} depth {k} copy at {position} has no image at {mirror}"
                         )
                     pairs[k].append((pairs_at[mark][k][position], pairs_at[mark][k][mirror]))
-        fitter = decision.Fitter(response)
         out = decision.read_pairs(fitter, pairs, shift, readout_cov, float(gate["planned_kept_per_copy"]), delta)
         if reason:
             decision.fail_gate(out, reason)

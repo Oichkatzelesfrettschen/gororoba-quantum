@@ -70,7 +70,7 @@ def record() -> dict[str, Any]:
             "primary_test": {
                 "worst_resolved_truth": power["truth"],
                 "coherent_rate": power["coherent"],
-                "coherent_rate_se": power.get("coherent_se"),
+                "coherent_rate_ci95": power.get("coherent_ci95"),
                 "design_effect_eps": prediction["decisions"]["power"]["design_effect_eps"],
             },
         }

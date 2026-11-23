@@ -12,6 +12,10 @@ Power. Each truth is the exact noisy response of the committed circuits to a coh
 phase, a PRX amplitude, a rotating-frame ZZ coupling of the two couplers) or to the plane rotation itself, with the
 excess factor s and the offset a of the cell; the fit still uses the plane family. The reading of a truth is the
 fraction of points reading each departure category at delta.
+
+Validation. delta is chosen on Sobol' points 1 to 2^n; the false-alarm rates of the null cells are read on points
+2^n + 1 to 2^(n + 1) - 1 of the same sequence (validation_normals), a deterministic set that shares no point with the
+selection set and takes no seed.
 """
 
 from __future__ import annotations
@@ -36,8 +40,28 @@ DELTA_STEP = 0.5
 
 
 def sobol_normals(dim: int, log2n: int) -> np.ndarray:
+    """The selection points: indices 1 to 2^log2n of the unscrambled Sobol' sequence, through the normal quantile."""
     sampler = stats.qmc.Sobol(d=dim, scramble=False)
     return np.asarray(stats.norm.ppf(sampler.random_base2(log2n + 1)[1 : 2**log2n + 1]))
+
+
+def validation_normals(dim: int, log2n: int) -> np.ndarray:
+    """The validation points: indices 2^log2n + 1 to 2^(log2n + 1) - 1 of the same sequence, the half that
+    sobol_normals leaves out. No point of this set is a point of the selection set, so a rate read on it is held out of
+    the choice of delta (2^log2n - 1 points)."""
+    sampler = stats.qmc.Sobol(d=dim, scramble=False)
+    return np.asarray(stats.norm.ppf(sampler.random_base2(log2n + 1)[2**log2n + 1 :]))
+
+
+def binomial_interval(k: int, n: int, confidence: float = 0.95) -> list[float]:
+    """The exact (Clopper-Pearson) binomial interval of k events in n points; it treats the quasi-Monte-Carlo points
+    as independent draws, so for them it is an approximation."""
+    ci = stats.binomtest(int(k), int(n)).proportion_ci(confidence, method="exact")
+    return [float(ci.low), float(ci.high)]
+
+
+def held_out(k: int, n: int) -> dict[str, Any]:
+    return {"k": int(k), "n": int(n), "rate": k / n, "ci95": binomial_interval(k, n)}
 
 
 def sobol_box(low: Sequence[float], high: Sequence[float], log2n: int) -> np.ndarray:
@@ -59,8 +83,10 @@ def covariance(truth: np.ndarray, kept: Sequence[float], readout_cov: np.ndarray
 
 
 def run_cell(item: tuple[Any, ...]) -> dict[str, Any]:
-    """T, eps and its standard error at every normal point for one truth: (fitter, truth, kept, readout_cov, points)."""
-    fitter, truth, kept, readout_cov, points = item
+    """T, eps and its standard error at every normal point for one truth: (fitter, truth, kept, readout_cov, points
+    [, errors]); errors False skips the standard errors (nan), which the false-alarm counts do not read."""
+    fitter, truth, kept, readout_cov, points, *rest = item
+    errors = bool(rest[0]) if rest else True
     cov = covariance(truth, kept, readout_cov)
     factor = np.linalg.cholesky(cov)
     t, eps, se, chi1 = [], [], [], []
@@ -71,7 +97,7 @@ def run_cell(item: tuple[Any, ...]) -> dict[str, Any]:
         t.append(f0["chi2"] - f1["chi2"])
         chi1.append(f1["chi2"])
         eps.append(f1["eps"])
-        se.append(fitter.errors(f1, cov).get("eps", float("nan")))
+        se.append(fitter.errors(f1, cov).get("eps", float("nan")) if errors else float("nan"))
     return {"T": np.array(t), "eps": np.array(eps), "se": np.array(se), "chi1": np.array(chi1), "dof": len(truth) - 3}
 
 
@@ -89,27 +115,28 @@ def readings(cell: dict[str, np.ndarray], delta: float) -> dict[str, float]:
     }
 
 
-def block_stats(values: np.ndarray, blocks: int) -> tuple[float, float]:
-    """Mean and standard error of an indicator's rate over consecutive blocks of the unscrambled Sobol' points: each
-    block is a deterministic low-discrepancy set, and the spread of the block rates is the error estimate (an
-    estimate, not a bound)."""
-    rates = np.asarray(values, dtype=float).reshape(blocks, -1).mean(axis=1)
-    return float(rates.mean()), float(rates.std(ddof=1) / math.sqrt(blocks))
-
-
-def cell_report(a: float, s: float, run: dict[str, Any], delta: float, blocks: int) -> dict[str, Any]:
-    t = run["T"]
+def false_alarm_counts(run: dict[str, Any], delta: float) -> tuple[int, int]:
+    """Points of a run that read "coherent" and that read "non-geometric, not a rotation" at delta."""
+    departs = run["T"] >= delta
     adequate = run["chi1"] <= stats.chi2.isf(dec.ALPHA, run["dof"])
-    coherent, coherent_se = block_stats((t >= delta) & adequate, blocks)
-    non_rotation, non_rotation_se = block_stats((t >= delta) & ~adequate, blocks)
+    return int(np.sum(departs & adequate)), int(np.sum(departs & ~adequate))
+
+
+def cell_report(a: float, s: float, run: dict[str, Any], validation: dict[str, Any], delta: float) -> dict[str, Any]:
+    """The in-sample rates of a cell (its selection points, which chose delta) and its held-out counts (the validation
+    points, which did not)."""
+    selected = false_alarm_counts(run, delta)
+    kept_out = false_alarm_counts(validation, delta)
+    n, n_out = len(run["T"]), len(validation["T"])
     return {
         "a": a,
         "s": s,
-        "coherent": coherent,
-        "coherent_se": coherent_se,
-        "non_rotation": non_rotation,
-        "non_rotation_se": non_rotation_se,
-        "quantile": float(np.quantile(t, 1 - dec.ALPHA)),
+        "coherent": selected[0] / n,
+        "non_rotation": selected[1] / n,
+        "quantile": float(np.quantile(run["T"], 1 - dec.ALPHA)),
+        "validation_points": n_out,
+        "validation_coherent": held_out(kept_out[0], n_out),
+        "validation_non_rotation": held_out(kept_out[1], n_out),
     }
 
 
@@ -133,20 +160,20 @@ def calibrate(
     readout_cov: np.ndarray,
     log2n: int = 10,
     cell_log2n: int = 6,
-    blocks: int = 8,
     search_log2n: int | None = None,
     nodes: int = 24,
     refinements: int = 5,
 ) -> dict[str, Any]:
     """The reading rates of the null truths, the offset line, the four corners of the box and a search of its boundary.
 
-    Every cell evaluates the same unscrambled Sobol' points (2^log2n, in blocks for an error estimate); the boundary
+    Every cell evaluates the same unscrambled Sobol' points (2^log2n, the selection points); the boundary
     search evaluates nodes cells at equal steps of the perimeter at 2^search_log2n points, then bisects the bracket of
     each of the three highest false-alarm rates refinements times at the same points (common points make the rate a
     deterministic function of the cell). delta is the 0.99 quantile of T of the cell with the largest one over every
-    cell evaluated, rounded up to a half unit and never below the chi-square(1) quantile. The reported maximum is the
-    largest rate over the evaluated cells with its error estimate: the integral is estimated at those cells and is not
-    bounded over the continuous box."""
+    cell evaluated, rounded up to a half unit and never below the chi-square(1) quantile. The false-alarm rates are
+    read on the validation points, which share no point with the selection points that chose delta: the rate at the
+    cell of the largest selection rate and the largest rate over the cells, each with an exact binomial interval. The
+    integral is estimated at the evaluated cells and is not bounded over the continuous box."""
     search_log2n = log2n - 2 if search_log2n is None else search_log2n
     points = sobol_normals(len(kept), log2n)
     cells = null_cells(cell_log2n) + [(a, s) for a in NULL_A for s in NULL_S]
@@ -193,18 +220,51 @@ def calibrate(
         labels.append("boundary")
         runs.append(boundary[t][1])
     delta = delta_of([float(np.quantile(r["T"], 1 - dec.ALPHA)) for r in runs])
+    validation_points = validation_normals(len(kept), log2n)
+    validation_runs = ordered_map(
+        run_cell,
+        [
+            (
+                fitter,
+                fitter.response.probabilities(a, s, 0.0),
+                kept,
+                readout_cov,
+                validation_points[: len(run["T"])],
+                False,
+            )
+            for (a, s), run in zip(cells, runs, strict=True)
+        ],
+        min_items=1,
+    )
     reports = []
-    for (a, s), label, run in zip(cells, labels, runs, strict=True):
-        n_blocks = blocks if len(run["T"]) >= 64 * blocks else 1
-        rep = cell_report(a, s, run, delta, n_blocks) if n_blocks > 1 else cell_report_single(a, s, run, delta)
-        reports.append({**rep, "kind": label, "points": len(run["T"])})
-    worst_alarm = max(reports, key=lambda r: r["coherent"])
+    for (a, s), label, run, held in zip(cells, labels, runs, validation_runs, strict=True):
+        reports.append({**cell_report(a, s, run, held, delta), "kind": label, "points": len(run["T"])})
+
+    def cell_of(r: dict[str, Any]) -> dict[str, Any]:
+        return {k: r[k] for k in ("a", "s", "kind")}
+
+    def validated(key: str, in_sample: str) -> dict[str, Any]:
+        selected = max(reports, key=lambda r: r[in_sample])
+        largest = max(reports, key=lambda r: r[key]["rate"])
+        return {
+            "at_selection_worst_cell": {**cell_of(selected), "in_sample_rate": selected[in_sample], **selected[key]},
+            "max_over_cells": {**cell_of(largest), **largest[key]},
+            "mean_rate_over_cells": float(np.mean([r[key]["rate"] for r in reports])),
+        }
+
+    coherent = validated("validation_coherent", "coherent")
+    non_rotation = validated("validation_non_rotation", "non_rotation")
     worst_quantile = max(reports, key=lambda r: r["quantile"])
     at_offset = [r for r in reports if r["s"] == 1.0]
+    offset_worst = max(at_offset, key=lambda r: r["validation_coherent"]["rate"])
     return {
-        "method": "unscrambled Sobol' quadrature in blocks, no seed; rates are estimates at the evaluated cells",
+        "method": (
+            "unscrambled Sobol' quadrature, no seed: delta from the selection points (indices 1 to 2^points), "
+            "false-alarm rates from the validation points (indices 2^points + 1 to 2^(points + 1) - 1), a disjoint "
+            "deterministic set per cell; rates are estimates at the evaluated cells"
+        ),
         "points": 2**log2n,
-        "blocks": blocks,
+        "validation_points": 2**log2n - 1,
         "boundary_points": 2**search_log2n,
         "cells": len(cells),
         "cells_by_kind": {k: labels.count(k) for k in ("null", "corner", "boundary")},
@@ -213,34 +273,27 @@ def calibrate(
         "chi2_1_quantile": floor,
         "chi2_1_tail_at_delta": float(stats.chi2.sf(delta, 1)),
         "worst_cell": {k: worst_quantile[k] for k in ("a", "s", "quantile", "kind")},
-        "false_coherent_max": worst_alarm["coherent"],
-        "false_coherent_max_se": worst_alarm["coherent_se"],
-        "false_coherent_max_cell": {k: worst_alarm[k] for k in ("a", "s", "kind")},
-        "false_coherent_max_plus_3se": worst_alarm["coherent"] + 3 * worst_alarm["coherent_se"],
-        "false_coherent_offset_line_max": max(r["coherent"] for r in at_offset),
-        "non_rotation_false_alarm_max": max(r["non_rotation"] for r in reports),
-        "non_rotation_false_alarm_mean": float(np.mean([r["non_rotation"] for r in reports])),
-        "non_rotation_false_alarm_max_cell": {
-            k: max(reports, key=lambda r: r["non_rotation"])[k] for k in ("a", "s", "kind")
+        "validation": {
+            "interval": (
+                "95 percent exact binomial (Clopper-Pearson) interval of the validation counts, which treats the "
+                "quasi-Monte-Carlo points as independent draws: approximate"
+            ),
+            "excludes": [
+                "the dependence between quasi-Monte-Carlo points",
+                "cells between the evaluated cells and the continuous box (the maximum over cells is read at the "
+                "evaluated cells only, and is biased upward by taking a maximum of noisy rates)",
+                "the model: the response, the dispersion phi and the readout covariance as planned",
+            ],
+            "false_coherent": coherent,
+            "false_coherent_offset_line_max": {**cell_of(offset_worst), **offset_worst["validation_coherent"]},
+            "non_rotation": non_rotation,
+            "in_sample_false_coherent_max": max(r["coherent"] for r in reports),
+            "in_sample_non_rotation_max": max(r["non_rotation"] for r in reports),
         },
         "geometric_reading_min_over_null_cells": min(
             readings(r, delta)["geometric"] for (a, s), r in zip(cells, runs, strict=True)
         ),
         "corners": [r for r in reports if r["kind"] == "corner"],
-    }
-
-
-def cell_report_single(a: float, s: float, run: dict[str, Any], delta: float) -> dict[str, Any]:
-    """cell_report for a run too short to split into blocks: the rates carry no error estimate."""
-    rates = readings(run, delta)
-    return {
-        "a": a,
-        "s": s,
-        "coherent": rates["coherent"],
-        "coherent_se": float("nan"),
-        "non_rotation": rates["non_rotation"],
-        "non_rotation_se": float("nan"),
-        "quantile": float(np.quantile(run["T"], 1 - dec.ALPHA)),
     }
 
 
@@ -251,17 +304,17 @@ def power(
     readout_cov: np.ndarray,
     delta: float,
     log2n: int = 9,
-    blocks: int = 8,
 ) -> list[dict[str, Any]]:
-    """Reading rates of every labeled truth (label, probabilities of the four depths) at delta, each with the error
-    estimate of its coherent rate over blocks of the Sobol' points (an estimate, not a bound)."""
+    """Reading rates of every labeled truth (label, probabilities of the four depths) at delta, each with the exact
+    binomial interval of its coherent rate over the Sobol' points (approximate: the points are not independent
+    draws)."""
     points = sobol_normals(len(kept), log2n)
     runs = ordered_map(run_cell, [(fitter, p, kept, readout_cov, points) for _, p in truths], min_items=1)
     out = []
     for (label, _), r in zip(truths, runs, strict=True):
         adequate = r["chi1"] <= stats.chi2.isf(dec.ALPHA, r["dof"])
-        mean, se = block_stats((r["T"] >= delta) & adequate, blocks)
-        out.append({"truth": label, **readings(r, delta), "coherent_se": se, "coherent_blocks": mean})
+        hits = int(np.sum((r["T"] >= delta) & adequate))
+        out.append({"truth": label, **readings(r, delta), "coherent_ci95": binomial_interval(hits, len(r["T"]))})
     return out
 
 

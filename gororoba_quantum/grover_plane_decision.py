@@ -23,6 +23,8 @@ against a CZ phase, a PRX amplitude and a ZZ coupling) is reported beside and de
 
 from __future__ import annotations
 
+import hashlib
+import json
 import math
 from collections.abc import Sequence
 from typing import Any
@@ -144,6 +146,25 @@ class Fitter:
             if name in out and (value <= box[0] + 1e-9 or value >= box[1] - 1e-9):
                 out[name] = float("nan")
         return out
+
+
+RESPONSE_DECIMALS = 6
+
+
+def response_grid_digest(fitter: Fitter) -> dict[str, Any]:
+    """The plane response over the table the fit and the calibration search: Q_k(s, eps) - 1/8 at every (s, eps) of the
+    fitter's grid (S_BOX by E_BOX), rounded to RESPONSE_DECIMALS and hashed, so a change of the response anywhere in
+    the fitting box changes the digest."""
+    table = np.round(fitter.table, RESPONSE_DECIMALS) + 0.0
+    return {
+        "s_box": list(S_BOX),
+        "eps_box": list(E_BOX),
+        "s_points": len(fitter.s),
+        "eps_points": len(fitter.e),
+        "depths": int(table.shape[-1]),
+        "decimals": RESPONSE_DECIMALS,
+        "sha256": hashlib.sha256(json.dumps(table.tolist()).encode()).hexdigest(),
+    }
 
 
 NON_ROTATION = "non-geometric, not a rotation"
@@ -291,6 +312,9 @@ def read_pairs(
 
 
 VALID_READINGS = ("coherent", "geometric", "unresolved")
+# T below delta leaves the reading "geometric" or "unresolved" whatever the adequacy of the rotation fit, so the
+# contrast tests the adequacy itself.
+ADEQUACY_FAIL = "not evaluated: the rotation fit is inadequate (chi-square above its 0.99 quantile)"
 
 
 def fail_gate(out: dict[str, Any], reason: str) -> dict[str, Any]:
@@ -303,12 +327,15 @@ def fail_gate(out: dict[str, Any], reason: str) -> dict[str, Any]:
 def gate_failure(fit: dict[str, Any]) -> str:
     """Why a mark's rotation fit may not enter the contrast: an empty string when every gate passed. The gates are the
     pair floor, readout, pair heterogeneity and influence (each reads "not evaluated"), the box (out of domain) and
-    the adequacy of the rotation (non-rotation); the fit of a mark that fails one carries no meaning for eps."""
+    the adequacy of the rotation (non-rotation at T >= delta, ADEQUACY_FAIL below it); the fit of a mark that fails
+    one carries no meaning for eps."""
     reading = str(fit.get("departure", "not evaluated: no reading"))
     if reading not in VALID_READINGS:
         return reading
     if "rotation" not in fit or "rotation_se" not in fit:
         return "not evaluated: the rotation fit is missing"
+    if fit.get("rotation_adequate") is not True:
+        return ADEQUACY_FAIL
     return ""
 
 

@@ -29,7 +29,7 @@
    },
    "case_expected_seconds": 12.806,
    "case_max_credits": 13.0,
-   "cases_sha256": "af50a721927d804c04f23f1cf240ca72411b4bf780631606350969f0d2d77503",
+   "cases_sha256": "eec4e47f37aad02344a137548875cd673b4d8835cf79846726ca0cacad5f4011",
    "circuits": 52,
    "executions": 832000,
    "longest_circuit_seconds": 4e-06,
@@ -77,7 +77,10 @@
    },
    "primary_test": {
     "coherent_rate": 0.964355,
-    "coherent_rate_se": 0.002013,
+    "coherent_rate_ci95": [
+     0.955389,
+     0.971958
+    ],
     "design_effect_eps": 0.02,
     "worst_resolved_truth": "prx +0.8 % a=0.92 s=0.92"
    },
@@ -112,7 +115,7 @@
    },
    "case_expected_seconds": 9.299,
    "case_max_credits": 9.5,
-   "cases_sha256": "085fddec1199089404daa79514f565ed10dca7af0cd512aa9022ae9ec9a42430",
+   "cases_sha256": "f5d3d4a238fe08fdb85aff8dab142b655dfbd7acc024c9966700a7d470da7653",
    "circuits": 38,
    "executions": 608000,
    "longest_circuit_seconds": 4e-06,
@@ -160,7 +163,10 @@
    },
    "primary_test": {
     "coherent_rate": 0.964355,
-    "coherent_rate_se": 0.002013,
+    "coherent_rate_ci95": [
+     0.955389,
+     0.971958
+    ],
     "design_effect_eps": 0.02,
     "worst_resolved_truth": "prx +0.8 % a=0.92 s=0.92"
    },

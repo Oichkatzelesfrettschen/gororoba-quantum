@@ -896,7 +896,6 @@
  },
  "decisions": {
   "calibration": {
-   "blocks": 8,
    "boundary_points": 1024,
    "cells": 99,
    "cells_by_kind": {
@@ -910,69 +909,200 @@
     {
      "a": 0.8,
      "coherent": 0.003417969,
-     "coherent_se": 0.000319655,
      "kind": "corner",
      "non_rotation": 0.0,
-     "non_rotation_se": 0.0,
      "points": 4096,
      "quantile": 6.259439178,
-     "s": 0.75
+     "s": 0.75,
+     "validation_coherent": {
+      "ci95": [
+       0.002234903,
+       0.006337319
+      ],
+      "k": 16,
+      "n": 4095,
+      "rate": 0.003907204
+     },
+     "validation_non_rotation": {
+      "ci95": [
+       6.183e-06,
+       0.001359837
+      ],
+      "k": 1,
+      "n": 4095,
+      "rate": 0.0002442
+     },
+     "validation_points": 4095
     },
     {
      "a": 0.8,
      "coherent": 0.005371094,
-     "coherent_se": 0.001152533,
      "kind": "corner",
      "non_rotation": 0.0,
-     "non_rotation_se": 0.0,
      "points": 4096,
      "quantile": 6.936643785,
-     "s": 1.15
+     "s": 1.15,
+     "validation_coherent": {
+      "ci95": [
+       0.003177158,
+       0.007828378
+      ],
+      "k": 21,
+      "n": 4095,
+      "rate": 0.005128205
+     },
+     "validation_non_rotation": {
+      "ci95": [
+       6.183e-06,
+       0.001359837
+      ],
+      "k": 1,
+      "n": 4095,
+      "rate": 0.0002442
+     },
+     "validation_points": 4095
     },
     {
      "a": 1.2,
      "coherent": 0.006103516,
-     "coherent_se": 0.000442542,
      "kind": "corner",
      "non_rotation": 0.0,
-     "non_rotation_se": 0.0,
      "points": 4096,
      "quantile": 7.063992367,
-     "s": 0.75
+     "s": 0.75,
+     "validation_coherent": {
+      "ci95": [
+       0.003954619,
+       0.008999087
+      ],
+      "k": 25,
+      "n": 4095,
+      "rate": 0.006105006
+     },
+     "validation_non_rotation": {
+      "ci95": [
+       0.0,
+       0.00090042
+      ],
+      "k": 0,
+      "n": 4095,
+      "rate": 0.0
+     },
+     "validation_points": 4095
     },
     {
      "a": 1.2,
      "coherent": 0.007080078,
-     "coherent_se": 0.000820171,
      "kind": "corner",
      "non_rotation": 0.000244141,
-     "non_rotation_se": 0.000244141,
      "points": 4096,
      "quantile": 7.084375051,
-     "s": 1.15
+     "s": 1.15,
+     "validation_coherent": {
+      "ci95": [
+       0.003563679,
+       0.008415816
+      ],
+      "k": 23,
+      "n": 4095,
+      "rate": 0.005616606
+     },
+     "validation_non_rotation": {
+      "ci95": [
+       6.183e-06,
+       0.001359837
+      ],
+      "k": 1,
+      "n": 4095,
+      "rate": 0.0002442
+     },
+     "validation_points": 4095
     }
    ],
    "delta_from_first_cells": 7.5,
    "delta_resolve": 8.0,
-   "false_coherent_max": 0.0078125,
-   "false_coherent_max_cell": {
-    "a": 1.2,
-    "kind": "boundary",
-    "s": 0.75
-   },
-   "false_coherent_max_plus_3se": 0.012241771,
-   "false_coherent_max_se": 0.001476424,
-   "false_coherent_offset_line_max": 0.005126953,
    "geometric_reading_min_over_null_cells": 0.0,
-   "method": "unscrambled Sobol' quadrature in blocks, no seed; rates are estimates at the evaluated cells",
-   "non_rotation_false_alarm_max": 0.000244141,
-   "non_rotation_false_alarm_max_cell": {
-    "a": 1.175,
-    "kind": "null",
-    "s": 0.775
-   },
-   "non_rotation_false_alarm_mean": 1.4796e-05,
+   "method": "unscrambled Sobol' quadrature, no seed: delta from the selection points (indices 1 to 2^points), false-alarm rates from the validation points (indices 2^points + 1 to 2^(points + 1) - 1), a disjoint deterministic set per cell; rates are estimates at the evaluated cells",
    "points": 4096,
+   "validation": {
+    "excludes": [
+     "the dependence between quasi-Monte-Carlo points",
+     "cells between the evaluated cells and the continuous box (the maximum over cells is read at the evaluated cells only, and is biased upward by taking a maximum of noisy rates)",
+     "the model: the response, the dispersion phi and the readout covariance as planned"
+    ],
+    "false_coherent": {
+     "at_selection_worst_cell": {
+      "a": 1.2,
+      "ci95": [
+       0.003378742,
+       0.015335431
+      ],
+      "in_sample_rate": 0.0078125,
+      "k": 8,
+      "kind": "boundary",
+      "n": 1024,
+      "rate": 0.0078125,
+      "s": 0.75
+     },
+     "max_over_cells": {
+      "a": 1.2,
+      "ci95": [
+       0.003378742,
+       0.015335431
+      ],
+      "k": 8,
+      "kind": "boundary",
+      "n": 1024,
+      "rate": 0.0078125,
+      "s": 0.75
+     },
+     "mean_rate_over_cells": 0.005408572
+    },
+    "false_coherent_offset_line_max": {
+     "a": 1.2,
+     "ci95": [
+      0.003563679,
+      0.008415816
+     ],
+     "k": 23,
+     "kind": "null",
+     "n": 4095,
+     "rate": 0.005616606,
+     "s": 1.0
+    },
+    "in_sample_false_coherent_max": 0.0078125,
+    "in_sample_non_rotation_max": 0.000244141,
+    "interval": "95 percent exact binomial (Clopper-Pearson) interval of the validation counts, which treats the quasi-Monte-Carlo points as independent draws: approximate",
+    "non_rotation": {
+     "at_selection_worst_cell": {
+      "a": 1.175,
+      "ci95": [
+       0.0,
+       0.00090042
+      ],
+      "in_sample_rate": 0.000244141,
+      "k": 0,
+      "kind": "null",
+      "n": 4095,
+      "rate": 0.0,
+      "s": 0.775
+     },
+     "max_over_cells": {
+      "a": 0.8,
+      "ci95": [
+       6.183e-06,
+       0.001359837
+      ],
+      "k": 1,
+      "kind": "corner",
+      "n": 4095,
+      "rate": 0.0002442,
+      "s": 0.75
+     },
+     "mean_rate_over_cells": 7.4e-06
+    }
+   },
+   "validation_points": 4095,
    "worst_cell": {
     "a": 1.2,
     "kind": "boundary",
@@ -1560,8 +1690,10 @@
    "truths": [
     {
      "coherent": 0.979980469,
-     "coherent_blocks": 0.979980469,
-     "coherent_se": 0.002144312,
+     "coherent_ci95": [
+      0.972938427,
+      0.985596279
+     ],
      "geometric": 0.0,
      "non_rotation": 0.0078125,
      "truth": "cz -0.015 rad a=0.92 s=0.92",
@@ -1569,8 +1701,10 @@
     },
     {
      "coherent": 0.990234375,
-     "coherent_blocks": 0.990234375,
-     "coherent_se": 0.00127862,
+     "coherent_ci95": [
+      0.984957898,
+      0.994024987
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009765625,
      "truth": "cz -0.015 rad a=0.92 s=1.04",
@@ -1578,8 +1712,10 @@
     },
     {
      "coherent": 0.991699219,
-     "coherent_blocks": 0.991699219,
-     "coherent_se": 0.001152533,
+     "coherent_ci95": [
+      0.986742811,
+      0.995157269
+     ],
      "geometric": 0.0,
      "non_rotation": 0.0078125,
      "truth": "cz -0.015 rad a=1.06 s=0.92",
@@ -1587,8 +1723,10 @@
     },
     {
      "coherent": 0.990722656,
-     "coherent_blocks": 0.990722656,
-     "coherent_se": 0.001640343,
+     "coherent_ci95": [
+      0.985550038,
+      0.994405455
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009277344,
      "truth": "cz -0.015 rad a=1.06 s=1.04",
@@ -1596,8 +1734,10 @@
     },
     {
      "coherent": 0.982910156,
-     "coherent_blocks": 0.982910156,
-     "coherent_se": 0.002755963,
+     "coherent_ci95": [
+      0.976311673,
+      0.988068167
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009277344,
      "truth": "cz +0.015 rad a=0.92 s=0.92",
@@ -1605,8 +1745,10 @@
     },
     {
      "coherent": 0.988769531,
-     "coherent_blocks": 0.988769531,
-     "coherent_se": 0.002013235,
+     "coherent_ci95": [
+      0.983196178,
+      0.992867896
+     ],
      "geometric": 0.0,
      "non_rotation": 0.011230469,
      "truth": "cz +0.015 rad a=0.92 s=1.04",
@@ -1614,8 +1756,10 @@
     },
     {
      "coherent": 0.990722656,
-     "coherent_blocks": 0.990722656,
-     "coherent_se": 0.001464844,
+     "coherent_ci95": [
+      0.985550038,
+      0.994405455
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009277344,
      "truth": "cz +0.015 rad a=1.06 s=0.92",
@@ -1623,8 +1767,10 @@
     },
     {
      "coherent": 0.988769531,
-     "coherent_blocks": 0.988769531,
-     "coherent_se": 0.002013235,
+     "coherent_ci95": [
+      0.983196178,
+      0.992867896
+     ],
      "geometric": 0.0,
      "non_rotation": 0.011230469,
      "truth": "cz +0.015 rad a=1.06 s=1.04",
@@ -1632,8 +1778,10 @@
     },
     {
      "coherent": 0.96484375,
-     "coherent_blocks": 0.96484375,
-     "coherent_se": 0.002859082,
+     "coherent_ci95": [
+      0.955929466,
+      0.972392769
+     ],
      "geometric": 0.0,
      "non_rotation": 0.010742188,
      "truth": "prx -0.8 % a=0.92 s=0.92",
@@ -1641,8 +1789,10 @@
     },
     {
      "coherent": 0.988769531,
-     "coherent_blocks": 0.988769531,
-     "coherent_se": 0.002267825,
+     "coherent_ci95": [
+      0.983196178,
+      0.992867896
+     ],
      "geometric": 0.0,
      "non_rotation": 0.011230469,
      "truth": "prx -0.8 % a=0.92 s=1.04",
@@ -1650,8 +1800,10 @@
     },
     {
      "coherent": 0.985839844,
-     "coherent_blocks": 0.985839844,
-     "coherent_se": 0.001944386,
+     "coherent_ci95": [
+      0.979726536,
+      0.990496759
+     ],
      "geometric": 0.0,
      "non_rotation": 0.01171875,
      "truth": "prx -0.8 % a=1.06 s=0.92",
@@ -1659,8 +1811,10 @@
     },
     {
      "coherent": 0.986816406,
-     "coherent_blocks": 0.986816406,
-     "coherent_se": 0.002206932,
+     "coherent_ci95": [
+      0.980876152,
+      0.991294437
+     ],
      "geometric": 0.0,
      "non_rotation": 0.013183594,
      "truth": "prx -0.8 % a=1.06 s=1.04",
@@ -1668,8 +1822,10 @@
     },
     {
      "coherent": 0.964355469,
-     "coherent_blocks": 0.964355469,
-     "coherent_se": 0.002013235,
+     "coherent_ci95": [
+      0.955389073,
+      0.971958372
+     ],
      "geometric": 0.0,
      "non_rotation": 0.011230469,
      "truth": "prx +0.8 % a=0.92 s=0.92",
@@ -1677,8 +1833,10 @@
     },
     {
      "coherent": 0.983886719,
-     "coherent_blocks": 0.983886719,
-     "coherent_se": 0.000885085,
+     "coherent_ci95": [
+      0.977444808,
+      0.988883073
+     ],
      "geometric": 0.0,
      "non_rotation": 0.016113281,
      "truth": "prx +0.8 % a=0.92 s=1.04",
@@ -1686,8 +1844,10 @@
     },
     {
      "coherent": 0.984863281,
-     "coherent_blocks": 0.984863281,
-     "coherent_se": 0.002013235,
+     "coherent_ci95": [
+      0.978582939,
+      0.989692772
+     ],
      "geometric": 0.0,
      "non_rotation": 0.011230469,
      "truth": "prx +0.8 % a=1.06 s=0.92",
@@ -1695,8 +1855,10 @@
     },
     {
      "coherent": 0.982421875,
-     "coherent_blocks": 0.982421875,
-     "coherent_se": 0.001476424,
+     "coherent_ci95": [
+      0.975746849,
+      0.9876589
+     ],
      "geometric": 0.0,
      "non_rotation": 0.017578125,
      "truth": "prx +0.8 % a=1.06 s=1.04",
@@ -1704,8 +1866,10 @@
     },
     {
      "coherent": 0.982910156,
-     "coherent_blocks": 0.982910156,
-     "coherent_se": 0.003038125,
+     "coherent_ci95": [
+      0.976311673,
+      0.988068167
+     ],
      "geometric": 0.0,
      "non_rotation": 0.01171875,
      "truth": "zz -10 kHz a=0.92 s=0.92",
@@ -1713,8 +1877,10 @@
     },
     {
      "coherent": 0.986328125,
-     "coherent_blocks": 0.986328125,
-     "coherent_se": 0.000738212,
+     "coherent_ci95": [
+      0.980300554,
+      0.990896428
+     ],
      "geometric": 0.0,
      "non_rotation": 0.013671875,
      "truth": "zz -10 kHz a=0.92 s=1.04",
@@ -1722,8 +1888,10 @@
     },
     {
      "coherent": 0.987304688,
-     "coherent_blocks": 0.987304688,
-     "coherent_se": 0.00177017,
+     "coherent_ci95": [
+      0.981453416,
+      0.991690696
+     ],
      "geometric": 0.0,
      "non_rotation": 0.012695312,
      "truth": "zz -10 kHz a=1.06 s=0.92",
@@ -1731,8 +1899,10 @@
     },
     {
      "coherent": 0.982421875,
-     "coherent_blocks": 0.982421875,
-     "coherent_se": 0.000738212,
+     "coherent_ci95": [
+      0.975746849,
+      0.9876589
+     ],
      "geometric": 0.0,
      "non_rotation": 0.017578125,
      "truth": "zz -10 kHz a=1.06 s=1.04",
@@ -1740,8 +1910,10 @@
     },
     {
      "coherent": 0.983886719,
-     "coherent_blocks": 0.983886719,
-     "coherent_se": 0.001152533,
+     "coherent_ci95": [
+      0.977444808,
+      0.988883073
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008300781,
      "truth": "zz +10 kHz a=0.92 s=0.92",
@@ -1749,8 +1921,10 @@
     },
     {
      "coherent": 0.990234375,
-     "coherent_blocks": 0.990234375,
-     "coherent_se": 0.00127862,
+     "coherent_ci95": [
+      0.984957898,
+      0.994024987
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009765625,
      "truth": "zz +10 kHz a=0.92 s=1.04",
@@ -1758,8 +1932,10 @@
     },
     {
      "coherent": 0.991210938,
-     "coherent_blocks": 0.991210938,
-     "coherent_se": 0.001224186,
+     "coherent_ci95": [
+      0.986144936,
+      0.994782965
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008789062,
      "truth": "zz +10 kHz a=1.06 s=0.92",
@@ -1767,8 +1943,10 @@
     },
     {
      "coherent": 0.989257812,
-     "coherent_blocks": 0.989257812,
-     "coherent_se": 0.000976562,
+     "coherent_ci95": [
+      0.983781131,
+      0.993256026
+     ],
      "geometric": 0.0,
      "non_rotation": 0.010742188,
      "truth": "zz +10 kHz a=1.06 s=1.04",
@@ -1776,8 +1954,10 @@
     },
     {
      "coherent": 0.989746094,
-     "coherent_blocks": 0.989746094,
-     "coherent_se": 0.001464844,
+     "coherent_ci95": [
+      0.98436832,
+      0.99364178
+     ],
      "geometric": 0.0,
      "non_rotation": 0.010253906,
      "truth": "plane eps=-0.03 a=0.92 s=0.92",
@@ -1785,8 +1965,10 @@
     },
     {
      "coherent": 0.989746094,
-     "coherent_blocks": 0.989746094,
-     "coherent_se": 0.0017988,
+     "coherent_ci95": [
+      0.98436832,
+      0.99364178
+     ],
      "geometric": 0.0,
      "non_rotation": 0.010253906,
      "truth": "plane eps=-0.03 a=0.92 s=1.04",
@@ -1794,8 +1976,10 @@
     },
     {
      "coherent": 0.989746094,
-     "coherent_blocks": 0.989746094,
-     "coherent_se": 0.001464844,
+     "coherent_ci95": [
+      0.98436832,
+      0.99364178
+     ],
      "geometric": 0.0,
      "non_rotation": 0.010253906,
      "truth": "plane eps=-0.03 a=1.06 s=0.92",
@@ -1803,8 +1987,10 @@
     },
     {
      "coherent": 0.989746094,
-     "coherent_blocks": 0.989746094,
-     "coherent_se": 0.0017988,
+     "coherent_ci95": [
+      0.98436832,
+      0.99364178
+     ],
      "geometric": 0.0,
      "non_rotation": 0.010253906,
      "truth": "plane eps=-0.03 a=1.06 s=1.04",
@@ -1812,8 +1998,10 @@
     },
     {
      "coherent": 0.985351562,
-     "coherent_blocks": 0.985351562,
-     "coherent_se": 0.002420389,
+     "coherent_ci95": [
+      0.979154022,
+      0.990095514
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009277344,
      "truth": "plane eps=-0.02 a=0.92 s=0.92",
@@ -1821,8 +2009,10 @@
     },
     {
      "coherent": 0.988769531,
-     "coherent_blocks": 0.988769531,
-     "coherent_se": 0.002013235,
+     "coherent_ci95": [
+      0.983196178,
+      0.992867896
+     ],
      "geometric": 0.0,
      "non_rotation": 0.011230469,
      "truth": "plane eps=-0.02 a=0.92 s=1.04",
@@ -1830,8 +2020,10 @@
     },
     {
      "coherent": 0.990722656,
-     "coherent_blocks": 0.990722656,
-     "coherent_se": 0.001464844,
+     "coherent_ci95": [
+      0.985550038,
+      0.994405455
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009277344,
      "truth": "plane eps=-0.02 a=1.06 s=0.92",
@@ -1839,8 +2031,10 @@
     },
     {
      "coherent": 0.988769531,
-     "coherent_blocks": 0.988769531,
-     "coherent_se": 0.002013235,
+     "coherent_ci95": [
+      0.983196178,
+      0.992867896
+     ],
      "geometric": 0.0,
      "non_rotation": 0.011230469,
      "truth": "plane eps=-0.02 a=1.06 s=1.04",
@@ -1848,8 +2042,10 @@
     },
     {
      "coherent": 0.873535156,
-     "coherent_blocks": 0.873535156,
-     "coherent_se": 0.003457599,
+     "coherent_ci95": [
+      0.858359947,
+      0.887631807
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008789062,
      "truth": "plane eps=-0.015 a=0.92 s=0.92",
@@ -1857,8 +2053,10 @@
     },
     {
      "coherent": 0.987304688,
-     "coherent_blocks": 0.987304688,
-     "coherent_se": 0.00177017,
+     "coherent_ci95": [
+      0.981453416,
+      0.991690696
+     ],
      "geometric": 0.0,
      "non_rotation": 0.01171875,
      "truth": "plane eps=-0.015 a=0.92 s=1.04",
@@ -1866,8 +2064,10 @@
     },
     {
      "coherent": 0.957519531,
-     "coherent_blocks": 0.957519531,
-     "coherent_se": 0.001368681,
+     "coherent_ci95": [
+      0.947862228,
+      0.965837464
+     ],
      "geometric": 0.0,
      "non_rotation": 0.010253906,
      "truth": "plane eps=-0.015 a=1.06 s=0.92",
@@ -1875,8 +2075,10 @@
     },
     {
      "coherent": 0.988769531,
-     "coherent_blocks": 0.988769531,
-     "coherent_se": 0.002013235,
+     "coherent_ci95": [
+      0.983196178,
+      0.992867896
+     ],
      "geometric": 0.0,
      "non_rotation": 0.011230469,
      "truth": "plane eps=-0.015 a=1.06 s=1.04",
@@ -1884,8 +2086,10 @@
     },
     {
      "coherent": 0.439453125,
-     "coherent_blocks": 0.439453125,
-     "coherent_se": 0.005905695,
+     "coherent_ci95": [
+      0.417813323,
+      0.461266502
+     ],
      "geometric": 0.049804688,
      "non_rotation": 0.003417969,
      "truth": "plane eps=-0.01 a=0.92 s=0.92",
@@ -1893,8 +2097,10 @@
     },
     {
      "coherent": 0.810546875,
-     "coherent_blocks": 0.810546875,
-     "coherent_se": 0.004550644,
+     "coherent_ci95": [
+      0.792891249,
+      0.827308757
+     ],
      "geometric": 0.047851562,
      "non_rotation": 0.0078125,
      "truth": "plane eps=-0.01 a=0.92 s=1.04",
@@ -1902,8 +2108,10 @@
     },
     {
      "coherent": 0.609863281,
-     "coherent_blocks": 0.609863281,
-     "coherent_se": 0.004516837,
+     "coherent_ci95": [
+      0.588348571,
+      0.631062956
+     ],
      "geometric": 0.049804688,
      "non_rotation": 0.005859375,
      "truth": "plane eps=-0.01 a=1.06 s=0.92",
@@ -1911,8 +2119,10 @@
     },
     {
      "coherent": 0.938476562,
-     "coherent_blocks": 0.938476562,
-     "coherent_se": 0.002530463,
+     "coherent_ci95": [
+      0.927182962,
+      0.948493677
+     ],
      "geometric": 0.049316406,
      "non_rotation": 0.009277344,
      "truth": "plane eps=-0.01 a=1.06 s=1.04",
@@ -1920,8 +2130,10 @@
     },
     {
      "coherent": 0.435058594,
-     "coherent_blocks": 0.435058594,
-     "coherent_se": 0.004665213,
+     "coherent_ci95": [
+      0.413449137,
+      0.456854227
+     ],
      "geometric": 0.048828125,
      "non_rotation": 0.00390625,
      "truth": "plane eps=0.01 a=0.92 s=0.92",
@@ -1929,8 +2141,10 @@
     },
     {
      "coherent": 0.797363281,
-     "coherent_blocks": 0.797363281,
-     "coherent_se": 0.004516837,
+     "coherent_ci95": [
+      0.779290193,
+      0.814580964
+     ],
      "geometric": 0.049316406,
      "non_rotation": 0.007324219,
      "truth": "plane eps=0.01 a=0.92 s=1.04",
@@ -1938,8 +2152,10 @@
     },
     {
      "coherent": 0.594238281,
-     "coherent_blocks": 0.594238281,
-     "coherent_se": 0.004005267,
+     "coherent_ci95": [
+      0.572605055,
+      0.615601303
+     ],
      "geometric": 0.048828125,
      "non_rotation": 0.004882812,
      "truth": "plane eps=0.01 a=1.06 s=0.92",
@@ -1947,8 +2163,10 @@
     },
     {
      "coherent": 0.930175781,
-     "coherent_blocks": 0.930175781,
-     "coherent_se": 0.001721395,
+     "coherent_ci95": [
+      0.918266,
+      0.940835341
+     ],
      "geometric": 0.047851562,
      "non_rotation": 0.009277344,
      "truth": "plane eps=0.01 a=1.06 s=1.04",
@@ -1956,8 +2174,10 @@
     },
     {
      "coherent": 0.876953125,
-     "coherent_blocks": 0.876953125,
-     "coherent_se": 0.004240704,
+     "coherent_ci95": [
+      0.861940674,
+      0.890876871
+     ],
      "geometric": 0.000488281,
      "non_rotation": 0.0078125,
      "truth": "plane eps=0.015 a=0.92 s=0.92",
@@ -1965,8 +2185,10 @@
     },
     {
      "coherent": 0.987304688,
-     "coherent_blocks": 0.987304688,
-     "coherent_se": 0.001429541,
+     "coherent_ci95": [
+      0.981453416,
+      0.991690696
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009765625,
      "truth": "plane eps=0.015 a=0.92 s=1.04",
@@ -1974,8 +2196,10 @@
     },
     {
      "coherent": 0.95703125,
-     "coherent_blocks": 0.95703125,
-     "coherent_se": 0.002661661,
+     "coherent_ci95": [
+      0.947327106,
+      0.965397704
+     ],
      "geometric": 0.000488281,
      "non_rotation": 0.008300781,
      "truth": "plane eps=0.015 a=1.06 s=0.92",
@@ -1983,8 +2207,10 @@
     },
     {
      "coherent": 0.991699219,
-     "coherent_blocks": 0.991699219,
-     "coherent_se": 0.000885085,
+     "coherent_ci95": [
+      0.986742811,
+      0.995157269
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008300781,
      "truth": "plane eps=0.015 a=1.06 s=1.04",
@@ -1992,8 +2218,10 @@
     },
     {
      "coherent": 0.984863281,
-     "coherent_blocks": 0.984863281,
-     "coherent_se": 0.001152533,
+     "coherent_ci95": [
+      0.978582939,
+      0.989692772
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=0.92 s=0.92",
@@ -2001,8 +2229,10 @@
     },
     {
      "coherent": 0.991699219,
-     "coherent_blocks": 0.991699219,
-     "coherent_se": 0.000885085,
+     "coherent_ci95": [
+      0.986742811,
+      0.995157269
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=0.92 s=1.04",
@@ -2010,8 +2240,10 @@
     },
     {
      "coherent": 0.991699219,
-     "coherent_blocks": 0.991699219,
-     "coherent_se": 0.000885085,
+     "coherent_ci95": [
+      0.986742811,
+      0.995157269
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=1.06 s=0.92",
@@ -2019,8 +2251,10 @@
     },
     {
      "coherent": 0.991210938,
-     "coherent_blocks": 0.991210938,
-     "coherent_se": 0.000976562,
+     "coherent_ci95": [
+      0.986144936,
+      0.994782965
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008789062,
      "truth": "plane eps=0.02 a=1.06 s=1.04",
@@ -2028,8 +2262,10 @@
     },
     {
      "coherent": 0.992675781,
-     "coherent_blocks": 0.992675781,
-     "coherent_se": 0.000885085,
+     "coherent_ci95": [
+      0.987948545,
+      0.995895065
+     ],
      "geometric": 0.0,
      "non_rotation": 0.007324219,
      "truth": "plane eps=0.03 a=0.92 s=0.92",
@@ -2037,8 +2273,10 @@
     },
     {
      "coherent": 0.991210938,
-     "coherent_blocks": 0.991210938,
-     "coherent_se": 0.000976562,
+     "coherent_ci95": [
+      0.986144936,
+      0.994782965
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008789062,
      "truth": "plane eps=0.03 a=0.92 s=1.04",
@@ -2046,8 +2284,10 @@
     },
     {
      "coherent": 0.992675781,
-     "coherent_blocks": 0.992675781,
-     "coherent_se": 0.000885085,
+     "coherent_ci95": [
+      0.987948545,
+      0.995895065
+     ],
      "geometric": 0.0,
      "non_rotation": 0.007324219,
      "truth": "plane eps=0.03 a=1.06 s=0.92",
@@ -2055,8 +2295,10 @@
     },
     {
      "coherent": 0.991699219,
-     "coherent_blocks": 0.991699219,
-     "coherent_se": 0.000885085,
+     "coherent_ci95": [
+      0.986742811,
+      0.995157269
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008300781,
      "truth": "plane eps=0.03 a=1.06 s=1.04",
@@ -2064,8 +2306,10 @@
     },
     {
      "coherent": 0.990234375,
-     "coherent_blocks": 0.990234375,
-     "coherent_se": 0.001808242,
+     "coherent_ci95": [
+      0.984957898,
+      0.994024987
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009765625,
      "truth": "plane eps=-0.02 a=1.0000 s=0.9750",
@@ -2073,8 +2317,10 @@
     },
     {
      "coherent": 0.990234375,
-     "coherent_blocks": 0.990234375,
-     "coherent_se": 0.001650692,
+     "coherent_ci95": [
+      0.984957898,
+      0.994024987
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009765625,
      "truth": "plane eps=-0.02 a=1.0500 s=0.9375",
@@ -2082,8 +2328,10 @@
     },
     {
      "coherent": 0.989257812,
-     "coherent_blocks": 0.989257812,
-     "coherent_se": 0.002055095,
+     "coherent_ci95": [
+      0.983781131,
+      0.993256026
+     ],
      "geometric": 0.0,
      "non_rotation": 0.010742188,
      "truth": "plane eps=-0.02 a=0.9500 s=1.0125",
@@ -2091,8 +2339,10 @@
     },
     {
      "coherent": 0.990722656,
-     "coherent_blocks": 0.990722656,
-     "coherent_se": 0.001944386,
+     "coherent_ci95": [
+      0.985550038,
+      0.994405455
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009277344,
      "truth": "plane eps=-0.02 a=0.9750 s=0.9563",
@@ -2100,8 +2350,10 @@
     },
     {
      "coherent": 0.988769531,
-     "coherent_blocks": 0.988769531,
-     "coherent_se": 0.002013235,
+     "coherent_ci95": [
+      0.983196178,
+      0.992867896
+     ],
      "geometric": 0.0,
      "non_rotation": 0.011230469,
      "truth": "plane eps=-0.02 a=1.0750 s=1.0312",
@@ -2109,8 +2361,10 @@
     },
     {
      "coherent": 0.990722656,
-     "coherent_blocks": 0.990722656,
-     "coherent_se": 0.001464844,
+     "coherent_ci95": [
+      0.985550038,
+      0.994405455
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009277344,
      "truth": "plane eps=-0.02 a=1.0250 s=0.9188",
@@ -2118,8 +2372,10 @@
     },
     {
      "coherent": 0.990234375,
-     "coherent_blocks": 0.990234375,
-     "coherent_se": 0.001808242,
+     "coherent_ci95": [
+      0.984957898,
+      0.994024987
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009765625,
      "truth": "plane eps=-0.02 a=0.9250 s=0.9938",
@@ -2127,8 +2383,10 @@
     },
     {
      "coherent": 0.990234375,
-     "coherent_blocks": 0.990234375,
-     "coherent_se": 0.001650692,
+     "coherent_ci95": [
+      0.984957898,
+      0.994024987
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009765625,
      "truth": "plane eps=-0.02 a=0.9375 s=0.9469",
@@ -2136,8 +2394,10 @@
     },
     {
      "coherent": 0.988769531,
-     "coherent_blocks": 0.988769531,
-     "coherent_se": 0.002013235,
+     "coherent_ci95": [
+      0.983196178,
+      0.992867896
+     ],
      "geometric": 0.0,
      "non_rotation": 0.011230469,
      "truth": "plane eps=-0.02 a=1.0375 s=1.0219",
@@ -2145,8 +2405,10 @@
     },
     {
      "coherent": 0.990234375,
-     "coherent_blocks": 0.990234375,
-     "coherent_se": 0.00127862,
+     "coherent_ci95": [
+      0.984957898,
+      0.994024987
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009765625,
      "truth": "plane eps=-0.02 a=1.0875 s=0.9094",
@@ -2154,8 +2416,10 @@
     },
     {
      "coherent": 0.990234375,
-     "coherent_blocks": 0.990234375,
-     "coherent_se": 0.001808242,
+     "coherent_ci95": [
+      0.984957898,
+      0.994024987
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009765625,
      "truth": "plane eps=-0.02 a=0.9875 s=0.9844",
@@ -2163,8 +2427,10 @@
     },
     {
      "coherent": 0.990722656,
-     "coherent_blocks": 0.990722656,
-     "coherent_se": 0.001464844,
+     "coherent_ci95": [
+      0.985550038,
+      0.994405455
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009277344,
      "truth": "plane eps=-0.02 a=0.9625 s=0.9281",
@@ -2172,8 +2438,10 @@
     },
     {
      "coherent": 0.989746094,
-     "coherent_blocks": 0.989746094,
-     "coherent_se": 0.0017988,
+     "coherent_ci95": [
+      0.98436832,
+      0.99364178
+     ],
      "geometric": 0.0,
      "non_rotation": 0.010253906,
      "truth": "plane eps=-0.02 a=1.0625 s=1.0031",
@@ -2181,8 +2449,10 @@
     },
     {
      "coherent": 0.990234375,
-     "coherent_blocks": 0.990234375,
-     "coherent_se": 0.001808242,
+     "coherent_ci95": [
+      0.984957898,
+      0.994024987
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009765625,
      "truth": "plane eps=-0.02 a=1.0125 s=0.9656",
@@ -2190,8 +2460,10 @@
     },
     {
      "coherent": 0.988769531,
-     "coherent_blocks": 0.988769531,
-     "coherent_se": 0.002013235,
+     "coherent_ci95": [
+      0.983196178,
+      0.992867896
+     ],
      "geometric": 0.0,
      "non_rotation": 0.011230469,
      "truth": "plane eps=-0.02 a=0.9125 s=1.0406",
@@ -2199,8 +2471,10 @@
     },
     {
      "coherent": 0.990234375,
-     "coherent_blocks": 0.990234375,
-     "coherent_se": 0.001808242,
+     "coherent_ci95": [
+      0.984957898,
+      0.994024987
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009765625,
      "truth": "plane eps=-0.02 a=0.9188 s=0.9703",
@@ -2208,8 +2482,10 @@
     },
     {
      "coherent": 0.991210938,
-     "coherent_blocks": 0.991210938,
-     "coherent_se": 0.001224186,
+     "coherent_ci95": [
+      0.986144936,
+      0.994782965
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008789062,
      "truth": "plane eps=0.02 a=1.0000 s=0.9750",
@@ -2217,8 +2493,10 @@
     },
     {
      "coherent": 0.991210938,
-     "coherent_blocks": 0.991210938,
-     "coherent_se": 0.001224186,
+     "coherent_ci95": [
+      0.986144936,
+      0.994782965
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008789062,
      "truth": "plane eps=0.02 a=1.0500 s=0.9375",
@@ -2226,8 +2504,10 @@
     },
     {
      "coherent": 0.990722656,
-     "coherent_blocks": 0.990722656,
-     "coherent_se": 0.001265231,
+     "coherent_ci95": [
+      0.985550038,
+      0.994405455
+     ],
      "geometric": 0.0,
      "non_rotation": 0.009277344,
      "truth": "plane eps=0.02 a=0.9500 s=1.0125",
@@ -2235,8 +2515,10 @@
     },
     {
      "coherent": 0.991699219,
-     "coherent_blocks": 0.991699219,
-     "coherent_se": 0.000885085,
+     "coherent_ci95": [
+      0.986742811,
+      0.995157269
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=0.9750 s=0.9563",
@@ -2244,8 +2526,10 @@
     },
     {
      "coherent": 0.991210938,
-     "coherent_blocks": 0.991210938,
-     "coherent_se": 0.000976562,
+     "coherent_ci95": [
+      0.986144936,
+      0.994782965
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008789062,
      "truth": "plane eps=0.02 a=1.0750 s=1.0312",
@@ -2253,8 +2537,10 @@
     },
     {
      "coherent": 0.991210938,
-     "coherent_blocks": 0.991210938,
-     "coherent_se": 0.000976562,
+     "coherent_ci95": [
+      0.986144936,
+      0.994782965
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=1.0250 s=0.9188",
@@ -2262,8 +2548,10 @@
     },
     {
      "coherent": 0.991699219,
-     "coherent_blocks": 0.991699219,
-     "coherent_se": 0.000885085,
+     "coherent_ci95": [
+      0.986742811,
+      0.995157269
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=0.9250 s=0.9938",
@@ -2271,8 +2559,10 @@
     },
     {
      "coherent": 0.991210938,
-     "coherent_blocks": 0.991210938,
-     "coherent_se": 0.000976562,
+     "coherent_ci95": [
+      0.986144936,
+      0.994782965
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=0.9375 s=0.9469",
@@ -2280,8 +2570,10 @@
     },
     {
      "coherent": 0.991210938,
-     "coherent_blocks": 0.991210938,
-     "coherent_se": 0.000976562,
+     "coherent_ci95": [
+      0.986144936,
+      0.994782965
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008789062,
      "truth": "plane eps=0.02 a=1.0375 s=1.0219",
@@ -2289,8 +2581,10 @@
     },
     {
      "coherent": 0.9921875,
-     "coherent_blocks": 0.9921875,
-     "coherent_se": 0.000738212,
+     "coherent_ci95": [
+      0.987343917,
+      0.995528079
+     ],
      "geometric": 0.0,
      "non_rotation": 0.0078125,
      "truth": "plane eps=0.02 a=1.0875 s=0.9094",
@@ -2298,8 +2592,10 @@
     },
     {
      "coherent": 0.991210938,
-     "coherent_blocks": 0.991210938,
-     "coherent_se": 0.001224186,
+     "coherent_ci95": [
+      0.986144936,
+      0.994782965
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008789062,
      "truth": "plane eps=0.02 a=0.9875 s=0.9844",
@@ -2307,8 +2603,10 @@
     },
     {
      "coherent": 0.990722656,
-     "coherent_blocks": 0.990722656,
-     "coherent_se": 0.001265231,
+     "coherent_ci95": [
+      0.985550038,
+      0.994405455
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=0.9625 s=0.9281",
@@ -2316,8 +2614,10 @@
     },
     {
      "coherent": 0.991699219,
-     "coherent_blocks": 0.991699219,
-     "coherent_se": 0.000885085,
+     "coherent_ci95": [
+      0.986742811,
+      0.995157269
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=1.0625 s=1.0031",
@@ -2325,8 +2625,10 @@
     },
     {
      "coherent": 0.991210938,
-     "coherent_blocks": 0.991210938,
-     "coherent_se": 0.001224186,
+     "coherent_ci95": [
+      0.986144936,
+      0.994782965
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008789062,
      "truth": "plane eps=0.02 a=1.0125 s=0.9656",
@@ -2334,8 +2636,10 @@
     },
     {
      "coherent": 0.991699219,
-     "coherent_blocks": 0.991699219,
-     "coherent_se": 0.000885085,
+     "coherent_ci95": [
+      0.986742811,
+      0.995157269
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=0.9125 s=1.0406",
@@ -2343,8 +2647,10 @@
     },
     {
      "coherent": 0.991699219,
-     "coherent_blocks": 0.991699219,
-     "coherent_se": 0.000885085,
+     "coherent_ci95": [
+      0.986742811,
+      0.995157269
+     ],
      "geometric": 0.0,
      "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=0.9188 s=0.9703",
@@ -2353,8 +2659,10 @@
    ],
    "worst_resolved_truth": {
     "coherent": 0.964355469,
-    "coherent_blocks": 0.964355469,
-    "coherent_se": 0.002013235,
+    "coherent_ci95": [
+     0.955389073,
+     0.971958372
+    ],
     "geometric": 0.0,
     "non_rotation": 0.011230469,
     "truth": "prx +0.8 % a=0.92 s=0.92",
@@ -2458,58 +2766,19 @@
    }
   },
   "response": {
-   "centered": [
-    [
-     [
-      0.49252069,
-      0.52065725,
-      0.133627033,
-      -0.048339266
-     ],
-     [
-      0.505535045,
-      0.510430773,
-      0.104942701,
-      -0.044080271
-     ],
-     [
-      0.518204624,
-      0.498429295,
-      0.077449817,
-      -0.034832422
-     ]
-    ],
-    [
-     [
-      0.547477749,
-      0.643356813,
-      0.18433859,
-      -0.071972179
-     ],
-     [
-      0.561938143,
-      0.630730452,
-      0.144992529,
-      -0.065472485
-     ],
-     [
-      0.576015453,
-      0.615912824,
-      0.107281208,
-      -0.051368851
-     ]
-    ]
+   "decimals": 6,
+   "depths": 4,
+   "eps_box": [
+    -0.3,
+    0.3
    ],
-   "eps": [
-    -0.04,
-    0.0,
-    0.04
+   "eps_points": 121,
+   "s_box": [
+    0.75,
+    1.15
    ],
-   "s": [
-    0.9,
-    1.0
-   ],
-   "sha256": "c2f27409dbc852b2ecb28471a3e9921d8cf4d02feefaa0f32f210c84269f3a5e"
+   "s_points": 91,
+   "sha256": "8c7c597dc06089169bea5c09bb8aebfd6bdc1ef06b979eab9932082f5f851b17"
   },
   "rule": {
    "boxes": {

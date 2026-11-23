@@ -433,17 +433,6 @@ def mark_block(
     return circuits, response, decision.Fitter(response), readout_plan(distributions, first, mark, copies), copies
 
 
-def response_digest(resp: sim.Response) -> dict[str, Any]:
-    grid_s, grid_e = [0.9, 1.0], [-0.04, 0.0, 0.04]
-    table = [[list(resp.centered(s, e)) for e in grid_e] for s in grid_s]
-    return {
-        "s": grid_s,
-        "eps": grid_e,
-        "centered": table,
-        "sha256": hashlib.sha256(json.dumps(rounded(table)).encode()).hexdigest(),
-    }
-
-
 def decisions(
     arms: list[dict[str, Any]], cal: Any, distributions: dict[str, np.ndarray], design: Design = DESIGN
 ) -> dict[str, Any]:
@@ -497,7 +486,7 @@ def decisions(
     }
     block: dict[str, Any] = {
         "model_probabilities": response.probabilities(1.0, 1.0, 0.0),
-        "response": response_digest(response),
+        "response": decision.response_grid_digest(fitter),
         "readout": plan,
         "gate": {
             "copy_floor": decision.COPY_FLOOR,
@@ -572,7 +561,7 @@ def decisions(
     )
     block["mark_011"] = {
         "model_probabilities": response_b.probabilities(1.0, 1.0, 0.0),
-        "response": response_digest(response_b),
+        "response": decision.response_grid_digest(fitter_b),
         "readout": plan_b,
         "copies": {str(k): n for k, n in copies_b.items()},
     }
@@ -649,7 +638,7 @@ def build_from(calibration_dir: Path, design: Design = DESIGN) -> tuple[dict[str
             "schema": CASE_SCHEMA,
             "case": design.case,
             "prediction_sha256": sha256(files["prediction.json"].encode()),
-            "question": question((prediction["decisions"]["contrast"] or {}).get("ratio_prx")),
+            "question": question("011" in design.marks),
             "qcs": QCS,
             "jobs": [job],
         }
@@ -657,22 +646,23 @@ def build_from(calibration_dir: Path, design: Design = DESIGN) -> tuple[dict[str
     return files, prediction
 
 
-def question(ratio_prx: float | None) -> str:
-    """The approval question: the PRX arm states the fitted ratio of the decision, as prediction.json records it; a
-    case without mark 011 arms (ratio_prx None) asks the primary question alone."""
-    if ratio_prx is None:
-        return (
-            "With the line-native Grover of mark 101 at depths 1 to 4 placed at positions mirrored about the job's "
-            "center on one Garnet calibration, does the marked probability of mark 101 depart from the geometric law "
-            "of the calibrated model toward a rotation of the Grover plane per iteration, whatever gate error "
-            "causes it?"
-        )
+def question(with_011: bool) -> str:
+    """The approval question: the primary departure test of mark 101 alone. A case with mark 011 arms states that the
+    arms buy a contrast reading that the question does not ask: the contrast reads only when both marks pass every
+    gate, and its power omits the pair and readout gates."""
+    primary = (
+        "With the line-native Grover of mark 101 at depths 1 to 4 placed at positions mirrored about the job's "
+        "center on one Garnet calibration, does the marked probability of mark 101 depart from the geometric law "
+        "of the calibrated model toward a rotation of the Grover plane per iteration, whatever gate error "
+        "causes it?"
+    )
+    if not with_011:
+        return primary
     return (
-        "With the line-native Grover of mark 101 at depths 1 to 4 and of mark 011 at depths 1 to 3 placed at "
-        "positions mirrored about the job's center on one Garnet calibration, does the marked probability of "
-        "mark 101 depart from the geometric law of the calibrated model toward a rotation of the Grover plane "
-        "per iteration, whatever gate error causes it, and does mark 011 rotate as a CZ phase (not at all) or "
-        f"as a PRX amplitude ({ratio_prx} times mark 101) predicts?"
+        primary
+        + " The job also carries 14 circuits of mark 011 at depths 1 to 3; they buy a contrast reading beside the "
+        "answer (a CZ phase leaves mark 011 unrotated, a PRX amplitude rotates it by the ratio of prediction.json "
+        "times mark 101) that this question does not ask and the approval does not rest on."
     )
 
 
