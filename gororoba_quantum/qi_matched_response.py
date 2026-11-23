@@ -53,6 +53,8 @@ READOUT_ONE = "readout-1.cq"
 REJECT_Z = 3.0
 REJECTION = "abs(z)>=3"
 WEIGHTS = (0, 0, -1, 1, 1, -1)
+PROPOSAL_SHA256 = "31e9e55a77767afd21ff01bebed55d71db76eae7d421a8c79342a6d050070568"
+SELECTORS = (4, 11)
 ORDER = ("D_R1_b0", "B_R2_b0", "B_R1_b1", "F_R2_b1", "F_R1_b2", "D_R2_b2")
 CASE_LETTER = {"dark": "D", "bright": "B", "fixture": "F"}
 LABEL = re.compile(r"[DBF]_R[12]_b\d+")
@@ -111,7 +113,10 @@ def proposal_digests(directory: Path) -> dict[str, Any]:
         len(batches) == 3 and all(len(row["circuits"]) == 3 for row in batches.values()),
         "the proposal needs three batches of three circuits",
     )
-    return {"proposal.json": _digest(directory / "proposal.json"), "batches": batches}
+    _require(
+        _digest(directory / "proposal.json") == PROPOSAL_SHA256, "proposal.json differs from the approved proposal"
+    )
+    return {"proposal.json": PROPOSAL_SHA256, "batches": batches}
 
 
 def verify_run_binding(expected: Mapping[str, Any], batch: str, record: Mapping[str, Any]) -> dict[str, Any]:
@@ -146,7 +151,7 @@ def analyze_matched_series(
     regions = proposal["regions"]
     _require(len(regions) == 2, "the proposal needs exactly two regions")
     selectors = (int(regions[0]["roles"]["selector"]), int(regions[1]["roles"]["selector"]))
-    _require(selectors[0] != selectors[1], "the two regions need distinct selector qubits")
+    _require(selectors == SELECTORS, "the proposal selectors differ from the frozen selectors")
 
     position: dict[str, int] = {}
     for index, label in enumerate(order):

@@ -5419,7 +5419,9 @@
       "boundary": "Local exact and compiler checks establish software conformance. Physical scheduling, refreshed budget, frozen covariance analysis and user approval precede provider execution; the contrast cannot identify a unique noise mechanism.",
       "evidence": [],
       "documents": [
-        "docs/design/tuna17-zero-divisor-matched-response.md"
+        "docs/design/tuna17-zero-divisor-matched-response.md",
+        "docs/design/tuna17-matched-response-region2-selector-q11.md",
+        "docs/design/tuna17-matched-response-analysis.md"
       ],
       "gates": {
         "core-632": "replay",

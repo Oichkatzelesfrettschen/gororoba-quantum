@@ -19,7 +19,7 @@ from qi_matched_zero_divisor import matched_response_contrast  # noqa: E402
 from qi_matched_response import analyze_matched_series, proposal_digests, verify_run_binding  # noqa: E402
 from qi_records import load_run, validate_run  # noqa: E402
 
-PROPOSAL = ROOT / "results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-ordered-map-cancel"
+PROPOSAL = ROOT / "results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-region2-selector-q11"
 
 
 def main() -> int:

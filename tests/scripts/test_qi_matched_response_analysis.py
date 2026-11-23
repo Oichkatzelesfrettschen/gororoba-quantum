@@ -10,7 +10,7 @@ import numpy as np
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
-PROPOSAL = ROOT / "results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-ordered-map-cancel"
+PROPOSAL = ROOT / "results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-region2-selector-q11"
 # Seeds: docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json, indices 4, 5, 6, 7 in order.
 TEST_SEEDS = (57531, 54461, 19728, 4799)
 IDEAL = {"dark": 0.0, "bright": 1.0, "fixture": 0.5}

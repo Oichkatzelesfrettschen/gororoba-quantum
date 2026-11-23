@@ -95,7 +95,8 @@ Selected zero-divisor hardware witnesses have retained acquisitions on
 [Tuna-17](notes/quantum_inspire/experiments.md). The
 [hardware-witness review](notes/topics/sedenion_hardware_witness_review.md) has an explicit historical cutoff.
 The [matched-response case](design/tuna17-zero-divisor-matched-response.md) is prospective and unsubmitted;
-its [frozen analysis](design/tuna17-matched-response-analysis.md) fixes the decision rule and covariance before data.
+its [frozen analysis](design/tuna17-matched-response-analysis.md) fixes the decision rule and covariance before data,
+and the [region-2 selector q11 successor](design/tuna17-matched-response-region2-selector-q11.md) holds the approved circuits.
 Its [historical catalogue](evidence/quantum_inspire/matched-zero-divisor-catalogue.json) retains the
 exact bytes bound by the archived compiler receipt; a newer live catalogue still requires case review.
 The [reduced QX destination case](design/tuna-destination-qx-conformance.md) defines

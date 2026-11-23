@@ -1,0 +1,94 @@
+{
+ "schema": "qi-matched-zero-divisor-proposal-v1",
+ "backend": "tuna_17",
+ "jobs": 9,
+ "shots_per_job": 16384,
+ "total_shots": 147456,
+ "expected_device_seconds": 101.55168,
+ "minimum_pause_per_interbatch_seconds": 120,
+ "minimum_total_interbatch_pause_seconds": 240,
+ "expected_metered_credits": 0,
+ "budget_basis": "retained 2.6 seconds fixed overhead plus 0.53 ms per shot; refresh before approval",
+ "provider_execution_authorized": false,
+ "catalogue_sha256": "d717a785d1500e926a0f738480ba0e92326a3e7f0772d3a0717bf451a7725ace",
+ "source_sha256": "e1f35b77800c160a829ac8ed483f54ac9c6ae6e15219d8440cce0129936c6337",
+ "regions": [
+  {
+   "qubits": [
+    1,
+    2,
+    4,
+    8,
+    12
+   ],
+   "roles": {
+    "d0": 8,
+    "d1": 2,
+    "d2": 12,
+    "d3": 1,
+    "selector": 4
+   },
+   "case_shapes_equal": true,
+   "ideal_probabilities": {
+    "dark": 0.0,
+    "bright": 1.0,
+    "fixture": 0.5
+   },
+   "cz": 81,
+   "t": 28
+  },
+  {
+   "qubits": [
+    11,
+    13,
+    16,
+    14,
+    10
+   ],
+   "roles": {
+    "d0": 13,
+    "d1": 16,
+    "d2": 10,
+    "d3": 14,
+    "selector": 11
+   },
+   "case_shapes_equal": true,
+   "ideal_probabilities": {
+    "dark": 0.0,
+    "bright": 1.0,
+    "fixture": 0.5
+   },
+   "cz": 96,
+   "t": 28
+  }
+ ],
+ "batches": [
+  "batch-00",
+  "batch-01",
+  "batch-02"
+ ],
+ "primary_contrast": {
+  "order": [
+   "D_R1_b0",
+   "B_R2_b0",
+   "B_R1_b1",
+   "F_R2_b1",
+   "F_R1_b2",
+   "D_R2_b2"
+  ],
+  "weights": [
+   0,
+   0,
+   -1,
+   1,
+   1,
+   -1
+  ],
+  "rejection": "abs(z)>=3",
+  "null": "batch offsets plus one fixed region offset and a common affine response"
+ },
+ "fixture": "(e4 - i e15)/sqrt2; same-support complex-linear quadrature control",
+ "timing_boundary": "identical emitted gate sequence and locations per region; provider physical scheduling remains a separate admission check",
+ "gates_from": "scripts/qi_matched_zero_divisor.py",
+ "supersedes": "results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-ordered-map-cancel"
+}

@@ -2,6 +2,8 @@
 
 This record freezes the analysis of the unsubmitted
 [matched-response series](tuna17-zero-divisor-matched-response.md) before any shot exists.
+The approved circuits are those of the
+[region-2 selector q11 proposal](tuna17-matched-response-region2-selector-q11.md).
 `scripts/qi_matched_response_analysis.py` reads the three collected batches and calls
 `gororoba_quantum/qi_matched_response.py`; neither contacts a provider.
 
@@ -19,8 +21,10 @@ This record freezes the analysis of the unsubmitted
   `v2` in the two regions the residual is `(v2 - v1) / 2`.
 - The residual equals `(v2 - v1) / 2` for region-dependent visibility and equally `(w2 - w1) / 2` for a
   visibility that drifts between batches 1 and 2, so it separates neither.
-- The regions run 81 and 105 controlled-Z gates, so a rejection is expected from depth alone and is a
-  statement about the device response, not about the zero-divisor property.
+- The regions run 81 and 96 controlled-Z gates ([successor proposal](tuna17-matched-response-region2-selector-q11.md)),
+  so a residual from depth alone is predicted at about -0.017 to -0.024 (z about -2.0 to -2.8) and a rejection
+  is plausible from it; a rejection is a statement about the device response, not about the zero-divisor
+  property.
 - The per-region half-spacings `(B_r - D_r) / 2` span two batches and keep their batch offsets, so they
   are secondary.
 
