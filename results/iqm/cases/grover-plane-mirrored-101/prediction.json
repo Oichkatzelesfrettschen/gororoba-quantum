@@ -1276,34 +1276,34 @@
      "unresolved": 0.0
     },
     {
-     "coherent": 0.984375,
-     "geometric": 0.0,
+     "coherent": 0.01953125,
+     "geometric": 0.01171875,
      "non_rotation": 0.0,
-     "other": 0.015625,
+     "other": 0.46484375,
      "truth": "zz -10 kHz a=0.92 s=0.92",
-     "unresolved": 0.0
+     "unresolved": 0.50390625
     },
     {
-     "coherent": 1.0,
-     "geometric": 0.0,
+     "coherent": 0.171875,
+     "geometric": 0.05078125,
      "non_rotation": 0.0,
-     "other": 0.0,
+     "other": 0.703125,
      "truth": "zz -10 kHz a=0.92 s=1.04",
-     "unresolved": 0.0
+     "unresolved": 0.07421875
     },
     {
-     "coherent": 0.98828125,
-     "geometric": 0.0,
+     "coherent": 0.05859375,
+     "geometric": 0.0234375,
      "non_rotation": 0.0,
-     "other": 0.01171875,
+     "other": 0.58203125,
      "truth": "zz -10 kHz a=1.06 s=0.92",
-     "unresolved": 0.0
+     "unresolved": 0.3359375
     },
     {
-     "coherent": 0.984375,
-     "geometric": 0.0,
+     "coherent": 0.359375,
+     "geometric": 0.08984375,
      "non_rotation": 0.0,
-     "other": 0.015625,
+     "other": 0.55078125,
      "truth": "zz -10 kHz a=1.06 s=1.04",
      "unresolved": 0.0
     },
@@ -1390,34 +1390,34 @@
      "unresolved": 0.0
     },
     {
-     "coherent": 0.9140625,
-     "geometric": 0.0,
+     "coherent": 0.0390625,
+     "geometric": 0.01953125,
      "non_rotation": 0.0,
-     "other": 0.08203125,
+     "other": 0.6015625,
      "truth": "zz -10 kHz a=0.92 s=0.92",
-     "unresolved": 0.00390625
+     "unresolved": 0.33984375
     },
     {
-     "coherent": 0.9375,
-     "geometric": 0.0,
+     "coherent": 0.1796875,
+     "geometric": 0.09375,
      "non_rotation": 0.0,
-     "other": 0.0625,
+     "other": 0.69921875,
      "truth": "zz -10 kHz a=0.92 s=1.04",
-     "unresolved": 0.0
+     "unresolved": 0.02734375
     },
     {
-     "coherent": 0.9296875,
-     "geometric": 0.0,
+     "coherent": 0.0859375,
+     "geometric": 0.0625,
      "non_rotation": 0.0,
-     "other": 0.0703125,
+     "other": 0.65234375,
      "truth": "zz -10 kHz a=1.06 s=0.92",
-     "unresolved": 0.0
+     "unresolved": 0.19921875
     },
     {
-     "coherent": 0.92578125,
-     "geometric": 0.0,
+     "coherent": 0.33203125,
+     "geometric": 0.12109375,
      "non_rotation": 0.0,
-     "other": 0.07421875,
+     "other": 0.546875,
      "truth": "zz -10 kHz a=1.06 s=1.04",
      "unresolved": 0.0
     },
@@ -1504,34 +1504,34 @@
      "unresolved": 0.0
     },
     {
-     "coherent": 0.97265625,
-     "geometric": 0.0,
+     "coherent": 0.01953125,
+     "geometric": 0.01171875,
      "non_rotation": 0.0,
-     "other": 0.02734375,
+     "other": 0.46875,
      "truth": "zz -10 kHz a=0.92 s=0.92",
-     "unresolved": 0.0
+     "unresolved": 0.5
     },
     {
-     "coherent": 0.98828125,
-     "geometric": 0.0,
+     "coherent": 0.16796875,
+     "geometric": 0.05078125,
      "non_rotation": 0.0,
-     "other": 0.01171875,
+     "other": 0.70703125,
      "truth": "zz -10 kHz a=0.92 s=1.04",
-     "unresolved": 0.0
+     "unresolved": 0.07421875
     },
     {
-     "coherent": 0.9765625,
-     "geometric": 0.0,
+     "coherent": 0.05859375,
+     "geometric": 0.0234375,
      "non_rotation": 0.0,
-     "other": 0.0234375,
+     "other": 0.58203125,
      "truth": "zz -10 kHz a=1.06 s=0.92",
-     "unresolved": 0.0
+     "unresolved": 0.3359375
     },
     {
-     "coherent": 0.97265625,
-     "geometric": 0.0,
+     "coherent": 0.3515625,
+     "geometric": 0.08984375,
      "non_rotation": 0.0,
-     "other": 0.02734375,
+     "other": 0.55859375,
      "truth": "zz -10 kHz a=1.06 s=1.04",
      "unresolved": 0.0
     },
@@ -1618,34 +1618,34 @@
      "unresolved": 0.0
     },
     {
-     "coherent": 0.859375,
-     "geometric": 0.0,
+     "coherent": 0.03515625,
+     "geometric": 0.01953125,
      "non_rotation": 0.0,
-     "other": 0.13671875,
+     "other": 0.6171875,
      "truth": "zz -10 kHz a=0.92 s=0.92",
-     "unresolved": 0.00390625
+     "unresolved": 0.328125
     },
     {
-     "coherent": 0.87890625,
-     "geometric": 0.0,
+     "coherent": 0.171875,
+     "geometric": 0.08984375,
      "non_rotation": 0.0,
-     "other": 0.12109375,
+     "other": 0.7109375,
      "truth": "zz -10 kHz a=0.92 s=1.04",
-     "unresolved": 0.0
+     "unresolved": 0.02734375
     },
     {
-     "coherent": 0.875,
-     "geometric": 0.0,
+     "coherent": 0.08203125,
+     "geometric": 0.0625,
      "non_rotation": 0.0,
-     "other": 0.125,
+     "other": 0.66015625,
      "truth": "zz -10 kHz a=1.06 s=0.92",
-     "unresolved": 0.0
+     "unresolved": 0.1953125
     },
     {
-     "coherent": 0.8671875,
-     "geometric": 0.0,
+     "coherent": 0.3203125,
+     "geometric": 0.1171875,
      "non_rotation": 0.0,
-     "other": 0.1328125,
+     "other": 0.5625,
      "truth": "zz -10 kHz a=1.06 s=1.04",
      "unresolved": 0.0
     },
@@ -1675,7 +1675,7 @@
     "eps_per_unit": -2.24118809
    },
    "zz_hz": {
-    "eps_per_unit": 1.997e-06
+    "eps_per_unit": 7.36e-07
    }
   },
   "model_probabilities": [
@@ -1686,7 +1686,7 @@
   ],
   "power": {
    "design_effect_eps": 0.02,
-   "note": "rates at the listed truths with block error estimates; no bound over the claimed region",
+   "note": "rates at the listed truths with block error estimates; no bound over the claimed region; the resolved set is the plane rotation, CZ-phase and PRX truths, and the ZZ truths are measured without a claim",
    "truths": [
     {
      "coherent": 0.979980469,
@@ -1865,92 +1865,92 @@
      "unresolved": 0.0
     },
     {
-     "coherent": 0.982910156,
+     "coherent": 0.192871094,
      "coherent_ci95": [
-      0.976311673,
-      0.988068167
+      0.175988136,
+      0.210637848
      ],
-     "geometric": 0.0,
-     "non_rotation": 0.01171875,
+     "geometric": 0.171875,
+     "non_rotation": 0.001464844,
      "truth": "zz -10 kHz a=0.92 s=0.92",
-     "unresolved": 0.005371094
+     "unresolved": 0.633789062
     },
     {
-     "coherent": 0.986328125,
+     "coherent": 0.455078125,
      "coherent_ci95": [
-      0.980300554,
-      0.990896428
+      0.43334423,
+      0.476940796
      ],
-     "geometric": 0.0,
-     "non_rotation": 0.013671875,
+     "geometric": 0.258300781,
+     "non_rotation": 0.006347656,
      "truth": "zz -10 kHz a=0.92 s=1.04",
-     "unresolved": 0.0
+     "unresolved": 0.280273438
     },
     {
-     "coherent": 0.987304688,
+     "coherent": 0.283691406,
      "coherent_ci95": [
-      0.981453416,
-      0.991690696
+      0.264244799,
+      0.303759043
      ],
-     "geometric": 0.0,
-     "non_rotation": 0.012695312,
+     "geometric": 0.206054688,
+     "non_rotation": 0.002441406,
      "truth": "zz -10 kHz a=1.06 s=0.92",
-     "unresolved": 0.0
+     "unresolved": 0.5078125
     },
     {
-     "coherent": 0.982421875,
+     "coherent": 0.659179688,
      "coherent_ci95": [
-      0.975746849,
-      0.9876589
+      0.638190908,
+      0.679711817
      ],
-     "geometric": 0.0,
-     "non_rotation": 0.017578125,
+     "geometric": 0.319824219,
+     "non_rotation": 0.009277344,
      "truth": "zz -10 kHz a=1.06 s=1.04",
-     "unresolved": 0.0
+     "unresolved": 0.01171875
     },
     {
-     "coherent": 0.983886719,
+     "coherent": 0.193847656,
      "coherent_ci95": [
-      0.977444808,
-      0.988883073
+      0.176930485,
+      0.211645782
      ],
-     "geometric": 0.0,
-     "non_rotation": 0.008300781,
+     "geometric": 0.175292969,
+     "non_rotation": 0.000488281,
      "truth": "zz +10 kHz a=0.92 s=0.92",
-     "unresolved": 0.0078125
+     "unresolved": 0.630371094
     },
     {
-     "coherent": 0.990234375,
+     "coherent": 0.437988281,
      "coherent_ci95": [
-      0.984957898,
-      0.994024987
+      0.416358404,
+      0.459795934
      ],
-     "geometric": 0.0,
-     "non_rotation": 0.009765625,
+     "geometric": 0.256835938,
+     "non_rotation": 0.004394531,
      "truth": "zz +10 kHz a=0.92 s=1.04",
-     "unresolved": 0.0
+     "unresolved": 0.30078125
     },
     {
-     "coherent": 0.991210938,
+     "coherent": 0.286621094,
      "coherent_ci95": [
-      0.986144936,
-      0.994782965
+      0.267109965,
+      0.30674481
      ],
-     "geometric": 0.0,
-     "non_rotation": 0.008789062,
+     "geometric": 0.208007812,
+     "non_rotation": 0.001953125,
      "truth": "zz +10 kHz a=1.06 s=0.92",
-     "unresolved": 0.0
+     "unresolved": 0.503417969
     },
     {
-     "coherent": 0.989257812,
+     "coherent": 0.638671875,
      "coherent_ci95": [
-      0.983781131,
-      0.993256026
+      0.617435705,
+      0.659510308
      ],
-     "geometric": 0.0,
-     "non_rotation": 0.010742188,
+     "geometric": 0.324707031,
+     "non_rotation": 0.006347656,
      "truth": "zz +10 kHz a=1.06 s=1.04",
-     "unresolved": 0.0
+     "unresolved": 0.030273438
     },
     {
      "coherent": 0.989746094,

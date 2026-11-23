@@ -467,7 +467,10 @@ def decisions(
         ]
     power = calibration.power(fitter, truths, kept, readout_cov, delta, POWER_LOG2N)
     resolved = [
-        p for p in power if "eps=" not in p["truth"] or abs(float(p["truth"].split("eps=")[1].split()[0])) >= 0.02
+        p
+        for p in power
+        if not p["truth"].startswith("zz")
+        and ("eps=" not in p["truth"] or abs(float(p["truth"].split("eps=")[1].split()[0])) >= 0.02)
     ]
     worst = min(resolved, key=lambda p: p["coherent"])
     gated_truths = [
@@ -515,7 +518,10 @@ def decisions(
             "design_effect_eps": 0.02,
             "worst_resolved_truth": worst,
             "truths": power,
-            "note": "rates at the listed truths with block error estimates; no bound over the claimed region",
+            "note": (
+                "rates at the listed truths with block error estimates; no bound over the claimed region; the resolved "
+                "set is the plane rotation, CZ-phase and PRX truths, and the ZZ truths are measured without a claim"
+            ),
         },
         "gated_power": gated,
         "readout_gates": {"101": calibration.readout_gate_rates(plan)},

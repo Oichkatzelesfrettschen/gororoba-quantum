@@ -73,7 +73,7 @@ Coherent errors, injected into the same noisy path (not the noiseless product a 
 |---|---|---|
 | CZ conditional phase pi + x | -1.294 per rad | +5e-3 per rad (no rotation) |
 | PRX amplitude theta (1 + x) | -2.24 per unit fraction | -2.68 (1.19 times mark 101) |
-| rotating-frame ZZ on both couplers | 2.0e-6 per Hz (0.020 per 10 kHz) | 1.7e-7 per Hz |
+| rotating-frame ZZ on both couplers | 7.4e-7 per Hz (0.0074 per 10 kHz) | 5.2e-8 per Hz |
 
 The family (a, s, eps) fitted to the exact noise-free response of a coherent error reproduces it to max |dP| 6.6e-5 (CZ
 0.015 rad), 1.9e-4 (0.03), 9.9e-5 (0.06), 1.5e-3 (0.1) and 6.7e-4 (PRX 0.8 percent), 1.1e-3, 9.9e-4, 1.4e-3 (PRX 1.6, 3,
@@ -249,13 +249,13 @@ largest selection rate, which is also the largest validation rate over the 99 ce
 (interval 0.000006 to 0.0014). The intervals exclude the dependence between points, the box between cells and the model. The build of
 variant A took 924 s on the Windows workstation under load from other jobs, the held-out evaluation included. Power at |eps| = 0.02:
 0.985 to 0.992 over the corners and 28 cells of the claimed region; at 0.015: 0.874 to 0.992; at 0.01: 0.435 to 0.938 (no resolution is
-claimed below 0.015). Mechanism corners (CZ 0.015 rad, PRX 0.8 percent, ZZ 10 kHz): 0.964 to 0.992. Through the pair gates (two-pair floor,
-heterogeneity at the covariance's phi, leave-one-pair-out) 0.949 to 1.000 at binomial copies and 0.805 to 0.953 at the dispersion bound
-phi = 1.54; with a binomial-phi heterogeneity gate the bound case falls to 0.770 to 0.895. The readout gates pass with probability 1.0
+claimed below 0.015). Mechanism corners: CZ 0.015 rad 0.980 to 0.992, PRX 0.8 percent 0.964 to 0.989, ZZ 10 kHz 0.193 to 0.659 (measured, no claim). The case is not sensitive to a ZZ coupling of 10 kHz: its power is reported as measured and no claim rests on it. Through the pair gates (two-pair floor,
+heterogeneity at the covariance's phi, leave-one-pair-out) 0.020 to 1.000 at binomial copies and 0.039 to 0.953 at the dispersion bound
+phi = 1.54; with a binomial-phi heterogeneity gate the bound case falls to 0.035 to 0.895 (the ZZ truths set the lower ends). The readout gates pass with probability 1.0
 (shift tolerance) and 0.9995, 0.99 and 0.458 (two-sides chi-square at phi 0.86, 1 and 1.54); the copy floor is not modeled.
 
 Mark contrast (variant A), through the departure rule of each mark: a CZ phase of -0.03 rad reads "CZ-phase-like" 0.942 to 0.951, a PRX
-amplitude of -1.6 percent reads "PRX-like" 0.925 to 0.939, ZZ +20 kHz reads "CZ-phase-like" 0.734 to 0.864. The PRX ratio carries the
+amplitude of -1.6 percent reads "PRX-like" 0.925 to 0.939, ZZ +20 kHz reads "CZ-phase-like" 0.333 to 0.861. The PRX ratio carries the
 interval [1.1947, 1.2168] of the amplitudes 0.2 to 3 percent; the rejection of a PRX amplitude must hold over it.
 
 Cost, billing v4 sizing (`variant_sizing.json`, coefficients pinned in `billing_v4_inputs.json`):

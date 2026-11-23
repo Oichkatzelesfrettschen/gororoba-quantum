@@ -113,7 +113,7 @@ covers the continuous box.
 | plane rotation \|eps\| = 0.01 (corners) | 0.435 to 0.938 |
 | CZ phase -0.015 and +0.015 rad (corners) | 0.980 to 0.992 |
 | PRX amplitude -0.8 and +0.8 percent (corners; the lowest is +0.8 percent at a 0.92, s 0.92) | 0.964 to 0.989 |
-| ZZ coupling -10 and +10 kHz (corners) | 0.982 to 0.991 |
+| ZZ coupling -10 and +10 kHz (corners; the always-on phase accrues once per elapsed schedule interval; measured, no claim: the case is not sensitive to a ZZ coupling of 10 kHz) | 0.193 to 0.659 |
 
   The case claims no resolution below |eps| = 0.015.
 - Power through the pair gates (the two-pair floor, heterogeneity, leave-one-pair-out; 256 points, standard error up to 0.03),
@@ -122,12 +122,12 @@ covers the continuous box.
 
 | Gate phi, noise phi | "coherent" | reads "not evaluated" |
 |---|---|---|
-| 1.54, 1 | 0.949 to 1.000 | up to 0.047 |
-| 1.54, 1.54 | 0.805 to 0.953 | 0.047 to 0.188 |
-| 1, 1 | 0.938 to 0.988 | up to 0.055 |
-| 1, 1.54 | 0.770 to 0.895 | 0.105 to 0.223 |
+| 1.54, 1 | 0.020 to 1.000 | up to 0.703 |
+| 1.54, 1.54 | 0.039 to 0.953 | 0.047 to 0.699 |
+| 1, 1 | 0.020 to 0.988 | up to 0.707 |
+| 1, 1.54 | 0.035 to 0.895 | 0.105 to 0.711 |
 
-  The gate at the dispersion of the covariance (1.54) raises power at overdispersed copies (0.805 against 0.770 at worst) and costs
+  The gate at the dispersion of the covariance (1.54) raises power at overdispersed copies (0.039 against 0.035 at worst; the ZZ truths set the lower ends, where the remainder reads "not evaluated" or another non-coherent category) and costs
   little at binomial copies.
 - Readout gates, by pass rate when the device follows the model at the planned shots: the shift tolerance 0.05 passes with
   probability 1.0 (the planned shift has standard deviation of about 0.003); the two-sides chi-square (0.99 quantile on 56
@@ -137,7 +137,7 @@ covers the continuous box.
 - Contrast, through the departure rule of each mark at delta (box and adequacy gates, the adequacy tested at every T so that a fit failing it reads "not evaluated"; not the pair or readout gates;
   the approval does not rest on this reading), binomial
   copies: a CZ phase of -0.03 rad reads "CZ-phase-like" 0.942 to 0.951; a PRX amplitude of -1.6 percent reads "PRX-like" 0.925 to
-  0.939; a ZZ coupling of +20 kHz reads "CZ-phase-like" 0.734 to 0.864 (its mark 011 slope is a tenth of its mark 101 slope), so the
+  0.939; a ZZ coupling of +20 kHz reads "CZ-phase-like" 0.333 to 0.861 (its mark 011 slope is a fourteenth of its mark 101 slope), so the
   contrast does not separate ZZ from a CZ phase; "not evaluated" 0.007 to 0.015.
 - Power at |eps| = 0.01 is 0.435 at worst, beside 0.985 at 0.02. The leak L = s - mu (weight contraction against Bloch
   contraction) is not identifiable from the marked probabilities: the weight that leaves the plane returns through the complement
@@ -168,7 +168,7 @@ DECISION NEEDED (owner): read the mock estimate and either keep 13.0 credits or 
 | expected billed credits (v3, v4) | 7.5, 7.0 | 5.5, 5.5 |
 | max_credits (all-jobs band), cancel threshold | 13.0, 25 s | 9.5, 18 s |
 | max_credits (Grover-jobs band) | 11.0 | 8.5 |
-| primary test, worst resolved truth (PRX +0.8 percent, a 0.92, s 0.92) | 0.964 (0.955 to 0.972) | 0.964 (0.955 to 0.972) |
+| primary test, worst resolved truth (PRX +0.8 percent, a 0.92, s 0.92; rotation, CZ and PRX truths only) | 0.964 (0.955 to 0.972) | 0.964 (0.955 to 0.972) |
 | margin at 1.5 times / 2.2 times the expected runtime | 5.1 s / -4.1 s | 3.4 s / -3.4 s |
 | mark contrast reading (outside the approval question) | yes | none |
 

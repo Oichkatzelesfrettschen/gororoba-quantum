@@ -363,6 +363,16 @@ def test_the_committed_case_binds_its_prediction_and_its_response_digest() -> No
     require(held["at_selection_worst_cell"]["ci95"][1] <= 0.02 and held["max_over_cells"]["ci95"][1] <= 0.03, str(held))
     require(d["calibration"]["cells_by_kind"]["corner"] == 4 and "blocks" not in d["calibration"])
     require(d["power"]["worst_resolved_truth"]["coherent"] >= 0.85)
+    claimed = [
+        t
+        for t in d["power"]["truths"]
+        if not t["truth"].startswith("zz")
+        and ("eps=" not in t["truth"] or abs(float(t["truth"].split("eps=")[1].split()[0])) >= 0.02)
+    ]
+    require(bool(claimed) and min(t["coherent"] for t in claimed) == d["power"]["worst_resolved_truth"]["coherent"])
+    require(all(t["coherent"] >= 0.85 for t in claimed), "a rotation, CZ or PRX truth is below 0.85")
+    require(not d["power"]["worst_resolved_truth"]["truth"].startswith("zz"))
+    require(any(t["truth"].startswith("zz") for t in d["power"]["truths"]), "the ZZ truths stay measured")
     require(d["contrast"]["ratio_interval"][0] <= d["contrast"]["ratio_prx"] <= d["contrast"]["ratio_interval"][1])
     require(set(d["readout_gates"]) == {"101", "011"} and d["gate"]["min_pairs_per_depth"] == 2)
     cal = iqm_sim.Calibration.from_directory(NEW / "calibration")
