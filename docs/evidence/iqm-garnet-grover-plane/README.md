@@ -14,6 +14,11 @@
 - `joint`: the five joint fits over the four (run, mark) groups.
 - `continuation_to_depth_4`: the depth-4 marked probability of the case's calibration under eps = 0 and under the fitted eps,
   with the retained uncertainty propagated by 64 unscrambled Sobol' draws.
+- `mark_contrast`: the contrast of the retained depth run (marks 101 and 011) against a CZ phase and a PRX amplitude, read post hoc
+  (z_PRX -3.14 from the exact fits and -2.99 from the joint fit; z_CZ -0.93), with the PRX ratio of the case's `prediction.json`.
 - `priors`: the calibration infidelities and relaxation times of the path and the average-fidelity cost of a coherent error.
+
+Replay: `"$PYTHON" scripts/iqm_grover_plane_retained.py --check docs/evidence/iqm-garnet-grover-plane/fits.json` recomputes the record
+and compares it with the file to 1e-6 relative (gate `core-iqm-grover-plane-retained`).
 
 Interpretation: [the plane-model note](../../design/iqm-garnet-grover-plane-model.md).

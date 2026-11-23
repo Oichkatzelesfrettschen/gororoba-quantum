@@ -239,6 +239,22 @@
    "depth/011"
   ]
  },
+ "mark_contrast": {
+  "depth_run_exact_fits": {
+   "ratio": 1.194651206,
+   "reading": "CZ-phase-like (PRX amplitude rejected)",
+   "z_cz": -0.9251069570382321,
+   "z_prx": -3.1403022762210986
+  },
+  "joint_fit_s_and_eps_per_mark": {
+   "ratio": 1.194651206,
+   "reading": "unresolved",
+   "z_cz": -0.9235157491645134,
+   "z_prx": -2.989598644518785
+  },
+  "post_hoc": true,
+  "ratio_prx": 1.194651206
+ },
  "per_run": [
   {
    "fits": {

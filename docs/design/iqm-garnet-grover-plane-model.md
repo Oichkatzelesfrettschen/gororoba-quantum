@@ -58,9 +58,9 @@ Coherent errors, injected into the same noisy path (not the noiseless product a 
 
 | Error | eps per unit error, mark 101 | mark 011 |
 |---|---|---|
-| CZ conditional phase pi + x | -1.294 per rad | -2e-6 per rad (no rotation) |
-| PRX amplitude theta (1 + x) | -2.24 per unit fraction | -3.21 (noiseless slope) |
-| rotating-frame ZZ on both couplers | 2.0e-6 per Hz (0.020 per 10 kHz) | not computed |
+| CZ conditional phase pi + x | -1.294 per rad | +5e-3 per rad (no rotation) |
+| PRX amplitude theta (1 + x) | -2.24 per unit fraction | -2.68 (1.19 times mark 101) |
+| rotating-frame ZZ on both couplers | 2.0e-6 per Hz (0.020 per 10 kHz) | 1.7e-7 per Hz |
 
 The family (a, s, eps) fitted to the exact noise-free response of a coherent error reproduces it to max |dP| 6.6e-5 (CZ
 0.015 rad), 1.9e-4 (0.03), 9.9e-5 (0.06), 1.5e-3 (0.1) and 6.7e-4 (PRX 0.8 percent), 1.1e-3, 9.9e-4, 1.4e-3 (PRX 1.6, 3,
@@ -117,10 +117,15 @@ differs by 0.07 between marks.
    (z 2.9). A per-mark excess loss, not a shared one, is what the data ask for; the nested rule cannot assign it to a gate.
 4. The exact fit has s = 1.034 +- 0.026 and a = 0.924: the incoherent excess loss per iteration is not resolved above
    the model's, and a and s are strongly anticorrelated with eps at three points.
-5. Mechanism pattern, a reading beside the decision and conditional on the eight-parameter fit: a CZ-phase origin predicts
-   eps_011 = 0 (slope -2e-6) against the measured -0.013 +- 0.014 (0.9 sigma); a PRX-amplitude origin predicts eps_011 about
-   1.4 times eps_101 = +0.053, which the measurement contradicts at 4.7 sigma. ZZ was not computed for mark 011. The
-   retained 011 arms therefore already carry information the case of PR 987 (mark 101 only) does not use.
+5. Mechanism pattern (post hoc: it was read from the retained data after the three-family case was written, so it is a
+   lead and not a test). In the calibrated noisy path a CZ phase leaves the plane of mark 011 unrotated (eps_011 per radian
+   +5e-3 against -1.29 for mark 101) and a PRX amplitude rotates it 1.19 times as much as mark 101 (-2.68 against -2.24).
+   The retained eps_101 = 0.041 +- 0.011 and eps_011 = -0.014 +- 0.015 read z = -0.93 against a CZ phase and z = -3.14
+   against a PRX amplitude (`decision.contrast`, which carries the uncertainty of both fits); the eight-parameter joint fit
+   reads -0.92 and -2.99. An earlier draft of this note and the hand-off report gave 4.7 sigma against PRX: that figure used
+   a PRX ratio of 1.4 from a noise-free slope and ignored the standard error of eps_101, and it is withdrawn. The retained
+   evidence rejects a PRX amplitude at about 3 sigma, consistent with the CZ phase; the `fits.json` record (`mark_contrast`)
+   is replayed by a gate.
 6. The closure assumes the leaked weight returns as the uniform state of the complement. The retained depth run rejected
    uniform unmarked error (Wald 95.7 on 6 degrees of freedom against the model's uniform prediction, design note of the
    follow-up case), so that assumption is contradicted by the data; the plane family absorbs it into (a, s) and eps and does
@@ -128,13 +133,16 @@ differs by 0.07 between marks.
 7. Coherent error is not seen by calibration benchmarking at this size: a CZ phase of 0.0286 rad costs an average gate
    infidelity of 1.2e-4 per CZ against the calibrated 4.2e-3 (3 percent), and a PRX amplitude error of 1.0 percent on a
    pi/2 rotation costs 4.3e-5 against 2.8e-4 to 5.5e-4. The calibration neither supports nor refutes eps = 0.04.
+8. A first version of the case fitted a and s over a box wider than the one calibrated, and a second narrowed the fit box
+   to a in [0.90, 1.10], s in [0.85, 1.10]: fits of the corner truths then sat on a bound and the gated power fell to 0.77.
+   The case now fits and calibrates over one box, a in [0.80, 1.20], s in [0.75, 1.15], and claims power only around the
+   retained fits (a in [0.90, 1.10], s in [0.90, 1.05]).
 
 Verdict: the plane model survives as the derivation, the effective-parameter family and the mechanism-free test statistic;
 the three-family contest of PR 987 does not survive as its decision rule, for the reasons recorded in the case
 (attribution of ZZ and coherent leakage to a named family, the fallback that calls an unresolved coherent term geometric,
 unequal-weight pooling, noiseless response tables, unbounded overdispersion, a four-point calibration and an
-unsupported runtime). Mark 011 arms would add a second discriminating contrast; the case does not include them
-(DECISION NEEDED below).
+unsupported runtime). The case now carries mark 011 arms, whose contrast with mark 101 is the retained pattern's test.
 
 ## Priors from the repository's records
 
@@ -169,21 +177,40 @@ rotation (dP_3/d eps = -0.84 at P_3 = 0.24).
 
 ## Power and cost of the case
 
-Design: 38 circuits at 16,000 shots, depth copies 4, 4, 10, 4 and 16 readout circuits (kept 13,440 per copy). Fisher
-standard error of eps in the worst (a, s) cell, with the overdispersion bound phi = 1.54 on every variance: 0.0035 rad.
-Calibration over the null box (39 Sobol' cells of a in [0.90, 1.10], s in [0.85, 1.10], and the offset line s = 1, 1,024
-points each): delta = 6.635 (the chi-square(1) 0.99 quantile; the worst cell's own quantile is 6.47), false "coherent"
-at most 0.0098, at most 0.0088 on the offset line. Power at |eps_eff| = 0.02 (CZ, PRX and ZZ truths at four corners of
-the box and 32 Sobol' cells of the plane rotation): at least 0.986; at 0.015 at least 0.92; at 0.01 at least 0.53.
-Power is three numbers: the pooled rule alone 0.986 or more; through the whole gated rule (pair heterogeneity, leave-one-pair-out)
-0.961 to 0.988 for binomial copies (the retained dispersion is 0.86); and 0.871 to 0.926 at the 95 percent dispersion bound,
-the remainder reading "not evaluated" (the heterogeneity gate runs at phi = 1 and fires in about 10 percent of runs when the
-copies carry the bound; the two assumptions are inconsistent by construction). The design reaches 0.95 through the gates only for
-binomial copies. The calibrated truth box (a 0.90 to 1.10, s 0.85 to 1.10) is narrower than the fit's admissible box (a 0.5 to
-1.5, s 0.3 to 1.2): outside it the false-alarm rate and power are not established. Expected execution 10.79 s (retained job 1.9985 s scaled by the schedule-duration ratio
-5.40; 10.22 s with the retained fixed 0.13 s removed), compilation 0.44 s; ceiling 18 billed seconds, 9.0 credits, which
-holds 1.5 times the estimate; the sibling Emerald run took 2.2 times its estimate (23.7 s here), which the ceiling does not
-cover. The `garnet:mock` compile estimate is required before approval and was not read.
+Design: 52 circuits at 16,000 shots (832,000 executions; the job limits are 100 circuits and 2,000,000 executions): mark 101
+at depths 1 to 4 in 4, 4, 10 and 4 copies, mark 011 at depths 1 to 3 in 4, 4 and 6 copies, and 16 readout circuits (each
+preparation on both sides of the center; both marks read the same preparations through their own marked row and depth
+distributions). Kept shots 13,440 per copy. The 101 arms are the arms of the earlier design, so the primary test keeps its
+Fisher standard error of eps in the worst (a, s) cell, 0.0035 rad with phi = 1.54.
+
+Calibration over the null box (41 Sobol' cells of a in [0.80, 1.20], s in [0.75, 1.15] and the offset line s = 1, 1,024 points
+each): delta = 7.5 (the chi-square(1) 0.99 quantile is 6.63; the worst cell, a = 1.2, s = 1, lies on the box edge where the
+fit clips, and has quantile 7.07), false "coherent" at most 0.0088, also on the offset line. The rotation reading needs an
+adequate rotation fit (chi-square of (a, s, eps) below the 0.99 quantile on 1 dof), so an incoherent departure from
+geometric reads "non-geometric, not a rotation"; planted, a depth-2 deficit of 0.05 reads it, and a fit on a box bound reads
+"out of domain".
+
+Power, claimed over a in [0.90, 1.10] and s in [0.90, 1.05] (CZ, PRX and ZZ truths at four corners and 32 Sobol' cells of the
+plane rotation): the pooled rule reads "coherent" at |eps_eff| = 0.02 with probability at least 0.969 (worst corner PRX
++0.8 percent, a 0.92, s 0.92), at 0.015 at least 0.89, at 0.01 at least 0.46. Through the whole gated rule (pair
+heterogeneity, leave-one-pair-out, readout, box) with binomial copies: 0.949 to 0.988 over the mechanism corners (the 0.949 is
+the PRX +0.8 percent corner, |eps_eff| 0.018) and 0.969 to 0.973 for the plane rotation at |eps| = 0.02 in the worst
+corner; at the 95 percent dispersion bound phi = 1.54 (the heterogeneity gate runs at phi = 1, so it fires and the
+remainder reads "not evaluated"): 0.79 to 0.90. Outside the claimed region the false-alarm rate is controlled and power is
+not claimed; the "geometric" reading reaches at least 0.17 of the null cells (weak-signal cells at the box edge).
+
+Mark contrast, binomial copies: for a CZ phase of -0.03 rad (eps_101 0.037, eps_011 about 0) the contrast reads
+"CZ-phase-like" with probability 0.95 to 0.96; for a PRX amplitude of -1.6 percent (eps_011 1.19 eps_101) it reads "PRX-like"
+with probability 0.94 to 0.95; a ZZ coupling of +20 kHz reads "CZ-phase-like" with probability 0.74 to 0.89 (its mark-011
+slope is a tenth of its mark-101 slope), so the contrast does not separate ZZ from a CZ phase. The contrast decides nothing.
+
+Cost: execution of the retained job (1.9985 s, 144,000 circuit-shots) scaled by the ratio of ASAP schedule totals, 7.95, is
+15.89 s (14.99 s with the retained fixed 0.13 s removed); compilation 0.44 s. Expected billed seconds ceil(1.6 + 15.89) = 18,
+9.0 credits. The ceiling is 26 billed seconds (cancel threshold 25 s), 13.0 credits, which holds 1.5 times the estimate with
+compilation (24.5 s) plus the margin; the sibling Emerald run took 2.2 times its estimate (35.0 s here), which the ceiling does
+not cover. The `garnet:mock` compile estimate is required before approval and was not read.
+
+Retained mark contrast (post hoc, replayed by a gate on `fits.json`): see the fifth item of the falsification log.
 
 ## A5 and Cayley-Dickson contributions
 
@@ -202,16 +229,16 @@ cover. The `garnet:mock` compile estimate is required before approval and was no
 
 ## Open design points
 
-- DECISION NEEDED: the reading "coherent" follows T >= delta alone; `rotation_adequate` is reported and gates nothing, so an
-  incoherent loss that departs from geometric would be read "coherent". Folding adequacy into the reading changes
-  `prediction.json` and the case digest.
-- Quadratic drift is balanced among the depths (mean squared offsets 160.3, 157.3, 159.8, 157.3 from the center, spread 3.0) and
-  not between the depths and the readout preparations (67.0): the placement rules put the readouts at the center.
+- The reading "geometric" needs |eps| + 1.645 SE <= 0.01 rad and is rare in weak-signal cells; the case claims no resolution
+  below |eps| = 0.015.
+- Quadratic drift is balanced among the depth kinds (mean squared offsets from the center 205.3, 198.3, 199.4, 198.3, 199.3,
+  202.3, 208.9; spread 10.7) and not between the depths and the readout preparations (278.3): the placement rules push the
+  readouts to the ends and the center.
+- phi = 1.54 is a depth-1 bound applied to every depth.
 
 ## Not done
 
-The QB12 fault-model, positions and Heron records (the first two are not on any remote branch of this clone); the Tuna-17 TLS
-note.
-
-Qutrit simulation of coherent leakage; mark 011 arms; the S3-symmetric four-dimensional extension; mock compile estimate;
-an end-to-end `analyze` run on a collected record (none exists; the decision layer is tested on planted counts).
+Qutrit simulation of coherent leakage; the S3-symmetric four-dimensional extension; the `garnet:mock` compile estimate; the QB12
+fault-model, positions and Heron records (the first two are not on any remote branch of this clone); the Tuna-17 TLS note;
+`analyze` has run end to end on synthetic collected records only (a model device, a CZ phase and a PRX amplitude planted, a
+mock refusal), not on a Garnet record.

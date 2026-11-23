@@ -3678,11 +3678,21 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_plane_case.py check results/iqm/cases/grover-plane-mirrored",
       "name": "core-iqm-grover-plane-case",
-      "seconds": 330.0,
+      "seconds": 400.0,
       "replays": [
         "results/iqm/cases/grover-plane-mirrored/cases.json",
         "results/iqm/cases/grover-plane-mirrored/circuits",
         "results/iqm/cases/grover-plane-mirrored/prediction.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/iqm_grover_plane_retained.py --check docs/evidence/iqm-garnet-grover-plane/fits.json",
+      "name": "core-iqm-grover-plane-retained",
+      "seconds": 10.0,
+      "replays": [
+        "docs/evidence/iqm-garnet-grover-plane/fits.json"
       ]
     },
     {
