@@ -1,8 +1,8 @@
 """Frozen matched-response analysis: null model, region visibility, covariance, order mutation, refusals."""
 
 import json
+import shutil
 from collections import Counter
-from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
@@ -142,17 +142,46 @@ def test_covariance_is_symmetric_semidefinite_and_matches_same_shot_monte_carlo(
     _check(matrix[0, 2] == 0 and matrix[1, 4] == 0)
 
 
-def test_swapping_two_order_entries_changes_the_residual() -> None:
+def test_swapped_order_is_refused() -> None:
     proposal, manifests = _load()
-    rng = np.random.default_rng(TEST_SEEDS[3])
-    shots = _series(rng, proposal, manifests)
-    original = _analyze(proposal, manifests, shots)
-    swapped = deepcopy(proposal)
-    order = swapped["primary_contrast"]["order"]
+    shots = _series(np.random.default_rng(TEST_SEEDS[3]), proposal, manifests)
+    _check(len(_analyze(proposal, manifests, shots)["order"]) == 6)
+    order = proposal["primary_contrast"]["order"]
     order[2], order[4] = order[4], order[2]
-    mutated = _analyze(swapped, manifests, shots)
-    _check(abs(mutated["contrast"]["residual"] - original["contrast"]["residual"]) > 0.1)
-    _check(abs(mutated["contrast"]["z"]) >= 3)
+    with pytest.raises(ValueError, match="frozen order"):
+        _analyze(proposal, manifests, shots)
+
+
+def _run_directory(tmp_path: Path, mutation: str) -> dict[str, Any]:
+    from qi_matched_response import proposal_digests, verify_run_binding
+    from qi_records import load_run
+
+    run = tmp_path / "run"
+    shutil.copytree(PROPOSAL / "batch-01", run)
+    if mutation == "circuit":
+        witness = run / "witness.cq"
+        data = bytearray(witness.read_bytes())
+        data[-5] ^= 1
+        witness.write_bytes(bytes(data))
+    elif mutation == "manifest":
+        manifest = json.loads((run / "cases.json").read_text())
+        manifest["shots"] = 8192
+        (run / "cases.json").write_text(json.dumps(manifest, indent=1) + "\n")
+    return verify_run_binding(proposal_digests(PROPOSAL), "batch-01", load_run(run))
+
+
+def test_run_binding_accepts_the_proposal_bytes(tmp_path: Path) -> None:
+    from qi_matched_response import proposal_digests
+
+    binding = _run_directory(tmp_path, "none")
+    _check(binding["circuits"] == proposal_digests(PROPOSAL)["batches"]["batch-01"]["circuits"])
+    _check(len(binding["circuits"]) == 3)
+
+
+@pytest.mark.parametrize("mutation", ["circuit", "manifest"])
+def test_run_binding_refuses_changed_circuit_or_manifest(tmp_path: Path, mutation: str) -> None:
+    with pytest.raises(ValueError, match="differ"):
+        _run_directory(tmp_path, mutation)
 
 
 @pytest.mark.parametrize("fault", ["short-witness", "short-readout", "missing-readout", "missing-batch", "bad-order"])

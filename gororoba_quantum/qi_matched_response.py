@@ -34,10 +34,13 @@ the readout contrast m1 - m0 shrinks, and a nonpositive contrast is refused.
 
 from __future__ import annotations
 
+import hashlib
+import json
 import math
 import re
 from collections import Counter
 from collections.abc import Callable, Mapping, Sequence
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -50,6 +53,7 @@ READOUT_ONE = "readout-1.cq"
 REJECT_Z = 3.0
 REJECTION = "abs(z)>=3"
 WEIGHTS = (0, 0, -1, 1, 1, -1)
+ORDER = ("D_R1_b0", "B_R2_b0", "B_R1_b1", "F_R2_b1", "F_R1_b2", "D_R2_b2")
 CASE_LETTER = {"dark": "D", "bright": "B", "fixture": "F"}
 LABEL = re.compile(r"[DBF]_R[12]_b\d+")
 DECISION = (
@@ -89,6 +93,37 @@ def _joint_moments(
     return mean, covariance
 
 
+def _digest(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def proposal_digests(directory: Path) -> dict[str, Any]:
+    """sha256 of proposal.json, each batch cases.json and each batch circuit file of a proposal directory."""
+    proposal = json.loads((directory / "proposal.json").read_text())
+    batches = {}
+    for name in proposal["batches"]:
+        files = sorted((directory / name).glob("*.cq"))
+        batches[name] = {
+            "cases.json": _digest(directory / name / "cases.json"),
+            "circuits": {path.name: _digest(path) for path in files},
+        }
+    _require(
+        len(batches) == 3 and all(len(row["circuits"]) == 3 for row in batches.values()),
+        "the proposal needs three batches of three circuits",
+    )
+    return {"proposal.json": _digest(directory / "proposal.json"), "batches": batches}
+
+
+def verify_run_binding(expected: Mapping[str, Any], batch: str, record: Mapping[str, Any]) -> dict[str, Any]:
+    """Refuse a loaded run (qi_records.load_run) whose manifest or submitted circuits differ from the proposal."""
+    row = expected["batches"].get(batch)
+    _require(row is not None, f"{batch}: the proposal has no such batch")
+    _require(record.get("cases_sha256") == row["cases.json"], f"{batch}: the run manifest differs from the proposal")
+    observed = dict(record["circuits"])
+    _require(observed == row["circuits"], f"{batch}: the run circuits differ from the proposal circuits")
+    return {"cases.json": record["cases_sha256"], "circuits": observed}
+
+
 def analyze_matched_series(
     proposal: Mapping[str, Any],
     manifests: Mapping[str, Mapping[str, Any]],
@@ -104,6 +139,7 @@ def analyze_matched_series(
     """
     spec = proposal["primary_contrast"]
     order = list(spec["order"])
+    _require(tuple(order) == ORDER, "the proposal order differs from the frozen order")
     _require(tuple(spec["weights"]) == WEIGHTS and spec["rejection"] == REJECTION, "proposal contrast differs")
     batches = list(proposal["batches"])
     _require(set(manifests) == set(batches), "the manifests differ from the proposal batches")

@@ -17,8 +17,22 @@ This record freezes the analysis of the unsubmitted
 - A rejection does not identify drift, crosstalk or a control-error channel. A compatible residual leaves
   region-dependent visibility and time-dependent region offsets unresolved: with visibilities `v1` and
   `v2` in the two regions the residual is `(v2 - v1) / 2`.
+- The residual equals `(v2 - v1) / 2` for region-dependent visibility and equally `(w2 - w1) / 2` for a
+  visibility that drifts between batches 1 and 2, so it separates neither.
+- The regions run 81 and 105 controlled-Z gates, so a rejection is expected from depth alone and is a
+  statement about the device response, not about the zero-divisor property.
 - The per-region half-spacings `(B_r - D_r) / 2` span two batches and keep their batch offsets, so they
   are secondary.
+
+## Binding
+
+The analysis accepts only the approved circuits. It carries the order of the six labels as a constant and
+refuses a proposal whose `primary_contrast.order` differs. The script computes the sha256 of
+`proposal.json`, of each batch `cases.json` and of each of the nine circuit files from the proposal
+directory, and compares them with the digests of the manifest and circuit files that each collected run
+directory holds (`qi_records.load_run`, validated by `validate_run` against the bytes the submission
+receipt uploaded). A run whose manifest or circuits differ from the proposal is refused. The digests enter
+the analysis output under `binding`.
 
 ## Covariance
 
@@ -43,4 +57,4 @@ lacks a case the manifests carry.
 `tests/scripts/test_qi_matched_response_analysis.py` runs on synthetic shots: the null model gives an
 unbiased residual below the threshold, a region-dependent visibility gives `(v2 - v1) / 2`, the
 covariance is symmetric and positive semidefinite and its same-shot entries match a Monte Carlo estimate,
-swapping two order entries moves the residual, and incomplete batches are refused.
+a swapped order, a changed witness byte, a changed manifest and incomplete batches are refused.
