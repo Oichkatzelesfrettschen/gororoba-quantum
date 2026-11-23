@@ -302,6 +302,19 @@ reports 500 constructed equal-norm orthogonal samples, all zero divisors, and pl
 consistent with Theorem 1 and does not answer the question. BASE returned only math/0512517 and Reggiani's sedenion
 geometry.
 
+The Internet Archive's Wayback Machine holds the CERFACS report server and settles the Chatelin leads, all read on
+2026-11-23. The "unlocated 2007 report" of Semantic Scholar is F. Chaitin-Chatelin, *Elements of Hypercomputation on R and
+Z2 with the Dickson-Albert inductive process*, CERFACS TR/PA/03/34 (2003; captures of 2005 to 2007). It and her reports
+TR/PA/05/56, TR/PA/06/07 and TR/PA/07/55 credit Moreno's weak alternativity, his complexification of the singular values of
+L_a and private communications of 2004, and state nothing about Stiefel elements. Their references identify the Moreno
+manuscripts her book cites: *Alternative elements in the Cayley-Dickson algebras* (arXiv math/0404395), *The exponential
+map on the Cayley-Dickson algebras* (math/0405424) and *Hopf construction map in higher dimensions* (math/0404172), all
+already read; *The higher dimensional Cayley-Dickson algebras* (CINVESTAV manuscript, 2001) has no public copy found.
+TR/PA/07/55 is dedicated to the memory of Guillermo Moreno, so the question has stood open since before 2007. Chatelin's
+2007 chapter (Randomness and Complexity, from Leibniz to Chaitin, World Scientific, DOI 10.1142/9789812770837_0002) does not
+cite Moreno. Her book *Qualitative Computing* (2012) is a lending-only item at archive.org (qualitativecompu0000chai).
+archive.org's item search for Cayley-Dickson, sedenion and Moreno returns only arXiv mirrors already read.
+
 MathSciNet and Google Scholar were not searched. On 2026-11-23 MathSciNet answered with its institutional login page,
 also in a visible Firefox session, and no working sign-in was available; Google Scholar answered with a JavaScript bot
 challenge, and in the visible Firefox session its CAPTCHA repeated after each solution. The Semantic Scholar website
@@ -328,6 +341,8 @@ The queries of 2026-11-23, with their raw counts:
 | OpenAIRE | `graph/v1/researchProducts?search=Stiefel Cayley-Dickson` | 9 | Lambert-Kibler 1988, math/0512517, 2411.18881, Rodriguez-Ordonez 2010, Zenodo 23451124 and 23151835 (Zhou and Zhou), three unrelated |
 | BASE | `Stiefel "Cayley-Dickson"` | 4 | math/0512517 and 2411.18881, each from arXiv and DataCite |
 | libgen.li | DOI search, then edition page MD5 | 5 of 10 DOIs carry a file | MD5s used for the Anna's Archive downloads filed in gororoba-documents-private |
+| Wayback CDX | `cerfacs.fr/algor/reports/<year>/TR_PA_*` and the report lists `algo_reports_<year>.html`, 2000 to 2008 | 6 Chatelin hypercomplex reports | TR/PA/00/74, 03/08, 03/34, 05/56, 06/07, 07/55 |
+| archive.org advancedsearch | `Moreno AND "Cayley-Dickson"`; `"Qualitative computing" AND Chatelin` | 5; 1 | q-alg/9710013, math/0404172, math/0404395, math/0405424, math/0511691; qualitativecompu0000chai (lending only) |
 | arXiv API | `(abs:"zero divisor" OR abs:"zero divisors") AND abs:"Cayley-Dickson" AND submittedDate:[202401010000 TO 202612312359]` | 7 | 2608.28176, 2608.28163, 2608.26893, 2608.08232, 2606.27798, 2505.11747, 2411.18881 |
 
 ## Replay
