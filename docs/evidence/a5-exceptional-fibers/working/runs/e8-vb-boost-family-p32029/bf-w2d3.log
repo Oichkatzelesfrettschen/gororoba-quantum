@@ -158,10 +158,10 @@ STAGE product 54 of 55 0
 STAGE product 55 of 55 0
 STAGE std_Q_start generators 457 1
 RESULT sq_size 431
-STAGE std_Q_done 6
-STAGE normal_forms_done 7
+STAGE std_Q_done 9
+STAGE normal_forms_done 9
 RESULT monomials 1632
-STAGE syzygies_done 11
+STAGE syzygies_done 17
 RESULT targets 55
 RESULT relations 21
 RESULT rel_1 0;0;0;0;0;2;0;0;0;0;0;0;0;-1;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0

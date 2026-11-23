@@ -45,12 +45,12 @@ linear span of the component with four linear forms, and the substitution they d
 
 from the repository root, with Singular on PATH and sympy and python-flint in that interpreter; the argument
 `generic` adds the function-field run, which is not retained. The driver exits nonzero unless every point shows the invariants above and
-one normal form and the bases before the frame differ. The retained sample run took 2 min 33 s (11 s a point) with
+one normal form and the bases before the frame differ. The twelve points run through `parallel.py`; the retained sample run took about 1 min on four cores (11 s a point) with
 Singular 4.4.1, Python 3.14.4, sympy 1.14.0 and python-flint 0.9.0 on an aarch64 Linux host.
 
 | File | Content |
 |---|---|
-| `boost_family.py` | the script generator |
+| `boost_family.py` | the script generator; `--run` dispatches the values through `parallel.py` |
 | `run_boost.sh` | the sample points, the comparison and the function-field run (argument `generic`) |
 | `bf-wTAG.sing`, `.log` | one value of w (`d` for `/`, `m` for `-`) |
 | `normal-forms.txt` | per point: sha256 of the normal form and of the basis before the frame |

@@ -34,3 +34,9 @@ The Advisor read the head `bee2f23d6` with the two reports and the fixes above.
 | The truncation of the header Pfaffians rested on prose | confirmed | mode `high` of `induced_slice_map.py` tests the part of weight above 10 of each header Pfaffian against an untruncated standard basis of J + m I: 0 outside at both basepoints over Q(i); truncating at the header weight 29 instead did not finish in 9 min and is not used |
 | The status note said X lacks a slice map | confirmed | X is decided on the header slice (A5-270, A5-305); the note and the README name W8 and Iso |
 | The function-field boost run had no watcher, and "46 min" is not its cost | confirmed | a watcher on its end marker; the record states the cost when the run ends or reaches its cap |
+
+## Hosted Codex round (1 of 1), head `087eb76e0`
+
+| Finding | Verdict | Action |
+|---|---|---|
+| `run_boost.sh` runs the twelve independent boost values in a serial loop | confirmed | `boost_family.py --run` dispatches the values through `parallel.ordered_map`; the driver gates the logs afterward; rerun with one normal form at the twelve values |

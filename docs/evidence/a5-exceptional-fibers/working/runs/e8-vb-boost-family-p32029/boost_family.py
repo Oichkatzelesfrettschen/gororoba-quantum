@@ -9,12 +9,14 @@ relations {q : q(G) in J + m I^2}, then the invariants of the quadric ideal K(w)
 frame of the two component spans.
 
 --emit generic writes the script over the function field F_32029(w); --emit NUMBER writes it over F_32029 with w
-that number, where it also compares the Schur entries with the retained ones (equal at w = 1).
+that number, where it also compares the Schur entries with the retained ones (equal at w = 1). --run DIRECTORY
+VALUE... writes and runs the scripts of the values through parallel.py.
 """
 
 from __future__ import annotations
 
 import re
+import subprocess
 import sys
 from fractions import Fraction
 from pathlib import Path
@@ -23,6 +25,9 @@ HERE = Path(__file__).resolve().parent
 EVIDENCE = HERE.parents[3]
 ATTACH = EVIDENCE / "a5-kernel-attachments"
 sys.path.insert(0, str(ATTACH))
+sys.path.insert(0, str(EVIDENCE.parents[1] / "gororoba_quantum"))
+
+import parallel  # noqa: E402
 
 PRIME, ROOT = 32029, 9115
 COSH, SINH = "((w^2+1)/(2*w))", "((w^2-1)/(2*w))"
@@ -163,6 +168,30 @@ def emit(value: str) -> str:
     return script
 
 
+def tag(value: str) -> str:
+    return value if value == "generic" else "w" + value.replace("/", "d").replace("-", "m")
+
+
+def run_point(item: tuple[str, str]) -> str:
+    """Write the script of one value of w into the directory and run Singular on it; the log sits beside it."""
+    directory, value = item
+    script = Path(directory) / f"bf-{tag(value)}.sing"
+    script.write_text(emit(value), encoding="utf-8")
+    with script.with_suffix(".log").open("w", encoding="utf-8") as log:
+        subprocess.run(
+            ["Singular", "-q", "--no-warn", "--no-rc", str(script)],
+            stdin=subprocess.DEVNULL,
+            stdout=log,
+            stderr=subprocess.STDOUT,
+            check=False,
+        )
+    return tag(value)
+
+
 if __name__ == "__main__":
-    _require(len(sys.argv) == 3 and sys.argv[1] == "--emit", __doc__ or "")
-    sys.stdout.write(emit(sys.argv[2]))
+    if len(sys.argv) >= 4 and sys.argv[1] == "--run":
+        # The values are independent Singular runs; the driver reads the logs afterward.
+        print(" ".join(parallel.ordered_map(run_point, [(sys.argv[2], value) for value in sys.argv[3:]], min_items=1)))
+    else:
+        _require(len(sys.argv) == 3 and sys.argv[1] == "--emit", __doc__ or "")
+        sys.stdout.write(emit(sys.argv[2]))

@@ -45,7 +45,7 @@ RESULT reduced_g_7 8862*t2^2*t4*t6+8862*t1*t2*t6^2-8862*t3*t5*t7^2-8862*t4*t6*t7
 RESULT reduced_g_8 -4431*t1*t2*t3*t7-4431*t2^2*t5*t7-4431*t3*t4*t6*t7-4431*t5*t6^2*t7+4431*t5*t7^3-8862*t3*t6^2*t8-4431*t5*t7*t8^2+8*t1*t2*t6+8*t3*t5*t6-16*t3*t6^2-8*t4*t6^2-4*t1*t3*t7-4*t1*t4*t7-8*t2*t5*t7-4*t2*t6*t7-16*t5*t7*t8-8*t6*t7*t8-8*t4*t8^2-8862*t2*t3-8862*t1*t5-8862*t1*t6-9874*t6*t7-14305*t3*t8+3419*t4*t8+24*t3+24*t4
 RESULT reduced_g_9 -4*t2^2*t3*t7+4*t3*t4^2*t7-4*t1*t2*t5*t7+4*t4*t5*t6*t7+4*t3*t7^3+8*t5*t6^2*t8-4*t3*t7*t8^2+8862*t1*t2*t4+8862*t3*t4*t5+8862*t4^2*t6-14305*t5^2*t6+14305*t5*t6^2+8862*t2*t3*t7-4431*t2*t4*t7+4431*t1*t5*t7-4431*t1*t6*t7-14305*t3*t7*t8-8862*t4*t7*t8-8862*t6*t8^2-8*t1*t3+8*t1*t4-8*t2*t5-20*t4*t7+16*t5*t8-32*t6*t8+5443*t5-5443*t6
 RESULT reduced_g_10 -4431*t2*t4*t5*t7-4431*t2*t3*t6*t7-8862*t2*t5*t6*t8-16*t1*t3*t5-8*t2*t5^2-16*t1*t4*t6-16*t2*t5*t6-8*t2*t6^2+4*t1*t2*t7-4*t4*t5*t7-4*t3*t6*t7-4*t2^2*t8-8*t5*t6*t8+8*t1*t7*t8-8*t2*t8^2+8862*t2^2+8862*t5^2+14305*t5*t6+8862*t6^2+9874*t1*t7+12281*t2*t8+8862*t8^2+40*t2+20*t8
-STAGE std_J_done 0
+STAGE std_J_done 1
 RESULT target_1 y(10)^2
 RESULT target_2 y(9)*y(10)
 RESULT target_3 y(8)*y(10)
@@ -101,67 +101,67 @@ RESULT target_52 y(1)*y(3)
 RESULT target_53 y(2)^2
 RESULT target_54 y(1)*y(2)
 RESULT target_55 y(1)^2
-STAGE product 1 of 55 0
-STAGE product 2 of 55 0
-STAGE product 3 of 55 0
-STAGE product 4 of 55 0
-STAGE product 5 of 55 0
-STAGE product 6 of 55 0
-STAGE product 7 of 55 0
-STAGE product 8 of 55 0
-STAGE product 9 of 55 0
-STAGE product 10 of 55 0
-STAGE product 11 of 55 0
-STAGE product 12 of 55 0
-STAGE product 13 of 55 0
-STAGE product 14 of 55 0
-STAGE product 15 of 55 0
-STAGE product 16 of 55 0
-STAGE product 17 of 55 0
-STAGE product 18 of 55 0
-STAGE product 19 of 55 0
-STAGE product 20 of 55 0
-STAGE product 21 of 55 0
-STAGE product 22 of 55 0
-STAGE product 23 of 55 0
-STAGE product 24 of 55 0
-STAGE product 25 of 55 0
-STAGE product 26 of 55 0
-STAGE product 27 of 55 0
-STAGE product 28 of 55 0
-STAGE product 29 of 55 0
-STAGE product 30 of 55 0
-STAGE product 31 of 55 0
-STAGE product 32 of 55 0
-STAGE product 33 of 55 0
-STAGE product 34 of 55 0
-STAGE product 35 of 55 0
-STAGE product 36 of 55 0
-STAGE product 37 of 55 0
-STAGE product 38 of 55 0
-STAGE product 39 of 55 0
-STAGE product 40 of 55 0
-STAGE product 41 of 55 0
-STAGE product 42 of 55 0
-STAGE product 43 of 55 0
-STAGE product 44 of 55 0
-STAGE product 45 of 55 0
-STAGE product 46 of 55 0
-STAGE product 47 of 55 0
-STAGE product 48 of 55 0
-STAGE product 49 of 55 0
-STAGE product 50 of 55 0
-STAGE product 51 of 55 0
-STAGE product 52 of 55 0
-STAGE product 53 of 55 0
-STAGE product 54 of 55 0
-STAGE product 55 of 55 0
+STAGE product 1 of 55 1
+STAGE product 2 of 55 1
+STAGE product 3 of 55 1
+STAGE product 4 of 55 1
+STAGE product 5 of 55 1
+STAGE product 6 of 55 1
+STAGE product 7 of 55 1
+STAGE product 8 of 55 1
+STAGE product 9 of 55 1
+STAGE product 10 of 55 1
+STAGE product 11 of 55 1
+STAGE product 12 of 55 1
+STAGE product 13 of 55 1
+STAGE product 14 of 55 1
+STAGE product 15 of 55 1
+STAGE product 16 of 55 1
+STAGE product 17 of 55 1
+STAGE product 18 of 55 1
+STAGE product 19 of 55 1
+STAGE product 20 of 55 1
+STAGE product 21 of 55 1
+STAGE product 22 of 55 1
+STAGE product 23 of 55 1
+STAGE product 24 of 55 1
+STAGE product 25 of 55 1
+STAGE product 26 of 55 1
+STAGE product 27 of 55 1
+STAGE product 28 of 55 1
+STAGE product 29 of 55 1
+STAGE product 30 of 55 1
+STAGE product 31 of 55 1
+STAGE product 32 of 55 1
+STAGE product 33 of 55 1
+STAGE product 34 of 55 1
+STAGE product 35 of 55 1
+STAGE product 36 of 55 1
+STAGE product 37 of 55 1
+STAGE product 38 of 55 1
+STAGE product 39 of 55 1
+STAGE product 40 of 55 1
+STAGE product 41 of 55 1
+STAGE product 42 of 55 1
+STAGE product 43 of 55 1
+STAGE product 44 of 55 1
+STAGE product 45 of 55 1
+STAGE product 46 of 55 1
+STAGE product 47 of 55 1
+STAGE product 48 of 55 1
+STAGE product 49 of 55 1
+STAGE product 50 of 55 1
+STAGE product 51 of 55 1
+STAGE product 52 of 55 1
+STAGE product 53 of 55 1
+STAGE product 54 of 55 1
+STAGE product 55 of 55 1
 STAGE std_Q_start generators 457 1
 RESULT sq_size 431
-STAGE std_Q_done 6
-STAGE normal_forms_done 6
+STAGE std_Q_done 9
+STAGE normal_forms_done 9
 RESULT monomials 1632
-STAGE syzygies_done 11
+STAGE syzygies_done 16
 RESULT targets 55
 RESULT relations 21
 RESULT rel_1 0;0;0;0;0;2;0;0;0;0;0;0;0;-1;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
