@@ -272,9 +272,11 @@ A wider search on 2026-11-22 and 2026-11-23 found no answer either. It covered:
   2608.26890 do so in range citations such as "Moreno [14-16]". Koebisu's 2512.13002 cites it as later geometry in higher algebras. The BCDI eigentheory
   paper (arXiv 0905.2987) cites it, as a 2007 preprint of Moreno and González-Flores, for the start of its eigentheory
   approach. None states an answer to the question. Guterman and Zhilina's two Journal of Mathematical Sciences papers
-  (zbMATH 1471.17009, 2019, and 1508.05105, 2023) are closed access with no arXiv version, and their Russian originals
-  in Zapiski Nauchnykh Seminarov POMI did not load from this environment (the PDMI site refused the connection,
-  Math-Net.Ru answered 403), so their citing passages are unread. The 2007 report stays unscreened;
+  (zbMATH 1471.17009, 2019, and 1508.05105, 2023) have no arXiv version. The 2019 paper, its Zapiski POMI 472 original
+  (already filed) and the Fundam. Prikl. Mat. 23:3 original of the 2023 paper, filed on 2026-11-23, cite the preprint
+  only in their reference lists and in a background sentence on attempts to classify zero divisors. Chatelin's
+  Dickson-algebra chapter (Qualitative Computing, 2012) credits Moreno's reports of 2001 and 2003 and drafts of his
+  2004 and 2006 papers, and states nothing about Stiefel elements. The 2007 report stays unscreened;
 - Moreno's 14 documents in zbMATH Open, where math/0512517 appears only as the arXiv preprint; the later items were
   screened by title, and no title treats the question;
 - zbMATH Open "Cayley-Dickson zero divisors" (39 documents, titles screened) and "Cayley-Dickson Stiefel" (6, among
@@ -287,8 +289,10 @@ A wider search on 2026-11-22 and 2026-11-23 found no answer either. It covered:
   nor its docs/SOURCES.json entry, whose reading scope covers the rights check, records a mathematical reading scope. Every Cayley-Dickson transcription in the documents repositories that mentions a Stiefel element was
   also read.
 
-MathSciNet and Google Scholar were not searched. On 2026-11-23 MathSciNet answered with its institutional login page
-and Google Scholar with a JavaScript bot challenge. A record of the paper as a CINVESTAV internal report ("Reporte
+MathSciNet and Google Scholar were not searched. On 2026-11-23 MathSciNet answered with its institutional login page,
+also in a visible Firefox session, and no working sign-in was available; Google Scholar answered with a JavaScript bot
+challenge, and in the visible Firefox session its CAPTCHA repeated after each solution. The Semantic Scholar website
+asks for a human check as well. A record of the paper as a CINVESTAV internal report ("Reporte
 interno - CINVESTAV", listed by biblat.unam.mx behind a browser check) is unscreened; it may be the 2007 version that
 BCDI cite. The 2007 hypercomputation report (Semantic Scholar CorpusId 6523462) has no Crossref or OpenAlex record
 under its title, and the Semantic Scholar API refused the metadata request (HTTP 429). Hypothesis: it belongs to
