@@ -4,7 +4,7 @@
   "case": "grover-plane-mirrored",
   "cases_sha256": "c382feb075abadd70531883204a9be99a71d834c276ad6f4b1ad256960f1b4e2",
   "circuits": 52,
-  "features_sha256": "dac9236a321668ae4f37591954a7f587892bf36df5df16e1da8092aabd4f2391",
+  "features_sha256": "15e973f7a4319a4bc8dae14aeb839095c4f75be1b35aeda6c8b689c1dfabdc87",
   "prediction": {
    "ceiling_seconds_check": 26,
    "garnet_active_jobs": 16,
