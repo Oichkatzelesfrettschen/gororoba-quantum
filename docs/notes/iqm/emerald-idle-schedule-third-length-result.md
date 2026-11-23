@@ -42,5 +42,8 @@ These come from the same record and decide nothing.
   estimate carries. Falsifier: a job of the same circuits without the two longest arms whose execution scales by the
   remaining circuits' mean duration rather than their count. Cheapest test: refit the billing model of
   `docs/evidence/iqm-garnet-billing-v3/` on Emerald jobs with a per-shot-duration term, from the retained runs alone.
+  Done in [billing-v4](../../evidence/iqm-billing-v4/README.md): the per-shot duration sum, the per-shot longest duration
+  and the padded longest duration each leave a 5.0 to 5.8 s residual on this job, so the linear duration terms fitted on Garnet fail to predict it; an
+  Emerald-specific or nonlinear dependence on the longest train stays open.
 - hypothesis: b changes between calibrations while the form holds. Falsifier: two jobs on one calibration set whose
   within-job b differ by more than three standard errors.
