@@ -1,18 +1,18 @@
-	Command being timed: "VENV/bin/python docs/evidence/a5-exceptional-fibers/working/runs/e8-slice-equivalence-p32009/slice_bridge.py e8-np docs/evidence/a5-exceptional-fibers/working/runs/e8-rees-fibers-v2-kcompare-p32009/KA-e8-np.sing docs/evidence/a5-exceptional-fibers/working/runs/e8-rees-fibers-v2-kcompare-p32009/KH-e8-np.sing docs/evidence/a5-exceptional-fibers/working/runs/e8-slice-equivalence-p32009/bridge-e8-np.json"
-	User time (seconds): 86.58
-	System time (seconds): 0.31
-	Percent of CPU this job got: 100%
-	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:26.73
+	Command being timed: "python docs/evidence/a5-exceptional-fibers/working/runs/e8-slice-equivalence-p32009/slice_bridge.py e8-np docs/evidence/a5-exceptional-fibers/working/runs/e8-rees-fibers-v2-kcompare-p32009/KA-e8-np.sing docs/evidence/a5-exceptional-fibers/working/runs/e8-rees-fibers-v2-kcompare-p32009/KH-e8-np.sing docs/evidence/a5-exceptional-fibers/working/runs/e8-slice-equivalence-p32009/bridge-e8-np.json"
+	User time (seconds): 86.38
+	System time (seconds): 0.75
+	Percent of CPU this job got: 117%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:14.22
 	Average shared text size (kbytes): 0
 	Average unshared data size (kbytes): 0
 	Average stack size (kbytes): 0
 	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 357508
+	Maximum resident set size (kbytes): 350680
 	Average resident set size (kbytes): 0
 	Major (requiring I/O) page faults: 0
-	Minor (reclaiming a frame) page faults: 69373
-	Voluntary context switches: 5
-	Involuntary context switches: 656
+	Minor (reclaiming a frame) page faults: 105303
+	Voluntary context switches: 8414
+	Involuntary context switches: 5071
 	Swaps: 0
 	File system inputs: 0
 	File system outputs: 40

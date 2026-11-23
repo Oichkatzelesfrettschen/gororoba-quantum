@@ -34,7 +34,7 @@ core at 1.39 GB.
 | File | Content |
 |---|---|
 | `run_receipt.sh` | the calibration and the receipt run of `fiber_cone_driver.py` |
-| `post_check.sh`, `post.sing`, `post.log` | the invariants of the receipt ideal, the two comparisons, the control and the two map searches |
+| `post_check.sh`, `post.sing`, `post.log` | the invariants of the receipt ideal, the two comparisons, the control and the two map searches; the script exits nonzero unless the receipt is certified, Singular prints `POST VERDICT PASS` and both searches print `map_found` |
 | `KH-e8-np-r21255.sing` | the receipt relations as an ideal, the input of the map search |
 | `bridge-weight-np.json`, `bridge-weight-nm.json` | the maps from the weight-slice ideals |
 | `run.log`, `driver.log`, `calibration-driver.log` | the run, driver and calibration logs |

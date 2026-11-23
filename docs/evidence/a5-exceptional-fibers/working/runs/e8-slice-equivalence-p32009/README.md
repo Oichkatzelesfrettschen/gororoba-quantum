@@ -70,8 +70,8 @@ the map is checked by a rank and by the mutual reduction.
 from the repository root, with python-flint and numpy in that interpreter and Singular on PATH. The Singular check
 prints `BRIDGE VERDICT cell CELL PASS` only on zero remainders, 148 generators, dimension 5, multiplicity 11, a
 nonzero determinant and rejecting controls, and the driver exits nonzero without that line. The retained run used
-Python 3.14.4, python-flint 0.9.0, numpy 2.5.5 and Singular 4.4.1 on an aarch64 Linux host: 29 s (N-) and 88 s (N+)
-for `slice_bridge.py` at 0.36 GB, under 1 s per Singular check. The run copied this tree without git metadata from
+Python 3.14.4, python-flint 0.9.0, numpy 2.5.4 and Singular 4.4.1 on an aarch64 Linux host with four cores: 25 s (N-)
+and 74 s (N+) for `slice_bridge.py`, whose per-quadric stabilizer blocks run through `parallel.ordered_map`, under 1 s per Singular check. The run copied this tree without git metadata from
 commit `78c5e5c3a` with the scripts of this directory added.
 
 | File | Content |

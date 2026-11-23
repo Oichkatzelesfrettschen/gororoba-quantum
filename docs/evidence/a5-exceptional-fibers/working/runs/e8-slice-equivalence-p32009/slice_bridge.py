@@ -31,6 +31,10 @@ from typing import Any
 import numpy as np
 from flint import fmpz_mat, nmod_mat, nmod_poly
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[6] / "gororoba_quantum"))
+
+import parallel  # noqa: E402
+
 P = 32009
 N = 21
 MONS = [(a, b) for a in range(N) for b in range(a, N)]
@@ -105,23 +109,27 @@ def kernel(a: np.ndarray) -> np.ndarray:
     return arr(x).T[:nullity]
 
 
+def _stabilizer_block(item: tuple[np.ndarray, np.ndarray]) -> np.ndarray:
+    """The linear conditions that the derivation of one quadric q stays in the span with annihilator ann."""
+    q, ann = item
+    t = np.zeros((N * N, len(MONS)), dtype=np.int64)
+    for col in np.nonzero(q)[0]:
+        a, b = MONS[col]
+        c = int(q[col])
+        for j in range(N):
+            if a == b:
+                t[a * N + j, MIDX[(min(a, j), max(a, j))]] += 2 * c
+            else:
+                t[a * N + j, MIDX[(min(b, j), max(b, j))]] += c
+                t[b * N + j, MIDX[(min(a, j), max(a, j))]] += c
+    return ((t % P) @ ann.T % P).T
+
+
 def stabilizer(k: np.ndarray) -> np.ndarray:
     ann = kernel(k)  # 83 x 231, functionals vanishing on the span
     if ann.shape[0] != len(MONS) - rank(k):
         raise ValueError("annihilator dimension")
-    blocks = []
-    for q in k:
-        t = np.zeros((N * N, len(MONS)), dtype=np.int64)
-        for col in np.nonzero(q)[0]:
-            a, b = MONS[col]
-            c = int(q[col])
-            for j in range(N):
-                if a == b:
-                    t[a * N + j, MIDX[(min(a, j), max(a, j))]] += 2 * c
-                else:
-                    t[a * N + j, MIDX[(min(b, j), max(b, j))]] += c
-                    t[b * N + j, MIDX[(min(a, j), max(a, j))]] += c
-        blocks.append(((t % P) @ ann.T % P).T)
+    blocks = parallel.ordered_map(_stabilizer_block, [(q, ann) for q in k])
     system = np.concatenate(blocks, axis=0) % P
     return kernel(system).reshape(-1, N, N)
 
