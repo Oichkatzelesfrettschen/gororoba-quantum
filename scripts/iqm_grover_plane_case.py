@@ -19,7 +19,7 @@ rebuilds it from the circuit files the run carries and compares its digest with 
 random number.
 
 Usage: "$PYTHON" scripts/iqm_grover_plane_case.py (build DIR (--calibration SRC | --live) | check DIR |
-       analyze RUN_DIR --out OUT.json | search)
+       analyze RUN_DIR [--case-dir DIR] --out OUT.json | search)
 """
 
 from __future__ import annotations
@@ -52,6 +52,7 @@ import grover_plane_calibration as calibration  # noqa: E402
 import grover_plane_decision as decision  # noqa: E402
 import grover_plane_sim as sim  # noqa: E402
 import grover_plane_sizing as sizing  # noqa: E402
+import iqm_records  # noqa: E402
 
 CASE = "grover-plane-mirrored"
 CASE_101 = "grover-plane-mirrored-101"
@@ -711,7 +712,18 @@ def check(directory: Path) -> None:
             raise ValueError(f"{directory}/{rel} differs from the build")
 
 
-def main() -> int:
+def analysis_case_dir(run_dir: Path, case_dir: Path | None) -> Path:
+    """The case directory an analysis reads: the one named, else the retained directory of the case the run records
+    (variant B records grover-plane-mirrored-101, whose directory differs from the analyzer's default)."""
+    if case_dir is not None:
+        return case_dir
+    name = iqm_records.read_run(run_dir).case.get("case")
+    if name not in DESIGNS:
+        raise ValueError(f"{run_dir}: records case {name!r}, not one of {sorted(DESIGNS)}")
+    return ROOT / "results" / "iqm" / "cases" / str(name)
+
+
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = parser.add_subparsers(dest="command")
     b = sub.add_parser("build")
@@ -723,17 +735,20 @@ def main() -> int:
     c.add_argument("directory", type=Path)
     a = sub.add_parser("analyze")
     a.add_argument("run_dir", type=Path)
+    a.add_argument("--case-dir", type=Path, help="the case directory of the run (default: the case the run records)")
     a.add_argument("--out", type=Path, required=True)
     s = sub.add_parser("search")
     s.add_argument("--case", default=CASE, choices=sorted(DESIGNS))
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     if args.command == "build":
         write(args.directory, args.calibration, args.live)
     elif args.command == "check":
         check(args.directory)
         print(f"{args.directory}: matches the build")
     elif args.command == "analyze":
-        run_analysis.write_record(run_analysis.analyze(args.run_dir), args.out)
+        run_analysis.write_record(
+            run_analysis.analyze(args.run_dir, analysis_case_dir(args.run_dir, args.case_dir)), args.out
+        )
     elif args.command == "search":
         print(best_first_half(DESIGNS[args.case]))
     else:

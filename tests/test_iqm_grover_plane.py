@@ -659,3 +659,20 @@ def test_a_change_of_the_response_away_from_six_points_breaks_the_analysis(
         require(abs(bumped(response, s, e) - original(response, s, e)).max() < 1e-12, str((s, e)))
     with pytest.raises(analysis.AnalysisError, match="differs from prediction.json"):
         analysis.analyze(run, NEW)
+
+
+@pytest.mark.audit
+def test_the_cli_analyzer_reads_the_case_directory_of_a_variant_b_run(tmp_path: Path) -> None:
+    import iqm_garnet_followup as followup
+
+    import grover_plane_analysis as analysis
+
+    run = followup.synthetic_run(NEW_101, tmp_path / "model", "grover")
+    selected = tmp_path / "selected.json"
+    require(case.main(["analyze", str(run), "--out", str(selected)]) == 0)
+    require(json.loads(selected.read_text(encoding="utf-8"))["case"] == case.CASE_101)
+    named = tmp_path / "named.json"
+    require(case.main(["analyze", str(run), "--case-dir", str(NEW_101), "--out", str(named)]) == 0)
+    require(named.read_bytes() == selected.read_bytes())
+    with pytest.raises(analysis.AnalysisError):
+        case.main(["analyze", str(run), "--case-dir", str(NEW), "--out", str(tmp_path / "wrong.json")])
