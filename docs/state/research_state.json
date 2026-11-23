@@ -4013,6 +4013,20 @@
       "question": "Does Emerald schedule ASAP, and is the decay of its pulse trains beyond the delay-measured T1 one per-pulse gap common to the qubits?"
     },
     {
+      "id": "iqm-emerald-mock-idle-schedule-third-length",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-22T231402Z-emerald_mock-idle-schedule-third-length-emerald-probe",
+      "family": "IQM idle schedule and train readout probe",
+      "question": "Does the emerald:mock station accept the 21-circuit third-length case with its 96 us delay and 2000-pulse trains, and what runtime does it estimate?"
+    },
+    {
+      "id": "iqm-emerald-idle-schedule-third-length",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-22T231417Z-emerald-idle-schedule-third-length-emerald-probe",
+      "family": "IQM idle schedule and train readout probe",
+      "question": "Does the per-pulse gap of Emerald's idle trains follow g(N) = a + b / N at 250 and 2000 pulses, against the line through the same job's 500 and 1000 pulse gaps?"
+    },
+    {
       "id": "iqm-garnet-mock-packed-pauli-36",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-11-21T193252Z-garnet_mock-packed-pauli-response-garnet-packed",
