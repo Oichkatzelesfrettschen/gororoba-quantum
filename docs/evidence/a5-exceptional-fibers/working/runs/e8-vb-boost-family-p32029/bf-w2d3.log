@@ -1,0 +1,246 @@
+RESULT adjugate_identity 1
+RESULT pivot_pfaffian_at_origin_nonzero 1
+RESULT schur_matches_retained 0
+RESULT germ_dimension 4
+RESULT germ_component_count 1
+RESULT candidate_count 21
+RESULT selected_count 10
+RESULT selected_1 7
+RESULT selected_2 8
+RESULT selected_3 10
+RESULT selected_4 11
+RESULT selected_5 12
+RESULT selected_6 14
+RESULT selected_7 15
+RESULT selected_8 17
+RESULT selected_9 18
+RESULT selected_10 21
+RESULT eliminated_count 0
+RESULT reduced_j_count 17
+RESULT reduced_j_1 t3^2-t4^2-t5^2+t6^2
+RESULT reduced_j_2 t1^2-t2^2+t7^2-t8^2-16011*t2-16014*t8
+RESULT reduced_j_3 t4*t5*t8-t3*t6*t8+8007*t3*t5+8007*t4*t5-8007*t3*t6-8007*t4*t6
+RESULT reduced_j_4 t4^2*t8-t6^2*t8+8007*t3*t4+8007*t4^2+8007*t5*t6-8007*t6^2
+RESULT reduced_j_5 t3*t4*t8-t5*t6*t8+8007*t3*t4+8007*t4^2+8007*t5^2-8007*t5*t6
+RESULT reduced_j_6 t2*t4*t8+t1*t6*t8+8007*t2*t4-8007*t1*t5+8007*t1*t6-8009*t4*t8
+RESULT reduced_j_7 t1*t4*t8+t2*t6*t8+8007*t1*t3+8007*t1*t4+8007*t2*t6-8009*t6*t8
+RESULT reduced_j_8 t2*t3*t8+t1*t5*t8+8007*t2*t3+8007*t1*t5-8007*t1*t6-8009*t3*t8
+RESULT reduced_j_9 t1*t3*t8+t2*t5*t8+8007*t1*t3+8007*t1*t4+8007*t2*t5-8009*t5*t8
+RESULT reduced_j_10 t2*t3*t5+t1*t5^2-t2*t4*t6-t1*t6^2-8009*t3*t5-8009*t4*t5+8009*t3*t6+8009*t4*t6
+RESULT reduced_j_11 t2*t4^2+t1*t3*t5+t2*t5^2+t1*t4*t6-8009*t3*t4-8009*t4^2-8009*t5^2+8009*t5*t6
+RESULT reduced_j_12 t2*t3*t4+t1*t4*t5+t1*t3*t6+t2*t5*t6-8009*t3*t4-8009*t4^2-8009*t5*t6+8009*t6^2
+RESULT reduced_j_13 t7^2*t8^2-t8^4+16014*t7^2*t8+t8^3-10009*t2^2+12010*t2*t8-1999*t8^2
+RESULT reduced_j_14 t6*t7^2*t8-t6*t8^3+8007*t1*t2*t3+8007*t2^2*t5-8007*t5*t7^2+8007*t6*t7^2+8007*t5*t8^2+8008*t6*t8^2-6005*t1*t3-6005*t1*t4-12010*t2*t5+6005*t2*t6+12011*t5*t8+10012*t6*t8
+RESULT reduced_j_15 t5*t7^2*t8-t5*t8^3+8007*t1*t2*t4+8007*t2^2*t6+8007*t5*t7^2-8007*t6*t7^2+8008*t5*t8^2+8007*t6*t8^2-6005*t1*t3-6005*t1*t4+6005*t2*t5-12010*t2*t6+10012*t5*t8+12011*t6*t8
+RESULT reduced_j_16 t4*t7^2*t8-t4*t8^3-8007*t2^2*t3-8007*t1*t2*t5+8007*t3*t7^2+8007*t4*t7^2-8007*t3*t8^2+8008*t4*t8^2+12010*t2*t3+6005*t2*t4+6005*t1*t5-6005*t1*t6-12011*t3*t8+10012*t4*t8
+RESULT reduced_j_17 t3*t7^2*t8-t3*t8^3-8007*t2^2*t4-8007*t1*t2*t6+8007*t3*t7^2+8007*t4*t7^2+8008*t3*t8^2-8007*t4*t8^2+6005*t2*t3+12010*t2*t4-6005*t1*t5+6005*t1*t6+10012*t3*t8-12011*t4*t8
+RESULT reduced_g_count 10
+RESULT reduced_g_1 -16014*t2*t4*t5*t7-16014*t2*t3*t6*t7-t2*t5*t6*t8-12011*t2*t5^2-8007*t2*t5*t6-12011*t2*t6^2+12010*t1*t2*t7+12010*t4*t5*t7+12010*t3*t6*t7+12010*t2^2*t8+8009*t5*t6*t8-12011*t1*t7*t8-12011*t2*t8^2+13012*t2^2+13012*t5^2+6005*t5*t6+13012*t6^2+6007*t1*t7+12014*t2*t8+13012*t8^2-9509*t2-2505*t8
+RESULT reduced_g_2 11457*t1*t4^2*t6-11457*t1*t6^3+11457*t1*t6*t7^2-11457*t1*t6*t8^2-3972*t2^2*t3-3972*t1*t2*t5-3972*t4*t5*t6-3972*t3*t6^2-10286*t1*t6*t8+13902*t2*t3+6951*t2*t4+6951*t1*t5+9293*t1*t6+1986*t6*t7-993*t4*t8-11916*t3-11916*t4
+RESULT reduced_g_3 t2^2*t4*t6+t1*t2*t6^2-8009*t2*t3*t6+16011*t2*t4*t6-8009*t1*t6^2+8007*t5*t6*t7-8007*t3*t6*t8+3*t3*t6+3*t4*t6
+RESULT reduced_g_4 11457*t5^2*t7^2-11457*t6^2*t7^2-15888*t2*t7^2*t8-11457*t5^2*t8^2+11457*t6^2*t8^2+15888*t2*t8^3-3972*t1*t4*t5+3972*t1*t3*t6+10286*t3*t6*t7+3972*t2*t7^2-10286*t5^2*t8-10286*t5*t6*t8+10286*t6^2*t8-4225*t7^2*t8-11916*t2*t8^2+4225*t8^3-15785*t2^2-6951*t5^2-13443*t5*t6-11635*t6^2+15785*t7^2-15635*t2*t8-1883*t8^2+3602*t2-1307*t8
+RESULT reduced_g_5 -16014*t1*t4^3+16014*t1*t4*t6^2-16014*t1*t4*t7^2-16014*t2*t6*t8^2+12010*t1*t2*t3+12010*t2^2*t5-12010*t4^2*t5-12010*t3*t4*t6+12011*t2*t5*t8+8007*t2*t6*t8+12010*t6*t8^2-5003*t1*t3-11010*t1*t4+11013*t2*t5+16013*t2*t6+6005*t4*t7-13012*t5*t8-6005*t6*t8+4001*t5-4001*t6
+RESULT reduced_g_6 11457*t5^2*t7^2-11457*t6^2*t7^2+15888*t2*t7^2*t8-11457*t5^2*t8^2+11457*t6^2*t8^2-15888*t2*t8^3-3972*t1*t4*t5+3972*t1*t3*t6-10286*t4*t5*t7-3972*t2*t7^2-10286*t5^2*t8+10286*t5*t6*t8+10286*t6^2*t8+4225*t7^2*t8+11916*t2*t8^2-4225*t8^3+15785*t2^2+11635*t5^2+13443*t5*t6+6951*t6^2-15785*t7^2+15635*t2*t8+1883*t8^2-3602*t2+1307*t8
+RESULT reduced_g_7 t2^2*t4*t6+t1*t2*t6^2-t3*t5*t7^2-t4*t6*t7^2+t3*t5*t8^2+t4*t6*t8^2-8009*t1*t3*t4-8009*t2*t3*t6+16011*t2*t4*t6+8009*t1*t5*t6-8009*t1*t6^2+8007*t3*t4*t7+16014*t3*t5*t8-8007*t3*t6*t8+16014*t4*t6*t8-3*t3*t5+3*t3*t6
+RESULT reduced_g_8 16014*t1*t2*t3*t7+16014*t2^2*t5*t7+16014*t3*t4*t6*t7+16014*t5*t6^2*t7-16014*t5*t7^3-t3*t6^2*t8+16014*t5*t7*t8^2-12011*t1*t2*t6-12011*t3*t5*t6-8007*t3*t6^2+12011*t4*t6^2-12010*t1*t3*t7-12010*t1*t4*t7+8009*t2*t5*t7-12010*t2*t6*t7-8007*t5*t7*t8+12011*t6*t7*t8+12011*t4*t8^2+13012*t2*t3+13012*t1*t5+13012*t1*t6-6007*t6*t7-11010*t3*t8+10009*t4*t8-4004*t3-4004*t4
+RESULT reduced_g_9 -11457*t2^2*t3*t7+11457*t3*t4^2*t7-11457*t1*t2*t5*t7+11457*t4*t5*t6*t7+11457*t3*t7^3-9115*t5*t6^2*t8-11457*t3*t7*t8^2-5143*t1*t2*t4-5143*t3*t4*t5-5143*t4^2*t6-10286*t5^2*t6+10286*t5*t6^2-7944*t2*t3*t7+3972*t2*t4*t7-3972*t1*t5*t7+3972*t1*t6*t7-10286*t3*t7*t8+5143*t4*t7*t8+5143*t6*t8^2-993*t1*t3+993*t1*t4-993*t2*t5+15785*t4*t7+9293*t5*t8+13443*t6*t8+15429*t5-15429*t6
+RESULT reduced_g_10 16014*t2*t4*t5*t7+16014*t2*t3*t6*t7-t2*t5*t6*t8-8007*t1*t3*t5+12011*t2*t5^2-8007*t1*t4*t6-8007*t2*t5*t6+12011*t2*t6^2+12010*t1*t2*t7-12010*t4*t5*t7-12010*t3*t6*t7-12010*t2^2*t8+8009*t5*t6*t8-12011*t1*t7*t8+12011*t2*t8^2-13012*t2^2-13012*t5^2-6005*t5*t6-13012*t6^2+6007*t1*t7-12014*t2*t8-13012*t8^2+9509*t2+2505*t8
+STAGE std_J_done 0
+RESULT target_1 y(10)^2
+RESULT target_2 y(9)*y(10)
+RESULT target_3 y(8)*y(10)
+RESULT target_4 y(7)*y(10)
+RESULT target_5 y(6)*y(10)
+RESULT target_6 y(5)*y(10)
+RESULT target_7 y(4)*y(10)
+RESULT target_8 y(3)*y(10)
+RESULT target_9 y(2)*y(10)
+RESULT target_10 y(1)*y(10)
+RESULT target_11 y(9)^2
+RESULT target_12 y(8)*y(9)
+RESULT target_13 y(7)*y(9)
+RESULT target_14 y(6)*y(9)
+RESULT target_15 y(5)*y(9)
+RESULT target_16 y(4)*y(9)
+RESULT target_17 y(3)*y(9)
+RESULT target_18 y(2)*y(9)
+RESULT target_19 y(1)*y(9)
+RESULT target_20 y(8)^2
+RESULT target_21 y(7)*y(8)
+RESULT target_22 y(6)*y(8)
+RESULT target_23 y(5)*y(8)
+RESULT target_24 y(4)*y(8)
+RESULT target_25 y(3)*y(8)
+RESULT target_26 y(2)*y(8)
+RESULT target_27 y(1)*y(8)
+RESULT target_28 y(7)^2
+RESULT target_29 y(6)*y(7)
+RESULT target_30 y(5)*y(7)
+RESULT target_31 y(4)*y(7)
+RESULT target_32 y(3)*y(7)
+RESULT target_33 y(2)*y(7)
+RESULT target_34 y(1)*y(7)
+RESULT target_35 y(6)^2
+RESULT target_36 y(5)*y(6)
+RESULT target_37 y(4)*y(6)
+RESULT target_38 y(3)*y(6)
+RESULT target_39 y(2)*y(6)
+RESULT target_40 y(1)*y(6)
+RESULT target_41 y(5)^2
+RESULT target_42 y(4)*y(5)
+RESULT target_43 y(3)*y(5)
+RESULT target_44 y(2)*y(5)
+RESULT target_45 y(1)*y(5)
+RESULT target_46 y(4)^2
+RESULT target_47 y(3)*y(4)
+RESULT target_48 y(2)*y(4)
+RESULT target_49 y(1)*y(4)
+RESULT target_50 y(3)^2
+RESULT target_51 y(2)*y(3)
+RESULT target_52 y(1)*y(3)
+RESULT target_53 y(2)^2
+RESULT target_54 y(1)*y(2)
+RESULT target_55 y(1)^2
+STAGE product 1 of 55 0
+STAGE product 2 of 55 0
+STAGE product 3 of 55 0
+STAGE product 4 of 55 0
+STAGE product 5 of 55 0
+STAGE product 6 of 55 0
+STAGE product 7 of 55 0
+STAGE product 8 of 55 0
+STAGE product 9 of 55 0
+STAGE product 10 of 55 0
+STAGE product 11 of 55 0
+STAGE product 12 of 55 0
+STAGE product 13 of 55 0
+STAGE product 14 of 55 0
+STAGE product 15 of 55 0
+STAGE product 16 of 55 0
+STAGE product 17 of 55 0
+STAGE product 18 of 55 0
+STAGE product 19 of 55 0
+STAGE product 20 of 55 0
+STAGE product 21 of 55 0
+STAGE product 22 of 55 0
+STAGE product 23 of 55 0
+STAGE product 24 of 55 0
+STAGE product 25 of 55 0
+STAGE product 26 of 55 0
+STAGE product 27 of 55 0
+STAGE product 28 of 55 0
+STAGE product 29 of 55 0
+STAGE product 30 of 55 0
+STAGE product 31 of 55 0
+STAGE product 32 of 55 0
+STAGE product 33 of 55 0
+STAGE product 34 of 55 0
+STAGE product 35 of 55 0
+STAGE product 36 of 55 0
+STAGE product 37 of 55 0
+STAGE product 38 of 55 0
+STAGE product 39 of 55 0
+STAGE product 40 of 55 0
+STAGE product 41 of 55 0
+STAGE product 42 of 55 0
+STAGE product 43 of 55 0
+STAGE product 44 of 55 0
+STAGE product 45 of 55 0
+STAGE product 46 of 55 0
+STAGE product 47 of 55 0
+STAGE product 48 of 55 0
+STAGE product 49 of 55 0
+STAGE product 50 of 55 0
+STAGE product 51 of 55 0
+STAGE product 52 of 55 0
+STAGE product 53 of 55 0
+STAGE product 54 of 55 0
+STAGE product 55 of 55 0
+STAGE std_Q_start generators 457 1
+RESULT sq_size 431
+STAGE std_Q_done 9
+STAGE normal_forms_done 9
+RESULT monomials 1632
+STAGE syzygies_done 17
+RESULT targets 55
+RESULT relations 21
+RESULT rel_1 0;0;0;0;0;2;0;0;0;0;0;0;0;-1;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+RESULT rel_2 0;0;0;0;0;1;0;0;0;0;0;0;0;-1;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+RESULT rel_3 0;0;0;0;0;0;0;0;-1;0;0;0;0;0;0;0;-1;0;0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+RESULT rel_4 0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;-1;0;0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+RESULT rel_5 0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;-1;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+RESULT rel_6 0;0;0;0;0;0;0;0;0;0;0;0;-4051;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+RESULT rel_7 0;0;0;8102;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;-1;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+RESULT rel_8 0;0;0;0;0;4051;0;0;0;0;0;0;0;-4051;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+RESULT rel_9 0;0;0;-11753;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+RESULT rel_10 0;0;0;0;-4051;0;-4051;0;0;-1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;-1;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+RESULT rel_11 0;0;0;0;0;4051;0;0;0;0;0;0;0;-4051;0;0;0;0;-1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+RESULT rel_12 0;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;-1;0;0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+RESULT rel_13 0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;-4051;0;0;0;0;0;0;0;0;0;-1;0;0;0;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+RESULT rel_14 0;0;0;0;0;4051;0;0;0;0;0;0;0;-4051;0;0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0
+RESULT rel_15 0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;-4051;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0
+RESULT rel_16 0;0;0;0;4051;0;4051;0;0;-1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;-1;0;0;0;0;0;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;0
+RESULT rel_17 0;0;0;0;0;0;0;8102;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;-1;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0
+RESULT rel_18 0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;-4051;0;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0
+RESULT rel_19 0;0;0;0;-11753;0;-11753;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0
+RESULT rel_20 0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;-4051;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;1;0;0;0;0
+RESULT rel_21 0;0;0;0;0;0;0;-11753;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;1;0;0;0
+RESULT k_generators 21 dim 4 mult 7
+RESULT k_numerator 1,0,-21,70,-105,84,-35,6,0
+RESULT prime 4 3 4
+RESULT prime 4 4 3
+RESULT prime_count 2
+RESULT radical 1
+RESULT frame_a -13119
+RESULT frame_b -8958
+RESULT frame_d 14113
+RESULT frame_consistent 1
+RESULT frame_determinant_nonzero 1
+RESULT normal_form_size 21
+NORMALFORM y(5)*y(9)-y(6)*y(10)
+NORMALFORM y(3)*y(9)-2*y(2)*y(10)
+NORMALFORM y(1)*y(9)+16014*y(3)*y(10)
+NORMALFORM y(6)*y(8)+16014*y(7)*y(9)
+NORMALFORM y(5)*y(8)+16014*y(7)*y(10)
+NORMALFORM y(7)^2-4*y(4)*y(8)
+NORMALFORM y(6)*y(7)-2*y(4)*y(9)
+NORMALFORM y(5)*y(7)-2*y(4)*y(10)
+NORMALFORM y(3)*y(7)
+NORMALFORM y(2)*y(7)
+NORMALFORM y(1)*y(7)
+NORMALFORM y(3)*y(6)
+NORMALFORM y(2)*y(6)
+NORMALFORM y(1)*y(6)
+NORMALFORM y(3)*y(5)
+NORMALFORM y(2)*y(5)
+NORMALFORM y(1)*y(5)
+NORMALFORM y(3)*y(4)
+NORMALFORM y(2)*y(4)
+NORMALFORM y(1)*y(4)
+NORMALFORM y(1)*y(2)+8007*y(3)^2
+KBASIS y(4)*y(9)-y(6)*y(9)+2*y(5)*y(10)
+KBASIS y(7)*y(8)-y(6)*y(9)+y(5)*y(10)
+KBASIS y(6)*y(8)-y(3)*y(9)-y(2)*y(10)
+KBASIS y(5)*y(8)-y(2)*y(9)
+KBASIS y(4)*y(8)-y(3)*y(9)+y(2)*y(10)
+KBASIS y(5)*y(7)-4051*y(7)*y(9)
+KBASIS y(4)*y(7)-y(6)*y(7)+8102*y(7)*y(10)
+KBASIS y(2)*y(7)-4051*y(6)*y(9)+4051*y(5)*y(10)
+KBASIS y(1)*y(7)-11753*y(7)*y(10)
+KBASIS y(6)^2-y(3)*y(7)-y(1)*y(10)-4051*y(4)*y(10)-4051*y(6)*y(10)
+KBASIS y(5)*y(6)-y(1)*y(9)-4051*y(6)*y(9)+4051*y(5)*y(10)
+KBASIS y(4)*y(6)-y(3)*y(7)+y(1)*y(10)
+KBASIS y(2)*y(6)-y(1)*y(8)-4051*y(3)*y(9)
+KBASIS y(4)*y(5)+y(1)*y(9)-4051*y(6)*y(9)+4051*y(5)*y(10)
+KBASIS y(3)*y(5)-4051*y(3)*y(9)
+KBASIS y(4)^2-y(3)*y(7)-y(1)*y(10)+4051*y(4)*y(10)+4051*y(6)*y(10)
+KBASIS y(3)*y(4)-y(3)*y(6)+8102*y(3)*y(10)
+KBASIS y(2)*y(4)+y(1)*y(8)-4051*y(3)*y(9)
+KBASIS y(1)*y(4)+y(1)*y(6)-11753*y(4)*y(10)-11753*y(6)*y(10)
+KBASIS y(2)*y(3)-4051*y(3)*y(8)
+KBASIS y(1)*y(3)-11753*y(3)*y(10)
+KBASIS y(1)*y(9)^2-y(5)^2*y(10)
+KBASIS y(1)*y(8)*y(9)-y(2)*y(5)*y(10)
+KBASIS y(1)*y(6)*y(9)-y(1)*y(5)*y(10)-11753*y(6)*y(9)*y(10)+11753*y(5)*y(10)^2
+KBASIS y(1)*y(8)^2-y(2)^2*y(10)
+RESULT done 1

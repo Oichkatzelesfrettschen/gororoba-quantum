@@ -1,0 +1,18 @@
+RESULT header_adjugate_identity 1
+RESULT weight_pivot_square 1
+RESULT weight_pivot_on_axis 1
+RESULT pivot_units_at_origin 1 1
+RESULT axis_unit 64*s2^6+(-128*i)*s2^5-192*s2^4+(256*i)*s2^3+192*s2^2+(-128*i)*s2-64
+RESULT germ_before 6 10 13
+RESULT component 6 10 1
+RESULT germ_after 5 58 52
+RESULT germ_inhomogeneous 0
+RESULT pfaffian_nonzero 111
+RESULT pfaffian_max_weight 10
+RESULT pfaffian_inhomogeneous
+RESULT generators 21
+RESULT selected 12,15,16,18,20,30,35,47,49,51,52,54,55,84,86,87,89,123,124,125,126
+RESULT generator_weights 5,4,7,5,6,5,7,5,3,4,4,5,5,3,4,4,5,3,3,4,5
+RESULT header_max_weight 29 10
+RESULT header_high_weight_outside 0
+RESULT done 1
