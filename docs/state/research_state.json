@@ -4048,6 +4048,20 @@
       "question": "On Garnet, does a sedenion left sign row on a four-qubit square imprint its exact Walsh peak against its degree-two truncation on the same CZ sequence and against a null arm?"
     },
     {
+      "id": "iqm-garnet-mock-grover-plane-mirrored-101",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-23T162130Z-garnet_mock-grover-plane-mirrored-101-grover",
+      "family": "IQM Garnet Grover plane, mark 101 mirrored",
+      "question": "Does the garnet:mock station accept the mirrored mark 101 plane case and what runtime does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-grover-plane-mirrored-101",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-23T162638Z-garnet-grover-plane-mirrored-101-grover",
+      "family": "IQM Garnet Grover plane, mark 101 mirrored",
+      "question": "On Garnet, does the mark 101 Grover retention depart from the geometric law at depths 1 to 4 on mirrored pairs, and does the plane rotation fit adequately?"
+    },
+    {
       "id": "qi-pathion-null-phase-scan-qx-2026-11-21t1650-batch-00",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_qx-batch-00",

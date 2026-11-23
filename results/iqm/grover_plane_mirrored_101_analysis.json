@@ -1,0 +1,461 @@
+{
+ "case": "grover-plane-mirrored-101",
+ "circuits": [
+  {
+   "circuit_sha256": "bc7570e50f201b6a66be8c6855c491df7e230496b0b284e4f922086456f6e801",
+   "depth": 3,
+   "kept_shots": 14323,
+   "mark": "101",
+   "marked": 4103,
+   "name": "m101-k3-c0",
+   "position": 0,
+   "sha256": "548eeed02d832884b1bee58a2bd84446028df88ef9c50172ef8f4bbe289e83ef"
+  },
+  {
+   "name": "ro-000",
+   "position": 1,
+   "sha256": "7ac9de616b24f6af14641628c32ad019a75859b3f12788b4c4c054d57c164d36"
+  },
+  {
+   "circuit_sha256": "58381fff854dd638ec1cc753363bd9e3a33d7d8669125575c3ddfb1aee8fc71f",
+   "depth": 4,
+   "kept_shots": 15177,
+   "mark": "101",
+   "marked": 657,
+   "name": "m101-k4-c0",
+   "position": 2,
+   "sha256": "e46edbd41c64aed72e3fa7009038fa2312dcda9b4767adfacef0edabb9a027b3"
+  },
+  {
+   "circuit_sha256": "942b5d40972928b241a0dd452b4755a968aa7e32f9c363730b7ddf2b95982d9e",
+   "depth": 1,
+   "kept_shots": 14214,
+   "mark": "101",
+   "marked": 9634,
+   "name": "m101-k1-c0",
+   "position": 3,
+   "sha256": "00505a1abae71ae9faf7bbdc7c32f316aed91ede306fa2e5e1a9e6c5c9d16472"
+  },
+  {
+   "circuit_sha256": "bc7570e50f201b6a66be8c6855c491df7e230496b0b284e4f922086456f6e801",
+   "depth": 3,
+   "kept_shots": 14196,
+   "mark": "101",
+   "marked": 3928,
+   "name": "m101-k3-c1",
+   "position": 4,
+   "sha256": "9bf47b47951e901a8951a633e4127b6331f4f6b3834d40d24c989c832912295f"
+  },
+  {
+   "circuit_sha256": "8690fa73d10ed7240c9a3f535a3c740779a15cc7b5c635eeb26de1cdc1cbc86d",
+   "depth": 2,
+   "kept_shots": 14189,
+   "mark": "101",
+   "marked": 10659,
+   "name": "m101-k2-c0",
+   "position": 5,
+   "sha256": "de19795da985e92986beb251341c80d14956befdc4e1def8193d9ce6527e1f74"
+  },
+  {
+   "name": "ro-001",
+   "position": 6,
+   "sha256": "c2a17c2693360c4fdee94203d5c2f50373d8921cbd5c1bea8dab4f7583324028"
+  },
+  {
+   "circuit_sha256": "bc7570e50f201b6a66be8c6855c491df7e230496b0b284e4f922086456f6e801",
+   "depth": 3,
+   "kept_shots": 14862,
+   "mark": "101",
+   "marked": 4243,
+   "name": "m101-k3-c2",
+   "position": 7,
+   "sha256": "91e5a0f4e582b5e6289971cae0f72d7e8964ea106ed501b96648aa4439e25549"
+  },
+  {
+   "circuit_sha256": "8690fa73d10ed7240c9a3f535a3c740779a15cc7b5c635eeb26de1cdc1cbc86d",
+   "depth": 2,
+   "kept_shots": 14297,
+   "mark": "101",
+   "marked": 10828,
+   "name": "m101-k2-c1",
+   "position": 8,
+   "sha256": "d6cfa2281bc0e960f767196978c865234e65b8f957c52cda563299a81e79a41f"
+  },
+  {
+   "name": "ro-010",
+   "position": 9,
+   "sha256": "92277bb113396cb15a709db7aedfa17cb012f371c11806c94e4c7b7f2cab6deb"
+  },
+  {
+   "name": "ro-011",
+   "position": 10,
+   "sha256": "866eb9ea2655c8c8e37d1f58a9e527c243a74226ec424b37e74ebfce4f74ce3e"
+  },
+  {
+   "circuit_sha256": "942b5d40972928b241a0dd452b4755a968aa7e32f9c363730b7ddf2b95982d9e",
+   "depth": 1,
+   "kept_shots": 14345,
+   "mark": "101",
+   "marked": 9723,
+   "name": "m101-k1-c1",
+   "position": 11,
+   "sha256": "d08481609ac14388996385d54b7e6200b65aee3ce6906deebe08c6ff305bd168"
+  },
+  {
+   "circuit_sha256": "bc7570e50f201b6a66be8c6855c491df7e230496b0b284e4f922086456f6e801",
+   "depth": 3,
+   "kept_shots": 14470,
+   "mark": "101",
+   "marked": 3972,
+   "name": "m101-k3-c3",
+   "position": 12,
+   "sha256": "741025dd1b8582dc5f29bba81388ed5b1b07c01dfb884cc3e9faa5471e72ff77"
+  },
+  {
+   "circuit_sha256": "58381fff854dd638ec1cc753363bd9e3a33d7d8669125575c3ddfb1aee8fc71f",
+   "depth": 4,
+   "kept_shots": 14389,
+   "mark": "101",
+   "marked": 647,
+   "name": "m101-k4-c1",
+   "position": 13,
+   "sha256": "43fbb99cfaa1f641830aa359aee52b60b969c2eb4d338946b5e364f87f8356ea"
+  },
+  {
+   "name": "ro-100",
+   "position": 14,
+   "sha256": "996685eb52fd9647e666c5455ae5e7c9950acfe4539f952d5ae64e5439cafec3"
+  },
+  {
+   "name": "ro-101",
+   "position": 15,
+   "sha256": "8a9d6ffa51aa18e89b45618ecd7d07ee73e115dcc564085f382255a9da7e7bf5"
+  },
+  {
+   "circuit_sha256": "bc7570e50f201b6a66be8c6855c491df7e230496b0b284e4f922086456f6e801",
+   "depth": 3,
+   "kept_shots": 14480,
+   "mark": "101",
+   "marked": 4011,
+   "name": "m101-k3-c4",
+   "position": 16,
+   "sha256": "2d88bfb49e4505f596d085267adfae349d1191dc14ff06018386d4d8d8c58525"
+  },
+  {
+   "name": "ro-110",
+   "position": 17,
+   "sha256": "0638d660cc1d913bf4aa1927a78f8a14373e2dbe0d854b1c8fc4c8ebab13df68"
+  },
+  {
+   "name": "ro-111",
+   "position": 18,
+   "sha256": "b44cbd475f7630d157fcaf5fad3aa7e9aebc9a8ce2c4e3974235b263854c3ee0"
+  },
+  {
+   "name": "ro-111-m",
+   "position": 19,
+   "sha256": "3a39aa36498c36cf10824dbebdb795ee9d736b5ece1b6980d1037a9c2772d34f"
+  },
+  {
+   "name": "ro-110-m",
+   "position": 20,
+   "sha256": "e19d6eab92a246fac286c3139208d084fb1ce290eb2bbfb352fcb77de30443e3"
+  },
+  {
+   "circuit_sha256": "bc7570e50f201b6a66be8c6855c491df7e230496b0b284e4f922086456f6e801",
+   "depth": 3,
+   "kept_shots": 14321,
+   "mark": "101",
+   "marked": 3951,
+   "name": "m101-k3-c5",
+   "position": 21,
+   "sha256": "df08169cce74694ed4de640eb621ceb0b5dd565c8c551938cf8bef9bfcdbdca1"
+  },
+  {
+   "name": "ro-101-m",
+   "position": 22,
+   "sha256": "1b85290f0b84a204455a43d0cb01e1b7e1ef92b61e621d8feb8af6c2a50f4e90"
+  },
+  {
+   "name": "ro-100-m",
+   "position": 23,
+   "sha256": "4aa52e862ec93cfe1bd7259571dfa67d77be8b03aca2988f606df4d5fdb3b46d"
+  },
+  {
+   "circuit_sha256": "58381fff854dd638ec1cc753363bd9e3a33d7d8669125575c3ddfb1aee8fc71f",
+   "depth": 4,
+   "kept_shots": 14942,
+   "mark": "101",
+   "marked": 695,
+   "name": "m101-k4-c2",
+   "position": 24,
+   "sha256": "3631911beb40abf329cd4ebe9126bb426ee3c229faa8f8fdb5bcb98a5b8f2a23"
+  },
+  {
+   "circuit_sha256": "bc7570e50f201b6a66be8c6855c491df7e230496b0b284e4f922086456f6e801",
+   "depth": 3,
+   "kept_shots": 14255,
+   "mark": "101",
+   "marked": 4043,
+   "name": "m101-k3-c6",
+   "position": 25,
+   "sha256": "a05651230a5d3a2994692b44175ab774dad57bdec3743bee8bafc07a7c24327a"
+  },
+  {
+   "circuit_sha256": "942b5d40972928b241a0dd452b4755a968aa7e32f9c363730b7ddf2b95982d9e",
+   "depth": 1,
+   "kept_shots": 14263,
+   "mark": "101",
+   "marked": 9632,
+   "name": "m101-k1-c2",
+   "position": 26,
+   "sha256": "84d9794e0e2e9454e13a297a63aba011725ab86da92c70b0af138e45f3fd839d"
+  },
+  {
+   "name": "ro-011-m",
+   "position": 27,
+   "sha256": "2ab292f68f3a3c90b1d2d965214ad4bb32db8eea4c61b0c9adceb6db72bd8465"
+  },
+  {
+   "name": "ro-010-m",
+   "position": 28,
+   "sha256": "42c8124172c6c1595606b544bf917ebbda4288f8693a9547c45d49df2a80909d"
+  },
+  {
+   "circuit_sha256": "8690fa73d10ed7240c9a3f535a3c740779a15cc7b5c635eeb26de1cdc1cbc86d",
+   "depth": 2,
+   "kept_shots": 14918,
+   "mark": "101",
+   "marked": 11243,
+   "name": "m101-k2-c2",
+   "position": 29,
+   "sha256": "7c3145482f3d3de810a7c7de35e4ea3b27912bd8ee55a5e0b0dc8b3466fbff56"
+  },
+  {
+   "circuit_sha256": "bc7570e50f201b6a66be8c6855c491df7e230496b0b284e4f922086456f6e801",
+   "depth": 3,
+   "kept_shots": 14462,
+   "mark": "101",
+   "marked": 4112,
+   "name": "m101-k3-c7",
+   "position": 30,
+   "sha256": "8a90c02b8aae3456fe69a35928201dce07a89c01599015891b7ee619a39b3289"
+  },
+  {
+   "name": "ro-001-m",
+   "position": 31,
+   "sha256": "879ab83b8c7b1f2c63f1a4339d88e8075445fba83f8505e3231dde4b20f263f2"
+  },
+  {
+   "circuit_sha256": "8690fa73d10ed7240c9a3f535a3c740779a15cc7b5c635eeb26de1cdc1cbc86d",
+   "depth": 2,
+   "kept_shots": 14867,
+   "mark": "101",
+   "marked": 11259,
+   "name": "m101-k2-c3",
+   "position": 32,
+   "sha256": "adb8ab258f34d4ae0cecfb70b5508dfbbf3b7405bd8171ce2d36015002622cc3"
+  },
+  {
+   "circuit_sha256": "bc7570e50f201b6a66be8c6855c491df7e230496b0b284e4f922086456f6e801",
+   "depth": 3,
+   "kept_shots": 14459,
+   "mark": "101",
+   "marked": 4057,
+   "name": "m101-k3-c8",
+   "position": 33,
+   "sha256": "b3018f8adec4cf8cc68367b571ed7f6bb31f29a53311c8c579752c65079007f5"
+  },
+  {
+   "circuit_sha256": "942b5d40972928b241a0dd452b4755a968aa7e32f9c363730b7ddf2b95982d9e",
+   "depth": 1,
+   "kept_shots": 14324,
+   "mark": "101",
+   "marked": 9709,
+   "name": "m101-k1-c3",
+   "position": 34,
+   "sha256": "c08fc85e35466d417c23654046a12cacce0ff5281b0081194c2b3bf9550cc1b2"
+  },
+  {
+   "circuit_sha256": "58381fff854dd638ec1cc753363bd9e3a33d7d8669125575c3ddfb1aee8fc71f",
+   "depth": 4,
+   "kept_shots": 14303,
+   "mark": "101",
+   "marked": 616,
+   "name": "m101-k4-c3",
+   "position": 35,
+   "sha256": "11f38f8cc3fb28668e31e49460f997ea205dd5707599ad30c4293f8ede35ba5d"
+  },
+  {
+   "name": "ro-000-m",
+   "position": 36,
+   "sha256": "0af90a213342449ff7096d9f6b53a744443b3c982d02d5bb7b34df87660c2e50"
+  },
+  {
+   "circuit_sha256": "bc7570e50f201b6a66be8c6855c491df7e230496b0b284e4f922086456f6e801",
+   "depth": 3,
+   "kept_shots": 15136,
+   "mark": "101",
+   "marked": 4319,
+   "name": "m101-k3-c9",
+   "position": 37,
+   "sha256": "40c0939c2625dd48c777bebbff735fe5be38b3e4ec5545f64fc5c7a5e1efc3a2"
+  }
+ ],
+ "contrast": {
+  "reading": "not evaluated: the case carries no mark 011 arms",
+  "z_cz": null,
+  "z_prx": null
+ },
+ "decisions": {
+  "101": {
+   "T": 1.796704797,
+   "chi2_geometric": 104.269882918,
+   "chi2_model": 270.486005602,
+   "chi2_rotation": 102.473178121,
+   "delta": 8.0,
+   "departure": "not evaluated: the reading depends on one mirror pair",
+   "departure_before": "geometric",
+   "dropped_pairs": {},
+   "geometric": {
+    "a": 0.907363807,
+    "s": 1.049666965
+   },
+   "heterogeneity": {
+    "chi2": 8.085253681,
+    "dof": 7,
+    "phi": 1.54,
+    "threshold": 18.475306907
+   },
+   "influence": {
+    "refits": [
+     {
+      "departure": "geometric",
+      "depth": 1,
+      "pair": 0
+     },
+     {
+      "departure": "geometric",
+      "depth": 1,
+      "pair": 1
+     },
+     {
+      "departure": "geometric",
+      "depth": 2,
+      "pair": 0
+     },
+     {
+      "departure": "geometric",
+      "depth": 2,
+      "pair": 1
+     },
+     {
+      "departure": "geometric",
+      "depth": 3,
+      "pair": 0
+     },
+     {
+      "departure": "geometric",
+      "depth": 3,
+      "pair": 1
+     },
+     {
+      "departure": "geometric",
+      "depth": 3,
+      "pair": 2
+     },
+     {
+      "departure": "geometric",
+      "depth": 3,
+      "pair": 3
+     },
+     {
+      "departure": "geometric",
+      "depth": 3,
+      "pair": 4
+     },
+     {
+      "departure": "unresolved",
+      "depth": 4,
+      "pair": 0
+     },
+     {
+      "departure": "geometric",
+      "depth": 4,
+      "pair": 1
+     }
+    ],
+    "stands": false
+   },
+   "offset_a": 0.907363807,
+   "offset_a_se": 0.006839433,
+   "per_iteration_loss": "not resolved",
+   "rotation": {
+    "a": 0.917215565,
+    "eps": -0.003047288,
+    "s": 1.042278886
+   },
+   "rotation_adequate": false,
+   "rotation_se": {
+    "a": 0.01064133,
+    "eps": 0.002563539,
+    "s": 0.007204259
+   }
+  }
+ },
+ "mechanism_attribution": {
+  "eps_per_unit": {
+   "cz_phase_rad": {
+    "eps_per_unit": -1.294918038
+   },
+   "prx_amplitude_fraction": {
+    "eps_per_unit": -2.239560669
+   },
+   "zz_hz": {
+    "eps_per_unit": 7.36e-07
+   }
+  },
+  "note": "a reading beside the departure; it decides nothing"
+ },
+ "readout": {
+  "101": {
+   "frequency_shift": [
+    0.009664072,
+    0.010696017,
+    0.003642473,
+    0.000553893
+   ],
+   "marked_row": [
+    0.0001,
+    0.000980396,
+    0.0001,
+    0.0001,
+    0.004812006,
+    0.975674572,
+    0.00021852,
+    0.01001545
+   ],
+   "model_marked_row": [
+    2.019e-06,
+    0.001387722,
+    3.2e-08,
+    2.1809e-05,
+    0.001399588,
+    0.961981419,
+    2.1995e-05,
+    0.015117975
+   ],
+   "passed": true
+  },
+  "sides_chi2": 41.035,
+  "sides_dof": 38
+ },
+ "run": {
+  "calibration_set": "2951733a-f569-452e-92bc-44397d6a192e",
+  "cases_sha256": "ccdff667ff4ee4ac4c55f6d22632a7b3661f4dde816874f6f3c64c90082b1763",
+  "job_id": "01a2093b-2503-756c-ab56-6621c703e128",
+  "prediction_sha256": "b03eb032e44e2d2ba0488eeb3f581a279082c63d4cc3133f96b09598f8d7a3d2",
+  "qc": "garnet"
+ },
+ "schema": "iqm-grover-plane-analysis-v1"
+}
