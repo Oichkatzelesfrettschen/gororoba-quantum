@@ -27,6 +27,13 @@ Each fit carries a per group offset a, a per mark s and a per mark eps; the mark
 joint fit of `fits.json` (chi2 1.474, eps 0.0373 and -0.0129) and calibrates the reader. Replay: `--check` recomputes it and
 compares to 1e-4 relative (gate `core-iqm-grover-plane-complement`); the depths of a group are independent, as in `fits.json`.
 
+`billing_v4_inputs.json` pins the Garnet billing models (v3, v4_sum, v4_max, their largest leave-one-out residuals, the schedule model
+and its relative errors) read from `docs/evidence/iqm-billing-v4/billing_v4.json` on branch `iqm-billing-shot-duration` at commit
+7e7be1f32ed6ac6e7f0a340ad19b4fb911d1b297 (sha256 in the file). `variant_sizing.json` prices the two case variants from their circuits with
+`gororoba_quantum/grover_plane_sizing.py` (written and replayed by `scripts/iqm_grover_plane_sizing.py --out / --check`, gate
+`core-iqm-grover-plane-sizing`): circuits, executions, expected execution seconds, billed credits, `max_credits`, cancel threshold, the
+margins at runtime overruns of 1, 1.5 and 2.2 times, the primary-test power and the `cases.json` digests.
+
 Replay: `"$PYTHON" scripts/iqm_grover_plane_retained.py --check docs/evidence/iqm-garnet-grover-plane/fits.json` recomputes the record
 and compares it with the file to 1e-6 relative (gate `core-iqm-grover-plane-retained`).
 

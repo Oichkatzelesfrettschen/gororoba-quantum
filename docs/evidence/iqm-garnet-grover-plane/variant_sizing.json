@@ -1,0 +1,172 @@
+{
+ "billing_v4_inputs_sha256": "d00da1b1cee3bbf953f27f2729e5e28d018294a92518938b83e1c138cdbd411c",
+ "cases": {
+  "grover-plane-mirrored": {
+   "adopted": {
+    "billed_seconds_of_ceiling": 26.0,
+    "cancel_threshold_seconds": 25.0,
+    "expected_execution_seconds": 12.805825,
+    "expected_runtime_seconds": 13.242682,
+    "max_credits": 13.0,
+    "max_credits_grover_band": 11.0,
+    "overrun_margins": {
+     "1.5x": {
+      "covered": true,
+      "margin_seconds": 5.135976,
+      "runtime_seconds": 19.864024
+     },
+     "1x": {
+      "covered": true,
+      "margin_seconds": 11.757318,
+      "runtime_seconds": 13.242682
+     },
+     "2.2x": {
+      "covered": false,
+      "margin_seconds": -4.133901,
+      "runtime_seconds": 29.133901
+     }
+    }
+   },
+   "case_expected_seconds": 12.806,
+   "case_max_credits": 13.0,
+   "cases_sha256": "af50a721927d804c04f23f1cf240ca72411b4bf780631606350969f0d2d77503",
+   "circuits": 52,
+   "executions": 832000,
+   "longest_circuit_seconds": 4e-06,
+   "mid_circuit_measures": 0,
+   "models": {
+    "v3": {
+     "band_seconds_all_jobs": 3.038097,
+     "band_seconds_grover_jobs": 0.383404,
+     "excess_seconds": 6.474558,
+     "execution_seconds": 12.805825,
+     "expected_billed_credits": 7.5,
+     "expected_runtime_seconds": 13.242682,
+     "max_credits_all_jobs": 13.0,
+     "max_credits_grover_jobs": 11.0,
+     "schedule_seconds": 6.331267,
+     "worst_case_runtime_seconds_all_jobs": 16.28078,
+     "worst_case_runtime_seconds_grover_jobs": 13.626086
+    },
+    "v4_max": {
+     "band_seconds_all_jobs": 2.982595,
+     "band_seconds_grover_jobs": 0.327902,
+     "excess_seconds": 5.876356,
+     "execution_seconds": 12.207623,
+     "expected_billed_credits": 7.0,
+     "expected_runtime_seconds": 12.64448,
+     "max_credits_all_jobs": 12.5,
+     "max_credits_grover_jobs": 10.5,
+     "schedule_seconds": 6.331267,
+     "worst_case_runtime_seconds_all_jobs": 15.627075,
+     "worst_case_runtime_seconds_grover_jobs": 12.972382
+    },
+    "v4_sum": {
+     "band_seconds_all_jobs": 2.984255,
+     "band_seconds_grover_jobs": 0.329562,
+     "excess_seconds": 5.336369,
+     "execution_seconds": 11.667636,
+     "expected_billed_credits": 7.0,
+     "expected_runtime_seconds": 12.104493,
+     "max_credits_all_jobs": 12.0,
+     "max_credits_grover_jobs": 10.0,
+     "schedule_seconds": 6.331267,
+     "worst_case_runtime_seconds_all_jobs": 15.088748,
+     "worst_case_runtime_seconds_grover_jobs": 12.434054
+    }
+   },
+   "primary_test": {
+    "coherent_rate": 0.964355,
+    "coherent_rate_se": 0.002013,
+    "design_effect_eps": 0.02,
+    "worst_resolved_truth": "prx +0.8 % a=0.92 s=0.92"
+   },
+   "shots": 16000,
+   "summed_duration_seconds": 9.2e-05
+  },
+  "grover-plane-mirrored-101": {
+   "adopted": {
+    "billed_seconds_of_ceiling": 19.0,
+    "cancel_threshold_seconds": 18.0,
+    "expected_execution_seconds": 9.298799,
+    "expected_runtime_seconds": 9.735656,
+    "max_credits": 9.5,
+    "max_credits_grover_band": 8.5,
+    "overrun_margins": {
+     "1.5x": {
+      "covered": true,
+      "margin_seconds": 3.396516,
+      "runtime_seconds": 14.603484
+     },
+     "1x": {
+      "covered": true,
+      "margin_seconds": 8.264344,
+      "runtime_seconds": 9.735656
+     },
+     "2.2x": {
+      "covered": false,
+      "margin_seconds": -3.418443,
+      "runtime_seconds": 21.418443
+     }
+    }
+   },
+   "case_expected_seconds": 9.299,
+   "case_max_credits": 9.5,
+   "cases_sha256": "085fddec1199089404daa79514f565ed10dca7af0cd512aa9022ae9ec9a42430",
+   "circuits": 38,
+   "executions": 608000,
+   "longest_circuit_seconds": 4e-06,
+   "mid_circuit_measures": 0,
+   "models": {
+    "v3": {
+     "band_seconds_all_jobs": 2.246052,
+     "band_seconds_grover_jobs": 0.346157,
+     "excess_seconds": 4.767676,
+     "execution_seconds": 9.298799,
+     "expected_billed_credits": 5.5,
+     "expected_runtime_seconds": 9.735656,
+     "max_credits_all_jobs": 9.5,
+     "max_credits_grover_jobs": 8.5,
+     "schedule_seconds": 4.531123,
+     "worst_case_runtime_seconds_all_jobs": 11.981708,
+     "worst_case_runtime_seconds_grover_jobs": 10.081813
+    },
+    "v4_max": {
+     "band_seconds_all_jobs": 2.19055,
+     "band_seconds_grover_jobs": 0.290655,
+     "excess_seconds": 4.348042,
+     "execution_seconds": 8.879165,
+     "expected_billed_credits": 5.5,
+     "expected_runtime_seconds": 9.316022,
+     "max_credits_all_jobs": 9.5,
+     "max_credits_grover_jobs": 8.0,
+     "schedule_seconds": 4.531123,
+     "worst_case_runtime_seconds_all_jobs": 11.506572,
+     "worst_case_runtime_seconds_grover_jobs": 9.606677
+    },
+    "v4_sum": {
+     "band_seconds_all_jobs": 2.19221,
+     "band_seconds_grover_jobs": 0.292315,
+     "excess_seconds": 3.938569,
+     "execution_seconds": 8.469692,
+     "expected_billed_credits": 5.5,
+     "expected_runtime_seconds": 8.906549,
+     "max_credits_all_jobs": 9.0,
+     "max_credits_grover_jobs": 7.5,
+     "schedule_seconds": 4.531123,
+     "worst_case_runtime_seconds_all_jobs": 11.098759,
+     "worst_case_runtime_seconds_grover_jobs": 9.198864
+    }
+   },
+   "primary_test": {
+    "coherent_rate": 0.964355,
+    "coherent_rate_se": 0.002013,
+    "design_effect_eps": 0.02,
+    "worst_resolved_truth": "prx +0.8 % a=0.92 s=0.92"
+   },
+   "shots": 16000,
+   "summed_duration_seconds": 6.2e-05
+  }
+ },
+ "schema": "iqm-grover-plane-variant-sizing-v1"
+}

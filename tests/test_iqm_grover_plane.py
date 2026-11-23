@@ -278,6 +278,9 @@ def test_the_101_case_is_the_primary_arms_of_the_full_case_without_mark_011() ->
     require("mark_011" not in prediction["decisions"] and prediction["decisions"]["contrast"] is None)
     require(only["question"] == case.question(None) and "011" not in only["question"])
     require(only["prediction_sha256"] == case.sha256((NEW_101 / "prediction.json").read_bytes()))
+    full_prediction = json.loads((NEW / "prediction.json").read_text(encoding="utf-8"))["decisions"]
+    for key in ("calibration", "power", "gated_power", "rule", "gate", "model_probabilities"):
+        require(full_prediction[key] == prediction["decisions"][key], key)
     names = lambda c: {e["file"] for e in c["jobs"][0]["circuits"] if "m101" in e["file"]}  # noqa: E731
     cost = prediction["decisions"]["cost"]
     require(cost["circuits"] == 38 and cost["executions"] == 38 * case.SHOTS and len(names(only)) == 22)
@@ -306,7 +309,9 @@ def test_the_committed_case_binds_its_prediction_and_its_response_digest() -> No
     response = sim.Response(circuits_by_depth, cal, PATH, "101")
     require(analysis.response_digest(response, d["response"]) == d["response"]["sha256"])
     job = cases["jobs"][0]
-    require(job["max_credits"]["garnet"] >= d["cost"]["headroom"] * 0.5 * (d["cost"]["best_execution_seconds"] + 0.4))
+    require(job["max_credits"]["garnet"] == d["cost"]["max_credits_garnet"])
+    require(job["max_credits"]["garnet"] >= d["cost"]["max_credits_grover_band"])
+    require(d["cost"]["cancel_threshold_seconds"] == d["cost"]["billed_seconds_of_ceiling"] - 1)
     require(d["contrast"]["power"] and d["mark_011"]["response"]["sha256"])
 
 

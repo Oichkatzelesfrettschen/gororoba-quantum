@@ -1251,97 +1251,189 @@
  },
  "decisions": {
   "calibration": {
-   "cells": 41,
+   "blocks": 8,
+   "boundary_points": 1024,
+   "cells": 99,
+   "cells_by_kind": {
+    "boundary": 54,
+    "corner": 4,
+    "null": 41
+   },
    "chi2_1_quantile": 6.634896601,
-   "delta_resolve": 7.5,
-   "false_coherent_max": 0.008789062,
-   "false_coherent_offset_line_max": 0.008789062,
-   "geometric_reading_min_over_null_cells": 0.16796875,
-   "method": "unscrambled Sobol' quadrature, no seed",
-   "points": 1024,
+   "chi2_1_tail_at_delta": 0.004677735,
+   "corners": [
+    {
+     "a": 0.8,
+     "coherent": 0.003417969,
+     "coherent_se": 0.000319655,
+     "kind": "corner",
+     "non_rotation": 0.0,
+     "non_rotation_se": 0.0,
+     "points": 4096,
+     "quantile": 6.259439178,
+     "s": 0.75
+    },
+    {
+     "a": 0.8,
+     "coherent": 0.005371094,
+     "coherent_se": 0.001152533,
+     "kind": "corner",
+     "non_rotation": 0.0,
+     "non_rotation_se": 0.0,
+     "points": 4096,
+     "quantile": 6.936643785,
+     "s": 1.15
+    },
+    {
+     "a": 1.2,
+     "coherent": 0.006103516,
+     "coherent_se": 0.000442542,
+     "kind": "corner",
+     "non_rotation": 0.0,
+     "non_rotation_se": 0.0,
+     "points": 4096,
+     "quantile": 7.063992367,
+     "s": 0.75
+    },
+    {
+     "a": 1.2,
+     "coherent": 0.007080078,
+     "coherent_se": 0.000820171,
+     "kind": "corner",
+     "non_rotation": 0.000244141,
+     "non_rotation_se": 0.000244141,
+     "points": 4096,
+     "quantile": 7.084375051,
+     "s": 1.15
+    }
+   ],
+   "delta_from_first_cells": 7.5,
+   "delta_resolve": 8.0,
+   "false_coherent_max": 0.0078125,
+   "false_coherent_max_cell": {
+    "a": 1.2,
+    "kind": "boundary",
+    "s": 0.75
+   },
+   "false_coherent_max_plus_3se": 0.012241771,
+   "false_coherent_max_se": 0.001476424,
+   "false_coherent_offset_line_max": 0.005126953,
+   "geometric_reading_min_over_null_cells": 0.0,
+   "method": "unscrambled Sobol' quadrature in blocks, no seed; rates are estimates at the evaluated cells",
+   "non_rotation_false_alarm_max": 0.000244141,
+   "non_rotation_false_alarm_max_cell": {
+    "a": 1.175,
+    "kind": "null",
+    "s": 0.775
+   },
+   "non_rotation_false_alarm_mean": 1.4796e-05,
+   "points": 4096,
    "worst_cell": {
     "a": 1.2,
-    "quantile": 7.072417484,
-    "s": 1.0
+    "kind": "boundary",
+    "quantile": 7.760623737,
+    "s": 0.75
    }
   },
   "contrast": {
    "power": [
     {
-     "CZ-phase-like": 0.95703125,
+     "CZ-phase-like": 0.951171875,
      "PRX-like": 0.0,
+     "not evaluated": 0.006835938,
      "truth": "cz -0.03 rad a=0.92 s=0.92",
+     "unresolved": 0.041992188
+    },
+    {
+     "CZ-phase-like": 0.946289062,
+     "PRX-like": 0.0,
+     "not evaluated": 0.008789062,
+     "truth": "cz -0.03 rad a=0.92 s=1.04",
+     "unresolved": 0.044921875
+    },
+    {
+     "CZ-phase-like": 0.950195312,
+     "PRX-like": 0.0,
+     "not evaluated": 0.006835938,
+     "truth": "cz -0.03 rad a=1.06 s=0.92",
      "unresolved": 0.04296875
     },
     {
-     "CZ-phase-like": 0.94921875,
+     "CZ-phase-like": 0.942382812,
      "PRX-like": 0.0,
-     "truth": "cz -0.03 rad a=0.92 s=1.04",
-     "unresolved": 0.05078125
-    },
-    {
-     "CZ-phase-like": 0.94921875,
-     "PRX-like": 0.0,
-     "truth": "cz -0.03 rad a=1.06 s=0.92",
-     "unresolved": 0.05078125
-    },
-    {
-     "CZ-phase-like": 0.94921875,
-     "PRX-like": 0.0,
+     "not evaluated": 0.008789062,
      "truth": "cz -0.03 rad a=1.06 s=1.04",
-     "unresolved": 0.05078125
+     "unresolved": 0.048828125
     },
     {
      "CZ-phase-like": 0.0,
-     "PRX-like": 0.94140625,
+     "PRX-like": 0.939453125,
+     "not evaluated": 0.010742188,
      "truth": "prx -1.6 % a=0.92 s=0.92",
-     "unresolved": 0.05859375
+     "unresolved": 0.049804688
     },
     {
      "CZ-phase-like": 0.0,
-     "PRX-like": 0.9453125,
+     "PRX-like": 0.928710938,
+     "not evaluated": 0.014648438,
      "truth": "prx -1.6 % a=0.92 s=1.04",
-     "unresolved": 0.0546875
+     "unresolved": 0.056640625
     },
     {
      "CZ-phase-like": 0.0,
-     "PRX-like": 0.94140625,
+     "PRX-like": 0.936523438,
+     "not evaluated": 0.010742188,
      "truth": "prx -1.6 % a=1.06 s=0.92",
-     "unresolved": 0.05859375
+     "unresolved": 0.052734375
     },
     {
      "CZ-phase-like": 0.0,
-     "PRX-like": 0.9375,
+     "PRX-like": 0.924804688,
+     "not evaluated": 0.014648438,
      "truth": "prx -1.6 % a=1.06 s=1.04",
-     "unresolved": 0.0625
+     "unresolved": 0.060546875
     },
     {
-     "CZ-phase-like": 0.890625,
+     "CZ-phase-like": 0.864257812,
      "PRX-like": 0.0,
+     "not evaluated": 0.008789062,
      "truth": "zz +20 kHz a=0.92 s=0.92",
-     "unresolved": 0.109375
+     "unresolved": 0.126953125
     },
     {
-     "CZ-phase-like": 0.8125,
+     "CZ-phase-like": 0.793945312,
      "PRX-like": 0.0,
+     "not evaluated": 0.008789062,
      "truth": "zz +20 kHz a=0.92 s=1.04",
-     "unresolved": 0.1875
+     "unresolved": 0.197265625
     },
     {
-     "CZ-phase-like": 0.875,
+     "CZ-phase-like": 0.8359375,
      "PRX-like": 0.0,
+     "not evaluated": 0.010742188,
      "truth": "zz +20 kHz a=1.06 s=0.92",
-     "unresolved": 0.125
+     "unresolved": 0.153320312
     },
     {
-     "CZ-phase-like": 0.73828125,
+     "CZ-phase-like": 0.734375,
      "PRX-like": 0.0,
+     "not evaluated": 0.009765625,
      "truth": "zz +20 kHz a=1.06 s=1.04",
-     "unresolved": 0.26171875
+     "unresolved": 0.255859375
     }
    ],
+   "ratio_by_amplitude": {
+    "0.002": 1.194651206,
+    "0.008": 1.196383472,
+    "0.016": 1.201561571,
+    "0.03": 1.216770631
+   },
+   "ratio_interval": [
+    1.194651206,
+    1.216770631
+   ],
    "ratio_prx": 1.194651206,
-   "rule": "eps_011 against 0 (CZ phase) and against ratio times eps_101 (PRX amplitude); decides nothing",
+   "rule": "eps_011 against 0 (CZ phase) and against ratio times eps_101 (PRX amplitude), the amplitude rejected only when rejected at every ratio of the interval; decides nothing",
    "slopes": {
     "011": {
      "cz_phase_rad": {
@@ -1368,19 +1460,86 @@
    }
   },
   "cost": {
-   "best_execution_seconds": 15.894135859,
+   "best_execution_seconds": 12.805825392,
    "billed_seconds_of_ceiling": 26,
+   "billing_v4": {
+    "v3": {
+     "band_seconds_all_jobs": 3.038097199,
+     "band_seconds_grover_jobs": 0.38340388,
+     "excess_seconds": 6.47455832,
+     "execution_seconds": 12.805825392,
+     "expected_billed_credits": 7.5,
+     "expected_runtime_seconds": 13.242682392,
+     "max_credits_all_jobs": 13.0,
+     "max_credits_grover_jobs": 11.0,
+     "schedule_seconds": 6.331267072,
+     "worst_case_runtime_seconds_all_jobs": 16.280779591,
+     "worst_case_runtime_seconds_grover_jobs": 13.626086272
+    },
+    "v4_max": {
+     "band_seconds_all_jobs": 2.982595199,
+     "band_seconds_grover_jobs": 0.32790188,
+     "excess_seconds": 5.87635595,
+     "execution_seconds": 12.207623022,
+     "expected_billed_credits": 7.0,
+     "expected_runtime_seconds": 12.644480022,
+     "max_credits_all_jobs": 12.5,
+     "max_credits_grover_jobs": 10.5,
+     "schedule_seconds": 6.331267072,
+     "worst_case_runtime_seconds_all_jobs": 15.627075221,
+     "worst_case_runtime_seconds_grover_jobs": 12.972381902
+    },
+    "v4_sum": {
+     "band_seconds_all_jobs": 2.984255199,
+     "band_seconds_grover_jobs": 0.32956188,
+     "excess_seconds": 5.336368508,
+     "execution_seconds": 11.66763558,
+     "expected_billed_credits": 7.0,
+     "expected_runtime_seconds": 12.10449258,
+     "max_credits_all_jobs": 12.0,
+     "max_credits_grover_jobs": 10.0,
+     "schedule_seconds": 6.331267072,
+     "worst_case_runtime_seconds_all_jobs": 15.088747779,
+     "worst_case_runtime_seconds_grover_jobs": 12.43405446
+    }
+   },
+   "billing_v4_inputs_sha256": "d00da1b1cee3bbf953f27f2729e5e28d018294a92518938b83e1c138cdbd411c",
+   "cancel_threshold_seconds": 25.0,
+   "circuits": 52,
    "compilation_seconds": 0.436857,
-   "emerald_stress_execution_seconds": 34.967098889,
-   "fixed_part_removed_execution_seconds": 14.990253506,
-   "headroom": 1.5,
+   "executions": 832000,
+   "expected_runtime_seconds": 13.242682392,
    "max_credits_garnet": 13.0,
+   "max_credits_grover_band": 11.0,
    "mock_compile_estimate": "required before approval; not read",
-   "scaled_execution_seconds": 15.894135859,
-   "schedule_ratio": 7.952941176
+   "overrun_margins": {
+    "1.5x": {
+     "covered": true,
+     "margin_seconds": 5.135976412,
+     "runtime_seconds": 19.864023588
+    },
+    "1x": {
+     "covered": true,
+     "margin_seconds": 11.757317608,
+     "runtime_seconds": 13.242682392
+    },
+    "2.2x": {
+     "covered": false,
+     "margin_seconds": -4.133901262,
+     "runtime_seconds": 29.133901262
+    }
+   },
+   "retained_scaling": {
+    "best_execution_seconds": 15.894135859,
+    "fixed_part_removed_execution_seconds": 14.990253506,
+    "headroom": 1.5,
+    "scaled_execution_seconds": 15.894135859,
+    "schedule_ratio": 7.952941176
+   }
   },
   "gate": {
    "copy_floor": 0.5,
+   "heterogeneity_phi": 1.54,
    "heterogeneity_threshold_by_dof": {
     "1": 6.634896601,
     "10": 23.209251159,
@@ -1395,15 +1554,244 @@
     "8": 20.09023503,
     "9": 21.665994333
    },
+   "min_pairs_per_depth": 2,
    "planned_kept_per_copy": 13440.0
   },
   "gated_power": {
-   "binomial_phi_1": [
+   "gate_phi_1.54_noise_phi_1": [
     {
      "coherent": 0.953125,
      "geometric": 0.0,
      "non_rotation": 0.0,
      "other": 0.046875,
+     "truth": "cz -0.015 rad a=0.92 s=0.92",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.99609375,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.00390625,
+     "truth": "cz -0.015 rad a=0.92 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 1.0,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.0,
+     "truth": "cz -0.015 rad a=1.06 s=0.92",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.99609375,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.00390625,
+     "truth": "cz -0.015 rad a=1.06 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.94921875,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.04296875,
+     "truth": "prx +0.8 % a=0.92 s=0.92",
+     "unresolved": 0.0078125
+    },
+    {
+     "coherent": 0.98828125,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.01171875,
+     "truth": "prx +0.8 % a=0.92 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.98046875,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.01953125,
+     "truth": "prx +0.8 % a=1.06 s=0.92",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.9765625,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.0234375,
+     "truth": "prx +0.8 % a=1.06 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.984375,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.015625,
+     "truth": "zz -10 kHz a=0.92 s=0.92",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 1.0,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.0,
+     "truth": "zz -10 kHz a=0.92 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.98828125,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.01171875,
+     "truth": "zz -10 kHz a=1.06 s=0.92",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.984375,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.015625,
+     "truth": "zz -10 kHz a=1.06 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.984375,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.015625,
+     "truth": "plane eps=-0.02 a=0.92 s=0.92",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.97265625,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.02734375,
+     "truth": "plane eps=0.02 a=0.92 s=0.92",
+     "unresolved": 0.0
+    }
+   ],
+   "gate_phi_1.54_noise_phi_1.54": [
+    {
+     "coherent": 0.859375,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.1328125,
+     "truth": "cz -0.015 rad a=0.92 s=0.92",
+     "unresolved": 0.0078125
+    },
+    {
+     "coherent": 0.953125,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.046875,
+     "truth": "cz -0.015 rad a=0.92 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.93359375,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.06640625,
+     "truth": "cz -0.015 rad a=1.06 s=0.92",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.953125,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.046875,
+     "truth": "cz -0.015 rad a=1.06 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.8046875,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.1875,
+     "truth": "prx +0.8 % a=0.92 s=0.92",
+     "unresolved": 0.0078125
+    },
+    {
+     "coherent": 0.92578125,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.07421875,
+     "truth": "prx +0.8 % a=0.92 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.9296875,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.0703125,
+     "truth": "prx +0.8 % a=1.06 s=0.92",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.921875,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.078125,
+     "truth": "prx +0.8 % a=1.06 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.9140625,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.08203125,
+     "truth": "zz -10 kHz a=0.92 s=0.92",
+     "unresolved": 0.00390625
+    },
+    {
+     "coherent": 0.9375,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.0625,
+     "truth": "zz -10 kHz a=0.92 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.9296875,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.0703125,
+     "truth": "zz -10 kHz a=1.06 s=0.92",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.92578125,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.07421875,
+     "truth": "zz -10 kHz a=1.06 s=1.04",
+     "unresolved": 0.0
+    },
+    {
+     "coherent": 0.9296875,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.06640625,
+     "truth": "plane eps=-0.02 a=0.92 s=0.92",
+     "unresolved": 0.00390625
+    },
+    {
+     "coherent": 0.890625,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.109375,
+     "truth": "plane eps=0.02 a=0.92 s=0.92",
+     "unresolved": 0.0
+    }
+   ],
+   "gate_phi_1_noise_phi_1": [
+    {
+     "coherent": 0.9453125,
+     "geometric": 0.0,
+     "non_rotation": 0.0,
+     "other": 0.0546875,
      "truth": "cz -0.015 rad a=0.92 s=0.92",
      "unresolved": 0.0
     },
@@ -1432,10 +1820,10 @@
      "unresolved": 0.0
     },
     {
-     "coherent": 0.94921875,
+     "coherent": 0.9375,
      "geometric": 0.0,
      "non_rotation": 0.0,
-     "other": 0.04296875,
+     "other": 0.0546875,
      "truth": "prx +0.8 % a=0.92 s=0.92",
      "unresolved": 0.0078125
     },
@@ -1480,10 +1868,10 @@
      "unresolved": 0.0
     },
     {
-     "coherent": 0.98046875,
+     "coherent": 0.9765625,
      "geometric": 0.0,
      "non_rotation": 0.0,
-     "other": 0.01953125,
+     "other": 0.0234375,
      "truth": "zz -10 kHz a=1.06 s=0.92",
      "unresolved": 0.0
     },
@@ -1504,20 +1892,20 @@
      "unresolved": 0.0
     },
     {
-     "coherent": 0.96875,
+     "coherent": 0.9609375,
      "geometric": 0.0,
      "non_rotation": 0.0,
-     "other": 0.03125,
+     "other": 0.0390625,
      "truth": "plane eps=0.02 a=0.92 s=0.92",
      "unresolved": 0.0
     }
    ],
-   "overdispersed_phi_bound": [
+   "gate_phi_1_noise_phi_1.54": [
     {
-     "coherent": 0.828125,
+     "coherent": 0.80859375,
      "geometric": 0.0,
      "non_rotation": 0.0,
-     "other": 0.1640625,
+     "other": 0.18359375,
      "truth": "cz -0.015 rad a=0.92 s=0.92",
      "unresolved": 0.0078125
     },
@@ -1530,10 +1918,10 @@
      "unresolved": 0.0
     },
     {
-     "coherent": 0.87890625,
+     "coherent": 0.875,
      "geometric": 0.0,
      "non_rotation": 0.0,
-     "other": 0.12109375,
+     "other": 0.125,
      "truth": "cz -0.015 rad a=1.06 s=0.92",
      "unresolved": 0.0
     },
@@ -1546,10 +1934,10 @@
      "unresolved": 0.0
     },
     {
-     "coherent": 0.79296875,
+     "coherent": 0.76953125,
      "geometric": 0.0,
      "non_rotation": 0.0,
-     "other": 0.19921875,
+     "other": 0.22265625,
      "truth": "prx +0.8 % a=0.92 s=0.92",
      "unresolved": 0.0078125
     },
@@ -1578,12 +1966,12 @@
      "unresolved": 0.0
     },
     {
-     "coherent": 0.8671875,
+     "coherent": 0.859375,
      "geometric": 0.0,
      "non_rotation": 0.0,
-     "other": 0.1328125,
+     "other": 0.13671875,
      "truth": "zz -10 kHz a=0.92 s=0.92",
-     "unresolved": 0.0
+     "unresolved": 0.00390625
     },
     {
      "coherent": 0.87890625,
@@ -1594,10 +1982,10 @@
      "unresolved": 0.0
     },
     {
-     "coherent": 0.87890625,
+     "coherent": 0.875,
      "geometric": 0.0,
      "non_rotation": 0.0,
-     "other": 0.12109375,
+     "other": 0.125,
      "truth": "zz -10 kHz a=1.06 s=0.92",
      "unresolved": 0.0
     },
@@ -1610,18 +1998,18 @@
      "unresolved": 0.0
     },
     {
-     "coherent": 0.8828125,
+     "coherent": 0.875,
      "geometric": 0.0,
      "non_rotation": 0.0,
-     "other": 0.1171875,
+     "other": 0.12109375,
      "truth": "plane eps=-0.02 a=0.92 s=0.92",
-     "unresolved": 0.0
+     "unresolved": 0.00390625
     },
     {
-     "coherent": 0.85546875,
+     "coherent": 0.83984375,
      "geometric": 0.0,
      "non_rotation": 0.0,
-     "other": 0.14453125,
+     "other": 0.16015625,
      "truth": "plane eps=0.02 a=0.92 s=0.92",
      "unresolved": 0.0
     }
@@ -1771,630 +2159,809 @@
   ],
   "power": {
    "design_effect_eps": 0.02,
+   "note": "rates at the listed truths with block error estimates; no bound over the claimed region",
    "truths": [
     {
-     "coherent": 0.98828125,
+     "coherent": 0.979980469,
+     "coherent_blocks": 0.979980469,
+     "coherent_se": 0.002144312,
      "geometric": 0.0,
-     "non_rotation": 0.00390625,
+     "non_rotation": 0.0078125,
      "truth": "cz -0.015 rad a=0.92 s=0.92",
-     "unresolved": 0.0078125
+     "unresolved": 0.012207031
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.990234375,
+     "coherent_blocks": 0.990234375,
+     "coherent_se": 0.00127862,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.009765625,
      "truth": "cz -0.015 rad a=0.92 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.99609375,
+     "coherent": 0.991699219,
+     "coherent_blocks": 0.991699219,
+     "coherent_se": 0.001152533,
      "geometric": 0.0,
-     "non_rotation": 0.00390625,
+     "non_rotation": 0.0078125,
      "truth": "cz -0.015 rad a=1.06 s=0.92",
-     "unresolved": 0.0
+     "unresolved": 0.000488281
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.990722656,
+     "coherent_blocks": 0.990722656,
+     "coherent_se": 0.001640343,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.009277344,
      "truth": "cz -0.015 rad a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.9921875,
+     "coherent": 0.982910156,
+     "coherent_blocks": 0.982910156,
+     "coherent_se": 0.002755963,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.009277344,
      "truth": "cz +0.015 rad a=0.92 s=0.92",
-     "unresolved": 0.001953125
+     "unresolved": 0.0078125
     },
     {
-     "coherent": 0.99609375,
+     "coherent": 0.988769531,
+     "coherent_blocks": 0.988769531,
+     "coherent_se": 0.002013235,
      "geometric": 0.0,
-     "non_rotation": 0.00390625,
+     "non_rotation": 0.011230469,
      "truth": "cz +0.015 rad a=0.92 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.990722656,
+     "coherent_blocks": 0.990722656,
+     "coherent_se": 0.001464844,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.009277344,
      "truth": "cz +0.015 rad a=1.06 s=0.92",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.99609375,
+     "coherent": 0.988769531,
+     "coherent_blocks": 0.988769531,
+     "coherent_se": 0.002013235,
      "geometric": 0.0,
-     "non_rotation": 0.00390625,
+     "non_rotation": 0.011230469,
      "truth": "cz +0.015 rad a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.96875,
+     "coherent": 0.96484375,
+     "coherent_blocks": 0.96484375,
+     "coherent_se": 0.002859082,
      "geometric": 0.0,
-     "non_rotation": 0.013671875,
+     "non_rotation": 0.010742188,
      "truth": "prx -0.8 % a=0.92 s=0.92",
-     "unresolved": 0.017578125
+     "unresolved": 0.024414062
     },
     {
-     "coherent": 0.984375,
+     "coherent": 0.988769531,
+     "coherent_blocks": 0.988769531,
+     "coherent_se": 0.002267825,
      "geometric": 0.0,
-     "non_rotation": 0.015625,
+     "non_rotation": 0.011230469,
      "truth": "prx -0.8 % a=0.92 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.986328125,
+     "coherent": 0.985839844,
+     "coherent_blocks": 0.985839844,
+     "coherent_se": 0.001944386,
      "geometric": 0.0,
-     "non_rotation": 0.013671875,
+     "non_rotation": 0.01171875,
      "truth": "prx -0.8 % a=1.06 s=0.92",
-     "unresolved": 0.0
+     "unresolved": 0.002441406
     },
     {
-     "coherent": 0.984375,
+     "coherent": 0.986816406,
+     "coherent_blocks": 0.986816406,
+     "coherent_se": 0.002206932,
      "geometric": 0.0,
-     "non_rotation": 0.015625,
+     "non_rotation": 0.013183594,
      "truth": "prx -0.8 % a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.974609375,
+     "coherent": 0.964355469,
+     "coherent_blocks": 0.964355469,
+     "coherent_se": 0.002013235,
      "geometric": 0.0,
-     "non_rotation": 0.0078125,
+     "non_rotation": 0.011230469,
      "truth": "prx +0.8 % a=0.92 s=0.92",
-     "unresolved": 0.017578125
+     "unresolved": 0.024414062
     },
     {
-     "coherent": 0.984375,
+     "coherent": 0.983886719,
+     "coherent_blocks": 0.983886719,
+     "coherent_se": 0.000885085,
      "geometric": 0.0,
-     "non_rotation": 0.015625,
+     "non_rotation": 0.016113281,
      "truth": "prx +0.8 % a=0.92 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.990234375,
+     "coherent": 0.984863281,
+     "coherent_blocks": 0.984863281,
+     "coherent_se": 0.002013235,
      "geometric": 0.0,
-     "non_rotation": 0.0078125,
+     "non_rotation": 0.011230469,
      "truth": "prx +0.8 % a=1.06 s=0.92",
-     "unresolved": 0.001953125
+     "unresolved": 0.00390625
     },
     {
      "coherent": 0.982421875,
+     "coherent_blocks": 0.982421875,
+     "coherent_se": 0.001476424,
      "geometric": 0.0,
      "non_rotation": 0.017578125,
      "truth": "prx +0.8 % a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.9921875,
+     "coherent": 0.982910156,
+     "coherent_blocks": 0.982910156,
+     "coherent_se": 0.003038125,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.01171875,
      "truth": "zz -10 kHz a=0.92 s=0.92",
-     "unresolved": 0.001953125
+     "unresolved": 0.005371094
     },
     {
      "coherent": 0.986328125,
+     "coherent_blocks": 0.986328125,
+     "coherent_se": 0.000738212,
      "geometric": 0.0,
      "non_rotation": 0.013671875,
      "truth": "zz -10 kHz a=0.92 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.990234375,
+     "coherent": 0.987304688,
+     "coherent_blocks": 0.987304688,
+     "coherent_se": 0.00177017,
      "geometric": 0.0,
-     "non_rotation": 0.009765625,
+     "non_rotation": 0.012695312,
      "truth": "zz -10 kHz a=1.06 s=0.92",
      "unresolved": 0.0
     },
     {
      "coherent": 0.982421875,
+     "coherent_blocks": 0.982421875,
+     "coherent_se": 0.000738212,
      "geometric": 0.0,
      "non_rotation": 0.017578125,
      "truth": "zz -10 kHz a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.986328125,
+     "coherent": 0.983886719,
+     "coherent_blocks": 0.983886719,
+     "coherent_se": 0.001152533,
      "geometric": 0.0,
-     "non_rotation": 0.0078125,
+     "non_rotation": 0.008300781,
      "truth": "zz +10 kHz a=0.92 s=0.92",
-     "unresolved": 0.005859375
+     "unresolved": 0.0078125
     },
     {
      "coherent": 0.990234375,
+     "coherent_blocks": 0.990234375,
+     "coherent_se": 0.00127862,
      "geometric": 0.0,
      "non_rotation": 0.009765625,
      "truth": "zz +10 kHz a=0.92 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.9921875,
+     "coherent": 0.991210938,
+     "coherent_blocks": 0.991210938,
+     "coherent_se": 0.001224186,
      "geometric": 0.0,
-     "non_rotation": 0.0078125,
+     "non_rotation": 0.008789062,
      "truth": "zz +10 kHz a=1.06 s=0.92",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.98828125,
+     "coherent": 0.989257812,
+     "coherent_blocks": 0.989257812,
+     "coherent_se": 0.000976562,
      "geometric": 0.0,
-     "non_rotation": 0.01171875,
+     "non_rotation": 0.010742188,
      "truth": "zz +10 kHz a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.989746094,
+     "coherent_blocks": 0.989746094,
+     "coherent_se": 0.001464844,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.010253906,
      "truth": "plane eps=-0.03 a=0.92 s=0.92",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.99609375,
+     "coherent": 0.989746094,
+     "coherent_blocks": 0.989746094,
+     "coherent_se": 0.0017988,
      "geometric": 0.0,
-     "non_rotation": 0.00390625,
+     "non_rotation": 0.010253906,
      "truth": "plane eps=-0.03 a=0.92 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.989746094,
+     "coherent_blocks": 0.989746094,
+     "coherent_se": 0.001464844,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.010253906,
      "truth": "plane eps=-0.03 a=1.06 s=0.92",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.99609375,
+     "coherent": 0.989746094,
+     "coherent_blocks": 0.989746094,
+     "coherent_se": 0.0017988,
      "geometric": 0.0,
-     "non_rotation": 0.00390625,
+     "non_rotation": 0.010253906,
      "truth": "plane eps=-0.03 a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.9921875,
+     "coherent": 0.985351562,
+     "coherent_blocks": 0.985351562,
+     "coherent_se": 0.002420389,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.009277344,
      "truth": "plane eps=-0.02 a=0.92 s=0.92",
-     "unresolved": 0.001953125
+     "unresolved": 0.005371094
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.988769531,
+     "coherent_blocks": 0.988769531,
+     "coherent_se": 0.002013235,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.011230469,
      "truth": "plane eps=-0.02 a=0.92 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.990722656,
+     "coherent_blocks": 0.990722656,
+     "coherent_se": 0.001464844,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.009277344,
      "truth": "plane eps=-0.02 a=1.06 s=0.92",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.99609375,
+     "coherent": 0.988769531,
+     "coherent_blocks": 0.988769531,
+     "coherent_se": 0.002013235,
      "geometric": 0.0,
-     "non_rotation": 0.00390625,
+     "non_rotation": 0.011230469,
      "truth": "plane eps=-0.02 a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.884765625,
+     "coherent": 0.873535156,
+     "coherent_blocks": 0.873535156,
+     "coherent_se": 0.003457599,
      "geometric": 0.0,
-     "non_rotation": 0.0078125,
+     "non_rotation": 0.008789062,
      "truth": "plane eps=-0.015 a=0.92 s=0.92",
-     "unresolved": 0.107421875
+     "unresolved": 0.117675781
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.987304688,
+     "coherent_blocks": 0.987304688,
+     "coherent_se": 0.00177017,
      "geometric": 0.0,
-     "non_rotation": 0.00390625,
+     "non_rotation": 0.01171875,
      "truth": "plane eps=-0.015 a=0.92 s=1.04",
-     "unresolved": 0.001953125
+     "unresolved": 0.000976562
     },
     {
-     "coherent": 0.966796875,
+     "coherent": 0.957519531,
+     "coherent_blocks": 0.957519531,
+     "coherent_se": 0.001368681,
      "geometric": 0.0,
-     "non_rotation": 0.0078125,
+     "non_rotation": 0.010253906,
      "truth": "plane eps=-0.015 a=1.06 s=0.92",
-     "unresolved": 0.025390625
+     "unresolved": 0.032226562
     },
     {
-     "coherent": 0.99609375,
+     "coherent": 0.988769531,
+     "coherent_blocks": 0.988769531,
+     "coherent_se": 0.002013235,
      "geometric": 0.0,
-     "non_rotation": 0.00390625,
+     "non_rotation": 0.011230469,
      "truth": "plane eps=-0.015 a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.48046875,
-     "geometric": 0.05078125,
-     "non_rotation": 0.00390625,
+     "coherent": 0.439453125,
+     "coherent_blocks": 0.439453125,
+     "coherent_se": 0.005905695,
+     "geometric": 0.049804688,
+     "non_rotation": 0.003417969,
      "truth": "plane eps=-0.01 a=0.92 s=0.92",
-     "unresolved": 0.46484375
+     "unresolved": 0.507324219
     },
     {
-     "coherent": 0.83203125,
-     "geometric": 0.05078125,
-     "non_rotation": 0.00390625,
+     "coherent": 0.810546875,
+     "coherent_blocks": 0.810546875,
+     "coherent_se": 0.004550644,
+     "geometric": 0.047851562,
+     "non_rotation": 0.0078125,
      "truth": "plane eps=-0.01 a=0.92 s=1.04",
-     "unresolved": 0.11328125
+     "unresolved": 0.133789062
     },
     {
-     "coherent": 0.63671875,
-     "geometric": 0.05078125,
+     "coherent": 0.609863281,
+     "coherent_blocks": 0.609863281,
+     "coherent_se": 0.004516837,
+     "geometric": 0.049804688,
      "non_rotation": 0.005859375,
      "truth": "plane eps=-0.01 a=1.06 s=0.92",
-     "unresolved": 0.306640625
+     "unresolved": 0.334472656
     },
     {
-     "coherent": 0.947265625,
-     "geometric": 0.046875,
-     "non_rotation": 0.00390625,
+     "coherent": 0.938476562,
+     "coherent_blocks": 0.938476562,
+     "coherent_se": 0.002530463,
+     "geometric": 0.049316406,
+     "non_rotation": 0.009277344,
      "truth": "plane eps=-0.01 a=1.06 s=1.04",
-     "unresolved": 0.001953125
+     "unresolved": 0.002929688
     },
     {
-     "coherent": 0.462890625,
-     "geometric": 0.05078125,
-     "non_rotation": 0.0,
-     "truth": "plane eps=0.01 a=0.92 s=0.92",
-     "unresolved": 0.486328125
-    },
-    {
-     "coherent": 0.828125,
-     "geometric": 0.046875,
-     "non_rotation": 0.001953125,
-     "truth": "plane eps=0.01 a=0.92 s=1.04",
-     "unresolved": 0.123046875
-    },
-    {
-     "coherent": 0.62890625,
-     "geometric": 0.046875,
-     "non_rotation": 0.0,
-     "truth": "plane eps=0.01 a=1.06 s=0.92",
-     "unresolved": 0.32421875
-    },
-    {
-     "coherent": 0.94921875,
-     "geometric": 0.04296875,
-     "non_rotation": 0.005859375,
-     "truth": "plane eps=0.01 a=1.06 s=1.04",
-     "unresolved": 0.001953125
-    },
-    {
-     "coherent": 0.890625,
-     "geometric": 0.0,
+     "coherent": 0.435058594,
+     "coherent_blocks": 0.435058594,
+     "coherent_se": 0.004665213,
+     "geometric": 0.048828125,
      "non_rotation": 0.00390625,
+     "truth": "plane eps=0.01 a=0.92 s=0.92",
+     "unresolved": 0.512207031
+    },
+    {
+     "coherent": 0.797363281,
+     "coherent_blocks": 0.797363281,
+     "coherent_se": 0.004516837,
+     "geometric": 0.049316406,
+     "non_rotation": 0.007324219,
+     "truth": "plane eps=0.01 a=0.92 s=1.04",
+     "unresolved": 0.145996094
+    },
+    {
+     "coherent": 0.594238281,
+     "coherent_blocks": 0.594238281,
+     "coherent_se": 0.004005267,
+     "geometric": 0.048828125,
+     "non_rotation": 0.004882812,
+     "truth": "plane eps=0.01 a=1.06 s=0.92",
+     "unresolved": 0.352050781
+    },
+    {
+     "coherent": 0.930175781,
+     "coherent_blocks": 0.930175781,
+     "coherent_se": 0.001721395,
+     "geometric": 0.047851562,
+     "non_rotation": 0.009277344,
+     "truth": "plane eps=0.01 a=1.06 s=1.04",
+     "unresolved": 0.012695312
+    },
+    {
+     "coherent": 0.876953125,
+     "coherent_blocks": 0.876953125,
+     "coherent_se": 0.004240704,
+     "geometric": 0.000488281,
+     "non_rotation": 0.0078125,
      "truth": "plane eps=0.015 a=0.92 s=0.92",
-     "unresolved": 0.10546875
+     "unresolved": 0.114746094
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.987304688,
+     "coherent_blocks": 0.987304688,
+     "coherent_se": 0.001429541,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.009765625,
      "truth": "plane eps=0.015 a=0.92 s=1.04",
-     "unresolved": 0.0
+     "unresolved": 0.002929688
     },
     {
-     "coherent": 0.966796875,
-     "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "coherent": 0.95703125,
+     "coherent_blocks": 0.95703125,
+     "coherent_se": 0.002661661,
+     "geometric": 0.000488281,
+     "non_rotation": 0.008300781,
      "truth": "plane eps=0.015 a=1.06 s=0.92",
-     "unresolved": 0.02734375
+     "unresolved": 0.034179688
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.991699219,
+     "coherent_blocks": 0.991699219,
+     "coherent_se": 0.000885085,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008300781,
      "truth": "plane eps=0.015 a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.990234375,
+     "coherent": 0.984863281,
+     "coherent_blocks": 0.984863281,
+     "coherent_se": 0.001152533,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=0.92 s=0.92",
-     "unresolved": 0.00390625
+     "unresolved": 0.006835938
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.991699219,
+     "coherent_blocks": 0.991699219,
+     "coherent_se": 0.000885085,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=0.92 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.991699219,
+     "coherent_blocks": 0.991699219,
+     "coherent_se": 0.000885085,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=1.06 s=0.92",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.991210938,
+     "coherent_blocks": 0.991210938,
+     "coherent_se": 0.000976562,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008789062,
      "truth": "plane eps=0.02 a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.992675781,
+     "coherent_blocks": 0.992675781,
+     "coherent_se": 0.000885085,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.007324219,
      "truth": "plane eps=0.03 a=0.92 s=0.92",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.991210938,
+     "coherent_blocks": 0.991210938,
+     "coherent_se": 0.000976562,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008789062,
      "truth": "plane eps=0.03 a=0.92 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.992675781,
+     "coherent_blocks": 0.992675781,
+     "coherent_se": 0.000885085,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.007324219,
      "truth": "plane eps=0.03 a=1.06 s=0.92",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.991699219,
+     "coherent_blocks": 0.991699219,
+     "coherent_se": 0.000885085,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008300781,
      "truth": "plane eps=0.03 a=1.06 s=1.04",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.99609375,
+     "coherent": 0.990234375,
+     "coherent_blocks": 0.990234375,
+     "coherent_se": 0.001808242,
      "geometric": 0.0,
-     "non_rotation": 0.00390625,
+     "non_rotation": 0.009765625,
      "truth": "plane eps=-0.02 a=1.0000 s=0.9750",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.990234375,
+     "coherent_blocks": 0.990234375,
+     "coherent_se": 0.001650692,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.009765625,
      "truth": "plane eps=-0.02 a=1.0500 s=0.9375",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.99609375,
+     "coherent": 0.989257812,
+     "coherent_blocks": 0.989257812,
+     "coherent_se": 0.002055095,
      "geometric": 0.0,
-     "non_rotation": 0.00390625,
+     "non_rotation": 0.010742188,
      "truth": "plane eps=-0.02 a=0.9500 s=1.0125",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.99609375,
+     "coherent": 0.990722656,
+     "coherent_blocks": 0.990722656,
+     "coherent_se": 0.001944386,
      "geometric": 0.0,
-     "non_rotation": 0.00390625,
+     "non_rotation": 0.009277344,
      "truth": "plane eps=-0.02 a=0.9750 s=0.9563",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.99609375,
+     "coherent": 0.988769531,
+     "coherent_blocks": 0.988769531,
+     "coherent_se": 0.002013235,
      "geometric": 0.0,
-     "non_rotation": 0.00390625,
+     "non_rotation": 0.011230469,
      "truth": "plane eps=-0.02 a=1.0750 s=1.0312",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.990722656,
+     "coherent_blocks": 0.990722656,
+     "coherent_se": 0.001464844,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.009277344,
      "truth": "plane eps=-0.02 a=1.0250 s=0.9188",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.99609375,
+     "coherent": 0.990234375,
+     "coherent_blocks": 0.990234375,
+     "coherent_se": 0.001808242,
      "geometric": 0.0,
-     "non_rotation": 0.00390625,
+     "non_rotation": 0.009765625,
      "truth": "plane eps=-0.02 a=0.9250 s=0.9938",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.990234375,
+     "coherent_blocks": 0.990234375,
+     "coherent_se": 0.001650692,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.009765625,
      "truth": "plane eps=-0.02 a=0.9375 s=0.9469",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.99609375,
+     "coherent": 0.988769531,
+     "coherent_blocks": 0.988769531,
+     "coherent_se": 0.002013235,
      "geometric": 0.0,
-     "non_rotation": 0.00390625,
+     "non_rotation": 0.011230469,
      "truth": "plane eps=-0.02 a=1.0375 s=1.0219",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.9921875,
+     "coherent": 0.990234375,
+     "coherent_blocks": 0.990234375,
+     "coherent_se": 0.00127862,
      "geometric": 0.0,
-     "non_rotation": 0.0078125,
+     "non_rotation": 0.009765625,
      "truth": "plane eps=-0.02 a=1.0875 s=0.9094",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.99609375,
+     "coherent": 0.990234375,
+     "coherent_blocks": 0.990234375,
+     "coherent_se": 0.001808242,
      "geometric": 0.0,
-     "non_rotation": 0.00390625,
+     "non_rotation": 0.009765625,
      "truth": "plane eps=-0.02 a=0.9875 s=0.9844",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.990722656,
+     "coherent_blocks": 0.990722656,
+     "coherent_se": 0.001464844,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.009277344,
      "truth": "plane eps=-0.02 a=0.9625 s=0.9281",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.99609375,
+     "coherent": 0.989746094,
+     "coherent_blocks": 0.989746094,
+     "coherent_se": 0.0017988,
      "geometric": 0.0,
-     "non_rotation": 0.00390625,
+     "non_rotation": 0.010253906,
      "truth": "plane eps=-0.02 a=1.0625 s=1.0031",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.99609375,
+     "coherent": 0.990234375,
+     "coherent_blocks": 0.990234375,
+     "coherent_se": 0.001808242,
      "geometric": 0.0,
-     "non_rotation": 0.00390625,
+     "non_rotation": 0.009765625,
      "truth": "plane eps=-0.02 a=1.0125 s=0.9656",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.988769531,
+     "coherent_blocks": 0.988769531,
+     "coherent_se": 0.002013235,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.011230469,
      "truth": "plane eps=-0.02 a=0.9125 s=1.0406",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.99609375,
+     "coherent": 0.990234375,
+     "coherent_blocks": 0.990234375,
+     "coherent_se": 0.001808242,
      "geometric": 0.0,
-     "non_rotation": 0.00390625,
+     "non_rotation": 0.009765625,
      "truth": "plane eps=-0.02 a=0.9188 s=0.9703",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.991210938,
+     "coherent_blocks": 0.991210938,
+     "coherent_se": 0.001224186,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008789062,
      "truth": "plane eps=0.02 a=1.0000 s=0.9750",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.991210938,
+     "coherent_blocks": 0.991210938,
+     "coherent_se": 0.001224186,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008789062,
      "truth": "plane eps=0.02 a=1.0500 s=0.9375",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.990722656,
+     "coherent_blocks": 0.990722656,
+     "coherent_se": 0.001265231,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.009277344,
      "truth": "plane eps=0.02 a=0.9500 s=1.0125",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.991699219,
+     "coherent_blocks": 0.991699219,
+     "coherent_se": 0.000885085,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=0.9750 s=0.9563",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.991210938,
+     "coherent_blocks": 0.991210938,
+     "coherent_se": 0.000976562,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008789062,
      "truth": "plane eps=0.02 a=1.0750 s=1.0312",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.991210938,
+     "coherent_blocks": 0.991210938,
+     "coherent_se": 0.000976562,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=1.0250 s=0.9188",
-     "unresolved": 0.0
+     "unresolved": 0.000488281
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.991699219,
+     "coherent_blocks": 0.991699219,
+     "coherent_se": 0.000885085,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=0.9250 s=0.9938",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.991210938,
+     "coherent_blocks": 0.991210938,
+     "coherent_se": 0.000976562,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=0.9375 s=0.9469",
-     "unresolved": 0.0
+     "unresolved": 0.000488281
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.991210938,
+     "coherent_blocks": 0.991210938,
+     "coherent_se": 0.000976562,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008789062,
      "truth": "plane eps=0.02 a=1.0375 s=1.0219",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.9921875,
+     "coherent_blocks": 0.9921875,
+     "coherent_se": 0.000738212,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.0078125,
      "truth": "plane eps=0.02 a=1.0875 s=0.9094",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.991210938,
+     "coherent_blocks": 0.991210938,
+     "coherent_se": 0.001224186,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008789062,
      "truth": "plane eps=0.02 a=0.9875 s=0.9844",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.990722656,
+     "coherent_blocks": 0.990722656,
+     "coherent_se": 0.001265231,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=0.9625 s=0.9281",
-     "unresolved": 0.0
+     "unresolved": 0.000976562
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.991699219,
+     "coherent_blocks": 0.991699219,
+     "coherent_se": 0.000885085,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=1.0625 s=1.0031",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.991210938,
+     "coherent_blocks": 0.991210938,
+     "coherent_se": 0.001224186,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008789062,
      "truth": "plane eps=0.02 a=1.0125 s=0.9656",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.991699219,
+     "coherent_blocks": 0.991699219,
+     "coherent_se": 0.000885085,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=0.9125 s=1.0406",
      "unresolved": 0.0
     },
     {
-     "coherent": 0.994140625,
+     "coherent": 0.991699219,
+     "coherent_blocks": 0.991699219,
+     "coherent_se": 0.000885085,
      "geometric": 0.0,
-     "non_rotation": 0.005859375,
+     "non_rotation": 0.008300781,
      "truth": "plane eps=0.02 a=0.9188 s=0.9703",
      "unresolved": 0.0
     }
    ],
    "worst_resolved_truth": {
-    "coherent": 0.96875,
+    "coherent": 0.964355469,
+    "coherent_blocks": 0.964355469,
+    "coherent_se": 0.002013235,
     "geometric": 0.0,
-    "non_rotation": 0.013671875,
-    "truth": "prx -0.8 % a=0.92 s=0.92",
-    "unresolved": 0.017578125
+    "non_rotation": 0.011230469,
+    "truth": "prx +0.8 % a=0.92 s=0.92",
+    "unresolved": 0.024414062
    }
   },
   "readout": {
@@ -2481,6 +3048,28 @@
    "sides_threshold": 83.513429932,
    "tolerance": 0.05
   },
+  "readout_gates": {
+   "011": {
+    "copy_floor": "not modeled",
+    "shift_pass_rate": 1.0,
+    "shift_tolerance": 0.05,
+    "sides_pass_rate_by_dispersion": {
+     "0.86": 0.999455382,
+     "1": 0.99,
+     "1.54": 0.457839336
+    }
+   },
+   "101": {
+    "copy_floor": "not modeled",
+    "shift_pass_rate": 1.0,
+    "shift_tolerance": 0.05,
+    "sides_pass_rate_by_dispersion": {
+     "0.86": 0.999455382,
+     "1": 0.99,
+     "1.54": 0.457839336
+    }
+   }
+  },
   "response": {
    "centered": [
     [
@@ -2551,7 +3140,7 @@
     ]
    },
    "boxes_note": "the fitting box of a and s equals the calibrated null box; a fit on a bound reads out of domain",
-   "delta_resolve": 7.5,
+   "delta_resolve": 8.0,
    "eps_equivalence": 0.01,
    "phi": 1.54,
    "primary": "departure of the marked probabilities of mark 101 from the geometric law toward a plane rotation eps",
@@ -2563,6 +3152,10 @@
   "QB20",
   "QB16",
   "QB17"
+ ],
+ "marks": [
+  "101",
+  "011"
  ],
  "model": "exact noisy density matrix of the committed circuits: depolarizing PRX and CZ, ASAP idle T1/T2, herald-conditioned readout; no coherent error, leakage or crosstalk"
 }

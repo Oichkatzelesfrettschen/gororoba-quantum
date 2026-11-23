@@ -50,6 +50,7 @@ from iqm_signed_probe import CALIBRATION_FILES, OPTIONS  # noqa: E402
 import grover_plane_analysis as run_analysis  # noqa: E402
 import grover_plane_calibration as calibration  # noqa: E402
 import grover_plane_decision as decision  # noqa: E402
+import grover_plane_sizing as sizing  # noqa: E402
 import grover_plane_sim as sim  # noqa: E402
 
 CASE = "grover-plane-mirrored"
@@ -317,32 +318,39 @@ def retained_schedule_total() -> int:
 
 
 def cost_estimates(arms: list[dict[str, Any]]) -> dict[str, Any]:
-    """Execution seconds of the job from the retained job's execution time scaled by the ratio of ASAP schedule
-    totals (gate durations of the retained schedule model): with and without the retained job's fixed part; the
-    sibling Emerald run that took 2.2 times its estimate is the stress the credit ceiling carries."""
+    """The billing v4 sizing of the job (grover_plane_sizing: the three Garnet models over the case's circuit durations;
+    the credits adopted are the largest, under the all-jobs band) beside the earlier estimate that scales the retained
+    job's execution time by the ratio of ASAP schedule totals (gate durations of the retained schedule model). The
+    sibling Emerald run that took 2.2 times its estimate is the stress the margins report."""
     new_total = sum(schedule_nanoseconds(a["circuit"]) * SHOTS for a in arms)
     ratio = new_total / retained_schedule_total()
     scaled = RETAINED_EXECUTION_SECONDS * ratio
     fixed_removed = RETAINED_FIXED_SECONDS + (RETAINED_EXECUTION_SECONDS - RETAINED_FIXED_SECONDS) * ratio
-    best = max(scaled, fixed_removed)
-    run = best + RETAINED_COMPILATION_SECONDS
-    billed = math.ceil(HEADROOM * run + CANCEL_MARGIN)
+    inputs = sizing.load_inputs()
+    seconds = [schedule_nanoseconds(a["circuit"]) * 1e-9 for a in arms]
+    mid = [sum(op["name"] == "measure" for op in a["circuit"]["instructions"]) - 1 for a in arms]
+    priced = sizing.price(inputs, seconds, mid, SHOTS)
+    chosen = sizing.adopted(inputs, priced)
     return {
-        "schedule_ratio": ratio,
-        "scaled_execution_seconds": scaled,
-        "fixed_part_removed_execution_seconds": fixed_removed,
-        "best_execution_seconds": best,
+        "billing_v4_inputs_sha256": hashlib.sha256(sizing.INPUTS.read_bytes()).hexdigest(),
+        "billing_v4": priced,
+        "best_execution_seconds": chosen["expected_execution_seconds"],
         "compilation_seconds": RETAINED_COMPILATION_SECONDS,
-        "headroom": HEADROOM,
-        "billed_seconds_of_ceiling": billed,
-        "max_credits_garnet": billed * PRICE["garnet"],
-        "emerald_stress_execution_seconds": 2.2 * best,
-        "cancel_threshold_seconds": billed - CANCEL_MARGIN,
-        "cancel_margin_seconds_at_overrun": {
-            f"{factor:g}x": billed - CANCEL_MARGIN - factor * run for factor in (1.0, 1.5, 2.2)
-        },
+        "billed_seconds_of_ceiling": int(chosen["billed_seconds_of_ceiling"]),
+        "max_credits_garnet": chosen["max_credits"],
+        "max_credits_grover_band": chosen["max_credits_grover_band"],
+        "cancel_threshold_seconds": chosen["cancel_threshold_seconds"],
+        "expected_runtime_seconds": chosen["expected_runtime_seconds"],
+        "overrun_margins": chosen["overrun_margins"],
         "executions": len(arms) * SHOTS,
         "circuits": len(arms),
+        "retained_scaling": {
+            "schedule_ratio": ratio,
+            "scaled_execution_seconds": scaled,
+            "fixed_part_removed_execution_seconds": fixed_removed,
+            "best_execution_seconds": max(scaled, fixed_removed),
+            "headroom": HEADROOM,
+        },
         "mock_compile_estimate": "required before approval; not read",
     }
 

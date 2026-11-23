@@ -227,38 +227,42 @@ rotation (dP_3/d eps = -0.84 at P_3 = 0.24).
 
 ## Power and cost of the case
 
-Design: 52 circuits at 16,000 shots (832,000 executions; the job limits are 100 circuits and 2,000,000 executions): mark 101
-at depths 1 to 4 in 4, 4, 10 and 4 copies, mark 011 at depths 1 to 3 in 4, 4 and 6 copies, and 16 readout circuits (each
-preparation on both sides of the center; both marks read the same preparations through their own marked row and depth
-distributions). Kept shots 13,440 per copy. The 101 arms are the arms of the earlier design, so the primary test keeps its
-Fisher standard error of eps in the worst (a, s) cell, 0.0035 rad with phi = 1.54.
+The run is a prospective replication or refutation of the retained depth-3 anomaly of mark 101 (eps 0.041 +- 0.011, one
+marked-probability point under the plane family). It does not identify a CZ, ZZ, PRX or leakage mechanism: a "coherent" reading says
+that the plane rotates and not why, ZZ reads like a CZ phase in the contrast, and the leak L = s - mu is not identifiable from the
+marked probabilities (the section "Eight-cell refit" frees the complement and eps then loses its identification). The values below
+are summarized from the cases' `prediction.json`; [the case](../../results/iqm/proposals/grover-plane-mirrored/CASE.md) and
+[its mark 101 variant](../../results/iqm/proposals/grover-plane-mirrored-101/CASE.md) hold the full tables.
 
-Calibration over the null box (41 Sobol' cells of a in [0.80, 1.20], s in [0.75, 1.15] and the offset line s = 1, 1,024 points
-each): delta = 7.5 (the chi-square(1) 0.99 quantile is 6.63; the worst cell, a = 1.2, s = 1, lies on the box edge where the
-fit clips, and has quantile 7.07), false "coherent" at most 0.0088, also on the offset line. The rotation reading needs an
-adequate rotation fit (chi-square of (a, s, eps) below the 0.99 quantile on 1 dof), so an incoherent departure from
-geometric reads "non-geometric, not a rotation"; planted, a depth-2 deficit of 0.05 reads it, and a fit on a box bound reads
-"out of domain".
+Design (variant A): 52 circuits at 16,000 shots (832,000 executions; the job limits are 100 circuits and 2,000,000 executions): mark 101
+at depths 1 to 4 in 4, 4, 10 and 4 copies, mark 011 at depths 1 to 3 in 4, 4 and 6 copies, and 16 readout circuits. Kept shots 13,440 per
+copy. Variant B drops the 14 mark 011 circuits (38 circuits, 608,000 executions) and keeps the primary test unchanged: its Fisher
+standard error of eps in the worst (a, s) cell stays 0.0035 rad with phi = 1.54.
 
-Power, claimed over a in [0.90, 1.10] and s in [0.90, 1.05] (CZ, PRX and ZZ truths at four corners and 32 Sobol' cells of the
-plane rotation): the pooled rule reads "coherent" at |eps_eff| = 0.02 with probability at least 0.969 (worst corner PRX
-+0.8 percent, a 0.92, s 0.92), at 0.015 at least 0.89, at 0.01 at least 0.46. Through the whole gated rule (pair
-heterogeneity, leave-one-pair-out, readout, box) with binomial copies: 0.949 to 0.988 over the mechanism corners (the 0.949 is
-the PRX +0.8 percent corner, |eps_eff| 0.018) and 0.969 to 0.973 for the plane rotation at |eps| = 0.02 in the worst
-corner; at the 95 percent dispersion bound phi = 1.54 (the heterogeneity gate runs at phi = 1, so it fires and the
-remainder reads "not evaluated"): 0.79 to 0.90. Outside the claimed region the false-alarm rate is controlled and power is
-not claimed; the "geometric" reading reaches at least 0.17 of the null cells (weak-signal cells at the box edge).
+Calibration and power are estimates at listed cells, each with a block error estimate; none is a bound over the continuous box.
+The null evaluation covers 41 Sobol' and offset-line cells, the four corners of the box and 54 cells of a boundary search at 4,096 points
+(8 blocks): delta = 8.0 (the boundary cell a 1.20, s 0.75 has 0.99 quantile 7.76; the 41 cells alone gave 7.5), false "coherent" at most
+0.0078 +- 0.0015 (0.0122 at three standard errors), "non-geometric, not a rotation" at most 0.00024 under the null. Power at |eps| = 0.02:
+0.985 to 0.992 over the corners and 28 cells of the claimed region; at 0.015: 0.874 to 0.992; at 0.01: 0.435 to 0.938 (no resolution is
+claimed below 0.015). Mechanism corners (CZ 0.015 rad, PRX 0.8 percent, ZZ 10 kHz): 0.964 to 0.992. Through the pair gates (two-pair floor,
+heterogeneity at the covariance's phi, leave-one-pair-out) 0.949 to 1.000 at binomial copies and 0.805 to 0.953 at the dispersion bound
+phi = 1.54; with a binomial-phi heterogeneity gate the bound case falls to 0.770 to 0.895. The readout gates pass with probability 1.0
+(shift tolerance) and 0.9995, 0.99 and 0.458 (two-sides chi-square at phi 0.86, 1 and 1.54); the copy floor is not modeled.
 
-Mark contrast, binomial copies: for a CZ phase of -0.03 rad (eps_101 0.037, eps_011 about 0) the contrast reads
-"CZ-phase-like" with probability 0.95 to 0.96; for a PRX amplitude of -1.6 percent (eps_011 1.19 eps_101) it reads "PRX-like"
-with probability 0.94 to 0.95; a ZZ coupling of +20 kHz reads "CZ-phase-like" with probability 0.74 to 0.89 (its mark-011
-slope is a tenth of its mark-101 slope), so the contrast does not separate ZZ from a CZ phase. The contrast decides nothing.
+Mark contrast (variant A), through the departure rule of each mark: a CZ phase of -0.03 rad reads "CZ-phase-like" 0.942 to 0.951, a PRX
+amplitude of -1.6 percent reads "PRX-like" 0.925 to 0.939, ZZ +20 kHz reads "CZ-phase-like" 0.734 to 0.864. The PRX ratio carries the
+interval [1.1947, 1.2168] of the amplitudes 0.2 to 3 percent; the rejection of a PRX amplitude must hold over it.
 
-Cost: execution of the retained job (1.9985 s, 144,000 circuit-shots) scaled by the ratio of ASAP schedule totals, 7.95, is
-15.89 s (14.99 s with the retained fixed 0.13 s removed); compilation 0.44 s. Expected billed seconds ceil(1.6 + 15.89) = 18,
-9.0 credits. The ceiling is 26 billed seconds (cancel threshold 25 s), 13.0 credits, which holds 1.5 times the estimate with
-compilation (24.5 s) plus the margin; the sibling Emerald run took 2.2 times its estimate (35.0 s here), which the ceiling does
-not cover. The `garnet:mock` compile estimate is required before approval and was not read.
+Cost, billing v4 sizing (`variant_sizing.json`, coefficients pinned in `billing_v4_inputs.json`):
+
+| | A | B |
+|---|---|---|
+| expected execution v3 / v4_sum / v4_max (s) | 12.81 / 11.67 / 12.21 | 9.30 / 8.47 / 8.88 |
+| max_credits (all-jobs band), cancel threshold | 13.0, 25 s | 9.5, 18 s |
+| margin of the threshold at 1.5 and 2.2 times the longest expected runtime | 5.1 s, -4.1 s | 3.4 s, -3.4 s |
+
+The 2.2 times overrun of the sibling Emerald run is not covered in either variant. The `garnet:mock` compile estimate is required before
+approval and was not read.
 
 Retained mark contrast (post hoc, replayed by a gate on `fits.json`): see the fifth item of the falsification log.
 
