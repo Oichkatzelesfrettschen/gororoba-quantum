@@ -1,0 +1,39 @@
+#!/bin/sh
+# The quadric ideal of E8-bar -> VB along the boost at sample values of w and, with the argument generic, over
+# F_32029(w); run from the repository root with Singular on PATH and sympy and python-flint in $PYTHON.
+# Exits nonzero unless every point shows the retained invariants and one normal form, the bases before the frame
+# differ between points, and (generic) the normal form over the function field is that same one.
+set -eu
+PYTHON=${PYTHON:-python3}
+export PYTHON PYTHONDONTWRITEBYTECODE=1
+D=docs/evidence/a5-exceptional-fibers/working/runs/e8-vb-boost-family-p32029
+POINTS="1 2 3 2/3 5 7 11 -3 1/4 1000 12345 9115"
+one() { # tag value
+  "$PYTHON" "$D/boost_family.py" --emit "$2" > "$D/bf-$1.sing"
+  Singular -q --no-warn --no-rc "$D/bf-$1.sing" < /dev/null > "$D/bf-$1.log" 2>&1
+  grep -q '^RESULT done 1$' "$D/bf-$1.log"
+  ! grep -q '^ *?' "$D/bf-$1.log"
+  grep -q '^RESULT k_generators 21 dim 4 mult 7$' "$D/bf-$1.log"
+  grep -q '^RESULT k_numerator 1,0,-21,70,-105,84,-35,6,0$' "$D/bf-$1.log"
+  [ "$(grep -c '^RESULT prime 4 [34] [43]$' "$D/bf-$1.log")" = 2 ]
+  grep -q '^RESULT radical 1$' "$D/bf-$1.log"
+  grep -q '^RESULT frame_consistent 1$' "$D/bf-$1.log"
+  grep -q '^RESULT frame_determinant_nonzero 1$' "$D/bf-$1.log"
+}
+tag() { echo "w$1" | tr '/-' 'dm'; }
+: > "$D/normal-forms.txt"
+for v in $POINTS; do
+  t=$(tag "$v")
+  one "$t" "$v"
+  echo "$t $(grep '^NORMALFORM' "$D/bf-$t.log" | sha256sum | cut -c1-64) $(grep '^KBASIS' "$D/bf-$t.log" | sha256sum | cut -c1-64)" >> "$D/normal-forms.txt"
+done
+grep -q '^RESULT schur_matches_retained 1$' "$D/bf-w1.log"
+[ "$(cut -d' ' -f2 "$D/normal-forms.txt" | sort -u | wc -l)" = 1 ]
+[ "$(cut -d' ' -f3 "$D/normal-forms.txt" | sort -u | wc -l)" -gt 1 ]
+if [ "${1:-}" = generic ]; then
+  one generic generic
+  [ "$(grep '^NORMALFORM' "$D/bf-generic.log" | sha256sum | cut -c1-64)" = "$(head -n 1 "$D/normal-forms.txt" | cut -d' ' -f2)" ]
+  grep '^KBASIS' "$D/bf-generic.log" | grep -q w
+  echo "run_boost generic: PASS"
+fi
+echo "run_boost: PASS"

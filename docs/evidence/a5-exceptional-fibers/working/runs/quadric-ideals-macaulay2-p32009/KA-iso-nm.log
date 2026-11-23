@@ -1,0 +1,6 @@
+RESULT KA-iso-nm K generators 68 dim 5 degree 23 numerator 1+12*T+10*T^2
+RESULT KA-iso-nm minimal_primes {{5, 23, 0}}
+RESULT KA-iso-nm radical_equal true
+RESULT KA-iso-nm control dim 4 degree 46 differs true
+RESULT KA-iso-nm primary_components {{5, 23, 5, 23}} intersect_equal true
+DONE KA-iso-nm

@@ -1,0 +1,38 @@
+RESULT KA-e8-nm K generators 148 dim 5 degree 11 numerator 1+16*T-12*T^2+10*T^3-5*T^4+T^5
+RESULT KA-e8-nm minimal_primes {{4, 4, 14}, {5, 11, 9}}
+RESULT KA-e8-nm radical_equal false
+RESULT KA-e8-nm A=K:rad generators 17 dim 4 degree 2 numerator 1+T
+RESULT KA-e8-nm A_prime true K:A_equals_rad true rad_squared_in_K true nil_linear_forms 5
+RESULT KA-e8-nm control dim 4 degree 28 differs true
+RESULT KA-e8-nm primary_components {{4, 4, 4, 2}, {4, 4, 4, 4}, {5, 11, 5, 11}} intersect_equal true
+DONE KA-e8-nm
+RESULT KA-e8-np K generators 148 dim 5 degree 11 numerator 1+16*T-12*T^2+10*T^3-5*T^4+T^5
+RESULT KA-e8-np minimal_primes {{4, 4, 14}, {5, 11, 9}}
+RESULT KA-e8-np radical_equal false
+RESULT KA-e8-np A=K:rad generators 17 dim 4 degree 2 numerator 1+T
+RESULT KA-e8-np A_prime true K:A_equals_rad true rad_squared_in_K true nil_linear_forms 5
+RESULT KA-e8-np control dim 4 degree 28 differs true
+RESULT KA-e8-np primary_components {{4, 4, 4, 2}, {4, 4, 4, 4}, {5, 11, 5, 11}} intersect_equal true
+DONE KA-e8-np
+RESULT KH-e8-nm K generators 148 dim 5 degree 11 numerator 1+16*T-12*T^2+10*T^3-5*T^4+T^5
+RESULT KH-e8-nm minimal_primes {{4, 4, 14}, {5, 11, 9}}
+RESULT KH-e8-nm radical_equal false
+RESULT KH-e8-nm A=K:rad generators 17 dim 4 degree 2 numerator 1+T
+RESULT KH-e8-nm A_prime true K:A_equals_rad true rad_squared_in_K true nil_linear_forms 5
+RESULT KH-e8-nm control dim 4 degree 22 differs true
+RESULT KH-e8-nm primary_components {{4, 4, 4, 2}, {4, 4, 4, 4}, {5, 11, 5, 11}} intersect_equal true
+DONE KH-e8-nm
+RESULT KH-e8-np K generators 148 dim 5 degree 11 numerator 1+16*T-12*T^2+10*T^3-5*T^4+T^5
+RESULT KH-e8-np minimal_primes {{4, 4, 14}, {5, 11, 9}}
+RESULT KH-e8-np radical_equal false
+RESULT KH-e8-np A=K:rad generators 17 dim 4 degree 2 numerator 1+T
+RESULT KH-e8-np A_prime true K:A_equals_rad true rad_squared_in_K true nil_linear_forms 5
+RESULT KH-e8-np control dim 4 degree 22 differs true
+RESULT KH-e8-np primary_components {{4, 4, 4, 2}, {4, 4, 4, 4}, {5, 11, 5, 11}} intersect_equal true
+DONE KH-e8-np
+RESULT KA-iso-nm K generators 68 dim 5 degree 23 numerator 1+12*T+10*T^2
+RESULT KA-iso-nm minimal_primes {{5, 23, 0}}
+RESULT KA-iso-nm radical_equal true
+RESULT KA-iso-nm control dim 4 degree 46 differs true
+RESULT KA-iso-nm primary_components {{5, 23, 5, 23}} intersect_equal true
+DONE KA-iso-nm
