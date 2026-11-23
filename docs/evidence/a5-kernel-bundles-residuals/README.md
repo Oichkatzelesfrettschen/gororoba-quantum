@@ -760,3 +760,27 @@ Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/gauss_image_quadric
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/kernel_three_plane_zero_divisors.py --check` (modulo 32029 and exact over Q(i) at the fixtures; 72 CPU seconds and 86 MiB on two workers, 53 seconds of wall time, same versions and host as the next replay).
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py --check` (exact modulo 32029 and over Q(i); 326 CPU seconds and 1.2 GiB on two workers under an 8 GiB memory scope, 3 minutes 33 seconds of wall time, Python 3.14.9, python-flint 0.9.0, sympy 1.14.0, on the build host).
+
+#### The Gauss images at a second prime, by the kernel of the bordered matrix
+
+`probes/bordered_kernel_gauss_image.py` (record `probes/bordered-kernel-gauss-image-result.json`, ledger row `A5-601`, survives) repeats the
+degree-2 measurement of the preceding section modulo 32009 by another route. It splits the bordered matrix into its
+parts linear in `z` and in `w = conjugate(z)`, draws 7,000 points of each hypersurface from the roots on lines of the
+split coordinates with `w` free, and takes the kernel plane from the nullspace of the 16 x 16 matrix itself, with no
+frame of `K(z)`.
+
+| stratum | span of the Plucker vectors | rank of the quadric monomials at 6,000 and 7,000 points | quadrics beyond Plucker | rank of the differential |
+|---|---|---|---|---|
+| `V(Q)` minus `V(G)` | 105 | 3,887 and 3,887 | 313 | 15 at eight points |
+| `V(G)` minus `V(Q)` | 105 | 4,022 and 4,022 | 178 | 15 at eight points |
+
+Every sampled kernel has scalar coordinate zero, so the image lies in `Gr(2, 15)` with Hilbert function 105 and
+4,200 in degrees 1 and 2. The two ranks were written into the script as the prediction before the run and are the
+ranks of `A5-460` modulo 32029. The differential, computed from first-order kernel frames over the dual numbers with
+no tangency failure, has rank 15, the dimension of a family of projective planes over a base of dimension 13. A
+first version of the probe tied `w` to `z` on the split real slice and read 3,872 on `V(Q)` minus `V(G)`: that
+subfamily has a smaller image. `V(Q) n V(G)`, degree 3 and characteristic 0 are not run.
+
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/probes/bordered_kernel_gauss_image.py 7000` (2 min 11 s at
+2.9 GiB a stratum, both in parallel; sympy, numpy and python-flint); the script exits nonzero on an unstable rank, a missed prediction, an
+accepted control or a tangency failure.

@@ -1,0 +1,139 @@
+{
+ "schema": "a5-nullity4-gauss-image-probe-v2",
+ "prediction": {
+  "V(Q) minus V(G)": 3887,
+  "V(G) minus V(Q)": 4022
+ },
+ "field": "GF(32009), i = 10754",
+ "strata": [
+  {
+   "stratum": "V(Q) minus V(G)",
+   "hypersurface_degree": 2,
+   "lines_drawn": 6929,
+   "points": 7000,
+   "rejected_rank_below_14": 0,
+   "rejected_on_other_hypersurface": 0,
+   "differential_rank_and_tangency_failures": [
+    [
+     15,
+     0
+    ],
+    [
+     15,
+     0
+    ],
+    [
+     15,
+     0
+    ],
+    [
+     15,
+     0
+    ],
+    [
+     15,
+     0
+    ],
+    [
+     15,
+     0
+    ],
+    [
+     15,
+     0
+    ],
+    [
+     15,
+     0
+    ]
+   ],
+   "gauss_image_dimension_lower_bound": 15,
+   "hilbert_function_degree_1": 105,
+   "hilbert_function_degree_2_by_sample": {
+    "6000": 3887,
+    "7000": 3887
+   },
+   "degree_2_rank_stable": true,
+   "grassmannian_hilbert_function": [
+    120,
+    5440
+   ],
+   "linear_forms_on_image": 15,
+   "coordinates_zero_on_every_kernel_zero_based": [
+    0
+   ],
+   "grassmannian_of_the_remaining_coordinates_hilbert_function": [
+    105,
+    4200
+   ],
+   "quadrics_on_image": 3373,
+   "generic_point_control_rejected": true,
+   "seconds": 123.2
+  },
+  {
+   "stratum": "V(G) minus V(Q)",
+   "hypersurface_degree": 4,
+   "lines_drawn": 7037,
+   "points": 7000,
+   "rejected_rank_below_14": 0,
+   "rejected_on_other_hypersurface": 0,
+   "differential_rank_and_tangency_failures": [
+    [
+     15,
+     0
+    ],
+    [
+     15,
+     0
+    ],
+    [
+     15,
+     0
+    ],
+    [
+     15,
+     0
+    ],
+    [
+     15,
+     0
+    ],
+    [
+     15,
+     0
+    ],
+    [
+     15,
+     0
+    ],
+    [
+     15,
+     0
+    ]
+   ],
+   "gauss_image_dimension_lower_bound": 15,
+   "hilbert_function_degree_1": 105,
+   "hilbert_function_degree_2_by_sample": {
+    "6000": 4022,
+    "7000": 4022
+   },
+   "degree_2_rank_stable": true,
+   "grassmannian_hilbert_function": [
+    120,
+    5440
+   ],
+   "linear_forms_on_image": 15,
+   "coordinates_zero_on_every_kernel_zero_based": [
+    0
+   ],
+   "grassmannian_of_the_remaining_coordinates_hilbert_function": [
+    105,
+    4200
+   ],
+   "quadrics_on_image": 3238,
+   "generic_point_control_rejected": true,
+   "seconds": 129.0
+  }
+ ],
+ "pass": true
+}
