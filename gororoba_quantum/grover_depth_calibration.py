@@ -45,6 +45,11 @@ CATEGORIES = families.FAMILY_CATEGORIES
 BEND_CATEGORIES = ("beyond", "upward", "none", "not evaluated")
 
 
+def wrong_of(name: str) -> str:
+    """The family a truth must not be read as: coherent for the geometric truth, geometric for either coherent one."""
+    return "coherent" if name == "geometric" else "geometric"
+
+
 def sobol_normals(dim: int, log2n: int) -> np.ndarray:
     """The Sobol' points 1 to 2^log2n of dimension dim (the first block of the unscrambled sequence without its
     origin) as standard normal vectors."""
@@ -77,8 +82,9 @@ class Scan:
         usable = {k: float(f) for k, f in zip(families.DEPTHS, freq, strict=True)}
         sizes = dict(zip(families.DEPTHS, kept, strict=True))
         bend = families.bend_decision(usable, sizes, self.model, self.readout)["reading"]
-        geo, coh, _, _ = families.fit_families(usable, sizes, self.model, self.readout)
-        family = [CATEGORIES.index(families.category_of(families.select_family(geo, coh, 2, t)[0])) for t in self.grid]
+        fits = families.fit_families(usable, sizes, self.model, self.readout)
+        args = (fits["geometric"], fits["cz_phase"], fits["prx_amplitude"], fits["null_chi2"])
+        family = [CATEGORIES.index(families.category_of(families.select_family(*args, t)[0])) for t in self.grid]
         return BEND_CATEGORIES.index(families.bend_category(bend)), family
 
     def __call__(self, y: np.ndarray) -> tuple[int, list[int]]:
@@ -159,14 +165,13 @@ def calibrate(
         fam = tables[name]["family"][sel]
         return {c: np.mean(fam == CATEGORIES.index(c), axis=0) for c in CATEGORIES}
 
-    wrong = {"geometric": "coherent", "coherent": "geometric"}
     chosen = None
     for j in range(len(DELTA_GRID)):
         ok = True
         for sel in (slice(0, half), slice(0, 2**log2n)):
             for name in truths:
                 r = rates(name, sel)
-                miss = (r["coherent"][j] + r["geometric"][j]) if name == "model" else r[wrong[name]][j]
+                miss = (r["coherent"][j] + r["geometric"][j]) if name == "model" else r[wrong_of(name)][j]
                 ok = ok and bool(miss <= STATED_RATE)
         if ok:
             chosen = j
@@ -179,7 +184,7 @@ def calibrate(
     def wrong_by_grid(name: str, r: dict[str, np.ndarray]) -> list[float]:
         if name == "model":
             return [float(x) for x in r["coherent"] + r["geometric"]]
-        return [float(x) for x in r[wrong[name]]]
+        return [float(x) for x in r[wrong_of(name)]]
 
     out: dict[str, Any] = {
         "method": (
@@ -266,4 +271,110 @@ def spans(pairs: Sequence[int]) -> list[tuple[int, int]]:
         if n >= 2:
             out.append((at, at + n))
             at += n
+    return out
+
+
+@dataclass(frozen=True, eq=False)
+class Posterior:
+    """The readings of the planned run when the retained data move within their uncertainty.
+
+    A standard normal vector z moves the retained ratios rho_1 to rho_3 to rho + L z (L the Cholesky factor of their
+    covariance); each family is refitted to the moved ratios and continued to depth 4, and the pooled rule of the
+    planned run (its readings at threshold, with the binomial and readout covariance) is integrated over the planned
+    run's own noise at those truths."""
+
+    model: Sequence[float]
+    readout: families.ReadoutShift
+    kept: Sequence[float]
+    threshold: float
+    retained_rho: Sequence[float]
+    retained_factor: np.ndarray
+    noise: np.ndarray
+
+    def __call__(self, z: np.ndarray) -> dict[str, Any]:
+        rho = np.asarray(self.retained_rho) + self.retained_factor @ z
+        cov = self.retained_factor @ self.retained_factor.T
+        ks = families.DEPTHS[:3]
+        fits = {
+            "geometric": families.fit_geometric(rho, cov, ks),
+            "coherent_cz": families.fit_circuit(rho, cov, ks, "cz_phase"),
+            "coherent_prx": families.fit_circuit(rho, cov, ks, "prx_amplitude"),
+        }
+        truths = {
+            "geometric": families.geometric_values(fits["geometric"], families.DEPTHS),
+            "coherent_cz": families.coherent_values(fits["coherent_cz"], families.DEPTHS),
+            "coherent_prx": families.coherent_values(fits["coherent_prx"], families.DEPTHS),
+        }
+        scan = Scan(self.model, {}, self.kept, self.readout, (self.threshold,))
+        out: dict[str, Any] = {"rho_4": {name: values[3] for name, values in truths.items()}}
+        for name, ratios in truths.items():
+            mean = truth_frequencies(ratios, self.model)
+            if not np.all((mean > 0) & (mean < 1)):
+                out[name] = [float("nan")] * len(CATEGORIES)
+                continue
+            factor = np.linalg.cholesky(frequency_covariance(mean, self.kept, self.readout))
+            reads = [scan.readings(y, self.kept)[1][0] for y in mean + self.noise @ factor.T]
+            out[name] = [float(np.mean(np.array(reads) == c)) for c in range(len(CATEGORIES))]
+        return out
+
+
+def retained_uncertainty(
+    model: Sequence[float],
+    readout: families.ReadoutShift,
+    kept: Sequence[float],
+    threshold: float,
+    retained_rho: Sequence[float],
+    retained_cov: np.ndarray,
+    samples_log2n: int = 6,
+    noise_log2n: int = 8,
+) -> dict[str, Any]:
+    """The probability that the planned run reads a family at all, with the retained fits' uncertainty propagated.
+
+    The three retained ratios are Gaussian (binomial at their kept shots); the 2^samples_log2n Sobol' points of
+    dimension 3 move them, each family is refitted and continued, and the planned run's pooled rule reads the
+    continuation with 2^noise_log2n Sobol' points of dimension 4. For each hypothesis (the retained data follow the
+    geometric family, the CZ-phase family or the PRX-amplitude family) the table gives the mean over the moved
+    retained data of the probability of each reading and its standard deviation, and the spread of the depth-4
+    ratio of the families. The influence and heterogeneity gates are not applied here."""
+    samples = sobol_normals(3, samples_log2n)
+    task = Posterior(
+        model,
+        readout,
+        kept,
+        threshold,
+        list(retained_rho),
+        np.linalg.cholesky(np.asarray(retained_cov)),
+        sobol_normals(4, noise_log2n),
+    )
+    rows = ordered_map(task, list(samples), min_items=1)
+    out: dict[str, Any] = {
+        "samples": len(rows),
+        "noise_points": 2**noise_log2n,
+        "retained_rho": list(retained_rho),
+        "hypotheses": {},
+    }
+    named = {"geometric": "geometric", "coherent_cz": "coherent", "coherent_prx": "coherent"}
+    for name, category in named.items():
+        table = np.array([r[name] for r in rows])
+        valid = ~np.isnan(table).any(axis=1)
+        table = table[valid]
+        c = CATEGORIES.index(category)
+        resolved = table[:, CATEGORIES.index("coherent")] + table[:, CATEGORIES.index("geometric")]
+        out["hypotheses"][name] = {
+            "valid_samples": int(valid.sum()),
+            "probability_of_the_true_family": [float(np.mean(table[:, c])), float(np.std(table[:, c]))],
+            "probability_of_reading_a_family": [float(np.mean(resolved)), float(np.std(resolved))],
+            "readings": {cat: float(np.mean(table[:, i])) for i, cat in enumerate(CATEGORIES)},
+            "rho_4": [
+                float(np.mean([r["rho_4"][name] for r, ok in zip(rows, valid, strict=True) if ok])),
+                float(np.std([r["rho_4"][name] for r, ok in zip(rows, valid, strict=True) if ok])),
+            ],
+        }
+    out["probability_the_run_resolves_the_families"] = float(
+        np.mean([h["probability_of_the_true_family"][0] for h in out["hypotheses"].values()])
+    )
+    out["difference_of_rho_4_geometric_minus_coherent_cz"] = [
+        float(np.mean([r["rho_4"]["geometric"] - r["rho_4"]["coherent_cz"] for r in rows])),
+        float(np.std([r["rho_4"]["geometric"] - r["rho_4"]["coherent_cz"] for r in rows])),
+    ]
     return out

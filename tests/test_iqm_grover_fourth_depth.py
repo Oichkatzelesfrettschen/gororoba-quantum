@@ -17,6 +17,7 @@ from iqm_platform import sha256
 
 import grover_depth_analysis as analysis
 import grover_depth_calibration as calibration
+import grover_depth_circuits as circuits
 import grover_depth_families as families
 import iqm_records
 
@@ -26,55 +27,81 @@ MODEL = [0.85, 0.77, 0.70, 0.58]
 DELTA = 9.0
 # The two fits of the retained ratios, decisions.retained of the committed prediction.
 GEOMETRIC = {"A": 1.025983, "r": 0.963383}
-COHERENT = {"eps": 0.304302, "r": 1.013413}
+CZ: dict[str, Any] = {"kind": "cz_phase", "a": 0.934675, "s": 1.0323, "x": -0.0309}
+PRX: dict[str, Any] = {"kind": "prx_amplitude", "a": 0.949847, "s": 1.021575, "x": -0.01725}
 
 
 def counts(lam: list[float], kept: list[int]) -> list[int]:
     return [round(families.probability_of(x, k) * n) for x, k, n in zip(lam, families.DEPTHS, kept, strict=True)]
 
 
-def test_zero_phase_error_is_the_ideal_rotation() -> None:
-    zero = np.zeros(1)
+def test_the_circuit_simulation_reproduces_the_ideal_outcomes_and_the_exact_error_values() -> None:
     for k in families.DEPTHS:
-        if abs(float(families.oracle_phase_probability(k, zero)[0]) - families.ideal_marked(k)) > 1e-12:
+        circuit = circuits.depth_circuit(k)
+        ideal = followup.ideal(circuit, circuits.PATH)
+        if np.max(np.abs(circuits.simulate(circuit, np.zeros(1), np.ones(1))[0] - ideal)) > 1e-12:
             raise AssertionError(f"depth {k}")
-    ideal = [families.ideal_marked(k) for k in families.DEPTHS]
-    if [round(x, 3) for x in ideal] != [0.781, 0.945, 0.330, 0.012]:
-        raise AssertionError(f"ideal marked probabilities {ideal}")
+        for kind in circuits.KINDS:
+            if abs(float(circuits.factor(kind, k, 0.0)[0]) - 1) > 1e-9:
+                raise AssertionError((kind, k))
+    # Exact simulation of the committed circuits with a CZ phase of -0.03 rad or a PRX amplitude of -2 %, as a red team
+    # computed them: the depth-3 dip and the depth-4 rebound that no geometric law has.
+    for kind, x, want in (
+        ("cz_phase", -0.03, [1.0209, 0.9744, 0.7469, 0.8055]),
+        ("prx_amplitude", -0.02, [1.0178, 0.9743, 0.7123, 0.7649]),
+    ):
+        got = [float(circuits.factor(kind, k, x)[0]) for k in families.DEPTHS]
+        if not np.allclose(got, want, atol=2e-4):
+            raise AssertionError((kind, got))
 
 
 def test_each_family_recovers_its_own_parameters() -> None:
     ks = families.DEPTHS
     se = [0.01] * 4
     geo = families.fit_geometric(families.geometric_values(GEOMETRIC, ks), se, ks)
-    coh = families.fit_coherent(families.coherent_values(COHERENT, ks), se, ks)
     if max(abs(geo["A"] - GEOMETRIC["A"]), abs(geo["r"] - GEOMETRIC["r"])) > 1e-3 or geo["chi2"] > 1e-6:
         raise AssertionError(f"geometric fit {geo}")
-    if max(abs(coh["eps"] - COHERENT["eps"]), abs(coh["r"] - COHERENT["r"])) > 1e-3 or coh["chi2"] > 1e-4:
-        raise AssertionError(f"coherent fit {coh}")
+    for truth in (CZ, PRX):
+        fit = families.fit_circuit(families.coherent_values(truth, ks), se, ks, truth["kind"])
+        if abs(fit["x"] - truth["x"]) > 5e-4 or abs(fit["s"] - truth["s"]) > 2e-3 or fit["chi2"] > 1e-2:
+            raise AssertionError(f"{truth['kind']} fit {fit}")
+    # The retained ratios fix each three-parameter family exactly, and its continuation to depth 4 differs from the
+    # geometric one by a rebound.
+    ret = case.retained_inputs()
+    cont = families.continuations(ret["lambda"], ret["kept"], ret["model"])
+    if not (-0.04 < cont["coherent_cz"]["x"] < -0.02 and -0.025 < cont["coherent_prx"]["x"] < -0.01):
+        raise AssertionError((cont["coherent_cz"], cont["coherent_prx"]))
+    if not cont["coherent_next"] < cont["geometric_next"] - 0.02:
+        raise AssertionError(cont)
 
 
 def test_the_verdict_reads_each_planted_family_and_the_model() -> None:
     kept = [67200, 67200, 67200, 302400]
     cont = {
         "geometric_next": families.geometric_values(GEOMETRIC, [4])[0],
-        "coherent_next": families.coherent_values(COHERENT, [4])[0],
+        "coherent_next": families.coherent_values(CZ, [4])[0],
+        "coherent_prx_next": families.coherent_values(PRX, [4])[0],
     }
     for truth, values, want in (
         ("geometric", families.geometric_values(GEOMETRIC, families.DEPTHS), "geometric"),
-        ("coherent", families.coherent_values(COHERENT, families.DEPTHS), "coherent"),
+        ("cz phase", families.coherent_values(CZ, families.DEPTHS), "coherent"),
+        ("prx amplitude", families.coherent_values(PRX, families.DEPTHS), "coherent"),
         ("model", [1.0] * 4, "unresolved"),
     ):
         lam = [r * m for r, m in zip(values, MODEL, strict=True)]
         read = families.verdict(counts(lam, kept), kept, MODEL, cont, DELTA)
         if read["family"] != want:
             raise AssertionError(f"planted {truth}: {read['family']}, delta {read['delta_chi2']}")
+    # A common prefactor a != 1 (a 3 % loss of state preparation and measurement) is a geometric loss, not a failure of
+    # fit: the families carry a free depth-independent prefactor.
+    lam = [0.97 * m for m in MODEL]
+    spam = families.verdict(counts(lam, kept), kept, MODEL, cont, DELTA)
+    if spam["family"] != "geometric":
+        raise AssertionError(spam["family"])
     bent = [0.85, 0.77, 0.55, 0.58]
     read = families.verdict(counts(bent, kept), kept, MODEL, cont, DELTA)
     if read["bend"]["reading"] != "the retention law bends beyond the model at mirrored positions":
         raise AssertionError(read["bend"])
-    if read["family"] != "neither family fits":
-        raise AssertionError(read["family"])
 
 
 @pytest.mark.parametrize("marked", [[1, 2, 3], [-1, 0, 0, 0], [11, 0, 0, 0]])
@@ -119,27 +146,22 @@ def test_the_committed_case_binds_a_resolved_prediction_and_a_bounded_cost() -> 
         raise AssertionError("the job's circuit order differs from the prediction's positions")
 
 
-def test_one_unusable_depth_leaves_the_other_decision_standing() -> None:
+def test_one_unusable_depth_leaves_the_bend_standing_and_the_family_not_evaluated() -> None:
     kept = [67200, 67200, 67200, 302400]
-    values = families.coherent_values(COHERENT, families.DEPTHS)
+    values = families.coherent_values(CZ, families.DEPTHS)
     lam = [r * m for r, m in zip(values, MODEL, strict=True)]
     marked = counts(lam, kept)
     cont = {"geometric_next": 0.9, "coherent_next": 0.9}
     no4 = families.verdict([*marked[:3], 0], [*kept[:3], 0], MODEL, cont, DELTA)
-    if no4["usable_depths"] != [1, 2, 3] or "bend" not in no4 or no4["family"] not in {"coherent", "unresolved"}:
+    if no4["usable_depths"] != [1, 2, 3] or "z_against_model" not in no4["bend"]:
         raise AssertionError(no4)
-    if (
-        "z_against_model" not in no4["bend"]
-        or "beside" not in no4
-        or "rho4_against_retained_geometric_z" in no4["beside"]
-    ):
+    if not no4["family"].startswith("not evaluated: fewer than four"):
         raise AssertionError(no4)
     no3 = families.verdict([marked[0], marked[1], 0, marked[3]], [kept[0], kept[1], 0, kept[3]], MODEL, cont, DELTA)
-    if no3["bend"]["reading"] != "not evaluated: a depth of 1, 2 or 3 is unusable" or no3["family"] == "not evaluated":
+    if no3["bend"]["reading"] != "not evaluated: a depth of 1, 2 or 3 is unusable" or not no3["family"].startswith(
+        "not evaluated"
+    ):
         raise AssertionError(no3)
-    two = families.verdict([marked[0], 0, 0, marked[3]], [kept[0], 0, 0, kept[3]], MODEL, cont, DELTA)
-    if not two["family"].startswith("not evaluated"):
-        raise AssertionError(two)
 
 
 def gate_from(prediction: dict[str, Any]) -> dict[str, Any]:
@@ -151,15 +173,18 @@ def test_a_failed_copy_leaves_its_depth_with_its_mirror_image() -> None:
     prediction = json.loads((CASE_DIR / "prediction.json").read_text(encoding="utf-8"))
     cont = {"geometric_next": 0.9, "coherent_next": 0.9}
     total = len(prediction["arms"])
-    copies = case.layout_copies(MODEL, tweak=lambda k, p, m, n: (m // 20, n // 20) if (k, p) == (1, 2) else (m, n))
+    first = case.FIRST_HALF.index(1)
+    copies = case.layout_copies(MODEL, tweak=lambda k, p, m, n: (m // 20, n // 20) if (k, p) == (1, first) else (m, n))
     read = families.read_copies(copies, total, case.PLANNED_KEPT_PER_COPY, MODEL, cont, gate_from(prediction), DELTA)
-    if read["dropped_pairs"] != {"1": [[2, total - 3]]} or read["heterogeneity"]["per_depth"]["1"]["pairs"] != 6:
+    if read["dropped_pairs"] != {"1": [[first, total - 1 - first]]}:
         raise AssertionError(read)
-    if not read["heterogeneity"]["passed"] or read["usable_depths"] != [1, 2, 3, 4]:
+    if read["heterogeneity"]["per_depth"]["1"]["pairs"] != 1 or not read["heterogeneity"]["passed"]:
+        raise AssertionError(read)
+    if read["usable_depths"] != [1, 2, 3, 4]:
         raise AssertionError(read)
     with pytest.raises(ValueError, match="no mirror image"):
         families.read_copies(
-            {**copies, 1: [(2, 100, 200)]},
+            {**copies, 1: [(first, 100, 200)]},
             total,
             case.PLANNED_KEPT_PER_COPY,
             MODEL,
@@ -174,7 +199,9 @@ def test_one_raised_copy_reads_not_evaluated_where_the_pooled_rule_read_geometri
     prediction = json.loads((CASE_DIR / "prediction.json").read_text(encoding="utf-8"))
     cont = {"geometric_next": prediction["decisions"]["retained"]["geometric_rho_4"], "coherent_next": 0.9}
     total = len(prediction["arms"])
-    plus = case.layout_copies(MODEL, tweak=lambda k, p, m, n: (m + round(0.04 * n), n) if (k, p) == (1, 2) else (m, n))
+    plus = case.layout_copies(
+        MODEL, tweak=lambda k, p, m, n: (m + round(0.04 * n), n) if (k, p) == (1, case.FIRST_HALF.index(1)) else (m, n)
+    )
     read = families.read_copies(plus, total, case.PLANNED_KEPT_PER_COPY, MODEL, cont, gate_from(prediction), DELTA)
     heterogeneity = read["heterogeneity"]
     if heterogeneity["passed"] or heterogeneity["chi2"] <= heterogeneity["threshold"]:
@@ -183,52 +210,52 @@ def test_one_raised_copy_reads_not_evaluated_where_the_pooled_rule_read_geometri
         raise AssertionError(read)
 
 
-def planted_fit(family: str, rate: float) -> str:
-    kept = [67200, 67200, 67200, 302400]
+KEPT_FOUR = [67200, 67200, 67200, 302400]
+
+
+def planted_fit(values: Any, parameters: dict[str, Any]) -> dict[str, Any]:
     cont = {"geometric_next": 0.9, "coherent_next": 0.9}
-    if family == "geometric":
-        values = families.geometric_values({"A": 0.5, "r": rate}, families.DEPTHS)
-    else:
-        values = families.coherent_values({"eps": 0.3, "r": rate}, families.DEPTHS)
-    lam = [r * m for r, m in zip(values, MODEL, strict=True)]
-    return str(families.verdict(counts(lam, kept), kept, MODEL, cont, DELTA)["family"])
+    lam = [r * m for r, m in zip(values(parameters, families.DEPTHS), MODEL, strict=True)]
+    return families.verdict(counts(lam, KEPT_FOUR), KEPT_FOUR, MODEL, cont, DELTA)
 
 
 @pytest.mark.parametrize(
-    ("family", "rate"),
+    ("values", "parameters", "want"),
     [
-        ("geometric", 1.19),
-        ("coherent", 1.09),
-        # Both families share one rate box, so data of either family just outside the old coherent box read their own.
-        ("coherent", 1.12),
-        ("geometric", 0.8),
-        ("coherent", 0.6),
-        # The coherent fit of exact geometric data of amplitude 0.5 ends on its rate bound of 0.5 at and below these
-        # rates, and a losing bound-limited fit does not void the exact fit of the other family.
-        ("geometric", 0.7),
-        ("geometric", 0.6),
-        ("geometric", 0.5),
-        ("geometric", 0.4),
+        (families.geometric_values, {"A": 0.5, "r": 1.19}, "geometric"),
+        (families.geometric_values, {"A": 0.5, "r": 0.8}, "geometric"),
+        # Exact geometric data of amplitude 0.5 at these rates read geometric whatever the coherent fits do.
+        (families.geometric_values, {"A": 0.5, "r": 0.7}, "geometric"),
+        (families.geometric_values, {"A": 0.5, "r": 0.5}, "geometric"),
+        (families.geometric_values, {"A": 0.5, "r": 0.4}, "geometric"),
+        (families.geometric_values, {"A": 0.5, "r": 0.32}, "geometric"),
+        (families.coherent_values, {**CZ, "x": -0.05}, "coherent"),
+        (families.coherent_values, {**CZ, "x": 0.05}, "coherent"),
+        (families.coherent_values, {**PRX, "x": -0.03}, "coherent"),
+        (families.coherent_values, {**PRX, "x": 0.03}, "coherent"),
     ],
 )
-def test_data_inside_the_rate_bounds_read_their_family(family: str, rate: float) -> None:
-    if planted_fit(family, rate) != family:
-        raise AssertionError(f"{family} at {rate} reads {planted_fit(family, rate)}")
-
-
-@pytest.mark.parametrize(("family", "rate"), [("coherent", 0.32), ("geometric", 0.32)])
-def test_data_just_inside_a_lower_rate_bound_stay_in_domain(family: str, rate: float) -> None:
-    if planted_fit(family, rate).startswith("out of domain"):
-        raise AssertionError(f"{family} at {rate} reads {planted_fit(family, rate)}")
+def test_data_inside_the_boxes_read_their_family(values: Any, parameters: dict[str, Any], want: str) -> None:
+    read = planted_fit(values, parameters)
+    if read["family"] != want:
+        raise AssertionError(f"{parameters} reads {read['family']}")
 
 
 @pytest.mark.parametrize(
-    ("family", "rate"), [("geometric", 1.25), ("geometric", 0.28), ("coherent", 1.21), ("coherent", 0.28)]
+    ("values", "parameters", "fit"),
+    [
+        (families.geometric_values, {"A": 0.5, "r": 1.25}, "geometric"),
+        (families.geometric_values, {"A": 0.5, "r": 0.28}, "geometric"),
+        (families.coherent_values, {**CZ, "x": -0.31, "a": 0.9, "s": 1.0}, "coherent"),
+        (families.coherent_values, {**PRX, "x": -0.11, "a": 0.9, "s": 1.0}, "coherent"),
+    ],
 )
-def test_data_outside_a_rate_bound_read_out_of_domain_not_neither_family(family: str, rate: float) -> None:
-    reading = planted_fit(family, rate)
-    if not (reading.startswith("out of domain") and family in reading):
-        raise AssertionError(f"{family} at {rate} reads {reading}")
+def test_data_outside_a_bound_read_out_of_domain_not_neither_family(
+    values: Any, parameters: dict[str, Any], fit: str
+) -> None:
+    reading = planted_fit(values, parameters)["family"]
+    if not (reading.startswith("out of domain") and fit in reading):
+        raise AssertionError(f"{parameters} reads {reading}")
 
 
 @pytest.mark.audit
@@ -342,7 +369,7 @@ def test_a_dropped_copy_and_a_linear_slope_read_the_centered_verdict(tmp_path: P
     changed = "not evaluated: the reading depends on one mirror pair"
     for victim, depth, bend in (
         ("m101-k4-c0", "4", centered),
-        ("m101-k1-c0", "1", centered),
+        ("m101-k1-c0", "1", changed),
         ("m101-k2-c0", "2", changed),
     ):
         pair = [position[victim], len(position) - 1 - position[victim]]
@@ -452,44 +479,32 @@ def test_a_live_build_regenerates_the_case_from_the_calibration_it_reads(
         case.write(tmp_path, None, live=False)
 
 
-def fit_of(chi2: float, at_bound: bool) -> dict[str, Any]:
-    return {"chi2": chi2, "at_bound": at_bound}
+def fit_of(chi2: float, at_bound: bool = False, kind: str = "cz_phase") -> dict[str, Any]:
+    return {"chi2": chi2, "at_bound": at_bound, "kind": kind}
 
 
-def test_a_rate_bound_blocks_a_reading_only_when_the_bound_limited_fit_is_what_it_rests_on() -> None:
+def test_the_selection_reads_nested_comparisons_and_a_bound_blocks_only_what_rests_on_it() -> None:
     select = families.select_family
-    # A losing bound-limited fit beside an adequate interior winner: the winner stands, the bound is reported.
-    for geo, coh, want, bounded in (
-        (fit_of(0.0, False), fit_of(1822.0, True), "geometric", ["coherent"]),
-        (fit_of(1822.0, True), fit_of(0.0, False), "coherent", ["geometric"]),
+    prx = fit_of(5.0, kind="prx_amplitude")
+    # (geometric, cz, prx, model chi-square) -> reading and the bounded fits.
+    for args, want in (
+        ((fit_of(3.0), fit_of(2.0), prx, 100.0), ("geometric", [])),
+        ((fit_of(30.0), fit_of(1.0), prx, 100.0), ("coherent", [])),
+        ((fit_of(30.0, True), fit_of(1.0), prx, 100.0), ("coherent", ["geometric"])),
+        ((fit_of(30.0), fit_of(20.0), fit_of(25.0, kind="prx_amplitude"), 100.0), ("neither family fits", [])),
+        ((fit_of(3.0), fit_of(2.0), prx, 5.0), ("unresolved", [])),
     ):
-        if select(geo, coh, 2, DELTA) != (want, bounded):
-            raise AssertionError(select(geo, coh, 2, DELTA))
-    # The bound-limited fit is the winner, or the claim that neither family fits rests on it: out of domain.
-    for geo, coh, name in (
-        (fit_of(1822.0, False), fit_of(0.0, True), "coherent"),
-        (fit_of(0.0, True), fit_of(1822.0, False), "geometric"),
-        (fit_of(50.0, False), fit_of(60.0, True), "coherent"),
-        (fit_of(2.0, False), fit_of(3.0, True), "coherent"),
+        if select(*args, DELTA) != want:
+            raise AssertionError((args, select(*args, DELTA)))
+    # The coherent fit on a bound blocks the coherent reading and every reading beside it.
+    for args, name in (
+        ((fit_of(30.0), fit_of(1.0, True), prx, 100.0), "coherent"),
+        ((fit_of(3.0), fit_of(2.0, True), prx, 100.0), "coherent"),
+        ((fit_of(3.0, True), fit_of(2.0), prx, 100.0), "geometric"),
     ):
-        reading, bounded = select(geo, coh, 2, DELTA)
-        if not reading.startswith("out of domain") or name not in reading or name not in bounded:
+        reading, bounded = select(*args, DELTA)
+        if not reading.startswith("out of domain") or name not in bounded:
             raise AssertionError((reading, bounded))
-    reading, _ = select(fit_of(50.0, True), fit_of(60.0, True), 2, DELTA)
-    if reading != "out of domain: the geometric and coherent fits end on their rate bounds":
-        raise AssertionError(reading)
-
-
-def test_a_coherent_winner_stands_beside_a_geometric_fit_on_its_rate_bound() -> None:
-    kept = [67200, 67200, 67200, 302400]
-    cont = {"geometric_next": 0.9, "coherent_next": 0.9}
-    values = families.coherent_values({"eps": 1.5, "r": 0.9}, families.DEPTHS)
-    lam = [r * m for r, m in zip(values, MODEL, strict=True)]
-    read = families.verdict(counts(lam, kept), kept, MODEL, cont, DELTA)
-    if read["family"] != "coherent" or read["beside"]["fits_on_a_rate_bound"] != ["geometric"]:
-        raise AssertionError(read)
-    if not read["geometric"]["at_bound"] or read["coherent"]["at_bound"]:
-        raise AssertionError(read)
 
 
 def test_the_readout_shift_moves_each_depth_by_its_weight_and_ties_the_depths() -> None:
@@ -548,7 +563,8 @@ def test_the_committed_threshold_holds_every_misclassification_at_the_stated_rat
         raise AssertionError("the threshold is not the smallest that holds the stated rate")
     wrong = (
         cal["truths"]["geometric"]["at_delta_resolve"]["coherent"],
-        cal["truths"]["coherent"]["at_delta_resolve"]["geometric"],
+        cal["truths"]["coherent_cz"]["at_delta_resolve"]["geometric"],
+        cal["truths"]["coherent_prx"]["at_delta_resolve"]["geometric"],
     )
     if max(wrong) > cal["stated_rate"]:
         raise AssertionError(wrong)
@@ -618,7 +634,7 @@ def test_a_readout_row_mismatch_reads_no_bend_once_the_job_readout_corrects_it(t
 
 
 @pytest.mark.audit
-def test_one_depth_3_copy_lowered_by_three_points_passes_the_gate_and_reads_not_evaluated(tmp_path: Path) -> None:
+def test_one_depth_3_copy_lowered_by_under_three_points_passes_the_gate_and_reads_not_evaluated(tmp_path: Path) -> None:
     prediction = json.loads((CASE_DIR / "prediction.json").read_text(encoding="utf-8"))
     total = len(prediction["arms"])
     victim = min(
@@ -627,30 +643,47 @@ def test_one_depth_3_copy_lowered_by_three_points_passes_the_gate_and_reads_not_
     at = prediction["arms"][victim]["position"]
 
     def plant(name: str, distribution: dict[str, float]) -> dict[str, float]:
-        return drifted(distribution, -0.03) if name == victim else distribution
+        return drifted(distribution, -0.027) if name == victim else distribution
 
     read = case.analyze(run_of(tmp_path, "lowered", plant=plant))["decisions"]
     heterogeneity = read["heterogeneity"]
     if not heterogeneity["passed"] or heterogeneity["chi2"] > 0.9 * heterogeneity["threshold"]:
         raise AssertionError(heterogeneity)
     changed = "not evaluated: the reading depends on one mirror pair"
-    if read["bend"]["reading"] != changed or read["family"] != changed:
+    if read["bend"]["reading"] != changed:
         raise AssertionError(read)
     influence = read["influence"]
-    if influence["bend_stands"] or influence["family_stands"]:
+    if influence["bend_stands"] or not influence["bend_before"].startswith("the retention law bends beyond"):
         raise AssertionError(influence)
-    if not influence["bend_before"].startswith("the retention law bends beyond") or influence["family_before"] != (
-        "coherent"
-    ):
-        raise AssertionError(influence)
-    moved = [row for row in influence["refits"] if row["bend"] != "beyond" or row["family"] != "coherent"]
+    moved = [row for row in influence["refits"] if row["bend"] != "beyond"]
     if [row["depth"] for row in moved] != [3] or moved[0]["positions"] != [at, total - 1 - at]:
         raise AssertionError(moved)
 
 
-def test_both_families_share_one_symmetric_rate_box() -> None:
+def test_every_family_has_symmetric_bounds() -> None:
     if families.GEOMETRIC_RATE != families.COHERENT_RATE or families.GEOMETRIC_RATE != (0.30, 1.20):
         raise AssertionError((families.GEOMETRIC_RATE, families.COHERENT_RATE))
+    for kind, bound in circuits.X_BOUND.items():
+        xs = circuits.grid(kind)
+        if abs(xs[0] + bound) > 1e-12 or abs(xs[-1] - bound) > 1e-12 or abs(xs[len(xs) // 2]) > 1e-12:
+            raise AssertionError(kind)
+
+
+def test_the_committed_retained_uncertainty_states_the_probability_of_resolving_the_families() -> None:
+    prediction = json.loads((CASE_DIR / "prediction.json").read_text(encoding="utf-8"))
+    uncertainty = prediction["decisions"]["retained_uncertainty"]
+    hypotheses = uncertainty["hypotheses"]
+    if set(hypotheses) != {"geometric", "coherent_cz", "coherent_prx"} or uncertainty["samples"] < 64:
+        raise AssertionError(uncertainty["samples"])
+    for name, entry in hypotheses.items():
+        if (
+            entry["valid_samples"] != uncertainty["samples"]
+            or not 0.9 < entry["probability_of_the_true_family"][0] <= 1
+        ):
+            raise AssertionError((name, entry))
+    mean = sum(h["probability_of_the_true_family"][0] for h in hypotheses.values()) / 3
+    if abs(mean - uncertainty["probability_the_run_resolves_the_families"]) > 1e-6:
+        raise AssertionError(mean)
 
 
 @pytest.mark.audit

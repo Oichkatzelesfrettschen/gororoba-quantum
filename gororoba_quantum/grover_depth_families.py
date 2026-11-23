@@ -7,16 +7,18 @@ calibration (incoherent depolarizing, idle decay and readout, no coherent error)
 that is not itself geometric in k, so the families describe the ratio rho_k = lambda_k / M_k, which is 1 at every
 depth when the model holds:
 
-- geometric: rho_k = a s^k, an incoherent loss beyond the model that compounds per iteration, with free amplitude a
+- geometric: rho_k = a s^k, an incoherent loss beyond the model that compounds per iteration, with free prefactor a
   and rate s;
-- coherent: rho_k = s^k (Q_k(eps) - 1/8) / (P_k - 1/8), where Q_k(eps) is the marked probability when the oracle's
-  phase of pi carries a fixed error eps per iteration (the rotation of the Grover subspace then departs from the
-  ideal angle by an amount that grows with k) and s is an incoherent rate. eps = 0 gives s^k.
+- coherent, two circuit-level families fitted by exact simulation of the committed line-native circuits
+  (grover_depth_circuits.py): rho_k = a s^k R_k(x), where R_k(x) is the marked probability of the depth-k circuit when
+  every CZ applies the conditional phase pi + x (cz_phase) or every PRX rotates by theta (1 + x) (prx_amplitude),
+  relative to its ideal value above the uniform floor, and a and s are the same free depth-independent prefactor and
+  rate. x = 0 gives the geometric family, so the coherent fits nest it, and a = s = 1 gives the model.
 
-Both families have two parameters, so a fit to four depths leaves two degrees of freedom. verdict() applies the
-preregistered rule: the difference of the two chi-squares decides at the calibrated threshold delta_resolve
-(grover_depth_calibration.py fixes it for a stated misclassification rate), and a family whose chi-square exceeds
-ADEQUACY (the 0.99 quantile at two degrees of freedom) does not describe the data.
+The coherent fits have three parameters, so four depths leave one degree of freedom and the geometric fit two.
+verdict() applies the preregistered rule of select_family: nested chi-square differences decide at the calibrated
+threshold delta_resolve (grover_depth_calibration.py fixes it for a stated misclassification rate), and a family
+whose chi-square exceeds the 0.99 quantile at its degrees of freedom (adequacy) does not describe the data.
 
 Readout. The case's model carries the assignment matrix of its calibration. The eight readout preparations of the job
 measure the marked row of the job's own matrix, r_j = P(marked read | state j prepared); the model's depth-k
@@ -44,11 +46,19 @@ DEPTHS = (1, 2, 3, 4)
 Z_RESOLVE = 3.0
 # chi-square 0.99 quantile at two degrees of freedom: -2 ln 0.01.
 ADEQUACY = -2 * math.log(0.01)
-# chi-square 0.99 quantiles at one and two degrees of freedom: the fits of three and four usable depths.
-ADEQUACY_BY_DOF = {1: 6.634897, 2: ADEQUACY}
+
+
+@functools.lru_cache(maxsize=16)
+def adequacy(dof: int) -> float:
+    """The 0.99 chi-square quantile at dof degrees of freedom: a fit above it does not describe the data."""
+    from scipy import stats
+
+    return float(stats.chi2.isf(0.01, dof))
+
+
 # Parameter domains of the two fits: the families of the preregistered rule are these boxes. A fit whose optimum
 # sits on a rate bound is the box's best, not the family's, so it blocks a reading only when it would be the reading
-# (select_family). The offset eps of the coherent family is periodic over (-pi, pi], so its grid ends are no bound.
+# (select_family). The coherent error x has its own symmetric bounds (grover_depth_circuits.X_BOUND).
 GEOMETRIC_RATE = (0.30, 1.20)
 COHERENT_RATE = GEOMETRIC_RATE
 BOUND_TOLERANCE = 1e-9
@@ -59,10 +69,9 @@ COPY_FLOOR = 0.5
 # frequency).
 HETEROGENEITY_ALPHA = 0.01
 FREQUENCY_FLOOR = 1e-9
-# Grid of the coherent fit: 1571 steps of the whole period of eps (the half period is searched), then a fine grid
-# around the minimum.
-COARSE_EPS = 1571
+# Rates of the coarse stage of the circuit-level fits (the x grid is grover_depth_circuits.grid).
 COARSE_RATE = 241
+COHERENT_KINDS = ("cz_phase", "prx_amplitude")
 
 
 def ideal_marked(k: int) -> float:
@@ -89,25 +98,6 @@ def standard_error(lam: float, k: int, kept: float) -> float:
     return math.sqrt(p * (1 - p) / kept) / abs(retention_scale(k))
 
 
-def oracle_phase_probability(k: int, eps: np.ndarray) -> np.ndarray:
-    """Marked probability after k iterations whose oracle phase is pi + eps (eps an array), from the uniform
-    start: the Grover subspace of the marked string and its orthogonal complement carries the whole state."""
-    s, c = math.sin(THETA), math.cos(THETA)
-    marked = np.full(eps.shape, s, dtype=complex)
-    rest = np.full(eps.shape, c, dtype=complex)
-    phase = np.exp(1j * (math.pi + eps))
-    for _ in range(k):
-        marked = marked * phase
-        overlap = s * marked + c * rest
-        marked = marked - 2 * s * overlap
-        rest = rest - 2 * c * overlap
-    return np.asarray(np.abs(marked) ** 2)
-
-
-def coherent_retention(r: np.ndarray, eps: np.ndarray, k: int) -> np.ndarray:
-    return np.asarray(r**k * (oracle_phase_probability(k, eps) - 1 / 8) / retention_scale(k))
-
-
 def chi2(model: np.ndarray, lam: Sequence[float] | np.ndarray, se: Sequence[float] | np.ndarray) -> np.ndarray:
     """Sum over the last axis of ((model - lam) / se)^2."""
     return np.asarray(np.sum(((model - np.asarray(lam)) / np.asarray(se)) ** 2, axis=-1))
@@ -119,19 +109,6 @@ def precision(err: Sequence[float] | np.ndarray) -> np.ndarray:
     if arr.ndim == 1:
         return np.asarray(np.diag(1 / arr**2))
     return np.asarray(np.linalg.inv(arr))
-
-
-def coherent_surface(
-    basis: np.ndarray, rates: np.ndarray, ks: np.ndarray, lam: np.ndarray, weight: np.ndarray
-) -> np.ndarray:
-    """chi-square (lam - basis r^k)^T weight (lam - basis r^k) on the grid of basis rows (eps) and rates r, as two
-    matrix products: the quadratic term over the products of basis columns and the cross term over the basis."""
-    power = rates[:, None] ** ks[None, :]
-    n = len(ks)
-    second = (weight[None, :, :] * power[:, :, None] * power[:, None, :]).reshape(len(rates), n * n)
-    pairs = (basis[:, :, None] * basis[:, None, :]).reshape(len(basis), n * n)
-    cross = basis @ ((weight @ lam)[None, :] * power).T
-    return np.asarray(pairs @ second.T - 2 * cross + lam @ weight @ lam)
 
 
 def on_bound(rate: float, domain: tuple[float, float]) -> bool:
@@ -165,39 +142,46 @@ def fit_geometric(lam: Sequence[float], err: Sequence[float] | np.ndarray, ks: S
     }
 
 
-def coarse_eps() -> np.ndarray:
-    """The coarse grid of the offset eps: the half period [0, pi], since Q_k(-eps) = Q_k(eps) (the start state is
-    real, so the oracle phase and its conjugate give conjugate amplitudes), which fixes the sign of a fit."""
-    return np.linspace(0.0, math.pi, COARSE_EPS // 2 + 1)
+def fit_circuit(
+    lam: Sequence[float], err: Sequence[float] | np.ndarray, ks: Sequence[int], kind: str
+) -> dict[str, Any]:
+    """Generalized least squares of lam_k = a s^k R_k(x), the circuit-level coherent family of kind (CZ conditional
+    phase or PRX amplitude error x, rate s, free depth-independent prefactor a): a solves in closed form at each (x, s)
+    of a coarse grid (every 20th point of the cached factor table, 241 rates), then of the fine table around the best
+    cell with 101 rates. x = 0 is the geometric family, so the fit never exceeds the geometric chi-square."""
+    from grover_depth_circuits import factor_table, grid
 
-
-@functools.lru_cache(maxsize=8)
-def coarse_basis(k: int) -> np.ndarray:
-    """(Q_k(eps) - 1/8) / (P_k - 1/8) on the coarse eps grid, which depends on neither the rate nor the data."""
-    return np.asarray((oracle_phase_probability(k, coarse_eps()) - 1 / 8) / retention_scale(k))
-
-
-def fit_coherent(lam: Sequence[float], err: Sequence[float] | np.ndarray, ks: Sequence[int]) -> dict[str, Any]:
-    """Generalized least squares of the coherent family over a coarse grid of (eps, r) on the half period of eps
-    (the family is even in eps), then a fine grid around the minimum."""
     lam_a, w = np.asarray(lam, dtype=float), precision(err)
     k = np.asarray(ks, dtype=float)
-    low, high = COHERENT_RATE
-    eps = coarse_eps()
-    r = np.linspace(low, high, COARSE_RATE)
-    basis = np.stack([coarse_basis(int(x)) for x in ks], axis=-1)
-    surface = coherent_surface(basis, r, k, lam_a, w)
-    i, j = np.unravel_index(int(np.argmin(surface)), surface.shape)
-    eps = np.linspace(eps[i] - 0.005, eps[i] + 0.005, 401)
-    r = np.linspace(max(low, r[j] - 0.0025), min(high, r[j] + 0.0025), 401)
-    basis = np.stack([(oracle_phase_probability(int(x), eps) - 1 / 8) / retention_scale(int(x)) for x in ks], axis=-1)
-    fine = coherent_surface(basis, r, k, lam_a, w)
-    i, j = np.unravel_index(int(np.argmin(fine)), fine.shape)
+    table = factor_table(kind)[:, [int(x) - 1 for x in ks]]
+    xs = grid(kind)
+    low, high = GEOMETRIC_RATE
+    base_chi2 = float(lam_a @ w @ lam_a)
+
+    def surface(rows: np.ndarray, rates: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        base = table[rows][:, None, :] * rates[None, :, None] ** k
+        weighted = base @ w
+        cross = weighted @ lam_a
+        den = np.maximum(np.sum(weighted * base, axis=-1), 1e-300)
+        return base_chi2 - cross**2 / den, cross / den
+
+    rows = np.arange(0, len(xs), 20)
+    rates = np.linspace(low, high, COARSE_RATE)
+    value, _ = surface(rows, rates)
+    i, j = np.unravel_index(int(np.argmin(value)), value.shape)
+    step = (high - low) / (COARSE_RATE - 1)
+    fine_rows = np.arange(max(0, rows[i] - 20), min(len(xs), rows[i] + 21))
+    fine_rates = np.linspace(max(low, rates[j] - step), min(high, rates[j] + step), 101)
+    value, amplitude = surface(fine_rows, fine_rates)
+    i, j = np.unravel_index(int(np.argmin(value)), value.shape)
+    x, s = float(xs[fine_rows[i]]), float(fine_rates[j])
     return {
-        "eps": float(eps[i]),
-        "r": float(r[j]),
-        "chi2": max(0.0, float(fine[i, j])),
-        "at_bound": on_bound(float(r[j]), COHERENT_RATE),
+        "kind": kind,
+        "a": float(amplitude[i, j]),
+        "s": s,
+        "x": x,
+        "chi2": max(0.0, float(value[i, j])),
+        "at_bound": on_bound(s, GEOMETRIC_RATE) or abs(abs(x) - float(xs[-1])) <= BOUND_TOLERANCE,
     }
 
 
@@ -206,8 +190,9 @@ def geometric_values(fit: dict[str, Any], ks: Sequence[int]) -> list[float]:
 
 
 def coherent_values(fit: dict[str, Any], ks: Sequence[int]) -> list[float]:
-    eps, r = np.asarray(fit["eps"]), np.asarray(fit["r"])
-    return [float(coherent_retention(r, eps, k)) for k in ks]
+    from grover_depth_circuits import factor
+
+    return [float(fit["a"] * fit["s"] ** k * factor(fit["kind"], k, fit["x"])[0]) for k in ks]
 
 
 @dataclass(frozen=True, eq=False)
@@ -260,20 +245,25 @@ def ratio_inputs(
 
 
 def continuations(lam: Sequence[float], kept: Sequence[float], model: Sequence[float]) -> dict[str, Any]:
-    """Both families fitted to the ratios rho_1 to rho_len(lam), and each one's value at the next depth."""
+    """The geometric family and both circuit-level coherent families fitted to the ratios rho_1 to rho_len(lam), and
+    each one's value at the next depth. Three retained depths fix the three parameters of a coherent fit exactly."""
     ks = DEPTHS[: len(lam)]
     rho, cov = ratio_inputs(lam, kept, model)
-    geo, coh = fit_geometric(rho, cov, ks), fit_coherent(rho, cov, ks)
+    geo = fit_geometric(rho, cov, ks)
+    cz, prx = (fit_circuit(rho, cov, ks, kind) for kind in COHERENT_KINDS)
     nxt = len(lam) + 1
     return {
         "depths": list(ks),
         "rho": rho,
         "se": [float(x) for x in np.sqrt(np.diag(cov))],
+        "cov": cov,
         "geometric": geo,
-        "coherent": coh,
+        "coherent_cz": cz,
+        "coherent_prx": prx,
         "next_depth": nxt,
         "geometric_next": geometric_values(geo, [nxt])[0],
-        "coherent_next": coherent_values(coh, [nxt])[0],
+        "coherent_next": coherent_values(cz, [nxt])[0],
+        "coherent_prx_next": coherent_values(prx, [nxt])[0],
     }
 
 
@@ -284,9 +274,10 @@ def separation(
     model: Sequence[float],
     readout: ReadoutShift | None = None,
 ) -> dict[str, Any]:
-    """What the preregistered rule sees when the four retentions equal M_k times each family's ratio at the given
-    kept shots: the separation of the two at the last depth in standard errors of rho (binomial and readout), and
-    the chi-square the other family leaves."""
+    """What the preregistered rule sees when the four retentions equal M_k times the ratios of the geometric truth or
+    of the coherent truth at the given kept shots: the separation of the two at the last depth in standard errors of rho
+    (binomial and readout), the chi-square the geometric fit leaves on the coherent data, and the chi-square the
+    model (rho = 1) leaves on the geometric data."""
     ks = DEPTHS[: len(kept)]
     out: dict[str, Any] = {}
     ratios = {"geometric": geometric_values(truth_geo, ks), "coherent": coherent_values(truth_coh, ks)}
@@ -298,7 +289,8 @@ def separation(
     out["last_depth_difference"] = last
     out["last_depth_z"] = last / max(math.sqrt(c[-1, -1]) for c in covs.values())
     out["chi2_geometric_on_coherent_data"] = fit_geometric(ratios["coherent"], covs["coherent"], ks)["chi2"]
-    out["chi2_coherent_on_geometric_data"] = fit_coherent(ratios["geometric"], covs["geometric"], ks)["chi2"]
+    miss = np.asarray(ratios["geometric"]) - 1
+    out["chi2_model_on_geometric_data"] = float(miss @ precision(covs["geometric"]) @ miss)
     return out
 
 
@@ -321,34 +313,39 @@ def category_of(reading: str) -> str:
     return reading.split(":", 1)[0]
 
 
-def select_family(geo: dict[str, Any], coh: dict[str, Any], dof: int, delta_resolve: float) -> tuple[str, list[str]]:
-    """The family reading from the two fits, and the names of the fits that end on a rate bound.
+def select_family(
+    geo: dict[str, Any], cz: dict[str, Any], prx: dict[str, Any], null_chi2: float, delta_resolve: float
+) -> tuple[str, list[str]]:
+    """The family reading from the fits to four depths, and the names of the fits that end on a bound.
 
-    Selection. 'neither family fits' when both chi-squares exceed ADEQUACY_BY_DOF[dof]; else 'coherent' when the
-    geometric chi-square minus the coherent one reaches delta_resolve, 'geometric' when it reaches -delta_resolve,
-    else 'unresolved'.
+    The coherent families contain the geometric one (x = 0), and the geometric one contains the model (a = s = 1), so
+    each step is a nested comparison at delta_resolve. With coh the better of the two coherent fits (CZ phase, PRX
+    amplitude): 'neither family fits' when the geometric chi-square exceeds its 0.99 quantile at two degrees of
+    freedom and the coherent one exceeds its quantile at one; 'coherent' when coh is adequate and the geometric
+    chi-square exceeds coh's by delta_resolve; 'geometric' when the geometric fit is adequate and the model's
+    chi-square exceeds its own by delta_resolve (a loss beyond the model that compounds per iteration), the coherent
+    error adding nothing resolvable; else 'unresolved'.
 
-    Bounds. A rate bound blocks a reading only when the bound-limited fit is what the reading rests on: the
-    selected family's own fit sits on its bound ('out of domain: the X fit ends on its rate bound'), or no family is
-    selected ('neither family fits', 'unresolved') while a fit sits on a bound, since the box rather than the data
-    may have ended that fit's search and its unbounded chi-square could have decided the comparison. A bound-limited
-    fit that loses to an adequate interior fit by delta_resolve does not block; it is named in the returned list and
-    reported beside the reading."""
-    bounded = [name for name, fit in (("geometric", geo), ("coherent", coh)) if fit["at_bound"]]
-    delta = geo["chi2"] - coh["chi2"]
-    if min(geo["chi2"], coh["chi2"]) > ADEQUACY_BY_DOF[dof]:
+    Bounds. A fit on a rate or error bound blocks a reading only when the reading rests on it: 'coherent' blocks when
+    the coherent fit sits on a bound, every other reading when either fit does, since the box rather than the data
+    may have ended the search whose chi-square the comparison reads."""
+    coh = cz if cz["chi2"] <= prx["chi2"] else prx
+    adequate_geo = geo["chi2"] <= adequacy(2)
+    adequate_coh = coh["chi2"] <= adequacy(1)
+    if not adequate_geo and not adequate_coh:
         reading = "neither family fits"
-    elif delta >= delta_resolve:
+    elif adequate_coh and geo["chi2"] - coh["chi2"] >= delta_resolve:
         reading = "coherent"
-    elif delta <= -delta_resolve:
+    elif adequate_geo and null_chi2 - geo["chi2"] >= delta_resolve:
         reading = "geometric"
     else:
         reading = "unresolved"
-    if reading in bounded or (bounded and reading in ("neither family fits", "unresolved")):
+    bounded = [name for name, fit in (("geometric", geo), ("coherent", coh)) if fit["at_bound"]]
+    if bounded and (reading != "coherent" or "coherent" in bounded):
         subject = (
-            "the geometric and coherent fits end on their rate bounds"
+            "the geometric and coherent fits end on their bounds"
             if len(bounded) == 2
-            else f"the {bounded[0]} fit ends on its rate bound"
+            else f"the {bounded[0]} fit ends on its bound"
         )
         return f"out of domain: {subject}", bounded
     return reading, bounded
@@ -365,7 +362,8 @@ def bend_reading(z: float) -> str:
 def bend_decision(
     freq: Mapping[int, float], kept: Mapping[int, float], model: Sequence[float], readout: ReadoutShift | None
 ) -> dict[str, Any]:
-    """The bend of the retention law at depths 1, 2 and 3 against the model's, or 'not evaluated' without all three."""
+    """The bend of the retention law at depths 1, 2 and 3 against the model's, or 'not evaluated' without all three.
+    It reads the three depths alone and stands apart from the family decision."""
     if not all(k in freq for k in (1, 2, 3)):
         return {"reading": "not evaluated: a depth of 1, 2 or 3 is unusable"}
     l1, l2, l3 = (retention(freq[k], k) for k in (1, 2, 3))
@@ -385,16 +383,24 @@ def bend_decision(
 
 def fit_families(
     freq: Mapping[int, float], kept: Mapping[int, float], model: Sequence[float], readout: ReadoutShift | None
-) -> tuple[dict[str, Any], dict[str, Any], list[float], np.ndarray]:
-    """Both families fitted to the ratios rho_k = lambda_k / M_k of the usable depths in freq, with the covariance
-    of the ratios: the geometric fit, the coherent fit, rho and its covariance."""
+) -> dict[str, Any]:
+    """The geometric fit, both circuit-level coherent fits and the model's chi-square for the ratios rho_k =
+    lambda_k / M_k of the usable depths in freq, with rho and its covariance."""
     usable = sorted(freq)
     at = {k: i for i, k in enumerate(DEPTHS)}
     cov_lam = lambda_covariance([freq[k] for k in usable], usable, [kept[k] for k in usable], readout)
     m = np.array([model[at[k]] for k in usable])
     rho = [retention(freq[k], k) / model[at[k]] for k in usable]
-    cov_rho = cov_lam / np.outer(m, m)
-    return fit_geometric(rho, cov_rho, usable), fit_coherent(rho, cov_rho, usable), rho, np.asarray(cov_rho)
+    cov_rho = np.asarray(cov_lam / np.outer(m, m))
+    miss = np.asarray(rho) - 1
+    return {
+        "geometric": fit_geometric(rho, cov_rho, usable),
+        "cz_phase": fit_circuit(rho, cov_rho, usable, "cz_phase"),
+        "prx_amplitude": fit_circuit(rho, cov_rho, usable, "prx_amplitude"),
+        "null_chi2": float(miss @ precision(cov_rho) @ miss),
+        "rho": rho,
+        "cov_rho": cov_rho,
+    }
 
 
 def decide(
@@ -407,7 +413,9 @@ def decide(
 ) -> dict[str, Any]:
     """The preregistered decisions on the corrected marked frequencies freq[k] of the usable depths (those in freq)
     and their kept shots, against the model's retentions M_1 to M_4. verdict() builds freq from pooled counts;
-    the calibration of delta_resolve calls this function on sampled frequencies."""
+    the calibration of delta_resolve calls the pieces on sampled frequencies. The bend reads depths 1 to 3 and
+    stands apart from the family decision, which needs all four depths (three coherent parameters leave one degree
+    of freedom at four)."""
     usable = sorted(freq)
     lam = {k: retention(freq[k], k) for k in usable}
     cov_lam = lambda_covariance([freq[k] for k in usable], usable, [kept[k] for k in usable], readout)
@@ -416,32 +424,37 @@ def decide(
         "usable_depths": usable,
         "lambda": {str(k): round(x, 6) for k, x in lam.items()},
         "se": {str(k): round(x, 6) for k, x in se.items()},
+        "bend": bend_decision(freq, kept, model, readout),
     }
-    out["bend"] = bend_decision(freq, kept, model, readout)
-    if len(usable) < 3:
-        out["family"] = "not evaluated: fewer than three usable depths"
+    if len(usable) < len(DEPTHS):
+        out["family"] = "not evaluated: fewer than four usable depths"
         return out
-    geo, coh, rho, cov_rho = fit_families(freq, kept, model, readout)
-    delta = geo["chi2"] - coh["chi2"]
-    family, bounded = select_family(geo, coh, len(usable) - 2, delta_resolve)
+    fits = fit_families(freq, kept, model, readout)
+    geo, cz, prx = fits["geometric"], fits["cz_phase"], fits["prx_amplitude"]
+    family, bounded = select_family(geo, cz, prx, fits["null_chi2"], delta_resolve)
+    coh = cz if cz["chi2"] <= prx["chi2"] else prx
     out |= {
-        "rho": [round(x, 6) for x in rho],
+        "rho": [round(x, 6) for x in fits["rho"]],
         "geometric": rounded_fit(geo),
-        "coherent": rounded_fit(coh),
-        "delta_chi2": round(delta, 4),
+        "coherent_cz": rounded_fit(cz),
+        "coherent_prx": rounded_fit(prx),
+        "null_chi2": round(fits["null_chi2"], 4),
+        "delta_chi2": round(geo["chi2"] - coh["chi2"], 4),
         "family": family,
         "beside": {
             "retention_decreases_with_depth": all(lam[a] > lam[b] for a, b in zip(usable, usable[1:], strict=False)),
-            "fits_on_a_rate_bound": bounded,
+            "fits_on_a_bound": bounded,
+            "better_coherent_error": coh["kind"],
         },
     }
-    if 4 in lam:
-        i4 = usable.index(4)
-        r4, s4 = lam[4] / model[3], math.sqrt(float(cov_rho[i4, i4]))
-        out["beside"] |= {
-            "rho4_against_retained_geometric_z": round((r4 - retained["geometric_next"]) / s4, 4),
-            "rho4_against_retained_coherent_z": round((r4 - retained["coherent_next"]) / s4, 4),
-        }
+    r4, s4 = lam[4] / model[3], math.sqrt(float(fits["cov_rho"][3, 3]))
+    out["beside"] |= {
+        "rho4_against_retained_geometric_z": round((r4 - retained["geometric_next"]) / s4, 4),
+        "rho4_against_retained_coherent_cz_z": round((r4 - retained["coherent_next"]) / s4, 4),
+        "rho4_against_retained_coherent_prx_z": round(
+            (r4 - retained.get("coherent_prx_next", retained["coherent_next"])) / s4, 4
+        ),
+    }
     return out
 
 
@@ -458,8 +471,8 @@ def verdict(
     retentions M_1 to M_4, with the readout correction and covariance of the job's readout preparations.
 
     Gating. Each decision uses the depths it needs and no others, so one unusable depth removes only what needs it:
-    the bend needs depths 1, 2 and 3; the family comparison fits the usable depths and needs three of the four, with
-    n - 2 degrees of freedom for n usable depths (ADEQUACY_BY_DOF). A decision whose depths are unusable reads
+    the bend needs depths 1, 2 and 3; the family comparison needs all four (three coherent parameters leave no degree
+    of freedom at three). A decision whose depths are unusable reads
     "not evaluated" and leaves the other decision standing.
 
     bend: f = lam_3 - lam_2^2 / lam_1 against the model's f, resolved at |z| >= Z_RESOLVE; a negative resolved f
@@ -479,7 +492,7 @@ def verdict(
 
 
 def rounded_fit(fit: dict[str, Any]) -> dict[str, Any]:
-    return {key: value if isinstance(value, bool) else round(value, 6) for key, value in fit.items()}
+    return {key: value if isinstance(value, bool | str) else round(value, 6) for key, value in fit.items()}
 
 
 def model_retention(arms: Mapping[str, Any]) -> list[float]:

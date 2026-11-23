@@ -144,7 +144,11 @@ def analyze(run_dir: Path, case_dir: Path = CASE_DIR) -> dict[str, Any]:
         total,
         float(gate["planned_kept_per_copy"]),
         model,
-        {"geometric_next": retained["geometric_rho_4"], "coherent_next": retained["coherent_rho_4"]},
+        {
+            "geometric_next": retained["geometric_rho_4"],
+            "coherent_next": retained["coherent_rho_4"],
+            "coherent_prx_next": retained["coherent_prx_rho_4"],
+        },
         gate,
         float(job.prediction["decisions"]["calibration"]["delta_resolve"]),
         shift,

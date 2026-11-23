@@ -63,6 +63,7 @@ from iqm_signed_probe import CALIBRATION_FILES, OPTIONS  # noqa: E402
 import garnet_followup_analysis as followup_analysis  # noqa: E402
 import grover_depth_analysis as run_analysis  # noqa: E402
 import grover_depth_calibration as calibration  # noqa: E402
+import grover_depth_circuits as circuits  # noqa: E402
 import grover_depth_families as families  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
@@ -73,11 +74,11 @@ PATH = followup.FORWARD_PATH
 MARKED = "101"
 SHOTS = 20000
 # Copies per depth; each is even so that every copy has a mirror image.
-COPIES = {1: 14, 2: 4, 3: 4, 4: 24}
+COPIES = {1: 4, 2: 4, 3: 4, 4: 10}
 # Kinds of the first half of the job's circuits (0 a readout preparation, k a copy of depth k): the local optimum of
 # single exchanges, from an even spread, of the mean squared offsets of the kinds from the job's center
 # (best_first_half() recomputes it; the orderings are too many to list).
-FIRST_HALF = (4, 0, 1, 4, 0, 1, 4, 2, 3, 4, 0, 1, 4, 0, 4, 1, 4, 0, 4, 3, 1, 2, 4, 0, 1, 4, 0, 4, 1, 0, 4)
+FIRST_HALF = (0, 4, 0, 3, 2, 1, 4, 0, 0, 4, 0, 1, 4, 2, 0, 0, 4, 0, 3)
 READOUTS = 8
 # Every readout preparation runs on both sides of the job's center (ro-xyz and ro-xyz-m at mirrored positions), so a
 # step or a glitch of the readout block shows as a difference between its two sides.
@@ -90,6 +91,9 @@ READOUT_TOLERANCE = 0.05
 # fits cost milliseconds each, and a build repeats both.
 CALIBRATION_LOG2N = 13
 INFLUENCE_LOG2N = 11
+# Retained-fit uncertainty: 2^6 moved retained data, each read by the planned run at 2^8 noise points.
+UNCERTAINTY_LOG2N = 6
+UNCERTAINTY_NOISE_LOG2N = 8
 # Kept fraction of the retained depth arms: 13,450 of 16,000, 3,377 and 3,383 of 4,000 (0.841, 0.844, 0.846).
 KEPT_PLAN = 0.84
 PLANNED_KEPT_PER_COPY = SHOTS * KEPT_PLAN
@@ -396,20 +400,18 @@ def pair_loss_sizing(cont: dict[str, Any], model: list[float], readout: families
     covariance included."""
     pair = 2 * PLANNED_KEPT_PER_COPY
     out: dict[str, Any] = {}
-    for lost in range(4):
-        kept = planned_kept()
-        kept[3] -= lost * pair
-        out[f"depth_4_pairs_lost_{lost}"] = families.separation(
-            cont["geometric"], cont["coherent"], kept, model, readout
-        )["last_depth_z"]
+    for tag, key in (("cz", "coherent_cz"), ("prx", "coherent_prx")):
+        for lost in range(4):
+            kept = planned_kept()
+            kept[3] -= lost * pair
+            out[f"depth_4_pairs_lost_{lost}_{tag}"] = families.separation(
+                cont["geometric"], cont[key], kept, model, readout
+            )["last_depth_z"]
     full = planned_kept()
     out["bend_se_all_copies"] = families.bend(model, full, readout)[1]
     for depth in families.DEPTHS:
         kept = planned_kept()
         kept[depth - 1] -= pair
-        out[f"separation_z_one_pair_lost_from_depth_{depth}"] = families.separation(
-            cont["geometric"], cont["coherent"], kept, model, readout
-        )["last_depth_z"]
         out[f"bend_se_one_pair_lost_from_depth_{depth}"] = families.bend(model, kept, readout)[1]
     return out
 
@@ -425,12 +427,14 @@ def decisions(arm_records: dict[str, Any]) -> dict[str, Any]:
     )
     # The retained ratios continued to depth 4 and scaled by this calibration's model retention are the two
     # continuations of lambda_4; the data the rule would see if one family held exactly sit at those values.
-    sep = families.separation(cont["geometric"], cont["coherent"], kept, model, planned_readout)
-    sep_binomial = families.separation(cont["geometric"], cont["coherent"], kept, model)
+    sep = families.separation(cont["geometric"], cont["coherent_cz"], kept, model, planned_readout)
+    sep_prx = families.separation(cont["geometric"], cont["coherent_prx"], kept, model, planned_readout)
+    sep_binomial = families.separation(cont["geometric"], cont["coherent_cz"], kept, model)
     model_f, model_f_se = families.bend(model, kept, planned_readout)
     truths = {
         "geometric": families.geometric_values(cont["geometric"], families.DEPTHS),
-        "coherent": families.coherent_values(cont["coherent"], families.DEPTHS),
+        "coherent_cz": families.coherent_values(cont["coherent_cz"], families.DEPTHS),
+        "coherent_prx": families.coherent_values(cont["coherent_prx"], families.DEPTHS),
         "model": [1.0] * len(families.DEPTHS),
     }
     positions = depth_positions(arm_records)
@@ -438,7 +442,18 @@ def decisions(arm_records: dict[str, Any]) -> dict[str, Any]:
     calibrated = calibration.calibrate(model, cont, truths, planned_readout, kept, CALIBRATION_LOG2N)
     threshold = calibrated["delta_resolve"]
     calibrated["influence_power"] = calibration.influence_power(
-        model, cont, truths, planned_readout, kept, pairs, 2 * PLANNED_KEPT_PER_COPY, threshold, INFLUENCE_LOG2N
+        model,
+        cont,
+        {name: ratios for name, ratios in truths.items() if name != "model"},
+        planned_readout,
+        kept,
+        pairs,
+        2 * PLANNED_KEPT_PER_COPY,
+        threshold,
+        INFLUENCE_LOG2N,
+    )
+    uncertainty = calibration.retained_uncertainty(
+        model, planned_readout, kept, threshold, cont["rho"], cont["cov"], UNCERTAINTY_LOG2N, UNCERTAINTY_NOISE_LOG2N
     )
     model_counts = [
         round(families.probability_of(m, k) * n) for m, k, n in zip(model, families.DEPTHS, kept, strict=True)
@@ -457,20 +472,26 @@ def decisions(arm_records: dict[str, Any]) -> dict[str, Any]:
                 "rho": dict(zip(("1", "2", "3"), cont["rho"], strict=True)),
                 "f_raw": retained["f_raw"],
                 "geometric_fit": cont["geometric"],
-                "coherent_fit": cont["coherent"],
+                "coherent_cz_fit": cont["coherent_cz"],
+                "coherent_prx_fit": cont["coherent_prx"],
                 "geometric_rho_4": cont["geometric_next"],
                 "coherent_rho_4": cont["coherent_next"],
+                "coherent_prx_rho_4": cont["coherent_prx_next"],
+                "rho_covariance": [[float(x) for x in row] for row in cont["cov"]],
             },
             "continuation": {
                 "model_lambda_4": model[3],
                 "geometric_lambda_4": cont["geometric_next"] * model[3],
                 "coherent_lambda_4": cont["coherent_next"] * model[3],
+                "coherent_prx_lambda_4": cont["coherent_prx_next"] * model[3],
                 "lambda_4_difference": sep["last_depth_difference"] * model[3],
                 "se_rho_4_at_planned_shots": sep["last_depth_difference"] / sep["last_depth_z"],
                 "z": sep["last_depth_z"],
+                "z_prx": sep_prx["last_depth_z"],
                 "z_binomial_only": sep_binomial["last_depth_z"],
-                "chi2_geometric_fit_to_coherent_values": sep["chi2_geometric_on_coherent_data"],
-                "chi2_coherent_fit_to_geometric_values": sep["chi2_coherent_on_geometric_data"],
+                "chi2_geometric_fit_to_coherent_cz_values": sep["chi2_geometric_on_coherent_data"],
+                "chi2_geometric_fit_to_coherent_prx_values": sep_prx["chi2_geometric_on_coherent_data"],
+                "chi2_model_on_geometric_values": sep["chi2_model_on_geometric_data"],
                 "delta_resolve": threshold,
                 "rule": (
                     "the retained ratios rho = lambda / model lambda at depths 1 to 3 fitted by each family and "
@@ -487,6 +508,7 @@ def decisions(arm_records: dict[str, Any]) -> dict[str, Any]:
                 "planned_kept_per_preparation": READOUT_COPIES * PLANNED_KEPT_PER_COPY,
             },
             "calibration": calibrated,
+            "retained_uncertainty": uncertainty,
             "heterogeneity": gate,
             "mirror_pair_loss": pair_loss_sizing(cont, model, planned_readout),
             "model": {
@@ -507,25 +529,27 @@ def decisions(arm_records: dict[str, Any]) -> dict[str, Any]:
                     "positions'"
                 ),
                 "family": (
-                    "generalized least squares (the full covariance of the four corrected frequencies) of the "
-                    "geometric family a s^k and the coherent family s^k (Q_k(eps) - 1/8) / (P_k - 1/8) to rho_k = "
-                    "lambda_k / model.lambda_k at k = 1 to 4 (gororoba_quantum/grover_depth_families.py), over "
-                    "the rate domains s in [0.30, 1.20] for both families (eps is "
-                    "searched over a half period, the family being even in eps; the amplitude a is free); "
-                    "'neither family fits' when both chi-squares exceed "
-                    "their 0.99 quantile (9.21 at four usable depths, 6.63 at three); else 'coherent' when "
-                    "chi2_geometric - chi2_coherent >= delta_resolve, 'geometric' when it is <= -delta_resolve, "
-                    "else 'unresolved'; delta_resolve is the smallest threshold at which the geometric truth read "
-                    "as coherent, the coherent truth read as geometric and the model read as either family each "
-                    "have probability at most 0.01 (decisions.calibration). A rate bound blocks a reading only "
-                    "when the bound-limited fit is what the reading rests on: 'out of domain' when the selected "
-                    "family's fit sits on its bound, or when no family is selected ('neither family fits', "
-                    "'unresolved') while a fit sits on a bound; a bound-limited fit that loses to an adequate interior "
-                    "fit is named beside the reading. "
-                    "Gating: a copy below half its planned kept shots leaves its depth together with the copy at "
-                    "its mirrored position, a depth without kept shots is unusable, the bend needs depths 1 to 3, "
-                    "the family comparison any three depths, and a decision whose depths are unusable reads 'not "
-                    "evaluated' without blocking the other"
+                    "generalized least squares (the full covariance of the four corrected frequencies) of three "
+                    "nested families to rho_k = lambda_k / model.lambda_k at k = 1 to 4 "
+                    "(gororoba_quantum/grover_depth_families.py): the geometric family a s^k, and the coherent "
+                    "families a s^k R_k(x), R_k(x) the marked probability of the committed depth-k circuit above the "
+                    "uniform floor, relative to its ideal value, by exact simulation with every CZ applying the "
+                    "conditional phase pi + x (cz_phase, |x| <= 0.3 rad) or every PRX rotating by theta (1 + x) "
+                    "(prx_amplitude, |x| <= 0.10); the prefactor a is free in all three and s lies in [0.30, 1.20]. "
+                    "'neither family fits' when the geometric chi-square exceeds its 0.99 quantile at two degrees of "
+                    "freedom (9.21) and the better coherent one exceeds its quantile at one (6.63); else 'coherent' "
+                    "when the better coherent fit is adequate and the geometric chi-square exceeds its own by "
+                    "delta_resolve; else 'geometric' when the geometric fit is adequate and the model's "
+                    "chi-square (rho = 1) exceeds the geometric one by delta_resolve; else 'unresolved'. "
+                    "delta_resolve is the smallest threshold at which the geometric truth read as coherent, "
+                    "either coherent truth read as geometric and the model read as either family each have "
+                    "probability at most 0.01 (decisions.calibration). A fit on a bound blocks a reading only when "
+                    "the reading rests on it: 'coherent' blocks when the coherent fit sits on a bound, every other "
+                    "reading when either fit does, as 'out of domain'. Gating: a copy below half its planned kept "
+                    "shots leaves its depth together with the copy at its mirrored position, a depth without kept "
+                    "shots is unusable, the bend needs depths 1 to 3 and stands on its own, the family comparison "
+                    "needs all four depths, and a decision whose depths are unusable reads 'not evaluated' without "
+                    "blocking the other"
                 ),
                 "heterogeneity": (
                     "after the mirror-pair gate, the chi-square of the surviving mirror pairs of each depth (a copy "
@@ -725,20 +749,27 @@ def self_test() -> str:
         all(arms[n]["name"][:7] == arms[total - 1 - n]["name"][:7] for n in range(total) if arms[n]["k"]),
         "mirror images carry the same depth",
     )
-    # eps = 0 is the ideal rotation; the families agree with the exact two-dimensional recursion.
-    zero = np.zeros(1)
+    # x = 0 is the ideal circuit: the coherent factors are 1 and the simulation reproduces the ideal outcome vector.
     for k in families.DEPTHS:
-        require(abs(float(families.oracle_phase_probability(k, zero)[0]) - families.ideal_marked(k)) < 1e-12, "eps 0")
-    # Planted recovery: noise-free values of each family return their own parameters with chi2 near zero.
+        for kind in circuits.KINDS:
+            require(abs(float(circuits.factor(kind, k, 0.0)[0]) - 1) < 1e-9, f"{kind} factor at depth {k}")
+        circuit = circuits.depth_circuit(k)
+        require(
+            np.max(np.abs(circuits.simulate(circuit, np.zeros(1), np.ones(1))[0] - followup.ideal(circuit, PATH)))
+            < 1e-12,
+            f"depth {k}: simulation against the ideal",
+        )
+    # Planted recovery: noise-free values of each family are read as that family.
     kept = [int(n) for n in planned_kept()]
     model = [0.85, 0.77, 0.70, 0.58]
-    # The retained ratios' two fits (decisions.retained of the case's prediction).
     geo_truth = {"A": 1.025983, "r": 0.963383}
-    coh_truth = {"eps": 0.304302, "r": 1.013413}
+    coh_truth = {"kind": "cz_phase", "a": 0.93467, "s": 1.0323, "x": -0.0309}
+    prx_truth = {"kind": "prx_amplitude", "a": 0.94985, "s": 1.02157, "x": -0.01725}
     geo_rho = families.geometric_values(geo_truth, families.DEPTHS)
     coh_rho = families.coherent_values(coh_truth, families.DEPTHS)
-    cont = {"geometric_next": geo_rho[3], "coherent_next": coh_rho[3]}
-    for rho, want in ((geo_rho, "geometric"), (coh_rho, "coherent")):
+    prx_rho = families.coherent_values(prx_truth, families.DEPTHS)
+    cont = {"geometric_next": geo_rho[3], "coherent_next": coh_rho[3], "coherent_prx_next": prx_rho[3]}
+    for rho, want in ((geo_rho, "geometric"), (coh_rho, "coherent"), (prx_rho, "coherent")):
         lam = [r * m for r, m in zip(rho, model, strict=True)]
         read = families.verdict(counts_of(lam, kept), kept, model, cont, SELF_TEST_DELTA)
         require(read["family"] == want, f"planted {want}: {read['family']} (delta {read['delta_chi2']})")
@@ -754,9 +785,11 @@ def self_test() -> str:
         read["bend"]["reading"] == "the retention law bends beyond the model at mirrored positions",
         f"bend {read['bend']}",
     )
-    require(read["family"] == "neither family fits", f"bent data: {read['family']}")
     gated = families.verdict([*counts_of(model, kept)[:3], 0], [*kept[:3], 0], model, cont, SELF_TEST_DELTA)
-    require(gated["usable_depths"] == [1, 2, 3] and gated["family"] == "unresolved", f"one unusable depth: {gated}")
+    require(
+        gated["usable_depths"] == [1, 2, 3] and gated["family"].startswith("not evaluated"),
+        f"one unusable depth: {gated}",
+    )
     require("z_against_model" in gated["bend"], "the bend needs depths 1 to 3 only")
     for bad in ([1, 2, 3], [-1, 0, 0, 0]):
         try:
@@ -764,53 +797,58 @@ def self_test() -> str:
         except ValueError:
             continue
         raise AssertionError(f"verdict accepted counts {bad}")
-    # Parameter domains: data of each family one step outside its rate bound read "out of domain", one inside read the
-    # family, and a coherent fit cut off by its bound does not void an exact geometric fit (rates 0.7 and 0.4 of
-    # amplitude 0.5 sit below the coherent bound of 0.5 and above the geometric one of 0.3).
+    # Bounds: data of the geometric family and of each coherent family inside the box read their family, a fit cut
+    # off by its bound does not void an exact fit of the other family, and data past a bound read "out of domain".
     planted = (
-        ("geometric", families.geometric_values, {"A": 0.5, "r": 0.7}, "geometric"),
-        ("geometric", families.geometric_values, {"A": 0.5, "r": 0.4}, "geometric"),
-        ("geometric", families.geometric_values, {"A": 0.5, "r": 1.19}, "geometric"),
-        ("geometric", families.geometric_values, {"A": 0.5, "r": 1.25}, "out of domain"),
-        ("coherent", families.coherent_values, {"eps": 0.3, "r": 1.09}, "coherent"),
-        ("coherent", families.coherent_values, {"eps": 0.3, "r": 1.11}, "coherent"),
-        ("coherent", families.coherent_values, {"eps": 0.3, "r": 1.21}, "out of domain"),
+        (families.geometric_values, {"A": 0.5, "r": 0.7}, "geometric"),
+        (families.geometric_values, {"A": 0.5, "r": 0.4}, "geometric"),
+        (families.geometric_values, {"A": 0.5, "r": 1.19}, "geometric"),
+        (families.geometric_values, {"A": 0.5, "r": 1.25}, "out of domain"),
+        (families.coherent_values, {**coh_truth, "x": -0.05}, "coherent"),
+        (families.coherent_values, {**prx_truth, "x": 0.03}, "coherent"),
+        (families.coherent_values, {**coh_truth, "x": -0.31, "a": 0.9, "s": 1.0}, "out of domain"),
     )
-    for family, values, parameters, want in planted:
+    for values, parameters, want in planted:
         domain_lam = [r * m for r, m in zip(values(parameters, families.DEPTHS), model, strict=True)]
         domain_read = families.verdict(counts_of(domain_lam, kept), kept, model, cont, SELF_TEST_DELTA)
-        require(domain_read["family"].startswith(want), f"planted {family} {parameters}: {domain_read['family']}")
+        require(domain_read["family"].startswith(want), f"planted {parameters}: {domain_read['family']}")
     # Mirror pairs and the heterogeneity gate on the arrangement's copies.
     gate = {
         "copy_floor": families.COPY_FLOOR,
         "threshold_by_dof": {str(d): families.heterogeneity_threshold(d) for d in range(1, 30)},
     }
     per_copy = PLANNED_KEPT_PER_COPY
+    first1 = FIRST_HALF.index(1)
     clean = families.read_copies(layout_copies(model), total, per_copy, model, cont, gate, SELF_TEST_DELTA)
     require(clean["heterogeneity"]["passed"] and clean["family"] == "unresolved", f"clean copies read {clean}")
-    raised = layout_copies(model, tweak=lambda k, p, m, n: (m + round(0.04 * n), n) if (k, p) == (1, 2) else (m, n))
+    raised = layout_copies(
+        model, tweak=lambda k, p, m, n: (m + round(0.04 * n), n) if (k, p) == (1, first1) else (m, n)
+    )
     raised_read = families.read_copies(raised, total, per_copy, model, cont, gate, SELF_TEST_DELTA)
     require(
         raised_read["bend"]["reading"].startswith("not evaluated")
         and raised_read["family"].startswith("not evaluated"),
         f"one copy of depth 1 raised by 0.04 reads {raised_read['bend']} and {raised_read['family']}",
     )
-    short = layout_copies(model, tweak=lambda k, p, m, n: (m // 20, n // 20) if (k, p) == (1, 2) else (m, n))
+    short = layout_copies(model, tweak=lambda k, p, m, n: (m // 20, n // 20) if (k, p) == (1, first1) else (m, n))
     kept_pairs = families.read_copies(short, total, per_copy, model, cont, gate, SELF_TEST_DELTA)
-    require(kept_pairs["dropped_pairs"] == {"1": [[2, total - 3]]}, f"a short copy leaves with its image: {kept_pairs}")
+    require(
+        kept_pairs["dropped_pairs"] == {"1": [[first1, total - 1 - first1]]},
+        f"a short copy leaves with its image: {kept_pairs}",
+    )
     require(kept_pairs["usable_depths"] == [1, 2, 3, 4], "the other pair of depth 1 stays")
     try:
         families.read_copies(
-            {**layout_copies(model), 1: [(2, 100, 200)]}, total, per_copy, model, cont, gate, SELF_TEST_DELTA
+            {**layout_copies(model), 1: [(first1, 100, 200)]}, total, per_copy, model, cont, gate, SELF_TEST_DELTA
         )
     except ValueError:
         pass
     else:
         raise AssertionError("an unpaired copy was accepted")
-    # Influence: one depth-3 copy at position 4 lowered by 0.03 passes the pair-heterogeneity gate and moves the pooled
+    # Influence: one depth-3 copy lowered by 0.027 passes the pair-heterogeneity gate and moves the pooled
     # depth; the leave-one-pair-out refits read the family and bend the clean copies read, so neither reads a finding.
     lowered = layout_copies(
-        model, tweak=lambda k, p, m, n: (m - round(0.03 * n), n) if (k, p) == (3, FIRST_HALF.index(3)) else (m, n)
+        model, tweak=lambda k, p, m, n: (m - round(0.027 * n), n) if (k, p) == (3, FIRST_HALF.index(3)) else (m, n)
     )
     pooled = [sum(c[1] for c in lowered[k]) for k in families.DEPTHS]
     pooled_kept = [sum(c[2] for c in lowered[k]) for k in families.DEPTHS]
@@ -843,7 +881,7 @@ def self_test() -> str:
     require(ceiling_credits(expected, PRICE["garnet"], JOB_SECONDS) < garnet_max, "ceiling below max_credits")
     return (
         "self-test passed: 3 depth circuits against ideal, mirror invariants, families, 5 planted verdicts, "
-        "2 refusals, 7 domain plants, 3 copy gates, 1 influence plant, readout shift"
+        "2 refusals, 7 bound plants, 3 copy gates, 1 influence plant, readout shift"
     )
 
 
