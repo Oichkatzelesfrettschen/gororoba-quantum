@@ -11,6 +11,10 @@ The heavy-tailed row draws Student t residuals on 3 degrees of freedom scaled to
 design at delta 0; its uncapped column stays empty, because the uncapped shortcut draws the later residuals as one
 normal variable.
 
+The five workloads (four sigmas and the heavy-tailed row) each own one seed and share no generator, so they map through
+gororoba_quantum/parallel.py ordered_map in input order; the rows keep the order of the serial loop and the table is
+identical to it bit for bit.
+
 Seeds: docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json, indices 8, 9, 10, 11, 12 in order.
 Usage: "$PYTHON" scripts/qi_replicated_stein_simulation.py [--trials N] [--out FILE] [--check | --overwrite]
 Without a flag the run writes a new output file and refuses an existing one; --overwrite replaces it and --check
@@ -31,6 +35,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 import qi_replicated_response as rule  # noqa: E402
+from parallel import ordered_map  # noqa: E402
 
 SIGMAS = (0.01, 0.02, 0.038, 0.08)
 SIMULATION_SEEDS = (34644, 40029, 46414, 54363)
@@ -83,6 +88,12 @@ def simulate(
     return rows
 
 
+def _workload(task: tuple[float, tuple[float, ...], int, int, int | None]) -> list[dict[str, Any]]:
+    """One independent workload: simulate() on the arguments of a task (module level, so the pool can pickle it)."""
+    sigma, deltas, trials, seed, tail_df = task
+    return simulate(sigma, deltas, trials, seed, tail_df)
+
+
 def _same(left: Any, right: Any) -> bool:
     """Structural equality with a 1e-12 tolerance on floats."""
     if isinstance(left, float) and isinstance(right, float):
@@ -104,10 +115,12 @@ def main() -> int:
     )
     mode.add_argument("--overwrite", action="store_true", help="replace an existing output file")
     arguments = parser.parse_args()
-    table = []
-    for sigma, seed in zip(SIGMAS, SIMULATION_SEEDS, strict=True):
-        table += simulate(sigma, (0.0, -rule.DELTA), arguments.trials, seed)
-    table += simulate(HEAVY_TAIL_SIGMA, (0.0,), arguments.trials, HEAVY_TAIL_SEED, HEAVY_TAIL_DF)
+    tasks: list[tuple[float, tuple[float, ...], int, int, int | None]] = [
+        (sigma, (0.0, -rule.DELTA), arguments.trials, seed, None)
+        for sigma, seed in zip(SIGMAS, SIMULATION_SEEDS, strict=True)
+    ]
+    tasks.append((HEAVY_TAIL_SIGMA, (0.0,), arguments.trials, HEAVY_TAIL_SEED, HEAVY_TAIL_DF))
+    table = [row for rows in ordered_map(_workload, tasks, min_items=1) for row in rows]
     for row in table[-1:]:
         row["residuals"] = f"student-t-{HEAVY_TAIL_DF}-scaled-to-sd"
     record = {
