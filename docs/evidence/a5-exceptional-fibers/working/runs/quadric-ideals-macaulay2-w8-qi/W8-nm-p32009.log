@@ -1,0 +1,6 @@
+RESULT W8-nm-p32009 K generators 144 dim 6 degree 50 numerator 1+18*T+27*T^2+4*T^3
+RESULT W8-nm-p32009 minimal_primes {{6, 20, 9}, {6, 30, 4}}
+RESULT W8-nm-p32009 radical_equal true
+RESULT W8-nm-p32009 control dim 5 degree 100 differs true
+RESULT W8-nm-p32009 primary_components {{6, 20, 6, 20}, {6, 30, 6, 30}} intersect_equal true
+DONE W8-nm-p32009
