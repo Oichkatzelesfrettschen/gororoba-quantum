@@ -45,16 +45,18 @@ def test_power_function_matches_the_noncentral_t_where_scipy_is_finite() -> None
         _expect(abs(oba.power_at(delta, 0.1, n, 0.05) - want) < 2e-3, f"n={n} delta={delta}")
 
 
-def test_planned_design_comes_from_the_retained_scatter() -> None:
-    path = ROOT / oba.RETAINED_COLLECT
-    if not path.is_file():
-        pytest.skip(f"{oba.RETAINED_COLLECT} is absent from this checkout")
-    record = oba.power_record(json.loads(path.read_text()), json.loads((DIRECTORY / "case_compile.json").read_text()))
+def test_committed_power_record_holds_the_planned_design_and_matches_the_power_function() -> None:
+    """power.json is produced by --power from the retained collect (about 15 s, run by the self-test and the
+    reproduction line of the design note); this test reads the record and recomputes two of its entries."""
+    record = json.loads((DIRECTORY / "power.json").read_text())
     _expect(record["replicas"] == 30 and record["planned_regions"] == 15 and record["jobs"] == 2, "design")
-    _expect(record["tests_in_family"] == 16, "family size")
+    _expect(record["tests_in_family"] == oba.FAMILY == 16, "family size")
     _expect(record["regions_needed_if_replicas_of_a_region_are_identical"] <= 15, "needed regions exceed the plan")
+    alpha = record["alpha_per_test"]
+    _expect(abs(alpha - oba.ALPHA / oba.FAMILY) < 1e-12, "alpha per test")
     for name, row in record["operands"].items():
         stats_ = row["statistics"]
+        _expect(set(stats_) == set(oba.STATISTICS), f"{name}: statistics {sorted(stats_)}")
         for stat in ("ctrl_g16", "move_g2", "swap_g16"):
             worst, best = stats_[stat]["regions_rho1"], stats_[stat]["regions_rho0"]
             _expect(worst["power_full_effect"] >= oba.POWER, f"{name} {stat}: power below {oba.POWER} at rho 1")
@@ -62,6 +64,11 @@ def test_planned_design_comes_from_the_retained_scatter() -> None:
             _expect(best["minimum_detectable_effect"] <= worst["minimum_detectable_effect"], f"{name} {stat}: MDE")
             _expect(worst["power_half_effect"] < oba.POWER, f"{name} {stat}: the half-effect power claims too much")
         _expect("power_full_effect" not in stats_["move_leak16"]["regions_rho1"], "leak16 has no retained effect")
+        gap = stats_["ctrl_g16"]
+        again = oba.power_at(gap["effect"], gap["sd_per_replica"], 15, alpha)
+        _expect(abs(again - gap["regions_rho1"]["power_full_effect"]) < 1e-9, f"{name}: power recomputed {again}")
+        both = oba._design_sd(gap["sd_per_replica"], 0.0)
+        _expect(abs(both - gap["sd_per_replica"] / 2**0.5) < 1e-12, "the two replicas of a region average")
     smaller = oba.required_replicas(0.10, 0.08, 0.05 / 16) - 1
     _expect(oba.power_at(0.10, 0.08, smaller, 0.05 / 16) < oba.POWER, "one replica fewer still reaches the power")
 

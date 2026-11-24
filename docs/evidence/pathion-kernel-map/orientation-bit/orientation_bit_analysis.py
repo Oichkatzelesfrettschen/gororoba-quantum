@@ -438,7 +438,8 @@ def merge_jobs(
                 raise ValueError("a job's replicas and its regions differ in number")
         keys = [[tuple(sorted(q)) for q in r] for r in regions]
     elif len(sizes) == 1:
-        keys = [[(i,) for i in range(sizes.pop())] for _ in entries]
+        size = sizes.pop()
+        keys = [[(i,) for i in range(size)] for _ in entries]
     else:
         raise ValueError("jobs of different replica counts need their regions")
     blocks: dict[tuple[int, ...], list[tuple[int, int]]] = {}
@@ -917,10 +918,8 @@ def self_test(collect: Any, compile_record: dict[str, Any] | None = None) -> lis
     nb.expect(
         all(r["layout_bound_candidate"] and not r["gap_travels_with_bit_4_wire"] for r in bound["readings"]), "layout"
     )
-    nb.expect(all(r["verdict"] == "unresolved" for r in bound["readings"]), "a gap on the physical qubit was decided")
-    done.append(
-        "a gap that stays on the physical qubit of bit 4 (none on the swap unit) is reported layout-bound, unresolved"
-    )
+    nb.expect(all(r["verdict"] == "refuted" for r in bound["readings"]), "a gap on the physical qubit stayed open")
+    done.append("a gap that stays on the physical qubit of bit 4 (none on the swap unit) reads (ii) and layout-bound")
     shift = 0.05
     shifted_move = {f"2:{t}": g - shift for t, g in ((tag(o), 0.12 * RETAINED_SIGN[o]) for o in pko.OPERANDS)}
     flat_floor = analyze_flat(synthetic_entry(n, sd, ctrl_gap, shifted_move, xtwin_gap))
