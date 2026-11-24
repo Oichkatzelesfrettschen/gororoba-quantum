@@ -45,20 +45,55 @@ def test_power_function_matches_the_noncentral_t_where_scipy_is_finite() -> None
         _expect(abs(oba.power_at(delta, 0.1, n, 0.05) - want) < 2e-3, f"n={n} delta={delta}")
 
 
-def test_replica_count_comes_from_the_retained_scatter() -> None:
+def test_planned_design_comes_from_the_retained_scatter() -> None:
     path = ROOT / oba.RETAINED_COLLECT
     if not path.is_file():
         pytest.skip(f"{oba.RETAINED_COLLECT} is absent from this checkout")
     record = oba.power_record(json.loads(path.read_text()))
-    _expect(record["replicas_needed"] == 14, f"replicas needed {record['replicas_needed']}")
-    _expect(record["replicas"] == 15, f"replicas planned {record['replicas']}")
-    _expect(record["tests_in_family"] == 14, "family size")
+    _expect(record["replicas"] == 30 and record["planned_regions"] == 15 and record["jobs"] == 2, "design")
+    _expect(record["tests_in_family"] == 16, "family size")
+    _expect(record["regions_needed_if_replicas_of_a_region_are_identical"] <= 15, "needed regions exceed the plan")
     for name, row in record["operands"].items():
-        _expect(row["power_at_n_full_effect"] >= oba.POWER, f"{name}: gap power below {oba.POWER}")
-        _expect(row["power_diff_at_n_full_effect"] >= oba.POWER, f"{name}: C power below {oba.POWER}")
-        _expect(row["power_at_n_half_effect"] < oba.POWER, f"{name}: the half-effect power claims too much")
-    smaller = oba.required_replicas(0.10, 0.08, 0.05 / 14) - 1
-    _expect(oba.power_at(0.10, 0.08, smaller, 0.05 / 14) < oba.POWER, "one replica fewer still reaches the power")
+        stats_ = row["statistics"]
+        for stat in ("ctrl_g16", "move_g2", "swap_g16", "diff_sm"):
+            worst, best = stats_[stat]["regions_rho1"], stats_[stat]["regions_rho0"]
+            _expect(worst["power_full_effect"] >= oba.POWER, f"{name} {stat}: power below {oba.POWER} at rho 1")
+            _expect(best["power_full_effect"] >= worst["power_full_effect"], f"{name} {stat}: rho 0 below rho 1")
+            _expect(best["minimum_detectable_effect"] <= worst["minimum_detectable_effect"], f"{name} {stat}: MDE")
+            _expect(worst["power_half_effect"] < oba.POWER, f"{name} {stat}: the half-effect power claims too much")
+        _expect("power_full_effect" not in stats_["move_leak16"]["regions_rho1"], "leak16 has no retained effect")
+    smaller = oba.required_replicas(0.10, 0.08, 0.05 / 16) - 1
+    _expect(oba.power_at(0.10, 0.08, smaller, 0.05 / 16) < oba.POWER, "one replica fewer still reaches the power")
+
+
+def test_merge_jobs_averages_the_replicas_of_one_region() -> None:
+    n = 4
+    first = oba.synthetic_entry(n, 0.08, {"16:e1pe26": -0.12, "16:e1pe18": 0.12}, {}, {})
+    second = oba.synthetic_entry(n, 0.08, {"16:e1pe26": -0.12, "16:e1pe18": 0.12}, {}, {}, visibility=0.2)
+    regions = [[[0, 1], [2, 3], [4, 5], [6, 7]], [[2, 3], [0, 1], [4, 5], [8, 9]]]
+    merged = oba.merge_jobs([first, second], regions)
+    name = next(iter(first["measured"]))
+    _expect(len(merged["measured"][name]) == 5 and sorted(merged["blocks"]) == [1, 1, 2, 2, 2], "blocks")
+    want = (np.asarray(first["measured"][name][0]) + np.asarray(second["measured"][name][1])) / 2.0
+    _expect(bool(np.allclose(merged["measured"][name][0], want)), "region [0, 1] is not the mean of its two replicas")
+    with pytest.raises(ValueError, match="once"):
+        oba.merge_jobs([first, second], [[[0, 1], [0, 1], [2, 3], [4, 5]], regions[1]])
+    unregioned = oba.merge_jobs([first, second])
+    _expect(len(unregioned["measured"][name]) == n and unregioned["blocks"] == [2] * n, "positional blocks")
+
+
+def test_swap_rule_ignores_the_physical_qubit_floor_that_the_superseded_rule_reads_as_refutation() -> None:
+    """A model floor of C = G16 ctrl - G2 move (a difference between the physical qubits of bits 1 and 4) rejects
+    diff_cm at enough regions while the gap itself follows; diff_sm, read on one physical qubit, stays at zero."""
+    n, sd = 40, 0.05
+    follow = {"16:e1pe26": -0.12, "16:e1pe18": 0.12}
+    move = {"2:e1pe26": -0.12 + 0.05, "2:e1pe18": 0.12 + 0.05}
+    swap = {"16:e1pe26": -0.12 + 0.05, "16:e1pe18": 0.12 + 0.05}
+    entry = oba.synthetic_entry(n, sd, follow, move, follow, swap=swap)
+    result = oba.analyze(entry)
+    _expect(all(r["ii_gap_stays_on_bit_4"] is False for r in result["readings"]), "the swap rule read a floor as (ii)")
+    _expect(all(v["reject"] is False for k, v in result["tests"].items() if k.startswith("diff_sm")), "diff_sm moved")
+    _expect(all(v["reject"] for k, v in result["exploratory"].items() if k.startswith("diff_cm")), "no floor on C")
 
 
 def test_holm_rejects_nothing_above_its_first_threshold() -> None:

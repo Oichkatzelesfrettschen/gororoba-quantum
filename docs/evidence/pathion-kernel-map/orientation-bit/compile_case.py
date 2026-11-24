@@ -15,7 +15,8 @@ Noise prediction. The same routed circuits run exactly (density matrix, no sampl
 snapshot: each cz carries its coupler error, each sx and x its qubit error, and each measured qubit a symmetric
 readout flip of its measure error. The snapshot holds no T1 or T2, so the model has no relaxation and no operand-
 dependent decay of the orientation qubit; its gaps lambda_16 - lambda_0 therefore follow from character weight and
-readout alone. The replicas are the tiles; the statistics are those of orientation_bit_analysis.
+readout alone. The replicas are the tiles; the statistics are those of orientation_bit_analysis (the family and the
+exploratory diff_cm and diff_cs, the model floors of the comparison across two physical qubits).
 
 Relaxation prediction. The snapshot holds no T1 or T2, and the only per-qubit T1, T2 and asymmetric readout error of
 ibm_fez in the tree belong to the retained kernel-map run (results/live/2026-11-06T183538.809814Z/record.json,
@@ -81,14 +82,13 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def variants() -> dict[str, tuple[tuple[int, int, int], int, int | None]]:
-    """Circuits to route as (operand, orientation bit, exchange bit): the three roles of the case per operand and the
-    alternative moved bit 0."""
-    out: dict[str, tuple[tuple[int, int, int], int, int | None]] = {}
+def variants() -> dict[str, QuantumCircuit]:
+    """Circuits to route: the four roles of the case per operand and the alternative moved bit 0."""
+    out: dict[str, QuantumCircuit] = {}
     for operand in pko.OPERANDS:
         for role in pko.ROLES:
-            out[pko.unit_name(role, operand)] = (operand, *pko.role_options(role, operand))
-        out[f"alt_bit0_{pkm.operand_tag(operand)}"] = (operand, 0, None)
+            out[pko.unit_name(role, operand)] = pko.role_template(role, operand)
+        out[f"alt_bit0_{pkm.operand_tag(operand)}"] = pko.kernel_map_template(operand, orientation_bit=0)
     return out
 
 
@@ -113,10 +113,7 @@ def snapshot_tiles() -> list[DisjointTile]:
 
 
 def routed_templates() -> dict[str, QuantumCircuit]:
-    bound = {
-        name: pko.kernel_map_template(op, orientation_bit=bit, exchange_bit=exchange)
-        for name, (op, bit, exchange) in variants().items()
-    }
+    bound = variants()
     retained = {f"retained_{pkm.operand_tag(op)}": pkm.kernel_map_template(op) for op in pko.OPERANDS}
     twins = {
         f"retained_twin_{pkm.operand_tag(twin)}": pkm.kernel_map_template(twin)
@@ -143,7 +140,11 @@ def cz_table(tiles: list[DisjointTile], seeds: list[int]) -> dict[str, Any]:
     for operand in pko.OPERANDS:
         t = pkm.operand_tag(operand)
         ctrl = flat[pko.unit_name("ctrl", operand)]
-        for label, key in (("move", pko.unit_name("move", operand)), ("alt_bit0", f"alt_bit0_{t}")):
+        for label, key in (
+            ("move", pko.unit_name("move", operand)),
+            ("swap", pko.unit_name("swap", operand)),
+            ("alt_bit0", f"alt_bit0_{t}"),
+        ):
             r = [m / c for m, c in zip(flat[key], ctrl, strict=True)]
             ratios[f"{label}_over_ctrl_{t}"] = {
                 "min": min(r),
@@ -223,7 +224,10 @@ def summarize_statistics(laws: list[dict[str, list[float]]]) -> dict[str, Any]:
     group = pko.pathion_kernel_map_orientation_group()
     entry = {"group": group.name, "measured": {m.name: [replica[m.name] for replica in laws] for m in group.members}}
     result = oba.analyze(entry)
-    keep = {key: {k: row[k] for k in ("mean", "se", "t", "n")} for key, row in result["tests"].items()}
+    keep = {
+        key: {k: row[k] for k in ("mean", "se", "t", "n")}
+        for key, row in {**result["tests"], **result["exploratory"]}.items()
+    }
     for row in keep.values():
         half = float(oba.stats.t.isf(0.025, row["n"] - 1)) * row["se"]
         row["interval95"] = [row["mean"] - half, row["mean"] + half]
@@ -484,6 +488,14 @@ def build_record(seeds: list[int], sources: list[str]) -> dict[str, Any]:
         },
         "optimization_level": OPT_LEVEL,
         "tiles": [t.qubits for t in tiles],
+        "disjoint_tiles_available": {
+            "guard_distance_2": len(
+                snapshot_lattice().find_disjoint_tiles(TILE_SIZE, min_buffer_distance=2, max_tiles=40)
+            ),
+            "guard_distance_3": len(
+                snapshot_lattice().find_disjoint_tiles(TILE_SIZE, min_buffer_distance=3, max_tiles=40)
+            ),
+        },
         "retained_cz_range": list(RETAINED_CZ_RANGE),
         "cz": cz_table(tiles, seeds),
         "simulation": simulate(tiles, seeds[0]),

@@ -3,9 +3,10 @@
 The case is written in docs/design/pathion-kernel-map-orientation-bit.md.
 
 The case asks whether the paired character gap lambda_16 - lambda_0 of the ibm_fez kernel map follows the orientation
-qubit. For one operand it reads three units of group pathion_kernel_map_orientation over replicas (disjoint chip
-regions): ctrl (orientation on bit 4), move (orientation on bit 1) and xtwin (ctrl with one X on data qubit 4 before
-readout). Per replica, with lambda_a = c^_obs,a / c^_ideal,a on the Walsh support of the ideal contrast
+qubit. For one operand it reads four units of group pathion_kernel_map_orientation over replicas (chip
+regions): ctrl (orientation on bit 4), move (orientation on bit 1), xtwin (ctrl with one X on data qubit 4 before
+readout) and swap (ctrl with data wires 1 and 4 exchanged, so that bit 4 sits on the physical qubit that carries bit 1
+in the other units). Per replica, with lambda_a = c^_obs,a / c^_ideal,a on the Walsh support of the ideal contrast
 (nhat_spectral.coefficients, nhat_spectral.unit_spectrum; this module reuses both):
 
     ctrl   G16  = lambda_16 - lambda_0
@@ -16,7 +17,13 @@ readout). Per replica, with lambda_a = c^_obs,a / c^_ideal,a on the Walsh suppor
     xtwin  G16  = lambda_16 - lambda_0 against the exchanged ideal
     S = (G16_ctrl + G16_xtwin) / 2               the part that keeps its sign under the exchange (follows the operand)
     D = (G16_ctrl - G16_xtwin) / 2               the part that flips its sign under the exchange
-    C = G16_ctrl - G2_move                       zero when the gap moves with the orientation qubit at equal size
+    G16s   = lambda_16 - lambda_0 of the swap unit   the gap of bit 4 read on the physical qubit of bit 1
+    C* = G16_swap - G2_move                      zero when the gap moves with the orientation qubit at equal size: both
+                                                  gaps are read on one physical qubit, so a T1, T2 or readout difference
+                                                  between the qubits of bits 1 and 4 cancels (diff_sm)
+    C  = G16_ctrl - G2_move                      the same comparison across two physical qubits (diff_cm); a model
+                                                  floor of +0.019 to +0.038 from that difference alone puts it outside
+                                                  the family, reported only
 
 What D sees. The xtwin compiles to the control's schedule plus one virtual rz on the data-bit-4 wire after the SELECT
 (identical cz sequence, identical measure mapping; tests/gororoba_quantum/test_pathion_kernel_map_orientation.py), so
@@ -25,9 +32,13 @@ responds only to an asymmetric readout of the bit-4 physical qubit or a coherent
 single-qubit tail. D isolates the readout-asymmetry half of the row's open "relaxation or asymmetric readout"
 question; it does not resolve the relaxation half.
 
-Each statistic is a one-sample t test over replicas with n - 1 degrees of freedom, whose standard error is the scatter
-of the replica values, so the test holds whatever drift the device has between regions. Two operands and seven
-statistics make the family of 14 tests; Holm's step-down procedure holds the family error at ALPHA.
+Each statistic is a one-sample t test over blocks with n - 1 degrees of freedom, whose standard error is the scatter of
+the block values, so the test holds whatever drift the device has between regions. A block is one region: the case
+runs two jobs on the same 15 regions (a 156-qubit chip holds at most 26 disjoint six-qubit regions, so 30 disjoint
+replicas do not exist), and merge_jobs averages the two replicas of a region (every statistic is linear in the
+measured laws) before the test, so n is the number of regions and the test stays valid for any correlation between
+the two replicas of a region. Two operands and eight statistics make the family of 16 tests; Holm's step-down
+procedure holds the family error at ALPHA.
 
 Row rule (preregistered). Ledger row A5-242 reads supported only when both operands read supported, refuted when either
 operand reads refuted, and unresolved otherwise (row_verdict). The two operands were chosen after the data as the
@@ -47,8 +58,13 @@ the sign that readout cannot produce.
 Modes:
     "$PYTHON" orientation_bit_analysis.py --self-test        decision rule on injected effects, with controls
     "$PYTHON" orientation_bit_analysis.py --power DIR --retained-collect PATH   replica count (DIR/power.json)
-    "$PYTHON" orientation_bit_analysis.py --analyze COLLECT [--readout-errors JSON]
-                                                              verdicts of a collected run (collect.json of live_run)
+    "$PYTHON" orientation_bit_analysis.py --operating DIR   operating characteristics of the rule under the model
+                                                              floors (DIR/operating.json from DIR/power.json and
+                                                              DIR/case_compile.json)
+    "$PYTHON" orientation_bit_analysis.py --analyze COLLECT... [--regions JSON...] [--readout-errors JSON]
+                                                              verdicts of the collected jobs (collect.json of
+                                                              live_run); --regions names each job's region qubit
+                                                              lists so that replicas of one region merge
 """
 
 from __future__ import annotations
@@ -75,14 +91,24 @@ import pathion_kernel_map_orientation as pko  # noqa: E402
 
 ALPHA = 0.05
 POWER = 0.8
-FAMILY = 14
-# Replicas (disjoint six-qubit regions) the case plans, and the regions one run placed at the retained replica floor.
+FAMILY = 16
+# The case plans two jobs on the same 15 disjoint six-qubit regions (30 replicas); a region is the block of its two
+# replicas. The retained run placed 5 regions at the retained replica floor.
 DEAD_VISIBILITY = 0.05
 MIN_LIVE = 3
-PLANNED_REPLICAS = 15
+PLANNED_REGIONS = 15
+JOBS = 2
+PLANNED_REPLICAS = PLANNED_REGIONS * JOBS
 REGIONS_PER_RUN = 5
+# Correlation of the two replicas of one region that the power table spans: 0 (independent) and 1 (the second job
+# adds nothing), the bounds between which the unknown job-to-job intraclass correlation lies.
+RHOS = (0.0, 1.0)
+# Median scatter of the off-support coefficient c_obs,16 of the retained units (32 bins at 16,384 shots).
+LEAK_SD = 0.017
 RETAINED_RUN = "ibm_fez kernel map"
-STATISTICS = ("ctrl_g16", "move_g2", "move_leak16", "xtwin_g16", "keep_s", "flip_d", "diff_cm")
+STATISTICS = ("ctrl_g16", "move_g2", "move_leak16", "xtwin_g16", "swap_g16", "keep_s", "flip_d", "diff_sm")
+EXPLORATORY = ("diff_cm", "diff_cs")
+OLD_STATISTICS = ("ctrl_g16", "move_g2", "move_leak16", "xtwin_g16", "keep_s", "flip_d", "diff_cm")
 RETAINED_COLLECT = "results/live/2026-11-06T183538.809814Z/collect.json"
 RETAINED_TWIN = {"kmap_e1pe26": "kmap_twin_e17me10", "kmap_e1pe18": "kmap_twin_e17me2"}
 # Sign of the retained gap per operand: negative at nullity 4, positive at nullity 12 (ledger row A5-242).
@@ -106,27 +132,33 @@ def replica_lambdas(unit: nb.Unit) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
 
 
 def replica_statistics(units: dict[str, nb.Unit], operand: tuple[int, int, int]) -> dict[str, np.ndarray]:
-    """The six per-replica statistics of one operand, each an array over replicas."""
+    """The per-replica statistics of one operand (the family and the exploratory ones), each an array over replicas."""
     t = tag(operand)
-    ctrl, move, xtwin = (units[f"kmo_{role}_{t}"] for role in pko.ROLES)
+    ctrl, move, xtwin, swap = (units[f"kmo_{role}_{t}"] for role in pko.ROLES)
     _, _, lam_c = replica_lambdas(ctrl)
+    _, _, lam_s = replica_lambdas(swap)
     co_m, ci_m, lam_m = replica_lambdas(move)
     _, _, lam_x = replica_lambdas(xtwin)
     moved = 2**pko.MOVED_BIT
-    if np.isnan(lam_c[:, 16]).any() or np.isnan(lam_x[:, 16]).any() or np.isnan(lam_m[:, moved]).any():
+    if any(np.isnan(lam[:, 16]).any() for lam in (lam_c, lam_x, lam_s)) or np.isnan(lam_m[:, moved]).any():
         raise ValueError(f"{t}: a gap character lies outside the ideal support")
     if abs(ci_m[16]) > ns.SUPPORT:
         raise ValueError(f"{t}: character 16 lies inside the moved support, so it has no leakage reading")
     g_c = lam_c[:, 16] - lam_c[:, 0]
     g_x = lam_x[:, 16] - lam_x[:, 0]
+    g_s = lam_s[:, 16] - lam_s[:, 0]
+    g_m = lam_m[:, moved] - lam_m[:, 0]
     return {
         "ctrl_g16": g_c,
-        "move_g2": lam_m[:, moved] - lam_m[:, 0],
+        "move_g2": g_m,
         "move_leak16": co_m[:, 16],
         "xtwin_g16": g_x,
+        "swap_g16": g_s,
         "keep_s": (g_c + g_x) / 2.0,
         "flip_d": (g_c - g_x) / 2.0,
-        "diff_cm": g_c - (lam_m[:, moved] - lam_m[:, 0]),
+        "diff_sm": g_s - g_m,
+        "diff_cm": g_c - g_m,
+        "diff_cs": g_c - g_s,
     }
 
 
@@ -137,6 +169,10 @@ def one_sample(values: np.ndarray) -> dict[str, float]:
     t = mean / se if se > 0 else math.copysign(math.inf, mean)
     p = float(2.0 * stats.t.sf(abs(t), n - 1)) if math.isfinite(t) else 0.0
     return {"n": n, "mean": mean, "se": se, "t": t, "p": p}
+
+
+def tests_names(tests: dict[str, dict[str, Any]], t: str) -> list[str]:
+    return [key.split(":")[0] for key in tests if key.endswith(f":{t}")]
 
 
 def holm(pvalues: dict[str, float], alpha: float = ALPHA) -> dict[str, bool]:
@@ -151,30 +187,54 @@ def holm(pvalues: dict[str, float], alpha: float = ALPHA) -> dict[str, bool]:
     return out
 
 
-def family_tests(units: dict[str, nb.Unit]) -> dict[str, dict[str, Any]]:
-    """Every test of the family, keyed <statistic>:<operand tag>, with its Holm decision."""
-    tests: dict[str, dict[str, Any]] = {}
-    for operand in pko.OPERANDS:
-        for name, values in replica_statistics(units, operand).items():
-            tests[f"{name}:{tag(operand)}"] = one_sample(values)
-    if len(tests) != FAMILY:
-        raise ValueError(f"family holds {len(tests)} tests, expected {FAMILY}")
+def _from_summary(mean: float, se: float, n: int) -> dict[str, float]:
+    t = mean / se if se > 0 else math.copysign(math.inf, mean)
+    p = float(2.0 * stats.t.sf(abs(t), n - 1)) if math.isfinite(t) else 0.0
+    return {"n": n, "mean": mean, "se": se, "t": t, "p": p}
+
+
+def decide_tests(tests: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    """Holm decision over every test of the dict, written into each row as reject."""
     decided = holm({k: v["p"] for k, v in tests.items()})
     for key, row in tests.items():
         row["reject"] = decided[key]
     return tests
 
 
-def readings(tests: dict[str, dict[str, Any]], operand: tuple[int, int, int], df: int) -> dict[str, Any]:
-    """The three readings of one operand and the verdict on A5-242 (df is kept for the signature of the family)."""
+def decide(
+    values: dict[tuple[int, int, int], dict[str, np.ndarray]], names: tuple[str, ...] = STATISTICS
+) -> dict[str, dict[str, Any]]:
+    """Every test of a family of the named statistics over both operands, keyed <statistic>:<operand tag>, with its
+    Holm decision."""
+    tests: dict[str, dict[str, Any]] = {}
+    for operand in pko.OPERANDS:
+        for name in names:
+            tests[f"{name}:{tag(operand)}"] = one_sample(values[operand][name])
+    return decide_tests(tests)
+
+
+def family_tests(units: dict[str, nb.Unit]) -> dict[str, dict[str, Any]]:
+    tests = decide({operand: replica_statistics(units, operand) for operand in pko.OPERANDS})
+    if len(tests) != FAMILY:
+        raise ValueError(f"family holds {len(tests)} tests, expected {FAMILY}")
+    return tests
+
+
+def readings(
+    tests: dict[str, dict[str, Any]], operand: tuple[int, int, int], df: int, differs_key: str = "diff_sm"
+) -> dict[str, Any]:
+    """The readings of one operand and the verdict on A5-242 (df is kept for the signature of the family).
+    differs_key names the statistic that decides whether the moved gap differs from the gap of bit 4: diff_sm (both
+    gaps on one physical qubit) in the rule; diff_cm (two physical qubits) reproduces the superseded rule."""
     del df
     t = tag(operand)
     sign = RETAINED_SIGN[operand]
-    row = {name: tests[f"{name}:{t}"] for name in STATISTICS}
+    row = {name: tests[f"{name}:{t}"] for name in tests_names(tests, t)}
     replicates = bool(row["ctrl_g16"]["reject"] and np.sign(row["ctrl_g16"]["mean"]) == sign)
     flipped = bool(row["ctrl_g16"]["reject"] and np.sign(row["ctrl_g16"]["mean"]) == -sign)
     follows = bool(row["move_g2"]["reject"] and np.sign(row["move_g2"]["mean"]) == sign)
-    differs = bool(row["diff_cm"]["reject"])
+    differs = bool(row[differs_key]["reject"])
+    travels = bool("swap_g16" in row and row["swap_g16"]["reject"] and np.sign(row["swap_g16"]["mean"]) == sign)
     # (ii): the control's gap replicates and the moved member's gap differs from it without following it.
     stays = bool(replicates and differs and not follows)
     keeps, flips = bool(row["keep_s"]["reject"]), bool(row["flip_d"]["reject"])
@@ -192,6 +252,8 @@ def readings(tests: dict[str, dict[str, Any]], operand: tuple[int, int, int], df
         "replicates_retained_sign": replicates,
         "sign_flipped": flipped,
         "i_gap_follows_orientation_qubit": bool(follows and not differs),
+        "gap_travels_with_bit_4_wire": travels,
+        "layout_bound_candidate": bool(replicates and "swap_g16" in row and not travels),
         "ii_gap_stays_on_bit_4": stays,
         "iii_exchange": state,
         "leakage_into_character_16": bool(row["move_leak16"]["reject"]),
@@ -230,7 +292,12 @@ def cross_check(units: dict[str, nb.Unit]) -> None:
     """The per-replica gaps reproduce nhat_spectral.unit_spectrum's minus_zero and t on every unit of the family."""
     for operand in pko.OPERANDS:
         t = tag(operand)
-        for role, key, character in (("ctrl", "ctrl_g16", 16), ("xtwin", "xtwin_g16", 16), ("move", "move_g2", 2)):
+        for role, key, character in (
+            ("ctrl", "ctrl_g16", 16),
+            ("xtwin", "xtwin_g16", 16),
+            ("swap", "swap_g16", 16),
+            ("move", "move_g2", 2),
+        ):
             unit = units[f"kmo_{role}_{t}"]
             row = ns.unit_spectrum(unit)
             reference = next(c for c in row["characters"] if c["character"] == character)
@@ -282,6 +349,42 @@ def readout_correlation(units: dict[str, nb.Unit], readout_errors: list[float]) 
     return out
 
 
+def merge_jobs(entries: list[dict[str, Any]], regions: list[list[list[int]]] | None = None) -> dict[str, Any]:
+    """One collected entry from the entries of the jobs of the case. A region is the block of its replicas: replicas
+    whose qubit sets are equal (across jobs) average their measured laws, which leaves every statistic's value the mean
+    of the replicas' values because each statistic is linear in the laws. Without regions each entry is one job and
+    its replicas are positioned alike (replica i of every job is one region); distinct regions stay separate blocks."""
+    if len(entries) == 1 and regions is None:
+        return entries[0]
+    if regions is not None and (
+        len(regions) != len(entries) or any(len(r) != len(set(map(tuple, r))) for r in regions)
+    ):
+        raise ValueError("regions need one list per job, each region once")
+    names = list(entries[0]["measured"])
+    sizes = {len(next(iter(e["measured"].values()))) for e in entries}
+    if regions is not None:
+        for e, r in zip(entries, regions, strict=True):
+            if len(next(iter(e["measured"].values()))) != len(r):
+                raise ValueError("a job's replicas and its regions differ in number")
+        keys = [[tuple(sorted(q)) for q in r] for r in regions]
+    elif len(sizes) == 1:
+        keys = [[(i,) for i in range(sizes.pop())] for _ in entries]
+    else:
+        raise ValueError("jobs of different replica counts need their regions")
+    blocks: dict[tuple[int, ...], list[tuple[int, int]]] = {}
+    for j, job_keys in enumerate(keys):
+        for i, key in enumerate(job_keys):
+            blocks.setdefault(key, []).append((j, i))
+    measured = {
+        name: [
+            np.mean([np.asarray(entries[j]["measured"][name][i], dtype=float) for j, i in members], axis=0).tolist()
+            for members in blocks.values()
+        ]
+        for name in names
+    }
+    return {"group": entries[0]["group"], "measured": measured, "blocks": [len(m) for m in blocks.values()]}
+
+
 def analyze(entry: dict[str, Any], readout_errors: list[float] | None = None) -> dict[str, Any]:
     units = units_from_entry(entry)
     tests, reads, n = _readings(units)
@@ -301,8 +404,14 @@ def analyze(entry: dict[str, Any], readout_errors: list[float] | None = None) ->
             if live_row["verdict"] != row["verdict"]:
                 row["verdict"] = "unresolved"
     result = {
-        "schema": "orientation-bit-analysis-v2",
+        "schema": "orientation-bit-analysis-v3",
         "replicas": n,
+        "replicas_per_block": entry.get("blocks"),
+        "exploratory": {
+            f"{name}:{tag(operand)}": one_sample(replica_statistics(units, operand)[name])
+            for operand in pko.OPERANDS
+            for name in EXPLORATORY
+        },
         "alpha": ALPHA,
         "family": FAMILY,
         "tests": tests,
@@ -343,12 +452,20 @@ def retained_scatter(collect: Any) -> dict[str, dict[str, float]]:
         unit = next(u for u in run["units"] if u["key"] == key)
         c = next(c for c in unit["characters"] if c["character"] == 16)
         se = abs(c["minus_zero"] / c["minus_zero_t"])
-        pair = gap16(key) - gap16(RETAINED_TWIN[key])
+        g_c, g_x = gap16(key), gap16(RETAINED_TWIN[key])
+        pair = g_c - g_x
         out[tag(operand)] = {
             "effect": c["minus_zero"],
             "se_five_replicas": se,
             "sd_per_replica": se * math.sqrt(5),
             "sd_pair_difference": float(pair.std(ddof=1)),
+            "retained_twin_gap": float(g_x.mean()),
+            "sd_twin_gap": float(g_x.std(ddof=1)),
+            "retained_keep_s": float(((g_c + g_x) / 2.0).mean()),
+            "sd_keep_s": float(((g_c + g_x) / 2.0).std(ddof=1)),
+            "retained_flip_d": float(((g_c - g_x) / 2.0).mean()),
+            "sd_flip_d": float((pair / 2.0).std(ddof=1)),
+            "pair_correlation": float(np.corrcoef(g_c, g_x)[0, 1]),
         }
     return out
 
@@ -392,46 +509,215 @@ def required_replicas(delta: float, sd: float, alpha: float, power: float = POWE
     return found
 
 
+def _design_sd(sd: float, rho: float) -> float:
+    """Standard deviation of the mean of the JOBS replicas of one region when the replicas of a region correlate with
+    rho: sd * sqrt(rho + (1 - rho) / JOBS)."""
+    return sd * math.sqrt(rho + (1.0 - rho) / JOBS)
+
+
+def statistic_specs(s: dict[str, float]) -> dict[str, tuple[float | None, float]]:
+    """(retained effect, standard deviation per replica) of every statistic of the family for one operand, from the
+    retained scatter. The gap statistics take the retained gap as their alternative (the gap moves, travels and is
+    kept at full size); diff_sm takes the alternative that the moved gap is zero, so its mean is the full effect, with
+    the scatter of the retained primary-minus-twin pair as the stand-in for two circuits on one region; xtwin, S and D
+    take the retained twin's own values; leak16 has no retained effect (ideal 0) and takes the shot-noise scatter."""
+    return {
+        "ctrl_g16": (abs(s["effect"]), s["sd_per_replica"]),
+        "move_g2": (abs(s["effect"]), s["sd_per_replica"]),
+        "swap_g16": (abs(s["effect"]), s["sd_per_replica"]),
+        "diff_sm": (abs(s["effect"]), s["sd_pair_difference"]),
+        "xtwin_g16": (abs(s["retained_twin_gap"]), s["sd_twin_gap"]),
+        "keep_s": (abs(s["retained_keep_s"]), s["sd_keep_s"]),
+        "flip_d": (abs(s["retained_flip_d"]), s["sd_flip_d"]),
+        "move_leak16": (None, LEAK_SD),
+    }
+
+
+def _mde(sd: float, n: int, alpha: float) -> float:
+    found = _first_true(lambda d: power_at(d / 1000.0, sd, n, alpha) >= POWER, 1, 1000)
+    if found is None:
+        raise ValueError("no effect below 1 reaches the power")
+    return found / 1000.0
+
+
 def power_record(collect: Any) -> dict[str, Any]:
+    """Power of every statistic of the family at the planned design: PLANNED_REGIONS regions read JOBS times, the test
+    over region means (df = regions - 1) at the correlation rho of a region's replicas in RHOS, and for reference the
+    test over all replicas as independent values (df = replicas - 1). The effect is the retained one and half of it."""
     scatter = retained_scatter(collect)
     alpha = ALPHA / FAMILY
-    rows = {}
+    operands: dict[str, Any] = {}
+    needed = 0
     for name, s in scatter.items():
-        full, half = abs(s["effect"]), abs(s["effect"]) / 2.0
-        sd, sd_diff = s["sd_per_replica"], s["sd_pair_difference"]
-        rows[name] = {
-            **s,
-            "n_full_effect": required_replicas(full, sd, alpha),
-            "n_half_effect": required_replicas(half, sd, alpha),
-            # C = ctrl - moved at the alternative that the moved gap is zero, so its mean is the full effect; S and D
-            # at the retained effect, with the scatter of one gap (the conservative bound for a correlated pair).
-            "n_diff_at_full_effect": required_replicas(full, sd_diff, alpha),
-        }
-    needed = max(max(r["n_full_effect"], r["n_diff_at_full_effect"]) for r in rows.values())
-    n = PLANNED_REPLICAS
-    if n < needed:
-        raise ValueError(f"{n} planned replicas are fewer than the {needed} needed")
-    for r in rows.values():
-        r["power_at_n_full_effect"] = power_at(r["effect"], r["sd_per_replica"], n, alpha)
-        r["power_at_n_half_effect"] = power_at(r["effect"] / 2.0, r["sd_per_replica"], n, alpha)
-        r["power_diff_at_n_full_effect"] = power_at(r["effect"], r["sd_pair_difference"], n, alpha)
-        sd_gap = r["sd_per_replica"]
-        mde = _first_true(lambda d, sd=sd_gap: power_at(d / 1000.0, sd, n, alpha) >= POWER, 1, 1000)
-        if mde is None:
-            raise ValueError("no effect below 1 reaches the power")
-        r["minimum_detectable_effect_at_n"] = mde / 1000.0
+        rows: dict[str, Any] = {}
+        for stat, (effect, sd) in statistic_specs(s).items():
+            row: dict[str, Any] = {"effect": effect, "sd_per_replica": sd}
+            designs = {f"regions_rho{int(rho)}": (PLANNED_REGIONS, _design_sd(sd, rho)) for rho in RHOS}
+            designs["replicas_independent"] = (PLANNED_REPLICAS, sd)
+            for label, (n, sd_n) in designs.items():
+                cell = {"minimum_detectable_effect": _mde(sd_n, n, alpha)}
+                if effect is not None:
+                    cell["power_full_effect"] = power_at(effect, sd_n, n, alpha)
+                    cell["power_half_effect"] = power_at(effect / 2.0, sd_n, n, alpha)
+                row[label] = cell
+            if stat in ("ctrl_g16", "move_g2", "swap_g16", "diff_sm") and effect is not None:
+                needed = max(needed, required_replicas(effect, sd, alpha))
+            rows[stat] = row
+        operands[name] = {**s, "statistics": rows}
+    if needed > PLANNED_REGIONS:
+        raise ValueError(f"{PLANNED_REGIONS} planned regions are fewer than the {needed} needed")
     return {
-        "schema": "orientation-bit-power-v1",
+        "schema": "orientation-bit-power-v2",
         "alpha_family": ALPHA,
         "tests_in_family": FAMILY,
         "alpha_per_test": alpha,
         "power": POWER,
-        "operands": rows,
-        "replicas_needed": needed,
-        "replicas": n,
+        "operands": operands,
+        "regions_needed_if_replicas_of_a_region_are_identical": needed,
+        "planned_regions": PLANNED_REGIONS,
+        "jobs": JOBS,
+        "replicas": PLANNED_REPLICAS,
         "regions_per_run": REGIONS_PER_RUN,
-        "runs_at_regions_per_run": -(-n // REGIONS_PER_RUN),
+        "rhos": list(RHOS),
+        "leak_sd": LEAK_SD,
         "source": "nhat-bias/result_spectral.json and the retained collect.json, run ibm_fez kernel map, character 16",
+    }
+
+
+# ---------------------------------------------------------------------------------------- operating characteristics
+
+_WEIGHTS = {
+    "ctrl_g16": (1, 0, 0, 0, 0),
+    "move_g2": (0, 1, 0, 0, 0),
+    "xtwin_g16": (0, 0, 1, 0, 0),
+    "swap_g16": (0, 0, 0, 1, 0),
+    "move_leak16": (0, 0, 0, 0, 1),
+    "keep_s": (0.5, 0, 0.5, 0, 0),
+    "flip_d": (0.5, 0, -0.5, 0, 0),
+    "diff_sm": (0, -1, 0, 1, 0),
+    "diff_cm": (1, -1, 0, 0, 0),
+}
+_VARIABLES = ("ctrl_g16", "move_g2", "xtwin_g16", "swap_g16", "move_leak16")
+OPERATING_LOG2_TRIALS = 12
+
+
+def _normal_quasi(u: np.ndarray) -> np.ndarray:
+    return np.asarray(stats.norm.ppf(u))
+
+
+def _unit_points(dim: int, log2: int) -> np.ndarray:
+    """Deterministic points of the unit cube: an unscrambled Sobol sequence shifted by half a cell and wrapped, so no
+    coordinate is 0 or 1 and no random seed enters the calculation."""
+    from scipy.stats import qmc
+
+    points = qmc.Sobol(dim, scramble=False).random(2**log2)
+    return np.mod(points + 0.5 / 2**log2, 1.0)
+
+
+def _summaries(
+    mean: np.ndarray, sd: np.ndarray, corr: float, n: int, points: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
+    """Sample mean vectors and sample covariances over n blocks of the five variables, for each row of points (20
+    columns): m = mean + L z / sqrt(n) and S = L A A' L' / (n - 1) with A the Bartlett factor, which is the exact
+    joint law of the sample mean and covariance of n draws of N(mean, L L')."""
+    k = len(mean)
+    cov = np.diag(sd**2)
+    for i in range(4):
+        for j in range(4):
+            if i != j:
+                cov[i, j] = corr * sd[i] * sd[j]
+    chol = np.linalg.cholesky(cov)
+    df = n - 1
+    z = _normal_quasi(points[:, :k])
+    chi = np.stack([np.sqrt(stats.chi2.ppf(points[:, k + i], df - i)) for i in range(k)], axis=1)
+    off = _normal_quasi(points[:, 2 * k :]).reshape(len(points), -1)
+    factor = np.zeros((len(points), k, k))
+    factor[:, np.arange(k), np.arange(k)] = chi
+    row, col = np.tril_indices(k, -1)
+    factor[:, row, col] = off[:, : len(row)]
+    lower = chol @ factor
+    means = mean + z @ chol.T / math.sqrt(n)
+    covs = lower @ lower.transpose(0, 2, 1) / df
+    return means, covs
+
+
+def operating_characteristics(
+    power: dict[str, Any], compile_record: dict[str, Any], log2: int = OPERATING_LOG2_TRIALS
+) -> dict[str, Any]:
+    """Probability of each reading of the rule, and of the superseded rule that decides (ii) through diff_cm, when the
+    truth is a model floor of the compile record (relaxation alone, all three noise models) with and without an
+    operand-following effect of the retained size, over PLANNED_REGIONS region means at each rho in RHOS. The scatter is
+    the retained one (power['operands']), equicorrelated across the four gaps with the retained pair correlation, the
+    scatter of leak16 is LEAK_SD / sqrt(JOBS); the 2 x 20 columns of each trial are deterministic Sobol points."""
+    models = compile_record["relaxation"]["statistics"]
+    scenarios: dict[str, dict[str, Any]] = {
+        "null": {"model": None, "effect": 0.0},
+        "relaxation_only": {"model": "relaxation_only", "effect": 0.0},
+        "all_three_models": {"model": "depolarizing_relaxation_asymmetric_readout", "effect": 0.0},
+        "all_three_models_plus_half_effect": {"model": "depolarizing_relaxation_asymmetric_readout", "effect": 0.5},
+        "all_three_models_plus_full_effect": {"model": "depolarizing_relaxation_asymmetric_readout", "effect": 1.0},
+    }
+    points = _unit_points(40, log2)
+    out: dict[str, Any] = {}
+    for scenario, spec in scenarios.items():
+        for rho in power["rhos"]:
+            per_operand = {}
+            for oi, operand in enumerate(pko.OPERANDS):
+                t = tag(operand)
+                s = power["operands"][t]
+                sd_gap = _design_sd(s["sd_per_replica"], rho)
+                r = float(min(max(s["pair_correlation"], 0.0), 0.9))
+                sd_vec = np.array([sd_gap, sd_gap, sd_gap, sd_gap, power["leak_sd"] / math.sqrt(JOBS)])
+                mean = np.zeros(5)
+                if spec["model"] is not None:
+                    mean = np.array([models[spec["model"]][f"{v}:{t}"]["mean"] for v in _VARIABLES])
+                mean = mean + np.array([1, 1, 1, 1, 0]) * spec["effect"] * s["effect"]
+                per_operand[t] = _summaries(
+                    mean, sd_vec, r, power["planned_regions"], points[:, 20 * oi : 20 * oi + 20]
+                )
+            for rule, names, key in (
+                ("swap_rule", STATISTICS, "diff_sm"),
+                ("superseded_rule", OLD_STATISTICS, "diff_cm"),
+            ):
+                counts: dict[str, dict[str, int]] = {"row": {}, **{tag(o): {} for o in pko.OPERANDS}}
+                stays = {tag(o): 0 for o in pko.OPERANDS}
+                n_blocks = power["planned_regions"]
+                for trial in range(len(points)):
+                    tests: dict[str, dict[str, Any]] = {}
+                    for operand in pko.OPERANDS:
+                        t = tag(operand)
+                        m, cov = per_operand[t][0][trial], per_operand[t][1][trial]
+                        for name in names:
+                            w = np.asarray(_WEIGHTS[name], dtype=float)
+                            tests[f"{name}:{t}"] = _from_summary(
+                                float(w @ m), float(math.sqrt(w @ cov @ w / n_blocks)), n_blocks
+                            )
+                    decide_tests(tests)
+                    reads = [readings(tests, o, n_blocks - 1, key) for o in pko.OPERANDS]
+                    for o, read in zip(pko.OPERANDS, reads, strict=True):
+                        bucket = counts[tag(o)]
+                        bucket[read["verdict"]] = bucket.get(read["verdict"], 0) + 1
+                        stays[tag(o)] += int(read["ii_gap_stays_on_bit_4"])
+                    row = row_verdict([r["verdict"] for r in reads])
+                    counts["row"][row] = counts["row"].get(row, 0) + 1
+                total = float(len(points))
+                out.setdefault(scenario, {}).setdefault(f"rho{int(rho)}", {})[rule] = {
+                    "row_verdict": {k: v / total for k, v in sorted(counts["row"].items())},
+                    "operands": {
+                        t: {
+                            "verdict": {k: v / total for k, v in sorted(counts[t].items())},
+                            "reading_ii": stays[t] / total,
+                        }
+                        for t in stays
+                    },
+                }
+    return {
+        "schema": "orientation-bit-operating-v1",
+        "trials_per_cell": 2**log2,
+        "regions": power["planned_regions"],
+        "sampling": "exact law of the sample mean and covariance (Bartlett factor) at deterministic Sobol points",
+        "model_source": "case_compile.json relaxation block; retained scatter of power.json",
+        "scenarios": out,
     }
 
 
@@ -452,6 +738,7 @@ def synthetic_entry(
     ctrl: dict[str, float],
     move: dict[str, float],
     xtwin: dict[str, float],
+    swap: dict[str, float] | None = None,
     visibility: float = 0.3,
     leak_sd: float = 0.016,
     leak_mean: float = 0.0,
@@ -462,11 +749,12 @@ def synthetic_entry(
     set per unit (a dict of "character:operand" to gap, 0 elsewhere), and on the moved unit a coefficient of character
     16 with mean leak_mean and scatter leak_sd (the shot-noise scale of 32 bins at 16,384 shots). The arms are laws
     whose selector-zero probability is 1/2 -+ c_obs / 2 on every output, so their contrast is c_obs. Replicas listed in
-    dead carry the visibility -0.1 and gap_regions ("all", "dead" or "live") names the replicas that carry the gaps."""
+    dead carry the visibility -0.1 and gap_regions ("all", "dead" or "live") names the replicas that carry the gaps.
+    The swap unit carries the control's gaps unless swap is given (a gap that travels with the bit-4 wire)."""
     group = pko.pathion_kernel_map_orientation_group()
     ideal = {m.name: np.asarray(m.ideal, dtype=float) for m in group.members}
     measured: dict[str, list[list[float]]] = {m.name: [] for m in group.members}
-    gaps = {"ctrl": ctrl, "move": move, "xtwin": xtwin}
+    gaps = {"ctrl": ctrl, "move": move, "xtwin": xtwin, "swap": ctrl if swap is None else swap}
     phase = 0
     for member in group.members:
         if not member.name.endswith("_plus"):
@@ -517,11 +805,19 @@ def self_test(collect: Any) -> list[str]:
     null = analyze(synthetic_entry(n, sd, {}, {}, {}))
     nb.expect(all(r["verdict"] == "unresolved" for r in null["readings"]), "a null run was not unresolved")
     nb.expect(not any(t["reject"] for t in null["tests"].values()), "a null run rejected a test")
-    done.append("a run with no gap rejects no test of the 14 (known-bad input of the rule)")
+    done.append("a run with no gap rejects no test of the 16 (known-bad input of the rule)")
     stays = analyze(synthetic_entry(n, sd, ctrl_gap, {}, xtwin_gap))
     nb.expect(all(r["verdict"] == "refuted" and r["ii_gap_stays_on_bit_4"] for r in stays["readings"]), "stays on 16")
     nb.expect(not any(r["leakage_into_character_16"] for r in stays["readings"]), "stays: spurious leakage")
-    done.append("a replicated gap on bit 4 with none on bit 1 reads refuted as stated (reading ii), through C")
+    done.append("a replicated gap on bit 4 with none on bit 1 reads refuted as stated (reading ii), through C*")
+    bound = analyze(synthetic_entry(n, sd, ctrl_gap, {}, xtwin_gap, swap={}))
+    nb.expect(
+        all(r["layout_bound_candidate"] and not r["gap_travels_with_bit_4_wire"] for r in bound["readings"]), "layout"
+    )
+    nb.expect(all(r["verdict"] == "unresolved" for r in bound["readings"]), "a gap on the physical qubit was decided")
+    done.append(
+        "a gap that stays on the physical qubit of bit 4 (none on the swap unit) is reported layout-bound, unresolved"
+    )
     smaller = analyze(synthetic_entry(n, sd, ctrl_gap, {k: v / 3.0 for k, v in move_gap.items()}, xtwin_gap))
     nb.expect(all(r["verdict"] != "supported" for r in smaller["readings"]), "a third-size moved gap was supported")
     done.append("a moved gap of one third the size is not read as supported")
@@ -571,9 +867,10 @@ def self_test(collect: Any) -> list[str]:
     done.append("the power function equals the noncentral t at 0.09 / 0.1 and the size of the test at zero effect")
     if collect is not None:
         power = power_record(collect)
-        nb.expect(all(r["power_at_n_full_effect"] >= POWER for r in power["operands"].values()), "power at n")
-        nb.expect(all(r["power_diff_at_n_full_effect"] >= POWER for r in power["operands"].values()), "diff power")
-        done.append(f"{power['replicas']} replicas give power at least {POWER} for the gaps and for C")
+        for o in power["operands"].values():
+            for stat in ("ctrl_g16", "move_g2", "swap_g16", "diff_sm"):
+                nb.expect(o["statistics"][stat]["regions_rho1"]["power_full_effect"] >= POWER, f"power of {stat}")
+        done.append(f"{PLANNED_REGIONS} regions read {JOBS} times give power at least {POWER} for the gaps and C*")
     return done
 
 
@@ -582,7 +879,9 @@ def main() -> int:
     mode = ap.add_mutually_exclusive_group(required=True)
     mode.add_argument("--self-test", action="store_true")
     mode.add_argument("--power", type=Path, metavar="DIR")
-    mode.add_argument("--analyze", type=Path, metavar="COLLECT")
+    mode.add_argument("--operating", type=Path, metavar="DIR")
+    mode.add_argument("--analyze", type=Path, metavar="COLLECT", nargs="+")
+    ap.add_argument("--regions", type=Path, nargs="+", help="JSON list of region qubit lists per collected job")
     ap.add_argument("--retained-collect", type=Path, help=f"{RETAINED_COLLECT}, read by --power and --self-test")
     ap.add_argument("--readout-errors", type=Path, help="JSON list: readout error of the bit-4 qubit per replica")
     args = ap.parse_args()
@@ -598,11 +897,23 @@ def main() -> int:
         record["retained_collect_sha256"] = hashlib.sha256(args.retained_collect.read_bytes()).hexdigest()
         (args.power / "power.json").write_text(json.dumps(record, indent=1, sort_keys=True) + "\n")
         return 0
-    collect = json.loads(args.analyze.read_text())
-    items = collect if isinstance(collect, list) else [collect]
-    entry = next(x for x in items if isinstance(x, dict) and x.get("group") == "pathion_kernel_map_orientation")
+    if args.operating:
+        record = operating_characteristics(
+            json.loads((args.operating / "power.json").read_text()),
+            json.loads((args.operating / "case_compile.json").read_text()),
+        )
+        (args.operating / "operating.json").write_text(json.dumps(record, indent=1, sort_keys=True) + "\n")
+        return 0
+    entries = []
+    for path in args.analyze:
+        collect = json.loads(path.read_text())
+        items = collect if isinstance(collect, list) else [collect]
+        entries.append(
+            next(x for x in items if isinstance(x, dict) and x.get("group") == "pathion_kernel_map_orientation")
+        )
+    regions = [json.loads(p.read_text()) for p in args.regions] if args.regions else None
     errors = json.loads(args.readout_errors.read_text()) if args.readout_errors else None
-    print(json.dumps(analyze(entry, errors), indent=1, sort_keys=True))
+    print(json.dumps(analyze(merge_jobs(entries, regions), errors), indent=1, sort_keys=True))
     return 0
 
 

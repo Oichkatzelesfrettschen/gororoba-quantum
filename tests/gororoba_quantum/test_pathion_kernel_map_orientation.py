@@ -68,9 +68,8 @@ def _quarters(sign: np.ndarray) -> dict[int, int]:
 
 
 def _role_quarters(operand: tuple[int, int, int], role: str) -> dict[int, int]:
-    orientation_bit, exchange_bit = pko.role_options(role, operand)
-    template = pko.kernel_map_template(operand, orientation_bit=orientation_bit, exchange_bit=exchange_bit)
-    laws = [pkm.ideal_law(template.assign_parameters({pkm.ORIENTATION: p})) for p in (np.pi, 0.0)]
+    template = pko.role_template(role, operand)
+    laws = [pko.outcome_law(template.assign_parameters({pkm.ORIENTATION: p})) for p in (np.pi, 0.0)]
     return _quarters(np.sign(pkm.output_contrast(laws[0], laws[1])))
 
 
@@ -81,11 +80,13 @@ SUPPORTS: dict[tuple[int, int, int], dict[str, dict[int, int]]] = {
         "ctrl": {0: 1, 4: 1, 10: -1, 14: -1, 16: -3, 20: 1, 26: -1, 30: -1},
         "move": {0: 1, 2: -3, 4: 1, 6: 1, 8: -1, 10: -1, 12: -1, 14: -1},
         "xtwin": {0: 1, 4: 1, 10: -1, 14: -1, 16: 3, 20: -1, 26: 1, 30: 1},
+        "swap": {0: 1, 4: 1, 10: -1, 14: -1, 16: -3, 20: 1, 26: -1, 30: -1},
     },
     (1, 18, 1): {
         "ctrl": {0: 3, 4: -1, 8: -1, 12: -1, 16: -1, 20: -1, 24: -1, 28: -1},
         "move": {0: 3, 2: -1, 4: -1, 6: -1, 8: -1, 10: -1, 12: -1, 14: -1},
         "xtwin": {0: 3, 4: -1, 8: -1, 12: -1, 16: 1, 20: 1, 24: 1, 28: 1},
+        "swap": {0: 3, 4: -1, 8: -1, 12: -1, 16: -1, 20: -1, 24: -1, 28: -1},
     },
 }
 
@@ -124,8 +125,9 @@ def test_walsh_supports_are_exact(operand: tuple[int, int, int]) -> None:
     the (0, signature) weight pair is identical between control and moved member."""
     for role in pko.ROLES:
         _expect(_role_quarters(operand, role) == SUPPORTS[operand][role], f"{operand} {role}: support differs")
-    ctrl, move, xtwin = (SUPPORTS[operand][role] for role in pko.ROLES)
-    _expect(len(ctrl) == len(move) == len(xtwin) == 8, "a support does not hold eight characters")
+    ctrl, move, xtwin, swap = (SUPPORTS[operand][role] for role in pko.ROLES)
+    _expect(len(ctrl) == len(move) == len(xtwin) == len(swap) == 8, "a support does not hold eight characters")
+    _expect(swap == ctrl, f"{operand}: the wire exchange changed the ideal law")
     shared = (set(ctrl) & set(move)) - {0}
     _expect(len(shared) == 3 and 16 not in shared and 2 not in shared, f"{operand}: shared characters {shared}")
     _expect(abs(ctrl[16]) == abs(move[2]) and ctrl[0] == move[0], f"{operand}: the (0, signature) weights differ")
@@ -185,14 +187,14 @@ def test_exchange_at_another_position_or_qubit_does_not_equal_the_twin(primary: 
     _expect(not np.allclose(law, want, atol=1e-9), f"{primary}: an X before the oracle equals the twin")
 
 
-def test_group_holds_twelve_circuits_in_balanced_arm_order() -> None:
+def test_group_holds_sixteen_circuits_in_balanced_arm_order() -> None:
     group = pko.pathion_kernel_map_orientation_group()
     names = [member.name for member in group.members]
-    _expect(len(names) == 12 and len(set(names)) == 12, f"unexpected members {names}")
+    _expect(len(names) == 16 and len(set(names)) == 16, f"unexpected members {names}")
     _expect(len(names) <= 24, "more than 24 PUBs")
     first_arm = [n.rsplit("_", 1)[1] for n in names[::2]]
-    _expect(first_arm == ["plus", "minus", "plus", "minus", "plus", "minus"], f"arm order {first_arm}")
-    for unit in range(6):
+    _expect(first_arm == ["plus", "minus"] * 4, f"arm order {first_arm}")
+    for unit in range(8):
         _expect(
             names[2 * unit].rsplit("_", 1)[0] == names[2 * unit + 1].rsplit("_", 1)[0],
             f"unit {unit}: arms are not adjacent",
@@ -203,6 +205,46 @@ def test_group_holds_twelve_circuits_in_balanced_arm_order() -> None:
         for operand in pko.OPERANDS:
             key = f"{pko.unit_name(role, operand)}_nullity_estimate"
             _expect(abs(summary[key] - pkm.nullity(operand)) < 1e-9, f"{key} reads {summary[key]}")
+
+
+@pytest.mark.parametrize("operand", pko.OPERANDS)
+def test_swap_member_exchanges_data_wires_one_and_four_and_keeps_the_law(operand: tuple[int, int, int]) -> None:
+    """The swap circuit is the control with every gate on the other of wires 1 and 4 and each wire measured into its own
+    classical bit, so a shared layout puts bit 4 on the qubit that carries bit 1 in the other members."""
+    ctrl = pko.role_template("ctrl", operand)
+    swap = pko.role_template("swap", operand)
+    perm = {1: 4, 4: 1}
+
+    def gates(circuit: QuantumCircuit) -> list[tuple[str, tuple[int, ...], tuple[int, ...]]]:
+        return [
+            (
+                ins.operation.name,
+                tuple(circuit.find_bit(q).index for q in ins.qubits),
+                tuple(circuit.find_bit(b).index for b in ins.clbits),
+            )
+            for ins in circuit.data
+        ]
+
+    want = [(n, tuple(perm.get(q, q) for q in qs), cs) for n, qs, cs in gates(ctrl) if n != "measure"]
+    got = [g for g in gates(swap) if g[0] != "measure"]
+    _expect(want == got, f"{operand}: the swap circuit is not the control with wires 1 and 4 exchanged")
+    measures = {cs[0]: qs[0] for n, qs, cs in gates(swap) if n == "measure"}
+    _expect(measures == {0: 0, 1: 4, 2: 2, 3: 3, 4: 1, 5: 5}, f"{operand}: measure map {measures}")
+    for phase in (0.0, np.pi):
+        bound = {pkm.ORIENTATION: phase}
+        _expect(
+            np.allclose(
+                pko.outcome_law(swap.assign_parameters(bound)),
+                pko.outcome_law(ctrl.assign_parameters(bound)),
+                atol=1e-12,
+            ),
+            f"{operand}: phase {phase}: the wire exchange changed the outcome law",
+        )
+    raw = pkm.ideal_law(swap.assign_parameters({pkm.ORIENTATION: 0.0}))
+    _expect(
+        not np.allclose(raw, pkm.ideal_law(ctrl.assign_parameters({pkm.ORIENTATION: 0.0})), atol=1e-6),
+        f"{operand}: the raw wire law equals the control's, so the exchange did nothing",
+    )
 
 
 def test_group_is_a_registered_standalone_campaign() -> None:

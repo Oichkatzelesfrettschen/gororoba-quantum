@@ -24,11 +24,19 @@ no exchange):
   (control minus exchange) is zero under every error that acts before that frame and responds only to asymmetric readout
   of that qubit or a coherent angle error on its final single-qubit tail.
 
+The role "swap" is the retained circuit with data wires 1 and 4 exchanged (swap_wires): every gate acts on the other
+wire and each wire still measures into its own classical bit, so the ideal outcome law is the control's. All members of
+a group run on one layout, so the swap member puts data bit 4 on the physical qubit that carries data bit 1 in the other
+members and data bit 1 on the one that carries bit 4. Its gap lambda_16 - lambda_0 and the moved member's gap
+lambda_2 - lambda_0 are then read on the same physical qubit, which removes the T1, T2 and readout difference between
+the two qubits from their difference (the statistic diff_sm of the analysis).
+
 Group pathion_kernel_map_orientation holds, for the nullity-4 operand e1 + e26 (m = 27) and the nullity-12 operand
-e1 + e18 (m = 19), three members each with plus and minus arms on one layout: the retained placement (orientation on
-bit 4), the orientation moved to bit 1 (a set bit of both m, with character 2 in the ideal support), and the retained
-placement with the bit-4 exchange. The experiment question is whether the character gap lambda_16 - lambda_0 of the
-retained map follows the orientation qubit (docs/design/pathion-kernel-map-orientation-bit.md).
+e1 + e18 (m = 19), four members each with plus and minus arms on one layout: the retained placement (orientation on
+bit 4), the orientation moved to bit 1 (a set bit of both m, with character 2 in the ideal support), the retained
+placement with the bit-4 exchange, and the retained circuit with data wires 1 and 4 exchanged. The experiment question
+is whether the character gap lambda_16 - lambda_0 of the retained map follows the orientation qubit
+(docs/design/pathion-kernel-map-orientation-bit.md).
 """
 
 from __future__ import annotations
@@ -36,6 +44,7 @@ from __future__ import annotations
 import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import DiagonalGate
+from qiskit.quantum_info import Statevector
 
 import pathion_kernel_map as pkm
 from experiments import Group, Member
@@ -45,7 +54,8 @@ OPERANDS: tuple[tuple[int, int, int], ...] = ((1, 26, 1), (1, 18, 1))
 # Bit 1 is set in m = 27 and m = 19, and is the lowest common set bit other than the retained bit 4 and bit 0.
 MOVED_BIT = 1
 EXCHANGE_BIT = 4
-ROLES = ("ctrl", "move", "xtwin")
+ROLES = ("ctrl", "move", "xtwin", "swap")
+SWAP_WIRES = (MOVED_BIT, EXCHANGE_BIT)
 
 
 def orientation_signs(operand: tuple[int, int, int], plus: bool, bit: int, *, dim: int = DIM) -> list[float]:
@@ -70,6 +80,7 @@ def kernel_map_template(
     *,
     orientation_bit: int | None = None,
     exchange_bit: int | None = None,
+    swap_wires: tuple[int, int] | None = None,
     cocycle_free: bool = False,
     flip_input: int | None = None,
     measure: bool = True,
@@ -77,7 +88,8 @@ def kernel_map_template(
 ) -> QuantumCircuit:
     """pathion_kernel_map.kernel_map_template with the orientation on `orientation_bit` (default the highest bit of
     m), an optional X on data qubit `exchange_bit` between the SELECT and the readout, and the SELECT mutations of
-    the retained map (cocycle-free layers, one negated joint sign) for the mutation test."""
+    the retained map (cocycle-free layers, one negated joint sign) for the mutation test. With swap_wires (a, b) every
+    gate acts on the other of the two data wires while each wire measures into its own classical bit."""
     i, j, t = operand
     data = pkm.data_qubits(dim)
     bit = pkm.upper_bit(operand) if orientation_bit is None else orientation_bit
@@ -93,6 +105,17 @@ def kernel_map_template(
     if exchange_bit is not None:
         qc.x(exchange_bit)
     qc.h(data)
+    if swap_wires is not None:
+        perm = list(range(data + 1))
+        a, b = swap_wires
+        perm[a], perm[b] = b, a
+        swapped = QuantumCircuit(data + 1, data + 1 if measure else 0)
+        swapped.compose(qc, qubits=perm, inplace=True)
+        qc = swapped
+        if measure:
+            for q in range(data + 1):
+                qc.measure(perm[q], q)
+        return qc
     if measure:
         qc.measure(range(data + 1), range(data + 1))
     return qc
@@ -100,8 +123,8 @@ def kernel_map_template(
 
 def role_options(role: str, operand: tuple[int, int, int]) -> tuple[int, int | None]:
     """(orientation bit, exchange bit) of one role: ctrl is the retained circuit, move the orientation on MOVED_BIT,
-    xtwin the retained circuit with the bit-4 exchange."""
-    if role == "ctrl":
+    xtwin the retained circuit with the bit-4 exchange, swap the retained circuit (role_template swaps wires)."""
+    if role in ("ctrl", "swap"):
         return pkm.upper_bit(operand), None
     if role == "move":
         return MOVED_BIT, None
@@ -112,7 +135,26 @@ def role_options(role: str, operand: tuple[int, int, int]) -> tuple[int, int | N
 
 def role_template(role: str, operand: tuple[int, int, int]) -> QuantumCircuit:
     orientation_bit, exchange_bit = role_options(role, operand)
-    return kernel_map_template(operand, orientation_bit=orientation_bit, exchange_bit=exchange_bit)
+    return kernel_map_template(
+        operand,
+        orientation_bit=orientation_bit,
+        exchange_bit=exchange_bit,
+        swap_wires=SWAP_WIRES if role == "swap" else None,
+    )
+
+
+def outcome_law(circuit: QuantumCircuit) -> np.ndarray:
+    """Ideal outcome law indexed by the classical bits (bit j of the index is classical bit j), for a circuit whose
+    wires measure into any classical bits; equals pathion_kernel_map.ideal_law when wire j measures into bit j."""
+    measured: dict[int, int] = {}
+    core = QuantumCircuit(circuit.num_qubits)
+    for instruction in circuit.data:
+        if instruction.operation.name == "measure":
+            measured[circuit.find_bit(instruction.clbits[0]).index] = circuit.find_bit(instruction.qubits[0]).index
+        else:
+            core.append(instruction.operation, [circuit.find_bit(q).index for q in instruction.qubits])
+    order = [measured[j] for j in range(len(measured))]
+    return np.asarray(Statevector(core).probabilities(order))
 
 
 def unit_name(role: str, operand: tuple[int, int, int]) -> str:
@@ -142,7 +184,7 @@ def orientation_members() -> tuple[Member, ...]:
             templates[name].name = name
         phase = np.pi if plus else 0.0
         template = templates[name]
-        ideal = pkm.ideal_law(template.assign_parameters({pkm.ORIENTATION: phase}))
+        ideal = outcome_law(template.assign_parameters({pkm.ORIENTATION: phase}))
         members.append(Member(f"{name}_{'plus' if plus else 'minus'}", template, ideal, {pkm.ORIENTATION: phase}))
     return tuple(members)
 
