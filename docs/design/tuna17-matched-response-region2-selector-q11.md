@@ -106,3 +106,5 @@ The nine circuits also ran on the local qxelarator emulator (16384 shots each) t
 corrected probabilities in the frozen order were 0.0, 1.0, 1.0, 0.5034, 0.4944 and 0.0, and the residual was
 -0.0021 with standard error 0.0055 (z -0.39). The check commands ran on the remote host with the replay runtime (Qiskit 2.5.2) and the Quantum Inspire interpreter
 named by `QI_PYTHON`; neither contacts a provider.
+
+The [replicated design](tuna17-matched-response-replicated.md) succeeds this proposal for the decision: it replicates the two weighted batches and takes the standard error from the scatter of the replicate residuals.
