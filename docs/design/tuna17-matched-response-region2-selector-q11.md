@@ -102,5 +102,7 @@ export QI_PYTHON
 "$PYTHON" scripts/qi_matched_zero_divisor_selector_q11.py --check-toolchain results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-region2-selector-q11
 ```
 
-Both commands ran on the remote host with the replay runtime (Qiskit 2.5.2) and the Quantum Inspire interpreter
+The nine circuits also ran on the local qxelarator emulator (16384 shots each) through the analysis: the six
+corrected probabilities in the frozen order were 0.0, 1.0, 1.0, 0.5034, 0.4944 and 0.0, and the residual was
+-0.0021 with standard error 0.0055 (z -0.39). The check commands ran on the remote host with the replay runtime (Qiskit 2.5.2) and the Quantum Inspire interpreter
 named by `QI_PYTHON`; neither contacts a provider.

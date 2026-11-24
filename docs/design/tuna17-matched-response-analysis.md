@@ -28,6 +28,25 @@ The approved circuits are those of the
 - The per-region half-spacings `(B_r - D_r) / 2` span two batches and keep their batch offsets, so they
   are secondary.
 
+## Limit of the decision rule
+
+The standard error of the contrast, about 0.0084 for the matched series, is shot noise only. A region-by-batch
+interaction (one region drifting between batches) does not cancel in the residual, and enters it as the sum of
+four independent cell terms, so its variance under the null is `4 s^2 + 0.0084^2` for a cell standard
+deviation `s`. The only retained design that estimates `s` is the three-region Latin run
+(`results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/analysis.json`, nine readout-corrected
+cells of 16384 shots, circuit by region). Fitting circuit, region and one visibility times the ideal leaves 3
+degrees of freedom with mean square 3.6e-4; subtracting the shot variance 1.9e-5 gives `s` = 0.018, with a 90
+percent interval of 0.011 to 0.055 from the chi-squared law on 3 degrees of freedom. The fit also absorbs any
+non-affine case response, so `s` is an upper estimate of the interaction. The residual standard deviation under
+the null is then 0.038 (0.023 to 0.11), and the rate of false rejection at `abs(z) >= 3` with z computed from
+0.0084 is about 0.50 (0.28 to 0.82); at s = 0 the rate is 0.0027. The notes also retain a depth-9 batch-to-batch
+scatter of about 0.03 and a 50 Hz line in the shot record of deep circuits
+([tuna-17.md](../notes/quantum_inspire/tuna-17.md)); both point the same way. The rule is unchanged: a rejection
+at `abs(z) >= 3` is expected from drift alone about half the time, so it supports no inference about the
+common-affine response without an interaction estimate from the same series, which three batches of two regions
+leave at one degree of freedom, the residual itself.
+
 ## Binding
 
 The analysis accepts only the approved circuits. It carries the order of the six labels as a constant and
