@@ -43,6 +43,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
 import qi_platform_job_status  # noqa: E402
+
 from qi_matched_response import SELECTORS  # noqa: E402
 from qi_replicated_response import READOUT_ONE, READOUT_ZERO, WITNESS_A, WITNESS_B  # noqa: E402
 
