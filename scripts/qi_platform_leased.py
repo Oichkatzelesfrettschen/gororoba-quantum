@@ -122,11 +122,14 @@ def submit(
     execution_deadline: float | None = None,
 ) -> dict[str, Any]:
     """Submit one case batch under SUBMIT_LOCK and, on a hardware backend type, under the account's submit lease."""
-    qi_platform._check_execution_deadline(execution_deadline)    with qi_platform.token_lock(qi_platform.SUBMIT_LOCK), qi_submit_lease.session(), _leased_client():
+    qi_platform._check_execution_deadline(execution_deadline)
+    with qi_platform.token_lock(qi_platform.SUBMIT_LOCK), qi_submit_lease.session(), _leased_client():
         # token_lock blocks until the holder releases; the wait may outlast the deadline, so the check follows it.
-        qi_platform._check_execution_deadline(execution_deadline)        backend = qi_platform.Client().get(f"/backend_types/{backend_type_id}", execution_deadline=execution_deadline)
+        qi_platform._check_execution_deadline(execution_deadline)
+        backend = qi_platform.Client().get(f"/backend_types/{backend_type_id}", execution_deadline=execution_deadline)
         if backend["is_hardware"]:
-            qi_platform._check_execution_deadline(execution_deadline)            qi_submit_lease.take()
+            qi_platform._check_execution_deadline(execution_deadline)
+            qi_submit_lease.take()
         return qi_platform._submit(
             case_dir,
             backend_type_id,
