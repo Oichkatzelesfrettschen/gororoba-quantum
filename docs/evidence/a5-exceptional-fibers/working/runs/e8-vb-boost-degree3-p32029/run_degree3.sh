@@ -1,8 +1,9 @@
 #!/bin/sh
 # Degree-3 relation counts of E8-bar -> VB along the boost at the A5-600 sample values of w, modulo 32029; run from the
 # repository root with Singular on PATH and sympy and python-flint in $PYTHON. Each value takes about 37 min on one
-# core; JOBS (default 4) values run at once. Exits nonzero unless every value reports 220 targets and 140 relations,
-# and the count check rejects a log whose relation count is altered.
+# core; JOBS (default 4) values run at once. With the argument check it reads the retained logs instead of running
+# Singular, after requiring each retained script to equal a fresh emission. Exits nonzero unless every value reports 220
+# targets and 140 relations, and the count check rejects a log whose relation count is altered.
 set -eu
 PYTHON=${PYTHON:-python3}
 export PYTHON PYTHONDONTWRITEBYTECODE=1
@@ -19,9 +20,13 @@ counted() { # log: 0 when the log shows 220 targets, 140 relations and a finishe
 }
 for v in $VALUES; do
   "$PYTHON" "$D/boost_degree3.py" --emit "$v" > "$scratch/d3-$(tag "$v").sing"
+  if [ "${1:-}" = check ]; then cmp "$scratch/d3-$(tag "$v").sing" "$D/d3-$(tag "$v").sing"; fi
 done
-# shellcheck disable=SC2016
-printf '%s\n' $VALUES | xargs -P "$JOBS" -I{} sh -c 't=$(echo "w{}" | tr "/-" "dm"); Singular -q --no-warn --no-rc "$1/d3-$t.sing" < /dev/null > "$2/d3-$t.log" 2>&1' _ "$scratch" "$D"
+if [ "${1:-}" != check ]; then
+  for v in $VALUES; do cp "$scratch/d3-$(tag "$v").sing" "$D/"; done
+  # shellcheck disable=SC2016
+  printf '%s\n' $VALUES | xargs -P "$JOBS" -I{} sh -c 't=$(echo "w{}" | tr "/-" "dm"); Singular -q --no-warn --no-rc "$1/d3-$t.sing" < /dev/null > "$1/d3-$t.log" 2>&1' _ "$D"
+fi
 : > "$D/counts.txt"
 for v in $VALUES; do
   t=$(tag "$v")
