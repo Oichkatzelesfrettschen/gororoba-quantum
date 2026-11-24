@@ -4,6 +4,9 @@
 # root with Singular on PATH and sympy in $PYTHON. Exits nonzero unless both stability logs carry the expected
 # RESULT lines and no log holds a Singular error line. The stability logs are rewritten with the bytes sha256.txt
 # pins; the algebra path writes alg-w8-iso-p32009.* and leaves the retained five-closure alg-p32009.log alone.
+# The two stability units run through gororoba_quantum/run_commands.py (parallel.ordered_map), the Q(i) unit first;
+# GOROROBA_WORKERS caps the units running at once (default the available CPUs). A unit is
+# "sh run_stability.sh unit STEM", where STEM is stab-p32009 or stab-qi.
 set -eu
 PYTHON=${PYTHON:-python3}
 export PYTHON PYTHONDONTWRITEBYTECODE=1
@@ -20,12 +23,18 @@ sing() { # stem: run one generated script; the log ends with the exit line the r
   [ "$rc" -eq 0 ]
   grep -q '^RESULT done 1$' "$D/$1.log"
 }
-"$PYTHON" "$D/derivation_stability.py" "$A" 32009 10754 > "$D/stab-p32009.sing"
-"$PYTHON" "$D/derivation_stability.py" "$A" 0 0 > "$D/stab-qi.sing"
-for stem in stab-p32009 stab-qi; do
-  sing "$stem"
-  grep '^RESULT' "$D/$stem.log" | cmp -s - "$D/expected-results.txt"
-done
+if [ "${1:-}" = unit ]; then
+  case "$2" in
+    stab-p32009) "$PYTHON" "$D/derivation_stability.py" "$A" 32009 10754 > "$D/$2.sing" ;;
+    stab-qi) "$PYTHON" "$D/derivation_stability.py" "$A" 0 0 > "$D/$2.sing" ;;
+    *) echo "run_stability: unknown unit $2" >&2; exit 2 ;;
+  esac
+  sing "$2"
+  grep '^RESULT' "$D/$2.log" | cmp -s - "$D/expected-results.txt"
+  exit 0
+fi
+me=$0
+"$PYTHON" gororoba_quantum/run_commands.py "sh $me unit stab-qi" "sh $me unit stab-p32009"
 if [ "${1:-}" = algebra ]; then
   "$PYTHON" "$D/derivation_stability.py" "$A" 32009 10754 alg w8,iso > "$D/alg-w8-iso-p32009.sing"
   sing alg-w8-iso-p32009

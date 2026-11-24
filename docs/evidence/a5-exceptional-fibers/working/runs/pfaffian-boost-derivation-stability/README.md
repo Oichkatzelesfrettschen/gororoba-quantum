@@ -146,7 +146,10 @@ question over the function field F_32029(w) reached a 4 h limit at 1.5 GiB witho
     sh docs/evidence/a5-exceptional-fibers/working/runs/pfaffian-boost-derivation-stability/run_stability.sh
     sh docs/evidence/a5-exceptional-fibers/working/runs/pfaffian-boost-derivation-stability/run_stability.sh algebra
 
-The first form takes about 13 minutes, regenerates `stab-*.sing` (about 276 kB each, not retained; their sha256
+The two stability units (modulo 32009 and over Q(i)) run at once through `gororoba_quantum/run_commands.py`
+(`parallel.ordered_map`); `GOROROBA_WORKERS` caps them (default the available CPUs, `1` runs them in turn), and
+their peak memory adds, 0.52 GiB and 0.74 GiB, to about 1.3 GiB at the default worker count. The first form takes
+about 10 minutes at 2 or more workers (about 13 minutes in turn), regenerates `stab-*.sing` (about 276 kB each, not retained; their sha256
 are in `sha256.txt`) and rewrites the two stability logs with the pinned bytes. The second repeats the W8 and Iso
 stabilizers in about 1 h 50 min and writes `alg-w8-iso-p32009.*`; the retained `alg-p32009.log` and the pin of
 `alg-p32009.sing` belong to the invocation with no closure list, which stopped at its 2 h limit after Iso.
