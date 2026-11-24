@@ -24,3 +24,9 @@ the producer's Hilbert input, all twelve emissions byte-equal; opencode: recompu
 `sha256.txt` verify, the A5-610 Hilbert value 80 from the A5-600 numerator).
 | 9 | Advisor | timing figures in the READMEs and rows had no retained artifact | Fixed: `timings.tsv` in both run directories (wall, peak RSS, exit status of every run, derived from `/usr/bin/time -v`) |
 | 10 | Advisor | `ledger.tsv` is also appended by PR 1001 and edited by PR 1004 | Merge order proposed to both owners: 1002, then 1001 rebased, then 1004 |
+| 11 | hosted Codex round 1 (head 166329e5a) | `run_m2_qi.sh` ran the seven Macaulay2 runs serially, outside `parallel.py` | Fixed in 98fb395f3: `qi_m2_runner.py` dispatches them through `parallel.ordered_map`; `run_m2_qi.sh dump` PASS (14 min 43 s) |
+| 12 | hosted Codex round 1 | `run_degree3.sh` used `xargs -P` and `JOBS`, outside the worker budget | Fixed in 98fb395f3: `boost_degree3.py --run` through `parallel.ordered_map`; check mode PASS; a real `--run` of w = 2 reproduced the retained script byte for byte and its RESULT lines |
+| 13 | hosted Codex round 2 (head 98fb395f3) | both `sha256.txt` manifests were stale after the dispatcher change and omitted `qi_m2_runner.py` | Fixed in this commit: both regenerated from the final files; `sha256sum -c sha256.txt` passes in each directory |
+
+Hosted rounds are capped at three (owner decision of 2026-11-24).
+
