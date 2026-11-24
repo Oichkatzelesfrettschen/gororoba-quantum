@@ -207,3 +207,15 @@ a replicate runs within one pause ladder step (120 s, `QI_HARDWARE_PAUSE_SECONDS
   directories of the retained shape from exact shot counts, and `tests/scripts/test_qi_replicated_series.py` checks
   that a failed binding of `rep-00` stops the series, that a restart skips collected replicates, and that the stage
   gate takes N from the rule.
+
+## Machine-checked algebra
+
+The three products behind the witnesses are proved in Lean in gororoba-math,
+`lean/GororobaMath/CayleyDickson/WitnessProducts.lean` (sha256
+`f3a4cded7b8c07cb5c12dea1c0319e078d93d09ada176d22c9cb680c6d57cbb5` at gororoba-math commit
+`66c084c837165a1f4bb39d9c98be5a9ec7644a66`): the dark product (e1 + e10)(e4 - e15) is 0 with both factors nonzero, the
+bright product (e1 + e10)(e4 + e15) is 2 (e5 - e14) with trace form 8, the fixture product (e1 + e10)(e2 - e13) is
+e3 + e7 + e8 - e12 with trace form 4, and the three trace forms divided by 8 are 0, 1 and 1/2 over a field of
+characteristic zero. The theorems use the axioms propext, Classical.choice and Quot.sound. The proof covers the
+products and their norms; the identity of the selector probability with the trace form divided by 8 and the SELECT
+circuit rest on `qi_zero_divisor_cases.certify()` and are not machine-checked.

@@ -41,3 +41,14 @@ The owner chose no further local reviewer. The Advisor read the reconciled head 
 
 Owed at the run, outside this change: the producer `--check` on the merged tree, the queue lease with the approval
 record, a deadline above the worst case, and the free-disk read on the submitting host.
+
+## Hosted Codex round
+
+One round, on head c8d91773b.
+
+| Finding | Verdict | Change |
+|---|---|---|
+| an altered `--proposal` reaches the first submit before any frozen digest is checked | confirmed | ffa998f0e: `--proposal-check` in the pre-flight and before every submit, with a byte comparison of the run copy; an altered proposal reaches zero provider calls in the stubbed test |
+| the simulation runs its independent workloads serially | confirmed against the repository rule | 2a55ab9a1: the workloads run through `parallel.ordered_map`; the retained table regenerates byte for byte |
+| `--final` accepts a non-terminal decision | confirmed | af7205b0b: it refuses every status except rejected, not_rejected and undecided_at_cap and writes nothing |
+| the series deadline is not enforced inside the leased submit | confirmed | 62caba253, f1fbf9a3b, 62731c818: `qi_platform_leased.py submit --deadline-seconds`, checked on entry, after the lock wait and before the lease request; a lock held past the deadline yields zero requests |
