@@ -128,6 +128,62 @@ def test_a_hardware_submission_takes_the_lease_before_the_inner_submit_and_relea
     same(qi_platform.Client is original, True)
 
 
+def test_a_submit_lock_held_past_the_deadline_yields_no_request_and_no_lease(
+    broker: Path, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    import threading
+    import time
+
+    http = Http()
+    reached: list[int] = []
+    route(monkeypatch, http, lambda *_, **__: reached.append(1))
+    outcome: list[BaseException] = []
+
+    def contender() -> None:
+        try:
+            qi_platform_leased.submit(tmp_path, 7, "fixture approval", execution_deadline=time.monotonic() + 0.3)
+        except BaseException as error:  # noqa: BLE001 - the thread hands the refusal to the test
+            outcome.append(error)
+
+    with qi_platform.token_lock(qi_platform.SUBMIT_LOCK):
+        worker = threading.Thread(target=contender)
+        worker.start()
+        time.sleep(0.8)
+        same(worker.is_alive(), True)
+    worker.join(timeout=10)
+    same([type(error) for error in outcome], [TimeoutError])
+    same((reached, http.sent, words(broker)), ([], [], []))
+
+
+def test_a_deadline_that_passed_on_entry_is_refused_before_the_lock_and_the_cli_passes_the_seconds_left(
+    broker: Path, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    http = Http()
+    route(monkeypatch, http, lambda *_, **__: None)
+    with qi_platform.token_lock(qi_platform.SUBMIT_LOCK), pytest.raises(TimeoutError, match="execution deadline"):
+        qi_platform_leased.submit(tmp_path, 7, "fixture approval", execution_deadline=0.0)
+    seen: list[float | None] = []
+
+    def fake_submit(*_: Any, execution_deadline: float | None = None, **__: Any) -> dict[str, Any]:
+        seen.append(execution_deadline)
+        return {"batch_job": 1, "jobs": []}
+
+    monkeypatch.setattr(qi_platform_leased, "submit", fake_submit)
+    monkeypatch.setattr(sys, "argv", ["x", "submit", str(tmp_path), "--backend-type-id", "7", "--approval", "a"])
+    qi_platform_leased.main()
+    monkeypatch.setattr(
+        sys, "argv", ["x", "submit", str(tmp_path), "--backend-type-id", "7", "--approval", "a", "--deadline-seconds=-5"]
+    )
+    with pytest.raises(SystemExit, match="deadline"):
+        monkeypatch.setattr(
+            qi_platform_leased,
+            "submit",
+            lambda *_, execution_deadline=None, **__: qi_platform._check_execution_deadline(execution_deadline),
+        )
+        qi_platform_leased.main()
+    same(seen, [None])
+
+
 def test_an_emulator_submission_takes_no_lease(broker: Path, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     http = Http()
     route(monkeypatch, http, lambda *_, **__: qi_platform.Client().post("/batch_jobs", {"backend_type_id": 1}))

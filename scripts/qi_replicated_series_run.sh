@@ -31,7 +31,8 @@
 # batch reached the service); one with neither is submitted. A run directory of the series under another stamp stops
 # the series; QI_REPEAT_SERIES set to the series name arms a repeat. A run directory whose copy differs from the
 # proposal's stops the series before any submit. Before each submit attempt the proposal digests and the copy of the
-# replicate are checked again.
+# replicate are checked again, and --deadline-seconds passes the series time left to the submit route, which sends
+# no request once that time has passed, including after a wait for the account's submit lock.
 #
 # State directory: series.log, marker (the terminal marker: done, done undecided-at-cap when the stage-1 gate stops at
 # the cap of 60 and no stage-2 replicate is submitted, or failed REASON), RESUME.md, stage1.json and final.json.
@@ -336,7 +337,7 @@ do_replicate() {
 	while [ ! -e "$run/submission.json" ]; do
 		verify_proposal
 		verify_copy "$rep" "$run"
-		if out=$("$qipy" "$submit_script" submit "$run" --backend-type-id "$backend_id" --approval "$approval" 2>&1); then
+		if out=$("$qipy" "$submit_script" submit "$run" --backend-type-id "$backend_id" --approval "$approval" --deadline-seconds="$(remaining)" 2>&1); then
 			log "$rep: submitted: $out"
 			break
 		fi

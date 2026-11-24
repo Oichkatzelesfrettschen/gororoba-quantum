@@ -164,6 +164,7 @@ def main() -> int:
     p.add_argument("run", type=Path)
     p.add_argument("--backend-type-id", type=int)
     p.add_argument("--approval", default="dry-run")
+    p.add_argument("--deadline-seconds", type=float)
     p = sub.add_parser("collect")
     p.add_argument("run", type=Path)
     p.add_argument("--poll", type=float, default=0)
