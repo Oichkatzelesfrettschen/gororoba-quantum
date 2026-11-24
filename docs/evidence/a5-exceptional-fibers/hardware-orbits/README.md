@@ -38,6 +38,10 @@ runs and `results/live/CAMPAIGN_FINDINGS.md` section 6 the rank-sector run. Thre
 - Nullity 12 does not separate orbits. e1 + e24 (V, dimension 8), e1 + e18 and e17 - e2 (VB, dimension 7) read
   N_hat = 12 on the kernel map and the coset blocks, so those readings cannot tell V from VB. B12 (B9, dimension 9) has
   the same nullity, and the hardware reads it through block levels and visibilities, not N_hat.
+- A twin is its primary times e16, which is i times the primary in split coordinates, and its sign network is the
+  primary's with basis bit 4 flipped and negated ([`twin_sign_relation.py`](twin_sign_relation.py),
+  [`twin-sign-relation.json`](twin-sign-relation.json), A5-606). A twin reading is a bit-flip control of the bit-4
+  qubit, not a second algebraic sample.
 - The twins keep the orbit class of their primaries: e17 - e2 lies in VB with e1 + e18, and e17 - e10 lies in the same
   nullity-4 stratum as e1 + e26.
 - The hardware has measured the opposite end of three incidences only through A16 (N-). The N+ end of E8-bar -> N+ and

@@ -34,7 +34,7 @@ linear span of the component with four linear forms, and the substitution they d
 
 ## Scope
 
-- One prime, 32029 with i = 9115; twelve values of w. The run over the function field F_32029(w) (`run_boost.sh generic`) had not finished the standard basis of J + m I^2 after 46 min, against 2 s at a point, when this record was written; it is no part of the result, so the statement holds at the sampled values and decides nothing about a general w.
+- One prime, 32029 with i = 9115; twelve values of w. The run over the function field F_32029(w) (`run_boost.sh generic`) reached a 4 h limit at 1.5 GiB without a standard basis of J + m I^2, against 2 s at a point; it is no part of the result, so the statement holds at the sampled values and decides nothing about a general w.
 - Degree 2 of the fiber cone. L = K2 in every degree is proved at the retained basepoint over Q(i) (A5-597) and is
   not recomputed along the boost; no limiting plane is compared.
 - The four incidences of A5-419 (Iso, W8, X+, X- into VB) are not rerun here.

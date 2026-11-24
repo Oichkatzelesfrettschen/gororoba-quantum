@@ -1,7 +1,7 @@
 # A_5 exceptional fibers: goal, status by layer and open theorems
 
 This page states what the A_5 fiber program is for, where each layer stands on 2026-11-23 by the claim ledger
-([`ledger.tsv`](../../evidence/a5-exceptional-fibers/ledger.tsv), 579 rows), which theorems remain between the
+([`ledger.tsv`](../../evidence/a5-exceptional-fibers/ledger.tsv), 585 rows), which theorems remain between the
 record and the registry claim, and what the next computations and formal proofs are. The measurements and methods
 live in [a5-exceptional-fiber-findings.md](a5-exceptional-fiber-findings.md) and in the evidence directories; this
 page counts and orders them. It replaces the status of 2026-11-11 (313 rows), whose open items the rows named below
@@ -27,7 +27,7 @@ X+, X-, Iso, W8 and E8-bar into N+ and N-). The program answers in four layers:
 
 ## Status by layer (2026-11-23)
 
-Ledger totals: 216 proved, 118 certified, 114 survives, 62 refuted, 37 superseded, 12 open, 9 stalled, 7 rejected, 4 boundary.
+Ledger totals: 218 proved, 119 certified, 117 survives, 62 refuted, 37 superseded, 11 open, 10 stalled, 7 rejected, 4 boundary.
 Reproduce with `"$PYTHON" docs/evidence/a5-exceptional-fibers/ledger.py --summary`.
 
 | Layer | State | Deciding rows | Open |
@@ -47,7 +47,7 @@ D done, P partial, O open; the cell names the deciding row. Sign-conjugate incid
 |---|---|---|---|
 | E8-bar, Iso, W8, X+- -> B9; X+ -> V^a+, X- -> V^a- (7) | D A5-402 | D A5-402 | D A5-411, A5-415 |
 | E8-bar -> V (1) | D A5-402 | D A5-402 | P A5-411; boost open (A5-414) |
-| X+-, Iso, W8 -> VB (4) | D A5-405 | D A5-405 | P A5-411; boost sampled (A5-419) |
+| X+-, Iso, W8 -> VB (4) | D A5-405 | D A5-405 | P A5-411; boost sampled (A5-419) and argued for every value (A5-603) |
 | E8-bar -> V^a+- (2) | D A5-405 | D A5-405, A5-413 | D A5-411, A5-415 |
 | E8-bar -> VB (1) | D A5-005 | D A5-597 at the retained basepoint; boost sampled modulo 32029 (A5-428) | O A5-250 |
 | B9, V, VB -> N+-; V^a+ -> N+, V^a- -> N- (8) | D A5-408 | D A5-408 | D A5-412, A5-415 |
@@ -63,7 +63,7 @@ D done, P partial, O open; the cell names the deciding row. Sign-conjugate incid
 | Theorem | Content | Missing |
 |---|---|---|
 | T1 | characteristic-0 fiber cones for all 33 incidences, independent of the transverse slice | for E8-bar, A5-598 computes the induced slice map over Q(i) and checks it at three primes; open: the same map for the W8 and Iso cells (X is decided on the header slice, A5-270 and A5-305), and a machine-checked form of the Pfaffian-ideal step that makes it the induced map |
-| T2 | the fibers along each whole boundary orbit | a family over the boost parameter for the six incidences into V and VB (A5-419, A5-428 and A5-600 sample VB, the last at twelve values; a general value of the parameter and the boost of E8-bar -> V are undecided, A5-414) |
+| T2 | the fibers along each whole boundary orbit | for the four incidences of W8, Iso, X+ and X- into VB the ten-Pfaffian ideal is stable under the boost derivation modulo the closure ideal over Q(i) (A5-602), from which A5-603 argues that the fiber cone is constant along the boost in every degree (the argument is not machine-checked and rests on identifying each retained generating set with the ten-Pfaffian ideal); for E8-bar the ideal is not stable, so E8-bar -> VB rests on twelve sampled values (A5-600) and E8-bar -> V is undecided (A5-414, A5-605) |
 | T3 | the two-sided real limit theorem at all 33 incidences (A5-250) | E8-bar -> VB; A5-418 for Iso, W8 and E8-bar into N+-; the boost direction |
 | T4 | compatibility of composed limits 8 -> 12 -> 16 | the flat-family clause of A5-420 |
 | T5 | classification of the kernel bundles | nullity 4 (A5-389; the degree-2 part of the Gauss images is measured at two primes, A5-460 and A5-601); the ordinary class in nullity 8 (A5-396) |
@@ -95,6 +95,7 @@ The reviews that selected these computations, with each finding checked against 
 | The map that the change of slice induces on the 21 generators of E8-bar -> N+-, over Q(i): each header Pfaffian is a constant combination of the weight-slice generators modulo J + m I, and the transported weight-slice ideal reduces to the retained header ideal at 32009 (both roots), 32029 and 32057, six cells of six, with three rejecting controls; that it is the induced map rests on a deduction in prose | A5-598, certified | [e8-induced-slice-map](../../evidence/a5-exceptional-fibers/working/runs/e8-induced-slice-map/README.md) |
 | Macaulay2 1.25.11 reproduces the invariants, minimal primes, three primary components and nilradical data of the E8-bar quadric ideals on both slices and the primality of the Iso ideal, modulo 32009 | A5-599, certified | [quadric-ideals-macaulay2-p32009](../../evidence/a5-exceptional-fibers/working/runs/quadric-ideals-macaulay2-p32009/README.md) |
 | E8-bar -> VB at twelve values of the boost parameter modulo 32029: the same invariants and one normal form of the quadric ideal | A5-600, certified | [e8-vb-boost-family-p32029](../../evidence/a5-exceptional-fibers/working/runs/e8-vb-boost-family-p32029/README.md) |
+| The ten-Pfaffian ideal is stable under the boost derivation modulo the closure ideals of W8, Iso, X+ and X- and not modulo that of E8-bar; on W8 and Iso the linear symmetries of the pair are G_2, the scaling and the boost | A5-602 proved, A5-603 survives, A5-604 certified, A5-605 stalled | [pfaffian-boost-derivation-stability](../../evidence/a5-exceptional-fibers/working/runs/pfaffian-boost-derivation-stability/README.md) |
 | The degree-2 ranks 3,887 and 4,022 of the two open nullity-4 Gauss images at a second prime, from the kernel of the bordered matrix; the differential has rank 15 | A5-601, survives | [a5-kernel-bundles-residuals](../../evidence/a5-kernel-bundles-residuals/README.md) |
 
 The review of these records is in [a5-induced-slice-map](../../archive/reviews/a5-induced-slice-map/reconciliation.md).
@@ -104,7 +105,7 @@ The review of these records is in [a5-induced-slice-map](../../archive/reviews/a
 | Layer | Computation | Decides | Estimate from retained timings |
 |---|---|---|---|
 | T1 | `induced_slice_map.py` with the header selections of W8 and Iso, each checked against its retained header relation files | the slice map of the four W8 and Iso cells into N+- | 5 s a map and about 70 s a relation script for E8-bar (A5-598) |
-| T2 | the relations of E8-bar -> VB over F_p(w), by interpolation in w from point runs or a standard basis with a degree bound, then the arc certificate of A5-597 along the family; the same for the incidences into V | fibers along the whole orbit | 11 s a point (A5-600); the direct standard basis over F_32029(w) did not finish in 46 min |
+| T2 | the relations of E8-bar -> VB over F_p(w), by interpolation in w from point runs or a standard basis with a degree bound, then the arc certificate of A5-597 along the family; the same for the incidences into V | fibers along the whole orbit | 11 s a point (A5-600); the direct standard basis over F_32029(w) reached a 4 h limit at 1.5 GiB; the derivation test of A5-602 takes 9 min over Q(i) and leaves E8-bar alone |
 | T3 | the closure argument of A5-417 on the weight-slice fiber cones over Q(i) for Iso, W8 and E8-bar, which needs no header slice, then the product theorem for the boost direction | A5-418, A5-250 | symbolic; unmeasured |
 | T5 | the degree-3 part of the Gauss images in Gr(2, 15) and the image of z -> K(z), then charts and transition functions over the moduli | A5-389 | degree 2 takes 4 min at 2.9 GiB for 7,000 points (A5-601); the degree-3 monomials on 105 coordinates number 198,485 |
 | A5-596 | retain the final-layer quotient of an existing degree (an engine change) and test the multiplication of the conic model, which also decides nodal against smooth for the first conic | A5-278, A5-596 | minutes at d = 2, 3 once the engine writes the quotient |
@@ -139,7 +140,7 @@ certificates that the kernel checks.
   slice. A5-598 joins the two E8-bar presentations over Q(i) by the induced map; its identification of the relation
   ideals is a deduction in prose, and W8 and Iso have no such map yet.
 - **Basepoint dependence.** On V and VB the group G_2(C) x C^* misses the boost direction, so a result at the
-  retained basepoint is a result at that point of the orbit. A5-600 samples twelve values of the boost for
-  E8-bar -> VB and decides no general value.
+  retained basepoint is a result at that point of the orbit. A5-603 argues the dependence of the fiber cone away for W8, Iso, X+ and X- into VB, subject to its identification step; limiting kernel planes are not covered. A5-600 samples twelve
+  values of the boost for E8-bar -> VB and decides no general value.
 - **Ledger wording.** A5-005 to A5-009 read proved with primes `both`: they are modular statements, and the
   characteristic-0 forms are the rows of the table above.
