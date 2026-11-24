@@ -156,3 +156,6 @@ emulator at 16384 shots per circuit. Selector-zero frequencies for (region 1, re
 0.0), (0.4908, 0.0). The raw residuals are 0.0056, 0.0013, -0.0012 and -0.0142 (ideal 0, shot noise about
 0.008 each); the readout circuits read 0 and 1 on both selectors; the exploratory block-corrected residual is
 -0.0021. The emulator checks syntax, register shape and the noiseless law, and says nothing about the device.
+
+The red-team round on this proposal and its reconciliation are in the
+[review record](../archive/reviews/tuna17-matched-response-replicated/reconciliation.md).
