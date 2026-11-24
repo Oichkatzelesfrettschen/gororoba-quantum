@@ -50,9 +50,9 @@ No retained read covers the hours before 2026-10-16T21:16Z.
 Every type reports `max_jobs_per_batch_job` 5 and `batchjobs_per_queue_limit`
 5 (API); the FAQ limits a user to 3 queued jobs per hardware backend (KB,
 [faq](site/faq.md), <https://www.quantum-inspire.com/faq/>). On hardware
-the repository applies the reading that satisfies the FAQ whether its "job"
-means a batch or a circuit: at most three circuits per batch and one queued
-batch at a time (`qi_platform.py submit`, [usage.md](usage.md#queue-rules-the-faq-governs)).
+the legacy policy holds at most three circuits per batch and one queued batch
+at a time, inside the provider's limit of 5 batch jobs (a FAQ "job" is a batch
+job, provider answer of 2026-11-23) (`qi_platform.py submit`, [usage.md](usage.md#queue-rules-the-faq-governs)).
 
 Backend instances behind the types (API `/backends`): QX emulator (Cloud),
 Spin-2+ (TU Delft, offline, last heartbeat 2025-12-10), Starmon-7 (TU Delft,
