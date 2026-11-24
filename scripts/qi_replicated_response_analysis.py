@@ -12,6 +12,9 @@ sha256 of its cases.json, and applies gororoba_quantum/qi_replicated_response.py
   --binding RUN_DIR                  one replicate: manifest and circuit digests, job order, readout sanity. No
                                      witness frequency or residual is printed.
 
+--final refuses a series whose decision is not terminal (status continue: fewer replicates than the rule's N)
+and writes nothing; the stage-one-only series at the cap (status undecided_at_cap) is terminal.
+
 Every mode refuses a run directory that carries the fabrication mark of scripts/qi_replicated_series_fake.py (the
 field "fabricated" in submission.json or results.json, or the file .fabricated), unless --allow-fabricated is given;
 the dry run of the series runner and the tests give it, a real series never does.
@@ -35,6 +38,8 @@ from qi_records import load_run, validate_run  # noqa: E402
 
 PROPOSAL = ROOT / "results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-replicated-q11"
 STAGE1_SCHEMA = "qi-replicated-stage1-decision-v1"
+# The statuses of rule.stein_decision that end a series; "continue" asks for more replicates.
+TERMINAL_STATUSES = ("rejected", "not_rejected", "undecided_at_cap")
 
 
 def _require(condition: object, message: str) -> None:
@@ -183,6 +188,12 @@ def main() -> int:
                 raise ValueError("--final needs --out FILE")
             series = load_series(arguments.final, arguments.proposal, arguments.allow_fabricated)
             analysis = analyze(series)
+            decision = analysis["decision"]
+            _require(
+                decision["status"] in TERMINAL_STATUSES,
+                f"the series is not final: status {decision['status']} with {decision['collected']} of the rule's "
+                f"{decision['required_total']} replicates",
+            )
             if arguments.stage1_decision is not None:
                 first = {name: series["manifests"][name] for name in sorted(series["manifests"])[: rule.N1]}
                 held = json.loads(arguments.stage1_decision.read_text())

@@ -110,6 +110,17 @@ def test_final_reports_the_stage_one_interval_at_the_cap(tmp_path: Path) -> None
     _check(json.loads(final.read_text())["decision"]["status"] == "undecided_at_cap")
 
 
+def test_final_refuses_a_twelve_replicate_series_whose_rule_asks_for_more_and_writes_nothing(tmp_path: Path) -> None:
+    runs = _build(tmp_path / "runs", 12, SIGMA_CONTINUE)
+    stage1 = tmp_path / "stage1.json"
+    _check(_analysis("--stage1", *runs, "--out", stage1).returncode == 0)
+    _check(json.loads(stage1.read_text())["verdict"] == "continue")
+    for extra in ((), ("--stage1-decision", stage1)):
+        out = tmp_path / f"final-{len(extra)}.json"
+        done = _analysis("--final", *runs, *extra, "--out", out)
+        _check(done.returncode == 1 and "not final" in done.stderr and not out.exists())
+
+
 def test_binding_prints_no_residual_and_refuses_a_bad_readout(tmp_path: Path) -> None:
     (run,) = _build(tmp_path / "runs", 1, SIGMA_CONTINUE, effect=0.0123456)
     done = _analysis("--binding", run)
