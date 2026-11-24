@@ -60,4 +60,5 @@ WSL Ubuntu 26.04.
 | `run_degree3.sh` | the runs, the count check and the altered-log check |
 | `d3-wTAG.sing`, `.log` | one value of w (`d` for `/`, `m` for `-`) |
 | `counts.txt` | value, targets, relations |
+| `timings.tsv` | wall time, peak resident set and exit status of each Singular run (`/usr/bin/time -v`) |
 | `sha256.txt` | sha256 of every other file of this directory |

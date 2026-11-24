@@ -66,5 +66,6 @@ each below 0.36 GB; the dump 1 min 49 s at 0.15 GB with Singular 4.4.1, Python 3
 | `NAME.log` | the output for one ideal (`W8-nm-p32009.log` runs `../quadric-ideals-macaulay2-p32009/quadric_invariants.m2`) |
 | `results.txt`, `expected-results.txt` | the RESULT lines of the run and the expected ones |
 | `m2-version.txt` | `M2 --version` |
+| `timings.tsv` | wall time, peak resident set and exit status of each Macaulay2 run and of the dump driver (`/usr/bin/time -v`) |
 | `calibration-p32009-run_m2.log` | `run_m2.sh` of `../quadric-ideals-macaulay2-p32009` on the same x86_64 host before this run: PASS, 63 s, 0.34 GB (`/usr/bin/time -v` output) |
 | `sha256.txt` | sha256 of every other file of this directory |
