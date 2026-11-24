@@ -1,0 +1,36 @@
+{
+ "alpha_family": 0.05,
+ "alpha_per_test": 0.004166666666666667,
+ "operands": {
+  "e1pe18": {
+   "effect": 0.103452595541,
+   "minimum_detectable_effect_at_n": 0.091,
+   "n_full_effect": 13,
+   "n_half_effect": 38,
+   "n_keep_s_or_flip_d_at_full_effect": 9,
+   "power_at_n_full_effect": 0.9105180333452587,
+   "power_at_n_half_effect": 0.23045764980336408,
+   "sd_per_replica": 0.08082241290145897,
+   "se_five_replicas": 0.03614488187064365
+  },
+  "e1pe26": {
+   "effect": -0.155492605959,
+   "minimum_detectable_effect_at_n": 0.102,
+   "n_full_effect": 9,
+   "n_half_effect": 23,
+   "n_keep_s_or_flip_d_at_full_effect": 7,
+   "power_at_n_full_effect": 0.9969025954545632,
+   "power_at_n_half_effect": 0.4905812779534705,
+   "sd_per_replica": 0.09062113619835446,
+   "se_five_replicas": 0.040527004147557485
+  }
+ },
+ "power": 0.8,
+ "regions_per_run": 5,
+ "replicas": 15,
+ "replicas_needed": 13,
+ "runs": 3,
+ "schema": "orientation-bit-power-v1",
+ "source": "nhat-bias/result_spectral.json, run ibm_fez kernel map, character 16",
+ "tests_in_family": 12
+}

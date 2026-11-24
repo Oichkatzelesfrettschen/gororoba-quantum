@@ -2229,6 +2229,30 @@
    "experiment": "pathion_one_cz_null_bracketed_qx"
   },
   {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-24T022126Z.json",
+   "index": 0,
+   "value": 26849,
+   "script": "docs/evidence/pathion-kernel-map/orientation-bit/compile_case.py",
+   "flag": "--seed-transpiler",
+   "experiment": "pathion-kernel-map-orientation-bit-compile"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-24T022126Z.json",
+   "index": 1,
+   "value": 42509,
+   "script": "docs/evidence/pathion-kernel-map/orientation-bit/compile_case.py",
+   "flag": "--seed-transpiler",
+   "experiment": "pathion-kernel-map-orientation-bit-compile"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-24T022126Z.json",
+   "index": 2,
+   "value": 38382,
+   "script": "docs/evidence/pathion-kernel-map/orientation-bit/compile_case.py",
+   "flag": "--seed-transpiler",
+   "experiment": "pathion-kernel-map-orientation-bit-compile"
+  },
+  {
    "record": "docs/evidence/outshift_qrng/draw-2026-10-27T154654Z.json",
    "index": 0,
    "value": 34509,
