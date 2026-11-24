@@ -90,22 +90,22 @@ def test_merge_jobs_averages_the_replicas_of_one_region() -> None:
 
 
 def test_floor_band_reads_a_model_floor_as_unresolved_and_a_larger_difference_as_a_difference() -> None:
-    n, sd = 40, 0.05
+    n, sd = 60, 0.1
     follow = {"16:e1pe26": -0.12, "16:e1pe18": 0.12}
-    move = {"2:e1pe26": -0.17, "2:e1pe18": 0.07}  # C = G16 - G2 = +0.05 on both operands
-    entry = oba.synthetic_entry(n, sd, follow, move, follow)
+    weak = {"2:e1pe26": -0.03, "2:e1pe18": 0.03}  # C = G16 - G2 = -0.09 and +0.09, G2 below its threshold
+    entry = oba.synthetic_entry(n, sd, follow, weak, follow)
     flat = oba.analyze_flat(entry)
-    _expect(all(r["verdict"] == "refuted" for r in flat["readings"]), "a floor of 0.05 at zero band was not refuted")
-    inside = {t: {"lower": [0.0] * n, "upper": [0.07] * n} for t in ("e1pe26", "e1pe18")}
+    _expect(all(r["ii_gap_stays_on_bit_4"] for r in flat["readings"]), "a floor at zero band was not read as (ii)")
+    inside = {
+        "e1pe26": {"lower": [-0.12] * n, "upper": [0.0] * n},
+        "e1pe18": {"lower": [0.0] * n, "upper": [0.12] * n},
+    }
     result = oba.analyze(entry, inside)
-    _expect(all(r["verdict"] == "supported" for r in result["readings"]), "a floor inside the band was refuted")
+    _expect(all(r["verdict"] == "unresolved" for r in result["readings"]), "a floor inside the band was decided")
     _expect(all(not v["reject"] for k, v in result["tests"].items() if k.startswith("diff_cm")), "band rejected")
-    below = {t: {"lower": [0.0] * n, "upper": [0.03] * n} for t in inside}
-    beyond = oba.analyze(entry, below)
-    _expect(all(r["ii_gap_stays_on_bit_4"] is False or r["verdict"] == "refuted" for r in beyond["readings"]), "beyond")
-    _expect(
-        all(v["reject"] for k, v in beyond["tests"].items() if k.startswith("diff_cm")), "beyond the band: no reject"
-    )
+    narrow = {t: {"lower": [-0.02] * n, "upper": [0.02] * n} for t in inside}
+    beyond = oba.analyze(entry, narrow)
+    _expect(all(v["reject"] for k, v in beyond["tests"].items() if k.startswith("diff_cm")), "beyond: no reject")
     with pytest.raises(ValueError, match="floor band"):
         oba.analyze(entry, {t: {"lower": [0.0], "upper": [0.0]} for t in inside})
 

@@ -920,22 +920,25 @@ def self_test(collect: Any, compile_record: dict[str, Any] | None = None) -> lis
     )
     nb.expect(all(r["verdict"] == "refuted" for r in bound["readings"]), "a gap on the physical qubit stayed open")
     done.append("a gap that stays on the physical qubit of bit 4 (none on the swap unit) reads (ii) and layout-bound")
-    shift = 0.05
-    shifted_move = {f"2:{t}": g - shift for t, g in ((tag(o), 0.12 * RETAINED_SIGN[o]) for o in pko.OPERANDS)}
-    flat_floor = analyze_flat(synthetic_entry(n, sd, ctrl_gap, shifted_move, xtwin_gap))
+    n2, sd2 = 60, 0.1
+    weak_move = {f"2:{t}": 0.03 * RETAINED_SIGN[o] for t, o in ops.items()}
+    flat_floor = analyze_flat(synthetic_entry(n2, sd2, ctrl_gap, weak_move, xtwin_gap))
     nb.expect(
         all(r["ii_gap_stays_on_bit_4"] for r in flat_floor["readings"]), "a floor was not read as (ii) at zero band"
     )
-    band = {tag(o): {"lower": [0.0] * n, "upper": [shift + 0.02] * n} for o in pko.OPERANDS}
-    banded = analyze(synthetic_entry(n, sd, ctrl_gap, shifted_move, xtwin_gap), band)
+    edge = {t: 0.09 * RETAINED_SIGN[o] for t, o in ops.items()}  # C = G16 - G2 of the weak moved gap
+    band = {t: {"lower": [min(0.0, e) - 0.03] * n2, "upper": [max(0.0, e) + 0.03] * n2} for t, e in edge.items()}
+    banded = analyze(synthetic_entry(n2, sd2, ctrl_gap, weak_move, xtwin_gap), band)
     nb.expect(
-        all(r["verdict"] == "supported" for r in banded["readings"]), "a floor inside the band was not unresolved"
+        not any(r["ii_gap_stays_on_bit_4"] for r in banded["readings"]), "a floor inside the band was read as (ii)"
     )
-    beyond = analyze(synthetic_entry(n, sd, ctrl_gap, {}, xtwin_gap), band)
+    nb.expect(all(r["verdict"] == "unresolved" for r in banded["readings"]), "a floor inside the band was decided")
+    narrow = {t: {"lower": [-0.02] * n2, "upper": [0.02] * n2} for t in edge}
+    beyond = analyze(synthetic_entry(n2, sd2, ctrl_gap, weak_move, xtwin_gap), narrow)
     nb.expect(all(r["ii_gap_stays_on_bit_4"] for r in beyond["readings"]), "a difference beyond the band was lost")
     short = {t: {"lower": [0.0], "upper": [0.0]} for t in band}
     try:
-        analyze(synthetic_entry(n, sd, ctrl_gap, shifted_move, xtwin_gap), short)
+        analyze(synthetic_entry(n2, sd2, ctrl_gap, weak_move, xtwin_gap), short)
     except ValueError:
         pass
     else:
