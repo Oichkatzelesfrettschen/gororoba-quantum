@@ -61,8 +61,10 @@ residuals is independent of `s1` for normal residuals, and `N` is a function of 
 Z / U`. The first term is at least `delta / sqrt(c)`, and `Z / U` is a central t variable on 11 degrees of
 freedom, so `t >= shift + T`. The shift that gives two-sided power 0.80 at level 0.01 solves
 `P(abs(shift + T) >= 3.1058) = 0.80`, which is `shift = 3.9812975678033524`. Then `c = 0.024^2 / shift^2 =
-3.6339019606546454e-05`, so the target effect is `abs(delta) = 0.024`. The level is exact for every sigma at
-delta 0 (there `t = Z / U`); the power is at least 0.80 for every sigma whose `N` stays within the cap. The three
+3.6339019606546454e-05`, so the target effect is `abs(delta) = 0.024`. For normal, exchangeable per-replicate
+residuals the level is exact for every sigma at delta 0 (there `t = Z / U`); heavy-tailed residuals carry no
+exactness claim, and the simulation below measures the level under Student t residuals on 3 degrees of
+freedom; the power is at least 0.80 for every sigma whose `N` stays within the cap (for normal residuals). The three
 constants are frozen as decimal literals, and a test recomputes them with scipy.
 
 Cap. `N` is capped at 60, which binds at `s1 = sqrt(60 c) = 0.0467`. When the rule asks for more, the case stops
@@ -85,11 +87,21 @@ The simulation draws the replicate residuals and calls the module's own `require
 | 0.038 | -0.024 | 0.7013 | 0.1206 | 0.7975 | 0.8080 | 38 |
 | 0.08 | 0 | 0.0026 | 0.9770 | 0.1151 | 0.0099 | 166 |
 | 0.08 | -0.024 | 0.0156 | 0.9770 | 0.6799 | 0.8020 | 166 |
+| 0.038 (t3) | 0 | 0.0112 | 0.1258 | 0.0128 | not simulated | 25 |
 
 The uncapped columns sit at 0.010 for delta 0 (within 0.0003) and at or above 0.80 for delta -0.024 at every sigma,
 so the rule holds its level and power; the cap is what lowers the power at large sigma. Reading: at the retained
 estimate sigma = 0.038 the design decides about 88 percent of cases and rejects a true effect of -0.024 in about 70
 percent of all cases (80 percent of the decided ones). At sigma = 0.08 it almost always stops after stage 1.
+
+The `0.038 (t3)` row draws Student t residuals on 3 degrees of freedom scaled to SD 0.038 (the t3 variance is 3,
+so each draw is divided by sqrt(3)), with seed index 12 of the same draw file. Its measured level at delta 0 is
+0.0112 for the capped design (400000 trials, binomial standard error 0.00016), against 0.0100 for normal residuals,
+and 0.0128 among the cases that decide within the cap. The level therefore sits about 12 percent above its nominal
+value under this tail; the heavy tail also moves the median required total to 25 and the undecided-at-cap rate to
+0.126. The uncapped column stays empty for this row because the uncapped shortcut draws the later residuals as one
+normal variable. The simulation covers one tail shape at one sigma, and its `--check` mode recomputes the whole
+table against the retained file without writing.
 
 ## Exchangeability, preregistered
 

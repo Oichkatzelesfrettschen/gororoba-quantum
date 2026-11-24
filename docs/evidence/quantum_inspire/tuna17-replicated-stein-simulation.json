@@ -12,7 +12,8 @@
   8,
   9,
   10,
-  11
+  11,
+  12
  ],
  "rows": [
   {
@@ -94,6 +95,17 @@
    "reject_given_within_cap": 0.6798694232861806,
    "reject_uncapped_rule": 0.8019825,
    "median_required_total": 166.0
+  },
+  {
+   "sigma": 0.038,
+   "delta": 0.0,
+   "trials": 400000,
+   "reject_capped_design": 0.0112,
+   "undecided_at_cap": 0.12578,
+   "reject_given_within_cap": 0.012811420466244195,
+   "reject_uncapped_rule": null,
+   "median_required_total": 25.0,
+   "residuals": "student-t-3-scaled-to-sd"
   }
  ]
 }
