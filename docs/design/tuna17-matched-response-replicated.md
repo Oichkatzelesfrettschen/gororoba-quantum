@@ -183,8 +183,18 @@ a replicate runs within one pause ladder step (120 s, `QI_HARDWARE_PAUSE_SECONDS
 - Restart. A second call with the same `--stamp` skips a replicate whose run directory holds `results.json`,
   collects one that holds `submission.json` without a second submit, and stops on a `submission-state.json` without
   a receipt (only `qi_platform.py reconcile` knows whether the batch reached the service). The runner writes
-  `series.log`, a terminal `marker` (`done` or `failed REASON`) and `RESUME.md` with each state claim beside its
-  check command.
+  `series.log`, a terminal `marker` (`done`, `done undecided-at-cap` when the stage-1 gate stops at the cap and no
+  stage-2 replicate is submitted, or `failed REASON`) and `RESUME.md` with each state claim beside its check command.
+  A deadline that expires in stage 2 leaves a `failed` marker that counts the collected replicates against the
+  target N, and `RESUME.md` states that `--stage1` and `--final` take exactly rep-00 .. rep-11 and rep-00 ..
+  rep-(N-1), so a partial series yields no verdict; a restart with the same stamp submits only the missing ones.
+- Dry runs stay apart from armed runs in two independent ways. `--dry-run` writes below `DIR/dry-run` for both the
+  runs and the state directory, each holding a `.dry-run` marker file; an armed call never reads `DIR/dry-run` and
+  refuses a runs or state directory that holds the marker. Every record of the stand-in carries the field
+  `fabricated` in `submission.json` and `results.json` and an empty `.fabricated` file, which the real submit
+  and collect routes never write; `--binding`, `--stage1` and `--final` refuse such a directory unless
+  `--allow-fabricated` is given (the dry run and the tests give it), and an armed series stops on one before any
+  provider call. The marks guard against accidents: a hand-edited directory can lose them.
 - Control flow without a provider: `--dry-run` drives `scripts/qi_replicated_series_fake.py`, which writes run
   directories of the retained shape from exact shot counts, and `tests/scripts/test_qi_replicated_series.py` checks
   that a failed binding of `rep-00` stops the series, that a restart skips collected replicates, and that the stage

@@ -12,6 +12,10 @@ sha256 of its cases.json, and applies gororoba_quantum/qi_replicated_response.py
   --binding RUN_DIR                  one replicate: manifest and circuit digests, job order, readout sanity. No
                                      witness frequency or residual is printed.
 
+Every mode refuses a run directory that carries the fabrication mark of scripts/qi_replicated_series_fake.py (the
+field "fabricated" in submission.json or results.json, or the file .fabricated), unless --allow-fabricated is given;
+the dry run of the series runner and the tests give it, a real series never does.
+
 The decision rule is fixed in docs/design/tuna17-matched-response-replicated.md.
 """
 
@@ -38,8 +42,30 @@ def _require(condition: object, message: str) -> None:
         raise ValueError(message)
 
 
-def load_series(directories: list[Path], proposal_dir: Path) -> dict[str, Any]:
+def fabricated_mark(directory: Path) -> str | None:
+    """Where a run directory carries the offline stand-in's fabrication mark, or None."""
+    if (directory / ".fabricated").exists():
+        return ".fabricated"
+    for name in ("submission.json", "results.json"):
+        path = directory / name
+        if path.is_file():
+            try:
+                value = json.loads(path.read_text())
+            except ValueError:
+                continue
+            if isinstance(value, dict) and "fabricated" in value:
+                return f'"fabricated" in {name}'
+    return None
+
+
+def load_series(directories: list[Path], proposal_dir: Path, allow_fabricated: bool = False) -> dict[str, Any]:
     """Load, validate and bind the run directories; the replicate of a run is the one whose manifest digest it holds."""
+    if not allow_fabricated:
+        for directory in directories:
+            where = fabricated_mark(directory)
+            _require(
+                where is None, f"{directory.name}: a fabricated dry-run record ({where}); a real analysis refuses it"
+            )
     expected = rule.proposal_digests(proposal_dir)
     proposal = json.loads((proposal_dir / "proposal.json").read_text())
     owner = {row["cases.json"]: name for name, row in expected["batches"].items()}
@@ -143,10 +169,11 @@ def main() -> int:
     parser.add_argument("--proposal", type=Path, default=PROPOSAL)
     parser.add_argument("--out", type=Path)
     parser.add_argument("--stage1-decision", type=Path)
+    parser.add_argument("--allow-fabricated", action="store_true")
     arguments = parser.parse_args()
     try:
         if arguments.stage1 is not None:
-            record = stage1_record(load_series(arguments.stage1, arguments.proposal))
+            record = stage1_record(load_series(arguments.stage1, arguments.proposal, arguments.allow_fabricated))
             if arguments.out is not None:
                 arguments.out.write_text(json.dumps(record, indent=1) + "\n")
             print(f"verdict: {record['verdict']}")
@@ -154,7 +181,7 @@ def main() -> int:
         elif arguments.final is not None:
             if arguments.out is None:
                 raise ValueError("--final needs --out FILE")
-            series = load_series(arguments.final, arguments.proposal)
+            series = load_series(arguments.final, arguments.proposal, arguments.allow_fabricated)
             analysis = analyze(series)
             if arguments.stage1_decision is not None:
                 first = {name: series["manifests"][name] for name in sorted(series["manifests"])[: rule.N1]}
@@ -172,7 +199,12 @@ def main() -> int:
             print(f"status: {analysis['decision']['status']}")
             print(f"N: {analysis['decision']['n']}")
         else:
-            print(json.dumps(binding_report(load_series([arguments.binding], arguments.proposal)), indent=1))
+            print(
+                json.dumps(
+                    binding_report(load_series([arguments.binding], arguments.proposal, arguments.allow_fabricated)),
+                    indent=1,
+                )
+            )
     except ValueError as error:
         print(f"refused: {error}", file=sys.stderr)
         return 1

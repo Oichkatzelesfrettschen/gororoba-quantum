@@ -13,8 +13,14 @@ effect), the alternating pattern +-a * sigma whose first twelve values have samp
 
 Environment: FAKE_LOG (file that receives one line per call), FAKE_SIGMA, FAKE_EFFECT, FAKE_FAIL_REP (submit exits
 1 for that replicate), FAKE_COLLECT_FAIL_REP (collect exits 1 for that replicate), FAKE_BAD_READOUT_REP (that
-replicate's readout circuit reads 0.5), FAKE_REFUSE (the first N submits answer a pause refusal). No call reaches a
-network or reads a credential.
+replicate's readout circuit reads 0.5), FAKE_REFUSE (the first N submits answer a pause refusal),
+FAKE_SKEW_REP, FAKE_SKEW_FILE and FAKE_SKEW_SECONDS (collecting that replicate writes the seconds to the file, which a
+test's clock shim adds to the time the runner reads). No call reaches a network or reads a credential.
+
+Every record this module writes is fabricated and says so: submission.json and results.json carry the field
+"fabricated" (FABRICATION_MARK) that the real submit and collect routes never write, and the run directory holds an
+empty file .fabricated. qi_replicated_response_analysis.py refuses such a directory unless it runs with
+--allow-fabricated, and an armed series refuses one, so a dry run never enters a real analysis.
 """
 
 from __future__ import annotations
@@ -35,6 +41,7 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from qi_matched_response import SELECTORS  # noqa: E402
 from qi_replicated_response import READOUT_ONE, READOUT_ZERO, WITNESS_A, WITNESS_B  # noqa: E402
 
+FABRICATION_MARK = "qi-replicated-series-fake-v1"
 BATCH_BASE = 800000
 JOB_BASE = 1000000
 AMPLITUDE = math.sqrt(11 / 12)
@@ -82,11 +89,13 @@ def _write(path: Path, value: Any) -> None:
 def submit_run(run: Path, approval: str, index: int) -> None:
     """Write the checkpoint and the qi-submission-v2 receipt of one replicate."""
     cases = json.loads((run / "cases.json").read_text(encoding="utf-8"))
+    (run / ".fabricated").write_text("", encoding="utf-8")
     _write(run / "submission-state.json", {"schema": "qi-submission-state-v1", "phase": "creating"})
     _write(
         run / "submission.json",
         {
             "schema": "qi-submission-v2",
+            "fabricated": FABRICATION_MARK,
             "state": "enqueued",
             "created_utc": "2026-01-01T00:00:00+00:00",
             "approval": approval,
@@ -131,7 +140,13 @@ def collect_run(run: Path, index: int, sigma: float, effect: float, bad_readout:
         rows.append({"file": file, "job": job, "results": [result]})
     _write(
         run / "results.json",
-        {"schema": "qi-collection-v1", "collected_utc": "2026-01-01T00:00:00+00:00", "jobs": rows, "transactions": []},
+        {
+            "schema": "qi-collection-v1",
+            "fabricated": FABRICATION_MARK,
+            "collected_utc": "2026-01-01T00:00:00+00:00",
+            "jobs": rows,
+            "transactions": [],
+        },
     )
 
 
@@ -183,6 +198,8 @@ def main() -> int:
         float(env.get("FAKE_EFFECT", "0")),
         env.get("FAKE_BAD_READOUT_REP") == name,
     )
+    if env.get("FAKE_SKEW_REP") == name and env.get("FAKE_SKEW_FILE"):
+        Path(env["FAKE_SKEW_FILE"]).write_text(env.get("FAKE_SKEW_SECONDS", "0") + "\n", encoding="utf-8")
     return 0
 
 

@@ -5,6 +5,11 @@
 #            [--runs-dir DIR] [--state-dir DIR] [--proposal DIR]
 #        qi_replicated_series_run.sh --dry-run --runs-dir DIR --state-dir DIR [--deadline SECONDS] [--stamp STAMP]
 #
+# --dry-run writes under DIR/dry-run for the runs and the state, each holding a .dry-run marker file; an armed call
+# refuses a runs or state directory that holds the marker and never reads DIR/dry-run, and every run directory the
+# stand-in writes carries a fabrication mark that the analysis refuses outside --dry-run (see
+# qi_replicated_response_analysis.py --allow-fabricated).
+#
 # The script does nothing without --approval QUOTE (the owner's approval, quoted, recorded in each
 # submission.json) and the exact arming argument --submit-replicated-q11. --dry-run walks the same control flow
 # against scripts/qi_replicated_series_fake.py, takes neither argument, needs an explicit --runs-dir other than the
@@ -25,8 +30,8 @@
 # the series; QI_REPEAT_SERIES set to the series name arms a repeat. A run directory whose copy differs from the
 # proposal's stops the series before any submit.
 #
-# State directory: series.log, marker (the terminal marker: done, or failed REASON), RESUME.md, stage1.json and
-# final.json.
+# State directory: series.log, marker (the terminal marker: done, done undecided-at-cap when the stage-1 gate stops at
+# the cap of 60 and no stage-2 replicate is submitted, or failed REASON), RESUME.md, stage1.json and final.json.
 #
 # Environment: QI_PYTHON (the Quantum Inspire interpreter, real runs), PYTHON (analysis; default python3),
 # QI_SUBMIT_LEASE_COMMAND (the lease command qi_submit_lease.py appends take HOLDER or release NONCE to),
@@ -37,7 +42,11 @@ series_name=tuna17-replicated-q11
 root=$(cd "$(dirname "$0")/.." && pwd)
 approval=
 armed=
+allow=
 dry=
+verdict=
+total=
+done_note=
 deadline=
 stamp=
 runs=
@@ -107,6 +116,7 @@ if [ -n "$dry" ]; then
 	}
 	[ -n "$deadline" ] || deadline=3600
 	approval="dry-run"
+	allow=--allow-fabricated
 else
 	{ [ "$armed" = 1 ] && [ -n "$approval" ]; } || usage
 	[ -n "$deadline" ] || usage
@@ -151,7 +161,22 @@ export GLIBC_TUNABLES
 QI_HARDWARE_PAUSE_SECONDS=120
 export QI_HARDWARE_PAUSE_SECONDS
 
-mkdir -p "$runs" "$state"
+# The directories as given, for the resume command: a dry run writes one level below them.
+runs_arg=$runs
+state_arg=$state
+if [ -n "$dry" ]; then
+	runs=$runs/dry-run
+	state=$state/dry-run
+	mkdir -p "$runs" "$state"
+	: >"$runs/.dry-run"
+	: >"$state/.dry-run"
+else
+	{ [ ! -e "$runs/.dry-run" ] && [ ! -e "$state/.dry-run" ]; } || {
+		echo "an armed run refuses a runs or state directory that holds a dry-run marker" >&2
+		exit 2
+	}
+	mkdir -p "$runs" "$state"
+fi
 rm -f "$state/marker"
 start=$(date +%s)
 reason=
@@ -161,18 +186,27 @@ log() {
 	printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*" | tee -a "$state/series.log" >&2
 }
 
-write_resume() {
+count_collected() {
 	collected=0
 	for d in "$runs"/"$stamp-$series_name"-rep-*; do
-		[ -e "$d/results.json" ] && collected=$((collected + 1))
+		if [ -e "$d/results.json" ]; then
+			collected=$((collected + 1))
+		fi
 	done
+}
+
+write_resume() {
+	count_collected
 	cat >"$state/RESUME.md" <<EOF
 # Replicated Tuna-17 series RESUME
 
 Stamp: $stamp. Replicates collected when this note was written: $collected. Terminal marker: $state/marker.
+Stage-1 verdict: ${verdict:-not reached}. Stage-2 target N: ${total:-not known}.
+The analysis refuses a partial series: --stage1 takes exactly rep-00 .. rep-11 and --final takes exactly rep-00 ..
+rep-(N-1), so $collected collected replicates give a verdict only when they are the whole of the target.
 
 Resume (same stamp, same approval quote):
-$0 --stamp $stamp --runs-dir $runs --state-dir $state --deadline SECONDS [--approval QUOTE --submit-replicated-q11 | --dry-run]
+$0 --stamp $stamp --runs-dir $runs_arg --state-dir $state_arg --deadline SECONDS [--approval QUOTE --submit-replicated-q11 | --dry-run]
 
 State claims, each with its check:
 - Run directories of this stamp: ls -d $runs/$stamp-$series_name-rep-*
@@ -192,7 +226,7 @@ finish() {
 	rc=$?
 	trap - EXIT
 	if [ "$rc" -eq 0 ]; then
-		printf 'done\n' >"$state/marker"
+		printf 'done%s\n' "$done_note" >"$state/marker"
 	else
 		printf 'failed %s\n' "${reason:-exit $rc}" >"$state/marker"
 	fi
@@ -239,6 +273,14 @@ for other in "$runs"/*-"$series_name"-rep-*; do
 		fail "$other holds this series under stamp $held; resume with --stamp $held, or arm a repeat with QI_REPEAT_SERIES=$series_name"
 	fi
 done
+if [ -z "$dry" ]; then
+	for other in "$runs"/*-"$series_name"-rep-*; do
+		[ -e "$other" ] || continue
+		if [ -e "$other/.fabricated" ]; then
+			fail "$other holds a fabricated dry-run record; an armed run never reads one"
+		fi
+	done
+fi
 for src in "$proposal"/rep-*; do
 	[ -d "$src" ] || continue
 	run=$runs/$stamp-$series_name-$(basename "$src")
@@ -255,7 +297,7 @@ run_of() {
 }
 
 check_binding() {
-	"$py" "$analysis" --binding "$1" --proposal "$proposal" >"$state/binding-$(basename "$1").json" || fail "binding check of $(basename "$1") failed"
+	"$py" "$analysis" $allow --binding "$1" --proposal "$proposal" >"$state/binding-$(basename "$1").json" || fail "binding check of $(basename "$1") failed"
 	log "$(basename "$1"): binding and readout checks passed"
 }
 
@@ -264,7 +306,8 @@ do_replicate() {
 	run=$(run_of "$i")
 	rep=$(printf 'rep-%02d' "$i")
 	if [ "$(remaining)" -le 0 ]; then
-		fail "the deadline of $deadline s passed before $rep"
+		count_collected
+		fail "the deadline of $deadline s passed before $rep ($collected replicates collected${total:+ of $total}; the analysis refuses a partial series)"
 	fi
 	if [ -e "$run/results.json" ]; then
 		log "$rep: collected; skipped"
@@ -311,7 +354,7 @@ analyze_series() {
 		k=$((k - 1))
 		set -- "$(run_of "$k")" "$@"
 	done
-	"$py" "$analysis" "$mode" "$@"
+	"$py" "$analysis" $allow "$mode" "$@"
 }
 
 # --- stage 1 (rep-00 is the profile unit) --------------------------------------------------------------------
@@ -331,7 +374,12 @@ continue)
 	esac
 	{ [ "$total" -gt 12 ] && [ "$total" -le 60 ]; } || fail "the stage-1 total $total lies outside 13 .. 60"
 	;;
-final | undecided-at-cap) total=12 ;;
+final) total=12 ;;
+undecided-at-cap)
+	total=12
+	done_note=" undecided-at-cap"
+	log "stage 1: the verdict is undecided at the cap; no stage-2 replicate is submitted and --final reports the stage-1 interval"
+	;;
 *) fail "the stage-1 gate printed no verdict" ;;
 esac
 

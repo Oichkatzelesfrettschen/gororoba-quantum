@@ -43,10 +43,16 @@ def _build(runs: Path, count: int, sigma: float, effect: float = 0.0, stamp: str
     return out
 
 
-def _analysis(*arguments: object) -> subprocess.CompletedProcess[str]:
+def _strict(*arguments: object) -> subprocess.CompletedProcess[str]:
+    """The analysis as a real series calls it: a fabricated run directory is refused."""
     return subprocess.run(
         [sys.executable, str(ANALYSIS), *map(str, arguments)], capture_output=True, text=True, check=False
     )
+
+
+def _analysis(*arguments: object) -> subprocess.CompletedProcess[str]:
+    """The analysis in the explicit dry-run mode the offline stand-in's records need."""
+    return _strict("--allow-fabricated", *arguments)
 
 
 def test_stage1_continue_prints_the_rule_total_and_never_the_mean(tmp_path: Path) -> None:
@@ -192,7 +198,8 @@ def _run(
     ]
     done = subprocess.run(command, capture_output=True, text=True, env=env, check=False)
     log = tmp_path / "calls.log"
-    return done.returncode, log.read_text() if log.exists() else "", done.stderr, state
+    # a dry run writes one level below the directories it is given
+    return done.returncode, log.read_text() if log.exists() else "", done.stderr, state / "dry-run"
 
 
 def _marker(state: Path) -> str:
@@ -233,9 +240,14 @@ def test_a_dry_run_continues_to_the_rules_total_and_writes_the_marker_and_resume
 def test_a_dry_run_stops_after_stage_one_when_the_rule_asks_for_twelve_or_for_more_than_the_cap(tmp_path: Path) -> None:
     code, calls, _, state = _run(tmp_path / "a")
     _check(code == 0 and calls.count("submit") == 12 and _marker(state) == "done")
-    code, calls, _, state = _run(tmp_path / "b", {"FAKE_SIGMA": str(SIGMA_CAP)})
-    _check(code == 0 and calls.count("submit") == 12)
+    _check(json.loads((state / "stage1.json").read_text())["verdict"] == "final")
+    _check(json.loads((state / "final.json").read_text())["decision"]["n"] == 12)
+    code, calls, err, state = _run(tmp_path / "b", {"FAKE_SIGMA": str(SIGMA_CAP)})
+    _check(code == 0 and calls.count("submit") == 12 and calls.count("collect") == 12)
+    _check(_marker(state) == "done undecided-at-cap" and "undecided at the cap" in err)
+    _check(json.loads((state / "stage1.json").read_text())["verdict"] == "undecided-at-cap")
     _check(json.loads((state / "final.json").read_text())["decision"]["status"] == "undecided_at_cap")
+    _check((state / "final.out").read_text().splitlines() == ["status: undecided_at_cap", "N: 12"])
 
 
 def test_a_failed_binding_of_the_profile_unit_stops_the_series_with_a_marker(tmp_path: Path) -> None:
@@ -260,7 +272,7 @@ def test_a_restart_skips_collected_replicates_and_collects_a_submitted_one_witho
 
 
 def test_a_checkpoint_without_a_receipt_and_another_stamp_each_stop_the_series(tmp_path: Path) -> None:
-    runs = tmp_path / "runs"
+    runs = tmp_path / "runs" / "dry-run"
     run = runs / "T-tuna17-replicated-q11-rep-00"
     shutil.copytree(PROPOSAL / "rep-00", run)
     (run / "submission-state.json").write_text("{}")
@@ -285,7 +297,7 @@ def test_the_deadline_bounds_the_series(tmp_path: Path) -> None:
 
 
 def test_a_changed_run_copy_stops_the_series_before_any_submit(tmp_path: Path) -> None:
-    run = tmp_path / "runs" / "T-tuna17-replicated-q11-rep-00"
+    run = tmp_path / "runs" / "dry-run" / "T-tuna17-replicated-q11-rep-00"
     shutil.copytree(PROPOSAL / "rep-00", run)
     (run / "readout-0.cq").write_text("changed\n")
     code, calls, _, state = _run(tmp_path)
@@ -317,3 +329,170 @@ def test_the_runner_script_is_shellcheck_clean() -> None:
         pytest.skip("shellcheck is not installed")
     done = subprocess.run([tool, "-S", "error", str(RUNNER)], capture_output=True, text=True, check=False)
     _check(done.returncode == 0)
+
+
+# --- fabricated records stay out of an armed series ----------------------------------------------------------------
+
+
+def _stub(tmp_path: Path) -> Path:
+    """A stand-in for the Quantum Inspire interpreter that answers the status read and refuses every other call."""
+    stub = tmp_path / "qi_stub.sh"
+    stub.write_text(
+        '#!/bin/sh\nif [ "$1" = "-c" ]; then echo online; exit 0; fi\n'
+        'echo "$*" >>"$STUB_LOG"\necho "stub route refuses" >&2\nexit 1\n'
+    )
+    stub.chmod(0o755)
+    return stub
+
+
+def _armed(
+    tmp_path: Path, runs: Path, state: Path, stamp: str = "T"
+) -> tuple[subprocess.CompletedProcess[str], list[str]]:
+    """The armed runner with every provider route replaced by the stub; the stub log lists what it was asked."""
+    log = tmp_path / "stub.log"
+    log.unlink(missing_ok=True)
+    env = {
+        "PATH": SHELL_PATH,
+        "PYTHON": sys.executable,
+        "QI_PYTHON": str(_stub(tmp_path)),
+        "QI_SUBMIT_LEASE_COMMAND": "true",
+        "STUB_LOG": str(log),
+    }
+    command = [
+        "sh",
+        str(RUNNER),
+        "--approval",
+        "QUOTE",
+        "--submit-replicated-q11",
+        "--deadline",
+        "600",
+        "--stamp",
+        stamp,
+        "--runs-dir",
+        str(runs),
+        "--state-dir",
+        str(state),
+    ]
+    done = subprocess.run(command, capture_output=True, text=True, env=env, check=False)
+    return done, (log.read_text().splitlines() if log.exists() else [])
+
+
+@pytest.mark.parametrize("mark", [".fabricated", "submission", "results"])
+def test_every_analysis_mode_refuses_a_fabricated_run_directory_unless_dry_run_mode_is_explicit(
+    tmp_path: Path, mark: str
+) -> None:
+    runs = _build(tmp_path / "runs", 12, SIGMA_FINAL)
+    # the three marks are independent: strip two and the remaining one still refuses
+    for run in runs:
+        if mark != ".fabricated":
+            (run / ".fabricated").unlink()
+        for name in ("submission", "results"):
+            if name != mark:
+                data = json.loads((run / f"{name}.json").read_text())
+                del data["fabricated"]
+                (run / f"{name}.json").write_text(json.dumps(data, indent=1))
+    for arguments in (["--binding", runs[0]], ["--stage1", *runs], ["--final", *runs, "--out", tmp_path / "f.json"]):
+        refused = _strict(*arguments)
+        _check(refused.returncode == 1 and "fabricated" in refused.stderr)
+        _check(_analysis(*arguments).returncode == 0)
+
+
+def test_a_run_directory_without_any_mark_enters_the_analysis(tmp_path: Path) -> None:
+    runs = _build(tmp_path / "runs", 12, SIGMA_FINAL)
+    for run in runs:
+        (run / ".fabricated").unlink()
+        for name in ("submission", "results"):
+            data = json.loads((run / f"{name}.json").read_text())
+            del data["fabricated"]
+            (run / f"{name}.json").write_text(json.dumps(data, indent=1))
+    _check(_strict("--binding", runs[0]).returncode == 0)
+    done = _strict("--stage1", *runs)
+    _check(done.returncode == 0 and done.stdout.splitlines() == ["verdict: final", "N: 12"])
+
+
+def test_an_armed_series_refuses_a_fabricated_run_directory_before_any_provider_call(tmp_path: Path) -> None:
+    fake = _fake()
+    run = tmp_path / "runs" / "T-tuna17-replicated-q11-rep-00"
+    shutil.copytree(PROPOSAL / "rep-00", run)
+    fake.submit_run(run, "dry-run", 0)  # a fabricated receipt without results: a real collect would read a batch id
+    done, stub_calls = _armed(tmp_path, tmp_path / "runs", tmp_path / "state")
+    _check(done.returncode != 0 and stub_calls == [])
+    _check("fabricated dry-run record" in (tmp_path / "state" / "marker").read_text())
+
+
+def test_an_armed_series_refuses_a_runs_or_state_directory_that_holds_a_dry_run_marker(tmp_path: Path) -> None:
+    for which in ("runs", "state"):
+        base = tmp_path / f"stub-{which}"
+        base.mkdir()
+        dirs = {"runs": tmp_path / "r" / which, "state": tmp_path / "s" / which}
+        dirs[which].mkdir(parents=True)
+        (dirs[which] / ".dry-run").write_text("")
+        done, stub_calls = _armed(base, dirs["runs"], dirs["state"])
+        _check(done.returncode == 2 and "dry-run marker" in done.stderr and stub_calls == [])
+        _check(not (dirs["state"] / "marker").exists())
+
+
+@pytest.mark.audit
+def test_a_dry_run_leaves_the_directories_an_armed_series_reads_untouched(tmp_path: Path) -> None:
+    runs, state = tmp_path / "runs", tmp_path / "state"
+    code, calls, _, dry_state = _run(tmp_path)
+    _check(code == 0 and calls.count("submit") == 12 and _marker(dry_state) == "done")
+    # every dry-run file sits below DIR/dry-run, so a series that reads DIR sees no run directory of it
+    _check([p.name for p in runs.iterdir()] == ["dry-run"] and [p.name for p in state.iterdir()] == ["dry-run"])
+    _check((runs / "dry-run" / ".dry-run").exists() and (state / "dry-run" / ".dry-run").exists())
+    # the same stamp, runs directory and state directory under the armed arguments
+    done, stub_calls = _armed(tmp_path, runs, state)
+    _check(done.returncode != 0 and not (state / "final.json").exists())
+    _check(len(stub_calls) == 1 and " submit " in stub_calls[0] and "rep-00" in stub_calls[0])
+    _check(not any("collect" in line for line in stub_calls))
+    # the dry-run directories themselves are refused
+    done, stub_calls = _armed(tmp_path, runs / "dry-run", tmp_path / "state2")
+    _check(done.returncode == 2 and stub_calls == [] and not (state / "final.json").exists())
+    done, stub_calls = _armed(tmp_path, tmp_path / "runs2", state / "dry-run")
+    _check(done.returncode == 2 and stub_calls == [])
+
+
+@pytest.mark.audit
+def test_a_deadline_that_expires_in_stage_two_leaves_a_counted_marker_and_a_restart_completes(
+    tmp_path: Path,
+) -> None:
+    shim = tmp_path / "shim"
+    shim.mkdir()
+    skew = tmp_path / "skew"
+    clock = shim / "date"
+    clock.write_text(
+        '#!/bin/sh\nskew=0\n[ -r "$SKEW_FILE" ] && skew=$(cat "$SKEW_FILE")\n'
+        'case "$*" in\n*+%s*) echo $(($(/bin/date +%s) + skew)) ;;\n*) exec /bin/date "$@" ;;\nesac\n'
+    )
+    clock.chmod(0o755)
+    env = {
+        "PATH": f"{shim}:{SHELL_PATH}",
+        "SKEW_FILE": str(skew),
+        "FAKE_SIGMA": str(SIGMA_CONTINUE),
+        "FAKE_SKEW_REP": "rep-13",
+        "FAKE_SKEW_FILE": str(skew),
+        "FAKE_SKEW_SECONDS": "100000",
+    }
+    code, calls, _, state = _run(tmp_path, env)
+    _check(code != 0 and calls.count("submit") == 14)
+    _check(
+        _marker(state).startswith("failed the deadline of 3600 s passed before rep-14")
+        and "14 replicates collected of 18" in _marker(state)
+    )
+    note = (state / "RESUME.md").read_text()
+    _check("collected when this note was written: 14" in note and "Stage-2 target N: 18" in note)
+    _check("refuses a partial series" in note)
+    runs = sorted((tmp_path / "runs" / "dry-run").glob("T-tuna17-replicated-q11-rep-*"))
+    _check(len(runs) == 14)
+    partial = _analysis("--final", *runs, "--stage1-decision", state / "stage1.json", "--out", tmp_path / "x.json")
+    _check(partial.returncode == 1 and "refused" in partial.stderr and not (tmp_path / "x.json").exists())
+    # a restart with the same stamp, under a clock that has not skipped, submits only the missing replicates
+    skew.unlink()
+    (tmp_path / "calls.log").unlink()
+    code, calls, _, state = _run(tmp_path, {"SKEW_FILE": str(skew), "FAKE_SIGMA": str(SIGMA_CONTINUE)})
+    _check(code == 0 and _marker(state) == "done")
+    _check(
+        [line for line in calls.splitlines() if line.startswith("submit")]
+        == [f"submit rep-{i:02d}" for i in range(14, 18)]
+    )
+    _check(json.loads((state / "final.json").read_text())["decision"]["n"] == 18)
