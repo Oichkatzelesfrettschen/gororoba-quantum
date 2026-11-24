@@ -38,4 +38,5 @@ n=$(($(wc -l < "$iso") - 1))
 head -n "$n" "$iso" > "$scratch/mutant.txt"
 M2 --script "$D/qi_invariants.m2" mutant "$scratch/mutant.txt" > "$scratch/mutant.log" 2>&1 || true
 grep -q '^RESULT mutant K generators 67 ' "$scratch/mutant.log"
+grep -q '^DONE mutant$' "$scratch/mutant.log"
 echo "run_m2_qi: PASS"

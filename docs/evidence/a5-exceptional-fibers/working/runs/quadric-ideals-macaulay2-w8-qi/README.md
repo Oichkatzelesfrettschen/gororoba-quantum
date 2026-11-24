@@ -50,7 +50,7 @@ prime, component and radical to Q(i)[y], where it reads dimension, degree and li
 
     PATH=DIR_WITH_M2:$PATH sh docs/evidence/a5-exceptional-fibers/working/runs/quadric-ideals-macaulay2-w8-qi/run_m2_qi.sh
 
-from the repository root. The argument `dump` first rewrites the Q(i) ideal files with `qi_quadric_ideals.py`
+from the repository root. A run rewrites the retained logs, `results.txt` and `m2-version.txt` of this directory, so a replay that should leave the record intact runs on a copy of the tree. The argument `dump` first rewrites the Q(i) ideal files with `qi_quadric_ideals.py`
 (Singular, sympy and python-flint in `$PYTHON`) and requires byte-equal files. The retained run (`run_m2_qi.sh dump`) took 14 min 29 s at 1.1 GB peak on
 an x86_64 WSL host (Ubuntu 26.04) with Macaulay2 1.25.11 from the Ubuntu package `macaulay2` unpacked in a user
 directory: the modular W8 ideal 10 min 27 s at 1.1 GB, the Q(i) W8 ideals 1 min 50 s each, the others under 22 s,
@@ -66,4 +66,5 @@ each below 0.36 GB; the dump 1 min 49 s at 0.15 GB with Singular 4.4.1, Python 3
 | `NAME.log` | the output for one ideal (`W8-nm-p32009.log` runs `../quadric-ideals-macaulay2-p32009/quadric_invariants.m2`) |
 | `results.txt`, `expected-results.txt` | the RESULT lines of the run and the expected ones |
 | `m2-version.txt` | `M2 --version` |
+| `calibration-p32009-run_m2.log` | `run_m2.sh` of `../quadric-ideals-macaulay2-p32009` on the same x86_64 host before this run: PASS, 63 s, 0.34 GB (`/usr/bin/time -v` output) |
 | `sha256.txt` | sha256 of every other file of this directory |

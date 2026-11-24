@@ -15,8 +15,10 @@ trap 'rm -rf "$scratch"' EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
 tag() { echo "w$1" | tr '/-' 'dm'; }
-counted() { # log: 0 when the log shows 220 targets, 140 relations and a finished run
-  grep -q '^RESULT targets 220$' "$1" && grep -q '^RESULT relations 140$' "$1" && grep -q '^RESULT done 1$' "$1"
+counted() { # log: 0 when the log holds exactly one each of 220 targets, 140 relations and a finished run
+  [ "$(grep -c '^RESULT targets ' "$1")" = 1 ] && [ "$(grep -c '^RESULT relations ' "$1")" = 1 ] &&
+    [ "$(grep -c '^RESULT done ' "$1")" = 1 ] && grep -q '^RESULT targets 220$' "$1" &&
+    grep -q '^RESULT relations 140$' "$1" && grep -q '^RESULT done 1$' "$1"
 }
 for v in $VALUES; do
   "$PYTHON" "$D/boost_degree3.py" --emit "$v" > "$scratch/d3-$(tag "$v").sing"
@@ -33,9 +35,15 @@ for v in $VALUES; do
   counted "$D/d3-$t.log"
   echo "$v $(grep '^RESULT targets' "$D/d3-$t.log" | cut -d' ' -f3) $(grep '^RESULT relations' "$D/d3-$t.log" | cut -d' ' -f3)" >> "$D/counts.txt"
 done
-sed 's/^RESULT relations 140$/RESULT relations 139/' "$D/d3-w2.log" > "$scratch/mutant.log"
-if counted "$scratch/mutant.log"; then
-  echo "run_degree3: the count check accepted an altered log" >&2
-  exit 1
-fi
+# Known-bad logs: an altered count, an appended conflicting count, a duplicated line, a missing done line.
+sed 's/^RESULT relations 140$/RESULT relations 139/' "$D/d3-w2.log" > "$scratch/mutant-altered.log"
+{ cat "$D/d3-w2.log"; echo 'RESULT relations 139'; } > "$scratch/mutant-conflict.log"
+{ cat "$D/d3-w2.log"; echo 'RESULT targets 220'; } > "$scratch/mutant-duplicate.log"
+grep -v '^RESULT done ' "$D/d3-w2.log" > "$scratch/mutant-unfinished.log" || true
+for m in altered conflict duplicate unfinished; do
+  if counted "$scratch/mutant-$m.log"; then
+    echo "run_degree3: the count check accepted the $m log" >&2
+    exit 1
+  fi
+done
 echo "run_degree3: PASS"

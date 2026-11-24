@@ -25,10 +25,11 @@ values of A5-600.
 
 - Every value gives 140 relations, so h_3 = 80 at each, the degree-3 Hilbert value of the quadric ring of A5-600's
   ideal (first numerator 1, 0, -21, 70, -105, 84, -35, 6 in 10 variables).
+- w = 9115 is a square root of -1 modulo 32029, where c = 0 and s = i: the boost is a pure rotation into the second block, the most special point of the list.
 - Calibration: w = 2 reproduces the count of A5-428, which `boost_e8_vb_quadrics.py` computed by another script
   (`degree_three_row`).
 - Since the degree-2 ideal K2(w) lies in the relation ideal, its degree-3 part (K2)_3, of dimension 140 by the Hilbert
-  function above, lies in the degree-3 relation space; equal dimensions give L_3 = (K2)_3 at each listed value.
+  function above, lies in the degree-3 relation space, and A5-600 records the same Hilbert numerator at every listed value (its frames carry the twelve quadric ideals onto one); equal dimensions give L_3 = (K2)_3 at each listed value.
 
 ## Method
 
@@ -47,7 +48,7 @@ degree 3 (`kbase(std(ideal(0)),3)`, 220 targets) and stops after the syzygies, p
 
     PYTHON=python3 JOBS=4 sh docs/evidence/a5-exceptional-fibers/working/runs/e8-vb-boost-degree3-p32029/run_degree3.sh
 
-from the repository root, with Singular on PATH and sympy and python-flint in that interpreter; the argument `check`
+from the repository root, with Singular on PATH and sympy and python-flint in that interpreter. A run without `check` rewrites the retained scripts and logs of this directory; the argument `check`
 reads the retained logs after requiring each retained script to equal a fresh emission. One value takes 37 min on
 one core at 0.32 GB alone (w = 2 and 3, run as a pair); the other ten, run at once on 16 cores with 32 threads, took
 1 h 20 min 48 s to 1 h 22 min 15 s at 0.32 GB each, the syzygy stage dominant. Singular 4.4.1, Python 3.14.9, sympy 1.14.0, python-flint 0.9.0, x86_64
