@@ -913,7 +913,7 @@ def self_test(collect: Any, compile_record: dict[str, Any] | None = None) -> lis
     stays = analyze_flat(synthetic_entry(n, sd, ctrl_gap, {}, xtwin_gap))
     nb.expect(all(r["verdict"] == "refuted" and r["ii_gap_stays_on_bit_4"] for r in stays["readings"]), "stays on 16")
     nb.expect(not any(r["leakage_into_character_16"] for r in stays["readings"]), "stays: spurious leakage")
-    done.append("a replicated gap on bit 4 with none on bit 1 reads refuted as stated (reading ii), through C*")
+    done.append("a replicated gap on bit 4 with none on bit 1 reads refuted as stated (reading ii), through C")
     bound = analyze_flat(synthetic_entry(n, sd, ctrl_gap, {}, xtwin_gap, swap={}))
     nb.expect(
         all(r["layout_bound_candidate"] and not r["gap_travels_with_bit_4_wire"] for r in bound["readings"]), "layout"
@@ -996,7 +996,7 @@ def self_test(collect: Any, compile_record: dict[str, Any] | None = None) -> lis
         for o in power["operands"].values():
             for stat in ("ctrl_g16", "move_g2", "swap_g16"):
                 nb.expect(o["statistics"][stat]["regions_rho1"]["power_full_effect"] >= POWER, f"power of {stat}")
-        done.append(f"{PLANNED_REGIONS} regions read {JOBS} times give power at least {POWER} for the gaps and C*")
+        done.append(f"{PLANNED_REGIONS} regions read {JOBS} times give power at least {POWER} for the three gaps")
     return done
 
 
