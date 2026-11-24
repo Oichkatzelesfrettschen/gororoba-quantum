@@ -145,7 +145,8 @@ Backend instances: QX emulator (Cloud), Spin-2+ (TU Delft), Starmon-7 (TU Delft)
 <!-- quantum-inspire-facts:end -->
 
 The last two columns are the API's mechanical ceilings, not an allowance:
-on hardware the FAQ's 3 queued jobs governs ([usage.md](usage.md#queue-rules-the-faq-governs)).
+on hardware the runner's queue policy applies inside the provider's limit of 5 batch jobs
+([usage.md](usage.md#queue-rules-the-faq-governs)).
 
 Status, queue length and heartbeat change between reads and live only in the
 snapshot. Spin-2+ and Starmon-7 appear as backend instances without a backend
@@ -197,9 +198,9 @@ cases.json digest, refuses an offline backend or a limit breach, records the
 approval in submission.json and sends one batch; `collect CASE_DIR` writes
 the raw shots, job records and charged transactions. On hardware a batch
 holds at most three circuits and goes in only when none of the account's
-batches is queued, so at most three jobs are ever queued (the FAQ's limit
-under either reading of "job"; [usage.md](usage.md#queue-rules-the-faq-governs)
-holds the rule, and the FAQ governs over the API's 5 and 5); a series runs a QX dry run first, then
+batches is queued, so at most three circuits in one batch job are ever queued, inside the
+provider's limit of 5 batch jobs per user and backend type ([usage.md](usage.md#queue-rules-the-faq-governs)
+holds the rule and the provider's answer of 2026-11-23); a series runs a QX dry run first, then
 submits each hardware batch only after the previous one is collected, passes
 its sanity checks and a pause. `submit` also refuses a hardware batch while
 any job of the account on a hardware backend type (`is_hardware`, whichever

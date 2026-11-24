@@ -217,7 +217,7 @@ Catalogue limits per backend type (retrieved 2026-10-16, this account):
 
 Every backend type carries `batchjobs_per_queue_limit` 5 and
 `max_jobs_per_batch_job` 5 (C1), the service's mechanical ceilings; on
-hardware the FAQ's 3 queued jobs governs ([usage.md](usage.md#queue-rules-the-faq-governs)).
+hardware the runner's queue policy applies inside the provider's limit of 5 batch jobs ([usage.md](usage.md#queue-rules-the-faq-governs)).
 
 Observations that bound the table:
 

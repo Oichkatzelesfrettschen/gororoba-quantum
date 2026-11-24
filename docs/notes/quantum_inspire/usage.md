@@ -69,7 +69,23 @@ They grant no permission: no plan, case or batch size is derived from them
 on hardware, and where the FAQ is silent they remain the ceiling the service
 enforces.
 
-The FAQ does not say whether a "job" is a batch or a circuit. A case manifest selects how the runner reads it through
+The platform maintainer answered the open questions of this section on 2026-11-23
+(QuTech-Delft/quantuminspire issue 528, [answer](https://github.com/QuTech-Delft/quantuminspire/issues/528#issuecomment-7102972319)):
+
+- the FAQ's "job" is a batch job;
+- the operative limit is `batchjobs_per_queue_limit`: 5 batch jobs per user and backend type at present, on every
+  backend type, emulators included, and it may come to differ per backend, so `qi backends get BACKEND-ID` (the
+  catalogue record) is the live value;
+- the count covers batch jobs in the statuses `planned`, `queued`, `reserved` and `running`;
+- `max_jobs_per_batch_job` (5) is a separate limit on the circuits of one batch job;
+- the service refuses the batch job beyond the limit when it is created (HTTP 429 on the create call of
+  `BatchJobsApi`), not when it is enqueued, which is why a `planned` batch job counts;
+- the FAQ now states only that a limit exists; the capture [site/faq.md](site/faq.md) predates that change.
+
+Both runner policies below stay inside that limit: `legacy` queues one batch and `wave-v1` three. Statement class:
+documented by the provider (a maintainer's reply), not measured here; a fresh FAQ capture is `not run`.
+
+A case manifest selects the queue policy of the runner through
 its `hardware_policy` field, a row of `HARDWARE_POLICIES` in `scripts/qi_platform_wave.py` (one table, read by
 `qi_platform_wave.py submit` and by the retention checker; an unknown name is refused before any service read):
 
@@ -103,9 +119,9 @@ batches of the same backend type are the earlier batches of the wave and set no 
 pause. The pause clock is account-wide, so the Ry emulator, which the API flags `is_hardware`, shares it with Tuna-17
 ([ry-emulator.md](ry-emulator.md)): a finished Ry job delays the next Tuna-17 batch by the rest of its pause, an
 unfinished Ry job refuses a Tuna-17 batch and the reverse, and the three queued batches are counted per backend type, so
-Ry batches do not count toward Tuna-17's three. Residual risk of `wave-v1`: if the provider reads "job" as a circuit, a
-wave of 15 circuits queues five times the stated 3, and the FAQ's abuse clause removes the account; the provider has not
-been asked. Evidence that the service accepts the numbers: `max_jobs_per_batch_job` and `batchjobs_per_queue_limit` are 5
+Ry batches do not count toward Tuna-17's three. The maintainer's answer of 2026-11-23 retires the residual
+risk `wave-v1` carried while the unit was open (a FAQ "job" read as a circuit would have made a wave of 15 circuits
+five times the stated 3): a job is a batch job, and `wave-v1` queues 3 of the 5 allowed. Evidence that the service accepts the numbers: `max_jobs_per_batch_job` and `batchjobs_per_queue_limit` are 5
 on every backend type in the catalogue; two retained Tuna-17 batches of 5 circuits were accepted and completed
 (`results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17`, `.../2026-10-16T221133Z-zero_divisor_tuna_17`); the SDK
 checks the batch size and nothing about the queue (`qi_jobs.py`); the service answers HTTP 429 "Backend type Tuna-17
