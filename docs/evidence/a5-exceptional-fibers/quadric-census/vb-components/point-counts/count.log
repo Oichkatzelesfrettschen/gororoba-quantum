@@ -1,0 +1,3 @@
+parsed {'K2GEN': 21, 'P1GEN': 7, 'P2GEN': 12}
+RESULT {'p': 13, 'P1GEN_span_dim': 5, 'P1GEN_points': 2549, 'P1GEN_K2_points_in_span': 2549, 'P2GEN_span_dim': 6, 'P2GEN_points': 2562, 'P2GEN_K2_points_in_span': 2562, 'union_K2_points': 4928, 'intersection': 183, 'predict_S111_S112_plane': 4941, 'predict_S111_veronese_cone': 4759}
+RESULT {'p': 17, 'P1GEN_span_dim': 5, 'P1GEN_points': 5509, 'P1GEN_K2_points_in_span': 5509, 'P2GEN_span_dim': 6, 'P2GEN_points': 5526, 'P2GEN_K2_points_in_span': 5526, 'union_K2_points': 10728, 'intersection': 307, 'predict_S111_S112_plane': 10745, 'predict_S111_veronese_cone': 10439}

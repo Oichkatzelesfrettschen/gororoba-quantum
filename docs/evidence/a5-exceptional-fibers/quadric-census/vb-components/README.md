@@ -42,4 +42,14 @@ linearly joined union, which matches the linear resolution above.
 
 Run: one aarch64 host, Singular 4.4.1, 0.2 s per prime, exit 0 (`timeout 1800 Singular -q vbc-PRIME.sing`).
 
-Not covered: characteristic 0 and Q(i); the analogous scroll S(1,1,2) of E8-bar -> N+- is A5-502 and A5-508.
+Second method, over Q(i) reduced at small primes (`point-counts/`, run by the RIEMANN session on the gate workstation):
+`vb-qi-dump.sing` is the Q(i) arc script of A5-597 with one print line added, and `vb-qi-dump.log` holds the
+generators of K2 and of the two primes over Q(i); `count_points.py LOG p...` reduces them with i -> sqrt(-1) mod p and
+counts F_p points of each component inside its linear span. At p = 13: 2549 = q(q+1)^2 + 1 points on the degree-3
+component (the cone S(0,1,2)), 2562 = (q+1)(q^2+q+1) on the degree-4 component (S(1,1,2)), 183 on their intersection
+(a plane) and 4928 = 2q^3 + 3q^2 + 2q + 1 on the union; at p = 17: 5509, 5526, 307 and 10728, the same closed forms. The
+P^1 x P^2 alternative predicts 4941 and 10745. `slocus.sing` repeats the singular-locus test over Q(i): affine
+dimension 1 for the degree-3 prime, 0 for the degree-4 prime. `count_points.py` is retained in the repository's lint form (ruff format and check, mypy); the run that produced `count.log` used the unformatted original, and this form, run again on the same log, prints both RESULT lines unchanged (75 s, 5.7 GB). `timings.txt` holds the GNU time lines (count 116 s,
+5.7 GB; dump 241 s, 1.4 GB).
+
+Not covered: a full characteristic-0 identification (the Q(i) generators are reduced at 13 and 17 only); the analogous scroll S(1,1,2) of E8-bar -> N+- is A5-502 and A5-508.

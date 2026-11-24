@@ -1,0 +1,6 @@
+LIB "sing.lib"; ring Y=(0,I),(y(1..10)),dp; minpoly=I^2+1; option(redSB);
+ideal P1=4*y(5)+(5*I)*y(9),2*y(4)-2*y(6)+(-5*I)*y(10),4*y(2)+(5*I)*y(8),16*y(1)+25*y(10),4*y(7)*y(8)-4*y(6)*y(9)+(-5*I)*y(9)*y(10),4*y(6)*y(8)-4*y(3)*y(9)+(5*I)*y(8)*y(10),16*y(6)^2-16*y(3)*y(7)+(40*I)*y(6)*y(10)-25*y(10)^2
+;
+ideal P2=y(7),y(4)+y(6),y(3),y(6)*y(9)-y(5)*y(10),y(6)*y(8)-y(2)*y(10),y(5)*y(8)-y(2)*y(9),y(6)^2-y(1)*y(10),y(5)*y(6)-y(1)*y(9),y(2)*y(6)-y(1)*y(8),y(1)*y(9)^2-y(5)^2*y(10),y(1)*y(8)*y(9)-y(2)*y(5)*y(10),y(1)*y(8)^2-y(2)^2*y(10)
+;
+ideal S1=std(slocus(P1)); "RESULT P1 singular locus dim (affine cone)", dim(S1), "mult", mult(S1); ideal S2=std(slocus(P2)); "RESULT P2 singular locus dim (affine cone)", dim(S2), "mult", mult(S2); "RESULT P1 dim", dim(std(P1)), "deg", mult(std(P1)); "RESULT P2 dim", dim(std(P2)), "deg", mult(std(P2)); quit;
