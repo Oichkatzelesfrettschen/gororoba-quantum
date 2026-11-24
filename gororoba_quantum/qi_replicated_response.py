@@ -20,8 +20,9 @@ all N replicates and s1:
 Because N depends on s1 only and mean_N is independent of s1 for normal residuals, t = SHIFT_effect + T with T
 a central t variable on N1 - 1 degrees of freedom whenever delta sqrt(N) / s1 >= delta / sqrt(C). C is
 delta^2 / SHIFT^2 with SHIFT the noncentrality that gives two-sided power POWER at level ALPHA for the
-shifted central t law. The level is exact for every sigma; the power is POWER for every sigma whose N stays
-at or under CAP, and a case whose rule asks for more than CAP replicates stops after stage 1 undecided.
+shifted central t law. For normal, exchangeable residuals the level is exact for every sigma; the power is POWER
+for every sigma whose N stays at or under CAP, and a case whose rule asks for more than CAP replicates stops after
+stage 1 undecided. Heavy-tailed residuals carry no exactness claim; the design note reports a simulated level.
 """
 
 from __future__ import annotations
@@ -208,6 +209,16 @@ def verify_job_order(name: str, manifest: Mapping[str, Any], jobs: Sequence[tupl
     )
 
 
+def verify_distinct_ids(job_ids: Sequence[Any], batch_ids: Sequence[Any]) -> None:
+    """Refuse a series in which two replicates share a job id or a batch-job id."""
+    _require(len(set(job_ids)) == len(job_ids), "a job id repeats across replicates")
+    _require(
+        all(isinstance(batch, int) and not isinstance(batch, bool) for batch in batch_ids),
+        "a batch-job id is not an integer",
+    )
+    _require(len(set(batch_ids)) == len(batch_ids), "a batch-job id repeats across replicates")
+
+
 def _replicate(
     index: int,
     manifest: Mapping[str, Any],
@@ -271,8 +282,14 @@ def analyze_replicated_series(
     shots: Mapping[tuple[str, str], Sequence[str] | None],
     *,
     job_order: Mapping[str, Sequence[tuple[str, Any]]],
+    batch_jobs: Mapping[str, Any],
 ) -> dict[str, Any]:
-    """Analyze the collected replicates rep-00 .. rep-(n-1) of one replicated proposal."""
+    """Analyze the collected replicates rep-00 .. rep-(n-1) of one replicated proposal.
+
+    job_order maps each replicate to its (circuit file, job id) pairs and batch_jobs maps each replicate to the id
+    of the batch job that carried it. Job ids are distinct across all replicates and batch-job ids are distinct
+    across replicates, so shots of one replicate cannot stand in a manifest of another under edited ids.
+    """
     _require(proposal.get("schema") == SCHEMA_PROPOSAL, "the proposal schema differs")
     _require(tuple(proposal["contrast"]["labels"]) == LABELS, "the proposal labels differ from the frozen labels")
     _require(tuple(proposal["contrast"]["weights"]) == WEIGHTS, "the proposal weights differ")
@@ -287,6 +304,8 @@ def analyze_replicated_series(
     _require(names == [batch_name(index) for index in range(count)], "a replicate is missing or out of sequence")
     _require(count >= N1, f"{count} replicates collected; stage 1 needs {N1}")
     _require(set(job_order) == set(names), "the job orders differ from the replicates")
+    _require(set(batch_jobs) == set(names), "the batch jobs differ from the replicates")
+    verify_distinct_ids([job for name in names for _, job in job_order[name]], [batch_jobs[name] for name in names])
     rows = []
     for index, name in enumerate(names):
         verify_job_order(name, manifests[name], job_order[name])

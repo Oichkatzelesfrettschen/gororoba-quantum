@@ -1501,6 +1501,13 @@
    "index": 11
   },
   {
+   "path": "scripts/qi_replicated_stein_simulation.py",
+   "name": "HEAVY_TAIL_SEED",
+   "value": 33479,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 12
+  },
+  {
    "path": "tests/scripts/test_qi_replicated_response.py",
    "name": "TEST_SEEDS",
    "value": 38219,

@@ -96,8 +96,11 @@ def _analyze(
     manifests: dict[str, dict[str, Any]],
     shots: dict[tuple[str, str], list[str]],
     orders: dict[str, list[tuple[str, int]]],
+    batch_jobs: dict[str, int] | None = None,
 ) -> dict[str, Any]:
-    return _rule().analyze_replicated_series(proposal, manifests, shots, job_order=orders)
+    if batch_jobs is None:
+        batch_jobs = {name: 9000 + index for index, name in enumerate(sorted(manifests))}
+    return _rule().analyze_replicated_series(proposal, manifests, shots, job_order=orders, batch_jobs=batch_jobs)
 
 
 def test_frozen_constants_equal_the_stein_derivation() -> None:
@@ -243,6 +246,8 @@ def test_two_stage_series_decides_at_the_rules_total() -> None:
         "reordered-manifest",
         "job-order",
         "job-ids",
+        "job-ids-duplicated-across-replicates",
+        "batch-job-duplicated-across-replicates",
         "short-witness",
         "missing-readout",
         "wrong-witness-cases",
@@ -259,6 +264,7 @@ def test_analysis_refuses_each_fault(fault: str) -> None:
     shots, orders = _series(rng, proposal, manifests, noise=0.002)
     _check(len(_analyze(proposal, manifests, shots, orders)["replicates"]) == rule.N1)
     match = None
+    batch_jobs = {name: 9000 + index for index, name in enumerate(sorted(manifests))}
     if fault == "missing-replicate":
         del manifests["rep-05"]
         match = "missing or out of sequence"
@@ -276,6 +282,12 @@ def test_analysis_refuses_each_fault(fault: str) -> None:
     elif fault == "job-ids":
         orders["rep-04"][2] = (orders["rep-04"][2][0], orders["rep-04"][0][1])
         match = "job ids do not rise"
+    elif fault == "job-ids-duplicated-across-replicates":
+        orders["rep-05"] = [(file, job) for (file, _), (_, job) in zip(orders["rep-05"], orders["rep-04"], strict=True)]
+        match = "job id repeats"
+    elif fault == "batch-job-duplicated-across-replicates":
+        batch_jobs["rep-07"] = batch_jobs["rep-06"]
+        match = "batch-job id repeats"
     elif fault == "short-witness":
         shots["rep-01", "witness-a.cq"].pop()
         match = "the manifest requests"
@@ -303,7 +315,7 @@ def test_analysis_refuses_each_fault(fault: str) -> None:
         manifests.pop("rep-11")
         match = "stage 1 needs"
     with pytest.raises(ValueError, match=match):
-        _analyze(proposal, manifests, shots, orders)
+        _analyze(proposal, manifests, shots, orders, batch_jobs)
 
 
 def test_job_order_check_accepts_the_schedule_and_refuses_a_swap() -> None:
