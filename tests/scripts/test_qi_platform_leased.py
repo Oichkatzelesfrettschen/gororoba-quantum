@@ -172,7 +172,9 @@ def test_a_deadline_that_passed_on_entry_is_refused_before_the_lock_and_the_cli_
     monkeypatch.setattr(sys, "argv", ["x", "submit", str(tmp_path), "--backend-type-id", "7", "--approval", "a"])
     qi_platform_leased.main()
     monkeypatch.setattr(
-        sys, "argv", ["x", "submit", str(tmp_path), "--backend-type-id", "7", "--approval", "a", "--deadline-seconds=-5"]
+        sys,
+        "argv",
+        ["x", "submit", str(tmp_path), "--backend-type-id", "7", "--approval", "a", "--deadline-seconds=-5"],
     )
     with pytest.raises(SystemExit, match="deadline"):
         monkeypatch.setattr(

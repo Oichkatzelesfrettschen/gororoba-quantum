@@ -1,6 +1,7 @@
 """Quantum Inspire batch submission under the account-wide submit lease; the successor route of qi_platform.submit.
 
-    "$QI_PYTHON" scripts/qi_platform_leased.py submit CASE_DIR --backend-type-id N --approval TEXT [--deadline-seconds S]
+    "$QI_PYTHON" scripts/qi_platform_leased.py submit CASE_DIR --backend-type-id N --approval TEXT
+        [--deadline-seconds S]
 
 qi_platform.submit orders the sessions of one device with a file lock, so two devices sharing the account can both
 pass its queue and pause checks before either batch exists on the service
