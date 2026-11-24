@@ -28,5 +28,5 @@ the producer's Hilbert input, all twelve emissions byte-equal; opencode: recompu
 | 12 | hosted Codex round 1 | `run_degree3.sh` used `xargs -P` and `JOBS`, outside the worker budget | Fixed in 98fb395f3: `boost_degree3.py --run` through `parallel.ordered_map`; check mode PASS; a real `--run` of w = 2 reproduced the retained script byte for byte and its RESULT lines |
 | 13 | hosted Codex round 2 (head 98fb395f3) | both `sha256.txt` manifests were stale after the dispatcher change and omitted `qi_m2_runner.py` | Fixed in this commit: both regenerated from the final files; `sha256sum -c sha256.txt` passes in each directory |
 
-Hosted rounds are capped at three (owner decision of 2026-11-24).
+Hosted round 3 (head 9edc42ee9) completed with no findings, and all six pr.yml checks passed (the macOS arm leg after one rerun: its first attempt hit the 10-minute pytest step limit at 99 percent with no failing test). Hosted rounds are capped at three (owner decision of 2026-11-24); the chain is complete and the pull request merges by merge commit.
 
