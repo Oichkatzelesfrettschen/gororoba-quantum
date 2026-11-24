@@ -25,3 +25,19 @@ unmeasured until stage 1.
 
 The predecessor round (the nine-job proposals and the reason they do not run) is recorded in the
 [analysis note](../../../design/tuna17-matched-response-analysis.md).
+
+## Advisor, last
+
+The owner chose no further local reviewer. The Advisor read the reconciled head and the two heads after it.
+
+| Finding | Verdict | Change |
+|---|---|---|
+| no script built `job_order` and `batch_jobs` from collected run directories, so the frozen analysis had no real-run entry point | confirmed: the only caller was a test helper | `scripts/qi_replicated_response_analysis.py` (`--binding`, `--stage1`, `--final`), tested on run directories of the retained shape |
+| nothing executed the staged series or gated stage 2 on the rule | confirmed | `scripts/qi_replicated_series_run.sh`: the first replicate as profile unit, the stage gate from `--stage1`, restart states, a terminal marker and a resume note |
+| the heavy-tail simulation row took draw index 12, which an earlier offline emulator check had used | no defect: no committed result holds that value outside the draw file and the simulation | none |
+| a dry run and an armed run that share a stamp and directories | confirmed and reachable: on the earlier head the armed run skipped all twelve replicates, analyzed fabricated shots and made no provider call | the dry run writes under its own marked directory, which the armed mode refuses; fabricated records carry three marks that `--binding`, `--stage1` and `--final` refuse; tests for each |
+| the stage gate was tested for the verdict "continue" only | confirmed | tests for "final" at N = 12, "undecided at the cap", a deadline inside stage 2 and the restart after it |
+| one approval for both stages, since a gap of hours between them weakens exchangeability | accepted | the design note's "Execution" section; the owner approved the series with the cap of 60 on 2026-11-24 |
+
+Owed at the run, outside this change: the producer `--check` on the merged tree, the queue lease with the approval
+record, a deadline above the worst case, and the free-disk read on the submitting host.
