@@ -68,3 +68,12 @@ The Advisor read head 6976f3b52 with the commit that annotated A5-242.
 | the retained twins are separate compiles (155 against 167 CZ), so A5-606 cannot offer them as a pure state exchange on hardware | confirmed in the findings table | A5-606 says a twin compiled as the primary plus one X is needed |
 | `run_blocks.sh` overwrote the retained logs, whose timing lines differ between runs | confirmed: the first run printed ok and 8 of 12 pinned files then failed their digests on the scratch copy | the script writes to its own directory and compares the run-independent RESULT lines; rerun on an aarch64 host: `run_blocks: ok`, exit 0, 12 of 12 retained files unchanged |
 | the pull-request body described an old head | confirmed | body rewritten |
+
+## Advisor, on the level-2 record
+
+The owner chose no further local reviewer for this pull request. The Advisor read the head that reworded A5-607.
+
+| Finding | Verdict | Change |
+|---|---|---|
+| A5-607 stated the cap, memory and exit code of the level-2 run, whose script and log were not retained | confirmed | `pivot_stability_level2.py`, `piv2-e8.sing`, `piv2-e8.log` and `piv2-e8.time` are retained with digests; the row cites them |
+| the README read "k = 2 is not computed" | confirmed | the README states the undecided run and the saturation membership test that would decide every level |
