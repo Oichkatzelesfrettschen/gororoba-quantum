@@ -1,0 +1,99 @@
+{
+ "schema": "qi-replicated-stein-simulation-v1",
+ "rule": {
+  "n1": 12,
+  "cap": 60,
+  "alpha": 0.01,
+  "power": 0.8,
+  "c": 3.6339019606546454e-05
+ },
+ "seed_draw": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+ "seed_indices": [
+  8,
+  9,
+  10,
+  11
+ ],
+ "rows": [
+  {
+   "sigma": 0.01,
+   "delta": 0.0,
+   "trials": 400000,
+   "reject_capped_design": 0.010105,
+   "undecided_at_cap": 0.0,
+   "reject_given_within_cap": 0.010105,
+   "reject_uncapped_rule": 0.010105,
+   "median_required_total": 12.0
+  },
+  {
+   "sigma": 0.01,
+   "delta": -0.024,
+   "trials": 400000,
+   "reject_capped_design": 0.9999925,
+   "undecided_at_cap": 0.0,
+   "reject_given_within_cap": 0.9999925,
+   "reject_uncapped_rule": 0.9999925,
+   "median_required_total": 12.0
+  },
+  {
+   "sigma": 0.02,
+   "delta": 0.0,
+   "trials": 400000,
+   "reject_capped_design": 0.01029,
+   "undecided_at_cap": 0.0,
+   "reject_given_within_cap": 0.01029,
+   "reject_uncapped_rule": 0.0103075,
+   "median_required_total": 12.0
+  },
+  {
+   "sigma": 0.02,
+   "delta": -0.024,
+   "trials": 400000,
+   "reject_capped_design": 0.90112,
+   "undecided_at_cap": 0.0,
+   "reject_given_within_cap": 0.90112,
+   "reject_uncapped_rule": 0.9007075,
+   "median_required_total": 12.0
+  },
+  {
+   "sigma": 0.038,
+   "delta": 0.0,
+   "trials": 400000,
+   "reject_capped_design": 0.0099975,
+   "undecided_at_cap": 0.1205775,
+   "reject_given_within_cap": 0.011368255872461758,
+   "reject_uncapped_rule": 0.0101825,
+   "median_required_total": 38.0
+  },
+  {
+   "sigma": 0.038,
+   "delta": -0.024,
+   "trials": 400000,
+   "reject_capped_design": 0.7013175,
+   "undecided_at_cap": 0.1205775,
+   "reject_given_within_cap": 0.7974750475454062,
+   "reject_uncapped_rule": 0.808045,
+   "median_required_total": 38.0
+  },
+  {
+   "sigma": 0.08,
+   "delta": 0.0,
+   "trials": 400000,
+   "reject_capped_design": 0.002645,
+   "undecided_at_cap": 0.977025,
+   "reject_given_within_cap": 0.11512513601741023,
+   "reject_uncapped_rule": 0.0099125,
+   "median_required_total": 166.0
+  },
+  {
+   "sigma": 0.08,
+   "delta": -0.024,
+   "trials": 400000,
+   "reject_capped_design": 0.01562,
+   "undecided_at_cap": 0.977025,
+   "reject_given_within_cap": 0.6798694232861806,
+   "reject_uncapped_rule": 0.8019825,
+   "median_required_total": 166.0
+  }
+ ]
+}
