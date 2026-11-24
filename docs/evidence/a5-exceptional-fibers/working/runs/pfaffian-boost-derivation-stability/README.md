@@ -70,7 +70,8 @@ with a test:
   sees the localization there, which can be larger. A standard basis in a local ordering at the retained VB
   basepoint decides D-stability of the local pair. The failure locus is closed and invariant under G_2 and the
   scaling, which commute with D, so on the boost orbit of VB it is a finite set of values of w or the whole orbit.
-- The chart test below reads 18 of 21 outside at k = 1, where the G_2 control passes; k = 2 is not computed.
+- The chart test below reads 18 of 21 outside at k = 1, where the G_2 control passes; the k = 2 run reached its
+  3 h limit without a verdict.
 - Another linear field. Excluded: the stabilizer algebra of the E8-bar pair is G_2 and the scaling (A5-604).
 - An isomorphism of the fibers that no symmetry of the pair induces. Degree-3 relation counts at further values of
   w test it (A5-428 holds one count at one boost).
@@ -95,6 +96,12 @@ the rotation fails on both, which calibrates the level. The boost passes on W8, 
 of the 21 entries outside on E8-bar. The W8 unit took 2 min 8 s at 0.7 GiB and the E8-bar unit 8 min 32 s at
 1.0 GiB on one core of an aarch64 host, Singular 4.4.1. A first design, a standard basis in a local ordering in
 all 15 variables, reached 40 min and 9.1 GiB on the W8 calibration without a verdict and is discarded.
+
+Level k = 2 for E8-bar is undecided. `pivot_stability_level2.py` emits the script `piv2-e8.sing` (retained as run;
+the producer was not rerun against it), which needs the standard basis of (F) + I(E8-bar) to degree 13. The run
+printed the k = 0 counts and reached its 3 h limit at 1.5 GiB on one core (`piv2-e8.log`, `piv2-e8.time`, exit
+124). The test that decides every level at once is membership of D(F_j) in the saturation by pB, that is in
+(F) + I(E8-bar) + (1 - t pB) with a new variable t; it is not run.
 
 ## Stabilizer algebras modulo 32009
 
