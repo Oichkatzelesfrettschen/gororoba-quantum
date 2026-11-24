@@ -77,3 +77,11 @@ The owner chose no further local reviewer for this pull request. The Advisor rea
 |---|---|---|
 | A5-607 stated the cap, memory and exit code of the level-2 run, whose script and log were not retained | confirmed | `pivot_stability_level2.py`, `piv2-e8.sing`, `piv2-e8.log` and `piv2-e8.time` are retained with digests; the row cites them |
 | the README read "k = 2 is not computed" | confirmed | the README states the undecided run and the saturation membership test that would decide every level |
+
+## Hosted Codex round
+
+One round, on head ed44c4d8e.
+
+| Finding | Verdict | Change |
+|---|---|---|
+| `run_blocks.sh` and `run_stability.sh` loop serially over independent Singular units | confirmed against the repository rule on CPU-bound loops | c45a8933d: both dispatch their units through `parallel.ordered_map` by way of `gororoba_quantum/run_commands.py`, one comparison file per unit, the stage-A units first; rerun with two workers on an aarch64 host: `run_blocks: ok` in 1,209 s and `run_stability: ok` in 980 s, retained files unchanged |
