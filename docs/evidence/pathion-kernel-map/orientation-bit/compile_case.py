@@ -19,6 +19,12 @@ dependent decay of the orientation qubit; its gaps lambda_16 - lambda_0 therefor
 readout alone. The replicas are the tiles; the statistics are those of orientation_bit_analysis (the family and the
 exploratory diff_cm and diff_cs, the model floors of the comparison across two physical qubits).
 
+Floor band. The "floor_band" of the relaxation block is, per operand and region, the smallest and largest value of
+C = G16 ctrl - G2 move over the four noise models, zero included. Moving the orientation to bit 1 changes the circuit,
+so the models predict a C of +0.004 to +0.047 with no orientation-qubit effect; the swap member (data wires 1 and 4
+exchanged on one layout) reads the same floor, which locates it in the circuit structure and not in the physical
+qubit. orientation_bit_analysis.py tests C against this band.
+
 Relaxation prediction. The snapshot holds no T1 or T2, and the only per-qubit T1, T2 and asymmetric readout error of
 ibm_fez in the tree belong to the retained kernel-map run (results/live/2026-11-06T183538.809814Z/record.json,
 calibration 2026-11-06T10:24:29-08:00), which covers its five placed regions. The "relaxation" block routes the same
@@ -33,6 +39,10 @@ against are -0.155 (nullity 4) and +0.103 (nullity 12).
 "$PYTHON" -B compile_case.py --out DIR --seed-transpiler \
     qrng:docs/evidence/anu_qrng/draw-2026-11-24T022126Z.json#0 ...#1 ...#2   (draw-2026-11-24T022126Z.json)
 "$PYTHON" -B compile_case.py --check      recompute and compare with the committed case_compile.json
+"$PYTHON" -B compile_case.py --floors-from RECORD --seed-transpiler REF --out DIR
+                                          DIR/floors.json: the floor band of C of each region of a live record's
+                                          calibration (the dry-run record; the retained record reproduces the committed
+                                          floor_band), the input --floors of orientation_bit_analysis.py --analyze
 """
 
 from __future__ import annotations
@@ -243,7 +253,7 @@ def summarize_statistics(laws: list[dict[str, list[float]]]) -> dict[str, Any]:
     are one dict of member name to law per replica."""
     group = pko.pathion_kernel_map_orientation_group()
     entry = {"group": group.name, "measured": {m.name: [replica[m.name] for replica in laws] for m in group.members}}
-    result = oba.analyze(entry)
+    result = oba.analyze_flat(entry)
     keep: dict[str, Any] = {}
     for key, row in {**result["tests"], **result["exploratory"]}.items():
         entry_row = {k: (row[k] if math.isfinite(row[k]) else None) for k in ("mean", "se", "t", "n")}
@@ -338,8 +348,12 @@ def load_calibration(path: Path) -> Calibration:
 
 
 @functools.cache
+def record_calibration(path: str) -> Calibration:
+    return load_calibration(Path(path))
+
+
 def retained_calibration() -> Calibration:
-    return load_calibration(RETAINED_RECORD)
+    return record_calibration(str(RETAINED_RECORD))
 
 
 def region_tile(lattice: HeronLattice, region: list[int], index: int) -> DisjointTile:
@@ -458,10 +472,11 @@ def model_laws(
     return _confuse(law, matrices)
 
 
-def region_laws(item: tuple[int, int]) -> dict[str, dict[str, list[float]]]:
-    """Laws of every member on one retained region under each of the four noise models (region index, seed)."""
-    index, seed = item
-    cal, lattice = retained_calibration(), snapshot_lattice()
+def region_laws(item: tuple[int, int, str]) -> dict[str, dict[str, list[float]]]:
+    """Laws of every member on one region of a live record's calibration under each of the four noise models (region
+    index, seed, record path)."""
+    index, seed, record = item
+    cal, lattice = record_calibration(record), snapshot_lattice()
     tile = region_tile(lattice, cal.regions[index], index)
     members = routed_members(lattice, tile, seed)
     return {
@@ -470,9 +485,31 @@ def region_laws(item: tuple[int, int]) -> dict[str, dict[str, list[float]]]:
     }
 
 
-def relaxation_prediction(seed: int) -> dict[str, Any]:
-    cal = retained_calibration()
-    per_region = parallel.ordered_map(region_laws, [(i, seed) for i in range(len(cal.regions))], min_items=1)
+def floor_band(per_region: list[dict[str, dict[str, list[float]]]]) -> dict[str, dict[str, list[float]]]:
+    """Per operand tag and region, the band [lower, upper] of the floor of C = G16 ctrl - G2 move: the extremes over the
+    four noise models, zero included."""
+    group = pko.pathion_kernel_map_orientation_group()
+    values: dict[str, list[np.ndarray]] = {pkm.operand_tag(o): [] for o in pko.OPERANDS}
+    for model in MODELS:
+        entry = {
+            "group": group.name,
+            "measured": {m.name: [replica[model][m.name] for replica in per_region] for m in group.members},
+        }
+        units = oba.units_from_entry(entry)
+        for operand in pko.OPERANDS:
+            values[pkm.operand_tag(operand)].append(oba.replica_statistics(units, operand)["diff_cm"])
+    out = {}
+    for t, rows in values.items():
+        stack = np.vstack([*rows, np.zeros_like(rows[0])])
+        out[t] = {"lower": stack.min(axis=0).tolist(), "upper": stack.max(axis=0).tolist()}
+    return out
+
+
+def relaxation_prediction(seed: int, record: Path = RETAINED_RECORD) -> dict[str, Any]:
+    cal = record_calibration(str(record))
+    per_region = parallel.ordered_map(
+        region_laws, [(i, seed, str(record)) for i in range(len(cal.regions))], min_items=1
+    )
     models = {model: summarize_statistics([replica[model] for replica in per_region]) for model in MODELS}
     return {
         "label": "five regions of the retained kernel-map run, its own calibration; exact density matrix, no sampling",
@@ -488,6 +525,7 @@ def relaxation_prediction(seed: int) -> dict[str, Any]:
         "schedule": "ASAP, wires end together, rz virtual, relaxation over gate durations and idle intervals",
         "retained_gap": RETAINED_GAP,
         "statistics": models,
+        "floor_band": floor_band(per_region),
     }
 
 
@@ -545,6 +583,9 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     qrng_seeds.add_seed_argument(ap, "--seed-transpiler", nargs="+")
     ap.add_argument("--out", type=Path)
+    ap.add_argument(
+        "--floors-from", type=Path, metavar="RECORD", help="write floors.json: the floor band of C per region of RECORD"
+    )
     ap.add_argument("--check", action="store_true", help="recompute the record and compare it with case_compile.json")
     args = ap.parse_args()
     if args.check:
@@ -556,6 +597,25 @@ def main() -> int:
             print(f"differs: {line}")
         print(f"{'FAIL' if found else 'ok'}: {len(found)} differences from case_compile.json")
         return 1 if found else 0
+    if args.floors_from is not None:
+        if args.seed_transpiler is None or args.out is None:
+            ap.error("--floors-from needs --seed-transpiler and --out")
+        cal = record_calibration(str(args.floors_from))
+        per_region = parallel.ordered_map(
+            region_laws,
+            [(i, args.seed_transpiler[0], str(args.floors_from)) for i in range(len(cal.regions))],
+            min_items=1,
+        )
+        floors = {
+            **floor_band(per_region),
+            "source": {
+                "record_sha256": sha256(args.floors_from),
+                "regions": cal.regions,
+                "calibration": cal.calibration,
+            },
+        }
+        (args.out / "floors.json").write_text(json.dumps(floors, indent=1, sort_keys=True, allow_nan=False) + "\n")
+        return 0
     if args.seed_transpiler is None or args.out is None:
         ap.error("--seed-transpiler and --out are required without --check")
     record = build_record(list(args.seed_transpiler), args.seed_transpiler_source)

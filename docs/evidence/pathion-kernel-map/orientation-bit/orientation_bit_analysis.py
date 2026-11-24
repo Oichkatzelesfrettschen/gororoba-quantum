@@ -17,13 +17,13 @@ in the other units). Per replica, with lambda_a = c^_obs,a / c^_ideal,a on the W
     xtwin  G16  = lambda_16 - lambda_0 against the exchanged ideal
     S = (G16_ctrl + G16_xtwin) / 2               the part that keeps its sign under the exchange (follows the operand)
     D = (G16_ctrl - G16_xtwin) / 2               the part that flips its sign under the exchange
-    G16s   = lambda_16 - lambda_0 of the swap unit   the gap of bit 4 read on the physical qubit of bit 1
-    C* = G16_swap - G2_move                      zero when the gap moves with the orientation qubit at equal size: both
-                                                  gaps are read on one physical qubit, so a T1, T2 or readout difference
-                                                  between the qubits of bits 1 and 4 cancels (diff_sm)
-    C  = G16_ctrl - G2_move                      the same comparison across two physical qubits (diff_cm); a model
-                                                  floor of +0.019 to +0.038 from that difference alone puts it outside
-                                                  the family, reported only
+    G16s   = lambda_16 - lambda_0 of the swap unit   the gap of bit 4 read on the physical qubit of bit 1 (swap_g16)
+    C  = G16_ctrl - G2_move                      zero when the gap moves with the orientation qubit at equal size
+                                                  (diff_cm). Two different circuits make C nonzero without the
+                                                  hypothesis: the noise models of case_compile.json predict a floor of
+                                                  +0.004 to +0.047 from the circuits alone, a fact of the SELECT and
+                                                  oracle structure (the swap unit reads the same floor, diff_sm), so
+                                                  C is tested against the band of the model floors, below.
 
 What D sees. The xtwin compiles to the control's schedule plus one virtual rz on the data-bit-4 wire after the SELECT
 (identical cz sequence, identical measure mapping; tests/gororoba_quantum/test_pathion_kernel_map_orientation.py), so
@@ -39,6 +39,17 @@ replicas do not exist), and merge_jobs averages the two replicas of a region (ev
 measured laws) before the test, so n is the number of regions and the test stays valid for any correlation between
 the two replicas of a region. Two operands and eight statistics make the family of 16 tests; Holm's step-down
 procedure holds the family error at ALPHA.
+
+Floor band (preregistered). The null of C is the band [lower_i, upper_i] of every region i, not zero: upper_i is the
+largest and lower_i the smallest, with zero included, of the four model floors of C of that region (the compile_case.py
+models on the region's own dry-run calibration: depolarizing with symmetric readout, relaxation alone, asymmetric
+readout alone, and all three). The test of C rejects when the region values C_i - upper_i have a positive mean or the
+values lower_i - C_i a positive mean, each by a one-sided t test over regions with n - 1 degrees of freedom, and its
+p value is twice the smaller of the two (capped at 1). A model floor between zero and its upper edge therefore reads as
+unresolved, and only a C beyond every model floor reads as a difference. The floors enter analyze() as a required input
+(--floors); the band itself is a modeling choice whose uncertainty the case states: the models reach 21 to 27 percent of
+the retained gap, so the band is bounded by the four mixtures that the offline models can build and not by a measured
+error of the model.
 
 Row rule (preregistered). Ledger row A5-242 reads supported only when both operands read supported, refuted when either
 operand reads refuted, and unresolved otherwise (row_verdict). The two operands were chosen after the data as the
@@ -106,8 +117,8 @@ RHOS = (0.0, 1.0)
 # Median scatter of the off-support coefficient c_obs,16 of the retained units (32 bins at 16,384 shots).
 LEAK_SD = 0.017
 RETAINED_RUN = "ibm_fez kernel map"
-STATISTICS = ("ctrl_g16", "move_g2", "move_leak16", "xtwin_g16", "swap_g16", "keep_s", "flip_d", "diff_sm")
-EXPLORATORY = ("diff_cm", "diff_cs")
+STATISTICS = ("ctrl_g16", "move_g2", "move_leak16", "xtwin_g16", "swap_g16", "keep_s", "flip_d", "diff_cm")
+EXPLORATORY = ("diff_sm", "diff_cs")
 OLD_STATISTICS = ("ctrl_g16", "move_g2", "move_leak16", "xtwin_g16", "keep_s", "flip_d", "diff_cm")
 RETAINED_COLLECT = "results/live/2026-11-06T183538.809814Z/collect.json"
 RETAINED_TWIN = {"kmap_e1pe26": "kmap_twin_e17me10", "kmap_e1pe18": "kmap_twin_e17me2"}
@@ -187,6 +198,42 @@ def holm(pvalues: dict[str, float], alpha: float = ALPHA) -> dict[str, bool]:
     return out
 
 
+def band_test(values: np.ndarray, lower: np.ndarray, upper: np.ndarray) -> dict[str, float]:
+    """Test of values against the band [lower, upper] per replica: two one-sided t tests (above upper, below lower),
+    p = twice the smaller one-sided p, capped at 1. The row reports the mean of the values and of the excess beyond the
+    nearer edge on the side that decides."""
+    n = len(values)
+    if len(lower) != n or len(upper) != n or np.any(lower > upper):
+        raise ValueError("a floor band needs one lower <= upper pair per replica")
+    above, below = values - upper, lower - values
+    sides = []
+    for excess in (above, below):
+        se = float(excess.std(ddof=1) / math.sqrt(n))
+        t = float(excess.mean() / se) if se > 0 else math.copysign(math.inf, float(excess.mean()))
+        sides.append((float(stats.t.sf(t, n - 1)) if math.isfinite(t) else float(t < 0), t, float(excess.mean()), se))
+    best = min(sides, key=lambda s: s[0])
+    return {
+        "n": n,
+        "mean": float(values.mean()),
+        "se": best[3],
+        "t": best[1],
+        "p": float(min(1.0, 2.0 * best[0])),
+        "excess_mean": best[2],
+        "band_upper_mean": float(upper.mean()),
+        "band_lower_mean": float(lower.mean()),
+    }
+
+
+def _band_from_summary(mean: float, se: float, n: int, lower: float, upper: float) -> dict[str, float]:
+    """band_test for a mean and standard error with constant band edges."""
+    ps = []
+    for excess in (mean - upper, lower - mean):
+        t = excess / se if se > 0 else math.copysign(math.inf, excess)
+        ps.append(float(stats.t.sf(t, n - 1)) if math.isfinite(t) else float(t < 0))
+    t_best = (mean - upper) / se if ps[0] <= ps[1] else (lower - mean) / se
+    return {"n": n, "mean": mean, "se": se, "t": t_best, "p": min(1.0, 2.0 * min(ps))}
+
+
 def _from_summary(mean: float, se: float, n: int) -> dict[str, float]:
     t = mean / se if se > 0 else math.copysign(math.inf, mean)
     p = float(2.0 * stats.t.sf(abs(t), n - 1)) if math.isfinite(t) else 0.0
@@ -201,31 +248,48 @@ def decide_tests(tests: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
     return tests
 
 
+Floors = dict[str, dict[str, list[float]]]
+
+
+def zero_floors(n: int) -> Floors:
+    """The band [0, 0] of every region: C is tested against zero, as the superseded rule did."""
+    return {tag(o): {"lower": [0.0] * n, "upper": [0.0] * n} for o in pko.OPERANDS}
+
+
 def decide(
-    values: dict[tuple[int, int, int], dict[str, np.ndarray]], names: tuple[str, ...] = STATISTICS
+    values: dict[tuple[int, int, int], dict[str, np.ndarray]],
+    names: tuple[str, ...] = STATISTICS,
+    floors: Floors | None = None,
 ) -> dict[str, dict[str, Any]]:
     """Every test of a family of the named statistics over both operands, keyed <statistic>:<operand tag>, with its
-    Holm decision."""
+    Holm decision. With floors, diff_cm is tested against the floor band of its operand."""
     tests: dict[str, dict[str, Any]] = {}
     for operand in pko.OPERANDS:
         for name in names:
-            tests[f"{name}:{tag(operand)}"] = one_sample(values[operand][name])
+            if name == "diff_cm" and floors is not None:
+                band = floors[tag(operand)]
+                tests[f"{name}:{tag(operand)}"] = band_test(
+                    values[operand][name],
+                    np.asarray(band["lower"], dtype=float),
+                    np.asarray(band["upper"], dtype=float),
+                )
+            else:
+                tests[f"{name}:{tag(operand)}"] = one_sample(values[operand][name])
     return decide_tests(tests)
 
 
-def family_tests(units: dict[str, nb.Unit]) -> dict[str, dict[str, Any]]:
-    tests = decide({operand: replica_statistics(units, operand) for operand in pko.OPERANDS})
+def family_tests(units: dict[str, nb.Unit], floors: Floors) -> dict[str, dict[str, Any]]:
+    tests = decide({operand: replica_statistics(units, operand) for operand in pko.OPERANDS}, floors=floors)
     if len(tests) != FAMILY:
         raise ValueError(f"family holds {len(tests)} tests, expected {FAMILY}")
     return tests
 
 
 def readings(
-    tests: dict[str, dict[str, Any]], operand: tuple[int, int, int], df: int, differs_key: str = "diff_sm"
+    tests: dict[str, dict[str, Any]], operand: tuple[int, int, int], df: int, differs_key: str = "diff_cm"
 ) -> dict[str, Any]:
     """The readings of one operand and the verdict on A5-242 (df is kept for the signature of the family).
-    differs_key names the statistic that decides whether the moved gap differs from the gap of bit 4: diff_sm (both
-    gaps on one physical qubit) in the rule; diff_cm (two physical qubits) reproduces the superseded rule."""
+    differs_key names the statistic that decides whether the moved gap differs from the gap of bit 4 (diff_cm)."""
     del df
     t = tag(operand)
     sign = RETAINED_SIGN[operand]
@@ -322,9 +386,9 @@ def region_visibilities(units: dict[str, nb.Unit]) -> np.ndarray:
     return np.asarray(per_unit).mean(axis=0)
 
 
-def _readings(units: dict[str, nb.Unit]) -> tuple[dict[str, dict[str, Any]], list[dict[str, Any]], int]:
+def _readings(units: dict[str, nb.Unit], floors: Floors) -> tuple[dict[str, dict[str, Any]], list[dict[str, Any]], int]:
     cross_check(units)
-    tests = family_tests(units)
+    tests = family_tests(units, floors)
     n = next(iter(tests.values()))["n"]
     return tests, [readings(tests, operand, n - 1) for operand in pko.OPERANDS], n
 
@@ -349,13 +413,19 @@ def readout_correlation(units: dict[str, nb.Unit], readout_errors: list[float]) 
     return out
 
 
-def merge_jobs(entries: list[dict[str, Any]], regions: list[list[list[int]]] | None = None) -> dict[str, Any]:
+def merge_jobs(
+    entries: list[dict[str, Any]],
+    regions: list[list[list[int]]] | None = None,
+    floors: list[Floors] | None = None,
+) -> tuple[dict[str, Any], Floors | None]:
     """One collected entry from the entries of the jobs of the case. A region is the block of its replicas: replicas
     whose qubit sets are equal (across jobs) average their measured laws, which leaves every statistic's value the mean
     of the replicas' values because each statistic is linear in the laws. Without regions each entry is one job and
     its replicas are positioned alike (replica i of every job is one region); distinct regions stay separate blocks."""
     if len(entries) == 1 and regions is None:
-        return entries[0]
+        return entries[0], None if floors is None else floors[0]
+    if floors is not None and len(floors) != len(entries):
+        raise ValueError("floors need one entry per job")
     if regions is not None and (
         len(regions) != len(entries) or any(len(r) != len(set(map(tuple, r))) for r in regions)
     ):
@@ -382,12 +452,31 @@ def merge_jobs(entries: list[dict[str, Any]], regions: list[list[list[int]]] | N
         ]
         for name in names
     }
-    return {"group": entries[0]["group"], "measured": measured, "blocks": [len(m) for m in blocks.values()]}
+    merged_floors: Floors | None = None
+    if floors is not None:
+        merged_floors = {
+            t: {
+                edge: [float(np.mean([floors[j][t][edge][i] for j, i in members])) for members in blocks.values()]
+                for edge in ("lower", "upper")
+            }
+            for t in (tag(o) for o in pko.OPERANDS)
+        }
+    entry = {"group": entries[0]["group"], "measured": measured, "blocks": [len(m) for m in blocks.values()]}
+    return entry, merged_floors
 
 
-def analyze(entry: dict[str, Any], readout_errors: list[float] | None = None) -> dict[str, Any]:
+def analyze_flat(entry: dict[str, Any], readout_errors: list[float] | None = None) -> dict[str, Any]:
+    """analyze() against the band [0, 0] of every region (no model floor), for synthetic entries and the superseded
+    rule."""
+    n = len(next(iter(entry["measured"].values())))
+    return analyze(entry, zero_floors(n), readout_errors)
+
+
+def analyze(entry: dict[str, Any], floors: Floors, readout_errors: list[float] | None = None) -> dict[str, Any]:
+    """Verdicts of one collected entry; floors holds, per operand tag, the lower and upper edge of the floor band of C
+    for each region (block) of the entry."""
     units = units_from_entry(entry)
-    tests, reads, n = _readings(units)
+    tests, reads, n = _readings(units, floors)
     visibility = region_visibilities(units)
     dead = [int(i) for i in np.nonzero(visibility < DEAD_VISIBILITY)[0]]
     rule_applies = 3 * len(dead) > n
@@ -396,7 +485,8 @@ def analyze(entry: dict[str, Any], readout_errors: list[float] | None = None) ->
         row["verdict_all_regions"] = row["verdict"]
     if rule_applies:
         if len(live) >= MIN_LIVE:
-            _, live_reads, _ = _readings(units_from_entry(entry, live))
+            live_floors = {t: {k: [v[i] for i in live] for k, v in band.items()} for t, band in floors.items()}
+            _, live_reads, _ = _readings(units_from_entry(entry, live), live_floors)
         else:
             live_reads = [{"verdict": "unresolved"} for _ in reads]
         for row, live_row in zip(reads, live_reads, strict=True):
@@ -407,6 +497,7 @@ def analyze(entry: dict[str, Any], readout_errors: list[float] | None = None) ->
         "schema": "orientation-bit-analysis-v3",
         "replicas": n,
         "replicas_per_block": entry.get("blocks"),
+        "floors": floors,
         "exploratory": {
             f"{name}:{tag(operand)}": one_sample(replica_statistics(units, operand)[name])
             for operand in pko.OPERANDS
@@ -515,17 +606,18 @@ def _design_sd(sd: float, rho: float) -> float:
     return sd * math.sqrt(rho + (1.0 - rho) / JOBS)
 
 
-def statistic_specs(s: dict[str, float]) -> dict[str, tuple[float | None, float]]:
+def statistic_specs(s: dict[str, float], band_upper: float) -> dict[str, tuple[float | None, float]]:
     """(retained effect, standard deviation per replica) of every statistic of the family for one operand, from the
     retained scatter. The gap statistics take the retained gap as their alternative (the gap moves, travels and is
-    kept at full size); diff_sm takes the alternative that the moved gap is zero, so its mean is the full effect, with
+    kept at full size); diff_cm takes the alternative that the moved gap is zero, so its mean is the full effect less
+    the upper edge of the floor band (the truth floor is zero in the worst case, so the band edge is all lost), with
     the scatter of the retained primary-minus-twin pair as the stand-in for two circuits on one region; xtwin, S and D
     take the retained twin's own values; leak16 has no retained effect (ideal 0) and takes the shot-noise scatter."""
     return {
         "ctrl_g16": (abs(s["effect"]), s["sd_per_replica"]),
         "move_g2": (abs(s["effect"]), s["sd_per_replica"]),
         "swap_g16": (abs(s["effect"]), s["sd_per_replica"]),
-        "diff_sm": (abs(s["effect"]), s["sd_pair_difference"]),
+        "diff_cm": (max(abs(s["effect"]) - band_upper, 0.0), s["sd_pair_difference"]),
         "xtwin_g16": (abs(s["retained_twin_gap"]), s["sd_twin_gap"]),
         "keep_s": (abs(s["retained_keep_s"]), s["sd_keep_s"]),
         "flip_d": (abs(s["retained_flip_d"]), s["sd_flip_d"]),
@@ -540,17 +632,24 @@ def _mde(sd: float, n: int, alpha: float) -> float:
     return found / 1000.0
 
 
-def power_record(collect: Any) -> dict[str, Any]:
+def floor_band_edges(compile_record: dict[str, Any]) -> dict[str, dict[str, float]]:
+    """Mean over the regions of the lower and upper edge of the floor band of C, per operand tag."""
+    band = compile_record["relaxation"]["floor_band"]
+    return {t: {edge: float(np.mean(b[edge])) for edge in ("lower", "upper")} for t, b in band.items()}
+
+
+def power_record(collect: Any, compile_record: dict[str, Any]) -> dict[str, Any]:
     """Power of every statistic of the family at the planned design: PLANNED_REGIONS regions read JOBS times, the test
     over region means (df = regions - 1) at the correlation rho of a region's replicas in RHOS, and for reference the
     test over all replicas as independent values (df = replicas - 1). The effect is the retained one and half of it."""
     scatter = retained_scatter(collect)
+    edges = floor_band_edges(compile_record)
     alpha = ALPHA / FAMILY
     operands: dict[str, Any] = {}
     needed = 0
     for name, s in scatter.items():
         rows: dict[str, Any] = {}
-        for stat, (effect, sd) in statistic_specs(s).items():
+        for stat, (effect, sd) in statistic_specs(s, edges[name]["upper"]).items():
             row: dict[str, Any] = {"effect": effect, "sd_per_replica": sd}
             designs = {f"regions_rho{int(rho)}": (PLANNED_REGIONS, _design_sd(sd, rho)) for rho in RHOS}
             designs["replicas_independent"] = (PLANNED_REPLICAS, sd)
@@ -560,14 +659,14 @@ def power_record(collect: Any) -> dict[str, Any]:
                     cell["power_full_effect"] = power_at(effect, sd_n, n, alpha)
                     cell["power_half_effect"] = power_at(effect / 2.0, sd_n, n, alpha)
                 row[label] = cell
-            if stat in ("ctrl_g16", "move_g2", "swap_g16", "diff_sm") and effect is not None:
+            if stat in ("ctrl_g16", "move_g2", "swap_g16") and effect is not None:
                 needed = max(needed, required_replicas(effect, sd, alpha))
             rows[stat] = row
-        operands[name] = {**s, "statistics": rows}
+        operands[name] = {**s, "floor_band_mean": edges[name], "statistics": rows}
     if needed > PLANNED_REGIONS:
         raise ValueError(f"{PLANNED_REGIONS} planned regions are fewer than the {needed} needed")
     return {
-        "schema": "orientation-bit-power-v2",
+        "schema": "orientation-bit-power-v3",
         "alpha_family": ALPHA,
         "tests_in_family": FAMILY,
         "alpha_per_test": alpha,
@@ -650,6 +749,7 @@ def operating_characteristics(
     the retained one (power['operands']), equicorrelated across the four gaps with the retained pair correlation, the
     scatter of leak16 is LEAK_SD / sqrt(JOBS); the 2 x 20 columns of each trial are deterministic Sobol points."""
     models = compile_record["relaxation"]["statistics"]
+    bands = floor_band_edges(compile_record)
     scenarios: dict[str, dict[str, Any]] = {
         "null": {"model": None, "effect": 0.0},
         "relaxation_only": {"model": "relaxation_only", "effect": 0.0},
@@ -676,7 +776,7 @@ def operating_characteristics(
                     mean, sd_vec, r, power["planned_regions"], points[:, 20 * oi : 20 * oi + 20]
                 )
             for rule, names, key in (
-                ("swap_rule", STATISTICS, "diff_sm"),
+                ("band_rule", STATISTICS, "diff_cm"),
                 ("superseded_rule", OLD_STATISTICS, "diff_cm"),
             ):
                 counts: dict[str, dict[str, int]] = {"row": {}, **{tag(o): {} for o in pko.OPERANDS}}
@@ -687,11 +787,14 @@ def operating_characteristics(
                     for operand in pko.OPERANDS:
                         t = tag(operand)
                         m, cov = per_operand[t][0][trial], per_operand[t][1][trial]
+                        lo, hi = (bands[t]["lower"], bands[t]["upper"]) if rule == "band_rule" else (0.0, 0.0)
                         for name in names:
                             w = np.asarray(_WEIGHTS[name], dtype=float)
-                            tests[f"{name}:{t}"] = _from_summary(
-                                float(w @ m), float(math.sqrt(w @ cov @ w / n_blocks)), n_blocks
-                            )
+                            mean_, se_ = float(w @ m), float(math.sqrt(w @ cov @ w / n_blocks))
+                            if name == "diff_cm":
+                                tests[f"{name}:{t}"] = _band_from_summary(mean_, se_, n_blocks, lo, hi)
+                            else:
+                                tests[f"{name}:{t}"] = _from_summary(mean_, se_, n_blocks)
                     decide_tests(tests)
                     reads = [readings(tests, o, n_blocks - 1, key) for o in pko.OPERANDS]
                     for o, read in zip(pko.OPERANDS, reads, strict=True):
@@ -788,7 +891,7 @@ def synthetic_entry(
     return {"group": group.name, "measured": measured}
 
 
-def self_test(collect: Any) -> list[str]:
+def self_test(collect: Any, compile_record: dict[str, Any] | None = None) -> list[str]:
     done = []
     n, sd = 40, 0.08
     ops = {tag(o): o for o in pko.OPERANDS}
@@ -796,21 +899,21 @@ def self_test(collect: Any) -> list[str]:
     ctrl_gap = dict(follow)
     xtwin_gap = dict(follow)  # operand-following: the exchange keeps the sign
     move_gap = {f"2:{t}": 0.12 * RETAINED_SIGN[o] for t, o in ops.items()}
-    result = analyze(synthetic_entry(n, sd, ctrl_gap, move_gap, xtwin_gap))
+    result = analyze_flat(synthetic_entry(n, sd, ctrl_gap, move_gap, xtwin_gap))
     got = [r["verdict"] for r in result["readings"]]
     nb.expect(got == ["supported", "supported"], f"operand-following effect read as {got}")
     nb.expect(all(r["iii_exchange"] == "operand-following" for r in result["readings"]), "exchange reading")
     nb.expect(not any(r["leakage_into_character_16"] for r in result["readings"]), "shot-scale leakage was rejected")
     done.append("an injected operand-following gap on bit 4 and on bit 1 reads supported on both operands")
-    null = analyze(synthetic_entry(n, sd, {}, {}, {}))
+    null = analyze_flat(synthetic_entry(n, sd, {}, {}, {}))
     nb.expect(all(r["verdict"] == "unresolved" for r in null["readings"]), "a null run was not unresolved")
     nb.expect(not any(t["reject"] for t in null["tests"].values()), "a null run rejected a test")
     done.append("a run with no gap rejects no test of the 16 (known-bad input of the rule)")
-    stays = analyze(synthetic_entry(n, sd, ctrl_gap, {}, xtwin_gap))
+    stays = analyze_flat(synthetic_entry(n, sd, ctrl_gap, {}, xtwin_gap))
     nb.expect(all(r["verdict"] == "refuted" and r["ii_gap_stays_on_bit_4"] for r in stays["readings"]), "stays on 16")
     nb.expect(not any(r["leakage_into_character_16"] for r in stays["readings"]), "stays: spurious leakage")
     done.append("a replicated gap on bit 4 with none on bit 1 reads refuted as stated (reading ii), through C*")
-    bound = analyze(synthetic_entry(n, sd, ctrl_gap, {}, xtwin_gap, swap={}))
+    bound = analyze_flat(synthetic_entry(n, sd, ctrl_gap, {}, xtwin_gap, swap={}))
     nb.expect(
         all(r["layout_bound_candidate"] and not r["gap_travels_with_bit_4_wire"] for r in bound["readings"]), "layout"
     )
@@ -818,19 +921,40 @@ def self_test(collect: Any) -> list[str]:
     done.append(
         "a gap that stays on the physical qubit of bit 4 (none on the swap unit) is reported layout-bound, unresolved"
     )
-    smaller = analyze(synthetic_entry(n, sd, ctrl_gap, {k: v / 3.0 for k, v in move_gap.items()}, xtwin_gap))
+    shift = 0.05
+    shifted_move = {f"2:{t}": g - shift for t, g in ((tag(o), 0.12 * RETAINED_SIGN[o]) for o in pko.OPERANDS)}
+    flat_floor = analyze_flat(synthetic_entry(n, sd, ctrl_gap, shifted_move, xtwin_gap))
+    nb.expect(
+        all(r["ii_gap_stays_on_bit_4"] for r in flat_floor["readings"]), "a floor was not read as (ii) at zero band"
+    )
+    band = {tag(o): {"lower": [0.0] * n, "upper": [shift + 0.02] * n} for o in pko.OPERANDS}
+    banded = analyze(synthetic_entry(n, sd, ctrl_gap, shifted_move, xtwin_gap), band)
+    nb.expect(
+        all(r["verdict"] == "supported" for r in banded["readings"]), "a floor inside the band was not unresolved"
+    )
+    beyond = analyze(synthetic_entry(n, sd, ctrl_gap, {}, xtwin_gap), band)
+    nb.expect(all(r["ii_gap_stays_on_bit_4"] for r in beyond["readings"]), "a difference beyond the band was lost")
+    short = {t: {"lower": [0.0], "upper": [0.0]} for t in band}
+    try:
+        analyze(synthetic_entry(n, sd, ctrl_gap, shifted_move, xtwin_gap), short)
+    except ValueError:
+        pass
+    else:
+        raise ValueError("a band of the wrong length was accepted")
+    done.append("a floor of C inside its band reads as the gap following; a C beyond the band reads (ii)")
+    smaller = analyze_flat(synthetic_entry(n, sd, ctrl_gap, {k: v / 3.0 for k, v in move_gap.items()}, xtwin_gap))
     nb.expect(all(r["verdict"] != "supported" for r in smaller["readings"]), "a third-size moved gap was supported")
     done.append("a moved gap of one third the size is not read as supported")
-    leaked = analyze(synthetic_entry(n, sd, ctrl_gap, move_gap, xtwin_gap, leak_mean=0.1))
+    leaked = analyze_flat(synthetic_entry(n, sd, ctrl_gap, move_gap, xtwin_gap, leak_mean=0.1))
     nb.expect(all(r["leakage_into_character_16"] for r in leaked["readings"]), "leakage of 0.1 was not rejected")
     nb.expect(all(r["verdict"] == "supported" for r in leaked["readings"]), "leakage alone changed the verdict")
     done.append("leakage into character 16 is reported and leaves the verdict to G2 and C")
     flip_x = {k: -v for k, v in follow.items()}
-    state = analyze(synthetic_entry(n, sd, ctrl_gap, move_gap, flip_x))
+    state = analyze_flat(synthetic_entry(n, sd, ctrl_gap, move_gap, flip_x))
     nb.expect(all(r["iii_exchange"] == "state-dependent" for r in state["readings"]), "state-dependent exchange")
     nb.expect(all(r["verdict"] == "unresolved" for r in state["readings"]), "a state-dependent exchange is supported")
     done.append("a gap whose sign flips under the exchange reads state-dependent and leaves A5-242 unresolved")
-    inverted = analyze(synthetic_entry(n, sd, {k: -v for k, v in follow.items()}, {}, {}))
+    inverted = analyze_flat(synthetic_entry(n, sd, {k: -v for k, v in follow.items()}, {}, {}))
     nb.expect(all(r["verdict"] == "refuted" for r in inverted["readings"]), "an inverted retained sign is not refuted")
     done.append("a replicated gap of the opposite sign reads refuted")
     nb.expect(row_verdict(["supported", "supported"]) == "supported", "row rule: both supported")
@@ -840,18 +964,18 @@ def self_test(collect: Any) -> list[str]:
     nb.expect(result["row"]["verdict"] == "supported" and null["row"]["verdict"] == "unresolved", "analyze row")
     done.append("the row reads supported only when both operands do, refuted when either is, else unresolved")
     dead = tuple(range(0, n, 5)) + tuple(range(1, n, 5))  # 40 percent of the regions
-    live_gap = analyze(synthetic_entry(n, sd, ctrl_gap, move_gap, xtwin_gap, dead=dead, gap_regions="live"))
+    live_gap = analyze_flat(synthetic_entry(n, sd, ctrl_gap, move_gap, xtwin_gap, dead=dead, gap_regions="live"))
     nb.expect(live_gap["regions"]["dead"] == sorted(dead) and live_gap["regions"]["rule_applied"], "dead regions")
     nb.expect(all(r["verdict"] == "supported" for r in live_gap["readings"]), "live-region effect was lost")
     done.append("a gap carried by the live regions survives the dead-region rule (more than one third dead)")
     big = [{k: 2.5 * v for k, v in g.items()} for g in (ctrl_gap, move_gap, xtwin_gap)]
-    dead_gap = analyze(synthetic_entry(n, sd, big[0], big[1], big[2], dead=dead, gap_regions="dead"))
+    dead_gap = analyze_flat(synthetic_entry(n, sd, big[0], big[1], big[2], dead=dead, gap_regions="dead"))
     nb.expect(all(r["verdict_all_regions"] == "supported" for r in dead_gap["readings"]), "all-region run: no gap")
     nb.expect(all(r["verdict_live_regions"] == "unresolved" for r in dead_gap["readings"]), "live run read a gap")
     nb.expect(all(r["verdict"] == "unresolved" for r in dead_gap["readings"]), "a dead-region gap counted")
     nb.expect(dead_gap["row"]["verdict"] == "unresolved", "the row counted a dead-region gap")
     done.append("a gap carried only by regions with visibility under 0.05 is not counted when they exceed one third")
-    few = analyze(synthetic_entry(n, sd, big[0], big[1], big[2], dead=dead[:2], gap_regions="dead"))
+    few = analyze_flat(synthetic_entry(n, sd, big[0], big[1], big[2], dead=dead[:2], gap_regions="dead"))
     nb.expect(not few["regions"]["rule_applied"], "two dead regions of forty applied the rule")
     done.append("the dead-region rule stays off at or below one third of the regions")
     pvalues = {"a": 0.001, "b": 0.02, "c": 0.04, "d": 0.5}
@@ -865,10 +989,10 @@ def self_test(collect: Any) -> list[str]:
     )
     nb.expect(power_at(0.03, 0.1, 12, 0.05) < POWER, "a small effect reaches full power: the power function is flat")
     done.append("the power function equals the noncentral t at 0.09 / 0.1 and the size of the test at zero effect")
-    if collect is not None:
-        power = power_record(collect)
+    if collect is not None and compile_record is not None:
+        power = power_record(collect, compile_record)
         for o in power["operands"].values():
-            for stat in ("ctrl_g16", "move_g2", "swap_g16", "diff_sm"):
+            for stat in ("ctrl_g16", "move_g2", "swap_g16"):
                 nb.expect(o["statistics"][stat]["regions_rho1"]["power_full_effect"] >= POWER, f"power of {stat}")
         done.append(f"{PLANNED_REGIONS} regions read {JOBS} times give power at least {POWER} for the gaps and C*")
     return done
@@ -882,18 +1006,22 @@ def main() -> int:
     mode.add_argument("--operating", type=Path, metavar="DIR")
     mode.add_argument("--analyze", type=Path, metavar="COLLECT", nargs="+")
     ap.add_argument("--regions", type=Path, nargs="+", help="JSON list of region qubit lists per collected job")
+    ap.add_argument(
+        "--floors", type=Path, nargs="+", help="per job, the floors.json of compile_case.py --floors-from (required)"
+    )
     ap.add_argument("--retained-collect", type=Path, help=f"{RETAINED_COLLECT}, read by --power and --self-test")
     ap.add_argument("--readout-errors", type=Path, help="JSON list: readout error of the bit-4 qubit per replica")
     args = ap.parse_args()
     retained = json.loads(args.retained_collect.read_text()) if args.retained_collect else None
     if args.self_test:
-        for line in self_test(retained):
+        compile_path = HERE / "case_compile.json"
+        for line in self_test(retained, json.loads(compile_path.read_text()) if compile_path.is_file() else None):
             print(f"ok: {line}")
         return 0
     if args.power:
         if retained is None:
             ap.error("--power needs --retained-collect")
-        record = power_record(retained)
+        record = power_record(retained, json.loads((args.power / "case_compile.json").read_text()))
         record["retained_collect_sha256"] = hashlib.sha256(args.retained_collect.read_bytes()).hexdigest()
         (args.power / "power.json").write_text(json.dumps(record, indent=1, sort_keys=True) + "\n")
         return 0
@@ -913,7 +1041,13 @@ def main() -> int:
         )
     regions = [json.loads(p.read_text()) for p in args.regions] if args.regions else None
     errors = json.loads(args.readout_errors.read_text()) if args.readout_errors else None
-    print(json.dumps(analyze(merge_jobs(entries, regions), errors), indent=1, sort_keys=True))
+    if not args.floors:
+        ap.error("--analyze needs --floors: the floor band of C comes from the dry-run calibration of each region")
+    floor_sets = [json.loads(p.read_text()) for p in args.floors]
+    entry, floors = merge_jobs(entries, regions, floor_sets)
+    if floors is None:
+        raise ValueError("no floors")
+    print(json.dumps(analyze(entry, floors, errors), indent=1, sort_keys=True))
     return 0
 
 

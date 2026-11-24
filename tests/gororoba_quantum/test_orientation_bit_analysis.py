@@ -35,7 +35,7 @@ def _expect(condition: bool, message: str) -> None:
 
 def test_self_test_passes() -> None:
     lines = oba.self_test(None)
-    _expect(len(lines) >= 9, f"self-test ran {len(lines)} checks")
+    _expect(len(lines) >= 12, f"self-test ran {len(lines)} checks")
 
 
 def test_power_function_matches_the_noncentral_t_where_scipy_is_finite() -> None:
@@ -49,13 +49,13 @@ def test_planned_design_comes_from_the_retained_scatter() -> None:
     path = ROOT / oba.RETAINED_COLLECT
     if not path.is_file():
         pytest.skip(f"{oba.RETAINED_COLLECT} is absent from this checkout")
-    record = oba.power_record(json.loads(path.read_text()))
+    record = oba.power_record(json.loads(path.read_text()), json.loads((DIRECTORY / "case_compile.json").read_text()))
     _expect(record["replicas"] == 30 and record["planned_regions"] == 15 and record["jobs"] == 2, "design")
     _expect(record["tests_in_family"] == 16, "family size")
     _expect(record["regions_needed_if_replicas_of_a_region_are_identical"] <= 15, "needed regions exceed the plan")
     for name, row in record["operands"].items():
         stats_ = row["statistics"]
-        for stat in ("ctrl_g16", "move_g2", "swap_g16", "diff_sm"):
+        for stat in ("ctrl_g16", "move_g2", "swap_g16"):
             worst, best = stats_[stat]["regions_rho1"], stats_[stat]["regions_rho0"]
             _expect(worst["power_full_effect"] >= oba.POWER, f"{name} {stat}: power below {oba.POWER} at rho 1")
             _expect(best["power_full_effect"] >= worst["power_full_effect"], f"{name} {stat}: rho 0 below rho 1")
@@ -71,29 +71,36 @@ def test_merge_jobs_averages_the_replicas_of_one_region() -> None:
     first = oba.synthetic_entry(n, 0.08, {"16:e1pe26": -0.12, "16:e1pe18": 0.12}, {}, {})
     second = oba.synthetic_entry(n, 0.08, {"16:e1pe26": -0.12, "16:e1pe18": 0.12}, {}, {}, visibility=0.2)
     regions = [[[0, 1], [2, 3], [4, 5], [6, 7]], [[2, 3], [0, 1], [4, 5], [8, 9]]]
-    merged = oba.merge_jobs([first, second], regions)
+    merged, _ = oba.merge_jobs([first, second], regions)
     name = next(iter(first["measured"]))
     _expect(len(merged["measured"][name]) == 5 and sorted(merged["blocks"]) == [1, 1, 2, 2, 2], "blocks")
     want = (np.asarray(first["measured"][name][0]) + np.asarray(second["measured"][name][1])) / 2.0
     _expect(bool(np.allclose(merged["measured"][name][0], want)), "region [0, 1] is not the mean of its two replicas")
     with pytest.raises(ValueError, match="once"):
         oba.merge_jobs([first, second], [[[0, 1], [0, 1], [2, 3], [4, 5]], regions[1]])
-    unregioned = oba.merge_jobs([first, second])
+    unregioned, _ = oba.merge_jobs([first, second])
     _expect(len(unregioned["measured"][name]) == n and unregioned["blocks"] == [2] * n, "positional blocks")
 
 
-def test_swap_rule_ignores_the_physical_qubit_floor_that_the_superseded_rule_reads_as_refutation() -> None:
-    """A model floor of C = G16 ctrl - G2 move (a difference between the physical qubits of bits 1 and 4) rejects
-    diff_cm at enough regions while the gap itself follows; diff_sm, read on one physical qubit, stays at zero."""
+def test_floor_band_reads_a_model_floor_as_unresolved_and_a_larger_difference_as_a_difference() -> None:
     n, sd = 40, 0.05
     follow = {"16:e1pe26": -0.12, "16:e1pe18": 0.12}
-    move = {"2:e1pe26": -0.12 + 0.05, "2:e1pe18": 0.12 + 0.05}
-    swap = {"16:e1pe26": -0.12 + 0.05, "16:e1pe18": 0.12 + 0.05}
-    entry = oba.synthetic_entry(n, sd, follow, move, follow, swap=swap)
-    result = oba.analyze(entry)
-    _expect(all(r["ii_gap_stays_on_bit_4"] is False for r in result["readings"]), "the swap rule read a floor as (ii)")
-    _expect(all(v["reject"] is False for k, v in result["tests"].items() if k.startswith("diff_sm")), "diff_sm moved")
-    _expect(all(v["reject"] for k, v in result["exploratory"].items() if k.startswith("diff_cm")), "no floor on C")
+    move = {"2:e1pe26": -0.17, "2:e1pe18": 0.07}  # C = G16 - G2 = +0.05 on both operands
+    entry = oba.synthetic_entry(n, sd, follow, move, follow)
+    flat = oba.analyze_flat(entry)
+    _expect(all(r["verdict"] == "refuted" for r in flat["readings"]), "a floor of 0.05 at zero band was not refuted")
+    inside = {t: {"lower": [0.0] * n, "upper": [0.07] * n} for t in ("e1pe26", "e1pe18")}
+    result = oba.analyze(entry, inside)
+    _expect(all(r["verdict"] == "supported" for r in result["readings"]), "a floor inside the band was refuted")
+    _expect(all(not v["reject"] for k, v in result["tests"].items() if k.startswith("diff_cm")), "band rejected")
+    below = {t: {"lower": [0.0] * n, "upper": [0.03] * n} for t in inside}
+    beyond = oba.analyze(entry, below)
+    _expect(all(r["ii_gap_stays_on_bit_4"] is False or r["verdict"] == "refuted" for r in beyond["readings"]), "beyond")
+    _expect(
+        all(v["reject"] for k, v in beyond["tests"].items() if k.startswith("diff_cm")), "beyond the band: no reject"
+    )
+    with pytest.raises(ValueError, match="floor band"):
+        oba.analyze(entry, {t: {"lower": [0.0], "upper": [0.0]} for t in inside})
 
 
 def test_holm_rejects_nothing_above_its_first_threshold() -> None:
@@ -119,7 +126,7 @@ def test_dead_region_rule_needs_more_than_one_third_dead() -> None:
     n, sd = 12, 0.08
     gap = {"16:e1pe26": -0.12, "16:e1pe18": 0.12}
     for dead, applies in (((0, 1, 2, 3), False), ((0, 1, 2, 3, 4), True)):
-        result = oba.analyze(oba.synthetic_entry(n, sd, gap, {}, {}, dead=dead))
+        result = oba.analyze_flat(oba.synthetic_entry(n, sd, gap, {}, {}, dead=dead))
         _expect(result["regions"]["dead"] == list(dead), f"dead regions {result['regions']['dead']}")
         _expect(result["regions"]["rule_applied"] is applies, f"{len(dead)} of {n} dead: rule {applies} expected")
         _expect(all(("verdict_live_regions" in r) is applies for r in result["readings"]), "live-region reading")
@@ -129,11 +136,11 @@ def test_readout_correlation_is_exploratory_and_checks_its_length() -> None:
     n = 12
     entry = oba.synthetic_entry(n, 0.08, {"16:e1pe26": -0.12, "16:e1pe18": 0.12}, {}, {})
     errors = [0.01 + 0.002 * i for i in range(n)]
-    result = oba.analyze(entry, errors)
+    result = oba.analyze_flat(entry, errors)
     block = result["exploratory_readout_correlation"]
     _expect("outside the family" in block["status"], "the correlation is not marked exploratory")
     _expect(set(block["operands"]) == {"e1pe26", "e1pe18"}, f"operands {set(block['operands'])}")
     _expect(all(row["n"] == n and -1.0 <= row["pearson_r"] <= 1.0 for row in block["operands"].values()), "values")
     _expect(len(result["tests"]) == oba.FAMILY, "the correlation entered the family")
     with pytest.raises(ValueError, match="readout errors"):
-        oba.analyze(entry, errors[:-1])
+        oba.analyze_flat(entry, errors[:-1])
