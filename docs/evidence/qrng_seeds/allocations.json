@@ -1443,6 +1443,90 @@
    "value": 9353,
    "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
    "index": 3
+  },
+  {
+   "path": "tests/scripts/test_qi_matched_response_analysis.py",
+   "name": "TEST_SEEDS",
+   "value": 57531,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 4
+  },
+  {
+   "path": "tests/scripts/test_qi_matched_response_analysis.py",
+   "name": "TEST_SEEDS",
+   "value": 54461,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 5
+  },
+  {
+   "path": "tests/scripts/test_qi_matched_response_analysis.py",
+   "name": "TEST_SEEDS",
+   "value": 19728,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 6
+  },
+  {
+   "path": "tests/scripts/test_qi_matched_response_analysis.py",
+   "name": "TEST_SEEDS",
+   "value": 4799,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 7
+  },
+  {
+   "path": "scripts/qi_replicated_stein_simulation.py",
+   "name": "SIMULATION_SEEDS",
+   "value": 34644,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 8
+  },
+  {
+   "path": "scripts/qi_replicated_stein_simulation.py",
+   "name": "SIMULATION_SEEDS",
+   "value": 40029,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 9
+  },
+  {
+   "path": "scripts/qi_replicated_stein_simulation.py",
+   "name": "SIMULATION_SEEDS",
+   "value": 46414,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 10
+  },
+  {
+   "path": "scripts/qi_replicated_stein_simulation.py",
+   "name": "SIMULATION_SEEDS",
+   "value": 54363,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 11
+  },
+  {
+   "path": "scripts/qi_replicated_stein_simulation.py",
+   "name": "HEAVY_TAIL_SEED",
+   "value": 33479,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 12
+  },
+  {
+   "path": "tests/scripts/test_qi_replicated_response.py",
+   "name": "TEST_SEEDS",
+   "value": 38219,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 13
+  },
+  {
+   "path": "tests/scripts/test_qi_replicated_response.py",
+   "name": "TEST_SEEDS",
+   "value": 9144,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 14
+  },
+  {
+   "path": "tests/scripts/test_qi_replicated_response.py",
+   "name": "TEST_SEEDS",
+   "value": 11079,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 15
   }
  ],
  "runtime": [

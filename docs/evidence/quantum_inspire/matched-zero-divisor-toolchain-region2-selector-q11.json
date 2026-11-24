@@ -1,0 +1,84 @@
+{
+ "schema": "qi-matched-zero-divisor-toolchain-v1",
+ "source_sha256": "e1f35b77800c160a829ac8ed483f54ac9c6ae6e15219d8440cce0129936c6337",
+ "producer_sources_sha256": {
+  "scripts/qi_matched_zero_divisor.py": "93f5c645131f3e3d90121feea794fc04a5bcf8d00d8ca05be574a21f11616414",
+  "scripts/qi_toolchain_check.py": "fa9d1ee6aa61b75906e2fe85adb39a5be46360ec8b3a947f5844f2c6c0c51d0c",
+  "scripts/qi_zero_divisor_cases.py": "6c0a7c15e3f04ec0036ad42e8712629b7dd764ddbc51d4ba1ee2526156515174",
+  "scripts/qi_platform.py": "d53b201e9a1268a5c7a4ab5af36807e90573e38c6842eae85dff9b6fb010669b",
+  "gororoba_quantum/qi_stack.py": "47c84368b91125942a04c8515edd7023e081ce19ad9d09e223060af5eb60e1df",
+  "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
+  "scripts/qi_matched_zero_divisor_selector_q11.py": "e1f35b77800c160a829ac8ed483f54ac9c6ae6e15219d8440cce0129936c6337"
+ },
+ "catalogue_sha256": "d717a785d1500e926a0f738480ba0e92326a3e7f0772d3a0717bf451a7725ace",
+ "toolchain": {
+  "qxelarator": "0.10.0",
+  "libqasm": "1.2.1",
+  "opensquirrel": "0.9.1"
+ },
+ "circuits": [
+  {
+   "file": "batch-00/readout-0.cq",
+   "source_sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3",
+   "compiled_sha256": "b9f6522943487823c55f09c907d3b3fbfbb9c2cf628f9a5cda94f990975ebe87",
+   "maximum_angle_serialization_error": 0.0,
+   "operand_control_order_preserved": true
+  },
+  {
+   "file": "batch-00/readout-1.cq",
+   "source_sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff",
+   "compiled_sha256": "4bf0615459a5abc811e03c4c5d41d66a3935249388c53333138dfd3140a4210f",
+   "maximum_angle_serialization_error": 0.0,
+   "operand_control_order_preserved": true
+  },
+  {
+   "file": "batch-00/witness.cq",
+   "source_sha256": "582aacf9ac3bd2aaa29be2ff44b2ac8502663029a6899adc799d0ba3256b037e",
+   "compiled_sha256": "194ce56de8856b15a075785b31601da06929472d5eaa055d26d37f070d931508",
+   "maximum_angle_serialization_error": 2.6794896967885506e-08,
+   "operand_control_order_preserved": true
+  },
+  {
+   "file": "batch-01/readout-0.cq",
+   "source_sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3",
+   "compiled_sha256": "b9f6522943487823c55f09c907d3b3fbfbb9c2cf628f9a5cda94f990975ebe87",
+   "maximum_angle_serialization_error": 0.0,
+   "operand_control_order_preserved": true
+  },
+  {
+   "file": "batch-01/readout-1.cq",
+   "source_sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff",
+   "compiled_sha256": "4bf0615459a5abc811e03c4c5d41d66a3935249388c53333138dfd3140a4210f",
+   "maximum_angle_serialization_error": 0.0,
+   "operand_control_order_preserved": true
+  },
+  {
+   "file": "batch-01/witness.cq",
+   "source_sha256": "50946fe9d7e5211d841efad20fab79ee163335b7428726a413ba54fbb36d70c2",
+   "compiled_sha256": "e9a2b8ee3392846db8de20be01d93246e31df52937afed9f49e27e42fe76e5b8",
+   "maximum_angle_serialization_error": 4.641020678874952e-08,
+   "operand_control_order_preserved": true
+  },
+  {
+   "file": "batch-02/readout-0.cq",
+   "source_sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3",
+   "compiled_sha256": "b9f6522943487823c55f09c907d3b3fbfbb9c2cf628f9a5cda94f990975ebe87",
+   "maximum_angle_serialization_error": 0.0,
+   "operand_control_order_preserved": true
+  },
+  {
+   "file": "batch-02/readout-1.cq",
+   "source_sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff",
+   "compiled_sha256": "4bf0615459a5abc811e03c4c5d41d66a3935249388c53333138dfd3140a4210f",
+   "maximum_angle_serialization_error": 0.0,
+   "operand_control_order_preserved": true
+  },
+  {
+   "file": "batch-02/witness.cq",
+   "source_sha256": "2c1f0b172b8834f2ce44fc704c8ecb2f75b89a80520f7d3bd4eb483e49b57232",
+   "compiled_sha256": "76ef5b330d1c360e1c51ebc652206c020a234f939867772a8780c81da1633f86",
+   "maximum_angle_serialization_error": 4.641020678874952e-08,
+   "operand_control_order_preserved": true
+  }
+ ]
+}

@@ -359,6 +359,10 @@ bytes of `qi_platform.py` that retained records pin:
   after an expired-token answer included, so a submission that stalls between requests cannot enqueue beside the
   next holder; a batch it had created stays `planned`, and `reconcile` reads the case as it does after any
   interrupted submission.
+- A caller that has its own time limit passes it as `--deadline-seconds S` (the function takes `execution_deadline` on the
+  monotonic clock). The route checks it on entry, after the wait for `SUBMIT_LOCK` and before the backend-type read
+  and the lease request, so a submission that waited for the lock past the limit sends no request. The replicated
+  series runner passes the series time left on every attempt, the retry after a hardware pause included.
 - The route's end releases the lease when no request creating a batch job was dispatched, or when a read of the
   created batch job (the list with its id filter, as `reconcile` reads it) shows it `queued`, `reserved`, `running`
   or `finished`. A creation request with no recorded answer, a batch still `planned` and a failed read leave the

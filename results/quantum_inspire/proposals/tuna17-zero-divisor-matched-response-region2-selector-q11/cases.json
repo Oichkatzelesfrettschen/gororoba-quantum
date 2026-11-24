@@ -1,0 +1,8 @@
+{
+ "schema": "qi-matched-zero-divisor-series-v1",
+ "batches": [
+  "batch-00",
+  "batch-01",
+  "batch-02"
+ ]
+}

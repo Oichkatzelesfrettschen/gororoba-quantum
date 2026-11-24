@@ -1,6 +1,7 @@
 """Quantum Inspire batch submission under the account-wide submit lease; the successor route of qi_platform.submit.
 
     "$QI_PYTHON" scripts/qi_platform_leased.py submit CASE_DIR --backend-type-id N --approval TEXT
+        [--deadline-seconds S]
 
 qi_platform.submit orders the sessions of one device with a file lock, so two devices sharing the account can both
 pass its queue and pause checks before either batch exists on the service
@@ -20,6 +21,11 @@ another thread of this process that builds qi_platform.Client() (snapshot, recon
 LeasedClient; the lease hooks act only for the thread that opened the session, so that client behaves as the base
 class, and no caller in the repository runs such a thread beside a submission.
 
+--deadline-seconds S bounds the whole submission: the CLI converts it to an execution_deadline on the monotonic
+clock at start, and submit() refuses with TimeoutError, before any request and before the lease is taken, when the
+deadline has passed on entry or after the wait for SUBMIT_LOCK. A caller that retries after a pause passes the time
+it has left on each call.
+
 An emulator batch takes no lease and passes through unchanged. Collection and reconciliation stay
 qi_platform's. A route that calls qi_platform.submit or qi_platform_submission_deadline.submit directly stays
 outside the lease (docs/notes/quantum_inspire/usage.md, "Submit lease").
@@ -29,6 +35,7 @@ from __future__ import annotations
 
 import argparse
 import contextlib
+import time
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
@@ -116,8 +123,13 @@ def submit(
     execution_deadline: float | None = None,
 ) -> dict[str, Any]:
     """Submit one case batch under SUBMIT_LOCK and, on a hardware backend type, under the account's submit lease."""
+    qi_platform._check_execution_deadline(execution_deadline)
     with qi_platform.token_lock(qi_platform.SUBMIT_LOCK), qi_submit_lease.session(), _leased_client():
-        if qi_platform.Client().get(f"/backend_types/{backend_type_id}")["is_hardware"]:
+        # token_lock blocks until the holder releases; the wait may outlast the deadline, so the check follows it.
+        qi_platform._check_execution_deadline(execution_deadline)
+        backend = qi_platform.Client().get(f"/backend_types/{backend_type_id}", execution_deadline=execution_deadline)
+        if backend["is_hardware"]:
+            qi_platform._check_execution_deadline(execution_deadline)
             qi_submit_lease.take()
         return qi_platform._submit(
             case_dir,
@@ -135,8 +147,13 @@ def main() -> None:
     p.add_argument("case_dir", type=Path)
     p.add_argument("--backend-type-id", type=int, required=True)
     p.add_argument("--approval", required=True)
+    p.add_argument("--deadline-seconds", type=float, help="seconds from now after which no request is sent")
     args = parser.parse_args()
-    record = submit(args.case_dir, args.backend_type_id, args.approval)
+    deadline = None if args.deadline_seconds is None else time.monotonic() + args.deadline_seconds
+    try:
+        record = submit(args.case_dir, args.backend_type_id, args.approval, execution_deadline=deadline)
+    except TimeoutError as error:
+        raise SystemExit(f"qi_platform_leased.py: {error}") from error
     print(f"batch {record['batch_job']}: jobs {[row['job'] for row in record['jobs']]}")
 
 
