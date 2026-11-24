@@ -33,7 +33,14 @@ e1 + e18 (nullity 12, m = 19):
 |---|---|---|
 | ctrl | retained placement, orientation on bit 4 | contains 16 |
 | move | the pairs split by bit 1, phase pi on data qubit 1 | contains 2, excludes 16 |
-| xtwin | ctrl plus one X on data qubit 4 after the SELECT, before readout | 16 (signs of the bins exchanged) |
+| xtwin | ctrl plus one X on data qubit 4 after the SELECT, before readout | the control's eight characters, with the sign of every character that carries bit 4 exchanged |
+
+Compiled form (snapshot target, optimization level 3). The xtwin routes to the control's schedule plus one virtual rz on
+the wire measured into data bit 4: the cz sequence (qubit pairs and order), the sx and x gates and the measure mapping are
+identical, and the two circuits differ only in rz angles of that wire, in the stretch before its last sx, which holds cz and
+rz gates only (rz commutes with cz). This held on all 60 compiles of a scratch sweep (5 tiles, 3 transpiler seeds, 2
+operands, both arm phases; not retained) and is asserted on one tile and one seed per operand by
+`test_exchange_compiles_to_one_frame_on_the_bit_four_wire`. The consequence for D is stated with its row below.
 
 Bit 1 is a set bit of both m (27 = 11011b, 19 = 10011b); the common set bits are 0, 1 and 4. Bits 0 and 1 route to the
 same CZ count (table below), so the choice is a tie on cost; bit 1 is the one the SELECT's input-X layer does not touch (i = 1
@@ -43,8 +50,20 @@ Verified exactly (`tests/gororoba_quantum/test_pathion_kernel_map_orientation.py
 
 - For every set bit b of m, the selector marginals are (16 -+ N)/32, every output contrast is +-1 and half their sum is N,
   so N is unchanged by b. The sign pattern of the contrast is not unchanged: moving the split exchanges which output of a
-  misaligned pair carries -1, so the Walsh support moves from character 16 to character 2^b. That movement is what the
-  case reads.
+  misaligned pair carries -1. Every member's ideal contrast has a Walsh support of eight characters, with these
+  coefficients times 4 (`SUPPORTS` in the test module):
+
+  | Member | e1 + e26 (nullity 4) | e1 + e18 (nullity 12) |
+  |---|---|---|
+  | ctrl | 0: 1, 4: 1, 10: -1, 14: -1, **16: -3**, 20: 1, 26: -1, 30: -1 | 0: 3, 4: -1, 8: -1, 12: -1, **16: -1**, 20: -1, 24: -1, 28: -1 |
+  | move (bit 1) | 0: 1, **2: -3**, 4: 1, 6: 1, 8: -1, 10: -1, 12: -1, 14: -1 | 0: 3, **2: -1**, 4: -1, 6: -1, 8: -1, 10: -1, 12: -1, 14: -1 |
+  | xtwin | as ctrl, with the sign of 16, 20, 26, 30 exchanged | as ctrl, with the sign of 16, 20, 24, 28 exchanged |
+
+  The signature character (bold) moves from 16 to 2^b = 2. Three of the other seven characters are shared by control and
+  moved member (4, 10, 14 at nullity 4; 4, 8, 12 at nullity 12). No statistic reads a shared character: the gaps read
+  characters 0, 16 and 2, and leak16 reads character 16 outside the moved support. The (0, signature) weight pair is
+  identical between control and moved member (1/4 and 3/4 at nullity 4, 3/4 and 1/4 at nullity 12), so G16 and G2
+  compare weight-matched quantities. The signature movement is what the case reads.
 - Mutation test (Hardware probes of `docs/notes/algebra_circuit_rules.md`): the cocycle-free SELECT and one negated SELECT
   sign move the half-sum of the moved circuit away from N, so the ideal observable depends on the sign table.
 - The X twin: for both pairs and both arms the ideal law of the primary plus one X on data qubit 4 after the SELECT equals
@@ -72,7 +91,16 @@ Replicas are disjoint six-qubit tiles of the chip. Per replica and operand:
 | C | G16 ctrl - G2 move | 0 (the gap moves at equal size) |
 | G16 (xtwin) | lambda_16 - lambda_0 against the exchanged ideal | the sign of ctrl if the effect follows the operand |
 | S | (G16 ctrl + G16 xtwin) / 2 | nonzero if the effect follows the operand |
-| D | (G16 ctrl - G16 xtwin) / 2 | zero; nonzero if a state-dependent error of the qubit enters |
+| D | (G16 ctrl - G16 xtwin) / 2 | zero under the row's SELECT-decay hypothesis; nonzero only for an asymmetric readout of the bit-4 physical qubit or a coherent angle error on that wire's final single-qubit tail |
+
+What D sees. The xtwin differs from the control by one frame on the bit-4 wire after the SELECT (compiled form above), so
+D is zero under any error that acts before that frame, the SELECT-decay hypothesis of row A5-242 included, and under any
+error that commutes with the frame (depolarizing noise, which is unitarily covariant). It responds to asymmetric readout of
+that qubit and to a coherent angle error on the tail. Relaxation enters only through the cz and idle interval that the
+frame commutes through: the exact relaxation-only model predicts D = -0.00041 (nullity 4) and -0.00004 (nullity 12), about
+1 percent of the control gap and under 0.5 percent of the minimum detectable effect, so D does not resolve relaxation. D
+isolates the readout-asymmetry half of the row's open question (relaxation or asymmetric readout): the asymmetric-readout
+model predicts D = -0.012 and -0.005.
 
 Each is a one-sample t test over replicas with n - 1 degrees of freedom; the standard error is the scatter of the replica
 values, so the test holds whatever the drift between regions. The family is 14 tests (7 statistics, 2 operands); Holm's
@@ -86,12 +114,32 @@ Readings, per operand:
   physical qubit or the SELECT. This is the row's first falsifier, and C is its test: the moved support holds no
   character with bit 4, so a character-diagonal channel cannot put weight on 16 and leak16 alone cannot detect the
   mechanism; it is reported (a nonzero leak16 needs asymmetric readout or relaxation) and does not enter the verdict.
-- (iii) The exchange: S rejected and D not reads operand-following (sign kept); D rejected and S not reads state-dependent
-  (sign flipped); both reads a mixture; neither is unresolved.
+- (iii) The exchange: S rejected and D not reads operand-following (sign kept); D rejected and S not reads an
+  asymmetric readout or tail-angle effect of the bit-4 qubit (sign flipped; the SELECT-decay hypothesis predicts D = 0, so
+  a rejected D does not support it); both reads a mixture; neither is unresolved. The reading is labeled
+  `state-dependent` in the analysis output.
 - Replication: G16 (ctrl) rejected with the retained sign is required; rejected with the opposite sign refutes A5-242
   (the row's second falsifier: a rerun whose paired gaps change sign).
 - Verdict per operand: supported when replication, (i) and operand-following (iii) hold; refuted on (ii) or a flipped
-  sign; unresolved otherwise (including a moved gap that follows with a different size). `--self-test` injects each case
+  sign; unresolved otherwise (including a moved gap that follows with a different size).
+- Row rule: A5-242 reads supported only when both operands read supported, refuted when either operand reads refuted,
+  and unresolved otherwise (`row_verdict`, tested). The two operands were chosen after the data as the largest retained
+  effect at each nullity among those with a retained twin, so the retained effects carry a winner's curse; the
+  replication test answers it, and a smaller true effect reads unresolved.
+- Dead-region rule: a region is dead when its visibility, the mean over its six units of the estimator's signed
+  visibility V_hat (the quantity behind the retained 0.004 and -0.033), is below 0.05. When more than one third of the
+  regions are dead the analysis runs again over the live regions and a verdict counts only when both runs read it; fewer
+  than three live regions leave every verdict unresolved. The retained run has two dead regions of five.
+- Exploratory output, outside the family of 14, the power calculation and the verdict: with `--readout-errors` (one
+  calibration readout error of the bit-4 physical qubit per replica, read at the dry run) the analysis reports the
+  Pearson and Spearman correlation of each replica's control gap G16 with it.
+- Floor argument: a per-qubit readout flip predicts negative gaps at both nullities (asymmetric-readout model below:
+  -0.007 and -0.037), so the nullity-12 gap reading positive is the sign that readout cannot produce; the e1 + e18 G16
+  and G2 signs are the discriminating reading, and a negative gap at nullity 4 alone is not.
+- Coherent errors: the case carries no ZZ or crosstalk row. The Target and the retained calibration hold no coupling
+  rates, so a coherent-error response cannot be predicted offline; D is the case's first-order probe of a coherent angle
+  error on the tail, and a coherent-error audit of the compiled circuits (as `scripts/iqm_probe_audit.py` does for IQM) is
+  owed to the dry run if the rates become readable. `--self-test` injects each case
   (null run, operand-following effect, gap on bit 4 only, a third-size moved gap, leakage, state-dependent exchange,
   flipped sign) and requires the verdict; 10 checks pass.
 
@@ -107,8 +155,8 @@ effect has power 0.47 and 0.21, and the minimum detectable gap at 15 replicas is
 (the retained effects were chosen after the data from six units) reads as unresolved, not as a refutation.
 
 The retained scatter is itself a risk: two of the five retained replicas of e1 + e26 and of its twin read a visibility near
-zero (0.004, -0.033 and 0.027, 0.007 against 0.14 to 0.26 on the others), so the replica floor of the live plan must keep
-such regions out, or the standard deviations above understate the scatter that the better regions would show. The
+zero (0.004, -0.033 and 0.027, 0.007 against 0.14 to 0.26 on the others), so the dead-region rule above applies to the
+live run, and the standard deviations above, which include those regions, can overstate the scatter of the live ones. The
 off-support coefficient c_obs,16 of the retained units has a median scatter of 0.012 to 0.017 over replicas (the shot-noise
 scale of 32 bins at 16,384 shots), which sets the scale of leak16.
 
@@ -137,7 +185,7 @@ nullity-4 pair); this compile is in range. Live CZ counts are owed to the dry ru
 
 ## Noise prediction (retained snapshot)
 
-An exact density-matrix run (no sampling) of the routed circuits under a depolarizing model from the snapshot (each cz at
+Snapshot rows. An exact density-matrix run (no sampling) of the routed circuits under a depolarizing model from the snapshot (each cz at
 its coupler error, sx and x at their qubit error, a symmetric readout flip at the measure error), on the five tiles as
 replicas. Gap statistics, mean and 95 percent t interval over tiles:
 
@@ -149,12 +197,38 @@ replicas. Gap statistics, mean and 95 percent t interval over tiles:
 | C = G16 ctrl - G2 move | +0.0167 [0.0131, 0.0203] | +0.0088 [0.0033, 0.0142] |
 | D | 0 | 0 |
 
-Why a simulation cannot answer the question: the snapshot carries no T1, T2 or operand-dependent decay of the orientation
-qubit, so the model's gaps arise from character weight and readout alone. They are negative at both nullities and a
-factor 7 to 14 smaller than the retained -0.155 (nullity 4), with the opposite sign of the retained +0.103 (nullity 12),
-below the minimum detectable effect of 0.09 to 0.10. The model's exchange is a relabeling, so D is zero by construction;
-whether the physical exchange carries a state-dependent error is the measurement. Intervals reflect tile scatter of the
-exact model and exclude shot noise.
+Relaxation prediction (retained calibration of 2026-11-06). The snapshot holds no T1 or T2. The only per-qubit T1, T2 and
+asymmetric readout errors of ibm_fez in the tree belong to the retained kernel-map run
+(`results/live/2026-11-06T183538.809814Z/record.json`, calibration 2026-11-06T10:24:29-08:00, five regions, no T2 above
+2 T1), so the same members route with the first transpiler seed onto those five regions and run exactly under four models
+built from that record: depolarizing gate errors with a symmetric readout flip (the snapshot model, on these regions),
+relaxation alone (T1 and T2 over every gate and idle interval of an ASAP schedule that ends all wires together, rz
+virtual, ideal gates and readout), asymmetric readout alone (`prob_meas1_prep0`, `prob_meas0_prep1`), and all three.
+The producer is `compile_case.py` (`"relaxation"` block of `case_compile.json`, `compile_case.py --check` recomputes and
+compares). Means over the five regions; the retained gaps are -0.155 and +0.103 over the same regions:
+
+| Statistic | Model | e1 + e26 | e1 + e18 |
+|---|---|---|---|
+| G16 ctrl | depolarizing, symmetric readout | -0.0137 | -0.0202 |
+| G16 ctrl | relaxation only | -0.0417 | -0.0072 |
+| G16 ctrl | asymmetric readout only | -0.0072 | -0.0374 |
+| G16 ctrl | all three | -0.0326 | -0.0141 |
+| G2 move | all three | -0.0710 | -0.0328 |
+| C = G16 ctrl - G2 move | all three | +0.0384 | +0.0187 |
+| D | depolarizing, relaxation only, asymmetric readout only, all three | 0, -0.0004, -0.0124, -0.0043 | 0, -0.00004, -0.0052, -0.0017 |
+
+Relaxation alone reaches the retained sign at nullity 4 at 27 percent of the size (-0.042 against -0.155; all three
+together 21 percent) and does not reach the retained sign at nullity 12 (-0.007 against +0.103); no model predicts a
+positive gap at either nullity. The models also predict a C of +0.019 to +0.038: a bias between the control and the
+moved member that stays below the minimum detectable effect (0.09 to 0.10) and equals 0.9 to 1.8 standard errors of C over
+15 replicas (0.0835 and 0.0818 per replica). Intervals of the snapshot table reflect tile scatter of the exact model and
+exclude shot noise.
+
+Why a simulation cannot answer the question: no modeled combination of depolarizing error, relaxation and asymmetric
+readout predicts the retained positive gap at nullity 12 (+0.103, against -0.007 to -0.037), and the nullity-4 gaps reach
+at most 27 percent of the retained -0.155; the remainder, and the sign at nullity 12, belong to an effect the models omit,
+which is what the device measurement tests. The comparison rests on one calibration of one day and five regions; a
+different day's T1 and T2 shift the relaxation share, which the dry run's live calibration reads.
 
 ## Backend, shots, expected seconds
 
@@ -175,8 +249,9 @@ exact model and exclude shot noise.
 Whether the retained gap of character 16 moves with the orientation phase to data qubit 1 and whether it keeps or flips
 sign under the exchange of the bit-4 states, on the device, over 15 disjoint regions, with one family-wise error of 0.05.
 Reading (ii) refutes A5-242 as stated; reading (i) with operand-following (iii) supports an operand-following
-orientation-qubit effect and leaves the mechanism hypothesis (SELECT-set decay) open; a state-dependent D resolves
-the exchange part that the retained twins could not.
+orientation-qubit effect and leaves the mechanism hypothesis (SELECT-set decay) open; a rejected D reports an asymmetric
+readout or tail-angle effect of the bit-4 qubit, the half of the row's open question that the retained separate-compile
+twins could not isolate, and D = 0 leaves relaxation and readout asymmetry unseparated.
 
 ## Falsifiers of the design
 
@@ -192,6 +267,8 @@ the exchange part that the retained twins could not.
 - One red-team pass, the Advisor review and the owner's approval of this case.
 - Ledger rows for the case in `docs/evidence/a5-exceptional-fibers/ledger.tsv` (rows A5-242 and A5-606 are not on main yet).
 - Seeds for the live plan: the compile owns the draw named above, so the live seed_transpiler and seed_simulator take a fresh draw.
+- A Lean or Rocq statement of the algebra the case rests on (pair-split invariance of N and |c|, the exchange identity) is
+  owed to gororoba-math; the case tests the device, not the algebra, and the statements above are Statevector checks.
 - Owner decision: the +, -, -, + arm order with a null arm needs both orders in one calibration, which is exactly the 24-PUB
   cap with no spare; the case uses alternating arm order and the in-circuit zero character as the null.
 - A Lean or Rocq statement of the pair-split invariance (N and |c| independent of b) and of the exchange identity is a
@@ -201,4 +278,5 @@ the exchange part that the retained twins could not.
 
 On an aarch64 host with the pinned environment: `orientation_bit_analysis.py --self-test` and `--power DIR`, each with
 `--retained-collect` naming the retained collect.json of `results/live/2026-11-06T183538.809814Z`;
-`compile_case.py --seed-transpiler qrng:docs/evidence/anu_qrng/draw-2026-11-24T022126Z.json#0 ...#1 ...#2 --out DIR`.
+`compile_case.py --seed-transpiler qrng:docs/evidence/anu_qrng/draw-2026-11-24T022126Z.json#0 ...#1 ...#2 --out DIR`;
+`compile_case.py --check` recomputes the record and compares it with the committed `case_compile.json`.

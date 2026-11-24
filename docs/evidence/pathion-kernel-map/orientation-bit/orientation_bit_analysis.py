@@ -15,17 +15,40 @@ readout). Per replica, with lambda_a = c^_obs,a / c^_ideal,a on the Walsh suppor
                                                   and tested but cannot decide the verdict)
     xtwin  G16  = lambda_16 - lambda_0 against the exchanged ideal
     S = (G16_ctrl + G16_xtwin) / 2               the part that keeps its sign under the exchange (follows the operand)
-    D = (G16_ctrl - G16_xtwin) / 2               the part that flips its sign under the exchange (follows the qubit)
+    D = (G16_ctrl - G16_xtwin) / 2               the part that flips its sign under the exchange
     C = G16_ctrl - G2_move                       zero when the gap moves with the orientation qubit at equal size
+
+What D sees. The xtwin compiles to the control's schedule plus one virtual rz on the data-bit-4 wire after the SELECT
+(identical cz sequence, identical measure mapping; tests/gororoba_quantum/test_pathion_kernel_map_orientation.py), so
+D is zero under every error that acts before that frame, including the SELECT-decay hypothesis of row A5-242, and
+responds only to an asymmetric readout of the bit-4 physical qubit or a coherent angle error on that wire's final
+single-qubit tail. D isolates the readout-asymmetry half of the row's open "relaxation or asymmetric readout"
+question; it does not resolve the relaxation half.
 
 Each statistic is a one-sample t test over replicas with n - 1 degrees of freedom, whose standard error is the scatter
 of the replica values, so the test holds whatever drift the device has between regions. Two operands and seven
 statistics make the family of 14 tests; Holm's step-down procedure holds the family error at ALPHA.
 
+Row rule (preregistered). Ledger row A5-242 reads supported only when both operands read supported, refuted when either
+operand reads refuted, and unresolved otherwise (row_verdict). The two operands were chosen after the data as the
+largest retained effect at each nullity among those with a retained twin, so the retained effects carry a winner's
+curse that the replication test, not the retained sizes, answers.
+
+Dead-region rule (preregistered). A region is dead when its visibility, the mean over its six units of the estimator's
+signed visibility V_hat (nhat_bias.estimate, the quantity behind the retained 0.004 and -0.033), is below
+DEAD_VISIBILITY. When more than one third of the regions are dead the analysis runs a second time over the live regions
+and a verdict counts only when both runs read it; fewer than MIN_LIVE live regions leave every verdict unresolved.
+
+Exploratory output (outside the family, the power calculation and the verdict). With --readout-errors, one calibration
+readout error of the bit-4 physical qubit per replica, the analysis reports the correlation of the replica's control
+gap G16 with it. A per-qubit readout flip predicts negative gaps at both nullities, so the nullity-12 positive sign is
+the sign that readout cannot produce.
+
 Modes:
     "$PYTHON" orientation_bit_analysis.py --self-test        decision rule on injected effects, with controls
     "$PYTHON" orientation_bit_analysis.py --power DIR --retained-collect PATH   replica count (DIR/power.json)
-    "$PYTHON" orientation_bit_analysis.py --analyze COLLECT  verdicts of a collected run (collect.json of live_run)
+    "$PYTHON" orientation_bit_analysis.py --analyze COLLECT [--readout-errors JSON]
+                                                              verdicts of a collected run (collect.json of live_run)
 """
 
 from __future__ import annotations
@@ -54,6 +77,8 @@ ALPHA = 0.05
 POWER = 0.8
 FAMILY = 14
 # Replicas (disjoint six-qubit regions) the case plans, and the regions one run placed at the retained replica floor.
+DEAD_VISIBILITY = 0.05
+MIN_LIVE = 3
 PLANNED_REPLICAS = 15
 REGIONS_PER_RUN = 5
 RETAINED_RUN = "ibm_fez kernel map"
@@ -174,13 +199,16 @@ def readings(tests: dict[str, dict[str, Any]], operand: tuple[int, int, int], df
     }
 
 
-def units_from_entry(entry: dict[str, Any]) -> dict[str, nb.Unit]:
-    """Units of one collected group entry: per unit the ideal sign and the replica contrasts of its two arms."""
+def units_from_entry(entry: dict[str, Any], keep: list[int] | None = None) -> dict[str, nb.Unit]:
+    """Units of one collected group entry: per unit the ideal sign and the replica contrasts of its two arms, over the
+    replicas listed in keep (all when None)."""
     group = pko.pathion_kernel_map_orientation_group()
     if entry["group"] != group.name:
         raise ValueError(f"{entry['group']} is not {group.name}")
     ideal = {m.name: np.asarray(m.ideal, dtype=float) for m in group.members}
     measured = {name: np.asarray(v, dtype=float) for name, v in entry["measured"].items()}
+    if keep is not None:
+        measured = {name: v[keep] for name, v in measured.items()}
     units: dict[str, nb.Unit] = {}
     for member in group.members:
         if not member.name.endswith("_plus"):
@@ -211,19 +239,85 @@ def cross_check(units: dict[str, nb.Unit]) -> None:
             nb.expect(abs(reference["minus_zero_t"] - mine["t"]) < 1e-6, f"{unit.key}: gap t differs")
 
 
-def analyze(entry: dict[str, Any]) -> dict[str, Any]:
-    units = units_from_entry(entry)
+def row_verdict(verdicts: list[str]) -> str:
+    """Verdict of ledger row A5-242 from its operands' verdicts: supported when all read supported, refuted when any
+    reads refuted, otherwise unresolved."""
+    if "refuted" in verdicts:
+        return "refuted"
+    if verdicts and all(v == "supported" for v in verdicts):
+        return "supported"
+    return "unresolved"
+
+
+def region_visibilities(units: dict[str, nb.Unit]) -> np.ndarray:
+    """Per replica, the mean over the six units of the signed visibility V_hat of nhat_bias.estimate."""
+    per_unit = [[nb.estimate(contrast, unit.sign).visibility for contrast in unit.contrast] for unit in units.values()]
+    return np.asarray(per_unit).mean(axis=0)
+
+
+def _readings(units: dict[str, nb.Unit]) -> tuple[dict[str, dict[str, Any]], list[dict[str, Any]], int]:
     cross_check(units)
     tests = family_tests(units)
     n = next(iter(tests.values()))["n"]
-    return {
-        "schema": "orientation-bit-analysis-v1",
+    return tests, [readings(tests, operand, n - 1) for operand in pko.OPERANDS], n
+
+
+def readout_correlation(units: dict[str, nb.Unit], readout_errors: list[float]) -> dict[str, Any]:
+    """Exploratory: per operand, the Pearson and Spearman correlation over replicas of the control gap G16 with the
+    calibration readout error of the bit-4 physical qubit of each replica's region."""
+    out: dict[str, Any] = {"status": "exploratory, outside the family and the verdict", "operands": {}}
+    for operand in pko.OPERANDS:
+        gap = replica_statistics(units, operand)["ctrl_g16"]
+        if len(readout_errors) != len(gap):
+            raise ValueError(f"{len(readout_errors)} readout errors for {len(gap)} replicas")
+        pearson = stats.pearsonr(gap, readout_errors)
+        spearman = stats.spearmanr(gap, readout_errors)
+        out["operands"][tag(operand)] = {
+            "n": len(gap),
+            "pearson_r": float(pearson.statistic),
+            "pearson_p": float(pearson.pvalue),
+            "spearman_rho": float(spearman.statistic),
+            "spearman_p": float(spearman.pvalue),
+        }
+    return out
+
+
+def analyze(entry: dict[str, Any], readout_errors: list[float] | None = None) -> dict[str, Any]:
+    units = units_from_entry(entry)
+    tests, reads, n = _readings(units)
+    visibility = region_visibilities(units)
+    dead = [int(i) for i in np.nonzero(visibility < DEAD_VISIBILITY)[0]]
+    rule_applies = 3 * len(dead) > n
+    live = [i for i in range(n) if i not in dead]
+    for row in reads:
+        row["verdict_all_regions"] = row["verdict"]
+    if rule_applies:
+        if len(live) >= MIN_LIVE:
+            _, live_reads, _ = _readings(units_from_entry(entry, live))
+        else:
+            live_reads = [{"verdict": "unresolved"} for _ in reads]
+        for row, live_row in zip(reads, live_reads, strict=True):
+            row["verdict_live_regions"] = live_row["verdict"]
+            if live_row["verdict"] != row["verdict"]:
+                row["verdict"] = "unresolved"
+    result = {
+        "schema": "orientation-bit-analysis-v2",
         "replicas": n,
         "alpha": ALPHA,
         "family": FAMILY,
         "tests": tests,
-        "readings": [readings(tests, operand, n - 1) for operand in pko.OPERANDS],
+        "readings": reads,
+        "row": {"id": "A5-242", "verdict": row_verdict([r["verdict"] for r in reads])},
+        "regions": {
+            "visibility": [float(v) for v in visibility],
+            "dead_below": DEAD_VISIBILITY,
+            "dead": dead,
+            "rule_applied": rule_applies,
+        },
     }
+    if readout_errors is not None:
+        result["exploratory_readout_correlation"] = readout_correlation(units, readout_errors)
+    return result
 
 
 # ------------------------------------------------------------------------------------------------------- power
@@ -275,11 +369,27 @@ def power_at(delta: float, sd: float, n: int, alpha: float) -> float:
     return float(value)
 
 
+def _first_true(predicate: Any, low: int, high: int) -> int | None:
+    """Smallest integer in [low, high) with predicate true, for a predicate that is monotone (false, then true), by
+    bisection; None when the predicate is false at high - 1."""
+    if not predicate(high - 1):
+        return None
+    top = high - 1
+    while low < top:
+        mid = (low + top) // 2
+        if predicate(mid):
+            top = mid
+        else:
+            low = mid + 1
+    return low
+
+
 def required_replicas(delta: float, sd: float, alpha: float, power: float = POWER, nmax: int = 400) -> int:
-    for n in range(2, nmax):
-        if power_at(delta, sd, n, alpha) >= power:
-            return n
-    raise ValueError("no replica count up to nmax reaches the power")
+    """Smallest replica count whose power reaches `power`; the power rises with n, so the search bisects."""
+    found = _first_true(lambda n: power_at(delta, sd, n, alpha) >= power, 2, nmax)
+    if found is None:
+        raise ValueError("no replica count up to nmax reaches the power")
+    return found
 
 
 def power_record(collect: Any) -> dict[str, Any]:
@@ -305,9 +415,11 @@ def power_record(collect: Any) -> dict[str, Any]:
         r["power_at_n_full_effect"] = power_at(r["effect"], r["sd_per_replica"], n, alpha)
         r["power_at_n_half_effect"] = power_at(r["effect"] / 2.0, r["sd_per_replica"], n, alpha)
         r["power_diff_at_n_full_effect"] = power_at(r["effect"], r["sd_pair_difference"], n, alpha)
-        r["minimum_detectable_effect_at_n"] = next(
-            d / 1000.0 for d in range(1, 1000) if power_at(d / 1000.0, r["sd_per_replica"], n, alpha) >= POWER
-        )
+        sd_gap = r["sd_per_replica"]
+        mde = _first_true(lambda d, sd=sd_gap: power_at(d / 1000.0, sd, n, alpha) >= POWER, 1, 1000)
+        if mde is None:
+            raise ValueError("no effect below 1 reaches the power")
+        r["minimum_detectable_effect_at_n"] = mde / 1000.0
     return {
         "schema": "orientation-bit-power-v1",
         "alpha_family": ALPHA,
@@ -343,11 +455,14 @@ def synthetic_entry(
     visibility: float = 0.3,
     leak_sd: float = 0.016,
     leak_mean: float = 0.0,
+    dead: tuple[int, ...] = (),
+    gap_regions: str = "all",
 ) -> dict[str, Any]:
     """A collect entry whose replicas carry lambda_a = visibility + gap_a + scatter on each unit's ideal support, gap_a
     set per unit (a dict of "character:operand" to gap, 0 elsewhere), and on the moved unit a coefficient of character
     16 with mean leak_mean and scatter leak_sd (the shot-noise scale of 32 bins at 16,384 shots). The arms are laws
-    whose selector-zero probability is 1/2 -+ c_obs / 2 on every output, so their contrast is c_obs."""
+    whose selector-zero probability is 1/2 -+ c_obs / 2 on every output, so their contrast is c_obs. Replicas listed in
+    dead carry the visibility -0.1 and gap_regions ("all", "dead" or "live") names the replicas that carry the gaps."""
     group = pko.pathion_kernel_map_orientation_group()
     ideal = {m.name: np.asarray(m.ideal, dtype=float) for m in group.members}
     measured: dict[str, list[list[float]]] = {m.name: [] for m in group.members}
@@ -364,9 +479,13 @@ def synthetic_entry(
         support = [a for a in range(len(sign)) if abs(ci[a]) > ns.SUPPORT]
         gap_here = {a: gaps[role].get(f"{a}:{op}", 0.0) for a in support}
         leak = _noise(n, leak_sd, phase + 11) + leak_mean
+        scatter = {a: _noise(n, sd, phase + a) for a in support if a}
+        scatter[0] = _noise(n, sd / 3.0, phase + 7)
         for r in range(n):
-            lam = {a: visibility + gap_here[a] + (_noise(n, sd, phase + a)[r] if a else 0.0) for a in support}
-            lam[0] = visibility + _noise(n, sd / 3.0, phase + 7)[r]
+            here = -0.1 if r in dead else visibility
+            carries = gap_regions == "all" or (gap_regions == "dead") == (r in dead)
+            lam = {a: here + (gap_here[a] if carries else 0.0) + scatter[a][r] for a in support if a}
+            lam[0] = here + scatter[0][r]
             c_obs = sum(lam[a] * ci[a] * walsh[a] for a in support)
             if role == "move":
                 c_obs = c_obs + leak[r] * walsh[16]
@@ -418,6 +537,27 @@ def self_test(collect: Any) -> list[str]:
     inverted = analyze(synthetic_entry(n, sd, {k: -v for k, v in follow.items()}, {}, {}))
     nb.expect(all(r["verdict"] == "refuted" for r in inverted["readings"]), "an inverted retained sign is not refuted")
     done.append("a replicated gap of the opposite sign reads refuted")
+    nb.expect(row_verdict(["supported", "supported"]) == "supported", "row rule: both supported")
+    nb.expect(row_verdict(["supported", "unresolved"]) == "unresolved", "row rule: one supported")
+    nb.expect(row_verdict(["supported", "refuted"]) == "refuted", "row rule: one refuted")
+    nb.expect(row_verdict(["unresolved", "refuted"]) == "refuted", "row rule: refuted outranks unresolved")
+    nb.expect(result["row"]["verdict"] == "supported" and null["row"]["verdict"] == "unresolved", "analyze row")
+    done.append("the row reads supported only when both operands do, refuted when either is, else unresolved")
+    dead = tuple(range(0, n, 5)) + tuple(range(1, n, 5))  # 40 percent of the regions
+    live_gap = analyze(synthetic_entry(n, sd, ctrl_gap, move_gap, xtwin_gap, dead=dead, gap_regions="live"))
+    nb.expect(live_gap["regions"]["dead"] == sorted(dead) and live_gap["regions"]["rule_applied"], "dead regions")
+    nb.expect(all(r["verdict"] == "supported" for r in live_gap["readings"]), "live-region effect was lost")
+    done.append("a gap carried by the live regions survives the dead-region rule (more than one third dead)")
+    big = [{k: 2.5 * v for k, v in g.items()} for g in (ctrl_gap, move_gap, xtwin_gap)]
+    dead_gap = analyze(synthetic_entry(n, sd, big[0], big[1], big[2], dead=dead, gap_regions="dead"))
+    nb.expect(all(r["verdict_all_regions"] == "supported" for r in dead_gap["readings"]), "all-region run: no gap")
+    nb.expect(all(r["verdict_live_regions"] == "unresolved" for r in dead_gap["readings"]), "live run read a gap")
+    nb.expect(all(r["verdict"] == "unresolved" for r in dead_gap["readings"]), "a dead-region gap counted")
+    nb.expect(dead_gap["row"]["verdict"] == "unresolved", "the row counted a dead-region gap")
+    done.append("a gap carried only by regions with visibility under 0.05 is not counted when they exceed one third")
+    few = analyze(synthetic_entry(n, sd, big[0], big[1], big[2], dead=dead[:2], gap_regions="dead"))
+    nb.expect(not few["regions"]["rule_applied"], "two dead regions of forty applied the rule")
+    done.append("the dead-region rule stays off at or below one third of the regions")
     pvalues = {"a": 0.001, "b": 0.02, "c": 0.04, "d": 0.5}
     nb.expect(holm(pvalues) == {"a": True, "b": False, "c": False, "d": False}, "Holm thresholds")
     nb.expect(holm({"a": 0.01, "b": 0.012}) == {"a": True, "b": True}, "Holm step-down")
@@ -444,6 +584,7 @@ def main() -> int:
     mode.add_argument("--power", type=Path, metavar="DIR")
     mode.add_argument("--analyze", type=Path, metavar="COLLECT")
     ap.add_argument("--retained-collect", type=Path, help=f"{RETAINED_COLLECT}, read by --power and --self-test")
+    ap.add_argument("--readout-errors", type=Path, help="JSON list: readout error of the bit-4 qubit per replica")
     args = ap.parse_args()
     retained = json.loads(args.retained_collect.read_text()) if args.retained_collect else None
     if args.self_test:
@@ -460,7 +601,8 @@ def main() -> int:
     collect = json.loads(args.analyze.read_text())
     items = collect if isinstance(collect, list) else [collect]
     entry = next(x for x in items if isinstance(x, dict) and x.get("group") == "pathion_kernel_map_orientation")
-    print(json.dumps(analyze(entry), indent=1, sort_keys=True))
+    errors = json.loads(args.readout_errors.read_text()) if args.readout_errors else None
+    print(json.dumps(analyze(entry, errors), indent=1, sort_keys=True))
     return 0
 
 

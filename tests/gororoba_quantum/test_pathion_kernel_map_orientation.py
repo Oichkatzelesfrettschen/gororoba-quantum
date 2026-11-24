@@ -7,14 +7,22 @@ ideal output contrast at +-1, the nullity N and the selector marginals while it 
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import numpy as np
 import pytest
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, transpile
 
 import pathion_kernel_map as pkm
 import pathion_kernel_map_orientation as pko
+import qrng_seeds
 from experiments import standalone_campaign_groups
+from heron_multiprogramming import HERON_BASIS, DisjointTile, HeronLattice
 
+ROOT = Path(__file__).resolve().parents[2]
+# The transpiler seed of the case compile (index 0 of the draw that docs/evidence/pathion-kernel-map/orientation-bit/
+# compile_case.py owns); the compile of this test reproduces that run's first routing.
+DRAW_INDEX = 0
 TWIN_OF = dict((primary, twin) for twin, primary in pkm.TWINS)
 
 
@@ -51,10 +59,35 @@ def _contrast(
     return pkm.output_contrast(laws[0], laws[1])
 
 
-def _support(sign: np.ndarray) -> set[int]:
+def _quarters(sign: np.ndarray) -> dict[int, int]:
+    """Nonzero Walsh coefficients of an ideal sign vector in units of 1/4, keyed by character."""
     n = len(sign)
     walsh = np.array([[(-1) ** bin(a & y).count("1") for y in range(n)] for a in range(n)])
-    return {int(a) for a in np.nonzero(np.abs(walsh @ sign / n) > 1e-12)[0]}
+    coefficients = 4.0 * (walsh @ sign) / n
+    return {int(a): int(round(coefficients[a])) for a in np.nonzero(np.abs(coefficients) > 1e-9)[0]}
+
+
+def _role_quarters(operand: tuple[int, int, int], role: str) -> dict[int, int]:
+    orientation_bit, exchange_bit = pko.role_options(role, operand)
+    template = pko.kernel_map_template(operand, orientation_bit=orientation_bit, exchange_bit=exchange_bit)
+    laws = [pkm.ideal_law(template.assign_parameters({pkm.ORIENTATION: p})) for p in (np.pi, 0.0)]
+    return _quarters(np.sign(pkm.output_contrast(laws[0], laws[1])))
+
+
+# Exact Walsh supports of the ideal contrast, computed from the statevector laws (coefficients times 4). The
+# signature character (the one that carries bit 4 of the control and bit 1 of the moved member) moves from 16 to 2.
+SUPPORTS: dict[tuple[int, int, int], dict[str, dict[int, int]]] = {
+    (1, 26, 1): {
+        "ctrl": {0: 1, 4: 1, 10: -1, 14: -1, 16: -3, 20: 1, 26: -1, 30: -1},
+        "move": {0: 1, 2: -3, 4: 1, 6: 1, 8: -1, 10: -1, 12: -1, 14: -1},
+        "xtwin": {0: 1, 4: 1, 10: -1, 14: -1, 16: 3, 20: -1, 26: 1, 30: 1},
+    },
+    (1, 18, 1): {
+        "ctrl": {0: 3, 4: -1, 8: -1, 12: -1, 16: -1, 20: -1, 24: -1, 28: -1},
+        "move": {0: 3, 2: -1, 4: -1, 6: -1, 8: -1, 10: -1, 12: -1, 14: -1},
+        "xtwin": {0: 3, 4: -1, 8: -1, 12: -1, 16: 1, 20: 1, 24: 1, 28: 1},
+    },
+}
 
 
 def _set_bits(operand: tuple[int, int, int]) -> list[int]:
@@ -85,13 +118,20 @@ def test_every_orientation_bit_keeps_contrasts_nullity_and_marginals(operand: tu
 
 
 @pytest.mark.parametrize("operand", pko.OPERANDS)
-def test_walsh_support_follows_the_orientation_bit(operand: tuple[int, int, int]) -> None:
-    retained = _support(np.sign(_contrast(operand)))
-    _expect(16 in retained, f"{operand}: the retained support lacks character 16")
-    moved = _support(np.sign(_contrast(operand, orientation_bit=pko.MOVED_BIT)))
-    _expect(2**pko.MOVED_BIT in moved, f"{operand}: the moved support lacks character {2**pko.MOVED_BIT}")
-    _expect(16 not in moved, f"{operand}: the moved support still holds character 16")
-    _expect(moved != retained, f"{operand}: moving the orientation changed no ideal sign")
+def test_walsh_supports_are_exact(operand: tuple[int, int, int]) -> None:
+    """Eight characters per member: the signature character moves from 16 to 2, the control and the moved member share
+    three of the other seven, the exchange keeps the support and flips the sign of the characters that carry bit 4, and
+    the (0, signature) weight pair is identical between control and moved member."""
+    for role in pko.ROLES:
+        _expect(_role_quarters(operand, role) == SUPPORTS[operand][role], f"{operand} {role}: support differs")
+    ctrl, move, xtwin = (SUPPORTS[operand][role] for role in pko.ROLES)
+    _expect(len(ctrl) == len(move) == len(xtwin) == 8, "a support does not hold eight characters")
+    shared = (set(ctrl) & set(move)) - {0}
+    _expect(len(shared) == 3 and 16 not in shared and 2 not in shared, f"{operand}: shared characters {shared}")
+    _expect(abs(ctrl[16]) == abs(move[2]) and ctrl[0] == move[0], f"{operand}: the (0, signature) weights differ")
+    _expect(set(xtwin) == set(ctrl), f"{operand}: the exchange changed the support")
+    for a in ctrl:
+        _expect(xtwin[a] == (-ctrl[a] if a & 16 else ctrl[a]), f"{operand}: character {a} under the exchange")
 
 
 def test_orientation_bit_must_split_the_pairs() -> None:
@@ -170,3 +210,70 @@ def test_group_is_a_registered_standalone_campaign() -> None:
         any(group.name == "pathion_kernel_map_orientation" for group in standalone_campaign_groups()),
         "the orientation group is not registered",
     )
+
+
+@pytest.fixture(scope="module")
+def snapshot_tile() -> tuple[HeronLattice, DisjointTile]:
+    lattice = HeronLattice.from_snapshot(ROOT / "docs/evidence/heron_platform/targets.json", "ibm_fez")
+    return lattice, lattice.find_disjoint_tiles(6, min_buffer_distance=2, max_tiles=1)[0]
+
+
+def _routed_rows(circuit: QuantumCircuit) -> list[tuple[str, tuple[int, ...], tuple[int, ...], float]]:
+    return [
+        (
+            ins.operation.name,
+            tuple(circuit.find_bit(q).index for q in ins.qubits),
+            tuple(circuit.find_bit(b).index for b in ins.clbits),
+            float(ins.operation.params[0]) if ins.operation.name == "rz" else 0.0,
+        )
+        for ins in circuit.data
+    ]
+
+
+@pytest.mark.parametrize("operand", pko.OPERANDS)
+def test_exchange_compiles_to_one_frame_on_the_bit_four_wire(
+    snapshot_tile: tuple[HeronLattice, DisjointTile], operand: tuple[int, int, int]
+) -> None:
+    """On the snapshot target the exchange member routes to the control's cz, sx and x sequence and measure mapping;
+    only rz angles of the wire measured into data bit 4 differ, all in the stretch before that wire's last sx or x, a
+    stretch of cz and rz gates that commute with the frame (compiled evidence at optimization level 3)."""
+    lattice, tile = snapshot_tile
+    seed = qrng_seeds.resolve(f"qrng:docs/evidence/anu_qrng/draw-2026-11-24T022126Z.json#{DRAW_INDEX}")[0]
+    rows = {}
+    for role in ("ctrl", "xtwin"):
+        template = pko.role_template(role, operand).assign_parameters({pkm.ORIENTATION: 0.0})
+        routed = transpile(
+            template,
+            coupling_map=lattice.tile_coupling_map(tile),
+            basis_gates=list(HERON_BASIS),
+            optimization_level=3,
+            seed_transpiler=seed,
+        )
+        rows[role] = _routed_rows(routed)
+    ctrl, xtwin = rows["ctrl"], rows["xtwin"]
+    _expect([r for r in ctrl if r[0] != "rz"] == [r for r in xtwin if r[0] != "rz"], "a non-rz gate differs")
+    _expect(sum(r[0] == "cz" for r in ctrl) > 100, "the routed control holds too few cz to be the case circuit")
+    wire = next(r[1][0] for r in ctrl if r[0] == "measure" and r[2] == (4,))
+
+    def stretches(rows_: list[tuple[str, tuple[int, ...], tuple[int, ...], float]]) -> dict[int, float]:
+        segment = 0
+        total: dict[int, float] = {}
+        for name, qubits, _, angle in rows_:
+            if wire in qubits and name in ("sx", "x"):
+                segment += 1
+            elif name == "rz" and qubits == (wire,):
+                total[segment] = total.get(segment, 0.0) + angle
+        total[-1] = float(segment)
+        return total
+
+    a, b = stretches(ctrl), stretches(xtwin)
+    _expect(a[-1] == b[-1], "the wire carries different numbers of sx and x gates")
+    differing = [
+        s
+        for s in set(a) | set(b)
+        if s >= 0 and abs((a.get(s, 0.0) - b.get(s, 0.0) + np.pi) % (2 * np.pi) - np.pi) > 1e-6
+    ]
+    _expect(differing == [int(a[-1]) - 1], f"rz angles differ in stretches {differing}, not the last one")
+    others = {role: [(row[1], row[3]) for row in rows[role] if row[0] == "rz" and row[1] != (wire,)] for role in rows}
+    _expect(bool(others["ctrl"]), "the check saw no rz on another wire")
+    _expect(others["ctrl"] == others["xtwin"], "an rz on another wire differs")

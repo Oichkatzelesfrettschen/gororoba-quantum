@@ -7,8 +7,10 @@ pair {k, k XOR m} clears bit h and the plus arm is the minus arm with a phase pi
 splits the pairs the same way: the member with bit b clear is the lower one, the oracle is +1 on it and -s on the upper
 member, with s = K[upper, lower] the sign of K = L_i^T (t L_j) that carries the lower member to the upper, and the
 plus arm differs by a phase pi on data qubit b. The split changes only which member of a misaligned pair carries the
--1 of the ideal per-output contrast, so every contrast stays +-1 and the nullity N is unchanged, while the Walsh
-support of the ideal contrast moves: the retained map carries character 2^h and the map oriented on b carries 2^b.
+-1 of the ideal per-output contrast, so every contrast stays +-1 and the nullity N is unchanged. The signature
+character of the Walsh support moves from 2^h to 2^b; each support holds eight characters, three of the other seven
+are shared by the retained and the moved map, no statistic of the case reads a shared character, and the (0, signature)
+weight pair is identical between them (tests/gororoba_quantum/test_pathion_kernel_map_orientation.py, SUPPORTS).
 
 Two orientation-bit options extend the circuit, with the retained circuit as their default (orientation_bit = h,
 no exchange):
@@ -17,7 +19,10 @@ no exchange):
 - exchange_bit q: one X on data qubit q after the SELECT and before measurement. The sign relation of the quarter-turn
   twin, s_twin(x) = -s_primary(x XOR 16), makes the twin's ideal outcome law equal to the primary's with data bit 4
   exchanged, which is this X; the equality holds on all 64 outcomes of both arms
-  (tests/gororoba_quantum/test_pathion_kernel_map_orientation.py).
+  (tests/gororoba_quantum/test_pathion_kernel_map_orientation.py). The member with the exchange compiles to the
+  control's cz, sx and x sequence plus a changed rz angle on the wire measured into data bit 4, so the statistic D
+  (control minus exchange) is zero under every error that acts before that frame and responds only to asymmetric readout
+  of that qubit or a coherent angle error on its final single-qubit tail.
 
 Group pathion_kernel_map_orientation holds, for the nullity-4 operand e1 + e26 (m = 27) and the nullity-12 operand
 e1 + e18 (m = 19), three members each with plus and minus arms on one layout: the retained placement (orientation on
