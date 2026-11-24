@@ -225,10 +225,12 @@ def summarize_statistics(laws: list[dict[str, list[float]]]) -> dict[str, Any]:
     entry = {"group": group.name, "measured": {m.name: [replica[m.name] for replica in laws] for m in group.members}}
     result = oba.analyze(entry)
     keep = {
-        key: {k: row[k] for k in ("mean", "se", "t", "n")}
+        key: {k: (row[k] if math.isfinite(row[k]) else None) for k in ("mean", "se", "t", "n")}
         for key, row in {**result["tests"], **result["exploratory"]}.items()
     }
     for row in keep.values():
+        if row["se"] is None or row["mean"] is None:
+            continue
         half = float(oba.stats.t.isf(0.025, row["n"] - 1)) * row["se"]
         row["interval95"] = [row["mean"] - half, row["mean"] + half]
     return keep
