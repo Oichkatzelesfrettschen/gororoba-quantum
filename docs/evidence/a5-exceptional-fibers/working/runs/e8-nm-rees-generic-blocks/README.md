@@ -58,8 +58,9 @@ One core of an aarch64 host, Singular 4.4.1: stage A 3 s; a point value 21 s at 
 
 The two stage-A units run first, then the eight block units, each set through `gororoba_quantum/run_commands.py`
 (`parallel.ordered_map`). `GOROROBA_WORKERS` caps the units that run at once and defaults to the available CPUs;
-`GOROROBA_WORKERS=2` serves a shared host. The two function-field units start first, so the wall time is about
-20 minutes at 2 workers (the serial run took about 40 minutes) and the longest unit's 19 minutes at 4 or more. Peak
+`GOROROBA_WORKERS=2` serves a shared host. The two function-field units start first, so the wall time is
+20 min 9 s at 2 workers on a 4-core aarch64 host (the serial run took about 40 minutes) and tends to the longest
+unit's 19 minutes at 4 or more. Peak
 memory is the sum over the running units: 0.23 GiB per function-field unit and 19 MiB per point-value unit, so at
 the default 8 workers (all eight units at once) about 1.0 GiB in total. The run writes its scripts and logs under
 `rerun/` beside the script (or the directory named by `OUT`), each unit also writes its own `.want` comparison
