@@ -1,0 +1,6 @@
+RESULT qi-g21-14293914377d K generators 148 dim 5 degree 11 numerator 1+16*T-12*T^2+10*T^3-5*T^4+T^5
+RESULT qi-g21-14293914377d minimal_primes {{4, 4, 14}, {5, 11, 9}}
+RESULT qi-g21-14293914377d radical_equal false
+RESULT qi-g21-14293914377d control dim 4 degree 28 differs true
+RESULT qi-g21-14293914377d primary_components {{4, 4, 4, 2}, {4, 4, 4, 4}, {5, 11, 5, 11}} intersect_equal true
+DONE qi-g21-14293914377d

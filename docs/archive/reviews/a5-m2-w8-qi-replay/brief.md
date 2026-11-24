@@ -1,0 +1,20 @@
+# Brief: review gororoba-quantum PR 1002, Macaulay2 replay of the W8 and Q(i) quadric ideals and degree-3 boost counts
+
+Read first: AGENTS.md, then gororoba-quantum/AGENTS.md. Work read-only: change no file except your report (named at the end); never commit, push, stash, submit to a provider or start a cloud resource; spawn no subagents. You may run git, grep, sed, python3 -I for reading files, sh -n and shellcheck; keep each command under 5 minutes. Do not run Singular or Macaulay2 jobs (they take minutes to hours).
+
+Material: worktree the branch worktree (branch a5-m2-w8-qi-replay, head a18abf088bf5500e8550867880dca433908b8868); read the change with `git -C the branch worktree diff origin/main...HEAD`. PR: https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/1002. New run directories under docs/evidence/a5-exceptional-fibers/working/runs/: quadric-ideals-macaulay2-w8-qi/ and e8-vb-boost-degree3-p32029/; ledger docs/evidence/a5-exceptional-fibers/ledger.tsv rows A5-608, A5-609, A5-610 and the amended basis of A5-599. Related existing directories: quadric-ideals-macaulay2-p32009/ (A5-599), e8-vb-boost-family-p32029/ (A5-600), and docs/evidence/a5-kernel-attachments/weight_slice_fiber_relations.py (A5-421) and boost_e8_vb_quadrics.py (A5-428).
+
+## Claims under review (each is a claim, not a fact)
+
+1. qi_quadric_ideals.py writes exactly the characteristic-0 relation ideals that weight_slice_fiber_relations.py passes to its Hilbert stage, with each coefficient and monomial unchanged. Falsifier: a code path where the written polynomial differs from what hilbert_script receives (sign, index base, coefficient parsing of Gaussian rationals, a dropped relation), or a characteristic-0 call that is not recorded.
+2. qi_invariants.m2 computes over Q(i): the map toR from QQ[jj, y]/(jj^2+1) to toField(QQ[jj]/(jj^2+1))[y] is a ring isomorphism on the quotient, so minimal primes, primary components and radicals computed in QQ[jj, y] modulo jj^2+1 and mapped give those over Q(i), with dimension, degree and linear-form counts read correctly. Falsifier: a step where the ideal K in R differs from the image of the relations, where an element of a prime containing jj^2+1 maps wrongly, where dim or degree in R differs from the Q(i) value, or where the linear-form count reads generators of the wrong degree.
+3. The RESULT lines equal the Singular records the README and ledger rows cite (census w8.log and w8-component-linear-forms.log, A5-012, A5-421, A5-446, A5-599, A5-428). Falsifier: a cited number in those files or rows that differs from expected-results.txt or counts.txt.
+4. The drivers fail closed: run_m2_qi.sh exits nonzero on any RESULT difference, on a dump that is not byte-equal, and when a removed relation goes undetected; run_degree3.sh exits nonzero unless every value reports 220 targets and 140 relations, and its check mode compares each retained script with a fresh emission. Falsifier: an input for which a driver prints PASS while a check fails (look at set -e behavior inside pipelines, loops and command substitutions, the mutant checks, and the dump comparison).
+5. boost_degree3.py emits the boost-family script of A5-600 with only the relation degree changed to 3 and the script cut after the counts, so 220 - relations is h_3 of the fiber cone at that w. Falsifier: a difference in the emitted script beyond kbase degree and the truncation, or a reading of size(S) that does not count independent relations.
+6. Ledger rows A5-608, A5-609 and A5-610 state only what the runs show (fields, primes, coverage, controls, not-covered items). Falsifier: a statement in a row that no log or README supports, or a coverage claim beyond the listed values and ideals.
+
+Also name structural statements the evidence suggests and no row states, each with its falsifier and the cheapest check.
+
+## Report
+
+Write your report to your final message (it is saved as the report): one section per claim with verdict (holds, fails, unresolved), the file and line or command output supporting it, and the class of each finding (proved, computed with the command, hypothesis). End with a list of findings ranked by severity.

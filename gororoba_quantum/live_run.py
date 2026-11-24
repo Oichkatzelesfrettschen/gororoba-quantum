@@ -220,6 +220,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "pathion_coset_block.py",
     "pathion_four_term_block.py",
     "pathion_kernel_map.py",
+    "pathion_kernel_map_orientation.py",
     "pathion_parallel_coset.py",
     "pathion_wide_coset.py",
     "qpu_cases.py",

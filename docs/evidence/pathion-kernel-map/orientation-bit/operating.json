@@ -1,0 +1,499 @@
+{
+ "model_source": "case_compile.json relaxation block; retained scatter of power.json",
+ "regions": 15,
+ "sampling": "exact law of the sample mean and covariance (Bartlett factor) at deterministic Sobol points",
+ "scenarios": {
+  "all_three_models": {
+   "rho0": {
+    "band_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "refuted": 0.00390625,
+        "unresolved": 0.99609375
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "supported": 0.070556640625,
+        "unresolved": 0.929443359375
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.00390625,
+      "unresolved": 0.99609375
+     }
+    },
+    "superseded_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "refuted": 0.0048828125,
+        "unresolved": 0.9951171875
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "supported": 0.070556640625,
+        "unresolved": 0.929443359375
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.0048828125,
+      "unresolved": 0.9951171875
+     }
+    }
+   },
+   "rho1": {
+    "band_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "refuted": 0.003173828125,
+        "unresolved": 0.996826171875
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "supported": 0.019775390625,
+        "unresolved": 0.980224609375
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.003173828125,
+      "unresolved": 0.996826171875
+     }
+    },
+    "superseded_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "refuted": 0.003662109375,
+        "unresolved": 0.996337890625
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "supported": 0.020263671875,
+        "unresolved": 0.979736328125
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.003662109375,
+      "unresolved": 0.996337890625
+     }
+    }
+   }
+  },
+  "all_three_models_plus_full_effect": {
+   "rho0": {
+    "band_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.000244140625,
+       "verdict": {
+        "refuted": 0.000244140625,
+        "supported": 0.96484375,
+        "unresolved": 0.034912109375
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "supported": 0.984619140625,
+        "unresolved": 0.015380859375
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.000244140625,
+      "supported": 0.94970703125,
+      "unresolved": 0.050048828125
+     }
+    },
+    "superseded_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.00439453125,
+       "verdict": {
+        "refuted": 0.00439453125,
+        "supported": 0.93603515625,
+        "unresolved": 0.0595703125
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "supported": 0.72900390625,
+        "unresolved": 0.27099609375
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.00439453125,
+      "supported": 0.683349609375,
+      "unresolved": 0.312255859375
+     }
+    }
+   },
+   "rho1": {
+    "band_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.00146484375,
+       "verdict": {
+        "refuted": 0.00146484375,
+        "supported": 0.675048828125,
+        "unresolved": 0.323486328125
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "supported": 0.98779296875,
+        "unresolved": 0.01220703125
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.00146484375,
+      "supported": 0.66748046875,
+      "unresolved": 0.3310546875
+     }
+    },
+    "superseded_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.009521484375,
+       "verdict": {
+        "refuted": 0.009521484375,
+        "supported": 0.672119140625,
+        "unresolved": 0.318359375
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "supported": 0.88671875,
+        "unresolved": 0.11328125
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.009521484375,
+      "supported": 0.59228515625,
+      "unresolved": 0.398193359375
+     }
+    }
+   }
+  },
+  "all_three_models_plus_half_effect": {
+   "rho0": {
+    "band_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.00146484375,
+       "verdict": {
+        "refuted": 0.00146484375,
+        "supported": 0.08447265625,
+        "unresolved": 0.9140625
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "supported": 0.98681640625,
+        "unresolved": 0.01318359375
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.00146484375,
+      "supported": 0.0830078125,
+      "unresolved": 0.91552734375
+     }
+    },
+    "superseded_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.02880859375,
+       "verdict": {
+        "refuted": 0.02880859375,
+        "supported": 0.09033203125,
+        "unresolved": 0.880859375
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "supported": 0.769287109375,
+        "unresolved": 0.230712890625
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.02880859375,
+      "supported": 0.065673828125,
+      "unresolved": 0.905517578125
+     }
+    }
+   },
+   "rho1": {
+    "band_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.001953125,
+       "verdict": {
+        "refuted": 0.002197265625,
+        "supported": 0.013427734375,
+        "unresolved": 0.984375
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "supported": 0.857666015625,
+        "unresolved": 0.142333984375
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.002197265625,
+      "supported": 0.012451171875,
+      "unresolved": 0.9853515625
+     }
+    },
+    "superseded_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.00927734375,
+       "verdict": {
+        "refuted": 0.009521484375,
+        "supported": 0.015625,
+        "unresolved": 0.974853515625
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "supported": 0.80712890625,
+        "unresolved": 0.19287109375
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.009521484375,
+      "supported": 0.012939453125,
+      "unresolved": 0.9775390625
+     }
+    }
+   }
+  },
+  "null": {
+   "rho0": {
+    "band_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "refuted": 0.00146484375,
+        "unresolved": 0.99853515625
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "refuted": 0.002197265625,
+        "supported": 0.000244140625,
+        "unresolved": 0.99755859375
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.003662109375,
+      "unresolved": 0.996337890625
+     }
+    },
+    "superseded_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "refuted": 0.00146484375,
+        "unresolved": 0.99853515625
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "refuted": 0.00244140625,
+        "supported": 0.000244140625,
+        "unresolved": 0.997314453125
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.00390625,
+      "unresolved": 0.99609375
+     }
+    }
+   },
+   "rho1": {
+    "band_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "refuted": 0.00146484375,
+        "unresolved": 0.99853515625
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "refuted": 0.002197265625,
+        "supported": 0.000244140625,
+        "unresolved": 0.99755859375
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.003662109375,
+      "unresolved": 0.996337890625
+     }
+    },
+    "superseded_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "refuted": 0.00146484375,
+        "unresolved": 0.99853515625
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "refuted": 0.00244140625,
+        "supported": 0.000244140625,
+        "unresolved": 0.997314453125
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.00390625,
+      "unresolved": 0.99609375
+     }
+    }
+   }
+  },
+  "relaxation_only": {
+   "rho0": {
+    "band_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "refuted": 0.00146484375,
+        "unresolved": 0.99853515625
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "supported": 0.21630859375,
+        "unresolved": 0.78369140625
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.00146484375,
+      "unresolved": 0.99853515625
+     }
+    },
+    "superseded_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.00048828125,
+       "verdict": {
+        "refuted": 0.001953125,
+        "unresolved": 0.998046875
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "supported": 0.2158203125,
+        "unresolved": 0.7841796875
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.001953125,
+      "unresolved": 0.998046875
+     }
+    }
+   },
+   "rho1": {
+    "band_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.000244140625,
+       "verdict": {
+        "refuted": 0.001708984375,
+        "unresolved": 0.998291015625
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "supported": 0.05712890625,
+        "unresolved": 0.94287109375
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.001708984375,
+      "unresolved": 0.998291015625
+     }
+    },
+    "superseded_rule": {
+     "operands": {
+      "e1pe18": {
+       "reading_ii": 0.00048828125,
+       "verdict": {
+        "refuted": 0.001953125,
+        "unresolved": 0.998046875
+       }
+      },
+      "e1pe26": {
+       "reading_ii": 0.0,
+       "verdict": {
+        "supported": 0.062255859375,
+        "unresolved": 0.937744140625
+       }
+      }
+     },
+     "row_verdict": {
+      "refuted": 0.001953125,
+      "unresolved": 0.998046875
+     }
+    }
+   }
+  }
+ },
+ "schema": "orientation-bit-operating-v1",
+ "trials_per_cell": 4096
+}

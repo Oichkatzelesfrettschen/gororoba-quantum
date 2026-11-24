@@ -1,0 +1,497 @@
+RESULT adjugate_identity 1
+RESULT pivot_pfaffian_at_origin_nonzero 1
+RESULT schur_matches_retained 1
+RESULT germ_dimension 4
+RESULT germ_component_count 1
+RESULT candidate_count 21
+RESULT selected_count 10
+RESULT selected_1 7
+RESULT selected_2 8
+RESULT selected_3 10
+RESULT selected_4 11
+RESULT selected_5 12
+RESULT selected_6 14
+RESULT selected_7 15
+RESULT selected_8 17
+RESULT selected_9 18
+RESULT selected_10 21
+RESULT eliminated_count 0
+RESULT reduced_j_count 17
+RESULT reduced_j_1 t3^2-t4^2-t5^2+t6^2
+RESULT reduced_j_2 t1^2-t2^2+t7^2-t8^2+4*t2+2*t8
+RESULT reduced_j_3 t4*t5*t8-t3*t6*t8-t3*t5-t4*t5+t3*t6+t4*t6
+RESULT reduced_j_4 t4^2*t8-t6^2*t8-t3*t4-t4^2-t5*t6+t6^2
+RESULT reduced_j_5 t3*t4*t8-t5*t6*t8-t3*t4-t4^2-t5^2+t5*t6
+RESULT reduced_j_6 t2*t4*t8+t1*t6*t8-t2*t4+t1*t5-t1*t6-2*t4*t8
+RESULT reduced_j_7 t1*t4*t8+t2*t6*t8-t1*t3-t1*t4-t2*t6-2*t6*t8
+RESULT reduced_j_8 t2*t3*t8+t1*t5*t8-t2*t3-t1*t5+t1*t6-2*t3*t8
+RESULT reduced_j_9 t1*t3*t8+t2*t5*t8-t1*t3-t1*t4-t2*t5-2*t5*t8
+RESULT reduced_j_10 t2*t3*t5+t1*t5^2-t2*t4*t6-t1*t6^2-2*t3*t5-2*t4*t5+2*t3*t6+2*t4*t6
+RESULT reduced_j_11 t2*t4^2+t1*t3*t5+t2*t5^2+t1*t4*t6-2*t3*t4-2*t4^2-2*t5^2+2*t5*t6
+RESULT reduced_j_12 t2*t3*t4+t1*t4*t5+t1*t3*t6+t2*t5*t6-2*t3*t4-2*t4^2-2*t5*t6+2*t6^2
+RESULT reduced_j_13 t7^2*t8^2-t8^4-2*t7^2*t8+4*t8^3+t2^2-4*t2*t8
+RESULT reduced_j_14 t6*t7^2*t8-t6*t8^3-t1*t2*t3-t2^2*t5+t5*t7^2-t6*t7^2-t5*t8^2+3*t6*t8^2+2*t1*t3+2*t1*t4+4*t2*t5-2*t2*t6+2*t5*t8+2*t6*t8
+RESULT reduced_j_15 t5*t7^2*t8-t5*t8^3-t1*t2*t4-t2^2*t6-t5*t7^2+t6*t7^2+3*t5*t8^2-t6*t8^2+2*t1*t3+2*t1*t4-2*t2*t5+4*t2*t6+2*t5*t8+2*t6*t8
+RESULT reduced_j_16 t4*t7^2*t8-t4*t8^3+t2^2*t3+t1*t2*t5-t3*t7^2-t4*t7^2+t3*t8^2+3*t4*t8^2-4*t2*t3-2*t2*t4-2*t1*t5+2*t1*t6-2*t3*t8+2*t4*t8
+RESULT reduced_j_17 t3*t7^2*t8-t3*t8^3+t2^2*t4+t1*t2*t6-t3*t7^2-t4*t7^2+3*t3*t8^2+t4*t8^2-2*t2*t3-4*t2*t4+2*t1*t5-2*t1*t6+2*t3*t8-2*t4*t8
+RESULT reduced_g_count 10
+RESULT reduced_g_1 2*t2*t4*t5*t7+2*t2*t3*t6*t7-4*t2*t5*t6*t8-2*t2*t5^2+4*t2*t5*t6-2*t2*t6^2-4*t1*t2*t7-4*t4*t5*t7-4*t3*t6*t7-4*t2^2*t8+8*t5*t6*t8-2*t1*t7*t8-2*t2*t8^2+4*t2^2+4*t5^2-8*t5*t6+4*t6^2+10*t1*t7+20*t2*t8+4*t8^2-10*t2-20*t8
+RESULT reduced_g_2 13799*t1*t4^2*t6-13799*t1*t6^3+13799*t1*t6*t7^2-13799*t1*t6*t8^2-4431*t2^2*t3-4431*t1*t2*t5-4431*t4*t5*t6-4431*t3*t6^2-4431*t1*t6*t8-14305*t2*t3+8862*t2*t4+8862*t1*t5-13799*t1*t6+8862*t6*t7-4431*t4*t8-13293*t3-13293*t4
+RESULT reduced_g_3 4*t2^2*t4*t6+4*t1*t2*t6^2-8*t2*t3*t6-16*t2*t4*t6-8*t1*t6^2-4*t5*t6*t7+4*t3*t6*t8+12*t3*t6+12*t4*t6
+RESULT reduced_g_4 13799*t5^2*t7^2-13799*t6^2*t7^2-4431*t2*t7^2*t8-13799*t5^2*t8^2+13799*t6^2*t8^2+4431*t2*t8^3-4431*t1*t4*t5+4431*t1*t3*t6+4431*t3*t6*t7+4431*t2*t7^2-4431*t5^2*t8-4431*t5*t6*t8+4431*t6^2*t8+8862*t7^2*t8-13293*t2*t8^2-8862*t8^3-4937*t2^2-8862*t5^2+4431*t5*t6+4431*t6^2+4937*t7^2-13293*t2*t8+12787*t8^2+9874*t2-9874*t8
+RESULT reduced_g_5 2*t1*t4^3-2*t1*t4*t6^2+2*t1*t4*t7^2+2*t2*t6*t8^2-4*t1*t2*t3-4*t2^2*t5+4*t4^2*t5+4*t3*t4*t6+2*t2*t5*t8-4*t2*t6*t8-4*t6*t8^2+8*t1*t3-2*t1*t4+14*t2*t5-6*t2*t6-8*t4*t7-4*t5*t8+8*t6*t8-12*t5+12*t6
+RESULT reduced_g_6 13799*t5^2*t7^2-13799*t6^2*t7^2+4431*t2*t7^2*t8-13799*t5^2*t8^2+13799*t6^2*t8^2-4431*t2*t8^3-4431*t1*t4*t5+4431*t1*t3*t6-4431*t4*t5*t7-4431*t2*t7^2-4431*t5^2*t8+4431*t5*t6*t8+4431*t6^2*t8-8862*t7^2*t8+13293*t2*t8^2+8862*t8^3+4937*t2^2-4431*t5^2-4431*t5*t6+8862*t6^2-4937*t7^2+13293*t2*t8-12787*t8^2-9874*t2+9874*t8
+RESULT reduced_g_7 4*t2^2*t4*t6+4*t1*t2*t6^2-4*t3*t5*t7^2-4*t4*t6*t7^2+4*t3*t5*t8^2+4*t4*t6*t8^2-8*t1*t3*t4-8*t2*t3*t6-16*t2*t4*t6+8*t1*t5*t6-8*t1*t6^2-4*t3*t4*t7-8*t3*t5*t8+4*t3*t6*t8-8*t4*t6*t8-12*t3*t5+12*t3*t6
+RESULT reduced_g_8 -2*t1*t2*t3*t7-2*t2^2*t5*t7-2*t3*t4*t6*t7-2*t5*t6^2*t7+2*t5*t7^3-4*t3*t6^2*t8-2*t5*t7*t8^2-2*t1*t2*t6-2*t3*t5*t6+4*t3*t6^2+2*t4*t6^2+4*t1*t3*t7+4*t1*t4*t7+8*t2*t5*t7+4*t2*t6*t7+4*t5*t7*t8+2*t6*t7*t8+2*t4*t8^2+4*t2*t3+4*t1*t5+4*t1*t6-10*t6*t7-2*t3*t8-4*t4*t8-6*t3-6*t4
+RESULT reduced_g_9 -13799*t2^2*t3*t7+13799*t3*t4^2*t7-13799*t1*t2*t5*t7+13799*t4*t5*t6*t7+13799*t3*t7^3-4431*t5*t6^2*t8-13799*t3*t7*t8^2+13799*t1*t2*t4+13799*t3*t4*t5+13799*t4^2*t6-4431*t5^2*t6+4431*t5*t6^2-8862*t2*t3*t7+4431*t2*t4*t7-4431*t1*t5*t7+4431*t1*t6*t7-4431*t3*t7*t8-13799*t4*t7*t8-13799*t6*t8^2-4431*t1*t3+4431*t1*t4-4431*t2*t5+4937*t4*t7-13799*t5*t8-4431*t6*t8-9368*t5+9368*t6
+RESULT reduced_g_10 -2*t2*t4*t5*t7-2*t2*t3*t6*t7-4*t2*t5*t6*t8+4*t1*t3*t5+2*t2*t5^2+4*t1*t4*t6+4*t2*t5*t6+2*t2*t6^2-4*t1*t2*t7+4*t4*t5*t7+4*t3*t6*t7+4*t2^2*t8+8*t5*t6*t8-2*t1*t7*t8+2*t2*t8^2-4*t2^2-4*t5^2+8*t5*t6-4*t6^2+10*t1*t7-20*t2*t8-4*t8^2+10*t2+20*t8
+STAGE std_J_done 1
+RESULT target_1 y(10)^3
+RESULT target_2 y(9)*y(10)^2
+RESULT target_3 y(8)*y(10)^2
+RESULT target_4 y(7)*y(10)^2
+RESULT target_5 y(6)*y(10)^2
+RESULT target_6 y(5)*y(10)^2
+RESULT target_7 y(4)*y(10)^2
+RESULT target_8 y(3)*y(10)^2
+RESULT target_9 y(2)*y(10)^2
+RESULT target_10 y(1)*y(10)^2
+RESULT target_11 y(9)^2*y(10)
+RESULT target_12 y(8)*y(9)*y(10)
+RESULT target_13 y(7)*y(9)*y(10)
+RESULT target_14 y(6)*y(9)*y(10)
+RESULT target_15 y(5)*y(9)*y(10)
+RESULT target_16 y(4)*y(9)*y(10)
+RESULT target_17 y(3)*y(9)*y(10)
+RESULT target_18 y(2)*y(9)*y(10)
+RESULT target_19 y(1)*y(9)*y(10)
+RESULT target_20 y(8)^2*y(10)
+RESULT target_21 y(7)*y(8)*y(10)
+RESULT target_22 y(6)*y(8)*y(10)
+RESULT target_23 y(5)*y(8)*y(10)
+RESULT target_24 y(4)*y(8)*y(10)
+RESULT target_25 y(3)*y(8)*y(10)
+RESULT target_26 y(2)*y(8)*y(10)
+RESULT target_27 y(1)*y(8)*y(10)
+RESULT target_28 y(7)^2*y(10)
+RESULT target_29 y(6)*y(7)*y(10)
+RESULT target_30 y(5)*y(7)*y(10)
+RESULT target_31 y(4)*y(7)*y(10)
+RESULT target_32 y(3)*y(7)*y(10)
+RESULT target_33 y(2)*y(7)*y(10)
+RESULT target_34 y(1)*y(7)*y(10)
+RESULT target_35 y(6)^2*y(10)
+RESULT target_36 y(5)*y(6)*y(10)
+RESULT target_37 y(4)*y(6)*y(10)
+RESULT target_38 y(3)*y(6)*y(10)
+RESULT target_39 y(2)*y(6)*y(10)
+RESULT target_40 y(1)*y(6)*y(10)
+RESULT target_41 y(5)^2*y(10)
+RESULT target_42 y(4)*y(5)*y(10)
+RESULT target_43 y(3)*y(5)*y(10)
+RESULT target_44 y(2)*y(5)*y(10)
+RESULT target_45 y(1)*y(5)*y(10)
+RESULT target_46 y(4)^2*y(10)
+RESULT target_47 y(3)*y(4)*y(10)
+RESULT target_48 y(2)*y(4)*y(10)
+RESULT target_49 y(1)*y(4)*y(10)
+RESULT target_50 y(3)^2*y(10)
+RESULT target_51 y(2)*y(3)*y(10)
+RESULT target_52 y(1)*y(3)*y(10)
+RESULT target_53 y(2)^2*y(10)
+RESULT target_54 y(1)*y(2)*y(10)
+RESULT target_55 y(1)^2*y(10)
+RESULT target_56 y(9)^3
+RESULT target_57 y(8)*y(9)^2
+RESULT target_58 y(7)*y(9)^2
+RESULT target_59 y(6)*y(9)^2
+RESULT target_60 y(5)*y(9)^2
+RESULT target_61 y(4)*y(9)^2
+RESULT target_62 y(3)*y(9)^2
+RESULT target_63 y(2)*y(9)^2
+RESULT target_64 y(1)*y(9)^2
+RESULT target_65 y(8)^2*y(9)
+RESULT target_66 y(7)*y(8)*y(9)
+RESULT target_67 y(6)*y(8)*y(9)
+RESULT target_68 y(5)*y(8)*y(9)
+RESULT target_69 y(4)*y(8)*y(9)
+RESULT target_70 y(3)*y(8)*y(9)
+RESULT target_71 y(2)*y(8)*y(9)
+RESULT target_72 y(1)*y(8)*y(9)
+RESULT target_73 y(7)^2*y(9)
+RESULT target_74 y(6)*y(7)*y(9)
+RESULT target_75 y(5)*y(7)*y(9)
+RESULT target_76 y(4)*y(7)*y(9)
+RESULT target_77 y(3)*y(7)*y(9)
+RESULT target_78 y(2)*y(7)*y(9)
+RESULT target_79 y(1)*y(7)*y(9)
+RESULT target_80 y(6)^2*y(9)
+RESULT target_81 y(5)*y(6)*y(9)
+RESULT target_82 y(4)*y(6)*y(9)
+RESULT target_83 y(3)*y(6)*y(9)
+RESULT target_84 y(2)*y(6)*y(9)
+RESULT target_85 y(1)*y(6)*y(9)
+RESULT target_86 y(5)^2*y(9)
+RESULT target_87 y(4)*y(5)*y(9)
+RESULT target_88 y(3)*y(5)*y(9)
+RESULT target_89 y(2)*y(5)*y(9)
+RESULT target_90 y(1)*y(5)*y(9)
+RESULT target_91 y(4)^2*y(9)
+RESULT target_92 y(3)*y(4)*y(9)
+RESULT target_93 y(2)*y(4)*y(9)
+RESULT target_94 y(1)*y(4)*y(9)
+RESULT target_95 y(3)^2*y(9)
+RESULT target_96 y(2)*y(3)*y(9)
+RESULT target_97 y(1)*y(3)*y(9)
+RESULT target_98 y(2)^2*y(9)
+RESULT target_99 y(1)*y(2)*y(9)
+RESULT target_100 y(1)^2*y(9)
+RESULT target_101 y(8)^3
+RESULT target_102 y(7)*y(8)^2
+RESULT target_103 y(6)*y(8)^2
+RESULT target_104 y(5)*y(8)^2
+RESULT target_105 y(4)*y(8)^2
+RESULT target_106 y(3)*y(8)^2
+RESULT target_107 y(2)*y(8)^2
+RESULT target_108 y(1)*y(8)^2
+RESULT target_109 y(7)^2*y(8)
+RESULT target_110 y(6)*y(7)*y(8)
+RESULT target_111 y(5)*y(7)*y(8)
+RESULT target_112 y(4)*y(7)*y(8)
+RESULT target_113 y(3)*y(7)*y(8)
+RESULT target_114 y(2)*y(7)*y(8)
+RESULT target_115 y(1)*y(7)*y(8)
+RESULT target_116 y(6)^2*y(8)
+RESULT target_117 y(5)*y(6)*y(8)
+RESULT target_118 y(4)*y(6)*y(8)
+RESULT target_119 y(3)*y(6)*y(8)
+RESULT target_120 y(2)*y(6)*y(8)
+RESULT target_121 y(1)*y(6)*y(8)
+RESULT target_122 y(5)^2*y(8)
+RESULT target_123 y(4)*y(5)*y(8)
+RESULT target_124 y(3)*y(5)*y(8)
+RESULT target_125 y(2)*y(5)*y(8)
+RESULT target_126 y(1)*y(5)*y(8)
+RESULT target_127 y(4)^2*y(8)
+RESULT target_128 y(3)*y(4)*y(8)
+RESULT target_129 y(2)*y(4)*y(8)
+RESULT target_130 y(1)*y(4)*y(8)
+RESULT target_131 y(3)^2*y(8)
+RESULT target_132 y(2)*y(3)*y(8)
+RESULT target_133 y(1)*y(3)*y(8)
+RESULT target_134 y(2)^2*y(8)
+RESULT target_135 y(1)*y(2)*y(8)
+RESULT target_136 y(1)^2*y(8)
+RESULT target_137 y(7)^3
+RESULT target_138 y(6)*y(7)^2
+RESULT target_139 y(5)*y(7)^2
+RESULT target_140 y(4)*y(7)^2
+RESULT target_141 y(3)*y(7)^2
+RESULT target_142 y(2)*y(7)^2
+RESULT target_143 y(1)*y(7)^2
+RESULT target_144 y(6)^2*y(7)
+RESULT target_145 y(5)*y(6)*y(7)
+RESULT target_146 y(4)*y(6)*y(7)
+RESULT target_147 y(3)*y(6)*y(7)
+RESULT target_148 y(2)*y(6)*y(7)
+RESULT target_149 y(1)*y(6)*y(7)
+RESULT target_150 y(5)^2*y(7)
+RESULT target_151 y(4)*y(5)*y(7)
+RESULT target_152 y(3)*y(5)*y(7)
+RESULT target_153 y(2)*y(5)*y(7)
+RESULT target_154 y(1)*y(5)*y(7)
+RESULT target_155 y(4)^2*y(7)
+RESULT target_156 y(3)*y(4)*y(7)
+RESULT target_157 y(2)*y(4)*y(7)
+RESULT target_158 y(1)*y(4)*y(7)
+RESULT target_159 y(3)^2*y(7)
+RESULT target_160 y(2)*y(3)*y(7)
+RESULT target_161 y(1)*y(3)*y(7)
+RESULT target_162 y(2)^2*y(7)
+RESULT target_163 y(1)*y(2)*y(7)
+RESULT target_164 y(1)^2*y(7)
+RESULT target_165 y(6)^3
+RESULT target_166 y(5)*y(6)^2
+RESULT target_167 y(4)*y(6)^2
+RESULT target_168 y(3)*y(6)^2
+RESULT target_169 y(2)*y(6)^2
+RESULT target_170 y(1)*y(6)^2
+RESULT target_171 y(5)^2*y(6)
+RESULT target_172 y(4)*y(5)*y(6)
+RESULT target_173 y(3)*y(5)*y(6)
+RESULT target_174 y(2)*y(5)*y(6)
+RESULT target_175 y(1)*y(5)*y(6)
+RESULT target_176 y(4)^2*y(6)
+RESULT target_177 y(3)*y(4)*y(6)
+RESULT target_178 y(2)*y(4)*y(6)
+RESULT target_179 y(1)*y(4)*y(6)
+RESULT target_180 y(3)^2*y(6)
+RESULT target_181 y(2)*y(3)*y(6)
+RESULT target_182 y(1)*y(3)*y(6)
+RESULT target_183 y(2)^2*y(6)
+RESULT target_184 y(1)*y(2)*y(6)
+RESULT target_185 y(1)^2*y(6)
+RESULT target_186 y(5)^3
+RESULT target_187 y(4)*y(5)^2
+RESULT target_188 y(3)*y(5)^2
+RESULT target_189 y(2)*y(5)^2
+RESULT target_190 y(1)*y(5)^2
+RESULT target_191 y(4)^2*y(5)
+RESULT target_192 y(3)*y(4)*y(5)
+RESULT target_193 y(2)*y(4)*y(5)
+RESULT target_194 y(1)*y(4)*y(5)
+RESULT target_195 y(3)^2*y(5)
+RESULT target_196 y(2)*y(3)*y(5)
+RESULT target_197 y(1)*y(3)*y(5)
+RESULT target_198 y(2)^2*y(5)
+RESULT target_199 y(1)*y(2)*y(5)
+RESULT target_200 y(1)^2*y(5)
+RESULT target_201 y(4)^3
+RESULT target_202 y(3)*y(4)^2
+RESULT target_203 y(2)*y(4)^2
+RESULT target_204 y(1)*y(4)^2
+RESULT target_205 y(3)^2*y(4)
+RESULT target_206 y(2)*y(3)*y(4)
+RESULT target_207 y(1)*y(3)*y(4)
+RESULT target_208 y(2)^2*y(4)
+RESULT target_209 y(1)*y(2)*y(4)
+RESULT target_210 y(1)^2*y(4)
+RESULT target_211 y(3)^3
+RESULT target_212 y(2)*y(3)^2
+RESULT target_213 y(1)*y(3)^2
+RESULT target_214 y(2)^2*y(3)
+RESULT target_215 y(1)*y(2)*y(3)
+RESULT target_216 y(1)^2*y(3)
+RESULT target_217 y(2)^3
+RESULT target_218 y(1)*y(2)^2
+RESULT target_219 y(1)^2*y(2)
+RESULT target_220 y(1)^3
+STAGE product 1 of 220 1
+STAGE product 2 of 220 1
+STAGE product 3 of 220 1
+STAGE product 4 of 220 1
+STAGE product 5 of 220 1
+STAGE product 6 of 220 1
+STAGE product 7 of 220 1
+STAGE product 8 of 220 1
+STAGE product 9 of 220 1
+STAGE product 10 of 220 1
+STAGE product 11 of 220 1
+STAGE product 12 of 220 1
+STAGE product 13 of 220 1
+STAGE product 14 of 220 1
+STAGE product 15 of 220 1
+STAGE product 16 of 220 1
+STAGE product 17 of 220 1
+STAGE product 18 of 220 1
+STAGE product 19 of 220 1
+STAGE product 20 of 220 1
+STAGE product 21 of 220 1
+STAGE product 22 of 220 1
+STAGE product 23 of 220 1
+STAGE product 24 of 220 1
+STAGE product 25 of 220 1
+STAGE product 26 of 220 1
+STAGE product 27 of 220 1
+STAGE product 28 of 220 1
+STAGE product 29 of 220 1
+STAGE product 30 of 220 1
+STAGE product 31 of 220 1
+STAGE product 32 of 220 1
+STAGE product 33 of 220 1
+STAGE product 34 of 220 1
+STAGE product 35 of 220 1
+STAGE product 36 of 220 1
+STAGE product 37 of 220 1
+STAGE product 38 of 220 1
+STAGE product 39 of 220 1
+STAGE product 40 of 220 1
+STAGE product 41 of 220 1
+STAGE product 42 of 220 1
+STAGE product 43 of 220 1
+STAGE product 44 of 220 1
+STAGE product 45 of 220 1
+STAGE product 46 of 220 1
+STAGE product 47 of 220 1
+STAGE product 48 of 220 1
+STAGE product 49 of 220 1
+STAGE product 50 of 220 1
+STAGE product 51 of 220 1
+STAGE product 52 of 220 1
+STAGE product 53 of 220 1
+STAGE product 54 of 220 1
+STAGE product 55 of 220 1
+STAGE product 56 of 220 1
+STAGE product 57 of 220 1
+STAGE product 58 of 220 1
+STAGE product 59 of 220 1
+STAGE product 60 of 220 1
+STAGE product 61 of 220 1
+STAGE product 62 of 220 1
+STAGE product 63 of 220 1
+STAGE product 64 of 220 1
+STAGE product 65 of 220 1
+STAGE product 66 of 220 1
+STAGE product 67 of 220 1
+STAGE product 68 of 220 1
+STAGE product 69 of 220 1
+STAGE product 70 of 220 1
+STAGE product 71 of 220 1
+STAGE product 72 of 220 1
+STAGE product 73 of 220 1
+STAGE product 74 of 220 1
+STAGE product 75 of 220 1
+STAGE product 76 of 220 1
+STAGE product 77 of 220 1
+STAGE product 78 of 220 1
+STAGE product 79 of 220 1
+STAGE product 80 of 220 1
+STAGE product 81 of 220 1
+STAGE product 82 of 220 1
+STAGE product 83 of 220 1
+STAGE product 84 of 220 1
+STAGE product 85 of 220 1
+STAGE product 86 of 220 1
+STAGE product 87 of 220 1
+STAGE product 88 of 220 1
+STAGE product 89 of 220 1
+STAGE product 90 of 220 1
+STAGE product 91 of 220 1
+STAGE product 92 of 220 1
+STAGE product 93 of 220 1
+STAGE product 94 of 220 1
+STAGE product 95 of 220 1
+STAGE product 96 of 220 1
+STAGE product 97 of 220 1
+STAGE product 98 of 220 1
+STAGE product 99 of 220 1
+STAGE product 100 of 220 1
+STAGE product 101 of 220 1
+STAGE product 102 of 220 1
+STAGE product 103 of 220 1
+STAGE product 104 of 220 1
+STAGE product 105 of 220 1
+STAGE product 106 of 220 1
+STAGE product 107 of 220 1
+STAGE product 108 of 220 1
+STAGE product 109 of 220 1
+STAGE product 110 of 220 1
+STAGE product 111 of 220 1
+STAGE product 112 of 220 1
+STAGE product 113 of 220 1
+STAGE product 114 of 220 1
+STAGE product 115 of 220 1
+STAGE product 116 of 220 1
+STAGE product 117 of 220 1
+STAGE product 118 of 220 1
+STAGE product 119 of 220 1
+STAGE product 120 of 220 1
+STAGE product 121 of 220 1
+STAGE product 122 of 220 1
+STAGE product 123 of 220 1
+STAGE product 124 of 220 1
+STAGE product 125 of 220 1
+STAGE product 126 of 220 1
+STAGE product 127 of 220 1
+STAGE product 128 of 220 1
+STAGE product 129 of 220 1
+STAGE product 130 of 220 1
+STAGE product 131 of 220 1
+STAGE product 132 of 220 1
+STAGE product 133 of 220 1
+STAGE product 134 of 220 1
+STAGE product 135 of 220 1
+STAGE product 136 of 220 1
+STAGE product 137 of 220 1
+STAGE product 138 of 220 1
+STAGE product 139 of 220 1
+STAGE product 140 of 220 1
+STAGE product 141 of 220 1
+STAGE product 142 of 220 1
+STAGE product 143 of 220 1
+STAGE product 144 of 220 1
+STAGE product 145 of 220 1
+STAGE product 146 of 220 1
+STAGE product 147 of 220 1
+STAGE product 148 of 220 1
+STAGE product 149 of 220 1
+STAGE product 150 of 220 1
+STAGE product 151 of 220 1
+STAGE product 152 of 220 1
+STAGE product 153 of 220 1
+STAGE product 154 of 220 1
+STAGE product 155 of 220 1
+STAGE product 156 of 220 1
+STAGE product 157 of 220 1
+STAGE product 158 of 220 1
+STAGE product 159 of 220 1
+STAGE product 160 of 220 1
+STAGE product 161 of 220 1
+STAGE product 162 of 220 1
+STAGE product 163 of 220 1
+STAGE product 164 of 220 1
+STAGE product 165 of 220 1
+STAGE product 166 of 220 1
+STAGE product 167 of 220 1
+STAGE product 168 of 220 1
+STAGE product 169 of 220 1
+STAGE product 170 of 220 1
+STAGE product 171 of 220 1
+STAGE product 172 of 220 1
+STAGE product 173 of 220 1
+STAGE product 174 of 220 1
+STAGE product 175 of 220 1
+STAGE product 176 of 220 1
+STAGE product 177 of 220 1
+STAGE product 178 of 220 1
+STAGE product 179 of 220 1
+STAGE product 180 of 220 1
+STAGE product 181 of 220 1
+STAGE product 182 of 220 1
+STAGE product 183 of 220 1
+STAGE product 184 of 220 1
+STAGE product 185 of 220 1
+STAGE product 186 of 220 1
+STAGE product 187 of 220 1
+STAGE product 188 of 220 1
+STAGE product 189 of 220 1
+STAGE product 190 of 220 1
+STAGE product 191 of 220 1
+STAGE product 192 of 220 1
+STAGE product 193 of 220 1
+STAGE product 194 of 220 1
+STAGE product 195 of 220 1
+STAGE product 196 of 220 1
+STAGE product 197 of 220 1
+STAGE product 198 of 220 1
+STAGE product 199 of 220 1
+STAGE product 200 of 220 1
+STAGE product 201 of 220 1
+STAGE product 202 of 220 1
+STAGE product 203 of 220 1
+STAGE product 204 of 220 1
+STAGE product 205 of 220 1
+STAGE product 206 of 220 1
+STAGE product 207 of 220 1
+STAGE product 208 of 220 1
+STAGE product 209 of 220 1
+STAGE product 210 of 220 1
+STAGE product 211 of 220 1
+STAGE product 212 of 220 1
+STAGE product 213 of 220 1
+STAGE product 214 of 220 1
+STAGE product 215 of 220 1
+STAGE product 216 of 220 1
+STAGE product 217 of 220 1
+STAGE product 218 of 220 1
+STAGE product 219 of 220 1
+STAGE product 220 of 220 1
+STAGE std_Q_start generators 1777 72
+RESULT sq_size 994
+STAGE std_Q_done 246
+STAGE normal_forms_done 252
+RESULT monomials 6888
+STAGE syzygies_done 4882
+RESULT targets 220
+RESULT relations 140
+RESULT done 1

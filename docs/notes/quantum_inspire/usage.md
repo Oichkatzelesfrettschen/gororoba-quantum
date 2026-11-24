@@ -173,6 +173,12 @@ follow root AGENTS.md "Hardware services".
    `QI_HARDWARE_PAUSE_SECONDS` one step of the ladder, and never resubmit a
    directory that holds `submission.json` or `submission-state.json`
    (`qi_platform.py reconcile` recovers its receipt).
+   A failed job's `GET /jobs/ID/logs` can exceed the client's 60 s read timeout on every call while `GET /jobs/ID`
+   answers in seconds with the failure message, so `collect` of a failed batch reports a timeout instead of the
+   message. `"$QI_PYTHON" scripts/qi_platform_job_status.py status RUN_DIR` reads the status first (exit 3 and a
+   `provider-failure.json` when a job reads `failed`); `scripts/qi_replicated_series_run.sh` runs it after each submit
+   and stops with the marker `failed REP: provider jobs failed: MESSAGE`. A restart on such a directory stops with that
+   marker and neither collects nor submits again.
 7. Analyze with the generator's `--analyze`, then commit the run
    directories, the analysis, its `--replay` gate, a refreshed `usage.json`
    and the `docs/state/research_state.json` registration in one change
