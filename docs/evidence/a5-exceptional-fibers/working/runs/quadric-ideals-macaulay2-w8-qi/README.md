@@ -63,6 +63,7 @@ each below 0.36 GB; the dump 1 min 49 s at 0.15 GB with Singular 4.4.1, Python 3
 | `qi-g17-*.txt`, `qi-g21-*.txt`, `qi-g24-*.txt` | the Iso, E8-bar and W8 ideals over Q(i), one polynomial per line |
 | `qi_invariants.m2` | the invariants of one Q(i) ideal |
 | `run_m2_qi.sh` | the seven runs, the comparison and the removed-relation check |
+| `qi_m2_runner.py` | dispatches the seven Macaulay2 runs through `parallel.py` |
 | `NAME.log` | the output for one ideal (`W8-nm-p32009.log` runs `../quadric-ideals-macaulay2-p32009/quadric_invariants.m2`) |
 | `results.txt`, `expected-results.txt` | the RESULT lines of the run and the expected ones |
 | `m2-version.txt` | `M2 --version` |

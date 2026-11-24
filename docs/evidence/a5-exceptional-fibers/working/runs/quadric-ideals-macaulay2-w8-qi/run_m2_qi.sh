@@ -7,8 +7,6 @@ set -eu
 PYTHON=${PYTHON:-python3}
 export PYTHON PYTHONDONTWRITEBYTECODE=1
 D=docs/evidence/a5-exceptional-fibers/working/runs/quadric-ideals-macaulay2-w8-qi
-P=docs/evidence/a5-exceptional-fibers/working/runs/quadric-ideals-macaulay2-p32009
-W=docs/evidence/a5-exceptional-fibers/working/runs/w8_a2/w8_k2.rel
 scratch=$(mktemp -d)
 trap 'rm -rf "$scratch"' EXIT
 trap 'exit 130' INT
@@ -22,13 +20,9 @@ if [ "${1:-}" = dump ]; then
   cmp "$scratch/before" "$scratch/after"
   for f in $(cat "$scratch/after"); do cmp "$D/$f" "$scratch/dump/$f"; done
 fi
-M2 --script "$P/quadric_invariants.m2" W8-nm-p32009 "$W" 24 > "$D/W8-nm-p32009.log" 2>&1
-names=W8-nm-p32009
-for f in "$D"/qi-g*.txt; do
-  b=$(basename "$f" .txt)
-  M2 --script "$D/qi_invariants.m2" "$b" "$f" > "$D/$b.log" 2>&1
-  names="$names $b"
-done
+# The seven runs are independent; qi_m2_runner.py dispatches them through parallel.py and prints the names in order.
+names=$("$PYTHON" "$D/qi_m2_runner.py")
+[ -n "$names" ]
 : > "$D/results.txt"
 for b in $names; do grep -E '^(RESULT|DONE) ' "$D/$b.log" >> "$D/results.txt"; done
 cmp "$D/results.txt" "$D/expected-results.txt"

@@ -46,7 +46,7 @@ degree 3 (`kbase(std(ideal(0)),3)`, 220 targets) and stops after the syzygies, p
 
 ## Replay
 
-    PYTHON=python3 JOBS=4 sh docs/evidence/a5-exceptional-fibers/working/runs/e8-vb-boost-degree3-p32029/run_degree3.sh
+    PYTHON=python3 sh docs/evidence/a5-exceptional-fibers/working/runs/e8-vb-boost-degree3-p32029/run_degree3.sh
 
 from the repository root, with Singular on PATH and sympy and python-flint in that interpreter. A run without `check` rewrites the retained scripts and logs of this directory; the argument `check`
 reads the retained logs after requiring each retained script to equal a fresh emission. One value takes 37 min on
