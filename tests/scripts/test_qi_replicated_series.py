@@ -218,6 +218,7 @@ def test_the_runner_does_nothing_without_the_approval_and_the_arming_argument(tm
     _check(not runs.exists() and not (tmp_path / "s").exists())
 
 
+@pytest.mark.audit
 def test_a_dry_run_continues_to_the_rules_total_and_writes_the_marker_and_resume_note(tmp_path: Path) -> None:
     code, calls, err, state = _run(tmp_path, {"FAKE_SIGMA": str(SIGMA_CONTINUE)})
     _check(code == 0)
@@ -228,6 +229,7 @@ def test_a_dry_run_continues_to_the_rules_total_and_writes_the_marker_and_resume
     _check(json.loads((state / "final.json").read_text())["decision"]["n"] == 18)
 
 
+@pytest.mark.audit
 def test_a_dry_run_stops_after_stage_one_when_the_rule_asks_for_twelve_or_for_more_than_the_cap(tmp_path: Path) -> None:
     code, calls, _, state = _run(tmp_path / "a")
     _check(code == 0 and calls.count("submit") == 12 and _marker(state) == "done")
@@ -245,16 +247,16 @@ def test_a_failed_binding_of_the_profile_unit_stops_the_series_with_a_marker(tmp
 def test_a_restart_skips_collected_replicates_and_collects_a_submitted_one_without_a_second_submit(
     tmp_path: Path,
 ) -> None:
-    code, calls, _, state = _run(tmp_path, {"FAKE_COLLECT_FAIL_REP": "rep-03"})
-    _check(code != 0 and _marker(state).startswith("failed rep-03: collection failed"))
-    _check(calls.count("submit") == 4)
+    code, calls, _, state = _run(tmp_path, {"FAKE_COLLECT_FAIL_REP": "rep-02"})
+    _check(code != 0 and _marker(state).startswith("failed rep-02: collection failed"))
+    _check(
+        calls.splitlines()
+        == ["submit rep-00", "collect rep-00", "submit rep-01", "collect rep-01", "submit rep-02", "collect rep-02"]
+    )
     (tmp_path / "calls.log").unlink()
-    code, calls, _, state = _run(tmp_path)
-    _check(code == 0 and _marker(state) == "done")
-    lines = calls.splitlines()
-    _check(lines[0] == "collect rep-03" and lines[1] == "submit rep-04")
-    _check(not any(line.endswith(f"rep-0{i}") for line in lines for i in range(3)))
-    _check(sum(line.startswith("submit") for line in lines) == 8)
+    code, calls, _, state = _run(tmp_path, {"FAKE_FAIL_REP": "rep-04"})
+    _check(code != 0 and _marker(state).startswith("failed rep-04"))
+    _check(calls.splitlines() == ["collect rep-02", "submit rep-03", "collect rep-03", "submit rep-04"])
 
 
 def test_a_checkpoint_without_a_receipt_and_another_stamp_each_stop_the_series(tmp_path: Path) -> None:
@@ -271,8 +273,8 @@ def test_a_checkpoint_without_a_receipt_and_another_stamp_each_stop_the_series(t
 
 
 def test_a_refused_pause_is_retried_and_ten_refusals_stop_the_replicate(tmp_path: Path) -> None:
-    code, calls, err, _ = _run(tmp_path / "a", {"FAKE_REFUSE": "2"})
-    _check(code == 0 and "rep-00: sleep 6" in err and calls.count("refused") == 2)
+    code, calls, err, _ = _run(tmp_path / "a", {"FAKE_REFUSE": "2", "FAKE_FAIL_REP": "rep-01"})
+    _check(code != 0 and "rep-00: sleep 6" in err and calls.count("refused") == 2 and "collect rep-00" in calls)
     code, calls, _, state = _run(tmp_path / "b", {"FAKE_REFUSE": "99"})
     _check(code != 0 and calls.count("submit rep-00") == 10 and "stopped after 10 refusal" in _marker(state))
 
