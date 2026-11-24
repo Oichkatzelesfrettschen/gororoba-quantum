@@ -57,7 +57,7 @@ Bit 1 is a set bit of both m (27 = 11011b, 19 = 10011b); the common set bits are
 same CZ count (table below), so the choice is a tie on cost; bit 1 is the one the SELECT's input-X layer does not touch (i = 1
 sets only bit 0), so its gates are the selector CNOTs alone. Bit 0 is the preregistered alternative.
 
-Verified exactly (`tests/gororoba_quantum/test_pathion_kernel_map_orientation.py`, Statevector on an aarch64 host, 25 tests; the swap
+Verified exactly (`tests/gororoba_quantum/test_pathion_kernel_map_orientation.py`, Statevector on an aarch64 host, 27 tests; the swap
 unit's wire exchange, outcome law and measure map are asserted by `test_swap_member_exchanges_data_wires_one_and_four_and_keeps_the_law`):
 
 - For every set bit b of m, the selector marginals are (16 -+ N)/32, every output contrast is +-1 and half their sum is N,
