@@ -305,10 +305,11 @@ def analyze_replicated_series(
     _require(count >= N1, f"{count} replicates collected; stage 1 needs {N1}")
     _require(set(job_order) == set(names), "the job orders differ from the replicates")
     _require(set(batch_jobs) == set(names), "the batch jobs differ from the replicates")
+    for name in names:
+        verify_job_order(name, manifests[name], job_order[name])
     verify_distinct_ids([job for name in names for _, job in job_order[name]], [batch_jobs[name] for name in names])
     rows = []
     for index, name in enumerate(names):
-        verify_job_order(name, manifests[name], job_order[name])
         rows.append(_replicate(index, manifests[name], shots, proposal))
     residuals = [row["residual"] for row in rows]
     decision = stein_decision(residuals)
