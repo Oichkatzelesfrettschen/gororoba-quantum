@@ -151,3 +151,18 @@ def test_readout_correlation_is_exploratory_and_checks_its_length() -> None:
     _expect(len(result["tests"]) == oba.FAMILY, "the correlation entered the family")
     with pytest.raises(ValueError, match="readout errors"):
         oba.analyze_flat(entry, errors[:-1])
+
+
+def test_operating_characteristics_sum_to_one_and_keep_the_null_from_refuting() -> None:
+    power = json.loads((DIRECTORY / "power.json").read_text())
+    record = json.loads((DIRECTORY / "case_compile.json").read_text())
+    result = oba.operating_characteristics(power, record, log2=6)
+    _expect(result["trials_per_cell"] == 64, "trials")
+    for scenario, by_rho in result["scenarios"].items():
+        for rho, rules in by_rho.items():
+            for rule, cell in rules.items():
+                _expect(abs(sum(cell["row_verdict"].values()) - 1.0) < 1e-9, f"{scenario} {rho} {rule}: row sums")
+                for operand in cell["operands"].values():
+                    _expect(abs(sum(operand["verdict"].values()) - 1.0) < 1e-9, f"{scenario} {rho} {rule}: operand")
+    null = result["scenarios"]["null"]["rho1"]["band_rule"]["row_verdict"]
+    _expect(null.get("refuted", 0.0) < 0.1, f"the null run refuted at {null}")
