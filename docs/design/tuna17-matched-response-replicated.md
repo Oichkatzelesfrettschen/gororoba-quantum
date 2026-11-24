@@ -74,7 +74,8 @@ after stage 1 with the verdict `undecided_at_cap` and reports the stage-1 mean w
 ### Seeded simulation (400000 trials per row, `scripts/qi_replicated_stein_simulation.py`)
 
 The simulation draws the replicate residuals and calls the module's own `required_replicates`,
-`stein_statistic`, `CAP` and `T_CRIT`. Rates are measured with the seeds of
+`stein_statistic`, `CAP` and `T_CRIT`. The four sigma workloads and the heavy-tailed row map through
+`gororoba_quantum/parallel.py`, each with its own seed. Rates are measured with the seeds of
 `docs/evidence/quantum_inspire/tuna17-replicated-stein-simulation.json`.
 
 | sigma | delta | reject (capped design) | undecided at cap | reject given within cap | reject (uncapped rule) | median N |
@@ -167,10 +168,15 @@ The red-team round on this proposal and its reconciliation are in the
 The two stages are one series because a gap of hours between them would break the exchangeability the t test assumes:
 a replicate runs within one pause ladder step (120 s, `QI_HARDWARE_PAUSE_SECONDS`) of the previous collection.
 
-- Pre-flight, each line written to the series log: the lease command named by `QI_SUBMIT_LEASE_COMMAND` (the submit
+- Pre-flight, each line written to the series log: the whole proposal directory against its frozen digests
+  (`qi_replicated_response_analysis.py --proposal-check`: `proposal.json`, every manifest and every circuit file of
+  the schedule), before anything is copied, leased or submitted; the lease command named by `QI_SUBMIT_LEASE_COMMAND` (the submit
   route is `scripts/qi_platform_leased.py`, which takes the account's submit lease before it reads the queue); the
   backend status read; free disk on the runs directory of the broker host (at least 2 GiB; the 180 jobs of the cap
   retain about 200 MB of shots).
+- Before every submit attempt the runner checks the proposal digests and the run copy again and passes the series
+  time left as `--deadline-seconds` to `qi_platform_leased.py`, which sends no request once that time has passed,
+  the wait for the account's submit lock included.
 - Profile unit. `rep-00` runs first through the real submit path (copy, submit, collect), followed by
   `qi_replicated_response_analysis.py --binding`, which checks its manifest and circuit digests, job order and
   readout sanity and prints no witness frequency or residual. The series stops with a failure marker on any failure of
@@ -180,6 +186,8 @@ a replicate runs within one pause ladder step (120 s, `QI_HARDWARE_PAUSE_SECONDS
   rule's N and writes a decision record of `s1`, N and digests. The stage-1 mean, the residuals and the diagnostics
   appear in neither, so the decision to continue rests on `s1` alone, as the rule states. The runner then submits
   `rep-12` to `rep-(N-1)` and calls `--final`, which cross-checks the decision record and writes the analysis.
+  `--final` refuses a series whose decision is `continue` and writes nothing; `undecided_at_cap` after exactly 12
+  replicates is terminal.
 - Restart. A second call with the same `--stamp` skips a replicate whose run directory holds `results.json`,
   collects one that holds `submission.json` without a second submit, and stops on a `submission-state.json` without
   a receipt (only `qi_platform.py reconcile` knows whether the batch reached the service). The runner writes
