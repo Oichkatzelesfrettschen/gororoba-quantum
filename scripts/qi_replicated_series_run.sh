@@ -15,8 +15,10 @@
 # against scripts/qi_replicated_series_fake.py, takes neither argument, needs an explicit --runs-dir other than the
 # retained runs directory, and never reaches a provider.
 #
-# Sequence. Pre-flight (lease command named, backend status read, free disk) -> rep-00 (the profile unit: copy,
-# submit under the account's submit lease, collect, binding check; the series stops with a marker on any failure)
+# Sequence. Pre-flight (the whole proposal directory checked against the frozen digests by
+# qi_replicated_response_analysis.py --proposal-check before anything is copied, leased or submitted; lease command
+# named, backend status read, free disk) -> rep-00 (the profile unit: copy, submit under the account's submit lease,
+# collect, binding check; the series stops with a marker on any failure)
 # -> rep-01 .. rep-11, each with its binding check -> the stage-1 gate (qi_replicated_response_analysis.py
 # --stage1) -> when the verdict is continue, the replicates up to the rule's N -> --final. Both stages are one
 # series: a gap of hours between them would break the exchangeability the t test assumes. A submit refused for the
@@ -28,7 +30,8 @@
 # submission-state.json and no submission.json stops the series (only qi_platform.py reconcile can tell whether the
 # batch reached the service); one with neither is submitted. A run directory of the series under another stamp stops
 # the series; QI_REPEAT_SERIES set to the series name arms a repeat. A run directory whose copy differs from the
-# proposal's stops the series before any submit.
+# proposal's stops the series before any submit. Before each submit attempt the proposal digests and the copy of the
+# replicate are checked again.
 #
 # State directory: series.log, marker (the terminal marker: done, done undecided-at-cap when the stage-1 gate stops at
 # the cap of 60 and no stage-2 replicate is submitted, or failed REASON), RESUME.md, stage1.json and final.json.
@@ -245,8 +248,22 @@ remaining() {
 	echo $((deadline - ($(date +%s) - start)))
 }
 
+verify_proposal() {
+	check_out=$("$py" "$analysis" --proposal-check --proposal "$proposal" 2>&1) || fail "the proposal differs from its frozen digests: $check_out"
+}
+
+verify_copy() {
+	# verify_copy REP RUN: every file of the proposal's replicate is byte-identical in the run directory
+	for file in "$proposal/$1"/*; do
+		[ -f "$file" ] || continue
+		cmp -s "$file" "$2/$(basename "$file")" || fail "$2/$(basename "$file") differs from $file: the series changed after this copy; run it under a new stamp"
+	done
+}
+
 # --- pre-flight ---------------------------------------------------------------------------------------------
 log "series $series_name stamp $stamp (dry-run: ${dry:-no})"
+verify_proposal
+log "pre-flight: the proposal matches its frozen digests"
 backend_id=$("$py" -I -c 'import json,sys; print(json.load(open(sys.argv[1]))["backend_type_id"])' "$proposal/rep-00/cases.json")
 if [ -n "$dry" ]; then
 	log "pre-flight: lease, backend status and disk are not read in a dry run"
@@ -285,10 +302,7 @@ for src in "$proposal"/rep-*; do
 	[ -d "$src" ] || continue
 	run=$runs/$stamp-$series_name-$(basename "$src")
 	[ -e "$run" ] || continue
-	for file in "$src"/*; do
-		[ -f "$file" ] || continue
-		cmp -s "$file" "$run/$(basename "$file")" || fail "$run/$(basename "$file") differs from $file: the series changed after this copy; run it under a new stamp"
-	done
+	verify_copy "$(basename "$src")" "$run"
 done
 write_resume
 
@@ -320,6 +334,8 @@ do_replicate() {
 	[ -e "$run" ] || cp -R "$proposal/$rep" "$run"
 	refused=0
 	while [ ! -e "$run/submission.json" ]; do
+		verify_proposal
+		verify_copy "$rep" "$run"
 		if out=$("$qipy" "$submit_script" submit "$run" --backend-type-id "$backend_id" --approval "$approval" 2>&1); then
 			log "$rep: submitted: $out"
 			break

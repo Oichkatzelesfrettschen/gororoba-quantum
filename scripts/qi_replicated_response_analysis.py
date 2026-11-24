@@ -11,6 +11,9 @@ sha256 of its cases.json, and applies gororoba_quantum/qi_replicated_response.py
                                      --stage1-decision FILE cross-checks it against the stage-1 record.
   --binding RUN_DIR                  one replicate: manifest and circuit digests, job order, readout sanity. No
                                      witness frequency or residual is printed.
+  --proposal-check                   the whole proposal directory against the frozen digests (proposal.json, every
+                                     replicate manifest and circuit file of the schedule); reads no run directory
+                                     and prints the proposal.json sha256.
 
 --final refuses a series whose decision is not terminal (status continue: fewer replicates than the rule's N)
 and writes nothing; the stage-one-only series at the cap (status undecided_at_cap) is terminal.
@@ -171,6 +174,7 @@ def main() -> int:
     mode.add_argument("--stage1", nargs="+", type=Path, metavar="RUN_DIR")
     mode.add_argument("--final", nargs="+", type=Path, metavar="RUN_DIR")
     mode.add_argument("--binding", type=Path, metavar="RUN_DIR")
+    mode.add_argument("--proposal-check", action="store_true")
     parser.add_argument("--proposal", type=Path, default=PROPOSAL)
     parser.add_argument("--out", type=Path)
     parser.add_argument("--stage1-decision", type=Path)
@@ -209,6 +213,8 @@ def main() -> int:
             arguments.out.write_text(json.dumps(analysis, indent=1) + "\n")
             print(f"status: {analysis['decision']['status']}")
             print(f"N: {analysis['decision']['n']}")
+        elif arguments.proposal_check:
+            print(f"proposal: {rule.proposal_digests(arguments.proposal)['proposal.json']}")
         else:
             print(
                 json.dumps(
@@ -216,7 +222,7 @@ def main() -> int:
                     indent=1,
                 )
             )
-    except ValueError as error:
+    except (ValueError, OSError, KeyError) as error:
         print(f"refused: {error}", file=sys.stderr)
         return 1
     return 0

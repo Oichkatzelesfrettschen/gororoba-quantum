@@ -307,6 +307,39 @@ def test_the_deadline_bounds_the_series(tmp_path: Path) -> None:
     _check(code != 0 and calls == "" and "deadline" in _marker(state))
 
 
+def _altered_proposal(tmp_path: Path) -> Path:
+    """A copy of the proposal whose shot count differs in proposal.json and in the manifest of rep-00."""
+    altered = tmp_path / "altered"
+    shutil.copytree(PROPOSAL, altered)
+    for path in (altered / "proposal.json", altered / "rep-00" / "cases.json"):
+        text = path.read_text()
+        _check("16384" in text)
+        path.write_text(text.replace("16384", "8192"))
+    return altered
+
+
+def test_an_altered_proposal_stops_the_series_before_any_copy_or_submit(tmp_path: Path) -> None:
+    altered = _altered_proposal(tmp_path)
+    code, calls, _, state = _run(tmp_path, arguments=["--proposal", str(altered)])
+    _check(code != 0 and calls == "" and _marker(state).startswith("failed the proposal differs"))
+    _check(not list((tmp_path / "runs").rglob("*rep-*")))
+    runs, states = tmp_path / "armed-runs", tmp_path / "armed-state"
+    done, stub_calls = _armed(tmp_path, runs, states, extra=("--proposal", str(altered)))
+    _check(done.returncode != 0 and stub_calls == [] and not list(runs.glob("*rep-*")))
+    _check((states / "marker").read_text().startswith("failed the proposal differs"))
+
+
+def test_the_proposal_check_passes_the_frozen_proposal_and_refuses_a_changed_circuit(tmp_path: Path) -> None:
+    done = _strict("--proposal-check")
+    _check(done.returncode == 0 and done.stdout.startswith("proposal: "))
+    altered = tmp_path / "altered"
+    shutil.copytree(PROPOSAL, altered)
+    circuit = sorted((altered / "rep-05").glob("*.cq"))[0]
+    circuit.write_text(circuit.read_text() + "\n")
+    refused = _strict("--proposal-check", "--proposal", altered)
+    _check(refused.returncode == 1 and "rep-05" in refused.stderr)
+
+
 def test_a_changed_run_copy_stops_the_series_before_any_submit(tmp_path: Path) -> None:
     run = tmp_path / "runs" / "dry-run" / "T-tuna17-replicated-q11-rep-00"
     shutil.copytree(PROPOSAL / "rep-00", run)
@@ -357,7 +390,7 @@ def _stub(tmp_path: Path) -> Path:
 
 
 def _armed(
-    tmp_path: Path, runs: Path, state: Path, stamp: str = "T"
+    tmp_path: Path, runs: Path, state: Path, stamp: str = "T", extra: tuple[str, ...] = ()
 ) -> tuple[subprocess.CompletedProcess[str], list[str]]:
     """The armed runner with every provider route replaced by the stub; the stub log lists what it was asked."""
     log = tmp_path / "stub.log"
@@ -383,6 +416,7 @@ def _armed(
         str(runs),
         "--state-dir",
         str(state),
+        *extra,
     ]
     done = subprocess.run(command, capture_output=True, text=True, env=env, check=False)
     return done, (log.read_text().splitlines() if log.exists() else [])
