@@ -1,0 +1,41 @@
+{
+ "alpha_family": 0.05,
+ "alpha_per_test": 0.0035714285714285718,
+ "operands": {
+  "e1pe18": {
+   "effect": 0.103452595541,
+   "minimum_detectable_effect_at_n": 0.093,
+   "n_diff_at_full_effect": 14,
+   "n_full_effect": 13,
+   "n_half_effect": 39,
+   "power_at_n_full_effect": 0.8983364297446422,
+   "power_at_n_half_effect": 0.21285320955394654,
+   "power_diff_at_n_full_effect": 0.8893648335275454,
+   "sd_pair_difference": 0.08180108696961173,
+   "sd_per_replica": 0.08082241290145897,
+   "se_five_replicas": 0.03614488187064365
+  },
+  "e1pe26": {
+   "effect": -0.155492605959,
+   "minimum_detectable_effect_at_n": 0.104,
+   "n_diff_at_full_effect": 9,
+   "n_full_effect": 9,
+   "n_half_effect": 24,
+   "power_at_n_full_effect": 0.9960462525425491,
+   "power_at_n_half_effect": 0.46536381849700253,
+   "power_diff_at_n_full_effect": 0.9990943937996569,
+   "sd_pair_difference": 0.08345689082126133,
+   "sd_per_replica": 0.09062113619835446,
+   "se_five_replicas": 0.040527004147557485
+  }
+ },
+ "power": 0.8,
+ "regions_per_run": 5,
+ "replicas": 15,
+ "replicas_needed": 14,
+ "retained_collect_sha256": "79eaf03b9c5f0af8dda754b780b7a3d497f55fc548a087a089c0213d5fc0f6e8",
+ "runs_at_regions_per_run": 3,
+ "schema": "orientation-bit-power-v1",
+ "source": "nhat-bias/result_spectral.json and the retained collect.json, run ibm_fez kernel map, character 16",
+ "tests_in_family": 14
+}
