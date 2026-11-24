@@ -2,6 +2,7 @@
 
     "$PYTHON" scripts/qi_replicated_series_fake.py submit RUN_DIR [--backend-type-id N] [--approval TEXT]
     "$PYTHON" scripts/qi_replicated_series_fake.py collect RUN_DIR [--poll S] [--timeout S]
+    "$PYTHON" scripts/qi_replicated_series_fake.py status RUN_DIR
 
 qi_replicated_series_run.sh --dry-run drives these two commands where a real series drives qi_platform_leased.py
 submit and qi_platform.py collect, so the control flow (copy, submit, collect, binding check, stage gate, restart)
@@ -12,7 +13,9 @@ of a replicate are chosen so that its raw residual F_R2 - B_R1 + F_R1 - D_R2 equ
 effect), the alternating pattern +-a * sigma whose first twelve values have sample standard deviation sigma.
 
 Environment: FAKE_LOG (file that receives one line per call), FAKE_SIGMA, FAKE_EFFECT, FAKE_FAIL_REP (submit exits
-1 for that replicate), FAKE_COLLECT_FAIL_REP (collect exits 1 for that replicate), FAKE_BAD_READOUT_REP (that
+1 for that replicate), FAKE_COLLECT_FAIL_REP (collect exits 1 for that replicate),
+FAKE_JOBS_FAIL_REP (status reads every job of that replicate as failed and writes provider-failure.json; status is
+not logged to FAKE_LOG), FAKE_BAD_READOUT_REP (that
 replicate's readout circuit reads 0.5), FAKE_REFUSE (the first N submits answer a pause refusal),
 FAKE_SKEW_REP, FAKE_SKEW_FILE and FAKE_SKEW_SECONDS (collecting that replicate writes the seconds to the file, which a
 test's clock shim adds to the time the runner reads). No call reaches a network or reads a credential.
@@ -38,6 +41,9 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+sys.path.insert(0, str(ROOT / "scripts"))
+import qi_platform_job_status  # noqa: E402
+
 from qi_matched_response import SELECTORS  # noqa: E402
 from qi_replicated_response import READOUT_ONE, READOUT_ZERO, WITNESS_A, WITNESS_B  # noqa: E402
 
@@ -169,6 +175,8 @@ def main() -> int:
     p.add_argument("run", type=Path)
     p.add_argument("--poll", type=float, default=0)
     p.add_argument("--timeout", type=float, default=0)
+    p = sub.add_parser("status")
+    p.add_argument("run", type=Path)
     args = parser.parse_args()
     match = RUN_NAME.search(args.run.name)
     if match is None:
@@ -189,6 +197,14 @@ def main() -> int:
         submit_run(args.run, args.approval, index)
         print(f"batch {BATCH_BASE + index}")
         return 0
+    if args.command == "status":
+        failing = env.get("FAKE_JOBS_FAIL_REP") == name
+        message = "Quantum backend error: OSError [Errno 28] No space left on device"
+
+        def read_job(job: int) -> dict[str, Any]:
+            return {"id": job, "status": "failed" if failing else "completed", "message": message if failing else ""}
+
+        return qi_platform_job_status.report(args.run, read_job)
     _log(f"collect {name}")
     if env.get("FAKE_COLLECT_FAIL_REP") == name:
         raise SystemExit("collection timed out")

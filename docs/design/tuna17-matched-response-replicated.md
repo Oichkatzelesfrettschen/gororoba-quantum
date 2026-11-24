@@ -188,9 +188,18 @@ a replicate runs within one pause ladder step (120 s, `QI_HARDWARE_PAUSE_SECONDS
   `rep-12` to `rep-(N-1)` and calls `--final`, which cross-checks the decision record and writes the analysis.
   `--final` refuses a series whose decision is `continue` and writes nothing; `undecided_at_cap` after exactly 12
   replicates is terminal.
+- Provider failure. After each submit and before collection the runner reads `GET /jobs/ID` for the replicate's jobs
+  (`scripts/qi_platform_job_status.py status`, which sends GETs only). A job that reads `failed` writes
+  `provider-failure.json` in the run directory (the job records and the first message, whitespace collapsed and cut
+  to 300 characters) and ends the series with the marker `failed REP: provider jobs failed: MESSAGE`, without a
+  collect. The read of `GET /jobs/ID/logs`, which `qi_platform.py collect` makes for a failed job, can outlast the
+  client's 60 s timeout on every call, so a collection that reached it would stop with "collection failed" and a
+  restart would repeat it against a batch that cannot complete. `qi_platform.py` keeps its bytes (retained records
+  pin its digest), so the status read is a separate script and collect is unchanged.
 - Restart. A second call with the same `--stamp` skips a replicate whose run directory holds `results.json`,
   collects one that holds `submission.json` without a second submit, and stops on a `submission-state.json` without
-  a receipt (only `qi_platform.py reconcile` knows whether the batch reached the service). The runner writes
+  a receipt (only `qi_platform.py reconcile` knows whether the batch reached the service), and on a
+  `provider-failure.json` stops with the marker of that file and neither collects nor submits again. The runner writes
   `series.log`, a terminal `marker` (`done`, `done undecided-at-cap` when the stage-1 gate stops at the cap and no
   stage-2 replicate is submitted, or `failed REASON`) and `RESUME.md` with each state claim beside its check command.
   A deadline that expires in stage 2 leaves a `failed` marker that counts the collected replicates against the
@@ -205,7 +214,8 @@ a replicate runs within one pause ladder step (120 s, `QI_HARDWARE_PAUSE_SECONDS
   provider call. The marks guard against accidents: a hand-edited directory can lose them.
 - Control flow without a provider: `--dry-run` drives `scripts/qi_replicated_series_fake.py`, which writes run
   directories of the retained shape from exact shot counts, and `tests/scripts/test_qi_replicated_series.py` checks
-  that a failed binding of `rep-00` stops the series, that a restart skips collected replicates, and that the stage
+  that a failed binding of `rep-00` stops the series, that a replicate whose jobs read `failed` stops it with zero
+  collect calls and a restart stops the same way, that a restart skips collected replicates, and that the stage
   gate takes N from the rule.
 
 ## Machine-checked algebra
