@@ -1,0 +1,42 @@
+RESULT W8-nm-p32009 K generators 144 dim 6 degree 50 numerator 1+18*T+27*T^2+4*T^3
+RESULT W8-nm-p32009 minimal_primes {{6, 20, 9}, {6, 30, 4}}
+RESULT W8-nm-p32009 radical_equal true
+RESULT W8-nm-p32009 control dim 5 degree 100 differs true
+RESULT W8-nm-p32009 primary_components {{6, 20, 6, 20}, {6, 30, 6, 30}} intersect_equal true
+DONE W8-nm-p32009
+RESULT qi-g17-563973c450c0 K generators 68 dim 5 degree 23 numerator 1+12*T+10*T^2
+RESULT qi-g17-563973c450c0 minimal_primes {{5, 23, 0}}
+RESULT qi-g17-563973c450c0 radical_equal true
+RESULT qi-g17-563973c450c0 control dim 4 degree 46 differs true
+RESULT qi-g17-563973c450c0 primary_components {{5, 23, 5, 23}} intersect_equal true
+DONE qi-g17-563973c450c0
+RESULT qi-g17-d3d123ecabde K generators 68 dim 5 degree 23 numerator 1+12*T+10*T^2
+RESULT qi-g17-d3d123ecabde minimal_primes {{5, 23, 0}}
+RESULT qi-g17-d3d123ecabde radical_equal true
+RESULT qi-g17-d3d123ecabde control dim 4 degree 46 differs true
+RESULT qi-g17-d3d123ecabde primary_components {{5, 23, 5, 23}} intersect_equal true
+DONE qi-g17-d3d123ecabde
+RESULT qi-g21-14293914377d K generators 148 dim 5 degree 11 numerator 1+16*T-12*T^2+10*T^3-5*T^4+T^5
+RESULT qi-g21-14293914377d minimal_primes {{4, 4, 14}, {5, 11, 9}}
+RESULT qi-g21-14293914377d radical_equal false
+RESULT qi-g21-14293914377d control dim 4 degree 28 differs true
+RESULT qi-g21-14293914377d primary_components {{4, 4, 4, 2}, {4, 4, 4, 4}, {5, 11, 5, 11}} intersect_equal true
+DONE qi-g21-14293914377d
+RESULT qi-g21-f84111039824 K generators 148 dim 5 degree 11 numerator 1+16*T-12*T^2+10*T^3-5*T^4+T^5
+RESULT qi-g21-f84111039824 minimal_primes {{4, 4, 14}, {5, 11, 9}}
+RESULT qi-g21-f84111039824 radical_equal false
+RESULT qi-g21-f84111039824 control dim 4 degree 28 differs true
+RESULT qi-g21-f84111039824 primary_components {{4, 4, 4, 2}, {4, 4, 4, 4}, {5, 11, 5, 11}} intersect_equal true
+DONE qi-g21-f84111039824
+RESULT qi-g24-2774e7babc00 K generators 144 dim 6 degree 50 numerator 1+18*T+27*T^2+4*T^3
+RESULT qi-g24-2774e7babc00 minimal_primes {{6, 20, 9}, {6, 30, 4}}
+RESULT qi-g24-2774e7babc00 radical_equal true
+RESULT qi-g24-2774e7babc00 control dim 6 degree 20 differs true
+RESULT qi-g24-2774e7babc00 primary_components {{6, 20, 6, 20}, {6, 30, 6, 30}} intersect_equal true
+DONE qi-g24-2774e7babc00
+RESULT qi-g24-cd34b93859b3 K generators 144 dim 6 degree 50 numerator 1+18*T+27*T^2+4*T^3
+RESULT qi-g24-cd34b93859b3 minimal_primes {{6, 20, 9}, {6, 30, 4}}
+RESULT qi-g24-cd34b93859b3 radical_equal true
+RESULT qi-g24-cd34b93859b3 control dim 6 degree 20 differs true
+RESULT qi-g24-cd34b93859b3 primary_components {{6, 20, 6, 20}, {6, 30, 6, 30}} intersect_equal true
+DONE qi-g24-cd34b93859b3

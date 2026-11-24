@@ -1,0 +1,6 @@
+RESULT qi-g24-2774e7babc00 K generators 144 dim 6 degree 50 numerator 1+18*T+27*T^2+4*T^3
+RESULT qi-g24-2774e7babc00 minimal_primes {{6, 20, 9}, {6, 30, 4}}
+RESULT qi-g24-2774e7babc00 radical_equal true
+RESULT qi-g24-2774e7babc00 control dim 6 degree 20 differs true
+RESULT qi-g24-2774e7babc00 primary_components {{6, 20, 6, 20}, {6, 30, 6, 30}} intersect_equal true
+DONE qi-g24-2774e7babc00
