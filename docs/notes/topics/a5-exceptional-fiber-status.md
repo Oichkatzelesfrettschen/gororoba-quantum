@@ -121,7 +121,7 @@ certificates that the kernel checks.
 |---|---|---|---|
 | 1 | the conjugation map Phi as a ring automorphism of Z[i][s1..s9] with its three matrix identities, and det B in closed form | Rocq | A5-591, A5-592 |
 | 2 | the Pfaffian identity Pf_4(det(B) D + X^T adj(B) X) = Pf(B)^3 Pf_10(T) for a skew matrix with a 6 x 6 block B, over a commutative ring | Lean | A5-593 in general |
-| 3 | the left-inverse rank certificate extended from Z[i] to its fraction field, then arc-rank files for E8-bar and Iso | Rocq | the prose step of `A5W8ArcMatrixRanks.v`; A5-457, A5-475 |
+| 3 | the left-inverse rank certificate extended from Z[i] to its fraction field (the W8 arc ranks); for E8-bar and Iso no arc matrices enter: A5-457 and A5-475 rest on the rank of the Jacobian matrix of an initial-form map V at a rational point (a nonzero maximal minor with its inverse), the vanishing of each prime's generators on V, and the order inequalities of the weight vector | Rocq | the prose step of `A5W8ArcMatrixRanks.v` (A5-448); A5-457, A5-475 |
 | 4 | a checker of sparse polynomial cofactor identities q(G) = sum a_k J_k + sum b_ij s_i P_j | Rocq | K inside L (A5-474) from exported cofactors |
 | 5 | a checker that a linear substitution carries one finite set of quadrics into the span of another, with the inverse | Rocq | A5-583 from `bridge-CELL.json` |
 | 6 | the splitting ker C_z = C z + ker A(z, conj z) | Lean | the mechanism of A5-411 and A5-412 |

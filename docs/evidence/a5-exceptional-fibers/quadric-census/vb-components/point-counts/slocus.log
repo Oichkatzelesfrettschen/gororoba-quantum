@@ -1,0 +1,7 @@
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+RESULT P1 singular locus dim (affine cone) 1 mult 6
+RESULT P2 singular locus dim (affine cone) 0 mult 30
+RESULT P1 dim 4 deg 3
+RESULT P2 dim 4 deg 4
