@@ -2860,6 +2860,11 @@
    "record": "docs/evidence/anu_qrng/draw-2026-11-19T164733Z.json",
    "path": "docs/notes/qrng/external-consumers.md",
    "reason": "the six analysis seeds of an external benchmark registration, two values each (indices 0 to 11), mapped as the cited file states"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-24T022126Z.json",
+   "path": "docs/evidence/pathion-kernel-map/orientation-bit/compile_case.py",
+   "reason": "transpiler seeds of the offline routed-cost and noise prediction of the orientation-bit case: indices 0 to 2 by command line, the rest unused"
   }
  ]
 }

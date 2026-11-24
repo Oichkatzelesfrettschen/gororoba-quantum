@@ -1,0 +1,351 @@
+{
+ "alpha_family": 0.05,
+ "alpha_per_test": 0.003125,
+ "jobs": 2,
+ "leak_sd": 0.017,
+ "operands": {
+  "e1pe18": {
+   "effect": 0.103452595541,
+   "floor_band_mean": {
+    "lower": -0.013670950237089929,
+    "upper": 0.025640873572787614
+   },
+   "pair_correlation": 0.13707302020679654,
+   "retained_flip_d": 0.022233914465819352,
+   "retained_keep_s": 0.08121868107518873,
+   "retained_twin_gap": 0.05898476660936939,
+   "sd_flip_d": 0.04090054348480587,
+   "sd_keep_s": 0.044515096883880036,
+   "sd_pair_difference": 0.08180108696961173,
+   "sd_per_replica": 0.08082241290145897,
+   "sd_twin_gap": 0.027868157252522747,
+   "se_five_replicas": 0.03614488187064365,
+   "statistics": {
+    "ctrl_g16": {
+     "effect": 0.103452595541,
+     "regions_rho0": {
+      "minimum_detectable_effect": 0.067,
+      "power_full_effect": 0.9980212843844022,
+      "power_half_effect": 0.5043508041225451
+     },
+     "regions_rho1": {
+      "minimum_detectable_effect": 0.095,
+      "power_full_effect": 0.8869658474967785,
+      "power_half_effect": 0.19842208914378306
+     },
+     "replicas_independent": {
+      "minimum_detectable_effect": 0.061,
+      "power_full_effect": 0.9997682492252549,
+      "power_half_effect": 0.6127546016238947
+     },
+     "sd_per_replica": 0.08082241290145897
+    },
+    "diff_cm": {
+     "effect": 0.07781172196821239,
+     "regions_rho0": {
+      "minimum_detectable_effect": 0.068,
+      "power_full_effect": 0.9218654901100699,
+      "power_half_effect": 0.22928444612178853
+     },
+     "regions_rho1": {
+      "minimum_detectable_effect": 0.096,
+      "power_full_effect": 0.5633228535567957,
+      "power_half_effect": 0.08322172451143772
+     },
+     "replicas_independent": {
+      "minimum_detectable_effect": 0.062,
+      "power_full_effect": 0.9680602990852276,
+      "power_half_effect": 0.2934010269973733
+     },
+     "sd_per_replica": 0.08180108696961173
+    },
+    "flip_d": {
+     "effect": 0.022233914465819352,
+     "regions_rho0": {
+      "minimum_detectable_effect": 0.034,
+      "power_full_effect": 0.3338443077215485,
+      "power_half_effect": 0.046206671373161604
+     },
+     "regions_rho1": {
+      "minimum_detectable_effect": 0.048,
+      "power_full_effect": 0.12273367971370575,
+      "power_half_effect": 0.020062871751697964
+     },
+     "replicas_independent": {
+      "minimum_detectable_effect": 0.031,
+      "power_full_effect": 0.42075871983473173,
+      "power_half_effect": 0.05762924665216913
+     },
+     "sd_per_replica": 0.04090054348480587
+    },
+    "keep_s": {
+     "effect": 0.08121868107518873,
+     "regions_rho0": {
+      "minimum_detectable_effect": 0.037,
+      "power_full_effect": 0.9999999292358677,
+      "power_half_effect": 0.8930202833057855
+     },
+     "regions_rho1": {
+      "minimum_detectable_effect": 0.052,
+      "power_full_effect": 0.9982849622528951,
+      "power_half_effect": 0.5135539526283168
+     },
+     "replicas_independent": {
+      "minimum_detectable_effect": 0.034,
+      "power_full_effect": 0.9999999997438704,
+      "power_half_effect": 0.9512621135693262
+     },
+     "sd_per_replica": 0.044515096883880036
+    },
+    "move_g2": {
+     "effect": 0.103452595541,
+     "regions_rho0": {
+      "minimum_detectable_effect": 0.067,
+      "power_full_effect": 0.9980212843844022,
+      "power_half_effect": 0.5043508041225451
+     },
+     "regions_rho1": {
+      "minimum_detectable_effect": 0.095,
+      "power_full_effect": 0.8869658474967785,
+      "power_half_effect": 0.19842208914378306
+     },
+     "replicas_independent": {
+      "minimum_detectable_effect": 0.061,
+      "power_full_effect": 0.9997682492252549,
+      "power_half_effect": 0.6127546016238947
+     },
+     "sd_per_replica": 0.08082241290145897
+    },
+    "move_leak16": {
+     "effect": null,
+     "regions_rho0": {
+      "minimum_detectable_effect": 0.014
+     },
+     "regions_rho1": {
+      "minimum_detectable_effect": 0.02
+     },
+     "replicas_independent": {
+      "minimum_detectable_effect": 0.013
+     },
+     "sd_per_replica": 0.017
+    },
+    "swap_g16": {
+     "effect": 0.103452595541,
+     "regions_rho0": {
+      "minimum_detectable_effect": 0.067,
+      "power_full_effect": 0.9980212843844022,
+      "power_half_effect": 0.5043508041225451
+     },
+     "regions_rho1": {
+      "minimum_detectable_effect": 0.095,
+      "power_full_effect": 0.8869658474967785,
+      "power_half_effect": 0.19842208914378306
+     },
+     "replicas_independent": {
+      "minimum_detectable_effect": 0.061,
+      "power_full_effect": 0.9997682492252549,
+      "power_half_effect": 0.6127546016238947
+     },
+     "sd_per_replica": 0.08082241290145897
+    },
+    "xtwin_g16": {
+     "effect": 0.05898476660936939,
+     "regions_rho0": {
+      "minimum_detectable_effect": 0.023,
+      "power_full_effect": 0.9999999999644211,
+      "power_half_effect": 0.9710694778952214
+     },
+     "regions_rho1": {
+      "minimum_detectable_effect": 0.033,
+      "power_full_effect": 0.9999372068479836,
+      "power_half_effect": 0.6925214296207945
+     },
+     "replicas_independent": {
+      "minimum_detectable_effect": 0.021,
+      "power_full_effect": 0.9999999999989893,
+      "power_half_effect": 0.9915846024859226
+     },
+     "sd_per_replica": 0.027868157252522747
+    }
+   }
+  },
+  "e1pe26": {
+   "effect": -0.155492605959,
+   "floor_band_mean": {
+    "lower": 0.0,
+    "upper": 0.053837142199057816
+   },
+   "pair_correlation": 0.489586636775854,
+   "retained_flip_d": -0.04462172781113573,
+   "retained_keep_s": -0.11087087814770216,
+   "retained_twin_gap": -0.06624915033656642,
+   "sd_flip_d": 0.041728445410630664,
+   "sd_keep_s": 0.07000881697582899,
+   "sd_pair_difference": 0.08345689082126133,
+   "sd_per_replica": 0.09062113619835446,
+   "sd_twin_gap": 0.0712236259651301,
+   "se_five_replicas": 0.040527004147557485,
+   "statistics": {
+    "ctrl_g16": {
+     "effect": 0.155492605959,
+     "regions_rho0": {
+      "minimum_detectable_effect": 0.075,
+      "power_full_effect": 0.9999991731990561,
+      "power_half_effect": 0.8409200819171936
+     },
+     "regions_rho1": {
+      "minimum_detectable_effect": 0.106,
+      "power_full_effect": 0.9951486131408694,
+      "power_half_effect": 0.44386610614699995
+     },
+     "replicas_independent": {
+      "minimum_detectable_effect": 0.068,
+      "power_full_effect": 0.9999999930853838,
+      "power_half_effect": 0.9168302182473598
+     },
+     "sd_per_replica": 0.09062113619835446
+    },
+    "diff_cm": {
+     "effect": 0.10165546375994218,
+     "regions_rho0": {
+      "minimum_detectable_effect": 0.069,
+      "power_full_effect": 0.995438085871734,
+      "power_half_effect": 0.4481661939294358
+     },
+     "regions_rho1": {
+      "minimum_detectable_effect": 0.098,
+      "power_full_effect": 0.8445742030051371,
+      "power_half_effect": 0.17154346008227953
+     },
+     "replicas_independent": {
+      "minimum_detectable_effect": 0.063,
+      "power_full_effect": 0.9992912206945099,
+      "power_half_effect": 0.5518262978324411
+     },
+     "sd_per_replica": 0.08345689082126133
+    },
+    "flip_d": {
+     "effect": 0.04462172781113573,
+     "regions_rho0": {
+      "minimum_detectable_effect": 0.035,
+      "power_full_effect": 0.9741771162826998,
+      "power_half_effect": 0.31908056658057793
+     },
+     "regions_rho1": {
+      "minimum_detectable_effect": 0.049,
+      "power_full_effect": 0.7048544598167596,
+      "power_half_effect": 0.11689962918329547
+     },
+     "replicas_independent": {
+      "minimum_detectable_effect": 0.032,
+      "power_full_effect": 0.9927739667092492,
+      "power_half_effect": 0.4031860452646419
+     },
+     "sd_per_replica": 0.041728445410630664
+    },
+    "keep_s": {
+     "effect": 0.11087087814770216,
+     "regions_rho0": {
+      "minimum_detectable_effect": 0.058,
+      "power_full_effect": 0.9999875511535505,
+      "power_half_effect": 0.7580208715512036
+     },
+     "regions_rho1": {
+      "minimum_detectable_effect": 0.082,
+      "power_full_effect": 0.9850367120867761,
+      "power_half_effect": 0.36140365297743937
+     },
+     "replicas_independent": {
+      "minimum_detectable_effect": 0.053,
+      "power_full_effect": 0.9999997379038985,
+      "power_half_effect": 0.8534928779243964
+     },
+     "sd_per_replica": 0.07000881697582899
+    },
+    "move_g2": {
+     "effect": 0.155492605959,
+     "regions_rho0": {
+      "minimum_detectable_effect": 0.075,
+      "power_full_effect": 0.9999991731990561,
+      "power_half_effect": 0.8409200819171936
+     },
+     "regions_rho1": {
+      "minimum_detectable_effect": 0.106,
+      "power_full_effect": 0.9951486131408694,
+      "power_half_effect": 0.44386610614699995
+     },
+     "replicas_independent": {
+      "minimum_detectable_effect": 0.068,
+      "power_full_effect": 0.9999999930853838,
+      "power_half_effect": 0.9168302182473598
+     },
+     "sd_per_replica": 0.09062113619835446
+    },
+    "move_leak16": {
+     "effect": null,
+     "regions_rho0": {
+      "minimum_detectable_effect": 0.014
+     },
+     "regions_rho1": {
+      "minimum_detectable_effect": 0.02
+     },
+     "replicas_independent": {
+      "minimum_detectable_effect": 0.013
+     },
+     "sd_per_replica": 0.017
+    },
+    "swap_g16": {
+     "effect": 0.155492605959,
+     "regions_rho0": {
+      "minimum_detectable_effect": 0.075,
+      "power_full_effect": 0.9999991731990561,
+      "power_half_effect": 0.8409200819171936
+     },
+     "regions_rho1": {
+      "minimum_detectable_effect": 0.106,
+      "power_full_effect": 0.9951486131408694,
+      "power_half_effect": 0.44386610614699995
+     },
+     "replicas_independent": {
+      "minimum_detectable_effect": 0.068,
+      "power_full_effect": 0.9999999930853838,
+      "power_half_effect": 0.9168302182473598
+     },
+     "sd_per_replica": 0.09062113619835446
+    },
+    "xtwin_g16": {
+     "effect": 0.06624915033656642,
+     "regions_rho0": {
+      "minimum_detectable_effect": 0.059,
+      "power_full_effect": 0.9071072132386298,
+      "power_half_effect": 0.21486939662069407
+     },
+     "regions_rho1": {
+      "minimum_detectable_effect": 0.083,
+      "power_full_effect": 0.5364921619615053,
+      "power_half_effect": 0.0780631464915907
+     },
+     "replicas_independent": {
+      "minimum_detectable_effect": 0.054,
+      "power_full_effect": 0.9596942942712419,
+      "power_half_effect": 0.2753406384944401
+     },
+     "sd_per_replica": 0.0712236259651301
+    }
+   }
+  }
+ },
+ "planned_regions": 15,
+ "power": 0.8,
+ "regions_needed_if_replicas_of_a_region_are_identical": 14,
+ "regions_per_run": 5,
+ "replicas": 30,
+ "retained_collect_sha256": "79eaf03b9c5f0af8dda754b780b7a3d497f55fc548a087a089c0213d5fc0f6e8",
+ "rhos": [
+  0.0,
+  1.0
+ ],
+ "schema": "orientation-bit-power-v3",
+ "source": "nhat-bias/result_spectral.json and the retained collect.json, run ibm_fez kernel map, character 16",
+ "tests_in_family": 16
+}
