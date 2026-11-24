@@ -1,0 +1,60 @@
+LIB "primdec.lib"; LIB "sing.lib"; LIB "homolog.lib";
+option(redSB);
+ring R=32029,(y(1..10)),dp;
+ideal K2=
+2*y(10)*y(5)+32028*y(6)*y(9)+1*y(4)*y(9),
+1*y(10)*y(5)+32028*y(6)*y(9)+1*y(7)*y(8),
+32028*y(10)*y(2)+32028*y(3)*y(9)+1*y(6)*y(8),
+32028*y(2)*y(9)+1*y(5)*y(8),
+1*y(10)*y(2)+32028*y(3)*y(9)+1*y(4)*y(8),
+19401*y(7)*y(9)+1*y(5)*y(7),
+25256*y(10)*y(7)+32028*y(6)*y(7)+1*y(4)*y(7),
+12628*y(10)*y(5)+19401*y(6)*y(9)+1*y(2)*y(7),
+6007*y(10)*y(7)+1*y(1)*y(7),
+19401*y(10)*y(6)+19401*y(10)*y(4)+32028*y(1)*y(10)+32028*y(3)*y(7)+1*y(6)^2,
+12628*y(10)*y(5)+19401*y(6)*y(9)+32028*y(1)*y(9)+1*y(5)*y(6),
+1*y(1)*y(10)+32028*y(3)*y(7)+1*y(4)*y(6),
+19401*y(3)*y(9)+32028*y(1)*y(8)+1*y(2)*y(6),
+12628*y(10)*y(5)+19401*y(6)*y(9)+1*y(1)*y(9)+1*y(4)*y(5),
+19401*y(3)*y(9)+1*y(3)*y(5),
+12628*y(10)*y(6)+12628*y(10)*y(4)+32028*y(1)*y(10)+32028*y(3)*y(7)+1*y(4)^2,
+25256*y(10)*y(3)+32028*y(3)*y(6)+1*y(3)*y(4),
+19401*y(3)*y(9)+1*y(1)*y(8)+1*y(2)*y(4),
+6007*y(10)*y(6)+6007*y(10)*y(4)+1*y(1)*y(6)+1*y(1)*y(4),
+19401*y(3)*y(8)+1*y(2)*y(3),
+6007*y(10)*y(3)+1*y(1)*y(3);
+ideal S=std(K2);
+"K2 dim mult:"; dim(S); mult(S);
+resolution rK=mres(K2,0); "K2 betti:"; print(betti(rK),"betti");
+"K2 radical equal:"; size(reduce(radical(K2),S));
+list P=minAssGTZ(K2);
+"ncomp:"; size(P);
+int i; int j;
+for(i=1;i<=size(P);i++){
+  ideal Pi=std(P[i]);
+  "comp", i, "dim", dim(Pi), "mult", mult(Pi);
+  ideal mb=minbase(P[i]);
+  int nl=0; int nq=0; int nc=0;
+  for(j=1;j<=size(mb);j++){ if(deg(mb[j])==1){nl++;} if(deg(mb[j])==2){nq++;} if(deg(mb[j])>2){nc++;} }
+  "  linear", nl, "quadric", nq, "higher", nc;
+  resolution rP=mres(P[i],0); print(betti(rP),"betti");
+  ideal SL=std(slocus(P[i]));
+  "  slocus dim (affine)", dim(SL), "mult", mult(SL);
+  if(dim(SL)>0){ "  slocus minbase:"; minbase(radical(SL)); }
+  kill Pi,mb,nl,nq,nc,rP,SL;
+}
+ideal X=P[1]+P[2]; ideal Xs=std(radical(X));
+"intersection dim", dim(Xs), "mult", mult(Xs); "intersection gens:"; minbase(Xs);
+ideal LIN;
+for(i=1;i<=2;i++){ ideal mb2=minbase(P[i]); for(j=1;j<=size(mb2);j++){ if(deg(mb2[j])==1){LIN=LIN+mb2[j];} } kill mb2; }
+ideal LS=std(LIN); "span-intersection dim", dim(LS);
+"linearly joined (radical(P1+P2) == lin spans):", size(reduce(Xs,LS))==0 && size(reduce(LS,Xs))==0;
+
+// vertex of the degree-3 component and the Jacobian rank of its prime there and at the generic point
+int c3; for(i=1;i<=2;i++){ if(mult(std(P[i]))==3){c3=i;} }
+ideal V=radical(std(slocus(P[c3])));
+matrix Jc=jacob(minbase(P[c3]));
+ideal vsub=V,y(10)-1; ideal vs=std(vsub);
+"vertex point:"; vs;
+matrix Jv=reduce(Jc,vs); "jacobian rank at vertex", rank(Jv);
+quit;
