@@ -9,7 +9,8 @@ binding dry run (scripts/approved_run.sh --check).
 Routed cost. Each member circuit is transpiled to the basis cz, rz, sx, x at optimization level 3 (live_run.OPT_LEVEL)
 onto each of the best-ESP six-qubit tiles of HeronLattice.find_disjoint_tiles, for each transpiler seed; the CZ count
 per (member, tile, seed) is the routed cost, compared with the retained 136 to 173 of the kernel map and between each
-moved circuit and its control (a departure above 20 percent rejects the moved bit).
+moved or swapped circuit and its control (a departure above 20 percent rejects the moved bit). Every member of a tile
+and seed routes on the layout of the first operand's control, as the live run routes a whole group on one layout.
 
 Noise prediction. The same routed circuits run exactly (density matrix, no sampling) under a depolarizing model from the
 snapshot: each cz carries its coupler error, each sx and x its qubit error, and each measured qubit a symmetric
@@ -92,14 +93,28 @@ def variants() -> dict[str, QuantumCircuit]:
     return out
 
 
-def route(circuit: QuantumCircuit, lattice: HeronLattice, tile: DisjointTile, seed: int) -> QuantumCircuit:
+def route(
+    circuit: QuantumCircuit, lattice: HeronLattice, tile: DisjointTile, seed: int, layout: list[int] | None = None
+) -> QuantumCircuit:
     return transpile(
         circuit,
         coupling_map=lattice.tile_coupling_map(tile),
         basis_gates=list(HERON_BASIS),
         optimization_level=OPT_LEVEL,
         seed_transpiler=seed,
+        initial_layout=layout,
     )
+
+
+def reference_layout(lattice: HeronLattice, tile: DisjointTile, seed: int) -> list[int]:
+    """Placement of the control of the first operand on one tile. The live run routes every member of a group on one
+    layout, so each member of the model is routed on this one: the swap member then puts data bit 4 on the physical
+    qubit that carries data bit 1 in the other members."""
+    first = pko.role_template("ctrl", pko.OPERANDS[0]).assign_parameters({pkm.ORIENTATION: 0.0})
+    routed = route(first, lattice, tile, seed)
+    if routed.layout is None:
+        raise ValueError("the routed control carries no layout")
+    return [int(q) for q in routed.layout.initial_index_layout(filter_ancillas=True)]
 
 
 @functools.cache
@@ -127,8 +142,11 @@ def cz_counts(item: tuple[int, int]) -> dict[str, int]:
     """CZ count of every routed template on one (tile index, transpiler seed) pair."""
     tile_index, seed = item
     lattice, tile = snapshot_lattice(), snapshot_tiles()[tile_index]
+    layout = reference_layout(lattice, tile, seed)
     return {
-        name: route(template.assign_parameters({pkm.ORIENTATION: 0.0}), lattice, tile, seed).count_ops().get("cz", 0)
+        name: route(template.assign_parameters({pkm.ORIENTATION: 0.0}), lattice, tile, seed, layout)
+        .count_ops()
+        .get("cz", 0)
         for name, template in routed_templates().items()
     }
 
@@ -199,14 +217,16 @@ def noise_laws(circuit: QuantumCircuit, lattice: HeronLattice, tile: DisjointTil
 
 
 def routed_members(lattice: HeronLattice, tile: DisjointTile, seed: int) -> dict[str, QuantumCircuit]:
-    """Every member of the group routed once per template onto one tile and bound to its arm's phase."""
+    """Every member of the group routed once per template onto one tile, on the layout of reference_layout, and bound
+    to its arm's phase."""
     group = pko.pathion_kernel_map_orientation_group()
+    layout = reference_layout(lattice, tile, seed)
     routed: dict[str, QuantumCircuit] = {}
     bound: dict[str, QuantumCircuit] = {}
     for member in group.members:
         template_name = member.name.rsplit("_", 1)[0]
         if template_name not in routed:
-            routed[template_name] = route(member.circuit, lattice, tile, seed)
+            routed[template_name] = route(member.circuit, lattice, tile, seed, layout)
         bound[member.name] = routed[template_name].assign_parameters(member.binding)
     return bound
 
