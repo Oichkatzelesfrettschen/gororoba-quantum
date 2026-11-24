@@ -25,6 +25,11 @@
 # hardware pause is retried after the reported remainder plus one second, at most ten refusals per replicate, so the
 # gap between batches is the pause ladder step (120 s) and nothing longer.
 #
+# Provider failure. After each submit and before collection, the runner reads GET /jobs/ID for the replicate's jobs
+# (qi_platform_job_status.py status). A job that reads failed writes RUN/provider-failure.json (the job records and the
+# first message) and ends the series with the marker "failed REP: provider jobs failed: MESSAGE", without a collect;
+# a restart on that directory stops with the same marker and neither collects nor submits again.
+#
 # Restart. A second call with the same --stamp resumes: a run directory that holds results.json is checked again and
 # left alone; one that holds submission.json and no results.json is collected without a submit; one that holds
 # submission-state.json and no submission.json stops the series (only qi_platform.py reconcile can tell whether the
@@ -154,11 +159,13 @@ if [ -n "$dry" ]; then
 	qipy=$py
 	submit_script=$root/scripts/qi_replicated_series_fake.py
 	collect_script=$submit_script
+	status_script=$submit_script
 else
 	: "${QI_PYTHON:?QI_PYTHON must name the Quantum Inspire interpreter}"
 	qipy=$QI_PYTHON
 	submit_script=$root/scripts/qi_platform_leased.py
 	collect_script=$root/scripts/qi_platform.py
+	status_script=$root/scripts/qi_platform_job_status.py
 fi
 GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 export GLIBC_TUNABLES
@@ -220,8 +227,8 @@ State claims, each with its check:
 - Final analysis: cat $state/final.json
 - Series log: tail $state/series.log
 
-Failure modes: a refused pause (retried up to ten times), a failed or timed-out collection (rerun collects without a
-second submit), a binding or readout failure (series stops; the run directory stays as evidence), the deadline.
+Failure modes: a refused pause (retried up to ten times), a failed provider job (provider-failure.json; the series stops
+and a restart stops with the same marker), a failed or timed-out collection (rerun collects without a second submit), a binding or readout failure (series stops; the run directory stays as evidence), the deadline.
 Done means: marker reads done and final.json exists.
 EOF
 }
@@ -316,6 +323,12 @@ check_binding() {
 	log "$(basename "$1"): binding and readout checks passed"
 }
 
+provider_failed() {
+	# provider_failed REP RUN: stop on the failure record of a replicate's jobs, without a collect or a second submit
+	failure_message=$("$py" -I -c 'import json,sys; print(json.load(open(sys.argv[1]))["message"][:300])' "$2/provider-failure.json") || fail "$1: $2/provider-failure.json is unreadable"
+	fail "$1: provider jobs failed: $failure_message"
+}
+
 do_replicate() {
 	i=$1
 	run=$(run_of "$i")
@@ -331,6 +344,9 @@ do_replicate() {
 	fi
 	if [ -e "$run/submission-state.json" ] && [ ! -e "$run/submission.json" ]; then
 		fail "$rep: $run holds a submit checkpoint and no receipt; run qi_platform.py reconcile on it"
+	fi
+	if [ -e "$run/provider-failure.json" ]; then
+		provider_failed "$rep" "$run"
 	fi
 	[ -e "$run" ] || cp -R "$proposal/$rep" "$run"
 	refused=0
@@ -353,6 +369,17 @@ do_replicate() {
 			sleep $((left + 1))
 		fi
 	done
+	# The provider's job status answers in seconds; the logs of a failed job can outlast every read timeout of collect.
+	if status_out=$("$qipy" "$status_script" status "$run" 2>&1); then
+		:
+	else
+		status_rc=$?
+		if [ "$status_rc" -eq 3 ] && [ -e "$run/provider-failure.json" ]; then
+			provider_failed "$rep" "$run"
+		fi
+		printf '%s\n' "$status_out" >&2
+		fail "$rep: the provider job status read failed; a restart reads it again without a second submit"
+	fi
 	timeout=$(remaining)
 	[ "$timeout" -le "$collect_timeout" ] || timeout=$collect_timeout
 	[ "$timeout" -gt 0 ] || fail "$rep: the deadline passed before collection"

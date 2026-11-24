@@ -282,6 +282,57 @@ def test_a_restart_skips_collected_replicates_and_collects_a_submitted_one_witho
     _check(calls.splitlines() == ["collect rep-02", "submit rep-03", "collect rep-03", "submit rep-04"])
 
 
+def test_failed_provider_jobs_stop_the_series_without_a_collect_and_a_restart_stops_the_same_way(
+    tmp_path: Path,
+) -> None:
+    code, calls, _, state = _run(tmp_path, {"FAKE_JOBS_FAIL_REP": "rep-02"})
+    _check(code != 0)
+    _check(
+        calls.splitlines() == ["submit rep-00", "collect rep-00", "submit rep-01", "collect rep-01", "submit rep-02"]
+    )
+    marker = _marker(state)
+    _check(
+        marker
+        == "failed rep-02: provider jobs failed: Quantum backend error: OSError [Errno 28] No space left on device"
+    )
+    run = tmp_path / "runs" / "dry-run" / "T-tuna17-replicated-q11-rep-02"
+    record = json.loads((run / "provider-failure.json").read_text())
+    _check(record["schema"] == "qi-provider-failure-v1" and len(record["jobs"]) == 3)
+    _check(all(job["status"] == "failed" for job in record["jobs"]) and not (run / "results.json").exists())
+    (tmp_path / "calls.log").unlink()
+    code, calls, _, state = _run(tmp_path, {"FAKE_JOBS_FAIL_REP": "rep-02"})
+    _check(code != 0 and calls == "" and _marker(state) == marker)
+    # the same restart without the fake failure still stops: the record on the directory decides
+    code, calls, _, state = _run(tmp_path)
+    _check(code != 0 and calls == "" and _marker(state) == marker)
+
+
+def test_a_restart_on_a_submitted_replicate_reads_the_provider_status_before_collecting(tmp_path: Path) -> None:
+    code, _, _, state = _run(tmp_path, {"FAKE_COLLECT_FAIL_REP": "rep-00"})
+    _check(code != 0 and _marker(state).startswith("failed rep-00: collection failed"))
+    (tmp_path / "calls.log").unlink()
+    code, calls, _, state = _run(tmp_path, {"FAKE_JOBS_FAIL_REP": "rep-00"})
+    _check(code != 0 and calls == "" and _marker(state).startswith("failed rep-00: provider jobs failed: "))
+
+
+def test_the_failure_message_is_one_line_of_at_most_300_characters(tmp_path: Path) -> None:
+    import qi_platform_job_status as status
+
+    run = tmp_path / "run"
+    run.mkdir()
+    (run / "submission.json").write_text(json.dumps({"batch_job": 7, "jobs": [{"job": 1}, {"job": 2}]}))
+    long = "line one\n\n  line   two " + "x" * 400
+    rows = {1: {"id": 1, "status": "completed"}, 2: {"id": 2, "status": "failed", "message": long}}
+    _check(status.report(run, lambda job: rows[job]) == status.EXIT_FAILED)
+    message = json.loads((run / "provider-failure.json").read_text())["message"]
+    _check(len(message) == 300 and message.startswith("line one line two xxx") and "\n" not in message)
+    ok = tmp_path / "ok"
+    ok.mkdir()
+    (ok / "submission.json").write_text(json.dumps({"batch_job": 8, "jobs": [{"job": 1}]}))
+    _check(status.report(ok, lambda job: {"id": job, "status": "running"}) == 0)
+    _check(not (ok / "provider-failure.json").exists())
+
+
 def test_a_checkpoint_without_a_receipt_and_another_stamp_each_stop_the_series(tmp_path: Path) -> None:
     runs = tmp_path / "runs" / "dry-run"
     run = runs / "T-tuna17-replicated-q11-rep-00"
