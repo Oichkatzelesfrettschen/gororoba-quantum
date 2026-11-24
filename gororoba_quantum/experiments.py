@@ -524,6 +524,7 @@ def standalone_campaign_groups() -> list[Group]:
     from maximal_experiments import spectator_wavefront_ramsey_group
     from pathion_coset_block import pathion_coset_map_group
     from pathion_kernel_map import pathion_kernel_map_group
+    from pathion_kernel_map_orientation import pathion_kernel_map_orientation_group
     from pathion_parallel_coset import pathion_parallel_coset_group
     from pathion_wide_coset import pathion_wide_coset_d32_group, pathion_wide_coset_group
     from primorial_campaigns import coherence_probe_group, gap88_group
@@ -547,6 +548,7 @@ def standalone_campaign_groups() -> list[Group]:
         idle_penalty_group(),
         idle_readout_group(),
         pathion_kernel_map_group(),
+        pathion_kernel_map_orientation_group(),
         pathion_coset_map_group(),
         pathion_parallel_coset_group(),
         pathion_wide_coset_group(),
