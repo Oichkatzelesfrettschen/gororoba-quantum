@@ -159,3 +159,33 @@ emulator at 16384 shots per circuit. Selector-zero frequencies for (region 1, re
 
 The red-team round on this proposal and its reconciliation are in the
 [review record](../archive/reviews/tuna17-matched-response-replicated/reconciliation.md).
+
+## Execution
+
+`scripts/qi_replicated_series_run.sh` runs both stages as one approved series. It does nothing without
+`--approval QUOTE` and the exact argument `--submit-replicated-q11`; `--deadline SECONDS` bounds the whole series.
+The two stages are one series because a gap of hours between them would break the exchangeability the t test assumes:
+a replicate runs within one pause ladder step (120 s, `QI_HARDWARE_PAUSE_SECONDS`) of the previous collection.
+
+- Pre-flight, each line written to the series log: the lease command named by `QI_SUBMIT_LEASE_COMMAND` (the submit
+  route is `scripts/qi_platform_leased.py`, which takes the account's submit lease before it reads the queue); the
+  backend status read; free disk on the runs directory of the broker host (at least 2 GiB; the 180 jobs of the cap
+  retain about 200 MB of shots).
+- Profile unit. `rep-00` runs first through the real submit path (copy, submit, collect), followed by
+  `qi_replicated_response_analysis.py --binding`, which checks its manifest and circuit digests, job order and
+  readout sanity and prints no witness frequency or residual. The series stops with a failure marker on any failure of
+  it, so the first batch proves that the real route accepts these manifests before eleven more are spent. Every later
+  replicate takes the same binding check after its collection.
+- Stage gate. After `rep-11`, `--stage1` prints the verdict (`continue`, `undecided-at-cap` or `final`) and the
+  rule's N and writes a decision record of `s1`, N and digests. The stage-1 mean, the residuals and the diagnostics
+  appear in neither, so the decision to continue rests on `s1` alone, as the rule states. The runner then submits
+  `rep-12` to `rep-(N-1)` and calls `--final`, which cross-checks the decision record and writes the analysis.
+- Restart. A second call with the same `--stamp` skips a replicate whose run directory holds `results.json`,
+  collects one that holds `submission.json` without a second submit, and stops on a `submission-state.json` without
+  a receipt (only `qi_platform.py reconcile` knows whether the batch reached the service). The runner writes
+  `series.log`, a terminal `marker` (`done` or `failed REASON`) and `RESUME.md` with each state claim beside its
+  check command.
+- Control flow without a provider: `--dry-run` drives `scripts/qi_replicated_series_fake.py`, which writes run
+  directories of the retained shape from exact shot counts, and `tests/scripts/test_qi_replicated_series.py` checks
+  that a failed binding of `rep-00` stops the series, that a restart skips collected replicates, and that the stage
+  gate takes N from the rule.
