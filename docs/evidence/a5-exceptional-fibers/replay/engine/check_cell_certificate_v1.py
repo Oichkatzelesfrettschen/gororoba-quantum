@@ -6,7 +6,8 @@ The check reads the emitted JSON and, when given, the header file and the retain
   3. J(M) e = 0 for every generator of J and t_k * (class of each product) = 0 (the images lie in W);
   4. the class vectors of the selected products, recomputed here as g(M) e from the G tables, have rank r, and
      left_inverse times them equals the identity;
-  5. r equals the retained r_N of the engine record and h_claimed;
+  5. r equals the retained r_N of the engine record and h_claimed, and q, N and the dimension of the truncated
+     space (dim_V in raw mode, dim_quotient in quotient mode) equal the record's;
 and, when the header is given, that its sha256 equals the recorded digest and that the J and G tables equal an
 independent parse of the header text.
 
@@ -136,20 +137,23 @@ def main() -> int:
     prods = cert["products"]
     G = cert["header"]["G"]
 
-    # recompute the class of every selected product from the G tables
+    # recompute the class of every product from the G tables; a product extends its prefix by one generator
+    prefix_class = {(): {e: 1}}
+
     def product_class(tup):
-        vec = {e: 1}
-        for f in tup:
+        tup = tuple(tup)
+        if tup not in prefix_class:
+            vec = product_class(tup[:-1])
             new = {}
-            for coef, exps in G[f]:
+            for coef, exps in G[tup[-1]]:
                 v = vec
                 for k, ek in enumerate(exps):
                     for _ in range(ek):
                         v = apply(k, v)
                 for r, x in v.items():
                     new[r] = (new.get(r, 0) + coef * x) % p
-            vec = {r: x for r, x in new.items() if x}
-        return vec
+            prefix_class[tup] = {r: x for r, x in new.items() if x}
+        return prefix_class[tup]
 
     allp = [product_class(t) for t in prods["tuples"]]
     killed = all(not apply(k, v) for v in allp for k in range(n))
@@ -172,11 +176,14 @@ def main() -> int:
             prods["r"] == rec["r_N"] == cert["h_claimed"],
             f"record r_N {rec['r_N']}",
         )
+        trunc = cert["truncation"]
+        # a raw-mode record holds dim_V; a quotient-mode record holds dim_quotient, the size of k[t]/(J + m^N)
+        dim_ok = trunc["dim_V"] == rec["dim_V"] if "dim_V" in rec else trunc.get("dim_quotient") == rec["dim_quotient"]
         report(
             "truncation matches record",
             mod["q"] == sum(b["cols"] - b["rank_W"] for b in rec["per_block"].values())
-            and cert["truncation"]["N"] == rec["N"]
-            and cert["truncation"]["dim_V"] == rec["dim_V"],
+            and trunc["N"] == rec["N"]
+            and dim_ok,
         )
     if a.header:
         raw = open(a.header, "rb").read()

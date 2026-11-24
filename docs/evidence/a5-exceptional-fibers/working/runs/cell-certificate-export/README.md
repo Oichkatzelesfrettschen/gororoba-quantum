@@ -53,6 +53,49 @@ ones, exact for the series points). Exact bit sizes of the norm: 104 and 103 bit
 in the imaginary part), 24 and 35 bits for the series points (d = -3600 and -134784). Largest left-inverse entry 48
 bits (linear) and 10 or 18 bits (series).
 
+## Quotient-mode cell: A5-111
+
+One quotient-mode cell, exported by `replay/engine/fiber_cell_certificate_quotient_v1.py` as the same schema with
+`cell_mode: "quotient"`. It is a successor file: the raw-mode exporter and the A5-108 file keep their bytes, because
+the A5-108 file records the exporter's digest. Row A5-111 (E8-bar -> VB, p = 32029, d = 4, h_4 = 155) cites the
+engine record `d4-p2/e8vb_d4_n13_p32029.json` (quotient mode, N = 13, dim k[t]/(J + m^13) = 3627, blocks 56/35/32/32).
+It is the smallest cell among the ledger rows that cite a quotient-mode engine record; the records of
+`xm-lown/` are smaller but belong to the trend row A5-244, which is not a Hilbert-cell row.
+
+Construction (recorded in the file as `module.construction`). The engine pipeline runs unchanged: Singular computes a
+dp standard basis of J + m^N, its multiplication tables and the reduced generators, the products come from the tables,
+and W is the closure of m P_d under the variables, per character block. The dp normal form of t_k b can lower the
+degree, so the level test of the checker fails on the standard monomials. The exporter rebases Q' = Q/W on the m-adic
+flag F_0 = Q', F_(j+1) = sum_k M_k F_j. Level j holds the first dim F_j - dim F_(j+1) monomials t_k alpha, alpha of
+level j - 1, whose classes M^alpha e are independent modulo F_(j+1). The span of the levels from j upward is F_j and
+t_k b for b of level j lies in F_(j+1), so every nonzero M_k[b', b] has lev(b') > lev(b); the exporter asserts this
+before it writes. The basis lists the monomials, lev is their degree, e is the first basis vector, and M_k is the
+engine matrix conjugated by the matrix T of the classes M^alpha e. The flag has dimensions 1782, 1781, 1774, 1755,
+1716, 1647, 1536, 1369, 1130, 900, 679, 454, 228 for j = 0 to 12. `J_in_W` is the explicit evaluation J(M) e = 0 on
+the emitted module.
+
+Gate against the record. The exporter stops before writing unless dim_quotient, every block's `cols` and `rank_W`,
+and r_N equal the engine record; all four agree (3627; 918/917/896/896 columns with ranks 462/469/457/457; r = 155).
+
+Run (one unit, measured, twice, with identical output apart from the timing fields):
+
+- Platform: an aarch64 host, 4 cores, python-flint 0.9.0, numpy 2.5.4, Singular 4.4.1, Python 3 venv.
+- Command: `python -I fiber_cell_certificate_quotient_v1.py HEADER 4 13 OUT --ledger-id A5-111 --fiber "E8-bar -> VB"
+  --h-claimed 155 --header-path PATH --record d4-p2/e8vb_d4_n13_p32029.json`
+- Exporter wall time 309 s (Singular 159 s), peak resident set 1,727,684 kB (`/usr/bin/time -v`), exit 0.
+- Checker: 7.5 s, peak resident set 44,156 kB, exit 0.
+- File: `a5-111-cell-certificate.json`, 1,297,310 bytes, sha256
+  `ccbf15218b63059d8bd55bf9dabfdbbdbaabd4d960df01ce6c3ef6c228d21705`.
+- Cell: n = 8, N = 13, q = 1782, r = 155 of 715 products, 44,177 nonzero entries over the eight M_k (1907, 8419, 2183,
+  6366, 3113, 11398, 2011, 8780).
+
+Checker: the twelve checks of the A5-108 run all pass, with the record comparison reading dim_quotient in place of dim_V
+for a quotient record, and the class of each product memoized on its prefix. `calibrate_cell_certificate_v1.py`
+applies the five corruptions (one M entry, one level, one left-inverse entry in its support, one J coefficient, a
+duplicated selected product) and requires the checker to reject each; it accepts both the A5-108 file and the A5-111
+file and rejects all ten corrupted copies. The A5-108 file still hashes to its recorded digest, and a regeneration with
+the unchanged raw exporter equals it except for `producer.seconds`.
+
 ## Retained files
 
-`sha256.txt` lists the digests of the exporter, the checker, the certificate and this file.
+`sha256.txt` lists the digests of the exporters, the checker, the calibration script, the certificates and this file.
