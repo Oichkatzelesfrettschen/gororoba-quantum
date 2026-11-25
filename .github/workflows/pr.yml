@@ -217,14 +217,14 @@ jobs:
             !/docs/evidence/a5-exceptional-fibers/working/exports/*/s.txt
             !/docs/evidence/a5-exceptional-fibers/working/azure-results/**/*.tgz.part*
       - uses: ./.github/actions/pins-venv
-      - name: Runner profile
-        run: '"$PYTHON" ci/runner_profile.py --github-env'
       # ci/pr_checks.sh holds its shared lock with flock, and the scripts under test call GNU timeout and the GNU
       # forms of the coreutils; macOS ships neither, so Homebrew's flock and coreutils supply them. gnubin joins
       # PATH after pins-venv, because setup-python's macOS installer needs the BSD chmod. The macOS arm64 runner reads
       # the repository about twice as slowly as the Linux runners (its slowest calls took 35.6 s), so its call-budget
-      # target (tests/conftest.py) is 30 s, which the runner profile's CPU speed factor then multiplies, so a call
-      # fails past 45 s times that factor; the x64 and Linux arm64 jobs keep the 10 s target, scaled the same way.
+      # target (tests/conftest.py) is 30 s, failing a call past 45 s; the Linux arm64 job keeps the 10 s target. The arm
+      # jobs run no runner profile: their cores do not slow when all four are busy (single-copy calibration 1.10 s,
+      # four copies 1.13 s on ubuntu-26.04-arm, against 1.6 to 1.9 times slower on the x64 runners), so the x64
+      # reference would loosen their budget by up to twice while their suite runs as fast as the fastest x64 runner.
       - name: Install flock and GNU coreutils
         if: runner.os == 'macOS'
         run: |

@@ -19,8 +19,16 @@ request; neither changed a file (`git status` clean). The Advisor reviews last.
 | 8 | opencode | The core shard holds about 61 percent of test time, not "about half" | measured | Fixed in pr.yml comments and the body: about 60 and 40 percent; the core shard's slowest step was 256 s against the 8-minute limit |
 | 9 | codex, opencode | The checkout table's columns come from two runs (45528880900 at e2e4fa954, 45533290585 at 4b9557d, macOS leg cancelled by the next push), not one | measured | Fixed: the runbook and body name each run, and the final head's green run |
 | 10 | codex, opencode | No run exercised a cancelled shard leg; the aggregate check rejects every result but `success` by construction | computed | Residual risk, stated in the body; a shard failure did fail the aggregate (run 45531923806, `tests` failed after `tests (core)` failed) |
-| 11 | opencode | Hypothesis: a runner whose 4-copy contention departs from the observed 1.78 to 1.96 concurrent-to-single ratio gets an under-scaled budget | hypothesis | Residual risk; the job summary prints both calibrations, so a divergent runner shows before a false failure is blamed on a test |
+| 11 | opencode | Hypothesis: a runner whose 4-copy contention departs from the observed 1.78 to 1.96 concurrent-to-single ratio gets a mis-scaled budget | measured on 9a0de64 | Present on the arm runners, which do not slow under load (ubuntu-26.04-arm 1.10 s single, 1.13 s four copies, factor 2.0; macos-26 0.94 s and 0.92 s, factor 1.7), so the factor loosened their bound unearned; the arm jobs no longer run the profile and keep their fixed targets. On x64 the two calibrations track each other |
 | 12 | codex | Remaining per-job cost: `pins-venv` 9 to 48 s, the profile 5 to 10 s, `Fetch main` under 1 s (the scripts shard may not need it) | hypothesis and measured | Recorded as follow-up candidates; none changes this pull request |
+
+## Advisor verdict
+
+The Advisor reviewed last, on 9a0de64 with every finding above: items 1 to 9 accepted, item 1 pending the macOS leg
+(it passed: run 45537604848); items 10 and 12 accepted as stated; item 11 open until the arm profiles were read, which
+made it a present case (fixed as recorded). It also asked that the measurements live in the repository
+(`docs/evidence/ci_runtime/runner_speed_2026-11.json`) and that the pull request reference issue 1006 without closing
+it, since QPU-49 closes on twenty consecutive runs inside the limit with 25 percent margin.
 
 ## Claims as the reviewers left them
 

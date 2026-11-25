@@ -1,0 +1,161 @@
+{
+  "description": "Runner speed, checkout and bytecode measurements behind docs/runbooks/ci-runtime.md, 'Runner speed, shards and bytecode' (gororoba-quantum pull requests 1007 and 1008, 2026-11-25 UTC). Calibration: ci/runner_profile.py, median wall seconds of five single-copy runs of a fixed workload, and of one copy per usable CPU at once. Summed test time: sum of JUnit testcase times; pytest wall: JUnit suite time.",
+  "pr1007_run_45521846099": {
+    "speed-1": {
+      "cpu": "AMD EPYC 9V45 96-Core Processor",
+      "calibration_single_s": 0.5539,
+      "steal": 0,
+      "summed_test_s": 904.4,
+      "pytest_wall_s": 250.98,
+      "testcases": 7799
+    },
+    "speed-2": {
+      "cpu": "AMD EPYC 9V45 96-Core Processor",
+      "calibration_single_s": 0.5019,
+      "steal": 0,
+      "summed_test_s": 874.8,
+      "pytest_wall_s": 242.288,
+      "testcases": 7799
+    },
+    "speed-3": {
+      "cpu": "AMD EPYC 9V45 96-Core Processor",
+      "calibration_single_s": 0.5544,
+      "steal": 0,
+      "summed_test_s": 1014.2,
+      "pytest_wall_s": 281.514,
+      "testcases": 7799
+    },
+    "speed-4": {
+      "cpu": "AMD EPYC 9V74 80-Core Processor",
+      "calibration_single_s": 0.7911,
+      "steal": 0,
+      "summed_test_s": 1261.7,
+      "pytest_wall_s": 346.233,
+      "testcases": 7799
+    },
+    "slim": {
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "calibration_single_s": 1.0915,
+      "steal": 0,
+      "summed_test_s": 1620.1,
+      "pytest_wall_s": 444.333,
+      "testcases": 7746,
+      "note": "slim checkout: 85 tests failed on missing files, so its time is a lower bound"
+    }
+  },
+  "pr1008": {
+    "run_45528880900_head_e2e4fa954": {
+      "core": {
+        "cpu": "Intel(R) Xeon(R) 6975P-C",
+        "calibration_single_s": 0.7646,
+        "calibration_concurrent_s": 1.4995,
+        "copies": 4,
+        "speed_factor": 1.39,
+        "summed_test_s": 504.1,
+        "pytest_wall_s": 141.774,
+        "testcases": 3918
+      },
+      "scripts": {
+        "cpu": "AMD EPYC 7763 64-Core Processor",
+        "calibration_single_s": 1.0546,
+        "calibration_concurrent_s": 1.888,
+        "copies": 4,
+        "speed_factor": 1.917,
+        "summed_test_s": 822.8,
+        "pytest_wall_s": 224.91,
+        "testcases": 3887
+      }
+    },
+    "run_45533290585_head_4b9557d": {
+      "core": {
+        "cpu": "AMD EPYC 7763 64-Core Processor",
+        "calibration_single_s": 1.0569,
+        "calibration_concurrent_s": 1.9756,
+        "copies": 4,
+        "speed_factor": 1.922,
+        "summed_test_s": 925.2,
+        "pytest_wall_s": 254.611,
+        "testcases": 3918
+      },
+      "scripts": {
+        "cpu": "AMD EPYC 9V74 80-Core Processor",
+        "calibration_single_s": 0.8098,
+        "calibration_concurrent_s": 1.4417,
+        "copies": 4,
+        "speed_factor": 1.472,
+        "summed_test_s": 581.5,
+        "pytest_wall_s": 159.389,
+        "testcases": 3887
+      }
+    },
+    "run_45537604848_head_9a0de64_profiles_from_job_logs": {
+      "tests (core)": {
+        "cpu": "AMD EPYC 7763 64-Core Processor",
+        "calibration_single_s": 1.05,
+        "calibration_concurrent_s": 1.8909,
+        "copies": 4,
+        "speed_factor": 1.909
+      },
+      "tests (scripts)": {
+        "cpu": "Intel(R) Xeon(R) 6975P-C",
+        "calibration_single_s": 0.7731,
+        "calibration_concurrent_s": 1.2804,
+        "copies": 4,
+        "speed_factor": 1.406
+      },
+      "contracts": {
+        "cpu": "Intel(R) Xeon(R) 6975P-C",
+        "calibration_single_s": 0.7931,
+        "calibration_concurrent_s": 1.312,
+        "copies": 4,
+        "speed_factor": 1.442
+      },
+      "arm (ubuntu-26.04-arm)": {
+        "cpu": "(unreported)",
+        "calibration_single_s": 1.0986,
+        "calibration_concurrent_s": 1.1273,
+        "copies": 4,
+        "speed_factor": 1.997,
+        "pytest_step_s_range_prior_runs": [
+          223,
+          231
+        ]
+      },
+      "arm (macos-26)": {
+        "cpu": "arm",
+        "calibration_single_s": 0.9386,
+        "calibration_concurrent_s": 0.9188,
+        "copies": 3,
+        "speed_factor": 1.707
+      }
+    }
+  },
+  "bytecode_tests_scripts_run_45521846099": {
+    "A_without_repository_bytecode_s": 231.766,
+    "compileall_s": 2.082,
+    "B_after_compileall_s": 225.526,
+    "A2_bytecode_removed_s": 231.736,
+    "runner": "Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz",
+    "calibration_single_s": 0.9095
+  },
+  "checkout_seconds": {
+    "before_run_45528880900_head_e2e4fa954": {
+      "lint": 209,
+      "types": 208,
+      "tests (core)": 272,
+      "tests (scripts)": 260,
+      "contracts": 212,
+      "arm (ubuntu-26.04-arm)": 193,
+      "arm (macos-26)": 284
+    },
+    "after_run_45533290585_head_4b9557d": {
+      "lint": 5,
+      "types": 8,
+      "tests (core)": 78,
+      "tests (scripts)": 75,
+      "contracts": 77,
+      "arm (ubuntu-26.04-arm)": 64,
+      "arm (macos-26)": 93
+    }
+  }
+}

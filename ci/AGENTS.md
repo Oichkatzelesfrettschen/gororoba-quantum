@@ -396,13 +396,16 @@ on every pull request. The rules that keep that run small:
   of an unmarked test and fails it past `CALL_BUDGET_TOLERANCE` (1.5) times
   that target, so hosted-runner jitter around 10 s passes;
   `GOROROBA_TEST_CALL_SECONDS` replaces the target on a contended host and 0
-  lifts the bound. In CI the target scales by the runner's speed factor
+  lifts the bound. In the x64 CI jobs (the test shards and `contracts`)
+  the target scales by the runner's speed factor
   (ci/runner_profile.py: its calibration over the 0.55 s of the reference
   runner, never below 1), since runners of one label differ by up to twice;
   the factor multiplies whichever target applies, a
   `GOROROBA_TEST_CALL_SECONDS` one included. The profile step writes
   `GOROROBA_RUNNER_CALIBRATION_SECONDS`; a non-positive or malformed value
-  stops collection, and a local run leaves it unset. An exhaustive or slow check carries `audit` and gets a small unmarked
+  stops collection, and a local run leaves it unset. The arm jobs run no
+  profile: their cores do not slow under load as the x64 runners' SMT
+  siblings do, so the x64 reference would loosen their bound unearned. An exhaustive or slow check carries `audit` and gets a small unmarked
   counterpart that tests the same rule on a small input.
 - Setup that several tests share is a `scope="module"` or `"session"`
   fixture. Each xdist worker builds its own copy, and `--dist loadgroup`

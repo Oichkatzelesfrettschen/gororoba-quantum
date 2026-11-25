@@ -518,6 +518,15 @@ cancelled after its checkout; the final head passed every job in run
 With the shards, the slowest pytest step was 256 s, on an EPYC 7763
 (calibration 1.06 s, budget factor 1.92), against the 8-minute limit.
 
+On the x64 runners one copy per CPU runs 1.6 to 1.9 times slower than a
+single copy (four vCPUs on SMT siblings), and the single-copy calibration
+still tracks the suite. The arm runners do not slow under load (1.10 s and
+1.13 s on ubuntu-26.04-arm, 0.94 s and 0.92 s on macos-26), and their suite
+runs as fast as the fastest x64 runner's, so the x64 reference would have
+doubled their bound unearned; the arm jobs run no profile and keep their
+fixed targets. The profiles, step times and bytecode readings are kept in
+[runner_speed_2026-11.json](../evidence/ci_runtime/runner_speed_2026-11.json).
+
 Precompiled bytecode reopens the question of the section above for one
 shard: in one job on one runner, tests/scripts took 231.8 s without
 repository bytecode, 225.5 s after a 2.1 s `compileall`, and 231.7 s again
