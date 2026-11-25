@@ -490,9 +490,29 @@ The per-test budget therefore scales by the calibration over 0.55 s, and the
 suite runs as two shards, each about half of a run that reached the
 8-minute step limit.
 
-A checkout that also left out the A5 relation dumps and the raw live
-records failed 85 tests that read them, so the sparse checkout stays as it
-is. Precompiled bytecode reopens the question of the section above for one
+Checkout, not pytest, was the largest step of every job: 193 to 284 s.
+Leaving out whole directories (the A5 working tree, the raw live records)
+failed 85 tests, since the A5 tests and findings ledger read the relation
+files, receipts and `.sha256` digests beside the bulk tables and the
+evidence-ledger tests read every live record their SHA256SUMS list. Leaving
+out only the bulk file families by name (about 3.3 GB; ci/AGENTS.md,
+"Layout and gates") passes the suite, and `lint` and `types` fetch
+docs/ and results/ as their Python files alone (93 MB of the 10.3 GB tree).
+On pull request 1008 checkout then took:
+
+| Job | Before (s) | After (s) |
+|---|---|---|
+| lint | 209 | 5 |
+| types | 208 | 8 |
+| tests (core), tests (scripts) | 260 to 272 | 75 to 78 |
+| contracts | 212 | 77 |
+| arm (ubuntu-26.04-arm) | 193 | 64 |
+| arm (macos-26) | 284 | 93 |
+
+With the shards, the slowest pytest step was 256 s, on an EPYC 7763
+(calibration 1.06 s, budget factor 1.92), against the 8-minute limit.
+
+Precompiled bytecode reopens the question of the section above for one
 shard: in one job on one runner, tests/scripts took 231.8 s without
 repository bytecode, 225.5 s after a 2.1 s `compileall`, and 231.7 s again
 with the bytecode removed, so the shard jobs precompile.
