@@ -1,0 +1,151 @@
+name: ci-experiments
+
+# Measurements for gororoba-quantum issue 1006 (pytest step near its timeout). This workflow lives only on the draft
+# experiment pull request and never merges: each job records a runner profile, the pytest JUnit report or timings, and
+# uploads them, with the per-test budget lifted (GOROROBA_TEST_CALL_SECONDS=0) so a slow runner records instead of failing.
+on:
+  pull_request:
+    paths:
+      - .github/workflows/ci-experiments.yml
+      - ci/runner_profile.py
+
+permissions:
+  contents: read
+
+jobs:
+  speed:
+    name: speed sample ${{ matrix.sample }}
+    runs-on: ubuntu-26.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        sample: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/q[BM]*.txt
+            !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/qM7.txt.part*
+            !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/s.txt
+            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/sq.txt.part*
+            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/nf-d2.txt*
+      - uses: ./.github/actions/pins-venv
+      - name: Fetch main
+        run: git fetch --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
+      - name: Profile before
+        run: '"$PYTHON" ci/runner_profile.py --json "$RUNNER_TEMP/profile-before.json"'
+      - name: pytest, budget lifted
+        continue-on-error: true
+        env:
+          GOROROBA_TEST_CALL_SECONDS: "0"
+          TEST_REPORT: ${{ runner.temp }}/pytest-report.xml
+        run: sh ci/pr_checks.sh tests
+      - name: Profile after
+        run: '"$PYTHON" ci/runner_profile.py --json "$RUNNER_TEMP/profile-after.json"'
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
+        if: always()
+        with:
+          name: speed-${{ matrix.sample }}
+          path: |
+            ${{ runner.temp }}/profile-*.json
+            ${{ runner.temp }}/pytest-report.xml
+          if-no-files-found: ignore
+
+  bytecode:
+    name: bytecode A/B
+    runs-on: ubuntu-26.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/q[BM]*.txt
+            !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/qM7.txt.part*
+            !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/s.txt
+            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/sq.txt.part*
+            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/nf-d2.txt*
+      - uses: ./.github/actions/pins-venv
+      - name: Fetch main
+        run: git fetch --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
+      - name: Profile
+        run: '"$PYTHON" ci/runner_profile.py --json "$RUNNER_TEMP/profile.json"'
+      # Order A (no repository bytecode, cold page cache), B (after compileall), A2 (bytecode removed, warm page cache):
+      # B against A2 isolates the bytecode, both with a warm page cache.
+      - name: A, B, A2 on tests/scripts
+        env:
+          GOROROBA_TEST_CALL_SECONDS: "0"
+        run: |
+          set -eu
+          out="$RUNNER_TEMP/bytecode.tsv"
+          run() {
+            start=$(date +%s.%N)
+            "$PYTHON" -B -m pytest -n auto --dist loadgroup -m "not audit" -q -p no:cacheprovider tests/scripts >"$RUNNER_TEMP/$1.log" 2>&1 || true
+            end=$(date +%s.%N)
+            printf '%s\t%s\t%s\n' "$1" "$(echo "$end - $start" | bc)" "$(tail -n 1 "$RUNNER_TEMP/$1.log")" >>"$out"
+          }
+          run A
+          start=$(date +%s.%N)
+          "$PYTHON" -m compileall -q -j 0 gororoba_quantum scripts ci tests >/dev/null
+          printf 'compileall\t%s\t-\n' "$(echo "$(date +%s.%N) - $start" | bc)" >>"$out"
+          run B
+          "$PYTHON" -c "import pathlib, shutil; [shutil.rmtree(p) for p in pathlib.Path('.').rglob('__pycache__') if '.git' not in p.parts]"
+          run A2
+          cat "$out" | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
+        if: always()
+        with:
+          name: bytecode
+          path: |
+            ${{ runner.temp }}/profile.json
+            ${{ runner.temp }}/bytecode.tsv
+          if-no-files-found: ignore
+
+  slim-checkout:
+    name: slim checkout
+    runs-on: ubuntu-26.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/q[BM]*.txt
+            !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/qM7.txt.part*
+            !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/s.txt
+            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/sq.txt.part*
+            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/nf-d2.txt*
+            !/docs/evidence/a5-exceptional-fibers/working/
+            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/
+            !/results/live/*/raw/
+            !/results/live/**/*.qpy
+            !/results/live/archives/
+      - uses: ./.github/actions/pins-venv
+      - name: Fetch main
+        run: git fetch --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
+      - name: Profile
+        run: '"$PYTHON" ci/runner_profile.py --json "$RUNNER_TEMP/profile.json"'
+      - name: Checkout size
+        run: du -sh --exclude=.git . | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: pytest, budget lifted
+        continue-on-error: true
+        env:
+          GOROROBA_TEST_CALL_SECONDS: "0"
+          TEST_REPORT: ${{ runner.temp }}/pytest-report.xml
+        run: sh ci/pr_checks.sh tests
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
+        if: always()
+        with:
+          name: slim
+          path: |
+            ${{ runner.temp }}/profile.json
+            ${{ runner.temp }}/pytest-report.xml
+          if-no-files-found: ignore
