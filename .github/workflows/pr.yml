@@ -187,15 +187,65 @@ jobs:
 
   # The same tests and contract suites on arm64: Linux with OpenBLAS and macOS with Accelerate, two numeric
   # identities apart from the x64 runners (docs/design/native-numeric-replay.md). A test whose result depends on
-  # the platform carries a strict expected failure from tests/platform_expectations.py.
+  # the platform carries a strict expected failure from tests/platform_expectations.py. The arm jobs run no runner
+  # profile: their cores do not slow when all four are busy (single-copy calibration 1.10 s, four copies 1.13 s on
+  # ubuntu-26.04-arm, against 1.6 to 1.9 times slower on the x64 runners), so the x64 reference would loosen their
+  # budget by up to twice while their suite runs as fast as the fastest x64 runner.
   arm:
-    name: arm (${{ matrix.runner }})
-    runs-on: ${{ matrix.runner }}
+    name: arm (ubuntu-26.04-arm)
+    runs-on: ubuntu-26.04-arm
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+        # The A5 bulk files no test reads (about 3.3 GB: products tables, normal forms, W8 N = 16 export tables, Azure
+        # archive parts; ci/AGENTS.md, "Layout and gates") stay unfetched; checkout took about 200 s of each job.
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/docs/evidence/a5-exceptional-fibers/**/sq.txt
+            !/docs/evidence/a5-exceptional-fibers/**/sq.txt.part*
+            !/docs/evidence/a5-exceptional-fibers/**/nf-d[0-9].txt
+            !/docs/evidence/a5-exceptional-fibers/**/nf-d[0-9].txt.part*
+            !/docs/evidence/a5-exceptional-fibers/**/nf[0-9].txt
+            !/docs/evidence/a5-exceptional-fibers/**/nf[0-9].txt.part*
+            !/docs/evidence/a5-exceptional-fibers/**/s[0-9]_nf[0-9].txt
+            !/docs/evidence/a5-exceptional-fibers/working/exports/*/q[BM]*.txt
+            !/docs/evidence/a5-exceptional-fibers/working/exports/*/q[BM]*.txt.part*
+            !/docs/evidence/a5-exceptional-fibers/working/exports/*/s.txt
+            !/docs/evidence/a5-exceptional-fibers/working/azure-results/**/*.tgz.part*
+      - uses: ./.github/actions/pins-venv
+      - name: Fetch main
+        run: git fetch --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
+      - name: Precompile bytecode
+        run: '"$PYTHON" -m compileall -q -j 0 gororoba_quantum scripts ci tests > /dev/null'
+      - name: pytest
+        timeout-minutes: 10
+        env:
+          TEST_REPORT: ${{ runner.temp }}/pytest-report.xml
+        run: sh ci/pr_checks.sh tests
+      - name: contract suites
+        timeout-minutes: 6
+        run: sh ci/pr_checks.sh contracts
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
+        if: always()
+        with:
+          name: pytest-durations-ubuntu-26.04-arm
+          path: ${{ runner.temp }}/pytest-report.xml
+          if-no-files-found: ignore
+
+  # The macOS arm64 leg runs as the two shards of the x64 tests job on the runner's three CPUs: unsharded, its pytest
+  # step took 471 to 586 s of its 600 s limit (issue 1009), against 220 s for the same suite on ubuntu-26.04-arm.
+  # The contract suites run in the core shard. The `arm (macos-26)` check below passes when both shards pass.
+  arm-macos-shard:
+    name: arm (macos-26, ${{ matrix.shard }})
+    runs-on: macos-26
     timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
-        runner: [ubuntu-26.04-arm, macos-26]
+        shard: [core, scripts]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
         # The A5 bulk files no test reads (about 3.3 GB: products tables, normal forms, W8 N = 16 export tables, Azure
@@ -221,29 +271,43 @@ jobs:
       # forms of the coreutils; macOS ships neither, so Homebrew's flock and coreutils supply them. gnubin joins
       # PATH after pins-venv, because setup-python's macOS installer needs the BSD chmod. The macOS arm64 runner reads
       # the repository about twice as slowly as the Linux runners (its slowest calls took 35.6 s), so its call-budget
-      # target (tests/conftest.py) is 30 s, failing a call past 45 s; the Linux arm64 job keeps the 10 s target. The arm
-      # jobs run no runner profile: their cores do not slow when all four are busy (single-copy calibration 1.10 s,
-      # four copies 1.13 s on ubuntu-26.04-arm, against 1.6 to 1.9 times slower on the x64 runners), so the x64
-      # reference would loosen their budget by up to twice while their suite runs as fast as the fastest x64 runner.
+      # target (tests/conftest.py) is 30 s, failing a call past 45 s; the Linux arm64 job keeps the 10 s target.
       - name: Install flock and GNU coreutils
-        if: runner.os == 'macOS'
         run: |
           brew install flock coreutils
           echo "$(brew --prefix coreutils)/libexec/gnubin" >> "$GITHUB_PATH"
           echo "GOROROBA_TEST_CALL_SECONDS=30" >> "$GITHUB_ENV"
       - name: Fetch main
         run: git fetch --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
+      # pytest runs under -B, so without compiled bytecode each of the three workers compiles every module it
+      # imports; the unsharded macOS step spent 45 s before its workers started, against 12 to 14 s on Linux.
+      - name: Precompile bytecode
+        run: '"$PYTHON" -m compileall -q -j 0 gororoba_quantum scripts ci tests > /dev/null'
       - name: pytest
         timeout-minutes: 10
         env:
           TEST_REPORT: ${{ runner.temp }}/pytest-report.xml
+          TEST_SHARD: ${{ matrix.shard }}
         run: sh ci/pr_checks.sh tests
       - name: contract suites
+        if: matrix.shard == 'core'
         timeout-minutes: 6
         run: sh ci/pr_checks.sh contracts
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
         if: always()
         with:
-          name: pytest-durations-${{ matrix.runner }}
+          name: pytest-durations-macos-26-${{ matrix.shard }}
           path: ${{ runner.temp }}/pytest-report.xml
           if-no-files-found: ignore
+
+  arm-macos:
+    name: arm (macos-26)
+    needs: arm-macos-shard
+    if: always()
+    runs-on: ubuntu-26.04
+    timeout-minutes: 2
+    steps:
+      - name: Both shards passed
+        env:
+          RESULT: ${{ needs.arm-macos-shard.result }}
+        run: test "$RESULT" = success
