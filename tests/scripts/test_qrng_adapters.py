@@ -45,8 +45,8 @@ def test_keyed_requests_refuse_redirects() -> None:
             pass
 
     class Local(http.server.HTTPServer):
-        # HTTPServer.server_bind names the server through socket.getfqdn, a reverse lookup of the address;
-        # hypothesis: that lookup is the constant 35.6 s this test took on the macOS arm64 runner (0.5 s on Linux).
+        # HTTPServer.server_bind names the server through socket.getfqdn, a reverse lookup of the address that held
+        # this test at 35.6 s on the macOS arm64 runner; without the lookup it takes 0.5 s there, as on Linux.
         def server_bind(self) -> None:
             socketserver.TCPServer.server_bind(self)
             self.server_name = "127.0.0.1"
