@@ -28,6 +28,7 @@ def test_retained_draws_are_admitted(check: Callable[[Path], int], directory: st
 def test_keyed_requests_refuse_redirects() -> None:
     """A 302 from the service surfaces as an error, and the key header never reaches the redirect target."""
     import http.server
+    import socketserver
     import threading
     import urllib.error
     import urllib.request
@@ -43,7 +44,15 @@ def test_keyed_requests_refuse_redirects() -> None:
         def log_message(self, *args: object) -> None:
             pass
 
-    target = http.server.HTTPServer(("127.0.0.1", 0), Target)
+    class Local(http.server.HTTPServer):
+        # HTTPServer.server_bind names the server through socket.getfqdn, a reverse lookup of the address that held
+        # this test at 35.6 s on the macOS arm64 runner; without the lookup it takes 0.5 s there, as on Linux.
+        def server_bind(self) -> None:
+            socketserver.TCPServer.server_bind(self)
+            self.server_name = "127.0.0.1"
+            self.server_port = self.server_address[1]
+
+    target = Local(("127.0.0.1", 0), Target)
 
     class Redirect(Target):
         def do_GET(self) -> None:
@@ -51,7 +60,7 @@ def test_keyed_requests_refuse_redirects() -> None:
             self.send_header("Location", f"http://127.0.0.1:{target.server_port}/")
             self.end_headers()
 
-    origin = http.server.HTTPServer(("127.0.0.1", 0), Redirect)
+    origin = Local(("127.0.0.1", 0), Redirect)
     for server in (target, origin):
         threading.Thread(target=server.serve_forever, daemon=True).start()
     try:

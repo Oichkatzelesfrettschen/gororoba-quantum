@@ -11,16 +11,25 @@ import seed_provenance
 import qrng_seeds
 
 
+@pytest.fixture(scope="module")
+def retained_tree() -> None:
+    """The retained-tree read of this worker (seed_provenance.tree_scan caches it per process), made in setup so no
+    tree check's call phase carries it."""
+    seed_provenance.tree_scan(seed_provenance.MANIFEST_ROOT)
+
+
 def test_seed_provenance_self_test() -> None:
     if seed_provenance.self_test() != 0:
         raise AssertionError("seed_provenance self-test failed")
 
 
+@pytest.mark.usefixtures("retained_tree")
 @pytest.mark.parametrize("shard", range(seed_provenance.SHARDS))
 def test_tree_seeds_are_accounted(shard: int) -> None:
     seed_provenance.check_tree(shard)
 
 
+@pytest.mark.usefixtures("retained_tree")
 def test_owned_draws_and_reserved_rows_validate() -> None:
     seed_provenance.check_tree_once()
 
@@ -32,7 +41,7 @@ def test_owned_validation_reuses_manifest_claims(monkeypatch: pytest.MonkeyPatch
         scans.append(root)
         return {"draw-claimed.json"}
 
-    monkeypatch.setattr(seed_provenance, "claimed_records", claimed)
+    monkeypatch.setattr(seed_provenance, "tree_claims", lambda: claimed(seed_provenance.MANIFEST_ROOT))
     monkeypatch.setattr(seed_provenance, "load", lambda _path, _field: [])
     monkeypatch.setattr(seed_provenance, "tracked_files", lambda: [])
     monkeypatch.setattr(seed_provenance, "check_reserved", lambda *_args: None)
@@ -45,6 +54,31 @@ def test_reproduction_seeds_only_shrink() -> None:
     seed_provenance.check_shrink()
 
 
+def test_the_tree_checks_read_each_retained_file_once(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    root = tmp_path / "results"
+    root.mkdir()
+    for name in ("a.json", "b.json"):
+        (root / name).write_text('{"draw": "none"}', encoding="utf-8")
+    reads: list[str] = []
+    draw_text = seed_provenance.draw_text
+
+    def counted(path: str) -> str | None:
+        reads.append(path)
+        return draw_text(path)
+
+    monkeypatch.setattr(seed_provenance, "draw_text", counted)
+    monkeypatch.setattr(seed_provenance, "MANIFEST_ROOT", root)
+    monkeypatch.setattr(seed_provenance, "load", lambda _path, _field: [])
+    monkeypatch.setattr(seed_provenance, "tracked_files", frozenset)
+    monkeypatch.setattr(seed_provenance, "check_reserved", lambda *_args: None)
+    seed_provenance.check_tree_once()
+    seed_provenance.check_tree_once()
+    seed_provenance.owned_records(validate=True)
+    if sorted(reads) != sorted(str(path) for path in root.iterdir()):
+        raise AssertionError(f"the retained files were read as {reads}")
+
+
+@pytest.mark.usefixtures("retained_tree")
 def test_retained_qrng_references_match_the_runtime_ledger() -> None:
     seed_provenance.check_runtime_tree()
 

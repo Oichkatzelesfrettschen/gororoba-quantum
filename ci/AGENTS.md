@@ -39,9 +39,11 @@ per native library, `GOROROBA_PINS_REQUIRED=1`):
   check passes when both shards pass;
 - `contracts` runs that file the same way in parallel with `tests` under a
   5-minute step timeout, so neither pytest step approaches its timeout;
-- `arm` runs the `tests` and `contracts` lanes on `ubuntu-26.04-arm` and
-  `macos-26` (a matrix with fail-fast off, a 10-minute pytest step and a
-  6-minute contract-suites step).
+- `arm` runs the `tests` and `contracts` lanes on `ubuntu-26.04-arm`, and
+  `arm-macos-shard` runs them on `macos-26` as the two shards of `tests`
+  (`TEST_SHARD`, the contract suites in the core shard), each after a bytecode
+  precompile, with a 10-minute pytest step and a 6-minute contract-suites step;
+  the `arm (macos-26)` check passes when both macOS shards pass.
 
 Pull-request CI answers one question: does the change break the repository's
 own Python. Each test it runs builds its input or reads a small fixture and
@@ -63,7 +65,7 @@ exercises the calls the code makes against answers fixed by construction (a Bell
 pair's support, the Hong-Ou-Mandel zero, a certain readout flip), locally and
 without credentials.
 The job timeouts are 8 minutes for `lint`, 10 for `types` (its mypy step 4), 12 for `tests` and
-`contracts`, and 25 for `arm`.
+`contracts`, 25 for `arm` and each `arm-macos-shard` job, and 2 for the `arm (macos-26)` check.
 `types`, `tests`, `contracts` and `arm` restore the pinned venv through
 .github/actions/pins-venv, under a cache key that hashes the venv's inputs, and
 build it with ci/install_pins.sh on a miss; a push to main saves it where later
