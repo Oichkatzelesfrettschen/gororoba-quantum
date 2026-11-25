@@ -30,12 +30,18 @@ def test_code_seeds_are_accounted(shard: int) -> None:
     seed_provenance.check_tree(shard, retained=False)
 
 
-# The checks below read the retained tree under results/, several gigabytes, so they carry audit (ci/AGENTS.md,
-# "Behavioral suite") and run in gate core-behavior-01; the shards above keep the code checks in every pull request.
+# The checks marked audit read the retained tree under results/, several gigabytes (ci/AGENTS.md, "Behavioral
+# suite"), and run in gate core-behavior-01; the unmarked forms keep the ledger checks that need no tree in every
+# pull request.
 @pytest.mark.audit
 @pytest.mark.usefixtures("retained_tree")
 def test_tree_seeds_are_accounted() -> None:
     seed_provenance.check_tree()
+
+
+def test_owned_and_reserved_rows_validate() -> None:
+    """Every owned and reserved row is admitted except for the case-manifest ownership of its draw."""
+    seed_provenance.check_tree_once(retained=False)
 
 
 @pytest.mark.audit
@@ -203,7 +209,10 @@ def test_the_code_form_skips_only_the_manifest_claim(monkeypatch: pytest.MonkeyP
         raise AssertionError("the code form read the retained tree")
 
     monkeypatch.setattr(seed_provenance, "tree_claims", no_tree)
+    monkeypatch.setattr(seed_provenance, "tracked_files", frozenset)
+    monkeypatch.setattr(seed_provenance, "check_reserved", lambda *_args: None)
     seed_provenance.check_tree(shard, retained=False)
+    seed_provenance.check_tree_once(retained=False)
     monkeypatch.setattr(seed_provenance, "tree_claims", lambda: {RECORD.rsplit("/", 1)[1]})
     with pytest.raises(seed_provenance.SeedError, match="belongs to a case manifest"):
         seed_provenance.check_tree(shard)
