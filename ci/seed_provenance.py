@@ -54,6 +54,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import functools
 import json
 import re
 import subprocess
@@ -332,6 +333,19 @@ def manifest_scan(manifest_root: Path) -> tuple[dict[tuple[str, int], set[Consum
     return (*consumption(manifest_root, paths, references), {name for names, _, _ in scans for name in names})
 
 
+@functools.cache
+def tree_scan(manifest_root: Path) -> tuple[dict[tuple[str, int], set[Consumer]], list[str], set[str]]:
+    """manifest_scan of the root, read once per process; callers treat the result as read-only. Every check of the
+    tree reads the same retained files, several gigabytes, and a host whose page cache cannot hold them reads them
+    from disk on each pass (the macOS arm64 runner took 20 to 42 s per pass against 2 to 6 s on Linux arm64)."""
+    return manifest_scan(manifest_root)
+
+
+def tree_claims() -> set[str]:
+    """claimed_records of MANIFEST_ROOT from the one tree_scan read, as a fresh set."""
+    return set(tree_scan(MANIFEST_ROOT)[2])
+
+
 def runtime_consumption(manifest_root: Path) -> tuple[dict[tuple[str, int], set[Consumer]], list[str]]:
     """(record, index) -> the (script, flag, experiment) keys of every retained qrng reference, and the
     files that carry a qrng reference no seed_source entry under the root declares."""
@@ -536,7 +550,7 @@ def owned_records(validate: bool, manifest_claimed: set[str] | None = None) -> s
     paths = sorted({row["path"] for row in owned if row["path"] in tracked and (ROOT / row["path"]).is_file()})
     texts = {path: (ROOT / path).read_text(encoding="utf-8") for path in paths}
     if manifest_claimed is None:
-        manifest_claimed = claimed_records(MANIFEST_ROOT)
+        manifest_claimed = tree_claims()
     return check_owned(owned, manifest_claimed, read_tree_record, texts)
 
 
@@ -684,7 +698,7 @@ def read_tree_record(record_path: str) -> dict[str, Any]:
 def check_tree(shard: int | None = None) -> int:
     """Account every seed literal of the tree, or of one shard; the whole tree also runs check_tree_once."""
     found, flags = scan(shard)
-    claimed = claimed_records(MANIFEST_ROOT) | owned_records(validate=False)
+    claimed = tree_claims() | owned_records(validate=False)
     check(found, load(BASELINE, "seeds"), load(ALLOCATIONS, "allocations"), claimed, read_tree_record, shard, flags)
     if shard is None:
         check_tree_once()
@@ -695,7 +709,7 @@ def check_tree(shard: int | None = None) -> int:
 def check_tree_once() -> None:
     """The checks no shard repeats: owned-draw validation and the reserved rows. The pull-request tests run it
     as its own test, so no shard carries it on top of its scan."""
-    manifest_claimed = claimed_records(MANIFEST_ROOT)
+    manifest_claimed = tree_claims()
     claimed = manifest_claimed | owned_records(validate=True, manifest_claimed=manifest_claimed)
     allocations = load(ALLOCATIONS, "allocations")
     reserved = load(ALLOCATIONS, "reserved")
@@ -706,7 +720,7 @@ def check_tree_once() -> None:
 
 
 def check_runtime_tree() -> int:
-    consumed, stray, manifest_claimed = manifest_scan(MANIFEST_ROOT)
+    consumed, stray, manifest_claimed = tree_scan(MANIFEST_ROOT)
     allocations = load(ALLOCATIONS, "allocations")
     runtime = load(ALLOCATIONS, "runtime")
     allocations = allocations + load(ALLOCATIONS, "reserved")
