@@ -6,10 +6,12 @@ Hosted runners of one label differ in per-core speed by up to a factor of two: t
 1,014 s of test time on AMD EPYC 9V45 runners, 1,262 s on an EPYC 9V74 and about 1,600 s on an EPYC 7763
 (gororoba-quantum pull request 1007, 2026-11-25). The workload is fixed single-threaded work, an integer loop and a
 NumPy matrix product at one BLAS thread, so its median wall time measures the core the job received: it took 0.50 to
-0.55 s on the 9V45 runners, 0.79 s on the 9V74 and 1.09 s on the 7763, in step with the suite. A second pass runs one
-copy per usable CPU at once, the load of the xdist suite, and steal time from /proc/stat separates a slow core from a
-host that takes CPU away from the guest. `--github-env` exports GOROROBA_RUNNER_CALIBRATION_SECONDS, the single-copy
-median, which tests/conftest.py turns into the per-test budget's speed factor (`speed_factor`).
+0.55 s on the 9V45 runners, 0.79 s on the 9V74 and 1.09 s on the 7763, in step with the suite. A second pass maps two
+copies per worker slot through parallel.ordered_map, whose parallel.workers() allocation (affinity mask bounded by the
+cgroup CPU quota and GOROROBA_WORKERS) also sizes the xdist pool, so it loads the CPUs the suite uses; steal time from
+/proc/stat separates a slow core from a host that takes CPU away from the guest. `--github-env` exports
+GOROROBA_RUNNER_CALIBRATION_SECONDS, the single-copy median, which tests/conftest.py turns into the per-test budget's
+speed factor (`speed_factor`).
 """
 
 from __future__ import annotations
@@ -19,9 +21,13 @@ import json
 import os
 import platform
 import statistics
+import sys
 import time
-from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+import parallel  # noqa: E402
 
 REPEATS = 5
 # The native thread pools pinned to one thread, as ci/pr_checks.sh pins them for the suite, so the workload measures
@@ -106,20 +112,20 @@ def workload(scale: float = 1.0) -> float:
     return time.perf_counter() - start
 
 
-def profile(scale: float = 1.0, repeats: int = REPEATS, copies: int | None = None) -> dict[str, object]:
-    """The runner's identity and calibration; `copies` concurrent workloads (default one per usable CPU)."""
-    cpus = copies or (len(os.sched_getaffinity(0)) if hasattr(os, "sched_getaffinity") else os.cpu_count() or 1)
+def profile(scale: float = 1.0, repeats: int = REPEATS) -> dict[str, object]:
+    """The runner's identity and calibration. The concurrent pass maps two workloads per parallel.workers() slot
+    through the shared pool, one item per chunk; one slot (a test process) runs them inline."""
+    copies = parallel.workers()
     before = cpu_ticks()
     single = [workload(scale) for _ in range(repeats)]
-    with ProcessPoolExecutor(max_workers=cpus, initializer=cap_threads) as pool:
-        concurrent = list(pool.map(workload, [scale] * (2 * cpus)))
+    concurrent = parallel.ordered_map(workload, [scale] * (2 * copies), min_items=1)
     after = cpu_ticks()
     delta = {k: after[k] - before[k] for k in before if k in after}
     return {
         "cpu": cpu_identity(),
         "calibration_wall_seconds": [round(s, 4) for s in single],
         "calibration_median_wall": round(statistics.median(single), 4),
-        "concurrent_copies": cpus,
+        "concurrent_copies": copies,
         "concurrent_median_wall": round(statistics.median(concurrent), 4),
         # None where /proc/stat is absent (macOS): unmeasured, not zero.
         "steal_fraction": round(delta.get("steal", 0) / (sum(delta.values()) or 1), 4) if delta else None,
