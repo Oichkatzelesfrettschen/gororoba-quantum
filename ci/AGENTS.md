@@ -65,7 +65,7 @@ exercises the calls the code makes against answers fixed by construction (a Bell
 pair's support, the Hong-Ou-Mandel zero, a certain readout flip), locally and
 without credentials.
 The job timeouts are 8 minutes for `lint`, 10 for `types` (its mypy step 4), 12 for `tests` and
-`contracts`, and 25 for `arm`.
+`contracts`, 25 for `arm` and each `arm-macos-shard` job, and 2 for the `arm (macos-26)` check.
 `types`, `tests`, `contracts` and `arm` restore the pinned venv through
 .github/actions/pins-venv, under a cache key that hashes the venv's inputs, and
 build it with ci/install_pins.sh on a miss; a push to main saves it where later

@@ -336,8 +336,8 @@ def manifest_scan(manifest_root: Path) -> tuple[dict[tuple[str, int], set[Consum
 @functools.cache
 def tree_scan(manifest_root: Path) -> tuple[dict[tuple[str, int], set[Consumer]], list[str], set[str]]:
     """manifest_scan of the root, read once per process; callers treat the result as read-only. Every check of the
-    tree reads the same retained files, several gigabytes, and a host whose page cache cannot hold them reads them
-    from disk on each pass (the macOS arm64 runner took 20 to 42 s per pass against 2 to 6 s on Linux arm64)."""
+    tree reads the same retained files, several gigabytes: one pass took 20 to 42 s on the macOS arm64 runner and 2
+    to 6 s on Linux arm64 (hypothesis: the macOS runner's page cache cannot hold the tree)."""
     return manifest_scan(manifest_root)
 
 
