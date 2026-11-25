@@ -92,11 +92,15 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /*
-            !/docs/evidence/a5-exceptional-fibers/**/sq.txt*
-            !/docs/evidence/a5-exceptional-fibers/**/nf-d[0-9].txt*
-            !/docs/evidence/a5-exceptional-fibers/**/nf[0-9].txt*
+            !/docs/evidence/a5-exceptional-fibers/**/sq.txt
+            !/docs/evidence/a5-exceptional-fibers/**/sq.txt.part*
+            !/docs/evidence/a5-exceptional-fibers/**/nf-d[0-9].txt
+            !/docs/evidence/a5-exceptional-fibers/**/nf-d[0-9].txt.part*
+            !/docs/evidence/a5-exceptional-fibers/**/nf[0-9].txt
+            !/docs/evidence/a5-exceptional-fibers/**/nf[0-9].txt.part*
             !/docs/evidence/a5-exceptional-fibers/**/s[0-9]_nf[0-9].txt
-            !/docs/evidence/a5-exceptional-fibers/working/exports/*/q[BM]*.txt*
+            !/docs/evidence/a5-exceptional-fibers/working/exports/*/q[BM]*.txt
+            !/docs/evidence/a5-exceptional-fibers/working/exports/*/q[BM]*.txt.part*
             !/docs/evidence/a5-exceptional-fibers/working/exports/*/s.txt
             !/docs/evidence/a5-exceptional-fibers/working/azure-results/**/*.tgz.part*
       - uses: ./.github/actions/pins-venv
@@ -154,11 +158,15 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /*
-            !/docs/evidence/a5-exceptional-fibers/**/sq.txt*
-            !/docs/evidence/a5-exceptional-fibers/**/nf-d[0-9].txt*
-            !/docs/evidence/a5-exceptional-fibers/**/nf[0-9].txt*
+            !/docs/evidence/a5-exceptional-fibers/**/sq.txt
+            !/docs/evidence/a5-exceptional-fibers/**/sq.txt.part*
+            !/docs/evidence/a5-exceptional-fibers/**/nf-d[0-9].txt
+            !/docs/evidence/a5-exceptional-fibers/**/nf-d[0-9].txt.part*
+            !/docs/evidence/a5-exceptional-fibers/**/nf[0-9].txt
+            !/docs/evidence/a5-exceptional-fibers/**/nf[0-9].txt.part*
             !/docs/evidence/a5-exceptional-fibers/**/s[0-9]_nf[0-9].txt
-            !/docs/evidence/a5-exceptional-fibers/working/exports/*/q[BM]*.txt*
+            !/docs/evidence/a5-exceptional-fibers/working/exports/*/q[BM]*.txt
+            !/docs/evidence/a5-exceptional-fibers/working/exports/*/q[BM]*.txt.part*
             !/docs/evidence/a5-exceptional-fibers/working/exports/*/s.txt
             !/docs/evidence/a5-exceptional-fibers/working/azure-results/**/*.tgz.part*
       - uses: ./.github/actions/pins-venv
@@ -197,11 +205,15 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /*
-            !/docs/evidence/a5-exceptional-fibers/**/sq.txt*
-            !/docs/evidence/a5-exceptional-fibers/**/nf-d[0-9].txt*
-            !/docs/evidence/a5-exceptional-fibers/**/nf[0-9].txt*
+            !/docs/evidence/a5-exceptional-fibers/**/sq.txt
+            !/docs/evidence/a5-exceptional-fibers/**/sq.txt.part*
+            !/docs/evidence/a5-exceptional-fibers/**/nf-d[0-9].txt
+            !/docs/evidence/a5-exceptional-fibers/**/nf-d[0-9].txt.part*
+            !/docs/evidence/a5-exceptional-fibers/**/nf[0-9].txt
+            !/docs/evidence/a5-exceptional-fibers/**/nf[0-9].txt.part*
             !/docs/evidence/a5-exceptional-fibers/**/s[0-9]_nf[0-9].txt
-            !/docs/evidence/a5-exceptional-fibers/working/exports/*/q[BM]*.txt*
+            !/docs/evidence/a5-exceptional-fibers/working/exports/*/q[BM]*.txt
+            !/docs/evidence/a5-exceptional-fibers/working/exports/*/q[BM]*.txt.part*
             !/docs/evidence/a5-exceptional-fibers/working/exports/*/s.txt
             !/docs/evidence/a5-exceptional-fibers/working/azure-results/**/*.tgz.part*
       - uses: ./.github/actions/pins-venv
