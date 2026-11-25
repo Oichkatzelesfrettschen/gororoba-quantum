@@ -551,9 +551,11 @@ other integer; the run record's `seed_source` names the spelling, and the
 change that retains a qrng-seeded run adds its ledger row with
 `"$PYTHON" ci/seed_provenance.py --add-runtime`. The seed sources and their
 draw rules are in [docs/notes/qrng/README.md](../docs/notes/qrng/README.md).
-The `tests` check accounts the literals and admits the allocation rows over
-eight shards on every pull request. The checks that read the retained tree
-under results/ (5.27 GB: the case-manifest ownership of each draw, the owned
-and reserved rows, the runtime ledger) carry `audit` and run in gate
+The `tests` check accounts the literals over eight shards and admits the
+allocation, owned and reserved rows on every pull request. The checks that read
+the retained tree under results/ (5.27 GB) carry `audit` and run in gate
 `core-behavior-01` and through `"$PYTHON" ci/seed_provenance.py --check` and
-`--runtime`.
+`--runtime`: that no case manifest owns a ledger row's draw, and that the
+runtime ledger matches the retained qrng references. A change that retains a
+qrng-seeded run without its `--add-runtime` row therefore passes the `tests`
+check and fails that gate.
