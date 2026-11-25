@@ -156,8 +156,17 @@ tests | contracts)
 	# The contract suites run in their own job beside tests, so neither job's pytest step reaches its timeout.
 	if [ "$check" = contracts ]; then
 		set -- tests/gororoba_quantum/test_contract_suites.py "$@"
-	else
-		[ $# -ge 1 ] || set -- tests --ignore=tests/gororoba_quantum/test_contract_suites.py
+	elif [ $# -eq 0 ]; then
+		# TEST_SHARD splits the suite between two pr.yml jobs: tests/scripts holds about half of its test time.
+		case ${TEST_SHARD:-all} in
+		all) set -- tests --ignore=tests/gororoba_quantum/test_contract_suites.py ;;
+		core) set -- tests --ignore=tests/gororoba_quantum/test_contract_suites.py --ignore=tests/scripts ;;
+		scripts) set -- tests/scripts ;;
+		*)
+			echo "pr_checks.sh: TEST_SHARD must be all, core or scripts, not $TEST_SHARD" >&2
+			exit 2
+			;;
+		esac
 	fi
 	log=$(mktemp)
 	code=$(mktemp)

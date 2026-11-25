@@ -466,3 +466,33 @@ five code directories took 35.3 s; a cold `ci/install_pins.sh` into a fresh
 Python 3.14.7 venv with `PIP_NO_CACHE_DIR=1` took 31.9 s on the build host's
 network. The hosted cold install, and the `types` job, are measured by the
 first pr.yml run that misses the cache or carries the job.
+
+## Runner speed, shards and bytecode
+
+Issue 1006 recorded the pytest step taking 3.9 to 8.2 minutes on one label.
+Pull request 1007 measured why: four runs of the same suite with the
+per-test budget lifted, each beside ci/runner_profile.py, landed on three
+CPU models. Summed test time follows the profile's single-copy calibration
+(the median of five runs of one fixed workload):
+
+| CPU | Calibration (s) | Summed test time (s) | Pytest wall (s) |
+|---|---|---|---|
+| AMD EPYC 9V45 | 0.50 to 0.55 | 875 to 1,014 | 242 to 282 |
+| AMD EPYC 9V74 | 0.79 | 1,262 | 346 |
+| AMD EPYC 7763 | 1.09 | 1,620 | 444 |
+
+The 7763 row comes from the run on a slimmer checkout described below, with
+85 tests failing early, so its time is a lower bound. Steal time read 0 on
+every runner, so the spread is per-core speed, not a contended host. The
+ordinary `tests` job of the same pull request, on a runner it did not
+profile, took 483 s and failed one test at 15.7 s against the 15 s bound.
+The per-test budget therefore scales by the calibration over 0.55 s, and the
+suite runs as two shards, each about half of a run that reached the
+8-minute step limit.
+
+A checkout that also left out the A5 relation dumps and the raw live
+records failed 85 tests that read them, so the sparse checkout stays as it
+is. Precompiled bytecode reopens the question of the section above for one
+shard: in one job on one runner, tests/scripts took 231.8 s without
+repository bytecode, 225.5 s after a 2.1 s `compileall`, and 231.7 s again
+with the bytecode removed, so the shard jobs precompile.
