@@ -695,10 +695,14 @@ def read_tree_record(record_path: str) -> dict[str, Any]:
     return qrng_seeds.read_record(record_path, ROOT)
 
 
-def check_tree(shard: int | None = None) -> int:
-    """Account every seed literal of the tree, or of one shard; the whole tree also runs check_tree_once."""
+def check_tree(shard: int | None = None, retained: bool = True) -> int:
+    """Account every seed literal of the tree, or of one shard; the whole tree also runs check_tree_once.
+
+    Without retained, an allocation row skips the one test that reads the retained tree under results/: that no
+    case manifest there owns its draw. The pull-request tests run that form over the shards; the full form, with the
+    tree, runs in the audit tests of gate core-behavior-01 and through --check."""
     found, flags = scan(shard)
-    claimed = tree_claims() | owned_records(validate=False)
+    claimed = (tree_claims() if retained else set()) | owned_records(validate=False)
     check(found, load(BASELINE, "seeds"), load(ALLOCATIONS, "allocations"), claimed, read_tree_record, shard, flags)
     if shard is None:
         check_tree_once()
