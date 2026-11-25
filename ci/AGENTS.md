@@ -7,11 +7,13 @@ flow; CLAUDE.md loads this file.
 
 ## Layout and gates
 
-Every `pr.yml` checkout uses a blob-filtered sparse checkout that leaves out the W8 N = 16 export tables
-(`docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/`, 235 MB per prime of evidence that no check reads), since
-fetching them pushed the `tests` job past its time limit, and the E8-bar and W8 products files at 32057
-(`docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/`, `sq.txt.part*` and `nf-d2.txt*`, 473 MiB). A
-check that starts reading a file there adds it back to the checkout's pattern list.
+Every `pr.yml` checkout is blob-filtered and sparse. The jobs that run pytest leave out the A5 bulk files no check
+reads, about 3.3 GB under `docs/evidence/a5-exceptional-fibers/`: the products tables `sq.txt*`, the normal forms
+`nf-d*.txt*`, `nf*.txt` and `s*_nf*.txt`, the W8 N = 16 export tables (`working/exports/*/q[BM]*.txt*` and `s.txt`)
+and the Azure archive parts (`working/azure-results/**/*.tgz.part*`); the relation files and receipts beside them stay,
+since the A5 tests and findings ledger read those. `lint` and `types` fetch docs/ and results/ as their Python files
+only. Checkout took about 200 s of every job before (pull request 1008). A check that starts reading an excluded file
+adds it back to its job's pattern list.
 
 The modules run as scripts from gororoba_quantum/ and form no installable
 package; requirements.txt pins the tested runtime and pyproject.toml carries

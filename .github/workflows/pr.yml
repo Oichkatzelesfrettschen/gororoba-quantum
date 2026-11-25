@@ -85,20 +85,20 @@ jobs:
         shard: [core, scripts]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
-        # The W8 N = 16 export tables (235 MB, docs/evidence/a5-exceptional-fibers/w8-n16-azure/README.md), the
-        # E8-bar and W8 products files at 32057 (473 MiB, docs/evidence/a5-exceptional-fibers/third-prime/README.md) and
-        # the A5 working tree's distribution outputs, exports and Azure archives (2.9 GB) are evidence no test reads;
-        # leaving their blobs unfetched shortens checkout, which took 195 to 272 s of each job.
+        # The A5 bulk files no test reads (about 3.3 GB: products tables, normal forms, W8 N = 16 export tables, Azure
+        # archive parts; ci/AGENTS.md, "Layout and gates") stay unfetched; checkout took about 200 s of each job.
         with:
           filter: blob:none
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /*
-            !/docs/evidence/a5-exceptional-fibers/working/exports/
-            !/docs/evidence/a5-exceptional-fibers/working/distribute/
-            !/docs/evidence/a5-exceptional-fibers/working/azure-results/
-            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/sq.txt.part*
-            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/nf-d2.txt*
+            !/docs/evidence/a5-exceptional-fibers/**/sq.txt*
+            !/docs/evidence/a5-exceptional-fibers/**/nf-d[0-9].txt*
+            !/docs/evidence/a5-exceptional-fibers/**/nf[0-9].txt*
+            !/docs/evidence/a5-exceptional-fibers/**/s[0-9]_nf[0-9].txt
+            !/docs/evidence/a5-exceptional-fibers/working/exports/*/q[BM]*.txt*
+            !/docs/evidence/a5-exceptional-fibers/working/exports/*/s.txt
+            !/docs/evidence/a5-exceptional-fibers/working/azure-results/**/*.tgz.part*
       - uses: ./.github/actions/pins-venv
       # ci/seed_provenance.py compares the reproduction-seed baseline with main's.
       - name: Fetch main
@@ -147,19 +147,20 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
-        # The W8 N = 16 export tables (235 MB, docs/evidence/a5-exceptional-fibers/w8-n16-azure/README.md) and the
-        # E8-bar and W8 products files at 32057 (473 MiB, docs/evidence/a5-exceptional-fibers/third-prime/README.md) are
-        # evidence no check reads; leaving their blobs unfetched keeps checkout inside each job's limit.
+        # The A5 bulk files no test reads (about 3.3 GB: products tables, normal forms, W8 N = 16 export tables, Azure
+        # archive parts; ci/AGENTS.md, "Layout and gates") stay unfetched; checkout took about 200 s of each job.
         with:
           filter: blob:none
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /*
-            !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/q[BM]*.txt
-            !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/qM7.txt.part*
-            !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/s.txt
-            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/sq.txt.part*
-            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/nf-d2.txt*
+            !/docs/evidence/a5-exceptional-fibers/**/sq.txt*
+            !/docs/evidence/a5-exceptional-fibers/**/nf-d[0-9].txt*
+            !/docs/evidence/a5-exceptional-fibers/**/nf[0-9].txt*
+            !/docs/evidence/a5-exceptional-fibers/**/s[0-9]_nf[0-9].txt
+            !/docs/evidence/a5-exceptional-fibers/working/exports/*/q[BM]*.txt*
+            !/docs/evidence/a5-exceptional-fibers/working/exports/*/s.txt
+            !/docs/evidence/a5-exceptional-fibers/working/azure-results/**/*.tgz.part*
       - uses: ./.github/actions/pins-venv
       # The per-test budget scales by this runner's speed factor, as in the test shards.
       - name: Runner profile
@@ -189,19 +190,20 @@ jobs:
         runner: [ubuntu-26.04-arm, macos-26]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
-        # The W8 N = 16 export tables (235 MB, docs/evidence/a5-exceptional-fibers/w8-n16-azure/README.md) and the
-        # E8-bar and W8 products files at 32057 (473 MiB, docs/evidence/a5-exceptional-fibers/third-prime/README.md) are
-        # evidence no check reads; leaving their blobs unfetched keeps checkout inside each job's limit.
+        # The A5 bulk files no test reads (about 3.3 GB: products tables, normal forms, W8 N = 16 export tables, Azure
+        # archive parts; ci/AGENTS.md, "Layout and gates") stay unfetched; checkout took about 200 s of each job.
         with:
           filter: blob:none
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /*
-            !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/q[BM]*.txt
-            !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/qM7.txt.part*
-            !/docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/s.txt
-            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/sq.txt.part*
-            !/docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/nf-d2.txt*
+            !/docs/evidence/a5-exceptional-fibers/**/sq.txt*
+            !/docs/evidence/a5-exceptional-fibers/**/nf-d[0-9].txt*
+            !/docs/evidence/a5-exceptional-fibers/**/nf[0-9].txt*
+            !/docs/evidence/a5-exceptional-fibers/**/s[0-9]_nf[0-9].txt
+            !/docs/evidence/a5-exceptional-fibers/working/exports/*/q[BM]*.txt*
+            !/docs/evidence/a5-exceptional-fibers/working/exports/*/s.txt
+            !/docs/evidence/a5-exceptional-fibers/working/azure-results/**/*.tgz.part*
       - uses: ./.github/actions/pins-venv
       - name: Runner profile
         run: '"$PYTHON" ci/runner_profile.py --github-env'
