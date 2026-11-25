@@ -24,6 +24,19 @@ from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
 REPEATS = 5
+# The native thread pools pinned to one thread, as ci/pr_checks.sh pins them for the suite, so the workload measures
+# one core: macOS NumPy multiplies through Accelerate, whose pool only VECLIB_MAXIMUM_THREADS bounds.
+THREAD_CAPS = {
+    name: "1"
+    for name in (
+        "OPENBLAS_NUM_THREADS",
+        "OMP_NUM_THREADS",
+        "MKL_NUM_THREADS",
+        "BLIS_NUM_THREADS",
+        "VECLIB_MAXIMUM_THREADS",
+        "NUMEXPR_NUM_THREADS",
+    )
+}
 # The single-copy median on the AMD EPYC 9V45 runners that set the 10 s per-test target (pull request 1007).
 REFERENCE_SECONDS = 0.55
 
@@ -70,10 +83,14 @@ def cpu_ticks() -> dict[str, int]:
     return {name: int(value) for name, value in zip(names, fields[1:9], strict=False)}
 
 
+def cap_threads() -> None:
+    """Pin every native thread pool to one thread; effective only before NumPy loads in the process."""
+    os.environ.update(THREAD_CAPS)
+
+
 def workload(scale: float = 1.0) -> float:
-    """Wall seconds of one fixed single-threaded workload; `scale` shrinks it for tests."""
-    for name in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS"):
-        os.environ.setdefault(name, "1")
+    """Wall seconds of one fixed workload, single-threaded once `cap_threads` ran before NumPy loaded; `scale`
+    shrinks it for tests."""
     import numpy as np
 
     n = 320
@@ -94,7 +111,7 @@ def profile(scale: float = 1.0, repeats: int = REPEATS, copies: int | None = Non
     cpus = copies or (len(os.sched_getaffinity(0)) if hasattr(os, "sched_getaffinity") else os.cpu_count() or 1)
     before = cpu_ticks()
     single = [workload(scale) for _ in range(repeats)]
-    with ProcessPoolExecutor(max_workers=cpus) as pool:
+    with ProcessPoolExecutor(max_workers=cpus, initializer=cap_threads) as pool:
         concurrent = list(pool.map(workload, [scale] * (2 * cpus)))
     after = cpu_ticks()
     delta = {k: after[k] - before[k] for k in before if k in after}
@@ -104,7 +121,8 @@ def profile(scale: float = 1.0, repeats: int = REPEATS, copies: int | None = Non
         "calibration_median_wall": round(statistics.median(single), 4),
         "concurrent_copies": cpus,
         "concurrent_median_wall": round(statistics.median(concurrent), 4),
-        "steal_fraction": round(delta.get("steal", 0) / (sum(delta.values()) or 1), 4),
+        # None where /proc/stat is absent (macOS): unmeasured, not zero.
+        "steal_fraction": round(delta.get("steal", 0) / (sum(delta.values()) or 1), 4) if delta else None,
         "speed_factor": round(speed_factor(str(statistics.median(single))), 3),
     }
 
@@ -114,6 +132,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--json", type=Path, help="write the profile to this file")
     parser.add_argument("--github-env", action="store_true", help="export the calibration to $GITHUB_ENV")
     args = parser.parse_args(argv)
+    cap_threads()
     result = profile()
     text = json.dumps(result, indent=2, sort_keys=True)
     print(text)
