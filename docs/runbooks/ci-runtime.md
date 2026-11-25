@@ -466,3 +466,68 @@ five code directories took 35.3 s; a cold `ci/install_pins.sh` into a fresh
 Python 3.14.7 venv with `PIP_NO_CACHE_DIR=1` took 31.9 s on the build host's
 network. The hosted cold install, and the `types` job, are measured by the
 first pr.yml run that misses the cache or carries the job.
+
+## Runner speed, shards and bytecode
+
+Issue 1006 recorded the pytest step taking 3.9 to 8.2 minutes on one label.
+Pull request 1007 measured why: four runs of the same suite with the
+per-test budget lifted, each beside ci/runner_profile.py, landed on EPYC
+9V45 (three) and 9V74 (one) runners, and its slim-checkout run on an EPYC
+7763. Summed test time follows the profile's single-copy calibration (the
+median of five runs of one fixed workload):
+
+| CPU | Calibration (s) | Summed test time (s) | Pytest wall (s) |
+|---|---|---|---|
+| AMD EPYC 9V45 | 0.50 to 0.55 | 875 to 1,014 | 242 to 282 |
+| AMD EPYC 9V74 | 0.79 | 1,262 | 346 |
+| AMD EPYC 7763 | 1.09 | 1,620 | 444 |
+
+The 7763 row comes from the run on a slimmer checkout described below, with
+85 tests failing early, so its time is a lower bound. Steal time read 0 on
+every runner, so the spread is per-core speed, not a contended host. The
+ordinary `tests` job of the same pull request, on a runner it did not
+profile, took 483 s and failed one test at 15.7 s against the 15 s bound.
+The per-test budget therefore scales by the calibration over 0.55 s, and the
+suite runs as two shards, each about half of a run that reached the
+8-minute step limit.
+
+Checkout took 193 to 284 s of every job, more than ruff, mypy, the
+contract suites or either shard's pytest step on the x64 runners; only the
+two arm jobs spent longer in pytest.
+Leaving out whole directories (the A5 working tree, the raw live records)
+failed 85 tests, since the A5 tests and findings ledger read the relation
+files, receipts and `.sha256` digests beside the bulk tables and the
+evidence-ledger tests read every live record their SHA256SUMS list. Leaving
+out only the bulk file families by name (about 3.3 GB; ci/AGENTS.md,
+"Layout and gates") passes the suite, and `lint` and `types` fetch
+docs/ and results/ as their Python files alone (93 MB of the 10.3 GB tree).
+On pull request 1008 checkout then took (before: run 45528880900 at
+e2e4fa954; after: run 45533290585 at 4b9557d, whose macOS leg the next push
+cancelled after its checkout; the final head passed every job in run
+45534428488):
+
+| Job | Before (s) | After (s) |
+|---|---|---|
+| lint | 209 | 5 |
+| types | 208 | 8 |
+| tests (core), tests (scripts) | 260 to 272 | 75 to 78 |
+| contracts | 212 | 77 |
+| arm (ubuntu-26.04-arm) | 193 | 64 |
+| arm (macos-26) | 284 | 93 |
+
+With the shards, the slowest pytest step was 256 s, on an EPYC 7763
+(calibration 1.06 s, budget factor 1.92), against the 8-minute limit.
+
+On the x64 runners one copy per CPU runs 1.6 to 1.9 times slower than a
+single copy (four vCPUs on SMT siblings), and the single-copy calibration
+still tracks the suite. The arm runners do not slow under load (1.10 s and
+1.13 s on ubuntu-26.04-arm, 0.94 s and 0.92 s on macos-26), and their suite
+runs as fast as the fastest x64 runner's, so the x64 reference would have
+doubled their bound unearned; the arm jobs run no profile and keep their
+fixed targets. The profiles, step times and bytecode readings are kept in
+[runner_speed_2026-11.json](../evidence/ci_runtime/runner_speed_2026-11.json).
+
+Precompiled bytecode reopens the question of the section above for one
+shard: in one job on one runner, tests/scripts took 231.8 s without
+repository bytecode, 225.5 s after a 2.1 s `compileall`, and 231.7 s again
+with the bytecode removed, so the shard jobs precompile.

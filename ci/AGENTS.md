@@ -7,11 +7,15 @@ flow; CLAUDE.md loads this file.
 
 ## Layout and gates
 
-Every `pr.yml` checkout uses a blob-filtered sparse checkout that leaves out the W8 N = 16 export tables
-(`docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-*/`, 235 MB per prime of evidence that no check reads), since
-fetching them pushed the `tests` job past its time limit, and the E8-bar and W8 products files at 32057
-(`docs/evidence/a5-exceptional-fibers/third-prime/relations/[ew]8-nm/d2/`, `sq.txt.part*` and `nf-d2.txt*`, 473 MiB). A
-check that starts reading a file there adds it back to the checkout's pattern list.
+Every `pr.yml` checkout is blob-filtered and sparse. The jobs that run pytest leave out the A5 bulk files no check
+reads, about 3.3 GB under `docs/evidence/a5-exceptional-fibers/`, by these exact name patterns: `sq.txt`,
+`nf-d[0-9].txt` and `nf[0-9].txt` with the `.part*` pieces of each, `s[0-9]_nf[0-9].txt`, the W8 N = 16 export
+tables `working/exports/*/q[BM]*.txt` with their `.part*` pieces and `working/exports/*/s.txt`, and the Azure archive
+parts `working/azure-results/**/*.tgz.part*`. A bulk file outside these patterns (a two-digit `nf-d10.txt`, say) is
+fetched until a pattern names it; the relation files, receipts and `.sha256` digests stay, since the A5 tests and
+findings ledger read those. `lint` and `types` fetch docs/ and results/ as their Python files
+only. Checkout took about 200 s of every job before (pull request 1008). A check that starts reading an excluded file
+adds it back to its job's pattern list.
 
 The modules run as scripts from gororoba_quantum/ and form no installable
 package; requirements.txt pins the tested runtime and pyproject.toml carries
@@ -29,7 +33,10 @@ per native library, `GOROROBA_PINS_REQUIRED=1`):
 - `types` runs mypy over the same directories from gororoba_quantum/;
 - `tests` runs `pytest -n auto --dist loadgroup -m "not audit"` over tests/
   under an 8-minute step timeout and writes the 25 slowest tests to the job
-  summary, leaving out tests/gororoba_quantum/test_contract_suites.py;
+  summary, leaving out tests/gororoba_quantum/test_contract_suites.py; in
+  pr.yml it runs as two shards, tests/scripts and the rest (`TEST_SHARD`),
+  each after ci/runner_profile.py and a bytecode precompile, and the `tests`
+  check passes when both shards pass;
 - `contracts` runs that file the same way in parallel with `tests` under a
   5-minute step timeout, so neither pytest step approaches its timeout;
 - `arm` runs the `tests` and `contracts` lanes on `ubuntu-26.04-arm` and
@@ -389,7 +396,16 @@ on every pull request. The rules that keep that run small:
   of an unmarked test and fails it past `CALL_BUDGET_TOLERANCE` (1.5) times
   that target, so hosted-runner jitter around 10 s passes;
   `GOROROBA_TEST_CALL_SECONDS` replaces the target on a contended host and 0
-  lifts the bound. An exhaustive or slow check carries `audit` and gets a small unmarked
+  lifts the bound. In the x64 CI jobs (the test shards and `contracts`)
+  the target scales by the runner's speed factor
+  (ci/runner_profile.py: its calibration over the 0.55 s of the reference
+  runner, never below 1), since runners of one label differ by up to twice;
+  the factor multiplies whichever target applies, a
+  `GOROROBA_TEST_CALL_SECONDS` one included. The profile step writes
+  `GOROROBA_RUNNER_CALIBRATION_SECONDS`; a non-positive or malformed value
+  stops collection, and a local run leaves it unset. The arm jobs run no
+  profile: their cores do not slow under load as the x64 runners' SMT
+  siblings do, so the x64 reference would loosen their bound unearned. An exhaustive or slow check carries `audit` and gets a small unmarked
   counterpart that tests the same rule on a small input.
 - Setup that several tests share is a `scope="module"` or `"session"`
   fixture. Each xdist worker builds its own copy, and `--dist loadgroup`

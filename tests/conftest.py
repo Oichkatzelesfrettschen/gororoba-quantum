@@ -29,6 +29,8 @@ sys.path.insert(0, str(ROOT / "ci"))
 sys.path.insert(1, str(ROOT / "gororoba_quantum"))
 sys.path.insert(2, str(ROOT / "scripts"))
 
+import runner_profile  # noqa: E402
+
 import math_sources  # noqa: E402
 import parallel  # noqa: E402
 
@@ -106,8 +108,12 @@ def create_perceval_data_directory() -> None:
 # and fails only past CALL_BUDGET_TOLERANCE times it, so hosted-runner jitter
 # around the target never fails a pull request. The hosted pull-request runner
 # measures about twice the build host's time. GOROROBA_TEST_CALL_SECONDS
-# replaces the target on a contended host; 0 lifts the bound.
-CALL_BUDGET_SECONDS = float(os.environ.get("GOROROBA_TEST_CALL_SECONDS", "10"))
+# replaces the target on a contended host; 0 lifts the bound. A CI job that
+# ran ci/runner_profile.py scales the target by its runner's speed factor,
+# since hosted runners of one label differ in per-core speed by up to twice.
+CALL_BUDGET_SECONDS = float(os.environ.get("GOROROBA_TEST_CALL_SECONDS", "10")) * runner_profile.speed_factor(
+    os.environ.get("GOROROBA_RUNNER_CALIBRATION_SECONDS")
+)
 CALL_BUDGET_TOLERANCE = 1.5
 
 
@@ -126,7 +132,7 @@ def pytest_runtest_makereport(
         report.outcome = "failed"
         report.longrepr = (
             f"{item.nodeid} took {call.duration:.2f} s, over {CALL_BUDGET_TOLERANCE:g} times the"
-            f" {CALL_BUDGET_SECONDS:.0f} s pull-request budget:"
+            f" {CALL_BUDGET_SECONDS:.1f} s pull-request budget:"
             " shrink its input or mark it audit with a small unmarked counterpart"
         )
     return report
