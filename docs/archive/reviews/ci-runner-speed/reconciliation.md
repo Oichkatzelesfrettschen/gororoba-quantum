@@ -30,6 +30,14 @@ made it a present case (fixed as recorded). It also asked that the measurements 
 (`docs/evidence/ci_runtime/runner_speed_2026-11.json`) and that the pull request reference issue 1006 without closing
 it, since QPU-49 closes on twenty consecutive runs inside the limit with 25 percent margin.
 
+## Hosted Codex review
+
+The hosted Codex round on head 1b38a07 left one finding (review 6051498562).
+
+| # | Reviewer | Finding | Class | Disposition |
+|---|---|---|---|---|
+| 13 | Codex (hosted), P1 | The concurrent calibration ran a private `ProcessPoolExecutor` sized by the affinity mask, so it ignored the cgroup CPU quota and `GOROROBA_WORKERS` that `parallel.workers()` honors, against the shared-pool rule of ci/AGENTS.md, and the reduced-profile test started two children in a one-slot test process | computed; measured on a 32-CPU host | Fixed in b8205ec08: the pass maps two copies per `parallel.workers()` slot through `parallel.ordered_map`. Under a 200 percent systemd CPU quota the profile ran 2 copies where the private pool ran 32; with `GOROROBA_WORKERS=4` it ran 4 through spawned workers. The summary test runs inline in its one slot, and a second test binds the copy count to `parallel.workers()` and the map to `parallel.ordered_map`. The hosted x64 runners report four affinity CPUs and no quota, so the recorded four-copy calibrations keep their load |
+
 ## Claims as the reviewers left them
 
 Claim 1 (budget floor) holds under the stated environment precondition. Claim 2 (calibration predicts suite time)
