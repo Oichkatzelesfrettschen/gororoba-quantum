@@ -260,3 +260,5 @@ The [billing refit review](iqm-billing-v4/README.md) (pull request 992) records 
 The [Emerald third-length claim review](research-state-emerald-third-length/README.md) (pull request 991) records two reviewers' findings on the claim.
 
 The [roadmap item-5 review](rank-locus-item5-nullity4/README.md) (pull request 1010) records the correction that leaves nullity 4 open in item 5 and the retained working records kept as a boundary.
+
+The [macOS pytest-step review](ci-macos-pytest-step/README.md) (pull request 1012) records the Advisor's findings, the inert worker group and the audit-marker boundary the hosted round raised.
