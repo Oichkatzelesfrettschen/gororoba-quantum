@@ -23,12 +23,28 @@ def test_seed_provenance_self_test() -> None:
         raise AssertionError("seed_provenance self-test failed")
 
 
-@pytest.mark.usefixtures("retained_tree")
 @pytest.mark.parametrize("shard", range(seed_provenance.SHARDS))
-def test_tree_seeds_are_accounted(shard: int) -> None:
-    seed_provenance.check_tree(shard)
+def test_code_seeds_are_accounted(shard: int) -> None:
+    """Every seed literal of the shard is accounted, and every allocation row is admitted except for the case-manifest
+    ownership of its draw, which reads the retained tree (test_tree_seeds_are_accounted)."""
+    seed_provenance.check_tree(shard, retained=False)
 
 
+# The checks marked audit read the retained tree under results/, several gigabytes (ci/AGENTS.md, "Behavioral
+# suite"), and run in gate core-behavior-01; the unmarked forms keep the ledger checks that need no tree in every
+# pull request.
+@pytest.mark.audit
+@pytest.mark.usefixtures("retained_tree")
+def test_tree_seeds_are_accounted() -> None:
+    seed_provenance.check_tree()
+
+
+def test_owned_and_reserved_rows_validate() -> None:
+    """Every owned and reserved row is admitted except for the case-manifest ownership of its draw."""
+    seed_provenance.check_tree_once(retained=False)
+
+
+@pytest.mark.audit
 @pytest.mark.usefixtures("retained_tree")
 def test_owned_draws_and_reserved_rows_validate() -> None:
     seed_provenance.check_tree_once()
@@ -78,6 +94,7 @@ def test_the_tree_checks_read_each_retained_file_once(tmp_path: Path, monkeypatc
         raise AssertionError(f"the retained files were read as {reads}")
 
 
+@pytest.mark.audit
 @pytest.mark.usefixtures("retained_tree")
 def test_retained_qrng_references_match_the_runtime_ledger() -> None:
     seed_provenance.check_runtime_tree()
@@ -172,3 +189,33 @@ def test_manifest_scan_equals_the_two_scans(tmp_path: Path) -> None:
     (root / "wide.json").write_bytes(json.dumps({"draw": name}).encode("utf-16"))
     with pytest.raises(seed_provenance.SeedError):
         seed_provenance.claimed_records(root)
+
+
+def test_the_code_form_skips_only_the_manifest_claim(monkeypatch: pytest.MonkeyPatch) -> None:
+    """check_tree(retained=False) never reads the retained tree, still refuses an unaccounted literal, and the full
+    form refuses an allocation whose draw a case manifest owns."""
+    path = "scripts/x.py"
+    row = {"path": path, "name": "SEED", "value": 22, "record": RECORD, "index": 1}
+    found = seed_provenance.Counter({(path, "SEED", 22): 1})
+    shard = seed_provenance.shard_of(path)
+    monkeypatch.setattr(seed_provenance, "scan", lambda _shard: (found, []))
+    monkeypatch.setattr(seed_provenance, "load", lambda _path, field: [row] if field == "allocations" else [])
+    monkeypatch.setattr(seed_provenance, "owned_records", lambda **_kwargs: set())
+    monkeypatch.setattr(seed_provenance, "read_tree_record", lambda _path: SYNTHETIC)
+    monkeypatch.setitem(seed_provenance.SOURCES, "docs/evidence/anu_qrng", admit_synthetic)
+    monkeypatch.setattr(seed_provenance, "PLAIN_SEED_FLAGS", frozenset())
+
+    def no_tree() -> set[str]:
+        raise AssertionError("the code form read the retained tree")
+
+    monkeypatch.setattr(seed_provenance, "tree_claims", no_tree)
+    monkeypatch.setattr(seed_provenance, "tracked_files", frozenset)
+    monkeypatch.setattr(seed_provenance, "check_reserved", lambda *_args: None)
+    seed_provenance.check_tree(shard, retained=False)
+    seed_provenance.check_tree_once(retained=False)
+    monkeypatch.setattr(seed_provenance, "tree_claims", lambda: {RECORD.rsplit("/", 1)[1]})
+    with pytest.raises(seed_provenance.SeedError, match="belongs to a case manifest"):
+        seed_provenance.check_tree(shard)
+    monkeypatch.setattr(seed_provenance, "load", lambda _path, _field: [])
+    with pytest.raises(seed_provenance.SeedError, match="appears 1 times, 0 accounted"):
+        seed_provenance.check_tree(shard, retained=False)

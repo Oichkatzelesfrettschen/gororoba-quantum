@@ -695,21 +695,26 @@ def read_tree_record(record_path: str) -> dict[str, Any]:
     return qrng_seeds.read_record(record_path, ROOT)
 
 
-def check_tree(shard: int | None = None) -> int:
-    """Account every seed literal of the tree, or of one shard; the whole tree also runs check_tree_once."""
+def check_tree(shard: int | None = None, retained: bool = True) -> int:
+    """Account every seed literal of the tree, or of one shard; the whole tree also runs check_tree_once.
+
+    Without retained, every row skips the one test that reads the retained tree under results/: that no case
+    manifest there owns its draw. The pull-request tests run that form; the full form, with the tree, runs in the
+    audit tests of gate core-behavior-01 and through --check."""
     found, flags = scan(shard)
-    claimed = tree_claims() | owned_records(validate=False)
+    claimed = (tree_claims() if retained else set()) | owned_records(validate=False)
     check(found, load(BASELINE, "seeds"), load(ALLOCATIONS, "allocations"), claimed, read_tree_record, shard, flags)
     if shard is None:
-        check_tree_once()
+        check_tree_once(retained)
     print(f"seed provenance: {sum(found.values())} seed literals accounted")
     return 0
 
 
-def check_tree_once() -> None:
+def check_tree_once(retained: bool = True) -> None:
     """The checks no shard repeats: owned-draw validation and the reserved rows. The pull-request tests run it
-    as its own test, so no shard carries it on top of its scan."""
-    manifest_claimed = tree_claims()
+    as its own test, so no shard carries it on top of its scan; without retained, the rows skip the case-manifest
+    ownership test, as in check_tree."""
+    manifest_claimed = tree_claims() if retained else set()
     claimed = manifest_claimed | owned_records(validate=True, manifest_claimed=manifest_claimed)
     allocations = load(ALLOCATIONS, "allocations")
     reserved = load(ALLOCATIONS, "reserved")

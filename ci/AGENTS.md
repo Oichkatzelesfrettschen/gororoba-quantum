@@ -538,7 +538,7 @@ and every gate exits 127 in 0.0 s.
 
 ## Seed ledger
 
-`ci/seed_provenance.py`, run by the `tests` check, requires every integer seed
+`ci/seed_provenance.py` requires every integer seed
 literal in the code directories and in every git-tracked Python file under
 docs/ to be a row of ci/reproduction_seeds.json, which only shrinks against
 main, or an entry of docs/evidence/qrng_seeds/allocations.json naming a
@@ -551,3 +551,11 @@ other integer; the run record's `seed_source` names the spelling, and the
 change that retains a qrng-seeded run adds its ledger row with
 `"$PYTHON" ci/seed_provenance.py --add-runtime`. The seed sources and their
 draw rules are in [docs/notes/qrng/README.md](../docs/notes/qrng/README.md).
+The `tests` check accounts the literals over eight shards and admits the
+allocation, owned and reserved rows on every pull request. The checks that read
+the retained tree under results/ (5.27 GB) carry `audit` and run in gate
+`core-behavior-01` and through `"$PYTHON" ci/seed_provenance.py --check` and
+`--runtime`: that no case manifest owns a ledger row's draw, and that the
+runtime ledger matches the retained qrng references. A change that retains a
+qrng-seeded run without its `--add-runtime` row therefore passes the `tests`
+check and fails that gate.

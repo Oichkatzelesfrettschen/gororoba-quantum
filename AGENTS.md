@@ -97,7 +97,10 @@ follows the job's question, not the circuit: a job that reproduces an earlier
 result imports the earlier seed constant by name, and a new job on an earlier
 circuit that needs its own randomness takes new values from a draw. A CLI
 seed goes through `qrng_seeds.add_seed_argument`.
-`ci/seed_provenance.py`, run by the `tests` check, enforces the ledger
+`ci/seed_provenance.py` enforces the ledger: the `tests` check accounts every
+seed literal and admits every allocation, owned and reserved row on each pull
+request, and gate `core-behavior-01` adds the checks that read the retained tree
+under results/: case-manifest ownership of a draw and the runtime ledger
 ([ci/AGENTS.md](ci/AGENTS.md#seed-ledger)).
 
 ## Grounding and algebra

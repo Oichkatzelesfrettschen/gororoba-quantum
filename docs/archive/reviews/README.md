@@ -262,3 +262,5 @@ The [Emerald third-length claim review](research-state-emerald-third-length/READ
 The [roadmap item-5 review](rank-locus-item5-nullity4/README.md) (pull request 1010) records the correction that leaves nullity 4 open in item 5 and the retained working records kept as a boundary.
 
 The [macOS pytest-step review](ci-macos-pytest-step/README.md) (pull request 1012) records the Advisor's findings, the inert worker group and the audit-marker boundary the hosted round raised.
+
+The [seed-ledger audit split review](ci-seed-ledger-audit-split/README.md) (pull request 1013) records the Advisor's findings on what left the pull-request suite and the clean hosted round.
