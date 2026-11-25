@@ -29,7 +29,10 @@ per native library, `GOROROBA_PINS_REQUIRED=1`):
 - `types` runs mypy over the same directories from gororoba_quantum/;
 - `tests` runs `pytest -n auto --dist loadgroup -m "not audit"` over tests/
   under an 8-minute step timeout and writes the 25 slowest tests to the job
-  summary, leaving out tests/gororoba_quantum/test_contract_suites.py;
+  summary, leaving out tests/gororoba_quantum/test_contract_suites.py; in
+  pr.yml it runs as two shards, tests/scripts and the rest (`TEST_SHARD`),
+  each after ci/runner_profile.py and a bytecode precompile, and the `tests`
+  check passes when both shards pass;
 - `contracts` runs that file the same way in parallel with `tests` under a
   5-minute step timeout, so neither pytest step approaches its timeout;
 - `arm` runs the `tests` and `contracts` lanes on `ubuntu-26.04-arm` and
@@ -389,7 +392,9 @@ on every pull request. The rules that keep that run small:
   of an unmarked test and fails it past `CALL_BUDGET_TOLERANCE` (1.5) times
   that target, so hosted-runner jitter around 10 s passes;
   `GOROROBA_TEST_CALL_SECONDS` replaces the target on a contended host and 0
-  lifts the bound. An exhaustive or slow check carries `audit` and gets a small unmarked
+  lifts the bound. In CI the target scales by the runner's speed factor
+  (ci/runner_profile.py: its calibration over the 0.55 s of the reference
+  runner, never below 1), since runners of one label differ by up to twice. An exhaustive or slow check carries `audit` and gets a small unmarked
   counterpart that tests the same rule on a small input.
 - Setup that several tests share is a `scope="module"` or `"session"`
   fixture. Each xdist worker builds its own copy, and `--dist loadgroup`
