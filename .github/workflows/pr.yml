@@ -73,7 +73,7 @@ jobs:
         timeout-minutes: 4
         run: sh ci/pr_checks.sh types
 
-  # The suite runs in two shards, tests/scripts and the rest, each about half of its test time; the `tests` job
+  # The suite runs in two shards, tests/scripts (about 40 percent of its test time) and the rest; the `tests` job
   # below passes only when both shards pass, so the required check keeps its name.
   tests-shard:
     name: tests (${{ matrix.shard }})
@@ -115,8 +115,8 @@ jobs:
       # took 2.1 s and saved 6.2 s of the 232 s tests/scripts run in one job (pull request 1007).
       - name: Precompile bytecode
         run: '"$PYTHON" -m compileall -q -j 0 gororoba_quantum scripts ci tests > /dev/null'
-      # The whole suite took 242 to 346 s on 4-CPU runners and 483 s on the slowest (pull request 1007), so each
-      # shard takes about half of that and the limit leaves room for the slowest runner.
+      # The whole suite took 242 to 346 s on 4-CPU runners and 483 s on the slowest (pull request 1007); the shards
+      # take about 60 and 40 percent of that (the core shard 256 s on an EPYC 7763), inside the limit.
       - name: pytest
         timeout-minutes: 8
         env:
@@ -223,8 +223,8 @@ jobs:
       # forms of the coreutils; macOS ships neither, so Homebrew's flock and coreutils supply them. gnubin joins
       # PATH after pins-venv, because setup-python's macOS installer needs the BSD chmod. The macOS arm64 runner reads
       # the repository about twice as slowly as the Linux runners (its slowest calls took 35.6 s), so its call-budget
-      # target (tests/conftest.py) is 30 s, failing a call past 45 s; the x64 and Linux arm64 jobs keep the 10 s
-      # target that catches a slowdown.
+      # target (tests/conftest.py) is 30 s, which the runner profile's CPU speed factor then multiplies, so a call
+      # fails past 45 s times that factor; the x64 and Linux arm64 jobs keep the 10 s target, scaled the same way.
       - name: Install flock and GNU coreutils
         if: runner.os == 'macOS'
         run: |

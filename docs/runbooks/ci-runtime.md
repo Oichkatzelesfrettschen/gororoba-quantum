@@ -471,9 +471,10 @@ first pr.yml run that misses the cache or carries the job.
 
 Issue 1006 recorded the pytest step taking 3.9 to 8.2 minutes on one label.
 Pull request 1007 measured why: four runs of the same suite with the
-per-test budget lifted, each beside ci/runner_profile.py, landed on three
-CPU models. Summed test time follows the profile's single-copy calibration
-(the median of five runs of one fixed workload):
+per-test budget lifted, each beside ci/runner_profile.py, landed on EPYC
+9V45 (three) and 9V74 (one) runners, and its slim-checkout run on an EPYC
+7763. Summed test time follows the profile's single-copy calibration (the
+median of five runs of one fixed workload):
 
 | CPU | Calibration (s) | Summed test time (s) | Pytest wall (s) |
 |---|---|---|---|
@@ -490,7 +491,9 @@ The per-test budget therefore scales by the calibration over 0.55 s, and the
 suite runs as two shards, each about half of a run that reached the
 8-minute step limit.
 
-Checkout, not pytest, was the largest step of every job: 193 to 284 s.
+Checkout took 193 to 284 s of every job, more than ruff, mypy, the
+contract suites or either shard's pytest step on the x64 runners; only the
+two arm jobs spent longer in pytest.
 Leaving out whole directories (the A5 working tree, the raw live records)
 failed 85 tests, since the A5 tests and findings ledger read the relation
 files, receipts and `.sha256` digests beside the bulk tables and the
@@ -498,7 +501,10 @@ evidence-ledger tests read every live record their SHA256SUMS list. Leaving
 out only the bulk file families by name (about 3.3 GB; ci/AGENTS.md,
 "Layout and gates") passes the suite, and `lint` and `types` fetch
 docs/ and results/ as their Python files alone (93 MB of the 10.3 GB tree).
-On pull request 1008 checkout then took:
+On pull request 1008 checkout then took (before: run 45528880900 at
+e2e4fa954; after: run 45533290585 at 4b9557d, whose macOS leg the next push
+cancelled after its checkout; the final head passed every job in run
+45534428488):
 
 | Job | Before (s) | After (s) |
 |---|---|---|
