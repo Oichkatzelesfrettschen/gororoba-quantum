@@ -35,7 +35,7 @@ builder reproduces the module's outcome laws on all six operands and both twins,
 4. Plain phases +-i on the upper members, with s_k dropped, read -14 at e_1 + i e_3 and -2 at e_1 + i e_26.
 5. The complex circuit is the pinned real circuit of e_i + e_j with two added gates: S (S-dagger for t = -i) on data
    qubit h, the highest set bit of m, after the oracle, and S on the selector after its first H. The statevectors
-   agree in both arms. Transpiled to the basis cz, rz, sx, x at optimization level 1 without a coupling map, both
+   agree in both arms at t = i and -i on all 465 pairs. Transpiled to the basis cz, rz, sx, x at optimization level 1 without a coupling map, both
    circuits have 96 cz gates at e_1 +- i e_26 and 91 at e_1 + i e_3. S is rz(pi/2) up to a global phase, and rz
    belongs to the Heron basis, so the complex strata cost single-qubit rotations alone.
 

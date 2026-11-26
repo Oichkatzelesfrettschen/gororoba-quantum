@@ -252,7 +252,17 @@ def validate(result: dict[str, Any]) -> None:
     require([row["nullity"] for row in result["field_points"]] == [12] * len(FIELD_POINTS), "field points")
     require([row["nullity"] for row in result["off_cone_points"]] == [0] * len(OFF_CONE_POINTS), "off-cone points")
     require([row["nullity_mod_p"] for row in result["local_points"]] == [12] * len(LOCAL_POINTS), "local points")
+    for row in result["field_points"]:
+        require(sum(v * v for v in row["x"]) == row["d"] * row["s"] ** 2, f"field point off the cone: {row}")
+    for row in result["off_cone_points"]:
+        require(sum(v * v for v in row["x"]) != row["d"] * row["s"] ** 2, f"control point on the cone: {row}")
+    for row in result["local_points"]:
+        p, r2, t = row["p"], sum(v * v for v in row["x"]), row["t_mod_p"]
+        require(p % 2 == 1 and r2 % p != 0 and (t * t + r2) % p == 0, f"Hensel preconditions fail: {row}")
     lemma = result["commutation_lemma"]
+    expected_specs = [(level, family, tau, len(space), u, v) for level, family, tau, space, u, v in family_specs()]
+    found_specs = [(r["level"], r["family"], r["time"], r["space_size"], r["u"], r["v"]) for r in lemma]
+    require(found_specs == expected_specs, "commutation lemma rows differ from the family specification")
     require(len(lemma) == 16 and all(row["failures"] == 0 for row in lemma), "commutation lemma")
 
 

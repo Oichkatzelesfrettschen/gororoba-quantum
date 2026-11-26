@@ -197,6 +197,11 @@ def pair_item(pair: tuple[int, int]) -> dict[str, Any]:
     i, j = pair
     real = exact_nullity(i, j, 1)
     row: dict[str, Any] = {"pair": [i, j], "real_nullity": real, "real_circuit": reading(i, j, 1)}
+    row["s_form_equivalent"] = all(
+        Statevector(s_form(i, j, t, plus)).equiv(Statevector(kernel_map(i, j, t, plus)))
+        for t in (1j, -1j)
+        for plus in (False, True)
+    )
     for label in ("i", "-i"):
         row[f"nullity_{label}"] = exact_nullity(i, j, PHASES[label])
         row[f"circuit_{label}"] = reading(i, j, PHASES[label])
@@ -220,6 +225,7 @@ def all_pairs() -> dict[str, Any]:
                 reading_row["half_sum"] == reading_row["selector"] == expected,
                 reading_row["half_sum_exact"] and reading_row["selector_exact"] and reading_row["unit_contrasts"],
             ]
+        checks.append(row["s_form_equivalent"])
         if not all(checks):
             failures.append(row["pair"])
     return {
@@ -264,6 +270,10 @@ def validate(result: dict[str, Any]) -> None:
     require(readings == [16, 12, 12, 8, 4, 4], f"operands at t = i: {readings}")
     for row in result["operands_at_i"].values():
         require(row["nullity_i"] == row["circuit_i"] == HALF - row["real_nullity"], f"operand row {row}")
+    p0 = {name: (row["p0_minus"], row["p0_plus"]) for name, row in result["points"].items()}
+    require(p0["e1+(i)e3"] == (0.0, 1.0) and p0["e1+(i)e26"] == (0.125, 0.875), f"selector marginals {p0}")
+    cz = {name: (row["cz_real"], row["cz_complex"]) for name, row in result["s_form"].items()}
+    require(cz == {"e1+(i)e3": (91, 91), "e1+(i)e26": (96, 96), "e1+(-i)e26": (96, 96)}, f"cz counts {cz}")
     plain = result["plain_phase_control"]
     require(plain["e1+(i)e3"]["half_sum"] == -14 and plain["e1+(i)e26"]["half_sum"] == -2, f"plain control: {plain}")
     pairs = result["all_pairs"]

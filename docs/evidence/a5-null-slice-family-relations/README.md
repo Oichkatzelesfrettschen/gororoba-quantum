@@ -16,7 +16,7 @@ record's `triple_item`, imported, with one pool task per pair:
 | 10 | 1024 | 254 | 8,161,274 | 0 | [result-n10.json](result-n10.json) |
 | 11 | 2048 | 510 | 66,195,450 | 0 | [result-n11.json](result-n11.json) |
 
-Each result names the sha256 of the checker and of the envelope script it imports. The relations at n = 10 to 12 now
+Each result names the sha256 of the checker and of the envelope script it imports. The relations at n = 10 and 11 now
 rest on two lines of evidence: this exhaustive check and the star criterion with the sufficient direction of A5-617.
 The two share the cd_sign tables, so they count as one line for the sign convention.
 

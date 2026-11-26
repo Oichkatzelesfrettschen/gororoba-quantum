@@ -12,7 +12,7 @@ The items of pool row MATH-71 and the reduction of pool row MATH-73, each comput
    exactly when its signs are consistent. From n = 3 on, only d = 0 is consistent. The rank of the linear system
    X L_a - L_a X = 0 modulo 32003 gives the same dimensions for n = 1 to 4.
 2. **Envelope.** For n = 3 to 10, the left tables generate the full matrix algebra M_(2^n)(Q). The span of the L_a is
-   closed under transposition (L_a^T = -L_a), so its associative envelope is semisimple: a nilpotent ideal holding x
+   closed under transposition (L_0 = I and L_a^T = -L_a for a != 0), so its associative envelope is semisimple: a nilpotent ideal holding x
    would hold the nilpotent positive semidefinite x x^T, which is 0. Commutant Q then makes Q^(2^n) one irreducible
    module whose endomorphisms are Q, and Wedderburn's theorem gives End_Q(Q^(2^n)). This is the characteristic-0 form
    of the F_p statement of Zhou 2026 (Zenodo 10.5281/zenodo.23966060, odd p, n >= 3); the earlier record's dimension 256
@@ -52,7 +52,9 @@ The items of pool row MATH-71 and the reduction of pool row MATH-73, each comput
 
    **What is still open (MATH-73).** The lemma itself for every n. One step of the cd_sign recursion on the top bit
    maps the commutation sign at level n, for k below the top bit, to minus the sign at level n - 1 with time
-   tau - 2^(n-1). The exceptions are k = tau' and tau' ^ a, where e_(tau' ^ k) and e_a commute. Three such steps reach
+   tau' = tau - 2^(n-1). The exceptions are k in {0, a, tau', tau' ^ a}: a reviewer derived this set, and a probe
+   at n = 5 to 8 confirms it. The involution k -> k ^ a ^ tau exchanges the two halves and preserves C_a, so the
+   lower half decides the lemma. Three such steps reach
    the doubling unit 2^(n-3), whose signs have a closed form. A proof can follow those three steps on both halves of
    k, or treat the four sign evaluations as one finite automaton over bit columns.
 
@@ -64,7 +66,7 @@ every cone point has nullity 12. All held.
 
 ## Controls
 
-`--self-test` runs four paired controls:
+`--self-test` runs five paired controls:
 
 | Control | Baseline | Mutant |
 |---|---|---|
