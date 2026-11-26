@@ -242,7 +242,11 @@ def section_item(task: tuple[str, tuple[int, int, str]]) -> dict[str, Any]:
     if kind == "point":
         return {"nullity": exact_nullity(i, j, t), **reading(i, j, t)}
     if kind == "operand":
-        return {"real_nullity": exact_nullity(i, j, t), "nullity_i": exact_nullity(i, j, 1j), "circuit_i": reading(i, j, 1j)["half_sum"]}
+        return {
+            "real_nullity": exact_nullity(i, j, t),
+            "nullity_i": exact_nullity(i, j, 1j),
+            "circuit_i": reading(i, j, 1j)["half_sum"],
+        }
     if kind == "plain":
         return reading(i, j, t, plain=True)
     return s_form_row(i, j, t)
