@@ -160,7 +160,7 @@ def local_nullity(tables: list[Any], p: int, x: tuple[int, ...], *, shift: int =
 
 
 def family_specs() -> list[tuple[int, str, int, tuple[int, ...], int, int]]:
-    """(level, family, time, space, u, v) of the two so(m,1) families of ledger A5-618, with T = {u, v, tau ^ u, tau ^ v}."""
+    """(level, family, time, space, u, v) of the two so(m,1) families of ledger A5-618; T = {u, v, tau ^ u, tau ^ v}."""
     specs = []
     for level in FAMILY_LEVELS:
         h = 1 << (level - 3)
@@ -185,7 +185,15 @@ def commutation_item(spec: tuple[int, str, int, tuple[int, ...], int, int], *, s
         commute = rows[0][k] * rows[index][tau ^ k] == rows[index][k] * rows[0][a ^ k]
         expected = common | {t ^ a ^ tau for t in common}
         failures += int(set(np.nonzero(commute)[0].tolist()) != expected)
-    return {"family": family, "level": level, "time": tau, "space_size": len(space), "u": u, "v": v, "failures": failures}
+    return {
+        "family": family,
+        "level": level,
+        "time": tau,
+        "space_size": len(space),
+        "u": u,
+        "v": v,
+        "failures": failures,
+    }
 
 
 def compute() -> dict[str, Any]:
