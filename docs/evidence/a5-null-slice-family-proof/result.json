@@ -66,6 +66,7 @@
    "failures": 0,
    "family": "time 7 * 2^(n-3)",
    "level": 4,
+   "space_clifford": true,
    "space_size": 2
   },
   {
@@ -73,6 +74,7 @@
    "failures": 0,
    "family": "time 7 * 2^(n-3)",
    "level": 5,
+   "space_clifford": true,
    "space_size": 6
   },
   {
@@ -80,6 +82,7 @@
    "failures": 0,
    "family": "time 7 * 2^(n-3)",
    "level": 6,
+   "space_clifford": false,
    "space_size": 14
   },
   {
@@ -87,6 +90,7 @@
    "failures": 0,
    "family": "octonion space",
    "level": 6,
+   "space_clifford": true,
    "space_size": 7
   },
   {
@@ -94,6 +98,7 @@
    "failures": 0,
    "family": "time 7 * 2^(n-3)",
    "level": 7,
+   "space_clifford": false,
    "space_size": 30
   },
   {
@@ -101,6 +106,7 @@
    "failures": 0,
    "family": "octonion space",
    "level": 7,
+   "space_clifford": true,
    "space_size": 7
   },
   {
@@ -108,6 +114,7 @@
    "failures": 0,
    "family": "time 7 * 2^(n-3)",
    "level": 8,
+   "space_clifford": false,
    "space_size": 62
   },
   {
@@ -115,6 +122,7 @@
    "failures": 0,
    "family": "octonion space",
    "level": 8,
+   "space_clifford": true,
    "space_size": 7
   },
   {
@@ -122,6 +130,7 @@
    "failures": 0,
    "family": "time 7 * 2^(n-3)",
    "level": 9,
+   "space_clifford": false,
    "space_size": 126
   },
   {
@@ -129,6 +138,7 @@
    "failures": 0,
    "family": "octonion space",
    "level": 9,
+   "space_clifford": true,
    "space_size": 7
   },
   {
@@ -136,6 +146,7 @@
    "failures": 0,
    "family": "time 7 * 2^(n-3)",
    "level": 10,
+   "space_clifford": false,
    "space_size": 254
   },
   {
@@ -143,6 +154,7 @@
    "failures": 0,
    "family": "octonion space",
    "level": 10,
+   "space_clifford": true,
    "space_size": 7
   },
   {
@@ -150,6 +162,7 @@
    "failures": 0,
    "family": "time 7 * 2^(n-3)",
    "level": 11,
+   "space_clifford": false,
    "space_size": 510
   },
   {
@@ -157,6 +170,7 @@
    "failures": 0,
    "family": "octonion space",
    "level": 11,
+   "space_clifford": true,
    "space_size": 7
   },
   {
@@ -164,6 +178,7 @@
    "failures": 0,
    "family": "time 7 * 2^(n-3)",
    "level": 12,
+   "space_clifford": false,
    "space_size": 1022
   },
   {
@@ -171,6 +186,7 @@
    "failures": 0,
    "family": "octonion space",
    "level": 12,
+   "space_clifford": true,
    "space_size": 7
   }
  ],

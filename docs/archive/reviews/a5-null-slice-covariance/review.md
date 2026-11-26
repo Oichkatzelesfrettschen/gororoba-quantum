@@ -1,0 +1,24 @@
+# Review record: A_5 null-slice covariance by XOR blocks and the family proof
+
+Pull request 1019, branch `a5-null-slice-covariance-blocks`. Reviewers, as the owner directed for this program:
+- one red-team round by `agy` on `gemini-4-neon-low` at head `80d4f998c`, read-only, with its computations on the compute workstation;
+- the Advisor (the `advisor` tool) last;
+- Codex, the hosted review.
+
+The proof of the commutation-set lemma comes from a delegated Opus task (pool row MATH-73, owner approval of
+2026-11-26). Its check script ran again on the compute workstation (rc 0, every line passing). The parent re-derived
+Step 0, the lower half of Lemma R and both compositions before the proof entered this record.
+
+## Red team, round 1 (head `80d4f998c`)
+
+| # | Finding | Class | Check against the source | Verdict |
+|---|---|---|---|---|
+| 1 | A5-618's "four vector modules" and A5-626's "nullity 4 at a null point" had no bridge in the proof README | read | ledger rows and README | survives; the README states the four modules (one per u in T, by the boost action of A5-617), and A5-626 says its nullity is computed per level |
+| 2 | The peel-sign control negated every sign, so it failed for a trivial reason | read | `self_test` | survives; the mutant drops a ^ t from S |
+| 3 | `validate()` left the constraint counts, the space sizes and the Clifford space unchecked | read | both `validate` functions | survives; each has a require, and the proof record checks the octonion-space Clifford property at n = 6 to 12 |
+| 4 | G_2 inside the covariance algebra follows from the Leibniz rule; the content is the reverse inclusion | proved by the reviewer | the identity D L_x - L_x D = L_(D x) | survives; the covariance README states it |
+| 5 | The block decomposition is exact; a dense A_4 system agrees with the block method | computed by the reviewer | not rerun here | noted |
+| 6 | The upper-half cases of Lemmas R and U are proved by four factor ratios each | proved by the reviewer | the README's case split | survives; the README records two agreeing derivations |
+| 7 | Conjecture: the octonion-space slice of A_7 has covariance G_2 | hypothesis, then computed | prediction 14 written before the run; A_7 gives 14, 14, 0 and equality with the derivations | survives; A_7 enters the record and A5-619 |
+
+The reviewer ran in auto mode. Afterwards `git status --short` showed no tracked change in any of the six workspace repositories.
