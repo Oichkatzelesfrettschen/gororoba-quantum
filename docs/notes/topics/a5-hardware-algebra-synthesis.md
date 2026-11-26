@@ -331,8 +331,10 @@ while no boost acts covariantly on L_y (615), so a Lorentz reading of the slice 
 - hypothesis (row 630): the complex strata become device observables through Hermitian involutions built from the
   same signed permutations: for anticommuting tables the kernel of L_(e_a + i e_b) is the +1 eigenspace of the Hermitian involution i L_a L_b (row 629), and for e_1 + i e_26 that holds only on ker K_1, so a kernel
   map with selector phase i and orientation phases +-i s_k reads N = 16 at e_1 + i e_3 and N = 12 at e_1 + i e_26,
-  by the complement law N(e_a + i e_b) = 16 - N(e_a + e_b) of row 629, the sector split of [singular sector dynamics](../singular_sector_dynamics.md) read on S-. The noiseless statevector decides
-  it before any written case ([program note](../../design/a5-null-slice-connections-program.md)).
+  by the complement law N(e_a + i e_b) = 16 - N(e_a + e_b) of row 629, the sector split of [singular sector dynamics](../singular_sector_dynamics.md) read on S-. The exact statevector
+  confirms it on all 465 pairs, and the complex map is the real map with two S gates and the same cz count (rows 630
+  and 631, [record](../../evidence/a5-complex-kernel-map/README.md)); a device reading (row 632) needs its own written
+  case.
 - The second record ([evidence](../../evidence/a5-null-slice-associator-envelope/README.md), rows 622 to 628) adds
   the strata a hardware estimator could not reach on the real slice: nullity 12 and 16 appear only where the
   Euclidean form r^2 + t^2 vanishes, which needs complex or modular coefficients.

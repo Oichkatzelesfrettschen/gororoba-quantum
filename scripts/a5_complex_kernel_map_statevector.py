@@ -52,7 +52,7 @@ POINTS: tuple[tuple[int, int, str], ...] = ((1, 3, "1"), (1, 3, "i"), (1, 26, "1
 PLAIN_POINTS: tuple[tuple[int, int, str], ...] = ((1, 3, "i"), (1, 26, "i"))
 BASIS_GATES = ["cz", "rz", "sx", "x"]
 # Real over complex nullity of the 465 two-term operands e_i + e_j and e_i + i e_j of A_5.
-HISTOGRAM: dict[str, int] = {}
+HISTOGRAM: dict[str, int] = {"0/16": 171, "12/4": 126, "4/12": 84, "8/8": 84}
 EXACT = 1e-9
 
 

@@ -4907,6 +4907,24 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_complex_kernel_map_statevector.py --check docs/evidence/a5-complex-kernel-map/result.json",
+      "name": "core-a5-complex-kernel-map",
+      "seconds": 30.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-complex-kernel-map/result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_complex_kernel_map_statevector.py --self-test && \"$PYTHON\" -B -W error -O scripts/a5_complex_kernel_map_statevector.py --self-test",
+      "name": "core-a5-complex-kernel-map-self-test",
+      "seconds": 30.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/qd_teleportation_rehearsal.py --analyze results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00 --check && \"$PYTHON\" -B -W error scripts/qd_rehearsal_secondary.py results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00 --check",
       "name": "core-teleportation-rehearsal-job-00-replay",
       "seconds": 12.0,

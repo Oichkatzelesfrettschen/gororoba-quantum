@@ -132,7 +132,9 @@ The second record, [a5-null-slice-associator-envelope](../../evidence/a5-null-sl
 | A5-627 | the 225 two-term pairs of A_5 split 15, 84, 126 at nullity 0, 4, 12; every nullity-4 pair has strut above 8 | proved |
 | A5-628 | the paper's corner boost is one unitary one-parameter group; no non-abelian Lorentz algebra appears | boundary |
 | A5-629 | complex two-term operands of anticommuting tables have Gram 2 (I - i L_a L_b): kernels are eigenspaces of Hermitian involutions, nullity half the dimension; on the slice the Euclidean-cone kernel is ker K_1 n ker(i L_1 J - I) | proved |
-| A5-630 | the kernel map with selector phase i and orientation phases +-i s_k reads N = 16 and N = 12 on the complex strata (a reviewer's noiseless computation agrees) | open |
+| A5-630 | the kernel map with selector phase i and orientation phases +-i s_k reads N = 16 and N = 12 on the complex strata in an exact statevector; plain +-i reads -14 and -2 ([record](../../evidence/a5-complex-kernel-map/README.md)) | proved |
+| A5-631 | the complex map reads the nullity over C on all 465 pairs of A_5, and it is the real map with two S gates and the same cz count | proved |
+| A5-632 | a Heron device reads 16 and 12 with the complex map | open |
 
 What the slice changes for the program:
 

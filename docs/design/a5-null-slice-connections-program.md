@@ -2,7 +2,7 @@
 
 This program note joins the two null-slice records
 ([boost algebra](../evidence/a5-null-slice-boost-algebra/README.md), ledger rows A5-612 to A5-621;
-[associator envelope](../evidence/a5-null-slice-associator-envelope/README.md), rows A5-622 to A5-630) to the rest of
+[associator envelope](../evidence/a5-null-slice-associator-envelope/README.md), rows A5-622 to A5-630; the [complex kernel map](../evidence/a5-complex-kernel-map/README.md), rows A5-630 to A5-632) to the rest of
 the repository. Each connection names its mechanism, evidence class, status and falsifier. Status uses the ledger
 words; "no link found" records a search with its scope.
 
@@ -64,12 +64,16 @@ and the involution property holds only after restriction to ker K_1, where the E
 L_(e_1 + i e_26) is ker K_1 n ker(i L_1 J - I), with K_1 the symmetric part of the module's signed permutation
 L_1^T L_26.
 
-- hypothesis: the kernel map of `gororoba_quantum/pathion_kernel_map.py` with the selector phase i (an S gate) in place
-  of the sign t = -1, and orientation phases +-i s_k on the upper pair members (s_k the pair sign of L_i^T L_j), reads
-  N = 16 at e_1 + i e_3 and N = 12 at e_1 + i e_26, against N = 4 at e_1 + e_26 and 0 at e_1 + e_3. A reviewer's
-  noiseless computation gives 16 and 12 with the phases +-i s_k and fails (-14 and -2) with plain +-i; the complement
-  law above is its mechanism. Falsifier: the recorded noiseless statevector of the modified module gives other
-  values. The statevector run needs no provider; a device run needs its own written case.
+- The kernel map of `gororoba_quantum/pathion_kernel_map.py` with the selector phase i (an S gate) in place of the
+  sign t = -1, and orientation phases +-i s_k on the upper pair members (s_k the pair sign of L_i^T L_j), reads
+  N = 16 at e_1 + i e_3 and N = 12 at e_1 + i e_26, against N = 4 at e_1 + e_26 and 0 at e_1 + e_3; plain +-i reads
+  -14 and -2 (A5-630, proved by exact statevector in the
+  [complex kernel map record](../evidence/a5-complex-kernel-map/README.md)). The oracle phase t s_k puts t^2 = -1
+  into the pair interference, so the map counts misaligned pairs, which the complement law equates with the nullity
+  over C; the record checks it on all 465 pairs (A5-631). The complex map is the real one with two S gates and the
+  same cz count.
+- hypothesis (A5-632): a Heron device reads 16 and 12 with the complex map. Falsifier: corrected estimates that
+  exclude them. A device run needs its own written case.
 
 ## Formal targets and the prover for each
 
