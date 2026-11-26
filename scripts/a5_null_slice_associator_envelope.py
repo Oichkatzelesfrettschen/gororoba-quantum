@@ -372,6 +372,7 @@ def complex_two_term() -> dict[str, Any]:
         "spectra": spectra,
     }
 
+
 def commutant_basis(generators: list[Any]) -> list[Any]:
     size = generators[0].shape[0]
     eye = np.eye(size, dtype=np.int64)
@@ -788,7 +789,9 @@ def validate(result: dict[str, Any]) -> None:
         require(row["gram_identity_failures"] == 0, f"complex Gram at {row['dimension']}")
         require(row["traceless_involutions"] == anticommuting, f"traceless involutions at {row['dimension']}")
         require(row["kernel_agreements"] == anticommuting, f"involution kernels at {row['dimension']}")
-    require(complex_result["complement_pairs"] == 465 and complex_result["complement_agreements"] == 465, "complement law")
+    require(
+        complex_result["complement_pairs"] == 465 and complex_result["complement_agreements"] == 465, "complement law"
+    )
     require(complex_result["slice_kernel"] == {"nullity": 12, "defect_and_involution": 12, "joint": 12}, "slice kernel")
     require(
         complex_result["spectra"]
