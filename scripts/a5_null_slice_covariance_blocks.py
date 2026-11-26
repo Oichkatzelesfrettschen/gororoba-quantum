@@ -12,8 +12,8 @@ This record checks, exactly over Q:
 
 - calibration: on the A_5 slice (space 1, 3, 4, 5, 6, 7; time 26) the method returns 8, 8, 0 for all generators,
   rotations and boosts, the values the dense 7168-row system of a5-null-slice-boost-algebra records (A5-615);
-- on the octonion-space slices of A_6 and A_7 (time 104) (space 1..7, time 56; the dense system has 32768 x 8220 entries) the covariant
-  generators span 14 dimensions, all rotations, no boost;
+- on the octonion-space slices of A_6 (space 1..7, time 56; the dense system has 32768 x 8220 entries) and of A_7
+  (time 104) the covariant generators span 14 dimensions, all rotations, no boost;
 - that space equals the derivation algebra of the octonions (G_2) in so(7), and the A_5 space equals the stabilizer
   of e_2 in G_2 restricted to the A_5 frame (su(3)).
 
