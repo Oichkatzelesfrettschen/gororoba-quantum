@@ -39,6 +39,18 @@ The n = 12 relation check finished after the round (533,209,082 relations, 0 fai
 result names the same checker sha256 (7ee2b676) as n = 10 and 11. It adds a row to the relations README, ledger
 A5-637 and a gate, and reaches the Advisor and Codex unreviewed by the red team.
 
+## Advisor, after the red team
+
+| Finding | Resolution |
+|---|---|
+| Statement 2 of the census called A5-633 the characteristic-0 form of Zhou 2026 with the paper read as an abstract only | the filed PDF's abstract and introduction were read: the theorem covers odd p and every n >= 3 with the cd_core doubling, and rank over Q >= rank over F_p transfers it to Q for every n; README and A5-633 say so |
+| The census said no published proof of the triple formula was found in searches made for other claims | four targeted queries listed; Wilmot 2025 (arXiv 2505.11747) is the nearest neighbor, its abstract states no count |
+| Statement 5 omitted the prime 11 below 32 | corrected |
+| `SOURCE_FILES` unused in the census; the n = 12 gate time unmeasured at 32 workers | removed; marked an estimate |
+| The A5-626 status row and the connections row still said direct checks stop at 512 | both point at A5-637 |
+| Serial loops over points, operands and S-form rows | pooled through `parallel.ordered_map`; the committed results are unchanged byte for byte |
+| The relations script had no bounded test | `tests/scripts/test_a5_null_slice_family_relations.py` checks n = 6 and a moved space |
+
 ## Validation after the fixes
 
 On the compute workstation under WSL with the pinned interpreter:

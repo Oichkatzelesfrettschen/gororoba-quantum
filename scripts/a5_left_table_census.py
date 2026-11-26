@@ -70,6 +70,8 @@ LOCAL_POINTS: tuple[tuple[int, tuple[int, ...]], ...] = (
     (41, (1, 2, 0, 0, 0, 0)),
 )
 FAMILY_LEVELS: tuple[int, ...] = tuple(range(4, 13))
+
+
 def require(condition: bool, message: str) -> None:
     if not condition:
         raise RuntimeError(message)
