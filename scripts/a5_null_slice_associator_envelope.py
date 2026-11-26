@@ -501,38 +501,66 @@ def block_nullity(dimension: int, rows: dict[int, Any], coefficients: dict[int, 
     return total
 
 
-def family_rows(level: int) -> list[dict[str, Any]]:
-    dimension = 1 << level
-    out = []
-    for family, tau, space in (
-        ("time 7 * 2^(n-3)", 7 << (level - 3), tuple(i for i in range(1, 1 << (level - 2)) if i != 1 << (level - 3))),
-        ("octonion space", (1 << (level - 1)) + (1 << (level - 2)) + 8, tuple(range(1, 8))),
-    ):
-        used = set(space) | {tau}
-        rows = {k: v.astype(np.int64) for k, v in zip(sorted(used), sign_rows(dimension, sorted(used)), strict=True)}
-        row: dict[str, Any] = {
-            "family": family,
-            "level": level,
-            "dimension": dimension,
-            "time": tau,
-            "space_size": len(space),
-        }
-        row["sign_rows_checked"] = len(used)
-        row["sign_disagreements"] = sign_disagreements(dimension, used)
-        row.update(stars(dimension, rows, tau, space))
-        row["space_clifford"] = clifford_space(dimension, rows, space)
-        row["null_point_nullity"] = block_nullity(dimension, rows, {space[0]: 3, space[1]: 4, tau: 5})
-        if level <= TRIPLE_LEVEL_LIMIT or len(space) <= 8:
-            items = [(dimension, tau, space, a, b) for a, b in combinations(space, 2)]
-            row["triple_relations"] = [
-                len(items) * len(space),
-                sum(parallel.ordered_map(triple_item, items, min_items=1)),
-            ]
-        else:
-            row["triple_relations"] = None
-        out.append(row)
-    return out
+def family_specs(levels: tuple[int, ...]) -> list[tuple[int, str, int, tuple[int, ...]]]:
+    """(level, family, time index, space) of the two families at each level."""
+    specs = []
+    for level in levels:
+        specs.append(
+            (
+                level,
+                "time 7 * 2^(n-3)",
+                7 << (level - 3),
+                tuple(i for i in range(1, 1 << (level - 2)) if i != 1 << (level - 3)),
+            )
+        )
+        specs.append((level, "octonion space", (1 << (level - 1)) + (1 << (level - 2)) + 8, tuple(range(1, 8))))
+    return specs
 
+
+def family_structure_item(spec: tuple[int, str, int, tuple[int, ...]]) -> dict[str, Any]:
+    """Stars, the Clifford test of the space and the nullity at a null point of one family slice."""
+    level, family, tau, space = spec
+    dimension = 1 << level
+    used = sorted({*space, tau})
+    rows = {k: v.astype(np.int64) for k, v in zip(used, sign_rows(dimension, used), strict=True)}
+    row: dict[str, Any] = {"family": family, "level": level, "dimension": dimension, "time": tau}
+    row["space_size"] = len(space)
+    row["sign_rows_checked"] = len(used)
+    row.update(stars(dimension, rows, tau, space))
+    row["space_clifford"] = clifford_space(dimension, rows, space)
+    row["null_point_nullity"] = block_nullity(dimension, rows, {space[0]: 3, space[1]: 4, tau: 5})
+    return row
+
+
+def family_rows_for(levels: tuple[int, ...]) -> list[dict[str, Any]]:
+    """Every family row of the levels, with structure, sign checks and relation checks each mapped as one flat pool."""
+    specs = family_specs(levels)
+    rows = parallel.ordered_map(family_structure_item, specs, min_items=1)
+    sign_tasks: list[tuple[int, tuple[int, ...]]] = []
+    sign_owner: list[int] = []
+    triple_tasks: list[tuple[int, int, tuple[int, ...], int, int]] = []
+    triple_owner: list[int] = []
+    for index, (level, _family, tau, space) in enumerate(specs):
+        dimension = 1 << level
+        used = sorted({*space, tau})
+        for start in range(0, len(used), 8):
+            sign_tasks.append((dimension, tuple(used[start : start + 8])))
+            sign_owner.append(index)
+        if level <= TRIPLE_LEVEL_LIMIT or len(space) <= 8:
+            for a, b in combinations(space, 2):
+                triple_tasks.append((dimension, tau, space, a, b))
+                triple_owner.append(index)
+    sign_counts = parallel.ordered_map(sign_agreement_item, sign_tasks, min_items=1)
+    triple_counts = parallel.ordered_map(triple_item, triple_tasks, min_items=1)
+    for index, row in enumerate(rows):
+        row["sign_disagreements"] = sum(c for c, owner in zip(sign_counts, sign_owner, strict=True) if owner == index)
+        failures = [c for c, owner in zip(triple_counts, triple_owner, strict=True) if owner == index]
+        row["triple_relations"] = [len(failures) * row["space_size"], sum(failures)] if failures else None
+    return rows
+
+
+def family_rows(level: int) -> list[dict[str, Any]]:
+    return family_rows_for((level,))
 
 def two_term_strata() -> dict[str, Any]:
     """Nullity of e_j + e_tau, 1 <= j < 16 <= tau, j ^ tau != 16, against the strut s = j ^ tau ^ 16."""
@@ -590,7 +618,7 @@ def compute() -> dict[str, Any]:
     associator = results[:count]
     strata = results[count : count + len(PRIMES)]
     envelope_result, two_term, gaussian = results[count + len(PRIMES) :]
-    families = [row for level in FAMILY_LEVELS for row in family_rows(level)]
+    families = family_rows_for(FAMILY_LEVELS)
     return {
         "schema": "a5-null-slice-associator-envelope/1",
         "sources": {name: sha256(ROOT / name) for name in SOURCE_FILES},

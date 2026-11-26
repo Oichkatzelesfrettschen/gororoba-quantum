@@ -87,7 +87,9 @@ the symmetric part of the module's signed permutation L_1^T L_26, and the module
 
 The paper's boost is one generator, K = A/(8 pi G_N), acting by conjugation (equation 5.22) and on area eigenstates by
 the phase of equation 4.12a; it names no non-abelian Lorentz algebra. A bracket-preserving map from that algebra to
-the defects exists only trivially, which retires ledger row A5-620 as worded.
+the defects exists for every choice of a single defect (any nonzero K_a, since [K_a, K_a] = 0), so the question of
+ledger row A5-620 has an answer that the paper does not constrain: the paper supplies no non-abelian structure that
+would single out one map. Row A5-628 records that boundary and supersedes A5-620.
 
 ## Reproduce
 
