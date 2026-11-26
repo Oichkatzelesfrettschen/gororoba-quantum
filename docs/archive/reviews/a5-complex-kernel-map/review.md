@@ -51,6 +51,14 @@ A5-637 and a gate, and reaches the Advisor and Codex unreviewed by the red team.
 | Serial loops over points, operands and S-form rows | pooled through `parallel.ordered_map`; the committed results are unchanged byte for byte |
 | The relations script had no bounded test | `tests/scripts/test_a5_null_slice_family_relations.py` checks n = 6 and a moved space |
 
+## Hosted checks
+
+The `tests (core)` lane at `2a1150e10` failed
+`tests/ci/test_runner_image_records.py::test_every_replayed_record_is_declared_bound_float_free_or_exempt`: the
+kernel-map record stored the selector marginals as floats. They are exact multiples of 1/32, so the record stores
+integer counts of 32nds with an exactness check (result sha256 a705e84a). The full suite on the compute workstation
+then read 7820 passed.
+
 ## Validation after the fixes
 
 On the compute workstation under WSL with the pinned interpreter:
