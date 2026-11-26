@@ -25,6 +25,8 @@
  "envelope": {
   "all_imaginary_tables_commutant_dimension": 1,
   "anticommutant_dimension_of_seven_units": 8,
+  "clifford_monomial_rank": 256,
+  "clock_in_clifford_span": true,
   "closed_under_products": true,
   "closed_under_transpose": true,
   "commutant_closed_under_products": true,
@@ -45,6 +47,10 @@
    255,
    256
   ],
+  "eighth_unit": "L_(e_2) D_8, D_8 = diag((-1)^(bit 3 of i))",
+  "eighth_unit_anticommutes": true,
+  "eighth_unit_in_envelope": true,
+  "eighth_unit_square_is_minus_one": true,
   "eta_in_envelope": true,
   "seven_units_anticommute": true,
   "seven_units_square_to_minus_one": true,
@@ -225,6 +231,44 @@
    ]
   }
  ],
+ "gaussian_euclidean_cone": [
+  {
+   "nullity": 12,
+   "t": 1,
+   "x": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "nullity": 12,
+   "t": 5,
+   "x": [
+    3,
+    4,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "nullity": 12,
+   "t": 3,
+   "x": [
+    1,
+    2,
+    2,
+    0,
+    0,
+    0
+   ]
+  }
+ ],
  "schema": "a5-null-slice-associator-envelope/1",
  "slice": {
   "dimension": 32,
@@ -247,7 +291,7 @@
  "sources": {
   "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
   "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
-  "scripts/a5_null_slice_associator_envelope.py": "3715479d9c91a51fd65ce6300408fcfb79e5c5b377adde0dc1ebfa54f7485a47"
+  "scripts/a5_null_slice_associator_envelope.py": "71f472f6daf5c6400a98c59be3bb9f30d60bcabb8cc0d3fff9139188b48e3359"
  },
  "strata": [
   {
@@ -281,6 +325,7 @@
    "12": 126,
    "4": 84
   },
+  "independence_criterion_agreements": 225,
   "nullity_4_struts_above_8": true,
   "slice_struts": {
    "1": 11,
@@ -289,6 +334,7 @@
    "5": 15,
    "6": 12,
    "7": 13
-  }
+  },
+  "strut_equals_low_index": 15
  }
 }

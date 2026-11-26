@@ -16,8 +16,8 @@ entry by entry.
 ## Statements
 
 1. **Associator form** (`associator`). For every pair of distinct imaginary units of dimensions 16, 32 and 64,
-   2 K_a = [e_a, e_t, .] + [e_t, e_a, .] with [p, q, z] = (pq)z - p(qz), and at three integer points of each
-   dimension L_y^T L_y = N(y) I + [y, y, .]. Both are elementary: the first is the anticommutativity
+   2 K_a = [e_a, e_t, .] + [e_t, e_a, .] with [p, q, z] = (pq)z - p(qz), and at three pure imaginary integer points of
+   each dimension L_y^T L_y = N(y) I + [y, y, .]. Both are elementary: the first is the anticommutativity
    e_a e_t = -e_t e_a of distinct imaginary units, and the second is L_y^T = -L_y with y^2 = -N(y) for imaginary y,
    the identity L^2 = -G of Moreno (math/0512517) that `gororoba_quantum/pathion_kernel_map.py` cites. On the slice
    [x, x, .] and [e_26, e_26, .] vanish, so the Gram identity of the earlier record reads Gram = (r^2 + t^2) I plus the
@@ -35,26 +35,38 @@ entry by entry.
    of characteristic 0 or above 32 by an argument the record does not machine-check: there r^2 = -t^2 != 0, so
    P = K(x)^2 / r^2 is idempotent with trace 8 and rank K(x) = rank P = 8; L_y commutes with L_y^2 = -2 t K(x), so it
    preserves ker K(x), of dimension 24, and squares to zero on it.
-   Equality is computed at the two primes only. Over a p-adic field a quadratic form in five or more variables is
-   isotropic, so the slice has Euclidean-cone points over every Q_p; that statement is a cited theorem, not a computation
-   of the record.
+   Equality is computed at the two primes and, over Q(i), at the three points x = e_1, (3, 4, 0, ...), (1, 2, 2, 0, ...)
+   with time coefficient i r, from the rank of the 64 x 64 real form (`gaussian_euclidean_cone`). Over a p-adic field
+   a quadratic form in five or more variables is isotropic, so the slice has Euclidean-cone points over every Q_p, where
+   the bound nullity >= 12 holds (characteristic 0); equality there is not computed.
 3. **Associative envelope** (`envelope`). The algebra the seven tables A_a and J generate over Q has dimension 256
    (word lengths 1 to 6 give 8, 35, 111, 210, 255, 256), is closed under products and under transposition, and
    contains eta = I - 2 P_T. Its commutant in M_32(Q) has dimension 4, is closed under products and is not
    commutative, and the trace form on its traceless part has signature (2, 1): a noncommutative four-dimensional
    semisimple real algebra is M_2(R) or the quaternions, and the signature excludes the quaternions (signature (0, 3)).
    Closure under transposition makes the envelope semisimple, so by the double-commutant theorem it is the commutant
-   of M_2(R), namely M_16(R), and R^32 is two copies of one irreducible 16-dimensional module. The six spatial tables alone have a commutant of dimension 16 (M_8(R) acting four times),
-   and the 31 imaginary tables of A_5 together have a commutant of dimension 1.
-4. **Seven anticommuting units** (`envelope`). The six A_a and J eta anticommute pairwise and square to -I. Their
-   product is not a scalar and squares to I, and the elements anticommuting with all seven form a space of dimension 8.
+   of M_2(R), namely M_16(R), and R^32 is two copies of one irreducible 16-dimensional module. The six spatial tables
+   alone have a commutant of dimension 16, consistent with Cl(0,6) = M_8(R) acting four times (an inference; the record
+   stores the dimension only), and the 31 imaginary tables of A_5 together have a commutant of dimension 1.
+4. **Cl(0,8)** (`envelope`). The six A_a and J eta anticommute pairwise and square to -I; their product is not a
+   scalar and squares to I, and the elements anticommuting with all seven form a space of dimension 8. The eighth unit
+   U_8 = L_(e_2) D_8, with D_8 the diagonal sign (-1)^(bit 3 of the index), anticommutes with all seven, squares to -I
+   and lies in the envelope; the 256 ordered monomials of the eight units have rank 256 over Z and their span contains
+   J. The envelope is therefore the image of Cl(0,8), consistent with M_16(R) above. The reviewer of
+   `docs/archive/reviews/a5-null-slice-associator-envelope/review.md` exhibited U_8.
 5. **Two-term strata of A_5** (`two_term_strata`). For e_j + e_tau, 1 <= j < 16 <= tau, j XOR tau != 16, the
-   nullities are 0 (15 pairs, the strut s = j XOR tau XOR 16 equal to j), 4 (84 pairs) and 12 (126 pairs); every
+   nullities are 0 (15 pairs, tau = 16, where the strut s = j XOR tau XOR 16 equals j), 4 (84 pairs) and 12 (126 pairs); every
    nullity-4 pair has s > 8 (the range `gororoba_quantum/demarrais_structures.py` marks `is_dmz_sparse`). The six
-   spatial directions of the slice pair with e_26 at the struts 11, 9, 14, 15, 12 and 13. The record tests counts
-   only; Proposition 2.2 of Skiouris, "Aphanics at the pathion level" (2026), states the 4 and 12 strata of these pairs
-   and names e_1 + e_26 the canonical representative of the nullity-4 stratum, with Gram spectrum 0, 2, 4 at
-   multiplicities 4, 24, 4.
+   spatial directions of the slice pair with e_26 at the struts 11, 9, 14, 15, 12 and 13.
+
+   Mechanism (proved from the strata record): write tau = 16 + k. In the coordinates z = (u, mu, v) of
+   [a5-zero-divisor-strata](../a5-zero-divisor-strata/README.md), u carries the indices 1 to 7, mu the index 8 and v
+   the indices 9 to 15, and every such pair has Q = 0; by that record's Theorem 6 the nullity is 4 exactly when u and v
+   are linearly independent, that is when one of j, k lies in 1 to 7, the other in 9 to 15, and they differ by other
+   than 8. Bit 3 of s = j XOR k is then set and s != 8, so s > 8. The converse fails on the 14 pairs with an index 8.
+   The record checks the criterion on all 225 pairs (`independence_criterion_agreements`). Skiouris, "Aphanics at
+   the pathion level" (2026), Proposition 2.2 states the 4 and 12 strata for these pairs, and Proposition 3.1 names
+   e_1 + e_26 a nullity-4 representative with Gram spectrum 0, 2, 4 at multiplicities 4, 24, 4.
 6. **The families to dimension 4096** (`families`). For n = 8 to 12, the slice with time index 7 * 2^(n-3) and
    space {1 .. 2^(n-2) - 1} minus 2^(n-3) has disjoint stars, a common support of size 4, a common kernel of dimension
    4 and nullity 4 at a null point; the so(2^(n-2) - 2, 1) relations hold by direct check at n = 8 (117,242 relations)
@@ -89,8 +101,6 @@ The check takes about 60 s on a 32-thread pool (gate `core-a5-null-slice-associa
 
 - The orbits of the strata classification ([a5-strata-regularity](../a5-strata-regularity/README.md)) that contain
   the nullity-12 and nullity-16 points of statement 2; the record does not place them.
-- An eighth unit anticommuting with the seven of statement 4 and squaring to -I, which would make the envelope the
-  image of Cl(0,8); the space of candidates has dimension 8.
 - The nullity on the Euclidean cone over Q(i) and over Q_p, beyond the two primes and the bound of statement 2.
 - The so(m,1) relations at n >= 10 by direct check, and the families beyond n = 12.
 - A machine-checked form of statements 1, 3 and 6; the two-term kernels of statement 5 are already formal in

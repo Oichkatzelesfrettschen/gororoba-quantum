@@ -31,12 +31,12 @@ words; "no link found" records a search with its scope.
 | de Marrais struts | every nullity-4 two-term pair has strut s > 8, the range `demarrais_structures.py` marks sparse (`is_dmz_sparse`); the slice uses the struts 9, 11 to 15 | computed (A5-627) | proved for the implication; the full 4-versus-12 rule is Skiouris's | a nullity-4 pair with s <= 8 |
 | Quantum runs | the coset-block map read e_1 + e_26 at N_hat = 4.25 and 4.28 (4.02 and 4.05 after readout correction) on two Heron r2 devices; the full map left it unresolved; the module's aligned pairs are the support of K_1 | measured (`results/live/PATHION_KERNEL_MAP_FINDINGS.md`) | measured | a retained replica outside the reported interval |
 | Tower to 4096 | both families hold from 256 to 4096 | computed (A5-626) | survives above 512 | a sign row that differs from cd_core; stars that meet |
-| Clifford and Cayley-Dickson | the six spatial tables are a Clifford space; with J eta they give seven anticommuting units in M_16(R) | computed (A5-624, A5-625) | proved; Cl(0,8) open | an eighth unit, or its exclusion |
+| Clifford and Cayley-Dickson | the six spatial tables, J eta and U_8 = L_(e_2) D_8 are eight anticommuting units whose monomials span the envelope M_16(R), the image of Cl(0,8); gororoba-math's Lean `Clifford/ZeroEight.lean` maps Cl(0,8) to 16 x 16 matrices from sedenion tables | computed (A5-624, A5-625) | proved | none |
 | Cayley-Dickson and Lie | defects close on so(m,1); covariance algebras su(3) and G_2 | computed (A5-613), conjecture (A5-619) | proved; A5-619 open | the A_6 covariance computation |
 | Nilpotents | y^2 = 0 on the Euclidean cone; L_y is square-zero on ker K(x) there and L_y^2 = 0 on the null space | computed over F_p (A5-623) | certified | a Euclidean-cone point with L_y^2 of rank other than 8 |
-| p-adic fields | the seven-variable form is isotropic over every Q_p, so the Euclidean cone has Q_p points | cited theorem (isotropy of forms in five or more variables) | hypothesis for the nullity value over Q_p | the nullity at a Q_p point by a Hensel lift of an F_p point |
-| Albert and Jordan algebras | gororoba-open `construction/albert.rs` and `jordan.rs` compute J_3(O) products; the slice uses no Jordan product | read (crate headers) | no link found | a Jordan-triple identity among the K_a |
-| Hopf algebras and fibrations | the filed sources hold Adams's Hopf-invariant-one theorem and an introduction to Hopf algebras; neither enters the slice | read (manifests) | no link found | a coproduct or a fibration built from the slice |
+| p-adic fields | the seven-variable form is isotropic over every Q_p, so the Euclidean cone has Q_p points, where nullity >= 12 holds (characteristic 0) | cited theorem and the README argument | the bound proved; equality a hypothesis | the nullity at a Q_p point by a Hensel lift of an F_p point |
+| Albert and Jordan algebras | the chain su(3) in G_2 in F_4 = Der(J_3(O)) would join the slice covariance (A5-615, A5-619) to the Albert algebra; the reviewer computed dim Der(J_3(O)) = 52 over F_32009 and F_32003 | computed by the reviewer, not recorded | hypothesis | a recorded derivation count other than 52 over Q, or a covariance algebra outside G_2 |
+| Hopf algebras and fibrations | Adams's Hopf-invariant-one theorem closes sphere fibrations past the octonions; Hopf algebras were searched only in the document manifests | documented (fibrations); read (manifests, algebras) | fibrations closed; algebras unsearched | a coproduct compatible with the slice tables |
 | arXiv 2611.34924 | one abelian unitary boost generator | read on pages 28 and 39 (A5-628) | boundary | a non-abelian boost algebra in the paper |
 
 ## Formal targets and the prover for each
@@ -69,11 +69,12 @@ digest reference in the record (a digest reference per table, the pattern of the
 
 ## Next computations, with acceptance checks
 
-1. **Eighth unit (A5-625).** Search the eight-dimensional anticommuting space for an element of square -I. Accept: an
-   exhibited unit with the Cl(0,8) relations checked over Z, or a proof of absence from the quadratic form X -> X^2 on
-   that space.
-2. **Euclidean cone over Q(i).** Rank over Q(i) at e_1 + i e_26 and two further points with FLINT's Gaussian
-   rationals. Accept: nullity 12 at each point, matching A5-623.
+1. **Nilpotent variety.** Over F_p (p odd) the nilpotents of A_n are the nonzero pure imaginary vectors of norm 0, and
+   their number is p^(2^n - 2) - 1 (the Euclidean cone of A5-623 is the slice's part of that variety). Accept: a record
+   that counts nilpotents and idempotents of A_2, A_3 over F_3, F_5, F_7 by brute force and matches both formulas.
+2. **Albert anchor.** dim Der(J_3(O)) = 52 over Q under the cd_core octonion convention, and the su(3) and G_2
+   covariance algebras of A5-615 and A5-619 as stabilizers inside it. Accept: the derivation rank over Q, and the
+   inclusions as rank equalities.
 3. **Relations above 512.** Direct triple checks at n = 10 on the compute workstation (about 8 million triples).
    Accept: zero failures; A5-626 moves to proved for n = 10.
 4. **Formal F1 and F4.** Briefs to gororoba-math. Accept: the repository's `ci/check.sh` and `ci/check_rocq.sh`
