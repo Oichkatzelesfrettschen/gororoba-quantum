@@ -1,0 +1,292 @@
+{
+ "associator": [
+  {
+   "associator_failures": 0,
+   "dimension": 16,
+   "gram_failures": 0,
+   "gram_points": 3,
+   "pairs": 210
+  },
+  {
+   "associator_failures": 0,
+   "dimension": 32,
+   "gram_failures": 0,
+   "gram_points": 3,
+   "pairs": 930
+  },
+  {
+   "associator_failures": 0,
+   "dimension": 64,
+   "gram_failures": 0,
+   "gram_points": 3,
+   "pairs": 3906
+  }
+ ],
+ "envelope": {
+  "all_imaginary_tables_commutant_dimension": 1,
+  "anticommutant_dimension_of_seven_units": 8,
+  "closed_under_products": true,
+  "closed_under_transpose": true,
+  "commutant_dimension": 4,
+  "commutant_trace_form_signature": [
+   2,
+   1
+  ],
+  "commutant_traceless_rank": 3,
+  "dimension": 256,
+  "dimension_by_word_length": [
+   1,
+   8,
+   35,
+   111,
+   210,
+   255,
+   256
+  ],
+  "eta_in_envelope": true,
+  "seven_units_anticommute": true,
+  "seven_units_square_to_minus_one": true,
+  "spatial_commutant_dimension": 16,
+  "volume_is_scalar": false,
+  "volume_square_is_identity": true
+ },
+ "families": [
+  {
+   "common_kernel": 4,
+   "common_support": 4,
+   "dimension": 256,
+   "disjoint_stars": true,
+   "family": "time 7 * 2^(n-3)",
+   "level": 8,
+   "null_point_nullity": 4,
+   "sign_disagreements": 0,
+   "sign_rows_checked": 63,
+   "space_clifford": false,
+   "space_size": 62,
+   "time": 224,
+   "triple_relations": [
+    117242,
+    0
+   ]
+  },
+  {
+   "common_kernel": 224,
+   "common_support": 4,
+   "dimension": 256,
+   "disjoint_stars": true,
+   "family": "octonion space",
+   "level": 8,
+   "null_point_nullity": 4,
+   "sign_disagreements": 0,
+   "sign_rows_checked": 8,
+   "space_clifford": true,
+   "space_size": 7,
+   "time": 200,
+   "triple_relations": [
+    147,
+    0
+   ]
+  },
+  {
+   "common_kernel": 4,
+   "common_support": 4,
+   "dimension": 512,
+   "disjoint_stars": true,
+   "family": "time 7 * 2^(n-3)",
+   "level": 9,
+   "null_point_nullity": 4,
+   "sign_disagreements": 0,
+   "sign_rows_checked": 127,
+   "space_clifford": false,
+   "space_size": 126,
+   "time": 448,
+   "triple_relations": [
+    992250,
+    0
+   ]
+  },
+  {
+   "common_kernel": 480,
+   "common_support": 4,
+   "dimension": 512,
+   "disjoint_stars": true,
+   "family": "octonion space",
+   "level": 9,
+   "null_point_nullity": 4,
+   "sign_disagreements": 0,
+   "sign_rows_checked": 8,
+   "space_clifford": true,
+   "space_size": 7,
+   "time": 392,
+   "triple_relations": [
+    147,
+    0
+   ]
+  },
+  {
+   "common_kernel": 4,
+   "common_support": 4,
+   "dimension": 1024,
+   "disjoint_stars": true,
+   "family": "time 7 * 2^(n-3)",
+   "level": 10,
+   "null_point_nullity": 4,
+   "sign_disagreements": 0,
+   "sign_rows_checked": 255,
+   "space_clifford": false,
+   "space_size": 254,
+   "time": 896,
+   "triple_relations": null
+  },
+  {
+   "common_kernel": 992,
+   "common_support": 4,
+   "dimension": 1024,
+   "disjoint_stars": true,
+   "family": "octonion space",
+   "level": 10,
+   "null_point_nullity": 4,
+   "sign_disagreements": 0,
+   "sign_rows_checked": 8,
+   "space_clifford": true,
+   "space_size": 7,
+   "time": 776,
+   "triple_relations": [
+    147,
+    0
+   ]
+  },
+  {
+   "common_kernel": 4,
+   "common_support": 4,
+   "dimension": 2048,
+   "disjoint_stars": true,
+   "family": "time 7 * 2^(n-3)",
+   "level": 11,
+   "null_point_nullity": 4,
+   "sign_disagreements": 0,
+   "sign_rows_checked": 511,
+   "space_clifford": false,
+   "space_size": 510,
+   "time": 1792,
+   "triple_relations": null
+  },
+  {
+   "common_kernel": 2016,
+   "common_support": 4,
+   "dimension": 2048,
+   "disjoint_stars": true,
+   "family": "octonion space",
+   "level": 11,
+   "null_point_nullity": 4,
+   "sign_disagreements": 0,
+   "sign_rows_checked": 8,
+   "space_clifford": true,
+   "space_size": 7,
+   "time": 1544,
+   "triple_relations": [
+    147,
+    0
+   ]
+  },
+  {
+   "common_kernel": 4,
+   "common_support": 4,
+   "dimension": 4096,
+   "disjoint_stars": true,
+   "family": "time 7 * 2^(n-3)",
+   "level": 12,
+   "null_point_nullity": 4,
+   "sign_disagreements": 0,
+   "sign_rows_checked": 1023,
+   "space_clifford": false,
+   "space_size": 1022,
+   "time": 3584,
+   "triple_relations": null
+  },
+  {
+   "common_kernel": 4064,
+   "common_support": 4,
+   "dimension": 4096,
+   "disjoint_stars": true,
+   "family": "octonion space",
+   "level": 12,
+   "null_point_nullity": 4,
+   "sign_disagreements": 0,
+   "sign_rows_checked": 8,
+   "space_clifford": true,
+   "space_size": 7,
+   "time": 3080,
+   "triple_relations": [
+    147,
+    0
+   ]
+  }
+ ],
+ "schema": "a5-null-slice-associator-envelope/1",
+ "slice": {
+  "dimension": 32,
+  "space": [
+   1,
+   3,
+   4,
+   5,
+   6,
+   7
+  ],
+  "time": 26,
+  "time_support": [
+   2,
+   8,
+   18,
+   24
+  ]
+ },
+ "sources": {
+  "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+  "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
+  "scripts/a5_null_slice_associator_envelope.py": "0062112248e6c32021006729a3967ccb223426dbd350104a2ccd1237e80f32f3"
+ },
+ "strata": [
+  {
+   "euclidean_cone": {
+    "nullity 12, rank L^2 8, y^2 = 0 True": 411
+   },
+   "lorentz_cone": {
+    "nullity 4": 411
+   },
+   "null_space": {
+    "nullity 16, L^2 = 0 True": 12
+   },
+   "prime": 32009
+  },
+  {
+   "euclidean_cone": {
+    "nullity 12, rank L^2 8, y^2 = 0 True": 319
+   },
+   "lorentz_cone": {
+    "nullity 4": 409
+   },
+   "null_space": {
+    "nullity 16, L^2 = 0 True": 12
+   },
+   "prime": 32003
+  }
+ ],
+ "two_term_strata": {
+  "histogram": {
+   "0": 15,
+   "12": 126,
+   "4": 84
+  },
+  "nullity_4_struts_above_8": true,
+  "slice_struts": {
+   "1": 11,
+   "3": 9,
+   "4": 14,
+   "5": 15,
+   "6": 12,
+   "7": 13
+  }
+ }
+}
