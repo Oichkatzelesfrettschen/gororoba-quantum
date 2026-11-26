@@ -49,5 +49,15 @@ def test_family_rows_of_dimension_256() -> None:
     require(first["sign_disagreements"] == 0 and octonion["null_point_nullity"] == 4)
 
 
+def test_complex_two_term_kernels_are_involution_eigenspaces() -> None:
+    tables = record.full_tables(16)
+    first, second = tables[1], tables[2]
+    eye = record.np.eye(16, dtype=record.np.int64)
+    require(not record.np.any(first @ second + second @ first))
+    require(record.complex_nullity(first, second) == 8)
+    require(record.joint_nullity([(first, second), (-eye, first @ second)]) == 8)
+    require(record.gram_multiplicities(first + second, 0 * eye) == {"0": 0, "2": 16, "4": 0})
+
+
 def test_mutation_controls() -> None:
     record.self_test()
