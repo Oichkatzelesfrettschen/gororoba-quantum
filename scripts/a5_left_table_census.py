@@ -81,12 +81,12 @@ def require(condition: bool, message: str) -> None:
         raise RuntimeError(message)
 
 
-def orbit_consistent(signs: Any, d: int) -> bool:
+def orbit_consistent(signs: Any, d: int, *, drop_diagonal: bool = False) -> bool:
     """Whether the orbit {(p, p ^ d)} carries a consistent sign: f(a) = s(a, a ^ d) s(a, a) from p = 0, then every edge
     (p -> a ^ p, weight s(a, a ^ p ^ d) s(a, a ^ p)) must agree with f."""
     dimension = signs.shape[0]
     a = np.arange(dimension)
-    f = signs[a, a ^ d] * signs[a, a]
+    f = signs[a, a ^ d] * (1 if drop_diagonal else signs[a, a])
     rows = a[:, None]
     cols = a[None, :]
     return bool(np.array_equal(f[rows ^ cols], signs[rows, rows ^ cols ^ d] * signs[rows, rows ^ cols] * f[cols]))
@@ -113,7 +113,7 @@ def commutant_direct(level: int) -> int:
     return dimension * dimension - int(nmod_mat(stacked.tolist(), DIRECT_PRIME).rank())
 
 
-def triple_item(task: tuple[int, int, int]) -> int:
+def triple_item(task: tuple[int, int, int], *, wrong_index: bool = False) -> int:
     """Ordered triples (a, b, c) of imaginary units with a in [start, stop) and nonzero associator:
     s(a, b) s(a ^ b, c) != s(b, c) s(a, b ^ c)."""
     level, start, stop = task
@@ -125,7 +125,7 @@ def triple_item(task: tuple[int, int, int]) -> int:
     count = 0
     for a in range(start, stop):
         left = signs[a, b] * signs[a ^ b, c]
-        right = signs[b, c] * signs[a, b ^ c]
+        right = signs[b, c] * (signs[a, b] if wrong_index else signs[a, b ^ c])
         count += int(np.count_nonzero(left != right))
     return count
 
@@ -140,20 +140,20 @@ def slice_tables() -> list[Any]:
     return [table(signs, k) for k in range(DIMENSION)]
 
 
-def field_nullity(tables: list[Any], d: int, x: tuple[int, ...], s: int) -> int:
+def field_nullity(tables: list[Any], d: int, x: tuple[int, ...], s: int, *, form_d: int | None = None) -> int:
     """Nullity over Q(sqrt(-d)) of A + s w J, w^2 = -d, from the rank of [[A, -d s J], [s J, A]]."""
     real: Any = sum(v * tables[a] for v, a in zip(x, SPACE, strict=True))
     time = tables[TIME]
-    block = np.block([[real, -d * s * time], [s * time, real]])
+    block = np.block([[real, -(d if form_d is None else form_d) * s * time], [s * time, real]])
     return (2 * DIMENSION - int(fmpz_mat(block.tolist()).rank())) // 2
 
 
-def local_nullity(tables: list[Any], p: int, x: tuple[int, ...]) -> dict[str, Any]:
+def local_nullity(tables: list[Any], p: int, x: tuple[int, ...], *, shift: int = 0) -> dict[str, Any]:
     r2 = sum(v * v for v in x)
     root = square_root(-r2, p)
     if root is None:
         raise RuntimeError(f"-{r2} is not a square modulo {p}")
-    operator: Any = sum(v * tables[a] for v, a in zip(x, SPACE, strict=True)) + root * tables[TIME]
+    operator: Any = sum(v * tables[a] for v, a in zip(x, SPACE, strict=True)) + (root + shift) * tables[TIME]
     rank = int(nmod_mat([[int(v) % p for v in row] for row in operator.tolist()], p).rank())
     return {"p": p, "x": list(x), "t_mod_p": int(root), "nullity_mod_p": DIMENSION - rank}
 
@@ -197,11 +197,46 @@ def compute() -> dict[str, Any]:
 
 
 def validate(result: dict[str, Any]) -> None:
-    pass
+    for level in COMMUTANT_LEVELS:
+        row = result["commutant"][str(1 << level)]
+        expected = {1: [0, 1], 2: [0, 1, 2, 3]}.get(level, [0])
+        require(row == {"dimension": len(expected), "consistent_differences": expected}, f"commutant at {1 << level}")
+    for level in DIRECT_LEVELS:
+        dimension = str(1 << level)
+        direct = result["commutant_direct_mod_32003"][dimension]
+        require(direct == result["commutant"][dimension]["dimension"], f"direct commutant at {dimension}: {direct}")
+    for dimension, row in result["nonassociating_triples"].items():
+        require(row["count"] == row["formula"], f"non-associating triples at {dimension}: {row}")
+    require(result["nonassociating_triples"]["8"]["count"] == 168, "octonion triples")
+    require(len(result["nonassociating_triples"]) == len(TRIPLE_LEVELS), "triple levels")
+    require([row["nullity"] for row in result["field_points"]] == [12] * len(FIELD_POINTS), "field points")
+    require([row["nullity"] for row in result["off_cone_points"]] == [0] * len(OFF_CONE_POINTS), "off-cone points")
+    require([row["nullity_mod_p"] for row in result["local_points"]] == [12] * len(LOCAL_POINTS), "local points")
 
 
 def self_test() -> None:
-    pass
+    def control(baseline: bool, mutant: bool, name: str) -> None:
+        require(baseline and not mutant, f"control {name}: baseline {baseline}, mutant {mutant}")
+
+    signs = sign_rows(8, list(range(8)))
+    orbit = sum(orbit_consistent(signs, d) for d in range(8))
+    dropped = sum(orbit_consistent(signs, d, drop_diagonal=True) for d in range(8))
+    direct = commutant_direct(3)
+    control(orbit == direct == 1, dropped == direct, "orbit cocycle against the direct system")
+    control(
+        triple_item((4, 1, 16)) == 1848, triple_item((4, 1, 16), wrong_index=True) == 1848, "associator predicate"
+    )
+    tables = slice_tables()
+    point = (1, 1, 0, 0, 0, 0)
+    control(
+        field_nullity(tables, 2, point, 1) == 12, field_nullity(tables, 2, point, 1, form_d=1) == 12, "field form"
+    )
+    base = (1, 0, 0, 0, 0, 0)
+    control(
+        local_nullity(tables, 17, base)["nullity_mod_p"] == 12,
+        local_nullity(tables, 17, base, shift=1)["nullity_mod_p"] == 12,
+        "local root",
+    )
 
 
 def dumps(result: dict[str, Any]) -> str:
@@ -217,7 +252,7 @@ def main() -> int:
     args = parser.parse_args()
     if args.self_test:
         self_test()
-        print("self-test: paired controls pass")
+        print("self-test: 4 paired controls pass")
         return 0
     result = compute()
     validate(result)
