@@ -603,6 +603,7 @@ def compute() -> dict[str, Any]:
         "families": families,
     }
 
+
 def validate(result: dict[str, Any]) -> None:
     require([row["dimension"] for row in result["associator"]] == list(ASSOCIATOR_DIMENSIONS), "associator dimensions")
     for row in result["associator"]:
