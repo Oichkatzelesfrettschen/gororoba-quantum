@@ -9,9 +9,9 @@ Three items of pool row MATH-71, each exact:
 - the number of ordered triples of imaginary basis units with nonzero associator, against (D - 2)(D - 4)(D + 6)/2,
   for D = 4 to 1024;
 - the nullity of L_y on the Euclidean cone r^2 + t^2 = 0 of the slice y = sum_a x_a e_a + t e_26,
-  S = {1, 3, 4, 5, 6, 7}, at points over the imaginary quadratic fields Q(sqrt(-d)) (rank of the 64 x 64 rational form) and at points over
-  Q_p (reduction mod p: rank 20 of the reduction bounds the nullity over Z_p by 12, and the bound nullity >= 12 holds
-  in characteristic 0).
+  S = {1, 3, 4, 5, 6, 7}, at points over the imaginary quadratic fields Q(sqrt(-d)) (rank of the 64 x 64 rational
+  form) and at points over Q_p (reduction mod p: rank 20 of the reduction bounds the nullity over Z_p by 12, and the
+  bound nullity >= 12 holds in characteristic 0).
 
 Independent items run through parallel.ordered_map. No random draw enters.
 """
