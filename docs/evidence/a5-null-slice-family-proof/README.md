@@ -71,14 +71,18 @@ The same composition gives C_a = T u (T ^ a ^ tau) with T = {8, Q, 3Q, 2Q + 8}.
 - The supports leave a common kernel of 2^n - 4 - 4 (2^(n-2) - 2) = 4 in the first family and 2^n - 4 - 28 =
   2^n - 32 in the second.
 - The second family's space is Clifford at every n: Lemma U carries chi(a, b, k) for distinct a, b < 8 down to the
-  octonions, where alternativity makes L_a and L_b anticommute.
+  octonions, where alternativity makes L_a and L_b anticommute. The record also checks it from the table at n = 6 to 12.
+- Each u in T spans with the K_a e_u (a in the space) an (m + 1)-dimensional subspace on which the defects act as the
+  boosts E_(0a) + E_(a0) of so(m,1) (the boost action of A5-617). With |T| = 4 these are the four vector modules of
+  A5-618.
 
 ## Evidence classes
 
 - **Proved.** Step 0, read from the cd_sign loop; I1 to I3, Lemma T and the lower half of Lemma R, by the case
   splits above; the composition and the consequences.
 - **Proved by case split and checked exhaustively.** The upper-half cases of Lemmas R and U (k = H + k'). Each case is
-  a sign identity independent of n, and the record checks every a, t and k at n = 2 to 9.
+  a sign identity independent of n. Two derivations agree: the one above and an independent one by the red-team
+  reviewer, who wrote out the four factor ratios case by case. The record checks every a, t and k at n = 2 to 9.
 - **Computed corroboration.** The family claim from the recursion table at n = 4 to 12; the census record's own check
   through the vectorized signs; and the direct relation checks to 4096
   ([family relations](../a5-null-slice-family-relations/README.md)).
@@ -89,7 +93,7 @@ The same composition gives C_a = T u (T ^ a ^ tau) with T = {8, Q, 3Q, 2Q + 8}.
 
 | Control | Baseline | Mutant |
 |---|---|---|
-| peel sign | sigma_S matches at n = 5 | the inverted sign does not |
+| peel set | sigma_S with S = {0, a, t, a ^ t} matches at n = 5 | S without a ^ t does not |
 | top unit | Lemma T at tau = 16 | tau = 16 + 5 is not empty |
 | recursion table | equals cd_sign at n = 5 | one negated entry does not |
 

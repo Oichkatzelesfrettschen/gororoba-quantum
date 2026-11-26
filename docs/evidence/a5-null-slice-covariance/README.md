@@ -1,7 +1,7 @@
 # A_5 and A_6 null slices: covariance algebras by XOR blocks
 
-The covariance algebra of the octonion-space slice of A_6 is the derivation algebra of the octonions, G_2, dimension 14,
-with no boost. The covariance algebra of the A_5 slice is the stabilizer of e_2 in G_2, su(3), dimension 8. Ledger row
+The covariance algebra of the octonion-space slices of A_6 and A_7 is the derivation algebra of the octonions, G_2,
+dimension 14, with no boost. The covariance algebra of the A_5 slice is the stabilizer of e_2 in G_2, su(3), dimension 8. Ledger row
 A5-619 records both.
 [`scripts/a5_null_slice_covariance_blocks.py`](../../../scripts/a5_null_slice_covariance_blocks.py) computes them
 exactly over Q.
@@ -29,8 +29,18 @@ The record runs in about 2 s on the compute workstation.
    rotations, no boost: 652 constraint rows of rank 14 on 28 generators.
 3. **G_2.** The octonion derivations, the solutions of D(e_i e_j) = D(e_i) e_j + e_i D(e_j) in so(7) under the cd_core
    signs, span 14 dimensions. Their span and the A_6 covariant span have a joint rank of 14, so the two spaces are equal.
+3a. **A_7.** On the octonion-space slice of A_7 (space 1..7, time 104; 128 blocks of 1024 equations) the covariant
+   generators again span 14 dimensions, all rotations, no boost, equal to the octonion derivations. A reviewer
+   proposed this extension as a conjecture, and the prediction of 14 was written before the run.
 4. **su(3).** The derivations with D e_2 = 0 span 8 dimensions. Written in the A_5 frame, their span and the A_5
    covariant span have a joint rank of 8, so the A_5 covariance algebra is the stabilizer of e_2 in G_2.
+
+## What is new against the known theorem
+
+Every derivation D of the octonions satisfies D L_x - L_x D = L_(D x) (the Leibniz rule). So X = D, Y = -D, w = D
+solves the covariance system, and G_2 = Der(O) (Cartan) lies inside the covariance algebra of any slice whose space
+is e_1..e_7. The record's content is the reverse inclusion. Arbitrary X and Y, with X not tied to -Y, admit no further
+generator: no rotation outside G_2 and no boost.
 
 ## Prediction
 

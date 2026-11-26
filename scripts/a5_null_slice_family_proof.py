@@ -66,9 +66,8 @@ def chi(table: Any, a: int, tau: int, k: Any) -> Any:
     return table[tau, k] * table[a, tau ^ k] * table[a, k] * table[tau, a ^ k]
 
 
-def sigma(k: Any, members: list[int], *, inverted: bool = False) -> Any:
-    inside = np.isin(k, members)
-    return np.where(inside, -1, 1) if inverted else np.where(inside, 1, -1)
+def sigma(k: Any, members: list[int]) -> Any:
+    return np.where(np.isin(k, members), 1, -1)
 
 
 def check_item(task: tuple[str, int]) -> int:
@@ -126,6 +125,7 @@ def family_item(level: int) -> dict[str, Any]:
             found = set(np.nonzero(chi(table, a, tau, k) == 1)[0].tolist())
             failures += int(found != common | {t ^ a ^ tau for t in common})
             support |= found
+        clifford = all(bool(np.all(chi(table, a, b, k) == -1)) for a in space for b in space if a < b)
         rows.append(
             {
                 "family": family,
@@ -133,6 +133,7 @@ def family_item(level: int) -> dict[str, Any]:
                 "space_size": len(space),
                 "failures": failures,
                 "common_kernel": dimension - len(support),
+                "space_clifford": clifford,
             }
         )
     return {"level": level, "rows": rows}
@@ -171,8 +172,11 @@ def validate(result: dict[str, Any]) -> None:
     require(len(families) == 16 and all(row["failures"] == 0 for row in families), "family claims")
     for row in families:
         n = row["level"]
-        expected = 4 if row["family"].startswith("time") else (1 << n) - 32
-        require(row["common_kernel"] == expected, f"common kernel {row}")
+        first = row["family"].startswith("time")
+        require(row["common_kernel"] == (4 if first else (1 << n) - 32), f"common kernel {row}")
+        require(row["space_size"] == ((1 << (n - 2)) - 2 if first else 7), f"space size {row}")
+        if not first:
+            require(row["space_clifford"], f"octonion space not Clifford {row}")
 
 
 def self_test() -> None:
@@ -187,8 +191,8 @@ def self_test() -> None:
     right = chi(previous, 3, 5, reduced)
     control(
         bool(np.all(lhs == sigma(reduced, [0, 3, 5, 6]) * right)),
-        bool(np.all(lhs == sigma(reduced, [0, 3, 5, 6], inverted=True) * right)),
-        "peel sign",
+        bool(np.all(lhs == sigma(reduced, [0, 3, 5]) * right)),
+        "peel set",
     )
     control(bool(np.all(chi(table, 3, 16, k) == -1)), bool(np.all(chi(table, 3, 16 + 5, k) == -1)), "top unit")
     broken = recursion_table(5)

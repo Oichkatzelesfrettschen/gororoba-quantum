@@ -12,7 +12,7 @@ This record checks, exactly over Q:
 
 - calibration: on the A_5 slice (space 1, 3, 4, 5, 6, 7; time 26) the method returns 8, 8, 0 for all generators,
   rotations and boosts, the values the dense 7168-row system of a5-null-slice-boost-algebra records (A5-615);
-- on the octonion-space slice of A_6 (space 1..7, time 56; the dense system has 32768 x 8220 entries) the covariant
+- on the octonion-space slices of A_6 and A_7 (time 104) (space 1..7, time 56; the dense system has 32768 x 8220 entries) the covariant
   generators span 14 dimensions, all rotations, no boost;
 - that space equals the derivation algebra of the octonions (G_2) in so(7), and the A_5 space equals the stabilizer
   of e_2 in G_2 restricted to the A_5 frame (su(3)).
@@ -42,6 +42,7 @@ import parallel  # noqa: E402
 SLICES: dict[str, tuple[int, tuple[int, ...], int]] = {
     "A5": (32, (1, 3, 4, 5, 6, 7), 26),
     "A6": (64, (1, 2, 3, 4, 5, 6, 7), 56),
+    "A7": (128, (1, 2, 3, 4, 5, 6, 7), 104),
 }
 OCTONION = 8
 
@@ -229,6 +230,7 @@ def compute() -> dict[str, Any]:
         "slices": {name: {k: v for k, v in row.items() if k != "basis"} for name, row in slices.items()},
         "octonion_derivations": len(derivations),
         "a6_against_g2": identification("A6", slices["A6"]["basis"], derivations),
+        "a7_against_g2": identification("A7", slices["A7"]["basis"], derivations),
         "a5_against_e2_stabilizer": identification("A5", slices["A5"]["basis"], stabilizer(derivations, 2)),
     }
 
@@ -237,6 +239,11 @@ def validate(result: dict[str, Any]) -> None:
     a5, a6 = result["slices"]["A5"], result["slices"]["A6"]
     require((a5["generators"], a5["all"], a5["rotations"], a5["boosts"]) == (21, 8, 8, 0), f"A5 calibration {a5}")
     require((a6["generators"], a6["all"], a6["rotations"], a6["boosts"]) == (28, 14, 14, 0), f"A6 covariance {a6}")
+    a7 = result["slices"]["A7"]
+    require((a7["generators"], a7["all"], a7["rotations"], a7["boosts"]) == (28, 14, 14, 0), f"A7 covariance {a7}")
+    require((a5["constraint_rows"], a5["constraint_rank"]) == (344, 13), f"A5 constraints {a5}")
+    require((a6["constraint_rows"], a6["constraint_rank"]) == (652, 14), f"A6 constraints {a6}")
+    require(result["a7_against_g2"] == {"covariant": 14, "reference": 14, "union": 14}, "A7 space is not G_2")
     require(result["octonion_derivations"] == 14, "octonion derivations")
     require(result["a6_against_g2"] == {"covariant": 14, "reference": 14, "union": 14}, "A6 space is not G_2")
     require(result["a5_against_e2_stabilizer"] == {"covariant": 8, "reference": 8, "union": 8}, "A5 space is not su(3)")
