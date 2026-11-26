@@ -69,6 +69,7 @@ LOCAL_POINTS: tuple[tuple[int, tuple[int, ...]], ...] = (
     (61, (1, 1, 1, 0, 0, 0)),
     (41, (1, 2, 0, 0, 0, 0)),
 )
+FAMILY_LEVELS: tuple[int, ...] = tuple(range(4, 13))
 SOURCE_FILES = (
     "gororoba_quantum/cd_core.py",
     "scripts/a5_null_slice_associator_envelope.py",
@@ -158,6 +159,35 @@ def local_nullity(tables: list[Any], p: int, x: tuple[int, ...], *, shift: int =
     return {"p": p, "x": list(x), "t_mod_p": int(root), "nullity_mod_p": DIMENSION - rank}
 
 
+def family_specs() -> list[tuple[int, str, int, tuple[int, ...], int, int]]:
+    """(level, family, time, space, u, v) of the two so(m,1) families of ledger A5-618, with T = {u, v, tau ^ u, tau ^ v}."""
+    specs = []
+    for level in FAMILY_LEVELS:
+        h = 1 << (level - 3)
+        space = tuple(i for i in range(1, 2 * h) if i != h)
+        specs.append((level, "time 7 * 2^(n-3)", 7 * h, space, h, 2 * h))
+        if level >= 6:
+            tau = (1 << (level - 1)) + (1 << (level - 2)) + 8
+            specs.append((level, "octonion space", tau, tuple(range(1, 8)), 8, 1 << (level - 2)))
+    return specs
+
+
+def commutation_item(spec: tuple[int, str, int, tuple[int, ...], int, int], *, shift: int = 0) -> dict[str, Any]:
+    """L_a and L_tau commute on e_k exactly for k in T or T ^ a ^ tau, for every space index a; shift moves u
+    (self-test only)."""
+    level, family, tau, space, u, v = spec
+    dimension = 1 << level
+    rows = sign_rows(dimension, [tau, *space])
+    k = np.arange(dimension)
+    common = {u + shift, v, tau ^ (u + shift), tau ^ v}
+    failures = 0
+    for index, a in enumerate(space, start=1):
+        commute = rows[0][k] * rows[index][tau ^ k] == rows[index][k] * rows[0][a ^ k]
+        expected = common | {t ^ a ^ tau for t in common}
+        failures += int(set(np.nonzero(commute)[0].tolist()) != expected)
+    return {"family": family, "level": level, "time": tau, "space_size": len(space), "u": u, "v": v, "failures": failures}
+
+
 def compute() -> dict[str, Any]:
     commutant_tasks = [task for level in COMMUTANT_LEVELS for task in chunks(level, 0, 32)]
     consistent = parallel.ordered_map(commutant_item, commutant_tasks, min_items=1)
@@ -171,7 +201,9 @@ def compute() -> dict[str, Any]:
         triples[level] = triples.get(level, 0) + count
     direct = parallel.ordered_map(commutant_direct, list(DIRECT_LEVELS), min_items=1)
     tables = slice_tables()
+    lemma = parallel.ordered_map(commutation_item, family_specs(), min_items=1)
     return {
+        "commutation_lemma": lemma,
         "commutant": {
             str(1 << level): {"dimension": len(found), "consistent_differences": found[:8]}
             for level, found in sorted(orbits.items())
@@ -212,6 +244,8 @@ def validate(result: dict[str, Any]) -> None:
     require([row["nullity"] for row in result["field_points"]] == [12] * len(FIELD_POINTS), "field points")
     require([row["nullity"] for row in result["off_cone_points"]] == [0] * len(OFF_CONE_POINTS), "off-cone points")
     require([row["nullity_mod_p"] for row in result["local_points"]] == [12] * len(LOCAL_POINTS), "local points")
+    lemma = result["commutation_lemma"]
+    require(len(lemma) == 16 and all(row["failures"] == 0 for row in lemma), "commutation lemma")
 
 
 def self_test() -> None:
@@ -233,6 +267,8 @@ def self_test() -> None:
         local_nullity(tables, 17, base, shift=1)["nullity_mod_p"] == 12,
         "local root",
     )
+    spec = family_specs()[1]
+    control(commutation_item(spec)["failures"] == 0, commutation_item(spec, shift=1)["failures"] == 0, "common support")
 
 
 def dumps(result: dict[str, Any]) -> str:
@@ -248,7 +284,7 @@ def main() -> int:
     args = parser.parse_args()
     if args.self_test:
         self_test()
-        print("self-test: 4 paired controls pass")
+        print("self-test: 5 paired controls pass")
         return 0
     result = compute()
     validate(result)
