@@ -422,62 +422,64 @@ def kernel_formula(lefts: list[Any], time: int, space: tuple[int, ...], support:
     return {"points": rows}
 
 
-def covariance() -> dict[str, Any]:
-    """Pairs (X, Y) and generators w of so(6,1) with X L_y + L_y Y = L_(w y) for every y of the slice.
+def covariance_item(item: tuple[str, tuple[str, ...]]) -> tuple[str, dict[str, int]]:
+    """One covariance system: the generators of the named kinds, with the dimension of their covariant subspace.
 
     The unknowns are the entries of X and Y and one coefficient per generator. The image dimension is the rank of the
     projection of the solution space onto the generator coefficients: nullity(all columns) - nullity(X, Y columns).
     """
+    label, kinds = item
     lefts = left_tables(DIMENSION)
     frame = (*SPACE, TIME)
     size = len(frame)
-    generators: list[tuple[str, list[list[int]]]] = []
+    chosen: list[list[list[int]]] = []
     for a, b in combinations(range(size), 2):
         matrix = [[0] * size for _ in range(size)]
         boost = frame[b] == TIME
         matrix[a][b] = 1
         matrix[b][a] = 1 if boost else -1
-        generators.append(("boost" if boost else "rotation", matrix))
+        if ("boost" if boost else "rotation") in kinds:
+            chosen.append(matrix)
     tables = {index: entries(lefts[index]) for index in frame}
     block = DIMENSION * DIMENSION
+    rows = []
+    for position, index in enumerate(frame):
+        table = tables[index]
+        images = []
+        for matrix in chosen:
+            image = [[0] * DIMENSION for _ in range(DIMENSION)]
+            for other in range(size):
+                weight = matrix[other][position]
+                if weight:
+                    source = tables[frame[other]]
+                    for r in range(DIMENSION):
+                        for c in range(DIMENSION):
+                            image[r][c] += weight * source[r][c]
+            images.append(image)
+        for r in range(DIMENSION):
+            for c in range(DIMENSION):
+                row = [0] * (2 * block + len(chosen))
+                for k in range(DIMENSION):
+                    if table[k][c]:
+                        row[r * DIMENSION + k] = table[k][c]
+                    if table[r][k]:
+                        row[block + k * DIMENSION + c] = table[r][k]
+                for g, image in enumerate(images):
+                    row[2 * block + g] = -image[r][c]
+                rows.append(row)
+    rank_full = int(fmpz_mat(rows).rank())
+    rank_plain = int(fmpz_mat([row[: 2 * block] for row in rows]).rank())
+    image_dimension = (2 * block + len(chosen) - rank_full) - (2 * block - rank_plain)
+    return label, {"generators": len(chosen), "covariant_dimension": image_dimension}
 
-    def system(kinds: tuple[str, ...]) -> tuple[int, int]:
-        chosen = [matrix for kind, matrix in generators if kind in kinds]
-        rows = []
-        for position, index in enumerate(frame):
-            table = tables[index]
-            images = []
-            for matrix in chosen:
-                image = [[0] * DIMENSION for _ in range(DIMENSION)]
-                for other in range(size):
-                    weight = matrix[other][position]
-                    if weight:
-                        source = tables[frame[other]]
-                        for r in range(DIMENSION):
-                            for c in range(DIMENSION):
-                                image[r][c] += weight * source[r][c]
-                images.append(image)
-            for r in range(DIMENSION):
-                for c in range(DIMENSION):
-                    row = [0] * (2 * block + len(chosen))
-                    for k in range(DIMENSION):
-                        if table[k][c]:
-                            row[r * DIMENSION + k] = table[k][c]
-                        if table[r][k]:
-                            row[block + k * DIMENSION + c] = table[r][k]
-                    for g, image in enumerate(images):
-                        row[2 * block + g] = -image[r][c]
-                    rows.append(row)
-        full = fmpz_mat(rows)
-        rank_full = int(full.rank())
-        rank_plain = int(fmpz_mat([row[: 2 * block] for row in rows]).rank())
-        return len(chosen), (2 * block + len(chosen) - rank_full) - (2 * block - rank_plain)
 
-    result = {}
-    for label, kinds in (("so_6_1", ("rotation", "boost")), ("rotations", ("rotation",)), ("boosts", ("boost",))):
-        count, image = system(kinds)
-        result[label] = {"generators": count, "covariant_dimension": image}
-    return result
+def covariance() -> dict[str, Any]:
+    """Pairs (X, Y) and generators w of so(6,1) with X L_y + L_y Y = L_(w y) for every y of the slice.
+
+    The three systems (all generators, rotations, boosts) are independent items of the process pool.
+    """
+    items = [("so_6_1", ("rotation", "boost")), ("rotations", ("rotation",)), ("boosts", ("boost",))]
+    return dict(parallel.ordered_map(covariance_item, items, min_items=1))
 
 
 def pair_nullities(dimension: int, lefts: list[Any], k: int) -> list[int]:

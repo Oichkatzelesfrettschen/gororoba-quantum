@@ -86,3 +86,10 @@ The Advisor found the head sound and asked for one commit before the hosted revi
 | The absence of Cayley-Dickson structure in the paper rested on two readers | a case-insensitive search of the filed text-layer transcription for octonion, sedenion, Cayley, zero divisor, nonassociative, Clifford, spinor, twistor, division algebra and Jordan algebra returns 0 lines | kept |
 | The pull-request body after its edit | read back: 51 slices, 9 paired controls, the corrected scan wording | the prior-art line now reads "related" for Proposition 11.1 |
 | Repository status after the reviewer's third round | `git status --short` in the nine workspace repositories | clean, except the one untracked results directory that predates the session |
+
+## Hosted review (Codex, head `aff943e24`)
+
+One finding, P1: the three covariance systems ran in a serial loop, against the rule that CPU-bound loops over
+independent items use `parallel.py`. Check: the loop in `covariance` built and ranked the three systems in
+turn. Resolution: `covariance_item` is a module-level worker and `covariance` maps the three systems through
+`parallel.ordered_map`; the record's values are unchanged and `--check` matches.
