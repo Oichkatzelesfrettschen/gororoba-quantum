@@ -43,7 +43,9 @@ def test_family_rows_of_dimension_256() -> None:
     rows = record.family_rows(8)
     first, octonion = rows
     require(first["triple_relations"] == [117242, 0] and first["disjoint_stars"] and first["common_kernel"] == 4)
-    require(octonion["space_clifford"] and octonion["triple_relations"] == [147, 0] and octonion["common_kernel"] == 224)
+    require(
+        octonion["space_clifford"] and octonion["triple_relations"] == [147, 0] and octonion["common_kernel"] == 224
+    )
     require(first["sign_disagreements"] == 0 and octonion["null_point_nullity"] == 4)
 
 
