@@ -45,7 +45,7 @@ words; "no link found" records a search with its scope.
 |---|---|---|
 | 2 K_a = symmetrized associator; Gram = N(y) I + [y, y, .] (A5-622) | yes: anticommuting distinct units and L_y^T = -L_y | dimensions 16, 32, 64 |
 | Gram of L_(e_a + i e_b) = 2 (I - i L_a L_b) for anticommuting tables, nullity half the dimension (A5-629) | every dimension: the Witt-basis identity and trace H = 0 | identity, trace and kernel on every anticommuting pair at 16, 32, 64 |
-| nullity(e_a + i e_b) = 16 - nullity(e_a + e_b) for two-term operands (A5-629) | open in general | all 465 pairs of A_5 |
+| nullity(e_a + i e_b) = D/2 - nullity(e_a + e_b) for two-term operands (A5-629) | every dimension: the sector split of singular_sector_dynamics.md read on S+ and S- | all 465 pairs of A_5 |
 | Gram identity, spectrum, determinant, so(6,1) relations, kernel frame, covariance on the A_5 slice (A5-612 to A5-615) | yes for that slice: polynomial or matrix identities checked exactly | the A_5 slice only |
 | nullity >= 12 on the Euclidean cone (A5-623) | yes, over fields of characteristic 0 or above 32 | equality at two primes and three Q(i) points |
 | Disjoint stars imply the so(m,1) relations (A5-617) | the sufficient direction | the converse on 51 slices and the families |

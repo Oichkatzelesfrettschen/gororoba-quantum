@@ -8,7 +8,7 @@ record extends [the null-slice boost algebra](../a5-null-slice-boost-algebra/REA
 
 with A_a = L_(e_a), J = L_(e_26), the Clifford defect K_a = -(A_a J + J A_a)/2 and T = span(e_2, e_8, e_18, e_24).
 Every decision is an identity of integer matrices, a FLINT rank over Z or over F_p, or a count; no random draw
-enters. `--check` recomputes the record and compares its bytes, and `--self-test` runs seven controls, each a
+enters. `--check` recomputes the record and compares its bytes, and `--self-test` runs eight controls, each a
 property that holds on the record's input and fails on a mutant, in normal and `-O` modes. Sign tables come from a
 vectorized form of the `cd_core.cd_sign` loop, and every sign row the record uses is compared with `cd_core`
 entry by entry.
@@ -83,17 +83,29 @@ entry by entry.
    with H^2 = I; and L_a L_b is a signed XOR permutation by a XOR b != 0, so trace H = 0 and the +1 eigenspace has
    dimension half the algebra (the record checks the vanishing trace on every pair). The identity is the standard
    Witt-basis computation of complexified Clifford modules, applied here to anticommuting Cayley-Dickson tables.
-   In A_5 every two-term operand also satisfies nullity(e_a + i e_b) = 16 - nullity(e_a + e_b), checked on all 465
-   pairs (`complement_agreements`). On the slice, L_(e_1 + i e_26) has nullity
+   Every two-term operand satisfies nullity(e_a + i e_b) = D/2 - nullity(e_a + e_b) in every dimension, checked on
+   all 465 pairs of A_5 (`complement_agreements`). Proof: with P = L_a L_b, P^T = L_b L_a, the real Gram operator is
+   2 I - (P + P^T) and the complex one 2 I - i (P - P^T). P pairs each index k with k XOR a XOR b; on a pair where P^2
+   is +1 (the sector S+ of [singular sector dynamics](../../notes/singular_sector_dynamics.md)) the real Gram has one
+   kernel vector and the complex Gram none, and on a pair where P^2 is -1 (S-) the reverse holds. The real nullity
+   is |S+|/2, as that note states, and the complex nullity |S-|/2. Anticommuting tables are the case S- = all. On the slice, L_(e_1 + i e_26) has nullity
    12, and its kernel is ker K_1 n ker(i L_1 J - I). The exact Gram multiplicities of the eigenvalues 0, 2, 4 are
    4, 24, 4 at e_1 + e_26 (the Lorentzian cone), 12, 8, 12 at e_1 + i e_26 (the Euclidean cone), 16, 0, 16 at
    e_1 + i e_3 (the null space) and 0, 32, 0 at the invertible e_1 + e_3.
 
 ## Prior art searched
 
-On 2026-11-26 six arXiv queries, five zbMATH queries and two OpenAlex queries for Cayley-Dickson left multiplication
-with Lorentz, so(n,1), boost, anticommutator, Clifford or associator terms returned no statement of the so(n,1)
-relations of the defects. The neighbors found bound the other statements: Zhou (2026, Zenodo preprint
+On 2026-11-26 nine arXiv queries, five zbMATH queries and two OpenAlex queries returned no statement of the so(n,1)
+relations of the defects. arXiv (abstract field): "Cayley-Dickson" with "left multiplication" and Lorentz, so(n,1)
+or boost (0 hits); with anticommutator (1); sedenion with Lorentz and "zero divisor" (0); "Cayley-Dickson" with
+"Clifford algebra" and "left multiplication" (1); pathion or trigintaduonion with "zero divisor" (2); "Cayley-Dickson"
+with associator and "Lie algebra" (1); with "finite field" or nilpotent and "zero divisor" (0); with "multiplication
+algebra" (1); title "Cayley-Dickson" with Clifford and Lie (0). zbMATH documents: "Cayley-Dickson left multiplication
+Lorentz" (0), "Cayley-Dickson zero divisors finite field" (3), "Cayley-Dickson anticommutator left multiplication"
+(0), "sedenion zero divisors Clifford algebra" (0), "Cayley-Dickson algebra nilpotent elements" (11); its multi-word
+queries match loosely, so their zero counts are weak evidence. OpenAlex: Cayley-Dickson with left multiplication and
+Lorentz, so(n,1), boost or Clifford (6); with zero divisors and finite fields, nilpotents or split forms (23). The
+neighbors below were read as abstracts only: Zhou (2026, Zenodo preprint
 10.5281/zenodo.23966060) states that the left multiplications of A_n generate the full matrix algebra over F_p for odd
 p and n >= 3; Gresnigt (2026, Fortschritte der Physik, doi 10.1002/prop.70161; arXiv 2609.10569) states that the
 complexified left multiplications of the sedenions generate an algebra isomorphic to Cl(8); Levratti (2026, Zenodo
