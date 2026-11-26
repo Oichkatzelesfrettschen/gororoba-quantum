@@ -8,8 +8,8 @@ Three items of pool row MATH-71, each exact:
   against the rank of the linear system X L_a - L_a X = 0 for n = 1 to 4;
 - the number of ordered triples of imaginary basis units with nonzero associator, against (D - 2)(D - 4)(D + 6)/2,
   for D = 4 to 1024;
-- the nullity of L_y on the Euclidean cone r^2 + t^2 = 0 of the slice y = sum_a x_a e_a + t e_26, S = {1, 3, 4, 5, 6, 7},
-  at points over the imaginary quadratic fields Q(sqrt(-d)) (rank of the 64 x 64 rational form) and at points over
+- the nullity of L_y on the Euclidean cone r^2 + t^2 = 0 of the slice y = sum_a x_a e_a + t e_26,
+  S = {1, 3, 4, 5, 6, 7}, at points over the imaginary quadratic fields Q(sqrt(-d)) (rank of the 64 x 64 rational form) and at points over
   Q_p (reduction mod p: rank 20 of the reduction bounds the nullity over Z_p by 12, and the bound nullity >= 12 holds
   in characteristic 0).
 
@@ -31,8 +31,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
-import parallel  # noqa: E402
 from a5_null_slice_associator_envelope import SPACE, TIME, sign_rows, square_root, table  # noqa: E402
+
+import parallel  # noqa: E402
 
 COMMUTANT_LEVELS: tuple[int, ...] = tuple(range(1, 11))
 DIRECT_LEVELS: tuple[int, ...] = (1, 2, 3, 4)
@@ -99,7 +100,8 @@ def commutant_item(task: tuple[int, int, int]) -> list[int]:
 
 
 def commutant_direct(level: int) -> int:
-    """Dimension of {X : X L_a = L_a X for every a} from the rank of the stacked Kronecker system modulo DIRECT_PRIME."""
+    """Dimension of {X : X L_a = L_a X for every a}, from the rank of the stacked Kronecker system modulo
+    DIRECT_PRIME."""
     dimension = 1 << level
     signs = sign_rows(dimension, list(range(dimension)))
     eye = np.eye(dimension, dtype=np.int64)
@@ -149,8 +151,8 @@ def field_nullity(tables: list[Any], d: int, x: tuple[int, ...], s: int) -> int:
 def local_nullity(tables: list[Any], p: int, x: tuple[int, ...]) -> dict[str, Any]:
     r2 = sum(v * v for v in x)
     root = square_root(-r2, p)
-    require(root is not None, f"-{r2} is not a square modulo {p}")
-    assert root is not None
+    if root is None:
+        raise RuntimeError(f"-{r2} is not a square modulo {p}")
     operator: Any = sum(v * tables[a] for v, a in zip(x, SPACE, strict=True)) + root * tables[TIME]
     rank = int(nmod_mat([[int(v) % p for v in row] for row in operator.tolist()], p).rank())
     return {"p": p, "x": list(x), "t_mod_p": int(root), "nullity_mod_p": DIMENSION - rank}
@@ -174,7 +176,9 @@ def compute() -> dict[str, Any]:
             str(1 << level): {"dimension": len(found), "consistent_differences": found[:8]}
             for level, found in sorted(orbits.items())
         },
-        "commutant_direct_mod_32003": {str(1 << level): value for level, value in zip(DIRECT_LEVELS, direct, strict=True)},
+        "commutant_direct_mod_32003": {
+            str(1 << level): value for level, value in zip(DIRECT_LEVELS, direct, strict=True)
+        },
         "field_points": [
             {"d": d, "x": list(x), "s": s, "nullity": field_nullity(tables, d, x, s)} for d, x, s in FIELD_POINTS
         ],
@@ -183,7 +187,10 @@ def compute() -> dict[str, Any]:
         ],
         "local_points": [local_nullity(tables, p, x) for p, x in LOCAL_POINTS],
         "nonassociating_triples": {
-            str(1 << level): {"count": count, "formula": ((1 << level) - 2) * ((1 << level) - 4) * ((1 << level) + 6) // 2}
+            str(1 << level): {
+                "count": count,
+                "formula": ((1 << level) - 2) * ((1 << level) - 4) * ((1 << level) + 6) // 2,
+            }
             for level, count in sorted(triples.items())
         },
     }
