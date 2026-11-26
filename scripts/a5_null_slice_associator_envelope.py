@@ -591,7 +591,9 @@ def validate(result: dict[str, Any]) -> None:
         dimension = row["dimension"]
         require(row["pairs"] == (dimension - 1) * (dimension - 2), f"associator pairs at {dimension}")
         require(row["gram_points"] == len(GRAM_POINTS), f"Gram points at {dimension}")
-        require(row["associator_failures"] == 0 and row["gram_failures"] == 0, f"associator identity fails at {dimension}")
+        require(
+            row["associator_failures"] == 0 and row["gram_failures"] == 0, f"associator identity fails at {dimension}"
+        )
     require([row["prime"] for row in result["strata"]] == list(PRIMES), "strata primes")
     expected_counts = {32009: (411, 411), 32003: (409, 319)}
     for row in result["strata"]:
@@ -608,20 +610,30 @@ def validate(result: dict[str, Any]) -> None:
     require(env["commutant_dimension"] == 4 and env["commutant_trace_form_signature"] == [2, 1], "commutant type")
     require(env["commutant_traceless_rank"] == 3, "commutant traceless part")
     require(env["commutant_closed_under_products"] and not env["commutant_is_commutative"], "commutant is M_2(R)")
-    require(env["spatial_commutant_dimension"] == 16 and env["all_imaginary_tables_commutant_dimension"] == 1, "commutants")
-    require(env["eta_in_envelope"] and env["seven_units_anticommute"] and env["seven_units_square_to_minus_one"], "units")
+    require(
+        env["spatial_commutant_dimension"] == 16 and env["all_imaginary_tables_commutant_dimension"] == 1, "commutants"
+    )
+    require(
+        env["eta_in_envelope"] and env["seven_units_anticommute"] and env["seven_units_square_to_minus_one"], "units"
+    )
     require(not env["volume_is_scalar"] and env["volume_square_is_identity"], "volume of the seven units")
     require(env["anticommutant_dimension_of_seven_units"] == 8, "anticommutant dimension")
     require(env["eighth_unit_anticommutes"] and env["eighth_unit_square_is_minus_one"], "eighth unit")
     require(env["eighth_unit_in_envelope"] and env["clifford_monomial_rank"] == 256, "Cl(0,8) monomials")
     require(env["clock_in_clifford_span"], "J in the Clifford span")
     strata = result["two_term_strata"]
-    require(strata["histogram"] == {"0": 15, "4": 84, "12": 126} and strata["nullity_4_struts_above_8"], "two-term strata")
+    require(
+        strata["histogram"] == {"0": 15, "4": 84, "12": 126} and strata["nullity_4_struts_above_8"], "two-term strata"
+    )
     require(strata["slice_struts"] == {"1": 11, "3": 9, "4": 14, "5": 15, "6": 12, "7": 13}, "slice struts")
     require(strata["strut_equals_low_index"] == 15, "nullity-0 pairs")
     require(strata["independence_criterion_agreements"] == 225, "independence criterion")
     families = result["families"]
-    require([(row["level"], row["family"]) for row in families] == [(n, f) for n in FAMILY_LEVELS for f in ("time 7 * 2^(n-3)", "octonion space")], "family rows")
+    require(
+        [(row["level"], row["family"]) for row in families]
+        == [(n, f) for n in FAMILY_LEVELS for f in ("time 7 * 2^(n-3)", "octonion space")],
+        "family rows",
+    )
     expected_relations = {8: 117242, 9: 992250}
     for row in families:
         tag = f"{row['family']} level {row['level']}"
@@ -637,6 +649,7 @@ def validate(result: dict[str, Any]) -> None:
                 require(row["triple_relations"] == [expected_relations[row["level"]], 0], tag)
             else:
                 require(row["triple_relations"] is None, tag)
+
 
 def control(holds: bool, fails: bool, name: str) -> None:
     require(holds and fails, f"self-test control {name}: holds {holds}, mutant fails {fails}")
