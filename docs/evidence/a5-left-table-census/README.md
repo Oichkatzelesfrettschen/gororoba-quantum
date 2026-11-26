@@ -14,8 +14,12 @@ The items of pool row MATH-71 and the reduction of pool row MATH-73, each comput
 2. **Envelope.** For n = 3 to 10, the left tables generate the full matrix algebra M_(2^n)(Q). The span of the L_a is
    closed under transposition (L_0 = I and L_a^T = -L_a for a != 0), so its associative envelope is semisimple: a nilpotent ideal holding x
    would hold the nilpotent positive semidefinite x x^T, which is 0. Commutant Q then makes Q^(2^n) one irreducible
-   module whose endomorphisms are Q, and Wedderburn's theorem gives End_Q(Q^(2^n)). This is the characteristic-0 form
-   of the F_p statement of Zhou 2026 (Zenodo 10.5281/zenodo.23966060, odd p, n >= 3); the earlier record's dimension 256
+   module whose endomorphisms are Q, and Wedderburn's theorem gives End_Q(Q^(2^n)). Zhou and Zhou 2026 (Zenodo
+   10.5281/zenodo.23966060; abstract and introduction read on the page) prove Env_L(A_n) = M_(2^n)(F_p) for odd p and
+   every n >= 3, with the doubling (a, b)(c, d) = (ac - d* b, da + b c*) of cd_core. The words in the L_a are integer
+   matrices, and the rank of their span over Q is at least its rank over F_p, so their theorem gives the Q statement
+   for every n >= 3. This record reaches it by another route (the commutant by sign cocycle, then semisimplicity) and
+   checks n = 3 to 10 independently of their proof, a preprint without peer review. The earlier record's dimension 256
    at A_5 refers to the seven slice tables, not to all 32.
 3. **Associator census.** The number of ordered triples (a, b, c) of imaginary basis units with
    [e_a, e_b, e_c] != 0 equals (D - 2)(D - 4)(D + 6)/2 for D = 4 to 1024: 0, 168, 1848, 15960, 130200, 1046808,
@@ -30,7 +34,7 @@ The items of pool row MATH-71 and the reduction of pool row MATH-73, each comput
 5. **Euclidean cone over Q_p.** At 10 points of Z_p with t^2 = -r^2 (p = 5, 11, 13, 17, 29, 37, 41 twice, 43, 61), the
    reduction mod p has nullity 12. Hensel's lemma lifts the root t, since p is odd and -r^2 is a nonzero square mod p.
    A nonzero 20 x 20 minor of the reduction is a unit of Z_p, so the nullity over Q_p is at most 12. The bound
-   nullity >= 12 holds in characteristic 0 (A5-623), so the nullity is exactly 12. The primes 5, 13, 17 and 29 lie
+   nullity >= 12 holds in characteristic 0 (A5-623), so the nullity is exactly 12. The primes 5, 11, 13, 17 and 29 lie
    below the bound 32 of A5-623 and still give 12 at these points.
 
 6. **Commutation-set lemma of the two so(m,1) families.** For the slices of A5-618 (time 7 * 2^(n-3) with space
@@ -79,8 +83,12 @@ every cone point has nullity 12. All held.
 ## Open
 
 - A proof of statements 1 and 3 for every n. The lower-half orbits (d < 2^n) of A_(n+1) contain the constraint graph
-  of A_n, so their inconsistency is inherited; the orbits with d >= 2^n need their own argument. No published proof
-  of the triple formula was found in the searches of the associator envelope.
+  of A_n, so their inconsistency is inherited; the orbits with d >= 2^n need their own argument; Zhou and Zhou's theorem covers
+  statement 1 for every n if it holds. Targeted searches on 2026-11-26 for the triple formula, arXiv
+  `all:"Cayley-Dickson" AND all:associator AND all:basis`, `all:"Cayley-Dickson" AND all:triples AND all:associative`
+  and `all:sedenion AND all:associator AND all:count`, and zbMATH documents `Cayley-Dickson associator basis`, found
+  Wilmot 2025 (arXiv 2505.11747), which classifies the associativity of basis triples in a graded notation. Its abstract
+  states no count, and its text was not read.
 - Equality on the Euclidean cone at every point over every field of characteristic 0 (the bound is proved; equality
   is checked at points).
 

@@ -235,25 +235,35 @@ def all_pairs() -> dict[str, Any]:
     }
 
 
+def section_item(task: tuple[str, tuple[int, int, str]]) -> dict[str, Any]:
+    """One named point, pinned-module operand, plain-phase control or S-form comparison."""
+    kind, (i, j, label) = task
+    t = PHASES[label]
+    if kind == "point":
+        return {"nullity": exact_nullity(i, j, t), **reading(i, j, t)}
+    if kind == "operand":
+        return {"real_nullity": exact_nullity(i, j, t), "nullity_i": exact_nullity(i, j, 1j), "circuit_i": reading(i, j, 1j)["half_sum"]}
+    if kind == "plain":
+        return reading(i, j, t, plain=True)
+    return s_form_row(i, j, t)
+
+
 def compute() -> dict[str, Any]:
-    points = {}
-    for i, j, label in POINTS:
-        points[f"e{i}+({label})e{j}"] = {"nullity": exact_nullity(i, j, PHASES[label]), **reading(i, j, PHASES[label])}
-    operands_at_i = {
-        pkm.operand_tag(operand): {
-            "real_nullity": exact_nullity(operand[0], operand[1], operand[2]),
-            "nullity_i": exact_nullity(operand[0], operand[1], 1j),
-            "circuit_i": reading(operand[0], operand[1], 1j)["half_sum"],
-        }
-        for operand in pkm.OPERANDS
-    }
-    plain = {f"e{i}+({label})e{j}": reading(i, j, PHASES[label], plain=True) for i, j, label in PLAIN_POINTS}
+    tasks: list[tuple[str, tuple[int, int, str]]] = [("point", spec) for spec in POINTS]
+    tasks += [("operand", (i, j, str(t))) for i, j, t in pkm.OPERANDS]
+    tasks += [("plain", spec) for spec in PLAIN_POINTS]
+    tasks += [("s_form", spec) for spec in POINTS if spec[2] != "1"]
+    rows = parallel.ordered_map(section_item, tasks, min_items=1)
+    by_kind: dict[str, dict[str, Any]] = {kind: {} for kind in ("point", "operand", "plain", "s_form")}
+    for (kind, (i, j, label)), row in zip(tasks, rows, strict=True):
+        key = pkm.operand_tag((i, j, int(label))) if kind == "operand" else f"e{i}+({label})e{j}"
+        by_kind[kind][key] = row
     return {
         "all_pairs": all_pairs(),
-        "operands_at_i": operands_at_i,
-        "plain_phase_control": plain,
-        "points": points,
-        "s_form": {f"e{i}+({label})e{j}": s_form_row(i, j, PHASES[label]) for i, j, label in POINTS if label != "1"},
+        "operands_at_i": by_kind["operand"],
+        "plain_phase_control": by_kind["plain"],
+        "points": by_kind["point"],
+        "s_form": by_kind["s_form"],
         "tie_to_pinned_module": tie_failures(),
     }
 

@@ -70,13 +70,6 @@ LOCAL_POINTS: tuple[tuple[int, tuple[int, ...]], ...] = (
     (41, (1, 2, 0, 0, 0, 0)),
 )
 FAMILY_LEVELS: tuple[int, ...] = tuple(range(4, 13))
-SOURCE_FILES = (
-    "gororoba_quantum/cd_core.py",
-    "scripts/a5_null_slice_associator_envelope.py",
-    "scripts/a5_left_table_census.py",
-)
-
-
 def require(condition: bool, message: str) -> None:
     if not condition:
         raise RuntimeError(message)
@@ -196,6 +189,17 @@ def commutation_item(spec: tuple[int, str, int, tuple[int, ...], int, int], *, s
     }
 
 
+def point_item(task: tuple[str, tuple[Any, ...]]) -> dict[str, Any]:
+    """One Euclidean-cone point: a field point (d, x, s) or a local point (p, x)."""
+    kind, spec = task
+    tables = slice_tables()
+    if kind == "local":
+        p, x = spec
+        return local_nullity(tables, p, x)
+    d, x, s = spec
+    return {"d": d, "x": list(x), "s": s, "nullity": field_nullity(tables, d, x, s)}
+
+
 def compute() -> dict[str, Any]:
     commutant_tasks = [task for level in COMMUTANT_LEVELS for task in chunks(level, 0, 32)]
     consistent = parallel.ordered_map(commutant_item, commutant_tasks, min_items=1)
@@ -208,8 +212,13 @@ def compute() -> dict[str, Any]:
     for (level, _start, _stop), count in zip(triple_tasks, counts, strict=True):
         triples[level] = triples.get(level, 0) + count
     direct = parallel.ordered_map(commutant_direct, list(DIRECT_LEVELS), min_items=1)
-    tables = slice_tables()
     lemma = parallel.ordered_map(commutation_item, family_specs(), min_items=1)
+    point_tasks: list[tuple[str, tuple[Any, ...]]] = [("field", spec) for spec in FIELD_POINTS]
+    point_tasks += [("field", spec) for spec in OFF_CONE_POINTS]
+    point_tasks += [("local", spec) for spec in LOCAL_POINTS]
+    points = parallel.ordered_map(point_item, point_tasks, min_items=1)
+    fields, rest = points[: len(FIELD_POINTS)], points[len(FIELD_POINTS) :]
+    off_cone, local = rest[: len(OFF_CONE_POINTS)], rest[len(OFF_CONE_POINTS) :]
     return {
         "commutation_lemma": lemma,
         "commutant": {
@@ -219,13 +228,9 @@ def compute() -> dict[str, Any]:
         "commutant_direct_mod_32003": {
             str(1 << level): value for level, value in zip(DIRECT_LEVELS, direct, strict=True)
         },
-        "field_points": [
-            {"d": d, "x": list(x), "s": s, "nullity": field_nullity(tables, d, x, s)} for d, x, s in FIELD_POINTS
-        ],
-        "off_cone_points": [
-            {"d": d, "x": list(x), "s": s, "nullity": field_nullity(tables, d, x, s)} for d, x, s in OFF_CONE_POINTS
-        ],
-        "local_points": [local_nullity(tables, p, x) for p, x in LOCAL_POINTS],
+        "field_points": fields,
+        "off_cone_points": off_cone,
+        "local_points": local,
         "nonassociating_triples": {
             str(1 << level): {
                 "count": count,

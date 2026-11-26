@@ -40,5 +40,5 @@ by the excluded index 2^(n-3) gives failures.
 "$PYTHON" -B -W error scripts/a5_null_slice_family_relations.py --level 12 --check docs/evidence/a5-null-slice-family-relations/result-n12.json
 ```
 
-Gates `core-a5-null-slice-family-relations-n10`, `-n11` and `-n12` run them on demand; the n = 12 gate takes about 10
-minutes at 32 workers.
+Gates `core-a5-null-slice-family-relations-n10`, `-n11` and `-n12` run them on demand; the n = 12 gate measured 1242 s at
+16 workers, and about 10 minutes at 32 workers is an estimate from the scaling.
