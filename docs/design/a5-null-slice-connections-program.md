@@ -32,7 +32,7 @@ words; "no link found" records a search with its scope.
 | Quantum runs | the coset-block map read e_1 + e_26 at N_hat = 4.25 and 4.28 (4.02 and 4.05 after readout correction) on two Heron r2 devices; the full map left it unresolved; the module's aligned pairs are the support of K_1 | measured (`results/live/PATHION_KERNEL_MAP_FINDINGS.md`) | measured | a retained replica outside the reported interval |
 | Tower to 4096 | both families hold from 256 to 4096 | computed (A5-626, A5-637) | direct relation checks at every level to 4096 for both families | a sign row that differs from cd_core; stars that meet |
 | Clifford and Cayley-Dickson | the six spatial tables, J eta and U_8 = L_(e_2) D_8 are eight anticommuting units whose monomials span the envelope M_16(R), the image of Cl(0,8); gororoba-math's Lean `Clifford/ZeroEight.lean` maps Cl(0,8) to 16 x 16 matrices from sedenion tables | computed (A5-624, A5-625) | proved | none |
-| Cayley-Dickson and Lie | defects close on so(m,1); covariance algebras su(3) and G_2 | computed (A5-613), conjecture (A5-619) | proved; A5-619 open | the A_6 covariance computation |
+| Cayley-Dickson and Lie | defects close on so(m,1); covariance algebras su(3) and G_2 | computed (A5-613, A5-619) | proved: the A_6 covariance algebra is G_2 and the A_5 one the e_2 stabilizer su(3) ([covariance blocks](../evidence/a5-null-slice-covariance/README.md)) | a covariant generator outside the derivations |
 | Nilpotents | y^2 = 0 on the Euclidean cone; L_y is square-zero on ker K(x) there and L_y^2 = 0 on the null space | computed over F_p (A5-623) | certified | a Euclidean-cone point with L_y^2 of rank other than 8 |
 | p-adic fields | the seven-variable form is isotropic over every Q_p, so the Euclidean cone has Q_p points, where nullity >= 12 holds (characteristic 0) | cited theorem and the README argument | the bound proved; equality a hypothesis | the nullity at a Q_p point by a Hensel lift of an F_p point |
 | Albert and Jordan algebras | the chain su(3) in G_2 in F_4 = Der(J_3(O)) would join the slice covariance (A5-615, A5-619) to the Albert algebra; dim Der(J_3(O)) = 52 over F_32009 and F_32003 was computed in review ([review record](../archive/reviews/a5-null-slice-associator-envelope/review.md)) and is not recorded | computed in review | hypothesis | a recorded derivation count other than 52 over Q, or a covariance algebra outside G_2 |
@@ -120,5 +120,5 @@ digest reference in the record (a digest reference per table, the pattern of the
    every n is the commutation-set lemma of A5-636 ([census](../evidence/a5-left-table-census/README.md), statement 6).
 4. **Formal F1 and F4.** Briefs to gororoba-math. Accept: the repository's `ci/check.sh` and `ci/check_rocq.sh`
    green with the new sources listed.
-5. **A_6 covariance (A5-619).** Accept: the covariance algebra of the octonion-space slice of A_6 computed and
-   compared with the G_2 derivations.
+5. **A_6 covariance (A5-619).** Done: G_2, no boost, and su(3) at A_5 by XOR-block decomposition
+   ([covariance blocks](../evidence/a5-null-slice-covariance/README.md)).
