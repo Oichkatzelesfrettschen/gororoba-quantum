@@ -323,10 +323,11 @@ on it, and the kernel on the cone is the explicit frame (t - K(x)) T, T = span(e
 while no boost acts covariantly on L_y (615), so a Lorentz reading of the slice stops at the defect operators.
 
 - measured: the operand e_1 + e_26 of `gororoba_quantum/pathion_kernel_map.py` is the cone point x = e_1, t = 1 of
-  the slice, and its nullity reads 4.02 on ibm_fez and 4.05 on ibm_marrakesh after readout correction, with all 32
-  kernel signs ([findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md)). The defect K_1 is the symmetric
-  part of that module's signed permutation L_1^T L_26, and its support is the module's aligned pairs, so the retained
-  runs already read the kernel frame of row 614 at that point. No new operand is proposed.
+  the slice. The full kernel map on ibm_fez left it unresolved (23 of 32 signs); the coset-block map read
+  N_hat = 4.25 on ibm_fez and 4.28 on ibm_marrakesh, 4.02 and 4.05 after readout correction, with 32 of 32 signs
+  ([findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md)). The runs read a nullity count and contrast
+  signs. The defect K_1 is the symmetric part of the module's signed permutation L_1^T L_26, whose aligned pairs are
+  the support of K_1. No new operand is proposed.
 - The second record ([evidence](../../evidence/a5-null-slice-associator-envelope/README.md), rows 622 to 628) adds
   the strata a hardware estimator could not reach on the real slice: nullity 12 and 16 appear only where the
   Euclidean form r^2 + t^2 vanishes, which needs complex or modular coefficients.

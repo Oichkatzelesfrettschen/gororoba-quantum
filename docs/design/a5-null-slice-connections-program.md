@@ -27,9 +27,9 @@ words; "no link found" records a search with its scope.
 | Area | Mechanism | Evidence class | Status | Falsifier or next check |
 |---|---|---|---|---|
 | Zero-divisor strata (Biss, Dugger and Isaksen) | the slice meets the annihilator dimensions 4, 12 and 16 of A_5, and misses 8 | computed over F_32009, F_32003 (A5-623) | certified | a slice point of nullity 8 over any field |
-| Two-term pairs (Skiouris Proposition 2.2) | x = e_a, t = +-1 gives the nullity-4 stratum; the record recounts all 225 pairs | documented and computed (A5-627) | proved | none |
+| Two-term pairs (Skiouris Proposition 2.2) | x = e_a, t = +-1 gives the nullity-4 stratum; the record recounts all 225 pairs (counts only; the proposition states the criterion) | documented and computed (A5-627) | proved | none |
 | de Marrais struts | every nullity-4 two-term pair has strut s > 8, the range `demarrais_structures.py` marks sparse (`is_dmz_sparse`); the slice uses the struts 9, 11 to 15 | computed (A5-627) | proved for the implication; the full 4-versus-12 rule is Skiouris's | a nullity-4 pair with s <= 8 |
-| Quantum runs | e_1 + e_26 read at nullity 4.02 and 4.05 on two Heron r2 devices; the module's aligned pairs are the support of K_1 | measured (`results/live/PATHION_KERNEL_MAP_FINDINGS.md`) | measured | a retained replica outside the reported interval |
+| Quantum runs | the coset-block map read e_1 + e_26 at N_hat = 4.25 and 4.28 (4.02 and 4.05 after readout correction) on two Heron r2 devices; the full map left it unresolved; the module's aligned pairs are the support of K_1 | measured (`results/live/PATHION_KERNEL_MAP_FINDINGS.md`) | measured | a retained replica outside the reported interval |
 | Tower to 4096 | both families hold from 256 to 4096 | computed (A5-626) | survives above 512 | a sign row that differs from cd_core; stars that meet |
 | Clifford and Cayley-Dickson | the six spatial tables are a Clifford space; with J eta they give seven anticommuting units in M_16(R) | computed (A5-624, A5-625) | proved; Cl(0,8) open | an eighth unit, or its exclusion |
 | Cayley-Dickson and Lie | defects close on so(m,1); covariance algebras su(3) and G_2 | computed (A5-613), conjecture (A5-619) | proved; A5-619 open | the A_6 covariance computation |
@@ -42,18 +42,17 @@ words; "no link found" records a search with its scope.
 ## Formal targets and the prover for each
 
 gororoba-math holds Lean 4.35 with Mathlib (pinned `56a005855ea1`) and Rocq 9.3 with MathComp 2.6. An Agda
-cross-check of the octonion Moufang loop sits on the branch `agda/pilot-moufang-loop` under an owner decision of
-2026-11-26 recorded in the workspace guide (gororoba-infrastructure commit `861ffb7`); it is on demand and no gate
-reads it.
+cross-check of the octonion Moufang loop is in preparation there under an owner decision of 2026-11-26; it runs on
+demand and no gate reads it.
 
 | Target | Statement | Prover | Reason |
 |---|---|---|---|
 | F1 | the signed-permutation identities: 2 K_a equals the symmetrized associator, the Gram identity on the slice, K(x)^3 = r^2 K(x) | Rocq, `vm_compute` over Z | finite integer matrices, the pattern of `A5W8ArcMatrixRanks.v` and `CdTowerTwoTermNullity.v` |
-| F2 | the so(6,1) relations of the six K_a as a Lie-algebra map into `LieAlgebra.Orthogonal.so' 6 1` | Lean with Mathlib | Mathlib defines `so'` p q (`Algebra/Lie/Classical.lean`); Rocq has no Lie-algebra library on the switch |
+| F2 | the so(6,1) relations of the six K_a as a Lie-algebra map into `LieAlgebra.Orthogonal.so'` with p = 6, q = 1 | Lean with Mathlib | Mathlib defines `so'` (`Mathlib/Algebra/Lie/Classical.lean`, line 180 at the pin); the installed Rocq libraries name no Lie-algebra package |
 | F3 | the kernel frame (t - K(x)) T on the cone, over any commutative ring | Lean, with a Rocq bridge | the pattern of `KernelCertificate.lean` and `CdTowerKernelCertificate.v` |
 | F4 | the disjoint-star criterion implies the so(m,1) relations, for every m | Lean | a structural statement over finite index sets, the only target that reaches every dimension |
 | F5 | seven anticommuting units in the envelope, and Cl(0,8) once A5-625 decides | Lean | `CliffordAlgebra.lift` and `Clifford/ZeroEight.lean` already map Cl(0,8) to 16 x 16 matrices built from sedenion tables |
-| F6 | nullity >= 12 on the Euclidean cone over a field of characteristic 0 or above 32 | Lean | needs rank and trace of idempotents over a field (Mathlib `LinearMap.IsIdempotentElem` family), absent from the Rocq switch |
+| F6 | nullity >= 12 on the Euclidean cone over a field of characteristic 0 or above 32 | Lean | needs rank and trace of an idempotent matrix over a field, which Mathlib's linear algebra supplies |
 
 Agda adds a third kernel for a statement already proved in Lean or Rocq. For the null slice its use would be a
 cross-check of F1, whose content is finite; the owner's pilot decision governs any extension, and no Agda work is
@@ -66,8 +65,7 @@ query over raw shots is slow, and DuckDB reads the retained JSON and JSON Lines 
 far below the GitHub size limits (`result.json` of a few kilobytes). An exhaustive table of every two-term pair or
 every slice at dimensions 1024 to 4096 is the first input of this program that could approach them: at dimension
 4096 the two-term pairs number about 8.4 million. Such a table, when a question needs it, goes to JSON Lines with a
-digest reference in the record (the `table_ref` pattern of the results-store design on the infrastructure branch
-`compute/results-store`), and the Parquet decision is reopened only with a measured query time.
+digest reference in the record (a digest reference per table, the pattern of the workspace's results-store design), and the Parquet decision is reopened only with a measured query time.
 
 ## Next computations, with acceptance checks
 

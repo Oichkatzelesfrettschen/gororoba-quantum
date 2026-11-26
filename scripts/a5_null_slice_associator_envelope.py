@@ -332,6 +332,8 @@ def envelope() -> dict[str, Any]:
     eye = np.eye(DIMENSION, dtype=object)
     traceless = [c * DIMENSION - sum(c[i, i] for i in range(DIMENSION)) * eye for c in commutant]
     gram = [[int(sum((x @ y)[i, i] for i in range(DIMENSION))) for y in traceless] for x in traceless]
+    commutant_commutative = all(np.array_equal(x @ y, y @ x) for x, y in combinations(commutant, 2))
+    commutant_closed = integer_rank(commutant + [x @ y for x in commutant for y in commutant]) == len(commutant)
     spatial_commutant = len(commutant_basis([tables[a] for a in SPACE]))
     full_commutant = len(commutant_basis(tables[1:]))
     eta: Any = np.eye(DIMENSION, dtype=np.int64)
@@ -352,6 +354,8 @@ def envelope() -> dict[str, Any]:
         "closed_under_products": closure_rank == len(basis),
         "closed_under_transpose": transpose_rank == len(basis),
         "commutant_dimension": len(commutant),
+        "commutant_closed_under_products": commutant_closed,
+        "commutant_is_commutative": commutant_commutative,
         "commutant_trace_form_signature": list(signature(gram)),
         "commutant_traceless_rank": integer_rank(traceless),
         "spatial_commutant_dimension": spatial_commutant,
@@ -546,6 +550,7 @@ def validate(result: dict[str, Any]) -> None:
     env = result["envelope"]
     require(env["dimension"] == 256 and env["closed_under_products"] and env["closed_under_transpose"], "envelope")
     require(env["commutant_dimension"] == 4 and env["commutant_trace_form_signature"] == [2, 1], "commutant type")
+    require(env["commutant_closed_under_products"] and not env["commutant_is_commutative"], "commutant is M_2(R)")
     require(
         env["spatial_commutant_dimension"] == 16 and env["all_imaginary_tables_commutant_dimension"] == 1, "commutants"
     )

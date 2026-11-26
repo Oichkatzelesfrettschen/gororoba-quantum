@@ -150,9 +150,9 @@ What the slice changes for the program:
   kernel is related to arXiv math/0511691 Proposition 11.1, whose hypotheses the record checks. The extension to the
   whole seven-dimensional slice, the so(n,1) relations of the defects, the envelope and the families have no source
   in the documents read.
-- **Hardware.** e_1 + e_26 is the cone point x = e_1, t = 1, and the kernel map read its nullity as 4.02 on
-  ibm_fez and 4.05 on ibm_marrakesh after readout correction
-  ([findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md)).
+- **Hardware.** e_1 + e_26 is the cone point x = e_1, t = 1. The full kernel map on ibm_fez left it unresolved (23 of
+  32 signs); the coset-block map read N_hat = 4.25 on ibm_fez and 4.28 on ibm_marrakesh, 4.02 and 4.05 after readout
+  correction, with 32 of 32 signs ([findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md)).
 - **Machine-checked.** The two-term kernels, e_a +- e_26 included, are formal in gororoba-math
   (`rocq/quantum/CdTowerTwoTermNullity.v`, `lean/GororobaMath/CayleyDickson/TwoTermNullity.lean`); the
   multi-direction statements A5-612 to A5-618 and A5-622 to A5-626 are not formalized.

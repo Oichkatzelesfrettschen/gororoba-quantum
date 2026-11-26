@@ -37,17 +37,19 @@ entry by entry.
    of the record.
 3. **Associative envelope** (`envelope`). The algebra the seven tables A_a and J generate over Q has dimension 256
    (word lengths 1 to 6 give 8, 35, 111, 210, 255, 256), is closed under products and under transposition, and
-   contains eta = I - 2 P_T. Its commutant in M_32(Q) has dimension 4, and the trace form on the commutant's traceless
-   part has signature (2, 1), the form of M_2(R) and not of the quaternions (signature (0, 3)). Closure under
-   transposition makes the envelope semisimple, so it is M_16(R) and R^32 is two copies of one irreducible
-   16-dimensional module. The six spatial tables alone have a commutant of dimension 16 (M_8(R) acting four times),
+   contains eta = I - 2 P_T. Its commutant in M_32(Q) has dimension 4, is closed under products and is not
+   commutative, and the trace form on its traceless part has signature (2, 1): a noncommutative four-dimensional
+   semisimple real algebra is M_2(R) or the quaternions, and the signature excludes the quaternions (signature (0, 3)).
+   Closure under transposition makes the envelope semisimple, so by the double-commutant theorem it is the commutant
+   of M_2(R), namely M_16(R), and R^32 is two copies of one irreducible 16-dimensional module. The six spatial tables alone have a commutant of dimension 16 (M_8(R) acting four times),
    and the 31 imaginary tables of A_5 together have a commutant of dimension 1.
 4. **Seven anticommuting units** (`envelope`). The six A_a and J eta anticommute pairwise and square to -I. Their
    product is not a scalar and squares to I, and the elements anticommuting with all seven form a space of dimension 8.
 5. **Two-term strata of A_5** (`two_term_strata`). For e_j + e_tau, 1 <= j < 16 <= tau, j XOR tau != 16, the
    nullities are 0 (15 pairs, the strut s = j XOR tau XOR 16 equal to j), 4 (84 pairs) and 12 (126 pairs); every
-   nullity-4 pair has s > 8. The six spatial directions of the slice pair with e_26 at the struts 11, 9, 14, 15, 12 and
-   13. Proposition 2.2 of Skiouris, "Aphanics at the pathion level" (2026), states the 4 and 12 strata of these pairs
+   nullity-4 pair has s > 8 (the range `gororoba_quantum/demarrais_structures.py` marks `is_dmz_sparse`). The six
+   spatial directions of the slice pair with e_26 at the struts 11, 9, 14, 15, 12 and 13. The record tests counts
+   only; Proposition 2.2 of Skiouris, "Aphanics at the pathion level" (2026), states the 4 and 12 strata of these pairs
    and names e_1 + e_26 the canonical representative of the nullity-4 stratum, with Gram spectrum 0, 2, 4 at
    multiplicities 4, 24, 4.
 6. **The families to dimension 4096** (`families`). For n = 8 to 12, the slice with time index 7 * 2^(n-3) and
@@ -60,10 +62,12 @@ entry by entry.
 
 ## Relation to retained hardware data
 
-The operand e_1 + e_26 is the cone point x = e_1, t = 1 of the slice. The kernel map of
-[pathion-kernel-map](../pathion-kernel-map/README.md) read its nullity on ibm_fez and ibm_marrakesh as 4.02 and 4.05
-after readout correction, with all 32 kernel signs ([findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md)).
-K_1 is the symmetric part of that module's signed permutation L_1^T L_26, and its aligned pairs are the support of K_1.
+The operand e_1 + e_26 is the cone point x = e_1, t = 1 of the slice ([findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md)).
+The full kernel map on ibm_fez (acquisition `ibm-fez-pathion-kernel-map`, 167 routed CZ) left it unresolved, with
+23 of 32 contrast signs. The coset-block map (acquisitions `ibm-fez-pathion-coset-map` and
+`ibm-marrakesh-pathion-coset-map`) read N_hat = 4.25 [4.15, 4.35] on ibm_fez and 4.28 [4.19, 4.38] on ibm_marrakesh,
+4.02 and 4.05 after readout correction, with 32 of 32 signs. The runs read a nullity count and contrast signs; K_1 is
+the symmetric part of the module's signed permutation L_1^T L_26, and the module's aligned pairs are the support of K_1.
 
 ## Relation to arXiv 2611.34924
 
@@ -80,6 +84,8 @@ The check takes about 60 s on a 32-thread pool (gate `core-a5-null-slice-associa
 
 ## Open
 
+- The orbits of the strata classification ([a5-strata-regularity](../a5-strata-regularity/README.md)) that contain
+  the nullity-12 and nullity-16 points of statement 2; the record does not place them.
 - An eighth unit anticommuting with the seven of statement 4 and squaring to -I, which would make the envelope the
   image of Cl(0,8); the space of candidates has dimension 8.
 - The nullity on the Euclidean cone over Q(i) and over Q_p, beyond the two primes and the bound of statement 2.
