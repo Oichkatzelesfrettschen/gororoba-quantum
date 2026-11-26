@@ -335,8 +335,8 @@ def envelope() -> dict[str, Any]:
     spatial_commutant = len(commutant_basis([tables[a] for a in SPACE]))
     full_commutant = len(commutant_basis(tables[1:]))
     eta: Any = np.eye(DIMENSION, dtype=np.int64)
-    for m in TIME_SUPPORT:
-        eta[m, m] = -1
+    for index in TIME_SUPPORT:
+        eta[index, index] = -1
     clock: Any = tables[TIME] @ eta
     units = [tables[a] for a in SPACE] + [clock]
     eye64 = np.eye(DIMENSION, dtype=np.int64)
