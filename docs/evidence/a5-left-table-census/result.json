@@ -71,6 +71,152 @@
   "4": 4,
   "8": 1
  },
+ "commutation_lemma": [
+  {
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 4,
+   "space_size": 2,
+   "time": 14,
+   "u": 2,
+   "v": 4
+  },
+  {
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 5,
+   "space_size": 6,
+   "time": 28,
+   "u": 4,
+   "v": 8
+  },
+  {
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 6,
+   "space_size": 14,
+   "time": 56,
+   "u": 8,
+   "v": 16
+  },
+  {
+   "failures": 0,
+   "family": "octonion space",
+   "level": 6,
+   "space_size": 7,
+   "time": 56,
+   "u": 8,
+   "v": 16
+  },
+  {
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 7,
+   "space_size": 30,
+   "time": 112,
+   "u": 16,
+   "v": 32
+  },
+  {
+   "failures": 0,
+   "family": "octonion space",
+   "level": 7,
+   "space_size": 7,
+   "time": 104,
+   "u": 8,
+   "v": 32
+  },
+  {
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 8,
+   "space_size": 62,
+   "time": 224,
+   "u": 32,
+   "v": 64
+  },
+  {
+   "failures": 0,
+   "family": "octonion space",
+   "level": 8,
+   "space_size": 7,
+   "time": 200,
+   "u": 8,
+   "v": 64
+  },
+  {
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 9,
+   "space_size": 126,
+   "time": 448,
+   "u": 64,
+   "v": 128
+  },
+  {
+   "failures": 0,
+   "family": "octonion space",
+   "level": 9,
+   "space_size": 7,
+   "time": 392,
+   "u": 8,
+   "v": 128
+  },
+  {
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 10,
+   "space_size": 254,
+   "time": 896,
+   "u": 128,
+   "v": 256
+  },
+  {
+   "failures": 0,
+   "family": "octonion space",
+   "level": 10,
+   "space_size": 7,
+   "time": 776,
+   "u": 8,
+   "v": 256
+  },
+  {
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 11,
+   "space_size": 510,
+   "time": 1792,
+   "u": 256,
+   "v": 512
+  },
+  {
+   "failures": 0,
+   "family": "octonion space",
+   "level": 11,
+   "space_size": 7,
+   "time": 1544,
+   "u": 8,
+   "v": 512
+  },
+  {
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 12,
+   "space_size": 1022,
+   "time": 3584,
+   "u": 512,
+   "v": 1024
+  },
+  {
+   "failures": 0,
+   "family": "octonion space",
+   "level": 12,
+   "space_size": 7,
+   "time": 3080,
+   "u": 8,
+   "v": 1024
+  }
+ ],
  "field_points": [
   {
    "d": 1,
