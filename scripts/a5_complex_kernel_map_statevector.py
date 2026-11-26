@@ -129,8 +129,11 @@ def reading(i: int, j: int, t: complex, *, plain: bool = False) -> dict[str, Any
         "selector": int(round(selector)),
         "selector_exact": abs(selector - round(selector)) < EXACT,
         "unit_contrasts": bool(np.allclose(np.abs(c), 1.0, atol=EXACT)),
-        "p0_minus": round(pkm.selector_zero(minus), 12),
-        "p0_plus": round(pkm.selector_zero(plus), 12),
+        "p0_minus_32nds": int(round(DIM * pkm.selector_zero(minus))),
+        "p0_plus_32nds": int(round(DIM * pkm.selector_zero(plus))),
+        "p0_exact": all(
+            abs(DIM * pkm.selector_zero(law) - round(DIM * pkm.selector_zero(law))) < EXACT for law in (minus, plus)
+        ),
     }
 
 
@@ -284,8 +287,9 @@ def validate(result: dict[str, Any]) -> None:
     require(readings == [16, 12, 12, 8, 4, 4], f"operands at t = i: {readings}")
     for row in result["operands_at_i"].values():
         require(row["nullity_i"] == row["circuit_i"] == HALF - row["real_nullity"], f"operand row {row}")
-    p0 = {name: (row["p0_minus"], row["p0_plus"]) for name, row in result["points"].items()}
-    require(p0["e1+(i)e3"] == (0.0, 1.0) and p0["e1+(i)e26"] == (0.125, 0.875), f"selector marginals {p0}")
+    p0 = {name: (row["p0_minus_32nds"], row["p0_plus_32nds"]) for name, row in result["points"].items()}
+    require(p0["e1+(i)e3"] == (0, 32) and p0["e1+(i)e26"] == (4, 28), f"selector marginals {p0}")
+    require(all(row["p0_exact"] for row in result["points"].values()), "selector marginals off the 1/32 grid")
     cz = {name: (row["cz_real"], row["cz_complex"]) for name, row in result["s_form"].items()}
     require(cz == {"e1+(i)e3": (91, 91), "e1+(i)e26": (96, 96), "e1+(-i)e26": (96, 96)}, f"cz counts {cz}")
     plain = result["plain_phase_control"]

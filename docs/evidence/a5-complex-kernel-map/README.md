@@ -30,7 +30,8 @@ builder reproduces the module's outcome laws on all six operands and both twins,
 2. Real over complex nullity of the 465 pairs: 0/16 at 171 pairs, the anticommuting tables; 4/12 at 84; 8/8 at 84;
    12/4 at 126. Every pair satisfies the complement law nullity(e_i + i e_j) = 16 - nullity(e_i + e_j) of A5-629.
 3. Named points: e_1 + e_3 reads 0, e_1 + i e_3 reads 16, e_1 + e_26 reads 4, and e_1 + i e_26 and e_1 - i e_26 read 12.
-   P(s = 0) in the minus and plus arms is 0 and 1 at e_1 + i e_3, and 0.125 and 0.875 at e_1 + i e_26. The six
+   P(s = 0) in the minus and plus arms is 0 and 1 at e_1 + i e_3, and 0.125 and 0.875 at e_1 + i e_26; the record
+   stores each as an integer count of 32nds, checked exact. The six
    operands of the pinned module read 16, 12, 12, 8, 4, 4 at t = i against real nullities 0, 4, 4, 8, 12, 12.
 4. Plain phases +-i on the upper members, with s_k dropped, read -14 at e_1 + i e_3 and -2 at e_1 + i e_26.
 5. The complex circuit is the pinned real circuit of e_i + e_j with two added gates: S (S-dagger for t = -i) on data
