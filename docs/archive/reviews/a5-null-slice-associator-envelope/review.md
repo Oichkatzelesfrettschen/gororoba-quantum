@@ -40,7 +40,7 @@ No finding is refuted. The reviewer ran in auto mode; `git status --short` in si
 ## Validation of the fixed head
 
 On the compute workstation under WSL with the pinned interpreter: ruff format and check and mypy clean; `--self-test`
-in normal and `-O` modes passes seven controls; `--out` in about 60 s (sections pooled); `--check` matches; `ledger.py --check` and
+in normal and `-O` modes passes seven controls; `--out` in 56 s (sections and family levels pooled); `--check` matches; `ledger.py --check` and
 `check_markdown_links.py` clean; `sh ci/pr_checks.sh tests` on the record's test file and the ledger test: 16 passed.
 
 ## Advisor, after the red team
@@ -51,3 +51,10 @@ of the strata record, the Lean file `Clifford/ZeroEight.lean` and the Mathlib pi
 "computed, in agreement with Theorem 6"), for stale text after the round to be updated (the PR body, the open lists,
 the program note, the roadmap row and the first record's open items), for verdicts on every reviewer item (rows 11 to
 13) and for the independent sections of `compute()` to run through the pool.
+
+## Hosted review (Codex, head `68b1432b6`)
+
+| Finding | Check | Resolution |
+|---|---|---|
+| P1: the five family levels ran serially; star construction and block ranks stayed off the pool | read `compute` and `family_rows` | Fixed in `9c96daf51`: three flat maps over all levels (structure, sign chunks, relation triples); `--out` 75 s to 56 s |
+| P2: a one-dimensional abelian algebra maps nonzero into the defects, so "only trivially" is wrong | [K_a, K_a] = 0 | Fixed in `9c96daf51`: README and A5-628 state that a map exists for each single defect and that the paper singles none out |
