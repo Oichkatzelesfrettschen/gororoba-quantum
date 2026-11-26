@@ -27,7 +27,9 @@
   "anticommutant_dimension_of_seven_units": 8,
   "closed_under_products": true,
   "closed_under_transpose": true,
+  "commutant_closed_under_products": true,
   "commutant_dimension": 4,
+  "commutant_is_commutative": false,
   "commutant_trace_form_signature": [
    2,
    1
@@ -245,7 +247,7 @@
  "sources": {
   "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
   "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
-  "scripts/a5_null_slice_associator_envelope.py": "0062112248e6c32021006729a3967ccb223426dbd350104a2ccd1237e80f32f3"
+  "scripts/a5_null_slice_associator_envelope.py": "3715479d9c91a51fd65ce6300408fcfb79e5c5b377adde0dc1ebfa54f7485a47"
  },
  "strata": [
   {
