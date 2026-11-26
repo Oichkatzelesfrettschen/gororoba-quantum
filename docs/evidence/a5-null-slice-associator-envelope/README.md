@@ -74,6 +74,29 @@ entry by entry.
    Clifford space, disjoint stars, the 147 relations of so(7,1) and a common kernel of dimension 2^n - 32 at every
    n = 8 to 12. Up to 1023 sign rows per level are compared with `cd_core`, with zero disagreements.
 
+7. **Complex two-term kernels** (`complex_two_term`). For two imaginary units whose left tables anticommute
+   (63 of 105 pairs in dimension 16, 171 of 465 in 32, 435 of 1953 in 64), the Gram operator of L_(e_a + i e_b) is
+   2 (I - i L_a L_b), checked on every such pair. Its kernel is therefore the +1 eigenspace of the Hermitian involution
+   i L_a L_b, of dimension half the algebra: the record confirms nullity, eigenspace and joint kernel at the first three
+   pairs of each dimension. The identity holds in every dimension by two lines: L_a^T = -L_a, L_a^2 = L_b^2 = -I and
+   L_a L_b = -L_b L_a give (L_a + i L_b)^H (L_a + i L_b) = 2 I - 2 i L_a L_b. On the slice, L_(e_1 + i e_26) has nullity
+   12, and its kernel is ker K_1 n ker(i L_1 J - I). The exact Gram multiplicities of the eigenvalues 0, 2, 4 are
+   4, 24, 4 at e_1 + e_26 (the Lorentzian cone), 12, 8, 12 at e_1 + i e_26 (the Euclidean cone), 16, 0, 16 at
+   e_1 + i e_3 (the null space) and 0, 32, 0 at the invertible e_1 + e_3.
+
+## Prior art searched
+
+On 2026-11-26 six arXiv queries, five zbMATH queries and two OpenAlex queries for Cayley-Dickson left multiplication
+with Lorentz, so(n,1), boost, anticommutator, Clifford or associator terms returned no statement of the so(n,1)
+relations of the defects. The neighbors found bound the other statements: Zhou (2026, Zenodo preprint
+10.5281/zenodo.23966060) states that the left multiplications of A_n generate the full matrix algebra over F_p for odd
+p and n >= 3; Gresnigt (2026, Fortschritte der Physik, doi 10.1002/prop.70161; arXiv 2609.10569) states that the
+complexified left multiplications of the sedenions generate an algebra isomorphic to Cl(8); Levratti (2026, Zenodo
+10.5281/zenodo.20445207) maps the sedenion zero divisors into Cl(0,7) through octonion left multiplications; Zahid
+and coauthors (2024, Journal of Computing and Biomedical Informatics 7(2)) count idempotents, nilpotents and zero
+divisors of Cayley-Dickson algebras over Z_p. The envelope statement of item 3 concerns seven tables of A_5 and is
+not stated in those abstracts; the novelty claim of this record is bounded by these searches and the documents read.
+
 ## Relation to retained hardware data
 
 The operand e_1 + e_26 is the cone point x = e_1, t = 1 of the slice ([findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md)).

@@ -328,6 +328,10 @@ while no boost acts covariantly on L_y (615), so a Lorentz reading of the slice 
   ([findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md)). The runs read a nullity count and contrast
   signs. The defect K_1 is the symmetric part of the module's signed permutation L_1^T L_26, whose aligned pairs are
   the support of K_1. No new operand is proposed.
+- hypothesis (row 630): the complex strata become device observables through Hermitian involutions built from the
+  same signed permutations: the kernel of L_(e_a + i e_b) is the +1 eigenspace of i L_a L_b (row 629), so a kernel
+  map with selector phase i reads N = 16 at e_1 + i e_3 and N = 12 at e_1 + i e_26. The noiseless statevector decides
+  it before any written case ([program note](../../design/a5-null-slice-connections-program.md)).
 - The second record ([evidence](../../evidence/a5-null-slice-associator-envelope/README.md), rows 622 to 628) adds
   the strata a hardware estimator could not reach on the real slice: nullity 12 and 16 appear only where the
   Euclidean form r^2 + t^2 vanishes, which needs complex or modular coefficients.

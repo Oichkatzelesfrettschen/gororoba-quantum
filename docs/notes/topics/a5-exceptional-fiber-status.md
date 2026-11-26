@@ -131,6 +131,8 @@ The second record, [a5-null-slice-associator-envelope](../../evidence/a5-null-sl
 | A5-626 | both families hold from dimension 256 to 4096, by direct relation checks at 256 and 512 and by disjoint stars above | survives |
 | A5-627 | the 225 two-term pairs of A_5 split 15, 84, 126 at nullity 0, 4, 12; every nullity-4 pair has strut above 8 | proved |
 | A5-628 | the paper's corner boost is one unitary one-parameter group; no non-abelian Lorentz algebra appears | boundary |
+| A5-629 | complex two-term operands of anticommuting tables have Gram 2 (I - i L_a L_b): kernels are eigenspaces of Hermitian involutions, nullity half the dimension; on the slice the Euclidean-cone kernel is ker K_1 n ker(i L_1 J - I) | proved |
+| A5-630 | the kernel map with phase i reads N = 16 and N = 12 on the complex strata | open |
 
 What the slice changes for the program:
 

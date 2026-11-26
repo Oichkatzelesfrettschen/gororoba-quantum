@@ -22,6 +22,142 @@
    "pairs": 3906
   }
  ],
+ "complex_two_term": {
+  "levels": [
+   {
+    "anticommuting_pairs": 63,
+    "dimension": 16,
+    "gram_identity_failures": 0,
+    "kernels": [
+     {
+      "eigenspace": 8,
+      "joint": 8,
+      "nullity": 8,
+      "pair": [
+       1,
+       2
+      ]
+     },
+     {
+      "eigenspace": 8,
+      "joint": 8,
+      "nullity": 8,
+      "pair": [
+       1,
+       3
+      ]
+     },
+     {
+      "eigenspace": 8,
+      "joint": 8,
+      "nullity": 8,
+      "pair": [
+       1,
+       4
+      ]
+     }
+    ],
+    "pairs": 105
+   },
+   {
+    "anticommuting_pairs": 171,
+    "dimension": 32,
+    "gram_identity_failures": 0,
+    "kernels": [
+     {
+      "eigenspace": 16,
+      "joint": 16,
+      "nullity": 16,
+      "pair": [
+       1,
+       2
+      ]
+     },
+     {
+      "eigenspace": 16,
+      "joint": 16,
+      "nullity": 16,
+      "pair": [
+       1,
+       3
+      ]
+     },
+     {
+      "eigenspace": 16,
+      "joint": 16,
+      "nullity": 16,
+      "pair": [
+       1,
+       4
+      ]
+     }
+    ],
+    "pairs": 465
+   },
+   {
+    "anticommuting_pairs": 435,
+    "dimension": 64,
+    "gram_identity_failures": 0,
+    "kernels": [
+     {
+      "eigenspace": 32,
+      "joint": 32,
+      "nullity": 32,
+      "pair": [
+       1,
+       2
+      ]
+     },
+     {
+      "eigenspace": 32,
+      "joint": 32,
+      "nullity": 32,
+      "pair": [
+       1,
+       3
+      ]
+     },
+     {
+      "eigenspace": 32,
+      "joint": 32,
+      "nullity": 32,
+      "pair": [
+       1,
+       4
+      ]
+     }
+    ],
+    "pairs": 1953
+   }
+  ],
+  "slice_kernel": {
+   "defect_and_involution": 12,
+   "joint": 12,
+   "nullity": 12
+  },
+  "spectra": {
+   "e_1 + e_26": {
+    "0": 4,
+    "2": 24,
+    "4": 4
+   },
+   "e_1 + e_3": {
+    "0": 0,
+    "2": 32,
+    "4": 0
+   },
+   "e_1 + i e_26": {
+    "0": 12,
+    "2": 8,
+    "4": 12
+   },
+   "e_1 + i e_3": {
+    "0": 16,
+    "2": 0,
+    "4": 16
+   }
+  }
+ },
  "envelope": {
   "all_imaginary_tables_commutant_dimension": 1,
   "anticommutant_dimension_of_seven_units": 8,
@@ -291,7 +427,7 @@
  "sources": {
   "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
   "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
-  "scripts/a5_null_slice_associator_envelope.py": "5f42cb95e0beb3f40bfccf2f375ab0e815e316ac067a898f81e73e4834d0415e"
+  "scripts/a5_null_slice_associator_envelope.py": "2c86973252ffad118d4b38110733fddcc222b59b5168b9574dcc48f60c6c4b5a"
  },
  "strata": [
   {
