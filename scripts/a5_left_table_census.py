@@ -223,14 +223,10 @@ def self_test() -> None:
     dropped = sum(orbit_consistent(signs, d, drop_diagonal=True) for d in range(8))
     direct = commutant_direct(3)
     control(orbit == direct == 1, dropped == direct, "orbit cocycle against the direct system")
-    control(
-        triple_item((4, 1, 16)) == 1848, triple_item((4, 1, 16), wrong_index=True) == 1848, "associator predicate"
-    )
+    control(triple_item((4, 1, 16)) == 1848, triple_item((4, 1, 16), wrong_index=True) == 1848, "associator predicate")
     tables = slice_tables()
     point = (1, 1, 0, 0, 0, 0)
-    control(
-        field_nullity(tables, 2, point, 1) == 12, field_nullity(tables, 2, point, 1, form_d=1) == 12, "field form"
-    )
+    control(field_nullity(tables, 2, point, 1) == 12, field_nullity(tables, 2, point, 1, form_d=1) == 12, "field form")
     base = (1, 0, 0, 0, 0, 0)
     control(
         local_nullity(tables, 17, base)["nullity_mod_p"] == 12,

@@ -135,6 +135,9 @@ The second record, [a5-null-slice-associator-envelope](../../evidence/a5-null-sl
 | A5-630 | the kernel map with selector phase i and orientation phases +-i s_k reads N = 16 and N = 12 on the complex strata in an exact statevector; plain +-i reads -14 and -2 ([record](../../evidence/a5-complex-kernel-map/README.md)) | proved |
 | A5-631 | the complex map reads the nullity over C on all 465 pairs of A_5, and it is the real map with two S gates and the same cz count | proved |
 | A5-632 | a Heron device reads 16 and 12 with the complex map | open |
+| A5-633 | the left tables of A_n have scalar commutant for n = 3 to 10 and generate M_(2^n)(Q) ([census](../../evidence/a5-left-table-census/README.md)) | proved |
+| A5-634 | (D - 2)(D - 4)(D + 6)/2 ordered basis triples have nonzero associator, D = 4 to 1024 | certified |
+| A5-635 | nullity 12 on the Euclidean cone over Q(sqrt(-d)), d = 1, 2, 3, 5, 6, 7, 11, and at 10 Q_p points | certified |
 
 What the slice changes for the program:
 
