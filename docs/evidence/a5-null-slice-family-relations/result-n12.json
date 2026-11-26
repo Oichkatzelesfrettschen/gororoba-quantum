@@ -1,0 +1,15 @@
+{
+ "dimension": 4096,
+ "failures": 0,
+ "level": 12,
+ "pairs": 521731,
+ "relations": 533209082,
+ "schema": "a5-null-slice-family-relations/1",
+ "sources": {
+  "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
+  "scripts/a5_null_slice_associator_envelope.py": "1022a19cb75249f79366e157730c4418a920be1bd4e4a4bbda678167addb8ab6",
+  "scripts/a5_null_slice_family_relations.py": "7ee2b676999b516321fb23956a17ac8b153314c9539df73ce8ded4233378766e"
+ },
+ "space_size": 1022,
+ "time": 3584
+}

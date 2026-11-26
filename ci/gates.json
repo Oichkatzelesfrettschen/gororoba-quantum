@@ -4907,6 +4907,75 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_complex_kernel_map_statevector.py --check docs/evidence/a5-complex-kernel-map/result.json",
+      "name": "core-a5-complex-kernel-map",
+      "seconds": 30.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-complex-kernel-map/result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_complex_kernel_map_statevector.py --self-test && \"$PYTHON\" -B -W error -O scripts/a5_complex_kernel_map_statevector.py --self-test",
+      "name": "core-a5-complex-kernel-map-self-test",
+      "seconds": 30.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_left_table_census.py --check docs/evidence/a5-left-table-census/result.json",
+      "name": "core-a5-left-table-census",
+      "seconds": 60.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-left-table-census/result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_left_table_census.py --self-test && \"$PYTHON\" -B -W error -O scripts/a5_left_table_census.py --self-test",
+      "name": "core-a5-left-table-census-self-test",
+      "seconds": 30.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_null_slice_family_relations.py --self-test && \"$PYTHON\" -B -W error scripts/a5_null_slice_family_relations.py --level 10 --check docs/evidence/a5-null-slice-family-relations/result-n10.json",
+      "name": "core-a5-null-slice-family-relations-n10",
+      "seconds": 60.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-null-slice-family-relations/result-n10.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_null_slice_family_relations.py --level 11 --check docs/evidence/a5-null-slice-family-relations/result-n11.json",
+      "name": "core-a5-null-slice-family-relations-n11",
+      "seconds": 300.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-null-slice-family-relations/result-n11.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_null_slice_family_relations.py --level 12 --check docs/evidence/a5-null-slice-family-relations/result-n12.json",
+      "name": "core-a5-null-slice-family-relations-n12",
+      "seconds": 1800.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-null-slice-family-relations/result-n12.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/qd_teleportation_rehearsal.py --analyze results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00 --check && \"$PYTHON\" -B -W error scripts/qd_rehearsal_secondary.py results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00 --check",
       "name": "core-teleportation-rehearsal-job-00-replay",
       "seconds": 12.0,

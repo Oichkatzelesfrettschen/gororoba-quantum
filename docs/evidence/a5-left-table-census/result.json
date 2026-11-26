@@ -1,0 +1,550 @@
+{
+ "commutant": {
+  "1024": {
+   "consistent_differences": [
+    0
+   ],
+   "dimension": 1
+  },
+  "128": {
+   "consistent_differences": [
+    0
+   ],
+   "dimension": 1
+  },
+  "16": {
+   "consistent_differences": [
+    0
+   ],
+   "dimension": 1
+  },
+  "2": {
+   "consistent_differences": [
+    0,
+    1
+   ],
+   "dimension": 2
+  },
+  "256": {
+   "consistent_differences": [
+    0
+   ],
+   "dimension": 1
+  },
+  "32": {
+   "consistent_differences": [
+    0
+   ],
+   "dimension": 1
+  },
+  "4": {
+   "consistent_differences": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "dimension": 4
+  },
+  "512": {
+   "consistent_differences": [
+    0
+   ],
+   "dimension": 1
+  },
+  "64": {
+   "consistent_differences": [
+    0
+   ],
+   "dimension": 1
+  },
+  "8": {
+   "consistent_differences": [
+    0
+   ],
+   "dimension": 1
+  }
+ },
+ "commutant_direct_mod_32003": {
+  "16": 1,
+  "2": 2,
+  "4": 4,
+  "8": 1
+ },
+ "commutation_lemma": [
+  {
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 4,
+   "space_size": 2,
+   "time": 14,
+   "u": 2,
+   "v": 4
+  },
+  {
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 5,
+   "space_size": 6,
+   "time": 28,
+   "u": 4,
+   "v": 8
+  },
+  {
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 6,
+   "space_size": 14,
+   "time": 56,
+   "u": 8,
+   "v": 16
+  },
+  {
+   "failures": 0,
+   "family": "octonion space",
+   "level": 6,
+   "space_size": 7,
+   "time": 56,
+   "u": 8,
+   "v": 16
+  },
+  {
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 7,
+   "space_size": 30,
+   "time": 112,
+   "u": 16,
+   "v": 32
+  },
+  {
+   "failures": 0,
+   "family": "octonion space",
+   "level": 7,
+   "space_size": 7,
+   "time": 104,
+   "u": 8,
+   "v": 32
+  },
+  {
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 8,
+   "space_size": 62,
+   "time": 224,
+   "u": 32,
+   "v": 64
+  },
+  {
+   "failures": 0,
+   "family": "octonion space",
+   "level": 8,
+   "space_size": 7,
+   "time": 200,
+   "u": 8,
+   "v": 64
+  },
+  {
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 9,
+   "space_size": 126,
+   "time": 448,
+   "u": 64,
+   "v": 128
+  },
+  {
+   "failures": 0,
+   "family": "octonion space",
+   "level": 9,
+   "space_size": 7,
+   "time": 392,
+   "u": 8,
+   "v": 128
+  },
+  {
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 10,
+   "space_size": 254,
+   "time": 896,
+   "u": 128,
+   "v": 256
+  },
+  {
+   "failures": 0,
+   "family": "octonion space",
+   "level": 10,
+   "space_size": 7,
+   "time": 776,
+   "u": 8,
+   "v": 256
+  },
+  {
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 11,
+   "space_size": 510,
+   "time": 1792,
+   "u": 256,
+   "v": 512
+  },
+  {
+   "failures": 0,
+   "family": "octonion space",
+   "level": 11,
+   "space_size": 7,
+   "time": 1544,
+   "u": 8,
+   "v": 512
+  },
+  {
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 12,
+   "space_size": 1022,
+   "time": 3584,
+   "u": 512,
+   "v": 1024
+  },
+  {
+   "failures": 0,
+   "family": "octonion space",
+   "level": 12,
+   "space_size": 7,
+   "time": 3080,
+   "u": 8,
+   "v": 1024
+  }
+ ],
+ "field_points": [
+  {
+   "d": 1,
+   "nullity": 12,
+   "s": 5,
+   "x": [
+    3,
+    4,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "d": 1,
+   "nullity": 12,
+   "s": 3,
+   "x": [
+    1,
+    2,
+    2,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "d": 1,
+   "nullity": 12,
+   "s": 7,
+   "x": [
+    2,
+    3,
+    6,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "d": 1,
+   "nullity": 12,
+   "s": 2,
+   "x": [
+    1,
+    1,
+    1,
+    1,
+    0,
+    0
+   ]
+  },
+  {
+   "d": 2,
+   "nullity": 12,
+   "s": 1,
+   "x": [
+    1,
+    1,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "d": 3,
+   "nullity": 12,
+   "s": 1,
+   "x": [
+    1,
+    1,
+    1,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "d": 5,
+   "nullity": 12,
+   "s": 1,
+   "x": [
+    1,
+    2,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "d": 6,
+   "nullity": 12,
+   "s": 1,
+   "x": [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "d": 7,
+   "nullity": 12,
+   "s": 1,
+   "x": [
+    1,
+    1,
+    1,
+    2,
+    0,
+    0
+   ]
+  },
+  {
+   "d": 11,
+   "nullity": 12,
+   "s": 1,
+   "x": [
+    1,
+    1,
+    3,
+    0,
+    0,
+    0
+   ]
+  }
+ ],
+ "local_points": [
+  {
+   "nullity_mod_p": 12,
+   "p": 5,
+   "t_mod_p": 3,
+   "x": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "nullity_mod_p": 12,
+   "p": 13,
+   "t_mod_p": 8,
+   "x": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "nullity_mod_p": 12,
+   "p": 17,
+   "t_mod_p": 4,
+   "x": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "nullity_mod_p": 12,
+   "p": 29,
+   "t_mod_p": 12,
+   "x": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "nullity_mod_p": 12,
+   "p": 37,
+   "t_mod_p": 6,
+   "x": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "nullity_mod_p": 12,
+   "p": 41,
+   "t_mod_p": 32,
+   "x": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "nullity_mod_p": 12,
+   "p": 11,
+   "t_mod_p": 3,
+   "x": [
+    1,
+    1,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "nullity_mod_p": 12,
+   "p": 43,
+   "t_mod_p": 16,
+   "x": [
+    1,
+    1,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "nullity_mod_p": 12,
+   "p": 61,
+   "t_mod_p": 34,
+   "x": [
+    1,
+    1,
+    1,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "nullity_mod_p": 12,
+   "p": 41,
+   "t_mod_p": 6,
+   "x": [
+    1,
+    2,
+    0,
+    0,
+    0,
+    0
+   ]
+  }
+ ],
+ "nonassociating_triples": {
+  "1024": {
+   "count": 536856600,
+   "formula": 536856600
+  },
+  "128": {
+   "count": 1046808,
+   "formula": 1046808
+  },
+  "16": {
+   "count": 1848,
+   "formula": 1848
+  },
+  "256": {
+   "count": 8385048,
+   "formula": 8385048
+  },
+  "32": {
+   "count": 15960,
+   "formula": 15960
+  },
+  "4": {
+   "count": 0,
+   "formula": 0
+  },
+  "512": {
+   "count": 67101720,
+   "formula": 67101720
+  },
+  "64": {
+   "count": 130200,
+   "formula": 130200
+  },
+  "8": {
+   "count": 168,
+   "formula": 168
+  }
+ },
+ "off_cone_points": [
+  {
+   "d": 3,
+   "nullity": 0,
+   "s": 1,
+   "x": [
+    1,
+    1,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "d": 2,
+   "nullity": 0,
+   "s": 1,
+   "x": [
+    1,
+    1,
+    1,
+    0,
+    0,
+    0
+   ]
+  }
+ ]
+}
