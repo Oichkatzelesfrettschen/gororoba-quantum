@@ -4961,6 +4961,24 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_null_slice_family_proof.py --check docs/evidence/a5-null-slice-family-proof/result.json",
+      "name": "core-a5-null-slice-family-proof",
+      "seconds": 60.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-null-slice-family-proof/result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_null_slice_family_proof.py --self-test && \"$PYTHON\" -B -W error -O scripts/a5_null_slice_family_proof.py --self-test",
+      "name": "core-a5-null-slice-family-proof-self-test",
+      "seconds": 30.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/a5_null_slice_family_relations.py --self-test && \"$PYTHON\" -B -W error scripts/a5_null_slice_family_relations.py --level 10 --check docs/evidence/a5-null-slice-family-relations/result-n10.json",
       "name": "core-a5-null-slice-family-relations-n10",
       "seconds": 60.0,

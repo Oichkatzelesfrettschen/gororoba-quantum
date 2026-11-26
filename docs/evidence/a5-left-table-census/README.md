@@ -54,7 +54,8 @@ The items of pool row MATH-71 and the reduction of pool row MATH-73, each comput
    Neither event can occur, so the stars are disjoint. The sufficient direction of A5-617 then gives the so(m,1)
    relations. The families of A5-618 therefore hold at every n where the lemma holds.
 
-   **What is still open (MATH-73).** The lemma itself for every n. One step of the cd_sign recursion on the top bit
+   **The lemma for every n** is proved in the [family proof](../a5-null-slice-family-proof/README.md) (MATH-73).
+   Earlier route notes, kept for the record: the lemma itself for every n. One step of the cd_sign recursion on the top bit
    maps the commutation sign at level n, for k below the top bit, to minus the sign at level n - 1 with time
    tau' = tau - 2^(n-1). The exceptions are k in {0, a, tau', tau' ^ a}: a reviewer derived this set, and a probe
    at n = 5 to 8 confirms it. The involution k -> k ^ a ^ tau exchanges the two halves and preserves C_a, so the

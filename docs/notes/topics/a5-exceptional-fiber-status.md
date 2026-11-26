@@ -114,7 +114,7 @@ row below is an exact check of `scripts/a5_null_slice_boost_algebra.py --check`;
 | A5-615 | the covariance algebra has dimension 8, inside the rotations; no boost acts covariantly on L_y | proved |
 | A5-616 | over the 51 clean slices of dimensions 16, 32 and 64 the cone and the fourfold kernel exist at every level; only the seven slices of A_5 carry both a Clifford space and the so(n,1) relations | proved |
 | A5-617 | the relations hold exactly when the defects have disjoint stars | survives |
-| A5-618 | two families: so(2^(n-2) - 2, 1) at time index 7 * 2^(n-3), computed for n = 4 to 7, and so(7,1) on the octonion-space slice, computed for n = 6 and 7 | survives |
+| A5-618 | two families: so(2^(n-2) - 2, 1) at time index 7 * 2^(n-3), computed for n = 4 to 7, and so(7,1) on the octonion-space slice, computed for n = 6 and 7; proved for every n ([family proof](../../evidence/a5-null-slice-family-proof/README.md)) | proved |
 | A5-619 | the covariance algebras are su(3) on A_5 and the G_2 derivations on the octonion-space slice of A_6 ([covariance blocks](../../evidence/a5-null-slice-covariance/README.md)) | proved |
 | A5-620 | a bracket-preserving map from the corner boost data of arXiv 2611.34924 (equations 3.41 to 3.43, 3.61 to 3.64) to (P_T, K_a) | superseded by A5-628 |
 | A5-621 | the Lorentzian cone with a fourfold kernel distinguishes A_5 in the tower | refuted |
@@ -128,7 +128,7 @@ The second record, [a5-null-slice-associator-envelope](../../evidence/a5-null-sl
 | A5-623 | over F_32009 and F_32003 the slice meets three null strata: nullity 4 on r^2 = t^2, 12 on r^2 + t^2 = 0 (y^2 = 0 there, and Q != 0, outside the real containment of nullity 12 in V(Q) n V(G)) and 16 on r^2 = 0 with t = 0; the bound 12 holds over every field of characteristic 0 or above 32 | certified |
 | A5-624 | the seven slice tables generate M_16(R) (dimension 256, commutant M_2(R)); R^32 is two copies of one irreducible 16-dimensional module | proved |
 | A5-625 | U_8 = L_(e_2) D_8 completes A_a, J eta to eight anticommuting units whose monomials span the envelope: the image of Cl(0,8) | proved |
-| A5-626 | both families hold from dimension 256 to 4096, by direct relation checks at 256 and 512 and by disjoint stars above; A5-637 adds direct checks of the first family at 1024, 2048 and 4096 | survives |
+| A5-626 | both families hold from dimension 256 to 4096, by direct relation checks at 256 and 512 and by disjoint stars above; A5-637 adds direct checks of the first family at 1024, 2048 and 4096; the proof of A5-636 covers every n | proved |
 | A5-627 | the 225 two-term pairs of A_5 split 15, 84, 126 at nullity 0, 4, 12; every nullity-4 pair has strut above 8 | proved |
 | A5-628 | the paper's corner boost is one unitary one-parameter group; no non-abelian Lorentz algebra appears | boundary |
 | A5-629 | complex two-term operands of anticommuting tables have Gram 2 (I - i L_a L_b): kernels are eigenspaces of Hermitian involutions, nullity half the dimension; on the slice the Euclidean-cone kernel is ker K_1 n ker(i L_1 J - I) | proved |
@@ -138,7 +138,7 @@ The second record, [a5-null-slice-associator-envelope](../../evidence/a5-null-sl
 | A5-633 | the left tables of A_n have scalar commutant for n = 3 to 10 and generate M_(2^n)(Q) ([census](../../evidence/a5-left-table-census/README.md)) | proved |
 | A5-634 | (D - 2)(D - 4)(D + 6)/2 ordered basis triples have nonzero associator, D = 4 to 1024 | certified |
 | A5-635 | nullity 12 on the Euclidean cone over Q(sqrt(-d)), d = 1, 2, 3, 5, 6, 7, 11, and at 10 Q_p points | certified |
-| A5-636 | the families of A5-618 reduce to one commutation-set lemma (reduction proved), checked to n = 12 | survives |
+| A5-636 | the families of A5-618 reduce to one commutation-set lemma, proved for every n by the cd_sign recursion (Lemmas T, U and the peel R) | proved |
 | A5-637 | the first family's relations hold by direct check at n = 10, 11 and 12, every level to 4096 ([record](../../evidence/a5-null-slice-family-relations/README.md)) | proved |
 
 What the slice changes for the program:

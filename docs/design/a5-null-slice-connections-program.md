@@ -49,7 +49,7 @@ words; "no link found" records a search with its scope.
 | Gram identity, spectrum, determinant, so(6,1) relations, kernel frame, covariance on the A_5 slice (A5-612 to A5-615) | yes for that slice: polynomial or matrix identities checked exactly | the A_5 slice only |
 | nullity >= 12 on the Euclidean cone (A5-623) | yes, over fields of characteristic 0 or above 32 | equality at two primes, seven Q(i) points, six other imaginary quadratic fields and 10 Q_p points (A5-635) |
 | Disjoint stars imply the so(m,1) relations (A5-617) | the sufficient direction | the converse on 51 slices and the families |
-| The two families carry so(m,1) (A5-618, A5-626, A5-636, A5-637) | reduced to one commutation-set lemma (L_a and L_tau commute exactly on T u (T ^ a ^ tau)); the reduction is proved for every n, the lemma is open | lemma at n = 4 to 12; the first family: direct relations to 4096; the octonion-space family: direct relations to 4096 |
+| The two families carry so(m,1) (A5-618, A5-626, A5-636, A5-637) | every n: the commutation-set lemma (L_a and L_tau commute exactly on T u (T ^ a ^ tau)) from the cd_sign recursion ([family proof](../evidence/a5-null-slice-family-proof/README.md)), then disjoint stars | lemma at n = 4 to 12; the first family: direct relations to 4096; the octonion-space family: direct relations to 4096 |
 | Left tables of A_n generate M_(2^n)(Q) for n >= 3 (A5-633) | from scalar commutant and closure under transposition | commutant n = 1 to 10 |
 | (D - 2)(D - 4)(D + 6)/2 non-associating ordered basis triples (A5-634) | open | D = 4 to 1024 |
 | Envelope M_16(R) and Cl(0,8) of the seven slice tables (A5-624, A5-625) | the A_5 slice (exact ranks) | dimension 32 only; other levels unchecked |
