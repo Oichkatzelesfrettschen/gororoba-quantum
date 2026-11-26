@@ -4965,6 +4965,17 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_null_slice_family_relations.py --level 12 --check docs/evidence/a5-null-slice-family-relations/result-n12.json",
+      "name": "core-a5-null-slice-family-relations-n12",
+      "seconds": 1800.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-null-slice-family-relations/result-n12.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/qd_teleportation_rehearsal.py --analyze results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00 --check && \"$PYTHON\" -B -W error scripts/qd_rehearsal_secondary.py results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00 --check",
       "name": "core-teleportation-rehearsal-job-00-replay",
       "seconds": 12.0,

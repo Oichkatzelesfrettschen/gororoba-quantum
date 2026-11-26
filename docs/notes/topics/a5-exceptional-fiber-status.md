@@ -139,7 +139,7 @@ The second record, [a5-null-slice-associator-envelope](../../evidence/a5-null-sl
 | A5-634 | (D - 2)(D - 4)(D + 6)/2 ordered basis triples have nonzero associator, D = 4 to 1024 | certified |
 | A5-635 | nullity 12 on the Euclidean cone over Q(sqrt(-d)), d = 1, 2, 3, 5, 6, 7, 11, and at 10 Q_p points | certified |
 | A5-636 | the families of A5-618 reduce to one commutation-set lemma (reduction proved), checked to n = 12 | survives |
-| A5-637 | the first family's relations hold by direct check at n = 10 and 11 ([record](../../evidence/a5-null-slice-family-relations/README.md)) | proved |
+| A5-637 | the first family's relations hold by direct check at n = 10, 11 and 12, every level to 4096 ([record](../../evidence/a5-null-slice-family-relations/README.md)) | proved |
 
 What the slice changes for the program:
 

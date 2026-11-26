@@ -33,6 +33,12 @@ reproduces independently. Its script stays outside the repository.
 
 The reviewer ran in auto mode. Afterwards `git status --short` showed no tracked change in any of the six workspace repositories.
 
+## After the round
+
+The n = 12 relation check finished after the round (533,209,082 relations, 0 failures, 1242 s at 16 workers). Its
+result names the same checker sha256 (7ee2b676) as n = 10 and 11. It adds a row to the relations README, ledger
+A5-637 and a gate, and reaches the Advisor and Codex unreviewed by the red team.
+
 ## Validation after the fixes
 
 On the compute workstation under WSL with the pinned interpreter:
