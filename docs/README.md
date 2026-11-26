@@ -17,6 +17,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | A5 Gram operators | Exact cubic kernel filters, Gaussian Jordan types, scalar and coefficient-phase controls | [Gram-operator witnesses](evidence/a5-gram-operator-witnesses/README.md) |
 | A5 and photonic candidates | Exact rank witnesses, heralding limits and retained Ascella and Belenos results | [A5 photonic cross-checks](evidence/a5-photonic-crosschecks/README.md) |
 | A5 associator observables | exact rank and spectrum of the left alternative associator operator over the twelve rank strata, with automorphism controls | [A5 associator observables](evidence/a5-associator-observables/README.md) |
+| A5 Lorentzian slice | exact Clifford-defect operators on a (6,1) slice of the zero-divisor cone: Gram spectrum, so(6,1) relations, kernel formula, covariance algebra, tower controls in dimensions 16 to 128 | [A5 null-slice boost algebra](evidence/a5-null-slice-boost-algebra/README.md) |
 | Hardware residuals | exploratory offline passes for residual structure in retained IBM, Tuna-17 and Quandela records | [hardware-residuals/README.md](evidence/hardware-residuals/README.md) |
 | Circuit and QPU design | circuit designs, claim boundaries, QPU budgets | [DESIGN_NOTES.md](../gororoba_quantum/DESIGN_NOTES.md) |
 | IBM Heron r2 | Targets, transpilation, dynamic circuits, submission | [ibm_quantum/README.md](notes/ibm_quantum/README.md) |
