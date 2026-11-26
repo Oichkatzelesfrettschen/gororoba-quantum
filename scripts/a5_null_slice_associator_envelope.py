@@ -318,7 +318,7 @@ def complex_two_term() -> dict[str, Any]:
         tables = full_tables(dimension)
         eye = np.eye(dimension, dtype=np.int64)
         pairs = anticommuting = identity_failures = 0
-        kernel_rows = []
+        kernel_rows: list[dict[str, Any]] = []
         for a, b in combinations(range(1, dimension), 2):
             first, second = tables[a], tables[b]
             pairs += 1
@@ -333,7 +333,9 @@ def complex_two_term() -> dict[str, Any]:
                 operator_nullity = complex_nullity(first, second)
                 eigenspace = complex_nullity(-eye, involution)
                 joint = joint_nullity([(first, second), (-eye, involution)])
-                kernel_rows.append({"pair": [a, b], "nullity": operator_nullity, "eigenspace": eigenspace, "joint": joint})
+                kernel_rows.append(
+                    {"pair": [a, b], "nullity": operator_nullity, "eigenspace": eigenspace, "joint": joint}
+                )
         levels.append(
             {
                 "dimension": dimension,
@@ -359,6 +361,7 @@ def complex_two_term() -> dict[str, Any]:
         imaginary = tables[b] if kind == 2 else zero
         spectra[name] = gram_multiplicities(real, imaginary)
     return {"levels": levels, "slice_kernel": slice_kernel, "spectra": spectra}
+
 
 def commutant_basis(generators: list[Any]) -> list[Any]:
     size = generators[0].shape[0]
@@ -768,10 +771,14 @@ def validate(result: dict[str, Any]) -> None:
     require(strata["strut_equals_low_index"] == 15, "nullity-0 pairs")
     require(strata["independence_criterion_agreements"] == 225, "independence criterion")
     complex_result = result["complex_two_term"]
-    require([row["dimension"] for row in complex_result["levels"]] == [1 << n for n in COMPLEX_LEVELS], "complex levels")
+    require(
+        [row["dimension"] for row in complex_result["levels"]] == [1 << n for n in COMPLEX_LEVELS], "complex levels"
+    )
     for row in complex_result["levels"]:
         half = row["dimension"] // 2
-        require(row["gram_identity_failures"] == 0 and row["anticommuting_pairs"] > 0, f"complex Gram at {row['dimension']}")
+        require(
+            row["gram_identity_failures"] == 0 and row["anticommuting_pairs"] > 0, f"complex Gram at {row['dimension']}"
+        )
         require(len(row["kernels"]) == COMPLEX_PAIRS_PER_LEVEL, f"complex kernels at {row['dimension']}")
         for kernel in row["kernels"]:
             require(kernel["nullity"] == kernel["eigenspace"] == kernel["joint"] == half, f"involution kernel {kernel}")
