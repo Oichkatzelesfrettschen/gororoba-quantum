@@ -22,6 +22,63 @@
    "pairs": 3906
   }
  ],
+ "complex_two_term": {
+  "complement_agreements": 465,
+  "complement_pairs": 465,
+  "levels": [
+   {
+    "anticommuting_pairs": 63,
+    "dimension": 16,
+    "gram_identity_failures": 0,
+    "kernel_agreements": 63,
+    "pairs": 105,
+    "traceless_involutions": 63
+   },
+   {
+    "anticommuting_pairs": 171,
+    "dimension": 32,
+    "gram_identity_failures": 0,
+    "kernel_agreements": 171,
+    "pairs": 465,
+    "traceless_involutions": 171
+   },
+   {
+    "anticommuting_pairs": 435,
+    "dimension": 64,
+    "gram_identity_failures": 0,
+    "kernel_agreements": 435,
+    "pairs": 1953,
+    "traceless_involutions": 435
+   }
+  ],
+  "slice_kernel": {
+   "defect_and_involution": 12,
+   "joint": 12,
+   "nullity": 12
+  },
+  "spectra": {
+   "e_1 + e_26": {
+    "0": 4,
+    "2": 24,
+    "4": 4
+   },
+   "e_1 + e_3": {
+    "0": 0,
+    "2": 32,
+    "4": 0
+   },
+   "e_1 + i e_26": {
+    "0": 12,
+    "2": 8,
+    "4": 12
+   },
+   "e_1 + i e_3": {
+    "0": 16,
+    "2": 0,
+    "4": 16
+   }
+  }
+ },
  "envelope": {
   "all_imaginary_tables_commutant_dimension": 1,
   "anticommutant_dimension_of_seven_units": 8,
@@ -291,7 +348,7 @@
  "sources": {
   "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
   "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
-  "scripts/a5_null_slice_associator_envelope.py": "5f42cb95e0beb3f40bfccf2f375ab0e815e316ac067a898f81e73e4834d0415e"
+  "scripts/a5_null_slice_associator_envelope.py": "1022a19cb75249f79366e157730c4418a920be1bd4e4a4bbda678167addb8ab6"
  },
  "strata": [
   {
