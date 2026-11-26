@@ -1,7 +1,7 @@
 # A_n left tables: commutant, associator census and Euclidean-cone points
 
-Three items of pool row MATH-71, each computed exactly by
-[`scripts/a5_left_table_census.py`](../../../scripts/a5_left_table_census.py). Ledger rows A5-633 to A5-635.
+The items of pool row MATH-71 and the reduction of pool row MATH-73, each computed exactly by
+[`scripts/a5_left_table_census.py`](../../../scripts/a5_left_table_census.py). Ledger rows A5-633 to A5-636.
 
 ## Statements, each checked by `--check`
 
@@ -33,6 +33,29 @@ Three items of pool row MATH-71, each computed exactly by
    nullity >= 12 holds in characteristic 0 (A5-623), so the nullity is exactly 12. The primes 5, 13, 17 and 29 lie
    below the bound 32 of A5-623 and still give 12 at these points.
 
+6. **Commutation-set lemma of the two so(m,1) families.** For the slices of A5-618 (time 7 * 2^(n-3) with space
+   [1, 2^(n-2)) without 2^(n-3), for n = 4 to 12; time 2^(n-1) + 2^(n-2) + 8 with space 1 to 7, for n = 6 to 12),
+   L_a and L_tau commute on e_k exactly for k in T or T ^ a ^ tau, for every space index a. Here
+   T = {u, v, tau ^ u, tau ^ v}, with (u, v) = (2^(n-3), 2^(n-2)) in the first family and (8, 2^(n-2)) in the second.
+
+   **The lemma gives disjoint stars for every n (proved).** Both terms of K_a = -(L_a L_tau + L_tau L_a)/2 send e_k
+   to plus or minus e_(k ^ a ^ tau). So K_a is a symmetric signed partial XOR permutation whose support is the set
+   C_a where L_a and L_tau commute on e_k.
+
+   If C_a = T u (T ^ a ^ tau), then the leaves T ^ a ^ tau of a and b meet only when a ^ b lies in
+   T + T = {0, u ^ v, tau, tau ^ u ^ v}, and a leaf meets T only when a ^ tau lies in T + T:
+   - First family: T + T = {0, 3h, 7h, 4h} with h = 2^(n-3), while a ^ b < 2h and a < 2h.
+   - Second family: T + T = {0, 8 + 2^(n-2), tau, 2^(n-1)}, while a and b lie in 1 to 7.
+
+   Neither event can occur, so the stars are disjoint. The sufficient direction of A5-617 then gives the so(m,1)
+   relations. The families of A5-618 therefore hold at every n where the lemma holds.
+
+   **What is still open (MATH-73).** The lemma itself for every n. One step of the cd_sign recursion on the top bit
+   maps the commutation sign at level n, for k below the top bit, to minus the sign at level n - 1 with time
+   tau - 2^(n-1). The exceptions are k = tau' and tau' ^ a, where e_(tau' ^ k) and e_a commute. Three such steps reach
+   the doubling unit 2^(n-3), whose signs have a closed form. A proof can follow those three steps on both halves of
+   k, or treat the four sign evaluations as one finite automaton over bit columns.
+
 ## Predictions
 
 Before the run, a reviewer had computed (not recorded) the commutant for n = 3 to 7 and the triple formula for D = 8
@@ -49,6 +72,7 @@ every cone point has nullity 12. All held.
 | associator predicate | 1848 at D = 16 | the wrong index in s(a, b ^ c) does not |
 | field form | Q(sqrt(-2)) point gives 12 | the Q(i) form at the same x does not |
 | local root | t mod 17 gives 12 | t + 1 does not |
+| common support | the lemma holds at n = 5 | moving u by one fails |
 
 ## Open
 

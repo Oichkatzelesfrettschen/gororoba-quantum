@@ -47,10 +47,12 @@ words; "no link found" records a search with its scope.
 | Gram of L_(e_a + i e_b) = 2 (I - i L_a L_b) for anticommuting tables, nullity half the dimension (A5-629) | every dimension: the Witt-basis identity and trace H = 0 | identity, trace and kernel on every anticommuting pair at 16, 32, 64 |
 | nullity(e_a + i e_b) = D/2 - nullity(e_a + e_b) for two-term operands (A5-629) | every dimension: the sector split of singular_sector_dynamics.md read on S+ and S- | all 465 pairs of A_5 |
 | Gram identity, spectrum, determinant, so(6,1) relations, kernel frame, covariance on the A_5 slice (A5-612 to A5-615) | yes for that slice: polynomial or matrix identities checked exactly | the A_5 slice only |
-| nullity >= 12 on the Euclidean cone (A5-623) | yes, over fields of characteristic 0 or above 32 | equality at two primes and three Q(i) points |
+| nullity >= 12 on the Euclidean cone (A5-623) | yes, over fields of characteristic 0 or above 32 | equality at two primes, seven Q(i) points, six other imaginary quadratic fields and 10 Q_p points (A5-635) |
 | Disjoint stars imply the so(m,1) relations (A5-617) | the sufficient direction | the converse on 51 slices and the families |
-| The two families carry so(m,1) (A5-618, A5-626) | open: needs disjoint stars for every n from the bit structure of the time index | the first family: direct relations to 512, stars to 4096; the octonion-space family: direct relations to 4096 |
-| Envelope M_16(R) and Cl(0,8) (A5-624, A5-625) | the A_5 slice (exact ranks) | dimension 32 only; other levels unchecked |
+| The two families carry so(m,1) (A5-618, A5-626, A5-636, A5-637) | reduced to one commutation-set lemma (L_a and L_tau commute exactly on T u (T ^ a ^ tau)); the reduction is proved for every n, the lemma is open | lemma at n = 4 to 12; the first family: direct relations to 2048, stars to 4096; the octonion-space family: direct relations to 4096 |
+| Left tables of A_n generate M_(2^n)(Q) for n >= 3 (A5-633) | from scalar commutant and closure under transposition | commutant n = 1 to 10 |
+| (D - 2)(D - 4)(D + 6)/2 non-associating ordered basis triples (A5-634) | open | D = 4 to 1024 |
+| Envelope M_16(R) and Cl(0,8) of the seven slice tables (A5-624, A5-625) | the A_5 slice (exact ranks) | dimension 32 only; other levels unchecked |
 | Two-term strata 15, 84, 126 and the strut criterion (A5-627) | A_5 (exhaustive) | other dimensions unchecked |
 
 ## Hardware observables for the complex strata
@@ -113,8 +115,9 @@ digest reference in the record (a digest reference per table, the pattern of the
 2. **Albert anchor.** dim Der(J_3(O)) = 52 over Q under the cd_core octonion convention, and the su(3) and G_2
    covariance algebras of A5-615 and A5-619 as stabilizers inside it. Accept: the derivation rank over Q, and the
    inclusions as rank equalities.
-3. **Relations above 512.** Direct triple checks at n = 10 on the compute workstation (about 8 million triples).
-   Accept: zero failures; A5-626 moves to proved for n = 10.
+3. **Relations above 512.** Done for n = 10 and 11 (A5-637,
+   [family relations](../evidence/a5-null-slice-family-relations/README.md)); n = 12 is the next run. What remains for
+   every n is the commutation-set lemma of A5-636 ([census](../evidence/a5-left-table-census/README.md), statement 6).
 4. **Formal F1 and F4.** Briefs to gororoba-math. Accept: the repository's `ci/check.sh` and `ci/check_rocq.sh`
    green with the new sources listed.
 5. **A_6 covariance (A5-619).** Accept: the covariance algebra of the octonion-space slice of A_6 computed and
