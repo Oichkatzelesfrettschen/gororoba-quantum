@@ -116,8 +116,21 @@ row below is an exact check of `scripts/a5_null_slice_boost_algebra.py --check`;
 | A5-617 | the relations hold exactly when the defects have disjoint stars | survives |
 | A5-618 | two families: so(2^(n-2) - 2, 1) at time index 7 * 2^(n-3), computed for n = 4 to 7, and so(7,1) on the octonion-space slice, computed for n = 6 and 7 | survives |
 | A5-619 | the covariance algebras are su(3) on A_5 and the G_2 derivations on the octonion-space slice of A_6 | open |
-| A5-620 | a bracket-preserving map from the corner boost data of arXiv 2611.34924 (equations 3.41 to 3.43, 3.61 to 3.64) to (P_T, K_a) | open |
+| A5-620 | a bracket-preserving map from the corner boost data of arXiv 2611.34924 (equations 3.41 to 3.43, 3.61 to 3.64) to (P_T, K_a) | superseded by A5-628 |
 | A5-621 | the Lorentzian cone with a fourfold kernel distinguishes A_5 in the tower | refuted |
+
+The second record, [a5-null-slice-associator-envelope](../../evidence/a5-null-slice-associator-envelope/README.md)
+(`scripts/a5_null_slice_associator_envelope.py --check`), adds:
+
+| Row | Statement | Status |
+|---|---|---|
+| A5-622 | 2 K_a is the symmetrized left associator of e_a and e_26, and L_y^T L_y = N(y) I + [y, y, .]: the Gram identity of A5-612 is the norm plus the left associator, an elementary identity | proved |
+| A5-623 | over F_32009 and F_32003 the slice meets three null strata: nullity 4 on r^2 = t^2, 12 on r^2 + t^2 = 0 (y^2 = 0 there) and 16 on r^2 = 0 with t = 0; the bound 12 holds over every field of characteristic 0 or above 32 | certified |
+| A5-624 | the seven slice tables generate M_16(R) (dimension 256, commutant M_2(R)); R^32 is two copies of one irreducible 16-dimensional module | proved |
+| A5-625 | an eighth anticommuting unit extends the seven units A_a, J eta to a representation of Cl(0,8) | open |
+| A5-626 | both families hold from dimension 256 to 4096, by direct relation checks at 256 and 512 and by disjoint stars above | survives |
+| A5-627 | the 225 two-term pairs of A_5 split 15, 84, 126 at nullity 0, 4, 12; every nullity-4 pair has strut above 8 | proved |
+| A5-628 | the paper's corner boost is one unitary one-parameter group; no non-abelian Lorentz algebra appears | boundary |
 
 What the slice changes for the program:
 
@@ -129,12 +142,20 @@ What the slice changes for the program:
   coordinates. It is related to the open nullity-4
   classification A5-389, whose Gauss map is certified only at fixture level; the frame does not meet the statement of
   that row.
-- **The paper.** arXiv 2611.34924 contains no Cayley-Dickson, Clifford or zero-divisor structure; the slice is an exact
-  algebraic testbed beside it, and A5-620 is the only bridge question, open.
-- **Prior art.** The determinant agrees with arXiv 2608.08232 Theorem 5.3; the kernel is related to arXiv
-  math/0511691 Proposition 11.1, whose hypotheses the record checks. A source for the so(n,1) relations of the
-  defects was not found in the documents read.
-- **Machine-checked.** None of A5-612 to A5-618 is formalized; the Rocq statements belong to gororoba-math, open.
+- **The paper.** arXiv 2611.34924 contains no Cayley-Dickson, Clifford or zero-divisor structure, and its boost is
+  one abelian generator (A5-628); the slice is an exact algebraic testbed beside it.
+- **Prior art.** The two-term case x = e_a, t = +-1 is known: Skiouris, Aphanics at the pathion level (2026),
+  Proposition 2.2 and Proposition 3.1, states the nullity-4 stratum and the spectrum 0, 2, 4 at multiplicities 4, 24,
+  4 with e_1 + e_26 as canonical representative. The determinant agrees with arXiv 2608.08232 Theorem 5.3; the
+  kernel is related to arXiv math/0511691 Proposition 11.1, whose hypotheses the record checks. The extension to the
+  whole seven-dimensional slice, the so(n,1) relations of the defects, the envelope and the families have no source
+  in the documents read.
+- **Hardware.** e_1 + e_26 is the cone point x = e_1, t = 1, and the kernel map read its nullity as 4.02 on
+  ibm_fez and 4.05 on ibm_marrakesh after readout correction
+  ([findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md)).
+- **Machine-checked.** The two-term kernels, e_a +- e_26 included, are formal in gororoba-math
+  (`rocq/quantum/CdTowerTwoTermNullity.v`, `lean/GororobaMath/CayleyDickson/TwoTermNullity.lean`); the
+  multi-direction statements A5-612 to A5-618 and A5-622 to A5-626 are not formalized.
 
 ## Next computations
 

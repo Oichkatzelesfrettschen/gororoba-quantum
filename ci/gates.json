@@ -4889,6 +4889,24 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_null_slice_associator_envelope.py --check docs/evidence/a5-null-slice-associator-envelope/result.json",
+      "name": "core-a5-null-slice-associator-envelope",
+      "seconds": 90.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-null-slice-associator-envelope/result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_null_slice_associator_envelope.py --self-test && \"$PYTHON\" -B -W error -O scripts/a5_null_slice_associator_envelope.py --self-test",
+      "name": "core-a5-null-slice-associator-envelope-self-test",
+      "seconds": 30.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/qd_teleportation_rehearsal.py --analyze results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00 --check && \"$PYTHON\" -B -W error scripts/qd_rehearsal_secondary.py results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00 --check",
       "name": "core-teleportation-rehearsal-job-00-replay",
       "seconds": 12.0,
