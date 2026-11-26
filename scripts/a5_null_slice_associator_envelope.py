@@ -252,6 +252,26 @@ def strata_item(prime: int) -> dict[str, Any]:
     }
 
 
+GAUSSIAN_POINTS: tuple[tuple[tuple[int, ...], int], ...] = (
+    ((1, 0, 0, 0, 0, 0), 1),
+    ((3, 4, 0, 0, 0, 0), 5),
+    ((1, 2, 2, 0, 0, 0), 3),
+)
+
+
+def gaussian_nullities() -> list[dict[str, Any]]:
+    """Nullity over Q(i) of L_y for y = x + i t e_26 with r = t, from the rank of the 64 x 64 realification."""
+    tables = full_tables(DIMENSION)
+    out = []
+    for x, t in GAUSSIAN_POINTS:
+        real: Any = sum(v * tables[a] for v, a in zip(x, SPACE, strict=True))
+        imaginary: Any = t * tables[TIME]
+        block = np.block([[real, -imaginary], [imaginary, real]])
+        complex_nullity = (2 * DIMENSION - int(fmpz_mat(block.tolist()).rank())) // 2
+        out.append({"x": list(x), "t": t, "nullity": complex_nullity})
+    return out
+
+
 def commutant_basis(generators: list[Any]) -> list[Any]:
     size = generators[0].shape[0]
     eye = np.eye(size, dtype=np.int64)
@@ -348,6 +368,20 @@ def envelope() -> dict[str, Any]:
     for u in units[1:]:
         volume = volume @ u
     eta_in_envelope = integer_rank(basis + [eta]) == len(basis)
+    sign_d8: Any = np.diag([-1 if (i >> 3) & 1 else 1 for i in range(DIMENSION)]).astype(np.int64)
+    eighth: Any = tables[2] @ sign_d8
+    eight = [*units, eighth]
+    eighth_anticommutes = all(np.array_equal(eighth @ u + u @ eighth, 0 * eye64) for u in units)
+    monomials: list[Any] = []
+    for mask in range(1 << len(eight)):
+        product_matrix: Any = eye64.copy()
+        for bit, unit in enumerate(eight):
+            if (mask >> bit) & 1:
+                product_matrix = product_matrix @ unit
+        monomials.append(product_matrix)
+    monomial_rank = integer_rank(monomials)
+    clock_in_span = integer_rank([*monomials, tables[TIME]]) == monomial_rank
+    eighth_in_envelope = integer_rank([*basis, eighth]) == len(basis)
     return {
         "dimension_by_word_length": growth,
         "dimension": len(basis),
@@ -366,6 +400,12 @@ def envelope() -> dict[str, Any]:
         "volume_is_scalar": bool(np.array_equal(volume, eye64) or np.array_equal(volume, -eye64)),
         "volume_square_is_identity": bool(np.array_equal(volume @ volume, eye64)),
         "anticommutant_dimension_of_seven_units": anticommutant_dimension(units),
+        "eighth_unit": "L_(e_2) D_8, D_8 = diag((-1)^(bit 3 of i))",
+        "eighth_unit_anticommutes": eighth_anticommutes,
+        "eighth_unit_square_is_minus_one": bool(np.array_equal(eighth @ eighth, -eye64)),
+        "eighth_unit_in_envelope": eighth_in_envelope,
+        "clifford_monomial_rank": monomial_rank,
+        "clock_in_clifford_span": clock_in_span,
     }
 
 
@@ -499,12 +539,19 @@ def two_term_strata() -> dict[str, Any]:
     tables = full_tables(DIMENSION)
     counts: Counter[int] = Counter()
     four_high = True
+    strut_equals_low = 0
+    criterion_agreements = 0
     for j in range(1, 16):
         for tau in range(16, 32):
             if j ^ tau == 16:
                 continue
             n = nullity(tables[j] + tables[tau])
             counts[n] += 1
+            k = tau - 16
+            strut_equals_low += k == 0
+            low, high = sorted((j, k))
+            independent = 1 <= low <= 7 and 9 <= high <= 15 and high != low + 8
+            criterion_agreements += (n == 4) == independent
             if n == 4:
                 four_high &= (j ^ tau ^ 16) > 8
     slice_struts = {str(a): a ^ TIME ^ 16 for a in SPACE}
@@ -512,6 +559,8 @@ def two_term_strata() -> dict[str, Any]:
         "histogram": {str(k): v for k, v in sorted(counts.items())},
         "nullity_4_struts_above_8": four_high,
         "slice_struts": slice_struts,
+        "strut_equals_low_index": strut_equals_low,
+        "independence_criterion_agreements": criterion_agreements,
     }
 
 
@@ -529,6 +578,7 @@ def compute() -> dict[str, Any]:
         "slice": {"dimension": DIMENSION, "time": TIME, "space": list(SPACE), "time_support": list(TIME_SUPPORT)},
         "associator": associator,
         "strata": strata,
+        "gaussian_euclidean_cone": gaussian_nullities(),
         "envelope": envelope(),
         "two_term_strata": two_term_strata(),
         "families": families,
@@ -536,42 +586,57 @@ def compute() -> dict[str, Any]:
 
 
 def validate(result: dict[str, Any]) -> None:
+    require([row["dimension"] for row in result["associator"]] == list(ASSOCIATOR_DIMENSIONS), "associator dimensions")
     for row in result["associator"]:
-        require(
-            row["associator_failures"] == 0 and row["gram_failures"] == 0,
-            f"associator identity fails at {row['dimension']}",
-        )
+        dimension = row["dimension"]
+        require(row["pairs"] == (dimension - 1) * (dimension - 2), f"associator pairs at {dimension}")
+        require(row["gram_points"] == len(GRAM_POINTS), f"Gram points at {dimension}")
+        require(row["associator_failures"] == 0 and row["gram_failures"] == 0, f"associator identity fails at {dimension}")
+    require([row["prime"] for row in result["strata"]] == list(PRIMES), "strata primes")
+    expected_counts = {32009: (411, 411), 32003: (409, 319)}
     for row in result["strata"]:
         p = row["prime"]
-        require(list(row["euclidean_cone"]) == ["nullity 12, rank L^2 8, y^2 = 0 True"], f"Euclidean cone at {p}")
-        require(list(row["lorentz_cone"]) == ["nullity 4"], f"Lorentz cone at {p}")
-        require(list(row["null_space"]) == ["nullity 16, L^2 = 0 True"], f"null space at {p}")
-        require(sum(row["null_space"].values()) == NULL_SPACE_POINTS, f"null-space sample at {p}")
+        lorentz, euclidean = expected_counts[p]
+        require(row["euclidean_cone"] == {"nullity 12, rank L^2 8, y^2 = 0 True": euclidean}, f"Euclidean cone at {p}")
+        require(row["lorentz_cone"] == {"nullity 4": lorentz}, f"Lorentz cone at {p}")
+        require(row["null_space"] == {"nullity 16, L^2 = 0 True": NULL_SPACE_POINTS}, f"null space at {p}")
+    gaussian = result["gaussian_euclidean_cone"]
+    require(len(gaussian) == len(GAUSSIAN_POINTS) and all(row["nullity"] == 12 for row in gaussian), "Q(i) cone")
     env = result["envelope"]
+    require(env["dimension_by_word_length"] == [1, 8, 35, 111, 210, 255, 256], "envelope growth")
     require(env["dimension"] == 256 and env["closed_under_products"] and env["closed_under_transpose"], "envelope")
     require(env["commutant_dimension"] == 4 and env["commutant_trace_form_signature"] == [2, 1], "commutant type")
+    require(env["commutant_traceless_rank"] == 3, "commutant traceless part")
     require(env["commutant_closed_under_products"] and not env["commutant_is_commutative"], "commutant is M_2(R)")
-    require(
-        env["spatial_commutant_dimension"] == 16 and env["all_imaginary_tables_commutant_dimension"] == 1, "commutants"
-    )
-    require(
-        env["eta_in_envelope"] and env["seven_units_anticommute"] and env["seven_units_square_to_minus_one"], "units"
-    )
+    require(env["spatial_commutant_dimension"] == 16 and env["all_imaginary_tables_commutant_dimension"] == 1, "commutants")
+    require(env["eta_in_envelope"] and env["seven_units_anticommute"] and env["seven_units_square_to_minus_one"], "units")
+    require(not env["volume_is_scalar"] and env["volume_square_is_identity"], "volume of the seven units")
+    require(env["anticommutant_dimension_of_seven_units"] == 8, "anticommutant dimension")
+    require(env["eighth_unit_anticommutes"] and env["eighth_unit_square_is_minus_one"], "eighth unit")
+    require(env["eighth_unit_in_envelope"] and env["clifford_monomial_rank"] == 256, "Cl(0,8) monomials")
+    require(env["clock_in_clifford_span"], "J in the Clifford span")
     strata = result["two_term_strata"]
-    require(
-        strata["histogram"] == {"0": 15, "4": 84, "12": 126} and strata["nullity_4_struts_above_8"], "two-term strata"
-    )
-    for row in result["families"]:
+    require(strata["histogram"] == {"0": 15, "4": 84, "12": 126} and strata["nullity_4_struts_above_8"], "two-term strata")
+    require(strata["slice_struts"] == {"1": 11, "3": 9, "4": 14, "5": 15, "6": 12, "7": 13}, "slice struts")
+    require(strata["strut_equals_low_index"] == 15, "nullity-0 pairs")
+    require(strata["independence_criterion_agreements"] == 225, "independence criterion")
+    families = result["families"]
+    require([(row["level"], row["family"]) for row in families] == [(n, f) for n in FAMILY_LEVELS for f in ("time 7 * 2^(n-3)", "octonion space")], "family rows")
+    expected_relations = {8: 117242, 9: 992250}
+    for row in families:
         tag = f"{row['family']} level {row['level']}"
         require(row["sign_disagreements"] == 0 and row["disjoint_stars"] and row["common_support"] == 4, tag)
+        require(row["sign_rows_checked"] == row["space_size"] + 1, tag)
         require(row["null_point_nullity"] == 4, tag)
         if row["family"] == "octonion space":
-            require(row["space_clifford"], tag)
-        if row["triple_relations"] is not None:
-            require(row["triple_relations"][1] == 0, tag)
-        expected_kernel = 4 if row["family"] != "octonion space" else row["dimension"] - 32
-        require(row["common_kernel"] == expected_kernel, tag)
-
+            require(row["space_clifford"] and row["triple_relations"] == [147, 0], tag)
+            require(row["common_kernel"] == row["dimension"] - 32, tag)
+        else:
+            require(row["common_kernel"] == 4, tag)
+            if row["level"] <= TRIPLE_LEVEL_LIMIT:
+                require(row["triple_relations"] == [expected_relations[row["level"]], 0], tag)
+            else:
+                require(row["triple_relations"] is None, tag)
 
 def control(holds: bool, fails: bool, name: str) -> None:
     require(holds and fails, f"self-test control {name}: holds {holds}, mutant fails {fails}")
@@ -580,9 +645,9 @@ def control(holds: bool, fails: bool, name: str) -> None:
 def self_test() -> None:
     signs = sign_rows(DIMENSION, list(range(DIMENSION)))
     reference = np.array([[cd_core.cd_sign(DIMENSION, p, q) for q in range(DIMENSION)] for p in range(DIMENSION)])
-    mutant_signs = reference.copy()
+    mutant_signs = signs.copy()
     mutant_signs[3, 5] *= -1
-    control(np.array_equal(signs, reference), not np.array_equal(signs, mutant_signs), "vectorized signs")
+    control(np.array_equal(signs, reference), not np.array_equal(mutant_signs, reference), "vectorized signs")
     tables = [table(signs, k) for k in range(DIMENSION)]
     a, t = 1, TIME
     defect2 = -(tables[a] @ tables[t] + tables[t] @ tables[a])
@@ -609,21 +674,15 @@ def self_test() -> None:
     )
     slice_commutant = len(commutant_basis([tables[k] for k in SPACE] + [tables[TIME]]))
     moved = len(commutant_basis([tables[k] for k in SPACE] + [tables[2]]))
-    control(slice_commutant == 4, moved != 4, "commutant against time index 2")
-    level = 8
-    dimension = 1 << level
-    tau = 7 << (level - 3)
-    space = tuple(k for k in range(1, 1 << (level - 2)) if k != 1 << (level - 3))
-    rows = {
-        k: v.astype(np.int64)
-        for k, v in zip(
-            sorted({*space, tau, tau + 1}), sign_rows(dimension, sorted({*space, tau, tau + 1})), strict=True
-        )
-    }
+    control(slice_commutant == 4, moved == 8, "commutant against time index 2")
+    used = sorted({*SPACE, 9, TIME})
+    rows = {k: v.astype(np.int64) for k, v in zip(used, sign_rows(DIMENSION, used), strict=True)}
+    clean = stars(DIMENSION, rows, TIME, SPACE)
+    widened = stars(DIMENSION, rows, TIME, (*SPACE, 9))
     control(
-        stars(dimension, rows, tau, space)["disjoint_stars"],
-        not stars(dimension, rows, tau + 1, space)["disjoint_stars"],
-        "stars against time + 1",
+        clean["disjoint_stars"],
+        widened["common_support"] == 4 and not widened["disjoint_stars"],
+        "stars against e_9 added to the space, with the common support kept",
     )
     fine = sum(triple_item((DIMENSION, TIME, SPACE, a, b)) for a, b in combinations(SPACE, 2))
     moved_space = (1, 2, 3, 4, 5, 6)
