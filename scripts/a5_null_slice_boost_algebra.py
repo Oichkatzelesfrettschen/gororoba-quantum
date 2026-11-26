@@ -3,9 +3,10 @@
 For a time index tau and spatial indices S the slice holds y = sum_a x_a e_a + t e_tau. With A_a = L_(e_a) and
 J = L_(e_tau), the defect K_a = -(A_a J + J A_a)/2 measures the failure of A_a and J to anticommute. The record
 checks, over Z and by FLINT ranks, the Gram identity L_y^T L_y = (r^2 + t^2) I + 2 t K(x), the cubic relation of
-K(x), the so(n,1) commutation relations of the K_a, the kernel of L_y on the cone r^2 = t^2, the covariance algebra
-of the slice, and the same statements on every axis-aligned slice of dimensions 16, 32 and 64. Independent slices
-run through parallel.ordered_map. No random draw enters.
+K(x), the so(n,1) commutation relations of the K_a, the kernel of L_y on the cone r^2 = t^2 and the covariance algebra
+of the slice. The tower scan repeats the checks in dimensions 16, 32 and 64 on every slice whose time axis is a basis
+unit of the upper half and whose space is the full clean set of that axis, and two families reach dimension 128.
+Independent slices run through parallel.ordered_map. No random draw enters.
 """
 
 from __future__ import annotations
@@ -97,7 +98,8 @@ def slice_invariants() -> dict[str, Any]:
     """Q, Delta and G of the strata record restricted to real slices with time coordinate t on index 26.
 
     The imaginary unit is the symbol i, reduced by i^2 = -1 after expansion, so every step is integer polynomial
-    arithmetic.
+    arithmetic. Each entry is an identity checked by expansion; the record holds booleans and term counts, which do
+    not depend on how a library prints a polynomial.
     """
     names = {index: sp.Symbol(f"x{index}") for index in range(1, 16)}
     t, unit = sp.Symbol("t"), sp.Symbol("i")
@@ -113,7 +115,7 @@ def slice_invariants() -> dict[str, Any]:
                 real += sign * coefficient
         return sp.expand(real), sp.expand(imaginary)
 
-    def restricted(space: tuple[int, ...], factor: bool) -> dict[str, Any]:
+    def restricted(space: tuple[int, ...]) -> tuple[Any, Any, Any, Any, Any]:
         z = [sp.Integer(0)] * 16
         for index in space:
             z[index] = names[index]
@@ -126,32 +128,36 @@ def slice_invariants() -> dict[str, Any]:
         d_real, d_imag = parts(big_u * big_v - big_w * big_w)
         g_real = sp.expand(q_real * q_real - q_imag * q_imag - 4 * d_real)
         g_imag = sp.expand(2 * q_real * q_imag - 4 * d_imag)
-        show = (
-            (lambda value: str(sp.factor(value))) if factor else (lambda value: f"{len(sp.Add.make_args(value))} terms")
-        )
-        return {
-            "Q_real": str(sp.factor(q_real)),
-            "Q_imag": str(sp.factor(q_imag)),
-            "Delta_real": show(d_real),
-            "G_real": show(g_real),
-            "G_imag": show(g_imag),
-            "_g": (g_real, g_imag, q_real),
-        }
+        return q_real, q_imag, d_real, g_real, g_imag
+
+    def terms(expression: Any) -> int:
+        return 0 if expression == 0 else len(sp.Add.make_args(expression))
 
     radius = sum(names[index] ** 2 for index in SPACE)
-    six = restricted(SPACE, True)
-    g_real, g_imag, q_real = six.pop("_g")
-    require(sp.expand(q_real - (radius - t * t)) == 0, "Q = r^2 - t^2 on the slice")
-    require(sp.expand(g_real - (radius + t * t) ** 2) == 0 and g_imag == 0, "G = (r^2 + t^2)^2 on the slice")
-    rows = {"six_plus_time": six}
-    for label, space, factor in (
-        ("six_with_e2", (*SPACE, 2), True),
-        ("six_with_e8", (*SPACE, 8), True),
-        ("fourteen_plus_time", tuple(index for index in range(1, 16) if index != TIME - 16), False),
-    ):
-        row = restricted(space, factor)
-        row.pop("_g")
-        rows[label] = row
+    q_real, q_imag, d_real, g_real, g_imag = restricted(SPACE)
+    rows: dict[str, Any] = {
+        "six_plus_time": {
+            "Q_is_r2_minus_t2": sp.expand(q_real - (radius - t * t)) == 0 and q_imag == 0,
+            "Delta_is_minus_r2_t2": sp.expand(d_real + radius * t * t) == 0,
+            "G_is_square_of_r2_plus_t2": sp.expand(g_real - (radius + t * t) ** 2) == 0 and g_imag == 0,
+        }
+    }
+    for label, extra in (("six_with_e2", 2), ("six_with_e8", 8)):
+        s = names[extra]
+        q_real, q_imag, _d_real, g_real, g_imag = restricted((*SPACE, extra))
+        product = ((t - s) ** 2 + radius) * ((t + s) ** 2 + radius)
+        rows[label] = {
+            "Q_is_r2_plus_s2_minus_t2": sp.expand(q_real - (radius + s * s - t * t)) == 0 and q_imag == 0,
+            "G_is_product_of_two_definite_forms": sp.expand(g_real - product) == 0 and g_imag == 0,
+        }
+    fourteen = tuple(index for index in range(1, 16) if index != TIME - 16)
+    q_real, q_imag, _d_real, g_real, g_imag = restricted(fourteen)
+    rows["fourteen_plus_time"] = {
+        "Q_is_r2_minus_t2": sp.expand(q_real - (sum(names[index] ** 2 for index in fourteen) - t * t)) == 0
+        and q_imag == 0,
+        "G_real_terms": terms(g_real),
+        "G_imag_terms": terms(g_imag),
+    }
     return rows
 
 
@@ -196,6 +202,9 @@ def operator_identities(lefts: list[Any], time: int, space: tuple[int, ...]) -> 
         "defect_traces": sorted({int(sum(matrices[a][i, i] for i in range(dimension))) for a in space}),
         "defect_square_traces": trace_squares,
         "defect_ranks": sorted({int(matrices[a].rank()) for a in space}),
+        "defect_cross_traces_vanish": all(
+            sum((matrices[a] * matrices[b])[i, i] for i in range(dimension)) == 0 for a, b in combinations(space, 2)
+        ),
         "cubic_relation": cubic_failures(matrices, space),
     }
 
@@ -322,6 +331,10 @@ def boost_algebra(lefts: list[Any], time: int, space: tuple[int, ...], support: 
         "vector_orbits_are_boosts": bool(orbit_ok),
         "orbit_indices_distinct": len(set(orbit_indices)) == len(orbit_indices) == len(support) * (len(space) + 1),
         "disjoint_stars": disjoint_stars(matrices, space),
+        "common_kernel_closed_under_products": all(
+            (i ^ j) in kernel_support for i in kernel_support for j in kernel_support
+        ),
+        "time_support_is_e2_times_common_kernel": sorted(2 ^ index for index in kernel_support) == list(support),
     }
 
 
@@ -363,11 +376,16 @@ def kernel_formula(lefts: list[Any], time: int, space: tuple[int, ...], support:
         operand = combination({a: lefts[a] for a in space}, space, point) + t * lefts[time]
         shift = t * identity(dimension) - combination(matrices, space, point)
         columns = fmpz_mat([[int(shift[row, m]) for m in support] for row in range(dimension)])
+        form = fmpz_mat(
+            [[(-1 if r in support else 1) if r == c else 0 for c in range(dimension)] for r in range(dimension)]
+        )
+        gram = columns.transpose() * form * columns
         rows.append(
             {
                 "x": list(point),
                 "t": t,
                 "annihilated": operand * columns == fmpz_mat(dimension, len(support)),
+                "kernel_null_for_form": all(gram[i, i] == 0 for i in range(len(support))),
                 "span_rank": int(columns.rank()),
                 "nullity": dimension - int(operand.rank()),
             }
@@ -498,7 +516,11 @@ def tower_item(item: tuple[int, int]) -> dict[str, Any]:
         matrices = defects(lefts, half + k, clean)
         operand = 3 * lefts[clean[0]] + 4 * lefts[clean[1]] + 5 * lefts[half + k]
         small = len(clean) <= LIE_SPACE_LIMIT
-        row["cubic_relation"] = cubic_failures(matrices, clean) if small else None
+        clock = lefts[half + k]
+        row["tables_skew_and_clock_squares_to_minus_one"] = clock * clock == -1 * identity(dimension) and all(
+            lefts[index].transpose() == -1 * lefts[index] for index in (*clean, half + k)
+        )
+        row["cubic_relation"] = cubic_failures(matrices, clean)
         row["triple_relations"] = triple_failures(matrices, clean)
         row["lie_dimension"] = lie_dimension([matrices[a] for a in clean]) if small else None
         row["range_span"] = column_span([matrices[a] for a in clean])
@@ -538,8 +560,8 @@ def tower_control() -> dict[str, Any]:
 def family_item(level: int) -> dict[str, Any]:
     """The slice of A_level with time index 7 * 2^(level-3) and space {1 .. 2^(level-2) - 1} minus 2^(level-3).
 
-    Prediction recorded before the first run of levels 4 and 7: the defects satisfy the so(m,1) relations with
-    m = 2^(level-2) - 2, their ranges span 4 (m + 1) = 2^level - 4 dimensions and their common kernel has dimension 4.
+    Expected by validate: the defects satisfy the so(m,1) relations with m = 2^(level-2) - 2, their ranges span
+    4 (m + 1) = 2^level - 4 dimensions and their common kernel has dimension 4.
     """
     dimension = 1 << level
     time = 7 << (level - 3)
@@ -570,8 +592,7 @@ def family_control() -> list[dict[str, Any]]:
 def octonion_space_item(level: int) -> dict[str, Any]:
     """The slice of A_level with time index 2^(level-1) + 2^(level-2) + 8 and the seven octonion units as space.
 
-    Prediction recorded before the first run, from a reviewer's conjecture checked by the reviewer at level 6:
-    Clifford space, the Gram identity, the 147 relations of so(7,1) and disjoint stars, at levels 6 and 7.
+    Expected by validate: Clifford space, the Gram identity, the 147 relations of so(7,1) and disjoint stars.
     """
     dimension = 1 << level
     time = (1 << (level - 1)) + (1 << (level - 2)) + 8
@@ -611,11 +632,15 @@ def real_slice_nullities(lefts: list[Any]) -> dict[str, Any]:
 
 
 def specification_agreement(lefts: list[Any]) -> bool:
-    vector = [0] * DIMENSION
-    vector[3], vector[TIME], vector[9] = 2, -5, 7
-    expected = cd_core.left_mult_matrix_exact(DIMENSION, vector)
-    built = 2 * lefts[3] - 5 * lefts[TIME] + 7 * lefts[9]
-    return entries(built) == [[int(value) for value in row] for row in expected]
+    """Every table equals the left-multiplication matrix cd_core builds for the same basis unit."""
+    dimension = lefts[0].nrows()
+    for index in range(dimension):
+        unit = [0] * dimension
+        unit[index] = 1
+        expected = cd_core.left_mult_matrix_exact(dimension, unit)
+        if entries(lefts[index]) != [[int(value) for value in row] for row in expected]:
+            return False
+    return True
 
 
 def source_digests() -> dict[str, str]:
@@ -652,6 +677,17 @@ def validate(result: dict[str, Any]) -> None:
     require(identities["defects_symmetric"] and identities["defect_traces"] == [0], "symmetric traceless defects")
     require(identities["defect_square_traces"] == [8] and identities["defect_ranks"] == [8], "defect rank 8")
     require(identities["cubic_relation"] == [56, 0], "K^3 = r^2 K on 56 cubic coefficients")
+    require(identities["defect_cross_traces_vanish"], "trace K_a K_b = 0 for distinct a, b")
+    for group in result["invariants"].values():
+        require(all(value for value in group.values() if isinstance(value, bool)), "slice invariants")
+    require(all(row["gram_identity"] for row in result["determinant"]), "Gram identity at the determinant points")
+    nullities = result["real_slice_nullities"]
+    clean = {str(a) for a in SPACE}
+    require(
+        all(value == (4 if j in clean else 0 if j == "10" else 12) for j, value in nullities["e_j_plus_e_26"].items()),
+        "nullity 4 on the six directions, 0 at e_10 + e_26 and 12 on the eight other axes",
+    )
+    require(nullities["named_points"]["3e2+4e8+5e26"] == 12, "nullity 12 on the rays r = 0")
     algebra = result["boost_algebra"]
     require(algebra["triple_relations"] == [90, 0], "so(6,1) relations")
     require(algebra["lie_dimension"] == {"dimension": 21, "capped": False}, "Lie dimension 21")
@@ -661,10 +697,16 @@ def validate(result: dict[str, Any]) -> None:
     require(algebra["range_span"] == 28 and algebra["common_kernel_dimension"] == 4, "28 + 4 decomposition")
     require(algebra["vector_orbits_are_boosts"] and algebra["orbit_indices_distinct"], "four vector modules")
     require(algebra["disjoint_stars"], "disjoint stars on the slice")
+    require(algebra["common_kernel_support"] == [0, 10, 16, 26], "common kernel support")
+    require(algebra["common_kernel_closed_under_products"], "the common kernel is a subalgebra")
+    require(algebra["time_support_is_e2_times_common_kernel"], "T = e_2 H")
+    signs = {key: (row["target"], row["sign"]) for key, row in result["conjugate_maps"].items()}
+    require(signs == {"2": (24, 1), "8": (18, -1), "18": (8, 1), "24": (2, -1)}, "conjugate targets and signs")
     for row in result["conjugate_maps"].values():
         require(row["t_x_coefficients_vanish"] and row["x_x_coefficients"], "y Phi_m(y) = sign Q e_target")
     for row in result["kernel_formula"]["points"]:
         require(row["annihilated"] and row["span_rank"] == 4 and row["nullity"] == 4, "kernel formula")
+        require(row["kernel_null_for_form"], "kernel vectors are null for the form")
     covariant = result["covariance"]
     require(covariant["so_6_1"]["covariant_dimension"] == 8, "covariance algebra of dimension 8")
     require(
@@ -676,8 +718,16 @@ def validate(result: dict[str, Any]) -> None:
     require(
         passing == expected, "so(n,1) relations hold for time index 25..31 of dimension 32 and 49..63 of dimension 64"
     )
+    summary = result["tower_control"]["summary"]
+    require([summary[d]["slices_with_clifford_space"] for d in ("16", "32", "64")] == [7, 14, 0], "Clifford counts")
+    require(summary["16"]["lie_dimensions"] == {"15": 7}, "Lie dimension 15 in dimension 16")
+    require(summary["32"]["lie_dimensions"] == {"15": 7, "21": 7}, "Lie dimensions 15 and 21 in dimension 32")
+    require(sum(1 for row in result["tower_control"]["rows"] if "triple_relations" in row) == 51, "51 clean slices")
     for row in result["tower_control"]["rows"]:
         if "triple_relations" in row:
+            require(row["tables_skew_and_clock_squares_to_minus_one"], "skew tables and clock on every slice")
+            require(row["defect_ranks"] == [8] and row["null_point_nullity"] == 4, "defect rank 8 and nullity 4")
+            require(row["cubic_relation"][1] == 0, "cubic relation on every clean slice")
             require(row["disjoint_stars"] == (row["triple_relations"][1] == 0), "stars decide the so(n,1) relations")
             require(row["gram_identity"] == row["space_clifford"], "the Gram identity holds exactly on Clifford spaces")
     for row in result["octonion_space_control"]:
@@ -692,38 +742,89 @@ def validate(result: dict[str, Any]) -> None:
             row["range_span"] == row["dimension"] - 4 and row["common_kernel_dimension"] == 4, "four vector modules"
         )
         require(row["defect_ranks"] == [8] and row["null_point_nullity"] == 4, "family defect rank 8 and nullity 4")
+        require(row["space_clifford"] == (row["level"] in (4, 5)), "family space is Clifford at levels 4 and 5 only")
 
 
 def self_test() -> None:
+    """Each control pairs a property that holds on the record's inputs with a mutant on which it fails."""
     lefts = left_tables(DIMENSION)
-    require(specification_agreement(lefts), "specification agreement")
-    require(operator_identities(lefts, TIME, SPACE)["cubic_relation"] == [56, 0], "baseline cubic relation")
-    with_e2 = (1, 2, 3, 4, 5, 6, 7)
-    require(
-        cubic_failures(defects(lefts, TIME, with_e2), with_e2)[1] > 0, "the direction e_2 breaks the cubic relation"
-    )
-    other = tuple(range(10, 16))
-    require(triple_failures(defects(lefts, 17, other), other)[1] > 0, "the slice with time e_17 fails so(6,1)")
-    sedenion = left_tables(16)
-    require(triple_failures(defects(sedenion, 10, SPACE), SPACE)[1] > 0, "the sedenion slice fails so(6,1)")
-    flipped = list(lefts)
+    controls = 0
+
+    def control(baseline: bool, mutant_fails: bool, name: str) -> None:
+        nonlocal controls
+        require(baseline, f"{name}: the property holds on the record's input")
+        require(mutant_fails, f"{name}: the property fails on the mutant")
+        controls += 1
+
+    swapped = list(lefts)
+    swapped[3], swapped[5] = swapped[5], swapped[3]
+    control(specification_agreement(lefts), not specification_agreement(swapped), "tables against cd_core")
+
     rows = entries(lefts[TIME])
     column = next(c for c in range(DIMENSION) if rows[0][c])
     rows[0][column] = -rows[0][column]
+    flipped = list(lefts)
     flipped[TIME] = fmpz_mat(rows)
-    require(flipped[TIME] * flipped[TIME] != -1 * identity(DIMENSION), "a flipped clock entry breaks J^2 = -I")
-    wrong_support = (2, 8, 18, 0)
-    wrong = conjugate_maps(lefts, TIME, SPACE, wrong_support)["0"]
-    require(not (wrong["t_x_coefficients_vanish"] and wrong["x_x_coefficients"]), "index 0 is outside the time support")
-    wrong_kernel = kernel_formula(lefts, TIME, SPACE, wrong_support)["points"][0]
-    require(not wrong_kernel["annihilated"], "a wrong support vector leaves the kernel")
-    require(gram_identity(lefts, TIME, SPACE, (2, 3, 6, 0, 0, 0), 5), "Gram identity holds at an off-cone point")
-    shifted = 2 * lefts[1] + 3 * lefts[3] + 6 * lefts[4] + 5 * lefts[TIME]
-    require(
-        (shifted.transpose() * shifted) != (49 + 26) * identity(DIMENSION),
-        "the Gram operator is not scalar off the cone",
+    point, t = (2, 3, 6, 0, 0, 0), 5
+    control(
+        lefts[TIME] * lefts[TIME] == -1 * identity(DIMENSION) and gram_identity(lefts, TIME, SPACE, point, t),
+        flipped[TIME] * flipped[TIME] != -1 * identity(DIMENSION) and not gram_identity(flipped, TIME, SPACE, point, t),
+        "clock table",
     )
-    print("self-test passed: 8 controls")
+
+    operand = combination({a: lefts[a] for a in SPACE}, SPACE, point) + t * lefts[TIME]
+    radius = sum(value * value for value in point)
+    control(
+        radius + t * t == 74 and gram_identity(lefts, TIME, SPACE, point, t),
+        operand.transpose() * operand != (radius + t * t) * identity(DIMENSION),
+        "the Gram operator carries the defect term",
+    )
+
+    with_e2 = (1, 2, 3, 4, 5, 6, 7)
+    control(
+        cubic_failures(defects(lefts, TIME, SPACE), SPACE) == [56, 0],
+        cubic_failures(defects(lefts, TIME, with_e2), with_e2)[1] > 0,
+        "cubic relation",
+    )
+
+    other = tuple(range(10, 16))
+    sedenion = left_tables(16)
+    control(
+        triple_failures(defects(lefts, TIME, SPACE), SPACE) == [90, 0],
+        triple_failures(defects(lefts, 17, other), other)[1] > 0
+        and triple_failures(defects(sedenion, 10, SPACE), SPACE)[1] > 0,
+        "so(6,1) relations",
+    )
+    control(
+        disjoint_stars(defects(lefts, TIME, SPACE), SPACE),
+        not disjoint_stars(defects(sedenion, 10, SPACE), SPACE)
+        and not disjoint_stars(defects(lefts, 17, other), other),
+        "disjoint stars",
+    )
+
+    good = conjugate_maps(lefts, TIME, SPACE, TIME_SUPPORT)
+    bad = conjugate_maps(lefts, TIME, SPACE, (2, 8, 18, 25, 0))
+    control(
+        all(row["t_x_coefficients_vanish"] and row["x_x_coefficients"] for row in good.values()),
+        all(not (bad[m]["t_x_coefficients_vanish"] and bad[m]["x_x_coefficients"]) for m in ("25", "0")),
+        "conjugate maps",
+    )
+
+    two_axis = 2
+    kernel = kernel_formula(lefts, TIME, SPACE, TIME_SUPPORT)["points"]
+    leaf = kernel_formula(lefts, TIME, SPACE, (2, 8, 18, 25))["points"][two_axis]
+    control(
+        all(row["annihilated"] and row["span_rank"] == 4 for row in kernel),
+        not leaf["annihilated"],
+        "kernel formula at a two-axis cone point with the leaf index 25",
+    )
+
+    control(
+        clifford(lefts, SPACE),
+        not clifford(left_tables(64), (1, 10)),
+        "Clifford space",
+    )
+    print(f"self-test passed: {controls} controls")
 
 
 def main() -> int:

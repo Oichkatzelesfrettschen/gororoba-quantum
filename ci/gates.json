@@ -4873,7 +4873,8 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/a5_null_slice_boost_algebra.py --check docs/evidence/a5-null-slice-boost-algebra/result.json",
       "name": "core-a5-null-slice-boost-algebra",
-      "seconds": 86.0,
+      "seconds": 30.0,
+      "workers": "all",
       "replays": [
         "docs/evidence/a5-null-slice-boost-algebra/result.json"
       ]

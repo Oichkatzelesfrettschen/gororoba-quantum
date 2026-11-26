@@ -1,5 +1,6 @@
 {
  "boost_algebra": {
+  "common_kernel_closed_under_products": true,
   "common_kernel_dimension": 4,
   "common_kernel_support": [
    0,
@@ -23,6 +24,7 @@
    18,
    24
   ],
+  "time_support_is_e2_times_common_kernel": true,
   "triple_relations": [
    90,
    0
@@ -343,38 +345,29 @@
  ],
  "invariants": {
   "fourteen_plus_time": {
-   "Delta_real": "57 terms",
-   "G_imag": "6 terms",
-   "G_real": "135 terms",
-   "Q_imag": "0",
-   "Q_real": "-t**2 + x1**2 + x11**2 + x12**2 + x13**2 + x14**2 + x15**2 + x2**2 + x3**2 + x4**2 + x5**2 + x6**2 + x7**2 + x8**2 + x9**2"
+   "G_imag_terms": 6,
+   "G_real_terms": 135,
+   "Q_is_r2_minus_t2": true
   },
   "six_plus_time": {
-   "Delta_real": "-t**2*(x1**2 + x3**2 + x4**2 + x5**2 + x6**2 + x7**2)",
-   "G_imag": "0",
-   "G_real": "(t**2 + x1**2 + x3**2 + x4**2 + x5**2 + x6**2 + x7**2)**2",
-   "Q_imag": "0",
-   "Q_real": "-t**2 + x1**2 + x3**2 + x4**2 + x5**2 + x6**2 + x7**2"
+   "Delta_is_minus_r2_t2": true,
+   "G_is_square_of_r2_plus_t2": true,
+   "Q_is_r2_minus_t2": true
   },
   "six_with_e2": {
-   "Delta_real": "-t**2*(x1**2 + x3**2 + x4**2 + x5**2 + x6**2 + x7**2)",
-   "G_imag": "0",
-   "G_real": "(t**2 - 2*t*x2 + x1**2 + x2**2 + x3**2 + x4**2 + x5**2 + x6**2 + x7**2)*(t**2 + 2*t*x2 + x1**2 + x2**2 + x3**2 + x4**2 + x5**2 + x6**2 + x7**2)",
-   "Q_imag": "0",
-   "Q_real": "-t**2 + x1**2 + x2**2 + x3**2 + x4**2 + x5**2 + x6**2 + x7**2"
+   "G_is_product_of_two_definite_forms": true,
+   "Q_is_r2_plus_s2_minus_t2": true
   },
   "six_with_e8": {
-   "Delta_real": "-t**2*(x1**2 + x3**2 + x4**2 + x5**2 + x6**2 + x7**2)",
-   "G_imag": "0",
-   "G_real": "(t**2 - 2*t*x8 + x1**2 + x3**2 + x4**2 + x5**2 + x6**2 + x7**2 + x8**2)*(t**2 + 2*t*x8 + x1**2 + x3**2 + x4**2 + x5**2 + x6**2 + x7**2 + x8**2)",
-   "Q_imag": "0",
-   "Q_real": "-t**2 + x1**2 + x3**2 + x4**2 + x5**2 + x6**2 + x7**2 + x8**2"
+   "G_is_product_of_two_definite_forms": true,
+   "Q_is_r2_plus_s2_minus_t2": true
   }
  },
  "kernel_formula": {
   "points": [
    {
     "annihilated": true,
+    "kernel_null_for_form": true,
     "nullity": 4,
     "span_rank": 4,
     "t": 1,
@@ -389,6 +382,7 @@
    },
    {
     "annihilated": true,
+    "kernel_null_for_form": true,
     "nullity": 4,
     "span_rank": 4,
     "t": -1,
@@ -403,6 +397,7 @@
    },
    {
     "annihilated": true,
+    "kernel_null_for_form": true,
     "nullity": 4,
     "span_rank": 4,
     "t": 5,
@@ -417,6 +412,7 @@
    },
    {
     "annihilated": true,
+    "kernel_null_for_form": true,
     "nullity": 4,
     "span_rank": 4,
     "t": -7,
@@ -467,6 +463,7 @@
    56,
    0
   ],
+  "defect_cross_traces_vanish": true,
   "defect_ranks": [
    8
   ],
@@ -529,7 +526,7 @@
  "sources": {
   "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
   "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
-  "scripts/a5_null_slice_boost_algebra.py": "3bff3d3a5ef05ac5c0e8debe71022d0c28321261d82dad815482ab188764060d"
+  "scripts/a5_null_slice_boost_algebra.py": "615922c465290e14b8c82a1f29e8d79903cbfac2e3c5ec0ceeb01271d4a94b7b"
  },
  "tower_control": {
   "rows": [
@@ -563,6 +560,7 @@
     },
     "range_span": 12,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 9,
     "triple_relations": [
      90,
@@ -599,6 +597,7 @@
     },
     "range_span": 12,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 10,
     "triple_relations": [
      90,
@@ -635,6 +634,7 @@
     },
     "range_span": 12,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 11,
     "triple_relations": [
      90,
@@ -671,6 +671,7 @@
     },
     "range_span": 12,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 12,
     "triple_relations": [
      90,
@@ -707,6 +708,7 @@
     },
     "range_span": 12,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 13,
     "triple_relations": [
      90,
@@ -743,6 +745,7 @@
     },
     "range_span": 12,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 14,
     "triple_relations": [
      90,
@@ -779,6 +782,7 @@
     },
     "range_span": 12,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 15,
     "triple_relations": [
      90,
@@ -816,6 +820,7 @@
     },
     "range_span": 16,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 17,
     "triple_relations": [
      90,
@@ -853,6 +858,7 @@
     },
     "range_span": 16,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 18,
     "triple_relations": [
      90,
@@ -890,6 +896,7 @@
     },
     "range_span": 16,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 19,
     "triple_relations": [
      90,
@@ -927,6 +934,7 @@
     },
     "range_span": 16,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 20,
     "triple_relations": [
      90,
@@ -964,6 +972,7 @@
     },
     "range_span": 16,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 21,
     "triple_relations": [
      90,
@@ -1001,6 +1010,7 @@
     },
     "range_span": 16,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 22,
     "triple_relations": [
      90,
@@ -1038,6 +1048,7 @@
     },
     "range_span": 16,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 23,
     "triple_relations": [
      90,
@@ -1084,6 +1095,7 @@
     },
     "range_span": 28,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 25,
     "triple_relations": [
      90,
@@ -1121,6 +1133,7 @@
     },
     "range_span": 28,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 26,
     "triple_relations": [
      90,
@@ -1158,6 +1171,7 @@
     },
     "range_span": 28,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 27,
     "triple_relations": [
      90,
@@ -1195,6 +1209,7 @@
     },
     "range_span": 28,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 28,
     "triple_relations": [
      90,
@@ -1232,6 +1247,7 @@
     },
     "range_span": 28,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 29,
     "triple_relations": [
      90,
@@ -1269,6 +1285,7 @@
     },
     "range_span": 28,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 30,
     "triple_relations": [
      90,
@@ -1306,6 +1323,7 @@
     },
     "range_span": 28,
     "space_clifford": true,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 31,
     "triple_relations": [
      90,
@@ -1347,6 +1365,7 @@
     },
     "range_span": 20,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 33,
     "triple_relations": [
      224,
@@ -1388,6 +1407,7 @@
     },
     "range_span": 20,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 34,
     "triple_relations": [
      224,
@@ -1429,6 +1449,7 @@
     },
     "range_span": 20,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 35,
     "triple_relations": [
      224,
@@ -1470,6 +1491,7 @@
     },
     "range_span": 20,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 36,
     "triple_relations": [
      224,
@@ -1511,6 +1533,7 @@
     },
     "range_span": 20,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 37,
     "triple_relations": [
      224,
@@ -1552,6 +1575,7 @@
     },
     "range_span": 20,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 38,
     "triple_relations": [
      224,
@@ -1593,6 +1617,7 @@
     },
     "range_span": 20,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 39,
     "triple_relations": [
      224,
@@ -1616,7 +1641,10 @@
      30,
      31
     ],
-    "cubic_relation": null,
+    "cubic_relation": [
+     560,
+     0
+    ],
     "defect_ranks": [
      8
     ],
@@ -1632,6 +1660,7 @@
     },
     "range_span": 32,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 40,
     "triple_relations": [
      1274,
@@ -1673,6 +1702,7 @@
     },
     "range_span": 32,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 41,
     "triple_relations": [
      224,
@@ -1714,6 +1744,7 @@
     },
     "range_span": 32,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 42,
     "triple_relations": [
      224,
@@ -1755,6 +1786,7 @@
     },
     "range_span": 32,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 43,
     "triple_relations": [
      224,
@@ -1796,6 +1828,7 @@
     },
     "range_span": 32,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 44,
     "triple_relations": [
      224,
@@ -1837,6 +1870,7 @@
     },
     "range_span": 32,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 45,
     "triple_relations": [
      224,
@@ -1878,6 +1912,7 @@
     },
     "range_span": 32,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 46,
     "triple_relations": [
      224,
@@ -1919,6 +1954,7 @@
     },
     "range_span": 32,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 47,
     "triple_relations": [
      224,
@@ -1969,6 +2005,7 @@
     },
     "range_span": 36,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 49,
     "triple_relations": [
      224,
@@ -2010,6 +2047,7 @@
     },
     "range_span": 36,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 50,
     "triple_relations": [
      224,
@@ -2051,6 +2089,7 @@
     },
     "range_span": 36,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 51,
     "triple_relations": [
      224,
@@ -2092,6 +2131,7 @@
     },
     "range_span": 36,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 52,
     "triple_relations": [
      224,
@@ -2133,6 +2173,7 @@
     },
     "range_span": 36,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 53,
     "triple_relations": [
      224,
@@ -2174,6 +2215,7 @@
     },
     "range_span": 36,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 54,
     "triple_relations": [
      224,
@@ -2215,6 +2257,7 @@
     },
     "range_span": 36,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 55,
     "triple_relations": [
      224,
@@ -2238,7 +2281,10 @@
      14,
      15
     ],
-    "cubic_relation": null,
+    "cubic_relation": [
+     560,
+     0
+    ],
     "defect_ranks": [
      8
     ],
@@ -2254,6 +2300,7 @@
     },
     "range_span": 60,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 56,
     "triple_relations": [
      1274,
@@ -2295,6 +2342,7 @@
     },
     "range_span": 36,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 57,
     "triple_relations": [
      224,
@@ -2336,6 +2384,7 @@
     },
     "range_span": 36,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 58,
     "triple_relations": [
      224,
@@ -2377,6 +2426,7 @@
     },
     "range_span": 36,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 59,
     "triple_relations": [
      224,
@@ -2418,6 +2468,7 @@
     },
     "range_span": 36,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 60,
     "triple_relations": [
      224,
@@ -2459,6 +2510,7 @@
     },
     "range_span": 36,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 61,
     "triple_relations": [
      224,
@@ -2500,6 +2552,7 @@
     },
     "range_span": 36,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 62,
     "triple_relations": [
      224,
@@ -2541,6 +2594,7 @@
     },
     "range_span": 36,
     "space_clifford": false,
+    "tables_skew_and_clock_squares_to_minus_one": true,
     "time": 63,
     "triple_relations": [
      224,
