@@ -477,6 +477,10 @@
   "left_tables_skew": true,
   "space_tables_anticommute_and_square_to_minus_one": true
  },
+ "quaternionic_pair": {
+  "associators_fail_for_a_sedenion_pair": true,
+  "associators_vanish_on_slice_pairs": true
+ },
  "real_slice_nullities": {
   "e_j_plus_e_26": {
    "1": 4,
@@ -526,7 +530,7 @@
  "sources": {
   "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
   "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
-  "scripts/a5_null_slice_boost_algebra.py": "615922c465290e14b8c82a1f29e8d79903cbfac2e3c5ec0ceeb01271d4a94b7b"
+  "scripts/a5_null_slice_boost_algebra.py": "e20f1c6521f681313f3573ac7d2c4c2b5d6e5d150f6c3a627ccf0a9082719141"
  },
  "tower_control": {
   "rows": [

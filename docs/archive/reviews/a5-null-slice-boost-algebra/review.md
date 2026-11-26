@@ -73,3 +73,16 @@ normal and `-O` modes; `ledger.py --check` clean; `check_markdown_links.py` clea
 `sh ci/pr_checks.sh tests` on the record's test file and `tests/test_a5_findings_ledger.py`: 20 passed.
 Earlier runs of this session on the build host: the first commit's record and tests ran there, against the
 standing rule that the build host takes no Python batch.
+
+## Advisor, second call (head `c04fcc3e3`)
+
+The Advisor found the head sound and asked for one commit before the hosted review:
+
+| Finding | Check | Resolution |
+| --- | --- | --- |
+| Gate wiring against `ci/AGENTS.md` | read the grouped-gate rule: a check keeps its own gate when its command carries more than one script invocation; `workers: all` marks a gate that takes the detected allocation | no change: the self-test gate runs the script twice (normal and `-O`), and the check gate drives the process pool, as gates core-694 and core-695 of `scripts/a5_zero_divisor_strata.py` do |
+| "42 of 90 fail" and "Lie dimension 36" had no `require`; statement 1 cited a two-coordinate point under "one more coordinate" | read `validate` and the README | two `require` lines added; statement 1 reworded |
+| "Instance" of Proposition 11.1 asserted from the statement alone | the record now computes [a, a, b] and [a, b, b] for slice pairs in cd_core (`quaternionic_pair`), with a sedenion pair as the failing control; the paper's doubling convention was not compared | README says "related", with the hypotheses checked |
+| The absence of Cayley-Dickson structure in the paper rested on two readers | a case-insensitive search of the filed text-layer transcription for octonion, sedenion, Cayley, zero divisor, nonassociative, Clifford, spinor, twistor, division algebra and Jordan algebra returns 0 lines | kept |
+| The pull-request body after its edit | read back: 51 slices, 9 paired controls, the corrected scan wording | the prior-art line now reads "related" for Proposition 11.1 |
+| Repository status after the reviewer's third round | `git status --short` in the nine workspace repositories | clean, except the one untracked results directory that predates the session |

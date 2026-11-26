@@ -34,8 +34,8 @@ Each statement is computed: an exact check of the record, named in parentheses, 
    G = (r^2 + t^2)^2. The nonzero zero divisors of the slice are the nonzero points of the cone r^2 = t^2, each of
    nullity 4 (by statement 2). With one more spatial coordinate s on e_2 or on e_8, Q = r^2 + s^2 - t^2 and
    G = ((t - s)^2 + r^2)((t + s)^2 + r^2): the zero divisors are again the points of the larger cone
-   r^2 + s^2 = t^2, and the nullity rises to 12 on its rays r = 0 (e_2 + e_26, e_8 + e_26 and
-   3 e_2 + 4 e_8 + 5 e_26 have nullity 12). The six directions of S are the ones with nullity 4 for e_j + e_26;
+   r^2 + s^2 = t^2, and the nullity rises to 12 on its rays r = 0 (e_2 + e_26 and e_8 + e_26). With both
+   coordinates at once, 3 e_2 + 4 e_8 + 5 e_26 has nullity 12 as well. The six directions of S are the ones with nullity 4 for e_j + e_26;
    the eight others below 16 give 12, and e_10 + e_26 is invertible.
 2. **Gram identity** (`operator_identities`, `determinant`). L_y^T L_y = (r^2 + t^2) I + 2 t K(x). Each K_a is
    symmetric, integer, traceless and of rank 8, trace(K_a K_b) = 8 delta_ab, and K(x)^3 = r^2 K(x) on all 56 cubic
@@ -74,10 +74,11 @@ Each statement is computed: an exact check of the record, named in parentheses, 
        ker L_y = (t - K(x)) T    for r^2 = t^2, y nonzero,
 
    each kernel vector is null for eta, and the kernel bundle over the punctured cone of the slice is trivial with
-   the global frame Phi_2, Phi_8, Phi_18, Phi_24. Off the cone Phi_m(y) / Q(y) solves y w = s_m e_m'. The kernel is
-   an instance of the annihilator of a quaternionic pair of alternative vectors (arXiv math/0511691,
-   Proposition 11.1), here the pair (x / r, +-e_10) of A_4; the linear frame and its module structure are the
-   content added here.
+   the global frame Phi_2, Phi_8, Phi_18, Phi_24. Off the cone Phi_m(y) / Q(y) solves y w = s_m e_m'. The pair
+   (x, e_10) of A_4 behind a slice point is orthogonal and imaginary with [a, a, b] = [a, b, b] = 0 in the cd_core
+   product (`quaternionic_pair`), the hypotheses under which arXiv math/0511691, Proposition 11.1, describes the
+   annihilator of a pair. That paper's doubling convention has not been compared with cd_core's, so the kernel is
+   recorded as related to that proposition; the linear frame and its module structure are the content added here.
 5. **Covariance** (`covariance`). The pairs (X, Y) of 32 x 32 matrices and generators w of so(6,1) acting on the
    slice with X L_y + L_y Y = L_(w y) for every slice point form a space whose projection onto w has dimension 8,
    inside the rotations; its projection onto the six boosts has dimension 0 (FLINT ranks of a 7168 x 2069 integer

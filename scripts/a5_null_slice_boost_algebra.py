@@ -362,6 +362,35 @@ def conjugate_maps(lefts: list[Any], time: int, space: tuple[int, ...], support:
     return rows
 
 
+def quaternionic_pair() -> dict[str, bool]:
+    """The pair (x, e_10) of dimension 16 behind a slice point: orthogonal, imaginary, with vanishing associators.
+
+    [a, a, b] = [a, b, b] = 0 for orthogonal imaginary a, b makes them generate a quaternion subalgebra.
+    """
+    dimension = 16
+
+    def vector(terms: dict[int, int]) -> list[int]:
+        values = [0] * dimension
+        for index, value in terms.items():
+            values[index] = value
+        return values
+
+    def associator(a: list[int], b: list[int], c: list[int]) -> list[Any]:
+        left = cd_core.cd_multiply_exact(dimension, list(cd_core.cd_multiply_exact(dimension, a, b)), c)
+        right = cd_core.cd_multiply_exact(dimension, a, list(cd_core.cd_multiply_exact(dimension, b, c)))
+        return [x - y for x, y in zip(left, right, strict=True)]
+
+    def vanishing(a: list[int], b: list[int]) -> bool:
+        return not any(associator(a, a, b)) and not any(associator(a, b, b))
+
+    time = vector({TIME - 16: 1})
+    points = [vector({1: 1}), vector({1: 3, 3: 4}), vector({1: 2, 3: 3, 4: 6}), vector({a: a for a in SPACE})]
+    return {
+        "associators_vanish_on_slice_pairs": all(vanishing(a, time) for a in points),
+        "associators_fail_for_a_sedenion_pair": not vanishing(vector({1: 1, 10: 1}), vector({4: 1, 15: 1})),
+    }
+
+
 def kernel_formula(lefts: list[Any], time: int, space: tuple[int, ...], support: tuple[int, ...]) -> dict[str, Any]:
     """On the cone the four vectors (t - K(x)) e_m lie in ker L_y and are independent, so they span it."""
     dimension = lefts[0].nrows()
@@ -659,6 +688,7 @@ def build_result() -> dict[str, Any]:
         "boost_algebra": boost_algebra(lefts, TIME, SPACE, TIME_SUPPORT),
         "conjugate_maps": conjugate_maps(lefts, TIME, SPACE, TIME_SUPPORT),
         "kernel_formula": kernel_formula(lefts, TIME, SPACE, TIME_SUPPORT),
+        "quaternionic_pair": quaternionic_pair(),
         "real_slice_nullities": real_slice_nullities(lefts),
         "covariance": covariance(),
         "tower_control": tower_control(),
@@ -707,6 +737,7 @@ def validate(result: dict[str, Any]) -> None:
     for row in result["kernel_formula"]["points"]:
         require(row["annihilated"] and row["span_rank"] == 4 and row["nullity"] == 4, "kernel formula")
         require(row["kernel_null_for_form"], "kernel vectors are null for the form")
+    require(all(result["quaternionic_pair"].values()), "slice pairs are quaternionic; the control pair is not")
     covariant = result["covariance"]
     require(covariant["so_6_1"]["covariant_dimension"] == 8, "covariance algebra of dimension 8")
     require(
@@ -725,6 +756,11 @@ def validate(result: dict[str, Any]) -> None:
     require(sum(1 for row in result["tower_control"]["rows"] if "triple_relations" in row) == 51, "51 clean slices")
     for row in result["tower_control"]["rows"]:
         if "triple_relations" in row:
+            fails = row["dimension"] == 16 or (row["dimension"] == 32 and row["time"] < 24)
+            if fails:
+                require(row["triple_relations"] == [90, 42], "42 of 90 relations fail on the six-direction slices")
+            if row["dimension"] == 64 and row["time"] > 48 and row["time"] != 56:
+                require(row["lie_dimension"] == {"dimension": 36, "capped": False}, "Lie dimension 36 = dim so(8,1)")
             require(row["tables_skew_and_clock_squares_to_minus_one"], "skew tables and clock on every slice")
             require(row["defect_ranks"] == [8] and row["null_point_nullity"] == 4, "defect rank 8 and nullity 4")
             require(row["cubic_relation"][1] == 0, "cubic relation on every clean slice")
