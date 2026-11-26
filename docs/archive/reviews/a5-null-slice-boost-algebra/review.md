@@ -98,8 +98,13 @@ turn. Resolution: `covariance_item` is a module-level worker and `covariance` ma
 
 The owner asked for the findings to enter the research notes and for the merge. The commit after `55084a4cf` adds
 the ledger rows A5-612 to A5-621 with their statuses to `docs/notes/topics/a5-exceptional-fiber-status.md`, a
-section with one `hypothesis:` item (nullity fixtures for the kernel map, no provider job proposed) to
+section with one `hypothesis:` item (the two-term operands e_a +- e_26 of the kernel map with their closed-form kernel, no provider job proposed) to
 `docs/notes/topics/a5-hardware-algebra-synthesis.md`, and one row to `docs/RESEARCH_ROADMAP.md`. None of the three
 files is pinned by digest in gororoba-quantum or gororoba-open. The commit changes no script, record or ledger row; it
 ran through no second hosted round. The relation of the kernel frame to the open nullity-4 classification A5-389 reads
 "related", since the frame does not meet that row's statement.
+
+The Advisor, on `621db34c2`, found two public sentences citing a row of the private work ledger, a hardware
+hypothesis wider than the two-term operands `pathion_kernel_map.py` accepts, and an A5-618 cell that dated both
+families n = 4 to 7; the next commit rewords the first to "belongs to gororoba-math, open", restricts the hypothesis to
+the operands e_a +- e_26, and dates the octonion-space family n = 6 and 7.

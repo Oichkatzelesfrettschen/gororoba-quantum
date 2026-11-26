@@ -114,7 +114,7 @@ row below is an exact check of `scripts/a5_null_slice_boost_algebra.py --check`;
 | A5-615 | the covariance algebra has dimension 8, inside the rotations; no boost acts covariantly on L_y | proved |
 | A5-616 | over the 51 clean slices of dimensions 16, 32 and 64 the cone and the fourfold kernel exist at every level; only the seven slices of A_5 carry both a Clifford space and the so(n,1) relations | proved |
 | A5-617 | the relations hold exactly when the defects have disjoint stars | survives |
-| A5-618 | two families: so(2^(n-2) - 2, 1) at time index 7 * 2^(n-3), and so(7,1) on the octonion-space slice from n = 6, computed for n = 4 to 7 | survives |
+| A5-618 | two families: so(2^(n-2) - 2, 1) at time index 7 * 2^(n-3), computed for n = 4 to 7, and so(7,1) on the octonion-space slice, computed for n = 6 and 7 | survives |
 | A5-619 | the covariance algebras are su(3) on A_5 and the G_2 derivations on the octonion-space slice of A_6 | open |
 | A5-620 | a bracket-preserving map from the corner boost data of arXiv 2611.34924 (equations 3.41 to 3.43, 3.61 to 3.64) to (P_T, K_a) | open |
 | A5-621 | the Lorentzian cone with a fourfold kernel distinguishes A_5 in the tower | refuted |
@@ -134,7 +134,7 @@ What the slice changes for the program:
 - **Prior art.** The determinant agrees with arXiv 2608.08232 Theorem 5.3; the kernel is related to arXiv
   math/0511691 Proposition 11.1, whose hypotheses the record checks. A source for the so(n,1) relations of the
   defects was not found in the documents read.
-- **Machine-checked.** None of A5-612 to A5-618 is formalized; the Rocq statements are pool row PROOF-64.
+- **Machine-checked.** None of A5-612 to A5-618 is formalized; the Rocq statements belong to gororoba-math, open.
 
 ## Next computations
 

@@ -322,11 +322,11 @@ on it, and the kernel on the cone is the explicit frame (t - K(x)) T, T = span(e
 [evidence](../../evidence/a5-null-slice-boost-algebra/README.md)). The defects K_a carry the so(6,1) relations (613),
 while no boost acts covariantly on L_y (615), so a Lorentz reading of the slice stops at the defect operators.
 
-- hypothesis: the slice supplies nullity fixtures for `gororoba_quantum/pathion_kernel_map.py` with the kernel known in
-  closed form at every cone point and nullity 0 at every off-cone point of the same two-parameter family, so an
-  estimate N_hat can be scored against 4 and 0 along one continuous path in t / r. Falsifier: the classical simulation
-  of the kernel map on these operands fails to separate 4 from 0 at the shot counts of the retained runs. No provider
-  job is proposed; a run would need its own written case.
+- hypothesis: the two-term operands e_a + t e_26 of `gororoba_quantum/pathion_kernel_map.py` (a in S) lie on the
+  slice with r = 1, so at t = +-1 the kernel map reads an operand of nullity 4 whose kernel is the closed form
+  (t - K_a) T, a reference for the kernel directions beside the count N. Falsifier: the module's ideal law at these
+  operands fails to give N = 4, or its aligned pairs differ from the pairs of (t - K_a) T. No provider job is
+  proposed; a run would need its own written case.
 
 ## Roadmap
 
