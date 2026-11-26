@@ -279,6 +279,7 @@ def self_test() -> None:
 
     true_n = exact_nullity(1, 26, 1j)
     control(reading(1, 26, 1j)["half_sum"] == true_n, reading(1, 26, 1j, plain=True)["half_sum"] == true_n, "s_k")
+
     def selector_reading(selector: complex) -> float:
         minus = law(kernel_map(1, 26, 1j, False, selector=selector))
         plus = law(kernel_map(1, 26, 1j, True, selector=selector))
