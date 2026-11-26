@@ -56,10 +56,13 @@ words; "no link found" records a search with its scope.
 ## Hardware observables for the complex strata
 
 The nullity-12 and nullity-16 strata need complex or modular coefficients, so a real operand on the device never
-reaches them; their kernels are still eigenspaces of operators the devices already compile. L_a L_b is a signed XOR
-permutation, so i L_a L_b is a Hermitian involution whose +1 eigenspace is the kernel of L_(e_a + i e_b) (A5-629), and
-the Euclidean-cone kernel of L_(e_1 + i e_26) is ker K_1 n ker(i L_1 J - I), with K_1 the symmetric part of the
-module's signed permutation L_1^T L_26.
+reaches them; their kernels are still eigenspaces of operators the devices already compile. When the tables L_a and
+L_b anticommute, L_a L_b is a skew signed XOR permutation with square -I, so i L_a L_b is a Hermitian involution whose
++1 eigenspace is the kernel of L_(e_a + i e_b) (A5-629): the nullity-16 point e_1 + i e_3 is that case. L_1 and J do not
+anticommute: on the 8-dimensional support of K_1 the product L_1 J squares to +I and i L_1 J is not Hermitian there,
+and the involution property holds only after restriction to ker K_1, where the Euclidean-cone kernel of
+L_(e_1 + i e_26) is ker K_1 n ker(i L_1 J - I), with K_1 the symmetric part of the module's signed permutation
+L_1^T L_26.
 
 - hypothesis: the kernel map of `gororoba_quantum/pathion_kernel_map.py` with the selector phase i (an S gate) in place
   of the sign t = -1, and orientation phases +-i s_k on the upper pair members (s_k the pair sign of L_i^T L_j), reads
