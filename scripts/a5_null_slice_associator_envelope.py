@@ -392,7 +392,9 @@ def complex_two_term(tasks: list[tuple[str, Any]], results: list[Any]) -> dict[s
     levels = []
     for level in COMPLEX_LEVELS:
         dimension = 1 << level
-        parts = [r for (name, p), r in zip(tasks, results, strict=True) if name == "complex_level" and p[0] == dimension]
+        parts = [
+            r for (name, p), r in zip(tasks, results, strict=True) if name == "complex_level" and p[0] == dimension
+        ]
         levels.append(
             {
                 "dimension": dimension,
@@ -411,6 +413,7 @@ def complex_two_term(tasks: list[tuple[str, Any]], results: list[Any]) -> dict[s
         "complement_agreements": sum(r["agreements"] for r in complement),
         **slice_part,
     }
+
 
 def commutant_basis(generators: list[Any]) -> list[Any]:
     size = generators[0].shape[0]
