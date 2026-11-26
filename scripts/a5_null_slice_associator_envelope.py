@@ -562,6 +562,7 @@ def family_rows_for(levels: tuple[int, ...]) -> list[dict[str, Any]]:
 def family_rows(level: int) -> list[dict[str, Any]]:
     return family_rows_for((level,))
 
+
 def two_term_strata() -> dict[str, Any]:
     """Nullity of e_j + e_tau, 1 <= j < 16 <= tau, j ^ tau != 16, against the strut s = j ^ tau ^ 16."""
     tables = full_tables(DIMENSION)
