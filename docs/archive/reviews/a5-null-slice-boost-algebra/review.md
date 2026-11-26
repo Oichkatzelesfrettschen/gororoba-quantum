@@ -93,3 +93,13 @@ One finding, P1: the three covariance systems ran in a serial loop, against the 
 independent items use `parallel.py`. Check: the loop in `covariance` built and ranked the three systems in
 turn. Resolution: `covariance_item` is a module-level worker and `covariance` maps the three systems through
 `parallel.ordered_map`; the record's values are unchanged and `--check` matches.
+
+## Integration commit (owner request of 2026-11-26)
+
+The owner asked for the findings to enter the research notes and for the merge. The commit after `55084a4cf` adds
+the ledger rows A5-612 to A5-621 with their statuses to `docs/notes/topics/a5-exceptional-fiber-status.md`, a
+section with one `hypothesis:` item (nullity fixtures for the kernel map, no provider job proposed) to
+`docs/notes/topics/a5-hardware-algebra-synthesis.md`, and one row to `docs/RESEARCH_ROADMAP.md`. None of the three
+files is pinned by digest in gororoba-quantum or gororoba-open. The commit changes no script, record or ledger row; it
+ran through no second hosted round. The relation of the kernel frame to the open nullity-4 classification A5-389 reads
+"related", since the frame does not meet that row's statement.

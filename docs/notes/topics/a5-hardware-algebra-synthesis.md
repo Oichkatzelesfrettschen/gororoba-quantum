@@ -315,6 +315,19 @@ circuits of at most a few hundred qubits with sampling noise. The always-free cl
 hardware side of the atlas: an operand whose nullity folding fixes exactly (a half operand, a two-term element) is a
 probe with a known ideal value and a mutation that changes it.
 
+## A Lorentzian slice with an explicit kernel frame (2026-11-26)
+
+On the slice y = sum x_a e_a + t e_26 of A_5, a in {1, 3, 4, 5, 6, 7}, the nullity is 0 off the cone r^2 = t^2 and 4
+on it, and the kernel on the cone is the explicit frame (t - K(x)) T, T = span(e_2, e_8, e_18, e_24) (rows 612 to 614;
+[evidence](../../evidence/a5-null-slice-boost-algebra/README.md)). The defects K_a carry the so(6,1) relations (613),
+while no boost acts covariantly on L_y (615), so a Lorentz reading of the slice stops at the defect operators.
+
+- hypothesis: the slice supplies nullity fixtures for `gororoba_quantum/pathion_kernel_map.py` with the kernel known in
+  closed form at every cone point and nullity 0 at every off-cone point of the same two-parameter family, so an
+  estimate N_hat can be scored against 4 and 0 along one continuous path in t / r. Falsifier: the classical simulation
+  of the kernel map on these operands fails to separate 4 from 0 at the shot counts of the retained runs. No provider
+  job is proposed; a run would need its own written case.
+
 ## Roadmap
 
 1. Done 2026-11-08: the Iso k = 4 rows read on with two independent form families at both primes (row 217), and row

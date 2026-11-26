@@ -100,6 +100,42 @@ The reviews that selected these computations, with each finding checked against 
 
 The review of these records is in [a5-induced-slice-map](../../archive/reviews/a5-induced-slice-map/reconciliation.md).
 
+## Results of 2026-11-26: a Lorentzian slice of A_5
+
+[a5-null-slice-boost-algebra](../../evidence/a5-null-slice-boost-algebra/README.md) restricts the strata invariants
+to the real slice y = sum x_a e_a + t e_26, a in {1, 3, 4, 5, 6, 7}, where Q = r^2 - t^2 is a Lorentzian form. Every
+row below is an exact check of `scripts/a5_null_slice_boost_algebra.py --check`; statuses are those of the ledger.
+
+| Row | Statement | Status |
+|---|---|---|
+| A5-612 | L_y^T L_y = (r^2 + t^2) I + 2 t K(x) with the Clifford defect K_a = -(A_a J + J A_a)/2, K(x)^3 = r^2 K(x), spectrum 4, 24, 4 and det L_y = (r^2 - t^2)^4 (r^2 + t^2)^12; the zero divisors of the slice are the cone r^2 = t^2 at nullity 4 | proved |
+| A5-613 | the six defects satisfy the so(6,1) relations (90 relations, Lie dimension 21); R^32 is four Minkowski vector modules on T = span(e_2, e_8, e_18, e_24) plus the common kernel H = span(e_0, e_10, e_16, e_26), with T = e_2 H | proved |
+| A5-614 | on the cone, ker L_y = (t - K(x)) T, from y (t - K(x)) e_m = +-(r^2 - t^2) e_m'; the four vectors frame a trivial kernel bundle over the punctured cone | proved |
+| A5-615 | the covariance algebra has dimension 8, inside the rotations; no boost acts covariantly on L_y | proved |
+| A5-616 | over the 51 clean slices of dimensions 16, 32 and 64 the cone and the fourfold kernel exist at every level; only the seven slices of A_5 carry both a Clifford space and the so(n,1) relations | proved |
+| A5-617 | the relations hold exactly when the defects have disjoint stars | survives |
+| A5-618 | two families: so(2^(n-2) - 2, 1) at time index 7 * 2^(n-3), and so(7,1) on the octonion-space slice from n = 6, computed for n = 4 to 7 | survives |
+| A5-619 | the covariance algebras are su(3) on A_5 and the G_2 derivations on the octonion-space slice of A_6 | open |
+| A5-620 | a bracket-preserving map from the corner boost data of arXiv 2611.34924 (equations 3.41 to 3.43, 3.61 to 3.64) to (P_T, K_a) | open |
+| A5-621 | the Lorentzian cone with a fourfold kernel distinguishes A_5 in the tower | refuted |
+
+What the slice changes for the program:
+
+- **The prediction that failed.** The script first required the so(n,1) relations in dimension 32 alone; the scan
+  refuted it with 15 slices of dimension 64 (time index 49 to 63). The family predictions for levels 4 and 7 and for
+  the octonion-space slices at levels 6 and 7 were written before their first run and held, up to so(30,1) in
+  dimension 128.
+- **A closed-form kernel frame.** A5-614 gives the nullity-4 kernel on the cone as an explicit linear frame in the
+  coordinates. It is related to the open nullity-4
+  classification A5-389, whose Gauss map is certified only at fixture level; the frame does not meet the statement of
+  that row.
+- **The paper.** arXiv 2611.34924 contains no Cayley-Dickson, Clifford or zero-divisor structure; the slice is an exact
+  algebraic testbed beside it, and A5-620 is the only bridge question, open.
+- **Prior art.** The determinant agrees with arXiv 2608.08232 Theorem 5.3; the kernel is related to arXiv
+  math/0511691 Proposition 11.1, whose hypotheses the record checks. A source for the so(n,1) relations of the
+  defects was not found in the documents read.
+- **Machine-checked.** None of A5-612 to A5-618 is formalized; the Rocq statements are pool row PROOF-64.
+
 ## Next computations
 
 | Layer | Computation | Decides | Estimate from retained timings |
