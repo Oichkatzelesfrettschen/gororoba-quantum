@@ -77,9 +77,14 @@ entry by entry.
 7. **Complex two-term kernels** (`complex_two_term`). For two imaginary units whose left tables anticommute
    (63 of 105 pairs in dimension 16, 171 of 465 in 32, 435 of 1953 in 64), the Gram operator of L_(e_a + i e_b) is
    2 (I - i L_a L_b), checked on every such pair. Its kernel is therefore the +1 eigenspace of the Hermitian involution
-   i L_a L_b, of dimension half the algebra: the record confirms nullity, eigenspace and joint kernel at the first three
-   pairs of each dimension. The identity holds in every dimension by two lines: L_a^T = -L_a, L_a^2 = L_b^2 = -I and
-   L_a L_b = -L_b L_a give (L_a + i L_b)^H (L_a + i L_b) = 2 I - 2 i L_a L_b. On the slice, L_(e_1 + i e_26) has nullity
+   H = i L_a L_b, of dimension half the algebra: the record confirms nullity, eigenspace and joint kernel on every
+   anticommuting pair of each dimension. The argument holds in every dimension: L_a^T = -L_a, L_a^2 = L_b^2 = -I and
+   L_a L_b = -L_b L_a give (L_a + i L_b)^H (L_a + i L_b) = 2 I - 2 i L_a L_b, so the kernel is ker(I - H); H is Hermitian
+   with H^2 = I; and L_a L_b is a signed XOR permutation by a XOR b != 0, so trace H = 0 and the +1 eigenspace has
+   dimension half the algebra (the record checks the vanishing trace on every pair). The identity is the standard
+   Witt-basis computation of complexified Clifford modules, applied here to anticommuting Cayley-Dickson tables.
+   In A_5 every two-term operand also satisfies nullity(e_a + i e_b) = 16 - nullity(e_a + e_b), checked on all 465
+   pairs (`complement_agreements`). On the slice, L_(e_1 + i e_26) has nullity
    12, and its kernel is ker K_1 n ker(i L_1 J - I). The exact Gram multiplicities of the eigenvalues 0, 2, 4 are
    4, 24, 4 at e_1 + e_26 (the Lorentzian cone), 12, 8, 12 at e_1 + i e_26 (the Euclidean cone), 16, 0, 16 at
    e_1 + i e_3 (the null space) and 0, 32, 0 at the invertible e_1 + e_3.

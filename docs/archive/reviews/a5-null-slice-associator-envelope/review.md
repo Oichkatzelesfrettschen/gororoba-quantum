@@ -58,3 +58,17 @@ the program note, the roadmap row and the first record's open items), for verdic
 |---|---|---|
 | P1: the five family levels ran serially; star construction and block ranks stayed off the pool | read `compute` and `family_rows` | Fixed in `9c96daf51`: three flat maps over all levels (structure, sign chunks, relation triples); `--out` 75 s to 56 s |
 | P2: a one-dimensional abelian algebra maps nonzero into the defects, so "only trivially" is wrong | [K_a, K_a] = 0 | Fixed in `9c96daf51`: README and A5-628 state that a map exists for each single defect and that the paper singles none out |
+
+## Pull request 1016: complex two-term kernels (red team round 2, head `6b2155d1a`)
+
+The owner selected the Neon round for this pull request, with a local Codex reviewer on `daybreak-blue` only if
+needed; the round below found no refutation, so no Codex reviewer ran locally.
+
+| # | Finding | Class | Check against the source | Verdict |
+|---|---|---|---|---|
+| 1 | A5-630 holds with orientation phases +-i s_k and fails with plain +-i (N = -14, -2); the mechanism is N(e_a + i e_b) = 16 - N(e_a + e_b) | computed by the reviewer | the record now checks the complement law on all 465 pairs of A_5 | survives; the hypothesis names +-i s_k, and the law enters A5-629 |
+| 2 | The half-dimension step of the A5-629 argument needs trace i L_a L_b = 0 | proved | L_a L_b is a signed XOR permutation by a XOR b != 0 | survives; the README states the step and the record checks the trace on every pair |
+| 3 | The kernel check ran on three pairs per dimension, all inside the octonions | computed | read complex_two_term | survives; the record checks every anticommuting pair (63, 171, 435) |
+| 4 | validate checked anticommuting_pairs > 0; no mutation control covered complex_nullity; the program note lost a heading and named rows to A5-628 | read | read validate, self_test and the note | survives; exact counts, an eighth control (e_1 + i e_2 against e_1 + i e_1) and the note fixed |
+| 5 | The proof-status table's header overstated scope; the octonion-space family has direct checks to 4096 | read | read the table | survives; header and row corrected |
+| 6 | The involution identity is standard complexified Clifford (Witt-basis) algebra | documented | read | survives; the README states it; no statement of the so(n,1) relations of the defects was found by the reviewer's searches either |

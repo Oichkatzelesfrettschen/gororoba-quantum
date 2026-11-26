@@ -2,7 +2,7 @@
 
 This program note joins the two null-slice records
 ([boost algebra](../evidence/a5-null-slice-boost-algebra/README.md), ledger rows A5-612 to A5-621;
-[associator envelope](../evidence/a5-null-slice-associator-envelope/README.md), rows A5-622 to A5-628) to the rest of
+[associator envelope](../evidence/a5-null-slice-associator-envelope/README.md), rows A5-622 to A5-630) to the rest of
 the repository. Each connection names its mechanism, evidence class, status and falsifier. Status uses the ledger
 words; "no link found" records a search with its scope.
 
@@ -41,14 +41,15 @@ words; "no link found" records a search with its scope.
 
 ## Proved for every dimension, and checked only up to a bound
 
-| Statement | Every dimension, by argument | Finite checks |
+| Statement | By argument (scope in the cell) | Finite checks |
 |---|---|---|
 | 2 K_a = symmetrized associator; Gram = N(y) I + [y, y, .] (A5-622) | yes: anticommuting distinct units and L_y^T = -L_y | dimensions 16, 32, 64 |
-| Gram of L_(e_a + i e_b) = 2 (I - i L_a L_b) for anticommuting tables, nullity half the dimension (A5-629) | yes: two-line identity | all anticommuting pairs at 16, 32, 64 |
+| Gram of L_(e_a + i e_b) = 2 (I - i L_a L_b) for anticommuting tables, nullity half the dimension (A5-629) | every dimension: the Witt-basis identity and trace H = 0 | identity, trace and kernel on every anticommuting pair at 16, 32, 64 |
+| nullity(e_a + i e_b) = 16 - nullity(e_a + e_b) for two-term operands (A5-629) | open in general | all 465 pairs of A_5 |
 | Gram identity, spectrum, determinant, so(6,1) relations, kernel frame, covariance on the A_5 slice (A5-612 to A5-615) | yes for that slice: polynomial or matrix identities checked exactly | the A_5 slice only |
 | nullity >= 12 on the Euclidean cone (A5-623) | yes, over fields of characteristic 0 or above 32 | equality at two primes and three Q(i) points |
 | Disjoint stars imply the so(m,1) relations (A5-617) | the sufficient direction | the converse on 51 slices and the families |
-| The two families carry so(m,1) (A5-618, A5-626) | open: needs disjoint stars for every n from the bit structure of the time index | direct relations to dimension 512, stars to 4096 |
+| The two families carry so(m,1) (A5-618, A5-626) | open: needs disjoint stars for every n from the bit structure of the time index | the first family: direct relations to 512, stars to 4096; the octonion-space family: direct relations to 4096 |
 | Envelope M_16(R) and Cl(0,8) (A5-624, A5-625) | the A_5 slice (exact ranks) | dimension 32 only; other levels unchecked |
 | Two-term strata 15, 84, 126 and the strut criterion (A5-627) | A_5 (exhaustive) | other dimensions unchecked |
 
@@ -61,9 +62,13 @@ the Euclidean-cone kernel of L_(e_1 + i e_26) is ker K_1 n ker(i L_1 J - I), wit
 module's signed permutation L_1^T L_26.
 
 - hypothesis: the kernel map of `gororoba_quantum/pathion_kernel_map.py` with the selector phase i (an S gate) in place
-  of the sign t = -1, and the orientation oracle phases +-i on the upper pair members, reads N = 16 at e_1 + i e_3 and
-  N = 12 at e_1 + i e_26, against N = 4 at e_1 + e_26 and 0 at e_1 + e_3. Falsifier: the noiseless statevector of the
-  modified circuit gives other values. The statevector run needs no provider; a device run needs its own written case.
+  of the sign t = -1, and orientation phases +-i s_k on the upper pair members (s_k the pair sign of L_i^T L_j), reads
+  N = 16 at e_1 + i e_3 and N = 12 at e_1 + i e_26, against N = 4 at e_1 + e_26 and 0 at e_1 + e_3. A reviewer's
+  noiseless computation gives 16 and 12 with the phases +-i s_k and fails (-14 and -2) with plain +-i; the complement
+  law above is its mechanism. Falsifier: the recorded noiseless statevector of the modified module gives other
+  values. The statevector run needs no provider; a device run needs its own written case.
+
+## Formal targets and the prover for each
 
 
 

@@ -273,7 +273,6 @@ def gaussian_nullities() -> list[dict[str, Any]]:
 
 
 COMPLEX_LEVELS: tuple[int, ...] = (4, 5, 6)
-COMPLEX_PAIRS_PER_LEVEL = 3
 SPECTRUM_POINTS: tuple[tuple[str, tuple[int, ...], tuple[int, ...]], ...] = (
     ("e_1 + e_26", (1, 26), (1, 1)),
     ("e_1 + i e_26", (1, 26), (1, 2)),
@@ -306,19 +305,20 @@ def gram_multiplicities(real: Any, imaginary: Any) -> dict[str, int]:
 
 
 def complex_two_term() -> dict[str, Any]:
-    """Kernels of complex two-term operands as eigenspaces of Hermitian involutions.
+    """Kernels of complex two-term operands as eigenspaces of Hermitian involutions, and their complement law in A_5.
 
     For anticommuting imaginary units e_a, e_b the Gram operator of L_(e_a + i e_b) is 2 (I - i L_a L_b): its kernel is
-    the +1 eigenspace of the involution i L_a L_b and its nullity is half the dimension. On the slice,
-    L_(e_1 + i e_26) has the kernel ker K_1 n ker(i L_1 J - I).
+    the +1 eigenspace of the involution i L_a L_b, whose trace vanishes, so the nullity is half the dimension. On the
+    slice, L_(e_1 + i e_26) has the kernel ker K_1 n ker(i L_1 J - I). In A_5 every two-term operand satisfies
+    nullity(e_a + i e_b) = 16 - nullity(e_a + e_b).
     """
     levels = []
     for level in COMPLEX_LEVELS:
         dimension = 1 << level
         tables = full_tables(dimension)
         eye = np.eye(dimension, dtype=np.int64)
-        pairs = anticommuting = identity_failures = 0
-        kernel_rows: list[dict[str, Any]] = []
+        half = dimension // 2
+        pairs = anticommuting = identity_failures = kernel_agreements = traceless = 0
         for a, b in combinations(range(1, dimension), 2):
             first, second = tables[a], tables[b]
             pairs += 1
@@ -328,28 +328,32 @@ def complex_two_term() -> dict[str, Any]:
             real_ok = np.array_equal(first.T @ first + second.T @ second, 2 * eye)
             imaginary_ok = np.array_equal(first.T @ second - second.T @ first, -2 * (first @ second))
             identity_failures += not (real_ok and imaginary_ok)
-            if len(kernel_rows) < COMPLEX_PAIRS_PER_LEVEL:
-                involution = first @ second
-                operator_nullity = complex_nullity(first, second)
-                eigenspace = complex_nullity(-eye, involution)
-                joint = joint_nullity([(first, second), (-eye, involution)])
-                kernel_rows.append(
-                    {"pair": [a, b], "nullity": operator_nullity, "eigenspace": eigenspace, "joint": joint}
-                )
+            involution = first @ second
+            traceless += int(np.trace(involution)) == 0
+            operator_nullity = complex_nullity(first, second)
+            eigenspace = complex_nullity(-eye, involution)
+            joint = joint_nullity([(first, second), (-eye, involution)])
+            kernel_agreements += operator_nullity == eigenspace == joint == half
         levels.append(
             {
                 "dimension": dimension,
                 "pairs": pairs,
                 "anticommuting_pairs": anticommuting,
                 "gram_identity_failures": identity_failures,
-                "kernels": kernel_rows,
+                "traceless_involutions": traceless,
+                "kernel_agreements": kernel_agreements,
             }
         )
     tables = full_tables(DIMENSION)
     eye = np.eye(DIMENSION, dtype=np.int64)
+    zero = 0 * eye
+    complement_agreements = complement_pairs = 0
+    for a, b in combinations(range(1, DIMENSION), 2):
+        complement_pairs += 1
+        real_nullity = DIMENSION - int(fmpz_mat((tables[a] + tables[b]).tolist()).rank())
+        complement_agreements += complex_nullity(tables[a], tables[b]) == DIMENSION // 2 - real_nullity
     first, clock = tables[1], tables[TIME]
     defect = -(first @ clock + clock @ first) // 2
-    zero = 0 * eye
     slice_kernel = {
         "nullity": complex_nullity(first, clock),
         "defect_and_involution": joint_nullity([(defect, zero), (-eye, first @ clock)]),
@@ -360,8 +364,13 @@ def complex_two_term() -> dict[str, Any]:
         real = tables[a] + (tables[b] if kind == 1 else zero)
         imaginary = tables[b] if kind == 2 else zero
         spectra[name] = gram_multiplicities(real, imaginary)
-    return {"levels": levels, "slice_kernel": slice_kernel, "spectra": spectra}
-
+    return {
+        "levels": levels,
+        "complement_pairs": complement_pairs,
+        "complement_agreements": complement_agreements,
+        "slice_kernel": slice_kernel,
+        "spectra": spectra,
+    }
 
 def commutant_basis(generators: list[Any]) -> list[Any]:
     size = generators[0].shape[0]
@@ -771,17 +780,15 @@ def validate(result: dict[str, Any]) -> None:
     require(strata["strut_equals_low_index"] == 15, "nullity-0 pairs")
     require(strata["independence_criterion_agreements"] == 225, "independence criterion")
     complex_result = result["complex_two_term"]
-    require(
-        [row["dimension"] for row in complex_result["levels"]] == [1 << n for n in COMPLEX_LEVELS], "complex levels"
-    )
+    expected_pairs = {16: (105, 63), 32: (465, 171), 64: (1953, 435)}
+    require([row["dimension"] for row in complex_result["levels"]] == list(expected_pairs), "complex levels")
     for row in complex_result["levels"]:
-        half = row["dimension"] // 2
-        require(
-            row["gram_identity_failures"] == 0 and row["anticommuting_pairs"] > 0, f"complex Gram at {row['dimension']}"
-        )
-        require(len(row["kernels"]) == COMPLEX_PAIRS_PER_LEVEL, f"complex kernels at {row['dimension']}")
-        for kernel in row["kernels"]:
-            require(kernel["nullity"] == kernel["eigenspace"] == kernel["joint"] == half, f"involution kernel {kernel}")
+        pairs, anticommuting = expected_pairs[row["dimension"]]
+        require(row["pairs"] == pairs and row["anticommuting_pairs"] == anticommuting, f"pairs at {row['dimension']}")
+        require(row["gram_identity_failures"] == 0, f"complex Gram at {row['dimension']}")
+        require(row["traceless_involutions"] == anticommuting, f"traceless involutions at {row['dimension']}")
+        require(row["kernel_agreements"] == anticommuting, f"involution kernels at {row['dimension']}")
+    require(complex_result["complement_pairs"] == 465 and complex_result["complement_agreements"] == 465, "complement law")
     require(complex_result["slice_kernel"] == {"nullity": 12, "defect_and_involution": 12, "joint": 12}, "slice kernel")
     require(
         complex_result["spectra"]
@@ -862,6 +869,12 @@ def self_test() -> None:
         widened["common_support"] == 4 and not widened["disjoint_stars"],
         "stars against e_9 added to the space, with the common support kept",
     )
+    tables16 = full_tables(16)
+    control(
+        complex_nullity(tables16[1], tables16[2]) == 8,
+        complex_nullity(tables16[1], tables16[1]) == 0,
+        "complex nullity of e_1 + i e_2 against e_1 + i e_1",
+    )
     fine = sum(triple_item((DIMENSION, TIME, SPACE, a, b)) for a, b in combinations(SPACE, 2))
     moved_space = (1, 2, 3, 4, 5, 6)
     coarse = sum(triple_item((DIMENSION, TIME, moved_space, a, b)) for a, b in combinations(moved_space, 2))
@@ -881,7 +894,7 @@ def main() -> int:
     args = parser.parse_args()
     if args.self_test:
         self_test()
-        print("self-test: 7 paired controls pass")
+        print("self-test: 8 paired controls pass")
         return 0
     result = compute()
     validate(result)
