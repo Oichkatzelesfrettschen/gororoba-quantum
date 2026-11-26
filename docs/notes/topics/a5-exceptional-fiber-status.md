@@ -125,7 +125,7 @@ The second record, [a5-null-slice-associator-envelope](../../evidence/a5-null-sl
 | Row | Statement | Status |
 |---|---|---|
 | A5-622 | 2 K_a is the symmetrized left associator of e_a and e_26, and L_y^T L_y = N(y) I + [y, y, .]: the Gram identity of A5-612 is the norm plus the left associator, an elementary identity | proved |
-| A5-623 | over F_32009 and F_32003 the slice meets three null strata: nullity 4 on r^2 = t^2, 12 on r^2 + t^2 = 0 (y^2 = 0 there) and 16 on r^2 = 0 with t = 0; the bound 12 holds over every field of characteristic 0 or above 32 | certified |
+| A5-623 | over F_32009 and F_32003 the slice meets three null strata: nullity 4 on r^2 = t^2, 12 on r^2 + t^2 = 0 (y^2 = 0 there, and Q != 0, outside the real containment of nullity 12 in V(Q) n V(G)) and 16 on r^2 = 0 with t = 0; the bound 12 holds over every field of characteristic 0 or above 32 | certified |
 | A5-624 | the seven slice tables generate M_16(R) (dimension 256, commutant M_2(R)); R^32 is two copies of one irreducible 16-dimensional module | proved |
 | A5-625 | an eighth anticommuting unit extends the seven units A_a, J eta to a representation of Cl(0,8) | open |
 | A5-626 | both families hold from dimension 256 to 4096, by direct relation checks at 256 and 512 and by disjoint stars above | survives |

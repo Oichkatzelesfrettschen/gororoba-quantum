@@ -28,7 +28,10 @@ entry by entry.
    - nullity 12 on the Euclidean cone r^2 + t^2 = 0, t != 0 (411 and 319 points), where y^2 = 0 and rank L_y^2 = 8;
    - nullity 16 on the null space r^2 = 0, t = 0 (twelve points x = (a, b, c, 0, 0, 0) per prime), where L_y^2 = 0.
 
-   The real slice meets the first stratum only. The bound nullity >= 12 on the Euclidean cone holds over every field
+   The real slice meets the first stratum only. For real points the strata record places every point of nullity at
+   least 12 in V(Q) n V(G) ([a5-zero-divisor-strata](../a5-zero-divisor-strata/README.md), the paragraph after its
+   Theorem 2 argument); over F_p the Euclidean-cone points have nullity 12 with G = 0 and Q = r^2 - t^2 = 2 r^2 != 0,
+   so that containment rests on reality (its proof uses |z|^2 > 0) and fails on the modular slice. The bound nullity >= 12 on the Euclidean cone holds over every field
    of characteristic 0 or above 32 by an argument the record does not machine-check: there r^2 = -t^2 != 0, so
    P = K(x)^2 / r^2 is idempotent with trace 8 and rank K(x) = rank P = 8; L_y commutes with L_y^2 = -2 t K(x), so it
    preserves ker K(x), of dimension 24, and squares to zero on it.
