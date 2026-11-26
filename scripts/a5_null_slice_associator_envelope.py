@@ -569,7 +569,7 @@ def sha256(path: Path) -> str:
 
 
 def section_item(task: tuple[str, int]) -> Any:
-    """One independent section of the record: an associator dimension, a prime, the envelope, the two-term strata or Q(i)."""
+    """One independent section: an associator dimension, a prime, the envelope, the two-term strata or Q(i)."""
     name, parameter = task
     if name == "associator":
         return associator_item(parameter)
