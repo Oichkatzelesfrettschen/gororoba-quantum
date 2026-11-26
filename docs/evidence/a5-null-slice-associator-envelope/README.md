@@ -52,19 +52,18 @@ entry by entry.
    scalar and squares to I, and the elements anticommuting with all seven form a space of dimension 8. The eighth unit
    U_8 = L_(e_2) D_8, with D_8 the diagonal sign (-1)^(bit 3 of the index), anticommutes with all seven, squares to -I
    and lies in the envelope; the 256 ordered monomials of the eight units have rank 256 over Z and their span contains
-   J. The envelope is therefore the image of Cl(0,8), consistent with M_16(R) above. The reviewer of
-   `docs/archive/reviews/a5-null-slice-associator-envelope/review.md` exhibited U_8.
+   J. The envelope is therefore the image of Cl(0,8), consistent with M_16(R) above.
 5. **Two-term strata of A_5** (`two_term_strata`). For e_j + e_tau, 1 <= j < 16 <= tau, j XOR tau != 16, the
    nullities are 0 (15 pairs, tau = 16, where the strut s = j XOR tau XOR 16 equals j), 4 (84 pairs) and 12 (126 pairs); every
    nullity-4 pair has s > 8 (the range `gororoba_quantum/demarrais_structures.py` marks `is_dmz_sparse`). The six
    spatial directions of the slice pair with e_26 at the struts 11, 9, 14, 15, 12 and 13.
 
-   Mechanism (proved from the strata record): write tau = 16 + k. In the coordinates z = (u, mu, v) of
-   [a5-zero-divisor-strata](../a5-zero-divisor-strata/README.md), u carries the indices 1 to 7, mu the index 8 and v
-   the indices 9 to 15, and every such pair has Q = 0; by that record's Theorem 6 the nullity is 4 exactly when u and v
-   are linearly independent, that is when one of j, k lies in 1 to 7, the other in 9 to 15, and they differ by other
-   than 8. Bit 3 of s = j XOR k is then set and s != 8, so s > 8. The converse fails on the 14 pairs with an index 8.
-   The record checks the criterion on all 225 pairs (`independence_criterion_agreements`). Skiouris, "Aphanics at
+   Mechanism (computed on all 225 pairs, `independence_criterion_agreements`): write tau = 16 + k. The nullity is 4
+   exactly when one of j, k lies in 1 to 7, the other in 9 to 15, and they differ by other than 8. In the coordinates
+   z = (u, mu, v) of [a5-zero-divisor-strata](../a5-zero-divisor-strata/README.md), where u carries the indices 1 to
+   7, mu the index 8 and v the indices 9 to 15, this is the independence of u and v, in agreement with that record's
+   Theorem 6 (R_12 = V u B9, with V the locus u' ^ v' = 0, Q = 0). Bit 3 of s = j XOR k is then set and s != 8, so
+   s > 8; the converse fails on the 14 pairs with an index 8. Skiouris, "Aphanics at
    the pathion level" (2026), Proposition 2.2 states the 4 and 12 strata for these pairs, and Proposition 3.1 names
    e_1 + e_26 a nullity-4 representative with Gram spectrum 0, 2, 4 at multiplicities 4, 24, 4.
 6. **The families to dimension 4096** (`families`). For n = 8 to 12, the slice with time index 7 * 2^(n-3) and
@@ -101,7 +100,8 @@ The check takes about 60 s on a 32-thread pool (gate `core-a5-null-slice-associa
 
 - The orbits of the strata classification ([a5-strata-regularity](../a5-strata-regularity/README.md)) that contain
   the nullity-12 and nullity-16 points of statement 2; the record does not place them.
-- The nullity on the Euclidean cone over Q(i) and over Q_p, beyond the two primes and the bound of statement 2.
+- The nullity on the Euclidean cone over Q(i) beyond three points, and equality over Q_p, beyond the bound of
+  statement 2.
 - The so(m,1) relations at n >= 10 by direct check, and the families beyond n = 12.
 - A machine-checked form of statements 1, 3 and 6; the two-term kernels of statement 5 are already formal in
   gororoba-math (`rocq/quantum/CdTowerTwoTermNullity.v` and `lean/GororobaMath/CayleyDickson/TwoTermNullity.lean`).

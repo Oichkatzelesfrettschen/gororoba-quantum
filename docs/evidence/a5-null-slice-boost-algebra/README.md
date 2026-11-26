@@ -170,6 +170,10 @@ record establishes about a relation and what it leaves open.
 6. Prior art for statement 3. The two sources cited in statements 2 and 4 cover the determinant and the kernel;
    no source for the so(n,1) relations of the defects has been found in the documents read, which bounds the
    novelty claim of this record to that reading.
+Items 2 (n = 8 and beyond) and 7 have a successor in
+[a5-null-slice-associator-envelope](../a5-null-slice-associator-envelope/README.md): the families to n = 12, and the
+paper's corner boost as one abelian generator (ledger row A5-628).
+
 7. Finite analogues of the paper's constructions, each a hypothesis with a cheap exact test: the finite boost
    exp(s K(n)) = I + sinh(s) K(n) + (cosh(s) - 1) K(n)^2 against the corner boost of equation 3.61; the matching
    condition of equation 3.64 as the joint kernel of K(n) x I - I x K(n) on a pair of modules exchanged by J; and

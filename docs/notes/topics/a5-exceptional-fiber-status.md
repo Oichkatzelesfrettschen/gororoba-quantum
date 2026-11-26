@@ -153,7 +153,7 @@ What the slice changes for the program:
 - **Hardware.** e_1 + e_26 is the cone point x = e_1, t = 1. The full kernel map on ibm_fez left it unresolved (23 of
   32 signs); the coset-block map read N_hat = 4.25 on ibm_fez and 4.28 on ibm_marrakesh, 4.02 and 4.05 after readout
   correction, with 32 of 32 signs ([findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md)).
-- **Machine-checked.** The two-term kernels, e_a +- e_26 included, are formal in gororoba-math
+- **Machine-checked.** The two-term kernels, e_a + e_26 included, are formal in gororoba-math
   (`rocq/quantum/CdTowerTwoTermNullity.v`, `lean/GororobaMath/CayleyDickson/TwoTermNullity.lean`); the
   multi-direction statements A5-612 to A5-618 and A5-622 to A5-626 are not formalized.
 

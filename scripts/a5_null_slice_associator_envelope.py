@@ -568,9 +568,28 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def section_item(task: tuple[str, int]) -> Any:
+    """One independent section of the record: an associator dimension, a prime, the envelope, the two-term strata or Q(i)."""
+    name, parameter = task
+    if name == "associator":
+        return associator_item(parameter)
+    if name == "strata":
+        return strata_item(parameter)
+    if name == "envelope":
+        return envelope()
+    if name == "two_term_strata":
+        return two_term_strata()
+    return gaussian_nullities()
+
+
 def compute() -> dict[str, Any]:
-    associator = parallel.ordered_map(associator_item, list(ASSOCIATOR_DIMENSIONS), min_items=1)
-    strata = parallel.ordered_map(strata_item, list(PRIMES), min_items=1)
+    tasks = [("associator", d) for d in ASSOCIATOR_DIMENSIONS] + [("strata", p) for p in PRIMES]
+    tasks += [("envelope", 0), ("two_term_strata", 0), ("gaussian", 0)]
+    results = parallel.ordered_map(section_item, tasks, min_items=1)
+    count = len(ASSOCIATOR_DIMENSIONS)
+    associator = results[:count]
+    strata = results[count : count + len(PRIMES)]
+    envelope_result, two_term, gaussian = results[count + len(PRIMES) :]
     families = [row for level in FAMILY_LEVELS for row in family_rows(level)]
     return {
         "schema": "a5-null-slice-associator-envelope/1",
@@ -578,12 +597,11 @@ def compute() -> dict[str, Any]:
         "slice": {"dimension": DIMENSION, "time": TIME, "space": list(SPACE), "time_support": list(TIME_SUPPORT)},
         "associator": associator,
         "strata": strata,
-        "gaussian_euclidean_cone": gaussian_nullities(),
-        "envelope": envelope(),
-        "two_term_strata": two_term_strata(),
+        "gaussian_euclidean_cone": gaussian,
+        "envelope": envelope_result,
+        "two_term_strata": two_term,
         "families": families,
     }
-
 
 def validate(result: dict[str, Any]) -> None:
     require([row["dimension"] for row in result["associator"]] == list(ASSOCIATOR_DIMENSIONS), "associator dimensions")

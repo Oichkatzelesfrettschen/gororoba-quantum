@@ -2,9 +2,8 @@
 
 Pull request 1015, branch `a5-null-slice-associator-envelope`. Reviewers: the Advisor (the `advisor` tool) twice
 before the red team and last after it, and one red-team round by `agy` on `gemini-4-neon-medium` at head
-`24f690825`, under the owner's standing selection of that reviewer for this program. The reviewer also audited four
-reports that mined mathematics from the owner's private chat history; those reports and their images stay in the
-ignored `docs/local/` tree, and only results the record computes enter this repository.
+`24f690825`, under the owner's standing selection of that reviewer for this program. The reviewer also audited
+mathematical notes held outside this repository; only results the record computes enter it.
 
 ## Advisor, before the red team
 
@@ -30,14 +29,25 @@ ignored `docs/local/` tree, and only results the record computes enter this repo
 | 7 | e_1 + e_26 is named in Skiouris Proposition 3.1, not 2.2 | read | the filed transcription, lines 167 to 172 and 224 to 229 | survives; corrected |
 | 8 | The spatial commutant "M_8(R) acting four times" is an inference | read | result.json stores the dimension | survives; labeled an inference |
 | 9 | The connection rows for Albert and Hopf searched too narrowly; Cl(0,8) is closed; Q_p has the bound | read | read the program note | survives; rows rewritten |
-| 10 | History items: the nilpotent and idempotent counts over F_p, the non-associating triple count (D-2)(D-4)(D+6)/2, the commutant 1 of the left tables for n = 3 to 7, dim Der(J_3(O)) = 52 | computed by the reviewer | not recomputed here | open; the program note lists the first and last as next computations |
-| 11 | Two errors in the history reports (unit zero divisors of A_4 have dimension 11, not 10; the loop automorphism count) | computed by the reviewer | read | recorded in the local reports only |
+| 10 | Further computations outside the record: nilpotent and idempotent counts over F_p, the count (D-2)(D-4)(D+6)/2 of non-associating basis triples, commutant 1 for the left tables at n = 3 to 7, dim Der(J_3(O)) = 52 | computed by the reviewer | not recomputed here | open; the program note lists the first and last as next computations |
+| 11 | Controls 2, 3 and 4 compute inline instead of calling associator_item and strata_item; two_term_strata, envelope, signature, block_nullity and clifford_space have no paired control | read | read self_test | Boundary: each of those functions is pinned by validate on exact values (strata counts, envelope growth, commutant data, the 225 criterion agreements, family rows); a mutation control for each is follow-up work |
+| 12 | "[x, x, .] = 0 on the slice" in statement 1 rests on A5-612, not on this record | read | README statement 1 | Boundary: the statement cites the earlier record's Clifford-space check |
+| 13 | "The slice misses nullity 8" is certified on the grid and at two primes only | read | program note | Boundary: the connection row names the grid and primes as its evidence |
 
-No finding is refuted. The reviewer ran in auto mode; `git status --short` in the workspace repositories after the
-round was clean.
+No finding is refuted. The reviewer ran in auto mode; `git status --short` in six workspace repositories (gororoba-quantum, -infrastructure, -math, -open, -documents-public,
+-documents-private) after the round was clean.
 
 ## Validation of the fixed head
 
 On the compute workstation under WSL with the pinned interpreter: ruff format and check and mypy clean; `--self-test`
-in normal and `-O` modes passes seven controls; `--out` in 59 s; `--check` matches; `ledger.py --check` and
+in normal and `-O` modes passes seven controls; `--out` in about 60 s (sections pooled); `--check` matches; `ledger.py --check` and
 `check_markdown_links.py` clean; `sh ci/pr_checks.sh tests` on the record's test file and the ledger test: 16 passed.
+
+## Advisor, after the red team
+
+The Advisor asked for the committed record's bytes to be checked on their own (the sha256 of the committed
+`result.json` equals the compute host's output), for the citations taken from the reviewer to be opened (Theorem 6
+of the strata record, the Lean file `Clifford/ZeroEight.lean` and the Mathlib pin were read; the mechanism now reads
+"computed, in agreement with Theorem 6"), for stale text after the round to be updated (the PR body, the open lists,
+the program note, the roadmap row and the first record's open items), for verdicts on every reviewer item (rows 11 to
+13) and for the independent sections of `compute()` to run through the pool.
