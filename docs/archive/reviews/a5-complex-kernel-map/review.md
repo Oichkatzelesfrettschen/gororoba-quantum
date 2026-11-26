@@ -59,6 +59,12 @@ kernel-map record stored the selector marginals as floats. They are exact multip
 integer counts of 32nds with an exactness check (result sha256 a705e84a). The full suite on the compute workstation
 then read 7820 passed.
 
+## Hosted review (Codex, head `15cfb59db`)
+
+| Finding | Check | Resolution |
+|---|---|---|
+| P1: `tie_failures()` simulated its 16 operand and arm comparisons serially | read `tie_failures` | Fixed in `040728b03`: `tie_item` maps each comparison through `parallel.ordered_map`; the result is unchanged (sha256 a705e84a) |
+
 ## Validation after the fixes
 
 On the compute workstation under WSL with the pinned interpreter:
