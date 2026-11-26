@@ -72,3 +72,16 @@ needed; the round below found no refutation, so no Codex reviewer ran locally.
 | 4 | validate checked anticommuting_pairs > 0; no mutation control covered complex_nullity; the program note lost a heading and named rows to A5-628 | read | read validate, self_test and the note | survives; exact counts, an eighth control (e_1 + i e_2 against e_1 + i e_1) and the note fixed |
 | 5 | The proof-status table's header overstated scope; the octonion-space family has direct checks to 4096 | read | read the table | survives; header and row corrected |
 | 6 | The involution identity is standard complexified Clifford (Witt-basis) algebra | documented | read | survives; the README states it; no statement of the so(n,1) relations of the defects was found by the reviewer's searches either |
+
+The reviewer ran in auto mode; `git status --short` in four workspace repositories (gororoba-quantum, -infrastructure,
+-math, -open) after the round was clean apart from one untracked results directory that predates the session.
+
+Advisor, after the round: the complement law is the sector split of `docs/notes/singular_sector_dynamics.md` read on
+S- (P = L_a L_b, P^T = L_b L_a; the real Gram 2 I - (P + P^T) vanishes on S+ pairs, the complex Gram 2 I - i (P - P^T)
+on S- pairs), so it holds in every dimension and A5-629 cites that note; the complex section runs as flat pool items;
+the prior-art section lists every query, counts nine arXiv queries and labels the neighbors as abstracts read; the
+pool rows name the phases +-i s_k and cite Zhou and Zahid.
+
+Validation of the fixed head: ruff format and check and mypy clean; `--self-test` passes eight controls in normal and
+`-O` modes; `--out` in 59 s; `--check` matches, and the committed `result.json` has the compute host's sha256;
+`ledger.py --check` and `check_markdown_links.py` clean; 17 tests pass.
