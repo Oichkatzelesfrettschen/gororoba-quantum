@@ -1,0 +1,138 @@
+{
+ "all_pairs": {
+  "failures": [],
+  "pairs": 465,
+  "real_over_complex_nullity": {
+   "0/16": 171,
+   "12/4": 126,
+   "4/12": 84,
+   "8/8": 84
+  }
+ },
+ "operands_at_i": {
+  "e1pe10": {
+   "circuit_i": 8,
+   "nullity_i": 8,
+   "real_nullity": 8
+  },
+  "e1pe17": {
+   "circuit_i": 16,
+   "nullity_i": 16,
+   "real_nullity": 0
+  },
+  "e1pe18": {
+   "circuit_i": 4,
+   "nullity_i": 4,
+   "real_nullity": 12
+  },
+  "e1pe24": {
+   "circuit_i": 4,
+   "nullity_i": 4,
+   "real_nullity": 12
+  },
+  "e1pe26": {
+   "circuit_i": 12,
+   "nullity_i": 12,
+   "real_nullity": 4
+  },
+  "e2pe27": {
+   "circuit_i": 12,
+   "nullity_i": 12,
+   "real_nullity": 4
+  }
+ },
+ "plain_phase_control": {
+  "e1+(i)e26": {
+   "half_sum": -2,
+   "half_sum_exact": true,
+   "p0_minus": 0.5625,
+   "p0_plus": 0.4375,
+   "selector": -2,
+   "selector_exact": true,
+   "unit_contrasts": true
+  },
+  "e1+(i)e3": {
+   "half_sum": -14,
+   "half_sum_exact": true,
+   "p0_minus": 0.9375,
+   "p0_plus": 0.0625,
+   "selector": -14,
+   "selector_exact": true,
+   "unit_contrasts": true
+  }
+ },
+ "points": {
+  "e1+(-i)e26": {
+   "half_sum": 12,
+   "half_sum_exact": true,
+   "nullity": 12,
+   "p0_minus": 0.125,
+   "p0_plus": 0.875,
+   "selector": 12,
+   "selector_exact": true,
+   "unit_contrasts": true
+  },
+  "e1+(1)e26": {
+   "half_sum": 4,
+   "half_sum_exact": true,
+   "nullity": 4,
+   "p0_minus": 0.375,
+   "p0_plus": 0.625,
+   "selector": 4,
+   "selector_exact": true,
+   "unit_contrasts": true
+  },
+  "e1+(1)e3": {
+   "half_sum": 0,
+   "half_sum_exact": true,
+   "nullity": 0,
+   "p0_minus": 0.5,
+   "p0_plus": 0.5,
+   "selector": 0,
+   "selector_exact": true,
+   "unit_contrasts": true
+  },
+  "e1+(i)e26": {
+   "half_sum": 12,
+   "half_sum_exact": true,
+   "nullity": 12,
+   "p0_minus": 0.125,
+   "p0_plus": 0.875,
+   "selector": 12,
+   "selector_exact": true,
+   "unit_contrasts": true
+  },
+  "e1+(i)e3": {
+   "half_sum": 16,
+   "half_sum_exact": true,
+   "nullity": 16,
+   "p0_minus": 0.0,
+   "p0_plus": 1.0,
+   "selector": 16,
+   "selector_exact": true,
+   "unit_contrasts": true
+  }
+ },
+ "s_form": {
+  "e1+(-i)e26": {
+   "cz_complex": 96,
+   "cz_real": 96,
+   "equivalent": true
+  },
+  "e1+(i)e26": {
+   "cz_complex": 96,
+   "cz_real": 96,
+   "equivalent": true
+  },
+  "e1+(i)e3": {
+   "cz_complex": 91,
+   "cz_real": 91,
+   "equivalent": true
+  }
+ },
+ "tie_to_pinned_module": {
+  "failures": 0,
+  "laws": 16,
+  "operands": 8
+ }
+}
