@@ -4871,6 +4871,23 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_null_slice_boost_algebra.py --check docs/evidence/a5-null-slice-boost-algebra/result.json",
+      "name": "core-a5-null-slice-boost-algebra",
+      "seconds": 86.0,
+      "replays": [
+        "docs/evidence/a5-null-slice-boost-algebra/result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_null_slice_boost_algebra.py --self-test && \"$PYTHON\" -B -W error -O scripts/a5_null_slice_boost_algebra.py --self-test",
+      "name": "core-a5-null-slice-boost-algebra-self-test",
+      "seconds": 5.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/qd_teleportation_rehearsal.py --analyze results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00 --check && \"$PYTHON\" -B -W error scripts/qd_rehearsal_secondary.py results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00 --check",
       "name": "core-teleportation-rehearsal-job-00-replay",
       "seconds": 12.0,
