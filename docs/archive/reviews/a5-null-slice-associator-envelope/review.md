@@ -85,3 +85,8 @@ pool rows name the phases +-i s_k and cite Zhou and Zahid.
 Validation of the fixed head: ruff format and check and mypy clean; `--self-test` passes eight controls in normal and
 `-O` modes; `--out` in 59 s; `--check` matches, and the committed `result.json` has the compute host's sha256;
 `ledger.py --check` and `check_markdown_links.py` clean; 17 tests pass.
+
+Hosted review (Codex, head `c0cc76dfc`): one finding, P2. The program note called i L_a L_b a Hermitian involution for
+every signed XOR permutation; on the support of K_1, P = L_1 L_26 squares to +I (the S+ sector), so the property needs
+anticommuting tables, and for e_1 + i e_26 it holds only on ker K_1. Fixed in `9305ec6dc` in the program note and
+the hardware synthesis; the README and ledger row A5-629 already carried the anticommutation condition.
