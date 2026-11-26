@@ -152,15 +152,19 @@ def exact_nullity(i: int, j: int, t: complex) -> int:
     return (2 * DIM - rank) // 2
 
 
+def tie_item(task: tuple[tuple[int, int, int], bool]) -> int:
+    """1 when this builder's law differs from pathion_kernel_map.kernel_map_circuit for one operand and arm."""
+    (i, j, t), plus = task
+    pinned = pkm.ideal_law(pkm.kernel_map_circuit((i, j, t), plus))
+    return int(not np.allclose(law(kernel_map(i, j, t, plus)), pinned, atol=1e-12))
+
+
 def tie_failures() -> dict[str, int]:
     """Laws of this builder against pathion_kernel_map.kernel_map_circuit at t = +-1, both arms."""
     operands = [*pkm.OPERANDS, *(twin for twin, _ in pkm.TWINS)]
-    failures = 0
-    for i, j, t in operands:
-        for plus in (False, True):
-            pinned = pkm.ideal_law(pkm.kernel_map_circuit((i, j, t), plus))
-            failures += int(not np.allclose(law(kernel_map(i, j, t, plus)), pinned, atol=1e-12))
-    return {"operands": len(operands), "laws": 2 * len(operands), "failures": failures}
+    tasks = [(operand, plus) for operand in operands for plus in (False, True)]
+    failures = sum(parallel.ordered_map(tie_item, tasks, min_items=1))
+    return {"operands": len(operands), "laws": len(tasks), "failures": failures}
 
 
 def s_form(i: int, j: int, t: complex, plus: bool, *, qubit: int | None = None) -> Any:
