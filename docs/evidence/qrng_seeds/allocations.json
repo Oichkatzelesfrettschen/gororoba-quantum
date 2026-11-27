@@ -2833,6 +2833,27 @@
    "record": "docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json",
    "index": 15,
    "reason": "c of the off control in the Iso -> N- point-blowup plane certificate (iso_planes_gen.py reads points.json by index); a JSON ledger the seed scan does not key"
+  },
+  {
+   "path": "docs/evidence/pathion-kernel-map/orientation-architecture/orientation_recompute.py",
+   "value": 6023,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-27T222523Z.json",
+   "index": 30,
+   "reason": "transpiler seed of the layout search over the six-qubit tile assignments"
+  },
+  {
+   "path": "docs/evidence/pathion-kernel-map/orientation-architecture/orientation_recompute.py",
+   "value": 47051,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-27T222523Z.json",
+   "index": 31,
+   "reason": "first confirmation transpiler seed of the layout search"
+  },
+  {
+   "path": "docs/evidence/pathion-kernel-map/orientation-architecture/orientation_recompute.py",
+   "value": 26813,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-27T222523Z.json",
+   "index": 32,
+   "reason": "second confirmation transpiler seed of the layout search"
   }
  ],
  "owned": [
