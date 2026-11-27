@@ -420,6 +420,25 @@ def clifford_item(base: tuple[tuple[int, int], ...]) -> dict[str, Any]:
     }
 
 
+def two_term_chunk(job: tuple[tuple[tuple[int, int], ...], int]) -> tuple[list[int], list[tuple[Any, ...]]]:
+    """Compression ranks of the signed two-term directions e_i +- e_j, j > i, at a base point, and the limiting
+    plane of each direction of rank 4. job = (base point, i)."""
+    base, i = job
+    frame = kernel_frame(dict(base))
+    first = frame.T * left_matrix(DIMENSION, {i: 1}) * frame
+    ranks: list[int] = []
+    keys: list[tuple[Any, ...]] = []
+    for j in range(i + 1, DIMENSION):
+        second = frame.T * left_matrix(DIMENSION, {j: 1}) * frame
+        for sign in (1, -1):
+            form = first + sign * second
+            rank = int(form.rank())
+            ranks.append(rank)
+            if rank == 4:
+                keys.append(tuple(plane_of(frame, form)))
+    return ranks, keys
+
+
 def pencil_item(base: tuple[tuple[int, int], ...]) -> dict[str, Any]:
     """The compression pencil w -> K^T L_w K on the kernel of the base point, K an orthogonal frame."""
     vector = dict(base)
@@ -459,15 +478,10 @@ def pencil_item(base: tuple[tuple[int, int], ...]) -> dict[str, Any]:
     pfaffian_matches = sp.expand(pfaffian(generic) - 16 * invariant) == 0
     census: Counter[int] = Counter()
     planes: dict[tuple[Any, ...], int] = {}
-    for i in range(1, DIMENSION):
-        for j in range(i + 1, DIMENSION):
-            for sign in (1, -1):
-                form = forms[i] + sign * forms[j]
-                rank = int(form.rank())
-                census[rank] += 1
-                if rank == 4:
-                    key = tuple(plane_of(frame, form))
-                    planes[key] = planes.get(key, 0) + 1
+    for ranks, keys in parallel.ordered_map(two_term_chunk, [(base, i) for i in range(1, DIMENSION)], 1):
+        census.update(ranks)
+        for key in keys:
+            planes[key] = planes.get(key, 0) + 1
     projectors = [sp.Matrix(DIMENSION, DIMENSION, list(key)) for key in sorted(planes, key=str)]
     axis_planes = set()
     for u_value, v_value in (((0, 1, 0), (0, 0, 1)), ((0, 0, 1), (1, 0, 0)), ((1, 0, 0), (0, 1, 0))):
