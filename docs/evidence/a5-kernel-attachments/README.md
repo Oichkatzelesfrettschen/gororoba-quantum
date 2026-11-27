@@ -1373,7 +1373,8 @@ ideals with known answers run first and reproduce.
 All eight cells are decided, none reached the Singular time limit, and no cell is reduced without being
 Cohen-Macaulay or the reverse, so A5-548 holds over Q(i) on the weight slice (rows A5-565 to A5-569). The rows for Iso,
 W8 and E8-bar agree with the reducedness already proved in A5-446, A5-447 and A5-451. The run tests the equivalence and
-leaves the rank-one nilradical clause of A5-548 and E8-bar -> VB, which is not a weight-slice cell, untested over Q(i).
+leaves the rank-one nilradical clause of A5-548 and E8-bar -> VB, which is not a weight-slice cell, to the next
+section.
 Its falsifier is a cell that is reduced and not Cohen-Macaulay or the reverse.
 
 The gate `core-a5-weight-slice-quadric-rings` of [ci/gates.json](../../../ci/gates.json) recomputes the record under
@@ -1381,6 +1382,35 @@ Singular and compares it through `ci/replay_check.py`, skipping the Singular ban
 `tests/test_a5_weight_slice_quadric_rings.py` re-derives every verdict from the stored numbers without Singular and
 rejects 27 mutations. The [review record](../../archive/reviews/pr936/README.md) holds the reviewers, the heads
 they read and the disposition of each finding.
+
+## Over Q(i) the nilradical module is an irrelevant ideal, and E8-bar -> VB completes the nine cells
+
+Two programs run the tests that the eight-cell record leaves to A5-548.
+
+[`weight_slice_module_map.py`](weight_slice_module_map.py) takes the four nonreduced cells (X- -> N-, X+ -> N+,
+E8-bar -> N- and N+) with K the weight-slice quadric ideal, R its radical, N the linear forms of R and
+B = Q(i)[y] / (K : R). It solves the linear system for a map theta from the coordinates of B to the span of N that
+respects the Koszul relations and, for E8-bar, the Euler relation of the quadric of K : R. Those relations generate
+the syzygies of the irrelevant ideal m of B, so a solution extends to a B-linear map m -> R / K. On every cell the
+solution space has dimension one, its generator is invertible with entries 1, -1, 2 and +-i, R = K + N, the
+sign-flipped control system has the zero solution alone, and N_K - N_R = N_A - (1 - t)^n; the map is therefore an
+isomorphism of graded modules ([`weight-slice-module-map-result.json`](weight-slice-module-map-result.json),
+Singular 4.4.1, 34 s; ledger row A5-640). The program also runs each cell modulo (32009, 10754) and (32029, 9115):
+with every map normalized by the leading coefficient of its first image, the modular map equals the Q(i) map with i
+sent to the root. The same system on the header slices modulo 32009, 32029 and 32057 is the
+`module-map` row kind of the [structure probes](../a5-exceptional-fibers/structure/README.md) (A5-638).
+
+[`e8_vb_quadric_ring_qi.py`](e8_vb_quadric_ring_qi.py) reruns the Q(i) relations of E8-bar -> VB from
+`../a5-char0-transfer/quadric_lift.py` (A5-315), requires their reduction at (32029, 9115) to equal the retained K2,
+and passes the 21 quadrics on 10 generators to `weight_slice_quadric_rings.decide`: dimension 4, degree 7, linear
+section of length 7, so Cohen-Macaulay, and K radical
+([`e8-vb-quadric-ring-qi-result.json`](e8-vb-quadric-ring-qi-result.json), 171 s; A5-641). With the eight cells
+above, the nine quadric rings of the fiber track are Cohen-Macaulay exactly when reduced over Q(i).
+
+The gates `core-a5-weight-slice-module-map` and `core-a5-e8-vb-quadric-ring-qi` of
+[ci/gates.json](../../../ci/gates.json) replay the two records, skipping the Singular banner;
+`tests/test_a5_weight_slice_module_map.py` and `tests/test_a5_e8_vb_quadric_ring_qi.py` apply each program's check
+to a fixture and reject 12 and 7 mutations.
 
 ## Investigated questions
 
