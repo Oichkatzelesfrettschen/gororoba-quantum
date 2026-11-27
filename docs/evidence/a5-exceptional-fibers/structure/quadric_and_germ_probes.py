@@ -1,6 +1,6 @@
 """Exact probes of the germ ideals and of three quadric schemes of the fiber track.
 
-Six kinds of row, each one Singular run in the global ordering dp on retained inputs:
+Seven kinds of row, each one Singular run in the global ordering dp on retained inputs:
 
 - `germ-prime`: the germ ideal J and the generators G of a retained input, a p = 32009 text
   (`working/runs/k2struct/<name>_J.sing`, `working/build/inputs/p32009-r10754/e8-nm.sing`) or the canonical p = 32029
@@ -36,8 +36,14 @@ Six kinds of row, each one Singular run in the global ordering dp on retained in
 - `e8-primes`: the two minimal primes of the radical of K2 of E8-bar -> N+-, each with its sections by linear forms
   at the four bases (absolute primality as for `vb-components`).
 
-No random source enters: the linear forms are fixed by their base. check() compares every field of a record with the
-expected value, row by row in the order of the job list, so a missing, relabeled or altered row is reported, and
+- `receipt`: the degree-2 receipt of the X+ -> N+ header at 32009, read and hashed in Python: its status, rank,
+  relation count and membership failures, whether its input digest is that of the canonical header and whether its
+  relation digest is that of the relation file the colon rows read.
+
+No random source enters: the linear forms are fixed by their base. check() compares a record with the expected values
+row by row in the order of the job list, so a missing, relabeled or altered row is reported: germ, module-map and
+receipt rows field for field, component and colon rows by identity, fixed invariants and the section condition (the
+orbit partitions of a section are measured data, held to that condition and to the byte-for-byte replay gate), and
 tests/test_a5_quadric_and_germ_probes.py applies it to the record and to mutated copies.
 
 Usage: quadric_and_germ_probes.py OUT.json; run from any directory, Singular on PATH or in $SINGULAR.
@@ -45,6 +51,7 @@ Usage: quadric_and_germ_probes.py OUT.json; run from any directory, Singular on 
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -60,7 +67,7 @@ W = HERE.parent / "working"
 P2 = 32029
 
 P1 = 32009
-ROOT_OF_MINUS_ONE = {P1: 10754, P2: 9115}
+ROOT_OF_MINUS_ONE = {P1: 10754, P2: 9115, 32057: 8059}
 # fiber: (32009 input, 32029 input, pivot index in the order of G or None, generators of J, dim J, generators G)
 GERM_TABLE: dict[str, tuple[str, str, int | None, int, int, int]] = {
     "X- -> N-": ("runs/k2struct/xm_J.sing", "distribute/out/a5-p2-small/xm_p2/d2/d2-products.sing", 11, 12, 4, 15),
@@ -103,6 +110,13 @@ BASES = (2, 3, 4, 5)
 MAPS: list[tuple[str, int, str, int, int, str]] = [
     *((fiber, p, rel, 15, 3, "minAssChar(sK)[1]") for fiber, p, rel in XS),
     *((fiber, p, rel, 21, 5, "radical(sK)") for fiber, p, rel in E8S),
+    ("X- -> N-", 32057, "../third-prime/relations/xm-nm/d2/relations-upto-d2.rel", 15, 3, "minAssChar(sK)[1]"),
+    ("X+ -> N+", 32057, "../third-prime/relations/xp-np/d2/relations-upto-d2.rel", 15, 3, "minAssChar(sK)[1]"),
+    ("E8-bar -> N-", 32057, "../third-prime/relations/e8-nm/d2/relations-upto-d2.rel", 21, 5, "radical(sK)"),
+]
+# (fiber, prime, receipt, canonical header), both under working/
+RECEIPTS: list[tuple[str, int, str, str]] = [
+    ("X+ -> N+", 32009, "distribute/out/a5-xp-p1-d2/xp_p1/d2/receipt-d2.json", "build/inputs/p32009-r10754/xp-np.sing"),
 ]
 
 GERM_SING = """LIB "primdec.lib";
@@ -369,6 +383,26 @@ def e8_primes(item: tuple[str, int, str]) -> dict[str, Any]:
     return rec
 
 
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def receipt(item: tuple[str, int, str, str]) -> dict[str, Any]:
+    fiber, p, path, header = item
+    data = json.loads((W / path).read_text())
+    folder = (W / path).parent
+    # The driver records its files relative to the repository root.
+    relations = HERE.parents[3] / data["relation_file"]
+    return {
+        "check": "receipt", "fiber": fiber, "prime": p, "receipt": path, "status": data["status"],
+        "receipt_prime": data["prime"], "generator_count": data["generator_count"], "rank_h_d": data["rank_h_d"],
+        "relation_count": data["relation_count"], "membership": data["membership_check"],
+        "input_matches": data["input_sha256"] == sha256(W / header),
+        "relations_match": relations.parent == folder and data["relation_sha256"] == sha256(relations),
+        "upto_equals_degree": (folder / "relations-upto-d2.rel").read_bytes() == relations.read_bytes(),
+    }  # fmt: skip
+
+
 def run(job: tuple[str, Any]) -> dict[str, Any]:
     kind, item = job
     if kind == "germ-prime":
@@ -381,6 +415,8 @@ def run(job: tuple[str, Any]) -> dict[str, Any]:
         return module_map(item)
     if kind == "e8-primes":
         return e8_primes(item)
+    if kind == "receipt":
+        return receipt(item)
     return x_colon(item)
 
 
@@ -465,24 +501,39 @@ def section_problems(sections: Any, degree: int) -> list[str]:
     return bad
 
 
-# The coefficient that the normalized module map carries at each prime.
-MAP_COEFFICIENT = {32009: 10501, 32029: 13799}
+def term(coefficient: int, variable: int, p: int, lead: bool = False) -> str:
+    """One term as Singular prints it over F_p: the coefficient in the symmetric range, 1 omitted."""
+    c = coefficient % p
+    c = c - p if c > p // 2 else c
+    body = f"y({variable})" if abs(c) == 1 else f"{abs(c)}*y({variable})"
+    return ("-" if c < 0 else "" if lead else "+") + body
 
 
 def expected_map(item: tuple[str, int, str, int, int, str]) -> dict[str, Any]:
+    """The module map normalized at its free coordinate; its one field constant is 2 / i, i the root of -1."""
     fiber, p, rel, _, g, _ = item
-    c = MAP_COEFFICIENT[p]
+    c = 2 * pow(ROOT_OF_MINUS_ONE[p], -1, p)
     if g == 3:
-        first = "2*y(6)" if fiber == "X- -> N-" else "-2*y(6)"
-        images = [["y(4)", first], ["y(10)", f"-{c}*y(5)"], ["y(15)", "y(1)"]]
+        sign = 1 if fiber == "X- -> N-" else -1
+        images = [["y(4)", term(2 * sign, 6, p, True)], ["y(10)", term(-c, 5, p, True)], ["y(15)", "y(1)"]]
         cone = [3, 12, 0]
     else:
-        images = [["y(13)", f"-{c}*y(7)-2*y(12)"], ["y(15)", "-2*y(6)"], ["y(16)", f"{c}*y(14)"]]
-        images += [["y(18)", "2*y(12)"], ["y(21)", "y(4)"]]
+        images = [["y(13)", term(-c, 7, p, True) + term(-2, 12, p)], ["y(15)", term(-2, 6, p, True)]]
+        images += [["y(16)", term(c, 14, p, True)], ["y(18)", term(2, 12, p, True)], ["y(21)", "y(4)"]]
         cone = [5, 16, 1]
     return {
         "check": "module-map", "fiber": fiber, "prime": p, "relations": rel, "images": images, "generation": [g, 1],
         "cone": cone, "solutions": [1], "det_nonzero": [1], "control_solutions": [0],
+    }  # fmt: skip
+
+
+def expected_receipt(item: tuple[str, int, str, str]) -> dict[str, Any]:
+    fiber, p, path, _ = item
+    return {
+        "check": "receipt", "fiber": fiber, "prime": p, "receipt": path, "status": "degree-certified",
+        "receipt_prime": p, "generator_count": 15, "rank_h_d": 51, "relation_count": 69,
+        "membership": {"checked": 69, "failures": 0}, "input_matches": True, "relations_match": True,
+        "upto_equals_degree": True,
     }  # fmt: skip
 
 
@@ -506,7 +557,7 @@ def check(rows: list[dict[str, Any]]) -> list[str]:
     Rows are compared in the order of the job list. A germ row equals its expected row field for field; a component
     or colon row carries its identity, its fixed values and the section condition.
     """
-    total = len(GERMS) + len(VB) + len(XS) + 2 * len(E8S) + len(MAPS)
+    total = len(GERMS) + len(VB) + len(XS) + 2 * len(E8S) + len(MAPS) + len(RECEIPTS)
     if len(rows) != total:
         return [f"{len(rows)} rows, expected {total}"]
     bad: list[str] = []
@@ -552,6 +603,11 @@ def check(rows: list[dict[str, Any]]) -> list[str]:
             bad.append(
                 f"module-map {map_item[0]} {map_item[1]}: the row differs from one invertible map and an empty control"
             )
+    for r, receipt_item in zip(rows[colons + len(MAPS) + len(E8S) :], RECEIPTS, strict=False):
+        if r != expected_receipt(receipt_item):
+            bad.append(
+                f"receipt {receipt_item[0]} {receipt_item[1]}: the row differs from a certified degree-2 receipt"
+            )
     for r, (fiber, p, rel) in zip(rows[colons + len(MAPS) :], E8S, strict=False):
         tag = f"e8-primes {fiber} {p}"
         identity = {"check": "e8-primes", "fiber": fiber, "prime": p, "relations": rel, "primes": 2}
@@ -593,7 +649,7 @@ def main() -> int:
 
     jobs: list[tuple[str, Any]] = [("germ-prime", g) for g in GERMS]
     jobs += [("vb-components", v) for v in VB] + [("x-colon", x) for x in XS] + [("e8-colon", e) for e in E8S]
-    jobs += [("module-map", m) for m in MAPS] + [("e8-primes", e) for e in E8S]
+    jobs += [("module-map", m) for m in MAPS] + [("e8-primes", e) for e in E8S] + [("receipt", c) for c in RECEIPTS]
     rows = parallel.ordered_map(run, jobs, min_items=1)
     Path(sys.argv[1]).write_text("[\n" + ",\n".join(json.dumps(r) for r in rows) + "\n]\n")
     problems = check(rows)

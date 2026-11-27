@@ -193,8 +193,10 @@ pullback, a residual of a different dimension, or any disagreement between the t
 
 ## Germ ideals and three quadric schemes, probed exactly
 
-`quadric_and_germ_probes.py` writes `quadric-and-germ-probes.json` (34 rows, Singular 4.4.1 in dp, 6 s on
-the 32-thread compute workstation). Its `check()` compares every field of a record with the expected value, row by row:
+`quadric_and_germ_probes.py` writes `quadric-and-germ-probes.json` (38 rows, Singular 4.4.1 in dp, 6 s on
+the 32-thread compute workstation). Its `check()` compares a record with the expected values row by row: germ,
+module-map and receipt rows field for field, component and colon rows by identity, fixed invariants and the section
+condition; the orbit partitions of a section are measured data, held to that condition and to the replay gate:
 
 - `germ-prime`, 12 rows: the germ ideal J of X- -> N-, E8-bar -> VB, Iso -> N-, W8 -> N-, E8-bar -> N+ and
   E8-bar -> N- at 32009 (`working/runs/k2struct/`, `working/build/inputs/p32009-r10754/e8-nm.sing`) and at 32029
@@ -211,14 +213,19 @@ the 32-thread compute workstation). Its `check()` compares every field of a reco
   zero, K2 : R is a prime of dimension 4 and multiplicity 2, K2 : (K2 : R) = R, and
   N_K2 - N_R = N_A - (1 - t)^21, so R / K2 has the Hilbert function 5, 14, 30, 55, 91, 140, 204, ... of the
   irrelevant ideal of a quadric threefold cone in every degree (A5-547).
-- `module-map`, 8 rows: on each X and E8-bar relation file the linear system for a map from the coordinates of
+- `module-map`, 11 rows (eight at 32009 and 32029, three at the third prime 32057): on each X and E8-bar relation
+  file the linear system for a map from the coordinates of
   k[y] / A to the nilpotent linear forms, compatible with the Koszul relations and with the Euler relation of the
   quadric of A, has a one-dimensional solution space spanned by an invertible map, and the sign-flipped control
   system has the zero solution alone. With R = K2 + N and the numerator identities above, the nilradical module is
-  isomorphic to the irrelevant ideal of k[y] / A as a graded module (A5-638).
+  isomorphic to the irrelevant ideal of k[y] / A as a graded module (A5-638). The one field constant of the
+  normalized map is 2 / i at each prime, which suggests one map over Z[i, 1/2] (A5-640, open).
 - `e8-primes`, 4 rows: the radical of the E8-bar quadric ideal has two minimal primes, of dimension 5 and degree 11
   with 9 linear forms and of dimension 4 and degree 4 with 14, and each has a reduced linear section with an
   F_p-point at both primes and both basepoints, so each is absolutely prime (A5-639).
+- `receipt`, 1 row: the degree-2 receipt of the X+ -> N+ header at 32009 is degree-certified with rank 51, 69
+  relations and 0 membership failures, its input digest is that of the canonical header and its relation digest
+  that of the file the colon rows read (A5-151).
 
 ## Where the embedded plane of same-sign X sits in the Pluecker space
 

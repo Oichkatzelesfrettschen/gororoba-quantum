@@ -65,6 +65,7 @@ def probe_fixture(mod: ModuleType) -> list[dict[str, Any]]:
         rows.append(
             {"check": "e8-primes", "fiber": fiber, "prime": p, "relations": rel, "primes": 2, "components": parts}
         )
+    rows += [mod.expected_receipt(item) for item in mod.RECEIPTS]
     return rows
 
 
@@ -75,7 +76,7 @@ def row(rows: list[dict[str, Any]], kind: str, index: int = 0) -> dict[str, Any]
 def test_the_fixture_record_passes() -> None:
     mod = load("quadric_and_germ_probes")
     rows = probe_fixture(mod)
-    if len(rows) != 34 or mod.check(rows):
+    if len(rows) != 38 or mod.check(rows):
         raise AssertionError(mod.check(rows))
 
 
@@ -117,6 +118,12 @@ MUTATIONS = {
     "a shifted numerator pair": lambda rows: [row(rows, "x-colon")[k].__setitem__(0, 101) for k in ("numK", "numP")],
     "a changed numerator": lambda rows: row(rows, "x-colon")["numP"].__setitem__(2, -29),
     "a row removed": lambda rows: rows.pop(),
+    "a receipt of another rank": lambda rows: row(rows, "receipt").update(rank_h_d=52),
+    "a receipt whose input is not the canonical header": lambda rows: row(rows, "receipt").update(input_matches=False),
+    "a receipt with a membership failure": lambda rows: row(rows, "receipt")["membership"].update(failures=1),
+    "a third-prime map with the coefficient of 32009": lambda rows: row(rows, "module-map", 8)["images"][1].__setitem__(
+        1, "-10501*y(5)"
+    ),
     "a module map with a two-dimensional solution space": lambda rows: row(rows, "module-map").update(solutions=[2]),
     "a control system with a solution": lambda rows: row(rows, "module-map", 5).update(control_solutions=[1]),
     "a singular module map": lambda rows: row(rows, "module-map").update(det_nonzero=[0]),
@@ -143,6 +150,20 @@ def test_a_changed_probe_record_is_reported(name: str) -> None:
     MUTATIONS[name](rows)
     if not mod.check(rows):
         raise AssertionError(f"{name}: the changed record passes")
+
+
+def test_the_map_coefficient_is_two_over_the_root_of_minus_one_in_the_symmetric_range() -> None:
+    mod = load("quadric_and_germ_probes")
+    values = {p: 2 * pow(root, -1, p) % p for p, root in mod.ROOT_OF_MINUS_ONE.items()}
+    if values != {32009: 10501, 32029: 13799, 32057: 15939}:
+        raise AssertionError(values)
+    if [mod.term(-3, 2, 7, True), mod.term(4, 5, 7), mod.term(1, 1, 7), mod.term(6, 3, 7, True)] != [
+        "-3*y(2)",
+        "-3*y(5)",
+        "+y(1)",
+        "-y(3)",
+    ]:
+        raise AssertionError("terms print in the symmetric range with a unit coefficient omitted")
 
 
 def test_the_hilbert_function_of_a_numerator_expands_exactly() -> None:
