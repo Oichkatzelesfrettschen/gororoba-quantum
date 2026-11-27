@@ -1412,6 +1412,23 @@ The gates `core-a5-weight-slice-module-map` and `core-a5-e8-vb-quadric-ring-qi` 
 `tests/test_a5_weight_slice_module_map.py` and `tests/test_a5_e8_vb_quadric_ring_qi.py` apply each program's check
 to a fixture and reject 12 and 7 mutations.
 
+[`slice_module_map_comparison.py`](slice_module_map_comparison.py) compares the E8-bar module maps of the two slices
+entry by entry. The substitution G of the 21 generators that the change of slice induces (A5-598, retained over Q(i)
+in `../a5-exceptional-fibers/working/runs/e8-induced-slice-map/`) is reduced at a prime and a root of -1 together
+with the weight-slice relations; the program solves the system on the reduced weight-slice ideal and on the retained
+header-slice ideal and tests G(theta_w(x)) = c theta_h(G(x)) on the five coordinates x of B_w, with G(x) taken modulo
+the linear forms of K_h : R_h. On N- at 32009, 32029 and 32057 and on N+ at 32009 and 32029 the solved maps equal the
+retained ones in their own normalizations (the Q(i) map of A5-640 with i sent to the root; the header map of A5-638
+with its free coordinate set to 1), and one scalar relates them: c = i / 2, i the root of -1 of the cell
+([`slice-module-map-comparison-result.json`](slice-module-map-comparison-result.json), Singular 4.4.1, 25 s on one worker
+and 4.5 s on five; ledger row A5-642). The identity is forced by A5-598 and the one-dimensional solution spaces, since G carries the radical,
+its linear forms and the colon ideal of one slice to those of the other; the run confirms that the two retained
+maps, found in unrelated coordinates, are one intrinsic map, and adds no independent evidence for those rows. Three controls find no scalar: two weight-slice images
+exchanged, G perturbed on the leading variable of the first image, and two header coordinates of B_h exchanged.
+Same-sign X has no retained slice map, so its two maps stay compared by invariants. The gate
+`core-a5-slice-module-map-comparison` replays the record, and `tests/test_a5_slice_module_map_comparison.py`
+rejects 22 mutations of a fixture.
+
 ## Investigated questions
 
 ### Does the antiholomorphic first-order part survive on a boundary kernel?

@@ -18,7 +18,7 @@ one-dimensional solution space leaves free; the modular map must then equal the 
 
 The same system on the header slices modulo 32009, 32029 and 32057 is the `module-map` row kind of
 `a5-exceptional-fibers/structure/quadric_and_germ_probes.py` (ledger row A5-638); the slices carry different
-coordinates, so the maps are compared by their invariants and not entry by entry.
+coordinates, and `slice_module_map_comparison.py` compares the E8-bar maps entry by entry under the induced slice map.
 
 Usage, from the repository root: "$PYTHON" docs/evidence/a5-kernel-attachments/weight_slice_module_map.py
 --out OUT.json [--check RETAINED.json]. The twelve runs (four cells over three fields) go through
