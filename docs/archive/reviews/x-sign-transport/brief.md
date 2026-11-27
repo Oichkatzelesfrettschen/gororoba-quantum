@@ -1,0 +1,28 @@
+# Brief: pull request 1028 of gororoba-quantum, sign transport of the same-sign X module maps
+
+Read first: the workspace AGENTS.md, then the repository AGENTS.md. Work read-only: change no file; never commit, push, stash, submit to a provider or start a cloud resource; spawn no subagents. This host takes no computation: run git and file reads (cat, sed, grep, git) only. Run no Python, no python3 -c, no Singular, no pytest, no jq-like evaluation through an interpreter; a JSON file is read with cat or grep. Every finding cites file:line or a git command with its output.
+
+Material: the session worktree of the branch (written WORKTREE below) at head 10aed094b of branch a5-x-sign-transport (two commits over origin/main; read them with `git -C WORKTREE diff origin/main...HEAD`).
+
+## Claims under review (each is a claim, not a fact; justify or falsify it)
+
+1. docs/evidence/a5-kernel-attachments/x_sign_transport.py computes S_w = G+^{-1} S_h G- in the right convention: record["map"] row k of induced-xm.json / induced-xp.json is the image of weight-slice generator y_k in header generators (see check_script of docs/evidence/a5-exceptional-fibers/working/runs/x-induced-slice-map/x_induced_slice_map.py), S_h is y_j -> c_j y_j, and slice_map() returns M- D M+^{-1}, so that f+ o S_w = S_h o f- as ring maps. Status: computed (the SQUARE check prints 0 over Q(i) and at three primes). Falsifier: a transposition or an inverse on the wrong side that the SQUARE lines would not detect.
+2. The direction of the sign isomorphism matches docs/evidence/a5-exceptional-fibers/witnesses.py (rows "from": "X-", "to": "X+" of witnesses.jsonl): y_i -> c_i y_i carries the X- relation ideal onto the X+ one. Status: computed (transported [0, 0] on the three header items). Falsifier: a use of the signs in the reverse direction that the check cannot see (the map is an involution, so say whether direction can matter at all).
+3. The identity c+ / c- = lambda_h / lambda_w in the docstring follows from the square and from G(theta_w(x)) = c theta_h(G(x)) of A5-645, with lambda defined by S(theta-(x)) = lambda theta+(S(x)). Status: argument. Falsifier: an inverted ratio or a sign slip in the derivation.
+4. The solver reuse is sound: script() takes TAIL of slice_module_map_comparison.py and changes one normalization argument per slice (NORMALIZED), so the header items compare two header-normalized maps and the weight items two weight-normalized maps; parse() output keys weight_* / header_* are renamed from_* / to_*. Status: computed. Falsifier: a place where TAIL still applies the other normalization, or where the rename mislabels a side.
+5. docs/evidence/a5-kernel-attachments/x-sign-transport-result.json shows: three signs rows equal to G_SIGNS and J_SIGNS; the qi row with transported [0, 0], identity [27, 27], conjugate [0, 0], square [0], one_more_sign fifteen zeros; header rows with scalar [1, 1, -1]; weight rows with scalar [1, 1, 1] and square [0]; slice_map the diagonal of W_SIGNS. Status: computed. Falsifier: a row that differs.
+6. Ledger row A5-647 of docs/evidence/a5-exceptional-fibers/ledger.tsv and the new paragraph of docs/evidence/a5-kernel-attachments/README.md state no more than the record and the argument support; in particular the statements that the identity is forced, that the run is not independent evidence for A5-638, A5-640, A5-644, A5-645, and that both scalars depend on the normalizations. Status: argument. Falsifier: a sentence that claims more, or a number no record shows (timings excepted: 4 s, 11 s and 101 MiB are measurements of the compute host that no file retains).
+7. The controls can fail for the right reason: one_more_sign (FLIPS), identity, and the three controls of the comparison solver. Status: computed. Falsifier: a control that reports failure whatever the substitution is, or that would pass a wrong one.
+8. tests/test_a5_x_sign_transport.py reads no retained evidence file (it builds its fixture from the module's tables), and each of the 21 mutations is reported only for the reason REASONS names. Status: computed (27 passed on the compute host). Falsifier: a test that opens a retained record, a mutation that problems() rejects for another reason, or a wrong record that problems() accepts.
+9. The second part: docs/archive/reviews/registry-regeneration/README.md and the k2_hilbert.py row of docs/evidence/a5-exceptional-fibers/README.md say that X+ at 32009 keeps its transported registry entry because 40 retained records bind the sha256 116222a7aec8d8c00cf061a5236f992ee516334236325199796f26b3cd049aa4 of k2-hilbert.jsonl. Status: computed (`git grep -l 116222a7 | sed 's|/[^/]*$||' | sort | uniq -c` gives 20, 18 and 2). Falsifier: another count, or a record whose check does not compare that digest.
+10. The second commit changes only the A5-548 row: it closes the Moreno lead as unobtainable with the zbMATH queries named. Status: recorded. Falsifier: a claim in that sentence that the row's own text contradicts.
+11. ci/gates.json entry core-a5-x-sign-transport replays the new record. Status: computed. Falsifier: a command that replays another record or skips silently.
+
+## Questions to answer
+
+- Defects in code, claims and records, with file:line.
+- Any repository rule of the two AGENTS.md files the change breaks (parallel.py rule, pinned bytes, text rules, commit rules, tests reading retained evidence).
+- Triviality: is the measured content (lambda_h = -1, lambda_w = 1, S_w diagonal) already visible in the retained records without a run, and if so what does the run add?
+- A structural statement the evidence suggests and no record states, with its falsifier and cheapest test.
+
+Report ranked by consequence, under 150 lines, printed as your answer.

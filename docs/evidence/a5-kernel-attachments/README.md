@@ -1452,9 +1452,11 @@ weight slice, at 32009, 32029 and 32057, with c+ / c- = lambda_h / lambda_w = -1
 ledger row A5-647). The three values were written down before the run and held. The identity is forced by A5-644,
 A5-645 and the one-dimensional solution spaces, so the run is no independent evidence for them; its content is where
 the sign sits: the retained header-slice maps of X- and X+ differ by a sign under the isomorphism, and the retained
-weight-slice maps agree. The run also finds the J and G sign vectors of the witness at 32057, where
+weight-slice maps agree. Both scalars can be read off the retained maps and the sign vector without a run; the run
+adds the matrix of S_w, the transport of the ideals over Q(i) and the controls. S_w followed by complex conjugation
+is then a semilinear involution that maps K_w(X-) to itself (a deduction from the two measured facts). The run also finds the J and G sign vectors of the witness at 32057, where
 `witnesses.jsonl` has no row, and no substitution with one more generator negated carries ideal to ideal, on either
-slice. The gate `core-a5-x-sign-transport` replays the record, and `tests/test_a5_x_sign_transport.py` rejects 22
+slice. The gate `core-a5-x-sign-transport` replays the record, and `tests/test_a5_x_sign_transport.py` rejects 24
 mutations of a fixture.
 
 ## Investigated questions

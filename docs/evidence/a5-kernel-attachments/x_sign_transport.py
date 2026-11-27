@@ -27,13 +27,17 @@ y10 -> 10501 y5, y15 -> -y1, the negative of the retained X+ map); lambda_w = 1,
 a diagonal matrix of signs. All three held: S_w is the diagonal of W_SIGNS below, lambda_h = -1 and lambda_w = 1 at the
 three primes. The opposite signs of the scalar of A5-645 therefore sit on the header slice: the retained header-slice
 maps of X- and X+ differ by a sign under the retained isomorphism, and the retained weight-slice maps do not.
+The two scalars can be read off the retained maps and the sign vector without a run, as the prediction was; the run
+adds the matrix of S_w, the sign vectors at 32057, the transport of the ideals over Q(i) and the controls. Since S_w
+is a real involution and conjugation carries K_w(X-) onto K_w(X+) as well, S_w followed by conjugation is a semilinear
+involution that maps K_w(X-) to itself (a deduction from the two measured facts).
 
 The run also reads: the J and G sign vectors of the three header pairs (32057 is not in witnesses.jsonl); the
 remainders of S_w(K_w(X-)) against K_w(X+) over Q(i), both ways; the same for the complex conjugate of K_w(X-), which
 is a second, semilinear, candidate for the weight-slice counterpart; the square G+ S_w = S_h G- over Q(i) and at each
 prime; and, for S_h and for S_w at each prime, which of the 15 substitutions with one more generator negated still
-carry ideal to ideal. Controls of each scalar are those of slice_module_map_comparison.py (images exchanged, map
-perturbed, generators exchanged), each of which must find no scalar.
+carry ideal to ideal (none does). Controls of each scalar are those of slice_module_map_comparison.py (images
+exchanged, map perturbed, generators exchanged), each of which must find no scalar.
 
 Usage, from the repository root: "$PYTHON" docs/evidence/a5-kernel-attachments/x_sign_transport.py --out OUT.json
 [--check RETAINED.json]. Ten items of a few seconds each go through parallel.ordered_map.
@@ -374,8 +378,8 @@ def problems(rows: list[dict[str, Any]], matrix: list[list[str]]) -> list[str]:
                 found.append(f"{name}: the header sign vectors differ from the retained isomorphism")
             continue
         flips = row.get("one_more_sign")
-        if not (isinstance(flips, list) and len(flips) == N and set(flips) <= {0, 1} and 0 in flips):
-            found.append(f"{name}: no single added sign breaks the ideal equality, or the row is malformed")
+        if flips != [0] * N:
+            found.append(f"{name}: a substitution with one more generator negated carries ideal to ideal")
         if row.get("transported") != [0, 0]:
             found.append(f"{name}: the substitution does not carry the X- ideal onto the X+ ideal")
         if kind != "header" and row.get("square") != [0]:
@@ -414,6 +418,9 @@ def problems(rows: list[dict[str, Any]], matrix: list[list[str]]) -> list[str]:
             seen = row.get(control)
             if not (isinstance(seen, list) and len(seen) == 3 and seen[1:] == [0, 0]):
                 found.append(f"{name}: {control} found a scalar")
+        indices = row.get("control_indices")
+        if not (isinstance(indices, list) and len(indices) == 3 and min(indices) >= 1 and indices[1] != indices[2]):
+            found.append(f"{name}: a control names no generator")
         extra = {"item", "prime", "root", "transported", "one_more_sign", "scalar", "control_indices", *cmp.CONTROLS}
         if set(row) != {*fixed, *extra, *(["square"] if kind == "weight" else [])}:
             found.append(f"{name}: the row holds an unexpected or missing field")
