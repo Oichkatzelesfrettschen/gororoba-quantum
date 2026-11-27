@@ -84,6 +84,8 @@ ORBIT_EXPECTED = {
     "gamma3(-1)": ("Np", 16),
 }
 BASE = {1: 1, 10: 1}
+W8_POINTS: tuple[dict[int, int], ...] = ({1: 1, 10: 1}, {1: 1, 10: -1}, {2: 1, 9: 1}, {1: 1, 10: 1, 3: 1, 20: 1})
+"""Four points of the orbit W8: three two-term points and the four-term midpoint of gamma2."""
 U_UNITS = (1, 2, 8)
 M_UNIT = 16
 V_UNITS = (17, 18, 24)
@@ -110,6 +112,8 @@ PREDICTIONS = {
     "P6": "L_(a,t)^T L_(a,t) = L_(a,0)^T L_(a,0) + t^2 I for imaginary a at levels 16, 32 and 64",
     "P7": "<e_i, e_j e_k> is alternating on the imaginary units at levels 8 to 64",
     "P8": "on u = a e1, v = b e2, mu = i: Q = a^2 + b^2 - 1 and G = ((a+b)^2 - 1)((a-b)^2 - 1)",
+    "P9": "at the second W8 point e1 + e10 + e3 + e20 the pencil has dimension 7, a quaternionic commutant of "
+    "dimension 4 and a Lie closure of dimension 10",
 }
 
 
@@ -227,7 +231,9 @@ def limits_item(pair: tuple[str, str]) -> dict[str, Any]:
         "product_zero": bool((second * first).is_zero_matrix),
         "sum_rank": int((first + second).rank()),
         "sum_inside_endpoint_kernel": bool((base * (first + second)).is_zero_matrix),
-        "self_product_zero": bool((first * first).is_zero_matrix),
+        "projectors_idempotent_of_trace_4": bool(
+            first * first == first and second * second == second and first.trace() == 4 and second.trace() == 4
+        ),
     }
 
 
@@ -271,6 +277,134 @@ def direction_of(u: tuple[int, int, int], v: tuple[int, int, int]) -> dict[int, 
 
 def cross(u: tuple[int, int, int], v: tuple[int, int, int]) -> tuple[int, int, int]:
     return (u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0])
+
+
+def structure_item(base: tuple[tuple[int, int], ...]) -> dict[str, Any]:
+    """Dimension of the compression pencil at a base point, its commutant as an algebra, and its Lie closure.
+
+    The operators are the compressions P_0 L_w P_0 written in a kernel frame; the pencil is closed under the adjoint
+    of the frame's Gram form, so its commutant is semisimple, and traces and dimensions do not depend on the frame.
+    A noncommutative semisimple real
+    algebra of dimension 4 is M_2(R) or the quaternions, and the trace form on its traceless part has signature
+    (2, 1) on the first and is negative definite on the second.
+    """
+    frame = kernel_frame(dict(base))
+    size = frame.cols
+    gram = frame.T * frame
+    inverse = gram.inv()
+    operators = [inverse * frame.T * left_matrix(DIMENSION, {w: 1}) * frame for w in range(1, DIMENSION)]
+    rows = sp.Matrix([list(m) for m in operators])
+    _, pivots = rows.T.rref()
+    basis = [operators[p] for p in pivots]
+    unknowns = sp.symbols(f"c0:{size * size}")
+    candidate = sp.Matrix(size, size, unknowns)
+    equations = [value for m in basis for value in candidate * m - m * candidate if value != 0]
+    system = sp.Matrix([[sp.diff(e, c) for c in unknowns] for e in equations])
+    commutant = [sp.Matrix(size, size, list(vector)) for vector in system.nullspace()]
+    noncommutative = any(not (a * b - b * a).is_zero_matrix for a in commutant for b in commutant)
+    traceless = [m - (m.trace() / size) * sp.eye(size) for m in commutant]
+    span = sp.Matrix([list(m) for m in traceless])
+    _, keep = span.T.rref()
+    independent = [traceless[p] for p in keep]
+    form = sp.Matrix(len(independent), len(independent), lambda a, b: -(independent[a] * independent[b]).trace())
+    positive = all(form[:k, :k].det() > 0 for k in range(1, form.rows + 1))
+    closure = list(basis)
+    closure_rank = len(basis)
+    while True:
+        candidates = closure + [a * b - b * a for a in closure for b in closure]
+        stacked = sp.Matrix([list(m) for m in candidates])
+        _, pivots = stacked.T.rref()
+        if len(pivots) == closure_rank:
+            break
+        closure = [candidates[p] for p in pivots]
+        closure_rank = len(pivots)
+    return {
+        "base": [list(term) for term in base],
+        "kernel": size,
+        "pencil_dimension": len(basis),
+        "commutant_dimension": len(commutant),
+        "commutant_noncommutative": bool(noncommutative),
+        "commutant_traceless_dimension": len(independent),
+        "commutant_trace_form_negative_definite": bool(positive),
+        "lie_closure_dimension": closure_rank,
+    }
+
+
+def tangent_cone_item(_: int) -> dict[str, Any]:
+    """G of the strata record along y_0 + s w, y_0 = e_1 + e_10, w on the six doubly pure coordinate units.
+
+    With z_k = y_k + i y_(16+k) the direction is zeta = (u1 + i v1, u2 + i v2, u3 + i v3) on (z_1, z_2, z_8).
+    """
+    s = sp.Symbol("s", real=True)
+    u = sp.symbols("u1 u2 u3", real=True)
+    v = sp.symbols("v1 v2 v3", real=True)
+    z = [sp.Integer(0)] * 16
+    z[1], z[10] = sp.Integer(1), sp.Integer(1)
+    zeta = [a + sp.I * b for a, b in zip(u, v, strict=True)]
+    for index, value in zip((1, 2, 8), zeta, strict=True):
+        z[index] += s * value
+    uu = sum(z[k] ** 2 for k in range(1, 8))
+    vv = sum(z[k] ** 2 for k in range(9, 16))
+    uv = sum(z[k] * z[8 + k] for k in range(1, 8))
+    g = (uu + z[8] ** 2 + vv) ** 2 - 4 * (uu * vv - uv**2)
+    square = sum(value**2 for value in zeta)
+    closed = s**2 * square * (4 + 4 * s * zeta[0] + s**2 * square)
+    real, imaginary = sp.expand(4 * square).as_real_imag()
+    uu0, vv0 = sum(a * a for a in u), sum(b * b for b in v)
+    uv0 = sum(a * b for a, b in zip(u, v, strict=True))
+    pfaffian_m0 = 16 * ((uu0 + vv0) ** 2 - 4 * (uu0 * vv0 - uv0**2))
+    return {
+        "g_is_s2_zeta2_times_cofactor": bool(sp.expand(g - closed) == 0),
+        "pfaffian_at_m0_is_squared_modulus_of_lead": bool(sp.expand(real**2 + imaginary**2 - pfaffian_m0) == 0),
+    }
+
+
+def clifford_item(base: tuple[tuple[int, int], ...]) -> dict[str, Any]:
+    """Three involutions E_k = 2 P(e_k) - I on the kernel, P(n) the limiting plane of normal n, and the identity
+    B_w (|u|^2 I + (u x v).E) = 0 modulo the Stiefel ideal (u.v, u.u - v.v) for symbolic (u, v)."""
+    frame = kernel_frame(dict(base))
+    size = frame.cols
+    forms = {w: frame.T * left_matrix(DIMENSION, {w: 1}) * frame for w in (*U_UNITS, *V_UNITS)}
+
+    def form_of(u: Any, v: Any) -> sp.Matrix:
+        total = sp.zeros(size, size)
+        for w, value in zip((*U_UNITS, *V_UNITS), (*u, *v), strict=True):
+            total += value * forms[w]
+        return total
+
+    involutions = []
+    for u_value, v_value in (((0, 1, 0), (0, 0, 1)), ((0, 0, 1), (1, 0, 0)), ((1, 0, 0), (0, 1, 0))):
+        kernel = sp.Matrix.hstack(*form_of(u_value, v_value).nullspace())
+        involutions.append(2 * kernel * (kernel.T * kernel).inv() * kernel.T - sp.eye(size))
+    relations = 0
+    for a in range(3):
+        relations += not (involutions[a] - involutions[a].T).is_zero_matrix
+        relations += involutions[a].trace() != 0
+        for b in range(3):
+            anticommutator = involutions[a] * involutions[b] + involutions[b] * involutions[a]
+            relations += anticommutator != 2 * int(a == b) * sp.eye(size)
+    u = sp.symbols("u1 u2 u3")
+    v = sp.symbols("v1 v2 v3")
+    normal = (u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0])
+    ideal = sp.groebner(
+        [sum(a * b for a, b in zip(u, v, strict=True)), sum(a * a for a in u) - sum(b * b for b in v)],
+        *u,
+        *v,
+        order="grevlex",
+    )
+
+    def outside(sign: int) -> int:
+        plane = sum(a * a for a in u) * sp.eye(size)
+        for coordinate, involution in zip(normal, involutions, strict=True):
+            plane += sign * coordinate * involution
+        product = form_of(u, v) * plane
+        return sum(not ideal.contains(sp.expand(value)) for value in product)
+
+    return {
+        "clifford_relation_failures": int(relations),
+        "kernel_identity_entries_outside_ideal": outside(1),
+        "reversed_normal_entries_outside_ideal": outside(-1),
+    }
 
 
 def pencil_item(base: tuple[tuple[int, int], ...]) -> dict[str, Any]:
@@ -322,6 +456,13 @@ def pencil_item(base: tuple[tuple[int, int], ...]) -> dict[str, Any]:
                     key = tuple(plane_of(frame, form))
                     planes[key] = planes.get(key, 0) + 1
     projectors = [sp.Matrix(DIMENSION, DIMENSION, list(key)) for key in sorted(planes, key=str)]
+    axis_planes = set()
+    for u_value, v_value in (((0, 1, 0), (0, 0, 1)), ((0, 0, 1), (1, 0, 0)), ((1, 0, 0), (0, 1, 0))):
+        for sign in (1, -1):
+            signed = (sign * v_value[0], sign * v_value[1], sign * v_value[2])
+            direction = direction_of(u_value, signed)
+            form = sum((value * forms[w] for w, value in direction.items()), sp.zeros(size, size))
+            axis_planes.add(tuple(plane_of(frame, form)))
     overlaps: Counter[str] = Counter()
     for a in range(len(projectors)):
         for b in range(a + 1, len(projectors)):
@@ -373,6 +514,7 @@ def pencil_item(base: tuple[tuple[int, int], ...]) -> dict[str, Any]:
         "pfaffian_is_16_times_invariant": bool(pfaffian_matches),
         "two_term_rank_census": {str(k): census[k] for k in sorted(census)},
         "two_term_limit_planes": len(projectors),
+        "two_term_planes_are_the_six_axis_planes": bool(axis_planes == set(planes)),
         "two_term_plane_overlap_traces": {k: overlaps[k] for k in sorted(overlaps)},
         "stiefel": stiefel,
         "same_normal_planes_equal": bool(stiefel_planes[SAME_NORMAL[0]] == stiefel_planes[SAME_NORMAL[1]]),
@@ -412,7 +554,7 @@ def three_form_item(dimension: int) -> dict[str, Any]:
             failures += cd_core.cd_sign(dimension, k, j) != -value
             failures += cd_core.cd_sign(dimension, i, k) != -value
             failures += cd_core.cd_sign(dimension, j, i) != -value
-    return {"dimension": dimension, "nonzero_ordered_triples": nonzero, "alternation_failures": failures}
+    return {"dimension": dimension, "ordered_unit_pairs": nonzero, "alternation_failures": failures}
 
 
 def section_item(_: int) -> dict[str, Any]:
@@ -428,6 +570,16 @@ def section_item(_: int) -> dict[str, Any]:
 
 def source_digests() -> dict[str, str]:
     return {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in SOURCE_FILES}
+
+
+def structure_ok(row: dict[str, Any]) -> bool:
+    return (
+        (row["kernel"], row["pencil_dimension"], row["commutant_dimension"], row["lie_closure_dimension"])
+        == (8, 7, 4, 10)
+        and row["commutant_noncommutative"]
+        and row["commutant_traceless_dimension"] == 3
+        and row["commutant_trace_form_negative_definite"]
+    )
 
 
 def outcomes(result: dict[str, Any]) -> dict[str, bool]:
@@ -451,6 +603,7 @@ def outcomes(result: dict[str, Any]) -> dict[str, bool]:
         "P6": all(r["cross_term_failures"] == 0 and r["unit_gram_identity"] for r in result["gram_identity"]),
         "P7": all(row["alternation_failures"] == 0 for row in result["three_form"]),
         "P8": result["section"]["q_matches"] and result["section"]["g_matches"],
+        "P9": structure_ok(result["structure"][3]),
     }
 
 
@@ -462,6 +615,9 @@ def build_result() -> dict[str, Any]:
         "limits": limits_item(("gamma1", "beta")),
         "compressions": parallel.ordered_map(compression_item, list(JUNCTIONS), 1),
         "pencil": pencil_item(tuple(sorted(BASE.items()))),
+        "structure": parallel.ordered_map(structure_item, [tuple(sorted(point.items())) for point in W8_POINTS], 1),
+        "tangent_cone": tangent_cone_item(0),
+        "clifford": clifford_item(tuple(sorted(BASE.items()))),
         "gram_identity": parallel.ordered_map(gram_identity_item, [(16, 8), (32, 16), (64, 32)], 1),
         "three_form": parallel.ordered_map(three_form_item, [8, 16, 32, 64], 1),
         "section": section_item(0),
@@ -484,10 +640,16 @@ def validate(result: dict[str, Any]) -> None:
         require((row["orbit"], row["nullity"]) == ORBIT_EXPECTED[row["name"]], f"orbit of {row['name']}")
     limits = result["limits"]
     require(limits["product_zero"] and limits["sum_rank"] == 8, "limiting planes are orthogonal complements")
-    require(limits["sum_inside_endpoint_kernel"] and not limits["self_product_zero"], "limit planes in the kernel")
+    require(limits["sum_inside_endpoint_kernel"], "limit planes in the kernel")
+    require(limits["projectors_idempotent_of_trace_4"], "each limit is an orthogonal projector of rank 4")
     for row in limits["certificates"]:
         require((row["generic_nullity"], row["endpoint_nullity"]) == (4, 8), "limit certificate nullities")
         require(row["projector_constant_on_branch"], "the projector is constant on the punctured branch")
+        require(row["exceptional_polynomial"] == [1, 0, 1, 0], "exceptional polynomial s^3 + s")
+    require([row["dimension"] for row in result["convention"]] == [8, 16, 32], "convention levels")
+    require([row["name"] for row in result["paths"]] == list(PATHS), "the four paths")
+    require([row["name"] for row in result["orbits"]] == list(ORBIT_POINTS), "the seven orbit points")
+    require([row["kernel"] for row in result["compressions"]] == [8, 12, 16, 16], "junction kernels")
     for row in result["compressions"]:
         require(row["compression_rank"] == 4 and row["skew"], f"compression at {row['name']}")
     pencil = result["pencil"]
@@ -496,6 +658,25 @@ def validate(result: dict[str, Any]) -> None:
     require(pencil["commutant_dimension"] == 4, "commutant of the pencil")
     require(pencil["lie_closure_dimension"] == 10, "Lie closure of the pencil")
     require(pencil["pfaffian_is_16_times_invariant"], "Pfaffian of the pencil")
+    require(pencil["coordinate_units"] == [1, 2, 8, 16, 17, 18, 24], "coordinate units of the pencil")
+    require(pencil["skew_units"] == [1, 2, 8, 9, 10, 16, 17, 18, 24, 25, 26], "units with a nonzero form")
+    require(len(pencil["stiefel"]) == len(STIEFEL_PAIRS) == 10, "ten Stiefel directions")
+    require(pencil["two_term_planes_are_the_six_axis_planes"], "the six two-term planes are the axis planes")
+    structure = result["structure"]
+    require(len(structure) == 4 and all(structure_ok(row) for row in structure[:3]), "two-term W8 points")
+    generic = structure[3]
+    require(
+        (generic["kernel"], generic["pencil_dimension"], generic["commutant_dimension"]) == (8, 7, 1)
+        and generic["lie_closure_dimension"] == 28,
+        "the four-term W8 point has a scalar commutant and Lie closure so(8)",
+    )
+    cone = result["tangent_cone"]
+    require(cone["g_is_s2_zeta2_times_cofactor"], "closed form of G on the lines through the base point")
+    require(cone["pfaffian_at_m0_is_squared_modulus_of_lead"], "Pfaffian at m = 0 from the leading form of G")
+    clifford = result["clifford"]
+    require(clifford["clifford_relation_failures"] == 0, "three anticommuting symmetric traceless involutions")
+    require(clifford["kernel_identity_entries_outside_ideal"] == 0, "kernel identity on the Stiefel cone")
+    require(clifford["reversed_normal_entries_outside_ideal"] > 0, "the reversed normal fails the identity")
     require(pencil["two_term_rank_census"] == {"0": 384, "4": 32, "8": 514}, "two-term rank census")
     require(pencil["two_term_limit_planes"] == 6, "two-term limiting planes")
     require(pencil["two_term_plane_overlap_traces"] == {"0": 3, "2": 12}, "two-term plane overlaps")
@@ -504,15 +685,17 @@ def validate(result: dict[str, Any]) -> None:
         require(row["line_nullity_at_1_2_3"] == [4, 4, 4], "a Stiefel line has nullity 4 at s = 1, 2, 3")
     require(pencil["same_normal_planes_equal"], "the limiting plane depends on u x v alone")
     require(pencil["overlap_law_failures"] == 0 and pencil["overlap_law_pairs"] == 55, "overlap law")
+    require([row["dimension"] for row in result["gram_identity"]] == [16, 32, 64], "Gram identity levels")
+    require([row["dimension"] for row in result["three_form"]] == [8, 16, 32, 64], "three-form levels")
     for row in result["gram_identity"]:
         require(row["cross_term_failures"] == 0 and row["unit_gram_identity"], "Gram identity")
     for row in result["three_form"]:
         require(row["alternation_failures"] == 0, "alternating three-form")
         dimension = row["dimension"]
-        require(row["nonzero_ordered_triples"] == (dimension - 1) * (dimension - 2), "three-form support count")
+        require(row["ordered_unit_pairs"] == (dimension - 1) * (dimension - 2), "three-form support count")
     require(result["section"]["q_matches"] and result["section"]["g_matches"], "section of Q and G")
     held = result["prediction_held"]
-    require(held == {**dict.fromkeys(PREDICTIONS, True), "P3": False}, "recorded prediction outcomes")
+    require(held == {**dict.fromkeys(PREDICTIONS, True), "P3": False, "P9": False}, "recorded prediction outcomes")
 
 
 def self_test() -> list[str]:
@@ -532,14 +715,20 @@ def self_test() -> list[str]:
     finally:
         PATHS = saved
     row = gram_identity_item((32, 26))
-    require(row["cross_term_failures"] > 0, "a unit below the doubling unit breaks the cross term")
+    require(row["cross_term_failures"] > 0, "a unit other than the doubling unit breaks the cross term")
     messages.append(f"mutant J = L_(e_26): {row['cross_term_failures']} cross-term failures")
     bad = doubled_product([0, 1, 0, 0], [0, 0, 1, 0])
     require(bad[3] == cd_core.cd_sign(4, 1, 2) and bad[3] != cd_core.cd_sign(4, 2, 1), "product order matters")
     messages.append("mutant operand order: sign differs")
     form = kernel_frame(BASE).T * left_matrix(DIMENSION, direction_of((1, 0, 0), (1, 0, 0))) * kernel_frame(BASE)
-    require(int(form.rank()) != 4, "a parallel pair (u = v) lies off the rank-4 cone")
+    require(int(form.rank()) == 8, "a parallel pair (u = v) has compression rank 8")
     messages.append(f"mutant parallel pair u = v: compression rank {int(form.rank())}")
+    row = structure_item(((3, 1), (20, 1)))
+    require(not structure_ok(row) and row["kernel"] == 12, "the VB point e_3 + e_20 has another pencil")
+    messages.append(
+        f"mutant base e3 + e20: kernel {row['kernel']}, pencil {row['pencil_dimension']}, "
+        f"commutant {row['commutant_dimension']}, closure {row['lie_closure_dimension']}"
+    )
     return messages
 
 

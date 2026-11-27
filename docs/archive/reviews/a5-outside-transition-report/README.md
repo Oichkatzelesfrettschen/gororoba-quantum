@@ -56,8 +56,8 @@ recomputed claims (paths, real roots, limiting planes, Pfaffian, overlap law, co
 | Report statement | Finding |
 |---|---|
 | gamma_3 reaches nullity 16 at s = 1 | also at s = -1, in the other orbit N+ (A5-651) |
-| "two exact 4D sectors" at e_1 + e_10, with the direct projection between them zero, as an obstruction | the two planes are one antipodal pair of a family: limiting planes depend on the normal u x v of the direction, with trace(P P') = 2 (1 + cos angle); six planes come from two-term directions alone, and pairs at a right angle of normals overlap with trace 2 (A5-655) |
-| each junction "identifies four additional annihilator directions" | the rank-4 compression identifies the four kernel directions that leave; the step 4 at W8 has a mechanism: the compression commutes with a quaternion algebra on the kernel (A5-654) |
+| "two exact 4D sectors" at e_1 + e_10, with the direct projection between them zero, as an obstruction | the two planes are one antipodal pair of a 2-sphere of limiting planes, the isotropic lines of C^3, with trace(P P') = 2 (1 + n.n'); six planes come from two-term directions alone, and planes of perpendicular normals overlap with trace 2 (A5-655) |
+| each junction "identifies four additional annihilator directions" | the rank-4 compression identifies the four kernel directions that leave; at e_1 + e_10 the step 4 has a mechanism: the commutant of the compression pencil is a quaternion algebra, so a compression has rank 0, 4 or 8 (A5-654); the four-term W8 point has a scalar commutant (A5-659) |
 | the section of Q and G is "an exact section" of the real variety | it is a section at the complex point mu = i; the real zero divisors of that plane need mu real |
 | the paper has "essentially solved" quantum gravity | a preprint that proposes a quantization of vacuum gravity; no independent verification is on record |
 
@@ -73,10 +73,44 @@ recomputed claims (paths, real roots, limiting planes, Pfaffian, overlap law, co
 
 ## New in this review (recomputed; first recorded here)
 
-At e_1 + e_10 the compression forms span a seven-dimensional pencil with a four-dimensional commutant and a
-ten-dimensional Lie closure, and the Pfaffian of the pencil is 16 (Q^2 - 4 Delta) on (u, m, v) in R^3 + R + R^3
-(A5-654). The real rank-4 directions are the cone over V_2(R^3), and limiting planes obey the overlap law on ten
-rational directions (A5-655). The reading as a 2-sphere of quaternionic lines is a hypothesis (A5-656), and the
-pencils at VB and N+- are open (A5-657). The prior-art search of
+At e_1 + e_10 the compression forms span a seven-dimensional pencil whose commutant is a quaternion algebra and whose
+Lie closure is sp(2), and the Pfaffian of the pencil is 16 (Q^2 - 4 Delta) on (u, m, v) in R^3 + R + R^3, the squared
+modulus of the tangent cone of G at m = 0 (A5-654). The real rank-4 directions are the isotropic vectors of C^3, and
+the limiting planes of their lines are the ranges of (I + n.E)/2 for three anticommuting involutions E_k, with the
+overlap law on the whole cone (A5-655). The structure is a property of the real point: a four-term W8 point has a
+scalar commutant (A5-659), which refutes the hypothesis that every W8 point is quaternionic (A5-656). Curved arcs
+and the pencils at VB and N+- are open (A5-657, A5-660).
+
+## Red team
+
+The owner chose no local reviewer and three red-teamers on one brief (claims with falsifiers, read-only, no
+computation on the host). Head under review: `b2a2d6d4d`.
+
+| Red-teamer | Verdict of the run |
+|---|---|
+| `agy` on gemini-4-neon-medium (standing session) | report returned |
+| `opencode` on opencode/deepseek-v4.1-flash-free | report returned |
+| `opencode` on opencode-go/glm-5.3 | not run: the weekly allowance meter read 79 percent, the script's ceiling |
+
+Each finding was checked against the source; "fixed" names the change in the head that follows.
+
+| Finding | Source | Verdict |
+|---|---|---|
+| Commutant dimension 4 and closure dimension 10 fit other algebra pairs (C + C on C^3 + C, R^4 on R^5 + R^3), so "quaternion algebra" was unsupported | Neon | confirmed; fixed: `structure_item` requires a noncommutative commutant with a negative-definite trace form on its traceless part |
+| The Pfaffian at m = 0 is the squared modulus of the s^2 coefficient of G along the direction, with zeta = u + i v on (z_1, z_2, z_8) | Neon | confirmed and sharpened by computation: G = s^2 (zeta.zeta)(4 + 4 s zeta_1 + s^2 zeta.zeta) (`tangent_cone`) |
+| Conjecture: P = (I + n.E)/2 with three anticommuting involutions proves the overlap law | Neon | confirmed: the Clifford relations hold and the kernel identity holds modulo the Stiefel ideal (`clifford`) |
+| The pencil structure holds at every W8 point | Neon (conjecture), DeepSeek (C3) | refuted by the run each proposed: the four-term point has commutant 1 and closure 28 (A5-659) |
+| README sentences without a `require` (exceptional polynomial, junction kernels, list lengths, coordinate and skew units) | both | confirmed; fixed |
+| Self-test mutant "u = v" required only rank != 4 | DeepSeek | confirmed; fixed to rank == 8 |
+| Mutant message "a unit below the doubling unit" for unit 26 | both | confirmed; fixed in the script and in A5-658 |
+| The constant 16 depends on the kernel frame | DeepSeek | confirmed; README and A5-654 name the frame |
+| "The Pfaffian is an unrecorded restriction, not a tangent-cone statement" | DeepSeek | refuted by the derivation above |
+| The rank-4 cone includes the apex, where the rank is 0 | DeepSeek | confirmed; wording fixed |
+| `self_product_zero` adds nothing | DeepSeek | confirmed; replaced by idempotence and trace 4 |
+| `nonzero_ordered_triples` counts index pairs | DeepSeek | confirmed; renamed `ordered_unit_pairs` |
+| The six two-term planes are the axis planes | DeepSeek (C2) | confirmed by a `require` |
+| No self-test mutant for the pencil items | Neon | partly fixed: the VB base point and the reversed normal are mutants; a mutant of the Pfaffian identity is not added |
+| `self_test` rebinds the module global PATHS, which a spawned pool would ignore | Neon | boundary: the self-test calls the items in-process; no change |
+ The prior-art search of
 [the annihilator-variety note](../../../notes/topics/cd-annihilator-varieties-prior-art.md) found no work on limits
 of annihilators or closures of strata in a Grassmannian; that bound is the scope of the novelty claim.

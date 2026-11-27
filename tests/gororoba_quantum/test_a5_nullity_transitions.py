@@ -34,7 +34,7 @@ def test_gram_identity_holds_for_the_doubling_unit_only() -> None:
 
 
 def test_three_form_alternates() -> None:
-    expect(record.three_form_item(16), {"dimension": 16, "nonzero_ordered_triples": 210, "alternation_failures": 0})
+    expect(record.three_form_item(16), {"dimension": 16, "ordered_unit_pairs": 210, "alternation_failures": 0})
 
 
 def test_validate_rejects_a_convention_mismatch() -> None:
