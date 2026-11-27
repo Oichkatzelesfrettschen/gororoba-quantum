@@ -41,8 +41,9 @@ The items of pool row MATH-71 and the reduction of pool row MATH-73, each comput
    - *Degenerate triples.* phi = 1 outside Gamma = {(x, y, z): x, y nonzero, x != y, z not in {0, x, y, x ^ y}}. A triple
      of the doubled group outside its Gamma projects to a triple of G outside Gamma, where phi = 1 by induction, so its
      cocycle is the R product of its case. That product depends only on which sums of x, y, z vanish, and every such
-     pattern occurs in Z_2^3, so the table at D = 16 (phi = 1 off Gamma, `tests/scripts/test_cd_sign_quasialgebra.py`)
-     settles every n; D = 2 and 4 are associative.
+     pattern occurs in Z_2^3, so the tables at D = 8 and D = 16 (phi = 1 off Gamma at both, hence every R product
+     of the doubling equal to 1; `tests/scripts/test_cd_sign_quasialgebra.py`) settle every n; D = 2 and 4 are
+     associative.
    - *The count.* On Gamma every R factor is -1: the cases (x, y, z), (x, vy, z), (vx, y, vz) and (vx, vy, vz) keep phi
      and the other four negate it, giving 4N + 4(|Gamma| - N) = 4(D - 1)(D - 2)(D - 4). Off Gamma phi = 1 and the case
      (x, y, z) adds none. Each one-factor case adds 4(D - 1)(D - 2): for R(y, z), the pairs y, z nonzero and distinct

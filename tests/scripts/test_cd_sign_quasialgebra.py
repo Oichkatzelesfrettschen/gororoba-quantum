@@ -63,7 +63,7 @@ def test_cd_sign_is_the_transposed_majid_cochain(n: int) -> None:
         raise AssertionError(f"cd_sign differs from the transposed cochain at n = {n}")
 
 
-@pytest.mark.parametrize("n", range(1, 6))
+@pytest.mark.parametrize("n", range(1, 7))
 def test_phi_is_one_off_gamma_and_the_count_follows_the_formula(n: int) -> None:
     dim = 1 << n
     count, degenerate = census(cd_table(n))
