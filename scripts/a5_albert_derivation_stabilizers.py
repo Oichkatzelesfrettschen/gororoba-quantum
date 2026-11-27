@@ -155,7 +155,7 @@ def jordan_algebra(sign: Sign, d: int):
 def der_system(alg: Alg) -> list[dict[int, int]]:
     """Rows of D(e_i e_j) - D(e_i) e_j - e_i D(e_j) = 0 in the unknowns D[b][a] (index b * n + a)."""
     n = alg.n
-    rows = []
+    rows: list[dict[int, int]] = []
     for i in range(n):
         for j in range(i if alg.commutative else 0, n):
             eq: list[dict[int, int]] = [{} for _ in range(n)]
