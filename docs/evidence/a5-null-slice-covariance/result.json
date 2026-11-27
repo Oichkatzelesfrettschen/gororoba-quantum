@@ -14,9 +14,15 @@
   "reference": 14,
   "union": 14
  },
+ "a8_against_g2": {
+  "covariant": 14,
+  "reference": 14,
+  "union": 14
+ },
  "derivation_type": {
   "A6": 14,
-  "A7": 14
+  "A7": 14,
+  "A8": 14
  },
  "octonion_derivations": 14,
  "schema": "a5-null-slice-covariance-blocks/1",
@@ -42,6 +48,14 @@
    "boosts": 0,
    "constraint_rank": 14,
    "constraint_rows": 1100,
+   "generators": 28,
+   "rotations": 14
+  },
+  "A8": {
+   "all": 14,
+   "boosts": 0,
+   "constraint_rank": 14,
+   "constraint_rows": 1996,
    "generators": 28,
    "rotations": 14
   }
