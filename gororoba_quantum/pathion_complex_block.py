@@ -4,8 +4,8 @@ pathion_coset_block builds the real blocks (t = +-1) of the pair-resolved kernel
 e_i + t e_j differs from the block of e_i + e_j by the factor t on the selector-one branch and on every upper member of
 an XOR pair (the k with bit h of m set, h the highest set bit of m). With a basis whose only vector carrying bit h is
 b_0 = m (``normalized_basis``), the upper indicator of block input x is the parity c_0 XOR x_0, so the factor is one
-phase gate on data qubit 0, P(PHASE) for c_0 = 0 and P(-PHASE) for c_0 = 1 up to a global phase, and one P(PHASE) on the
-selector. The block circuit is the real block circuit with those two gates: one gate skeleton serves t = 1, i and -i
+phase gate on data qubit 0, RZ(PHASE) for c_0 = 0 and RZ(-PHASE) for c_0 = 1 up to a global phase, and one RZ(PHASE) on
+the selector. The block circuit is the real block circuit with those two gates: one gate skeleton serves t = 1, i and -i
 (PHASE = 0, pi/2, -pi/2) and both orientations (ORIENTATION = 0, pi), so the transpiled skeletons are identical.
 
 The selector marginal of a block, P_plus(s = 0) - P_minus(s = 0), is the mean of its output contrasts c(y), and
@@ -74,9 +74,15 @@ def block_template(block: pcb.Block, *, plain: bool = False, measure: bool = Tru
     qc = QuantumCircuit(d + 1, d + 1 if measure else 0)
     qc.h(range(d))
     qc.append(DiagonalGate(list(first)), range(d))
-    qc.p(ORIENTATION + sign * PHASE, 0)
+    # The two phase gates stay Z rotations behind barriers, so a compile keeps them apart from the neighboring
+    # rotations and a Z rotation moves to the end of the circuit as a shift of the phase of every later PRX.
+    qc.barrier(0)
+    qc.rz(ORIENTATION + sign * PHASE, 0)
+    qc.barrier(0)
     qc.h(d)
-    qc.p(PHASE, d)
+    qc.barrier(d)
+    qc.rz(PHASE, d)
+    qc.barrier(d)
     qc.append(DiagonalGate([1.0] * (1 << d) + list(second)), range(d + 1))
     qc.cx(d, 0)
     qc.h(d)

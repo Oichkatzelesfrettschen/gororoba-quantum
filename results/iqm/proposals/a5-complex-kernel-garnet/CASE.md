@@ -5,7 +5,7 @@ The case is ledger row A5-632 (pool row QPU-68). It spends part of the 11.75 IQM
 ceiling of the job is 10.5 credits, within the 11.0 the owner set.
 
 Backend `iqm:garnet`, calibration set `a0e725eb-a020-43d3-8aaf-072b926e425a` (created 2026-11-22T03:02:20Z; copy in the
-case's `calibration/`). One job of 80 circuits at 8,500 shots (680,000 executions; the limits are 100 circuits and 2,000,000
+case's `calibration/`). One job of 80 circuits at 7,000 shots (560,000 executions; the limits are 100 circuits and 2,000,000
 executions), built by `scripts/iqm_complex_kernel_case.py`. The digest of `results/iqm/cases/a5-complex-kernel-garnet/cases.json`
 is in the pull request body. A live rebuild (`build --live`, a free read of the current calibration set) changes it, and an
 approval names the digest after that rebuild.
@@ -34,27 +34,41 @@ the chip answers it: a simulation returns the ideal law it is built from.
 
 - A coset block of dimension d holds the 2^d inputs of a coset of a subspace V of (Z/2)^5 that contains m = i XOR j, on d data
   qubits and the selector. The block law is the six-qubit law of the complex map restricted to the output coset
-  (`gororoba_quantum/pathion_complex_block.py`; exact statevector agreement to 3e-16 on every coset, phase and orientation of the
-  four operands, and with the folded-diagonal law, `tests/test_pathion_complex_block.py`).
+  (`gororoba_quantum/pathion_complex_block.py`; exact statevector agreement to 3.7e-15 at most on every coset, phase and
+  orientation of the four operands, and with the folded-diagonal law, `tests/test_pathion_complex_block.py`).
 - The selector-zero difference D = P_plus(s = 0) - P_minus(s = 0) of a block is the mean of its output contrasts, and for the
   chosen subspaces every coset reads D = N / 16 exactly, for t = 1, i and -i. A single block therefore reads the nullity N of
   L_(e_i + t e_j) over C. The strata fix N in {0, 4, 8, 12, 16}, so N / 16 has the denominator 2^(d-1) with d = 1 (N = 0 or 16),
   2 (N = 8) and 3 (N = 4 or 12). The audit test finds, for each of the 465 pairs of imaginary units, a subspace of that
   dimension whose cosets all read N exactly (closed-form amplitudes to 1e-9 and exact integer nullities, every pair).
-- Real and complex circuits of an operand share one gate skeleton: the complex circuit adds one P(phase) on data qubit 0 and one
-  on the selector to the real circuit, the basis having bit h of m on vector 0 alone. The compiled circuits of t = 1, i and
-  orientations + and - differ in rotation angles alone (a test). The plain-phase kind drops the pair sign s_k of the oracle and
-  has its own compile.
 - Complement law (A5-629): D_complex + D_real = 1 on every operand, so the pair measures the visibility V = D_c + D_r with no
   reference to the complex sign table.
 
-## Circuits, order and operands
+## Synthesis: real and complex differ in PRX phase alone
 
-| Operand | Pair | Stratum real/complex | Circuit qubits | Physical qubits | CZ (real, complex; plain) | Kinds |
+The earlier compile merged the two phase gates of the complex circuit into the neighboring single-qubit runs. Measured on the
+earlier circuits: 2 PRX gates of every operand (of 12, 84, 107 and 45) differed in amplitude between the real and complex
+circuits and none in phase. A Z rotation between two rotations about X changes the net rotation's amplitude, so a PRX amplitude
+error then acted differently on the two kinds.
+
+The block template now keeps each phase gate as an RZ behind barriers. After the compile, every Z rotation moves to the end of
+the circuit as a shift of the phase of each later PRX (r(theta, phi) after Rz(a) equals Rz(a) after r(theta, phi - a); CZ
+commutes with Z; a Z before a measure changes no outcome), so the circuits that run contain PRX, CZ and measure alone. Real and
+complex kinds, and both orientations, carry identical PRX amplitudes and CZ gates and differ in PRX phases (the builder
+refuses a circuit that breaks this, and a test checks the emitted files). The plain-phase kind has its own compile; its
+coset is the one whose plain circuit compiles to the CZ count of the real kind (19 against 19 at s412, 1 against 1 at s016).
+
+## Operands, circuits and order
+
+All four operands run on one patch, the star of QB11, QB5, QB6 and QB7 about QB6 (calibrated couplers QB6-QB11, QB6-QB5,
+QB6-QB7), so the null operand's offset applies to the others. The layout of each operand is the injective placement on the patch
+of the largest predicted visibility.
+
+| Operand | Pair | Stratum real/complex | Circuit qubits | Physical qubits | CZ (every kind) | Kinds |
 |---|---|---|---|---|---|---|
-| s016 | e_1 + e_3 | 0/16 | 2 | QB1, QB2 | 1; 1 | real, complex, plain |
-| s412 | e_1 + e_26 | 4/12 | 4 | QB11, QB5, QB6, QB7 | 23; 29 | real, complex, plain |
-| s808 | e_1 + e_10 | 8/8 | 3 | QB1, QB2, QB4, QB5 | 11 | real, complex |
+| s016 | e_1 + e_3 | 0/16 | 2 | QB11, QB6 | 1 | real, complex, plain |
+| s412 | e_1 + e_26 | 4/12 | 4 | QB11, QB5, QB6, QB7 | 19 | real, complex, plain |
+| s808 | e_1 + e_10 | 8/8 | 3 | QB11, QB6, QB7 | 9 | real, complex |
 | s124 | e_1 + e_18 | 12/4 | 4 | QB11, QB5, QB6, QB7 | 29 | real, complex |
 
 Each kind runs in the orientations + and -, ordered +, -, -, + (a quad), once per kind in the first half and in reverse kind order
@@ -63,55 +77,99 @@ copies per orientation. s808 is the null operand: its real and complex readings 
 vanishes. The plain kind sits at the two operands where the six-qubit mutation is recorded (-14 and -2 as tile sums over all
 cosets; the chosen coset reads -1 at s016 and -0.75 at s412 against +1 and +0.75 for the complex kind). The qubit QB12 is outside
 every layout because the calibration set holds no herald-conditioned readout for it. Eight transpiler seeds (ANU draw
-2026-11-27T222523Z, indices 10 to 17) give identical CZ counts and predicted visibilities at s016, s412 and s124 and two distinct values at s808, so the seeds
-do not search the layout (s808 routes through one extra physical qubit).
+2026-11-27T222523Z, indices 10 to 17) give identical CZ counts and predicted visibilities at the chosen layout of every operand, so
+the seeds do not search anything beyond the placements.
 
 ## Estimators and the preregistered rule
 
-(`gororoba_quantum/a5_complex_kernel_decision.py`; the case's `prediction.json` carries the predictions and the thresholds.)
+(`gororoba_quantum/a5_complex_kernel_decision.py`; the case's `prediction.json` carries the predictions.)
 
 - D of a kind is the difference of the selector-zero frequencies of the kept (herald zeros) shots of the + and - orientations,
   pooled over the four copies; its variance is the binomial variance times phi = 1.54, the 95 percent upper bound of the retained
   Garnet copy dispersion of the grover-plane case.
-- Per operand: the raw double difference DD = D_c - D_r (ideal (2 D_c - 1) V; no division); V = D_c + D_r; the visibility-corrected
-  nullity N_c = 16 D_c / V with delta-method standard error, undefined unless V exceeds 5 standard errors.
+- Per operand: the raw double difference DD = D_c - D_r (ideal (2 D_c - 1) V; no division); V = D_c + D_r; r = DD / V and the
+  nullity N_c = 8 + 8 r = 16 D_c / V with delta-method standard error, undefined unless V exceeds 5 standard errors. At s016
+  D_r = 0 makes N_c identically 16 for any D_c > 0, so the visibility test carries that operand's resolution.
+- Null subtraction (the hardware-probe rule, odd(t) - odd(0), in place of a gate): r_null is r of s808, whose ideal value is 0;
+  the reading of each discriminating operand is N_c' = 8 + 8 (r - r_null) with the standard error of both. The null's
+  visibility must resolve; its offset is subtracted, not bounded.
 - Mutation reading D_p / V at s016 and s412, with the standard error of the ratio.
-- Side of an operand: "complex-side" when (N_c - 8) has the sign of the complex reading and lies 5 standard errors from 8,
+- Side of an operand: "complex-side" when (N_c' - 8) has the sign of the complex reading and lies 5 standard errors from 8,
   "real-side" for the opposite, "unresolved" otherwise (N_r + N_c = 16 on every pair, so both readings split at 8).
-- Verdict "complex strata" when s016, s412 and s124 are complex-side (above, above, below 8), the plain readings are negative by
-  5 standard errors at s016 and s412, and |DD| / V at s808 stays within 0.10. "real strata" when the three read on the real side.
+- Verdict "complex strata" when s016, s412 and s124 are complex-side (above, above, below 8), the null visibility resolves and the
+  plain readings are negative by 5 standard errors at s016 and s412. "real strata" when the three read on the real side.
   "complex side, a control fails" when the three read complex-side and a control fails. "no reading" otherwise.
 - The estimators never read the ideal sign table of the complex circuit. Tests feed them the real-map law in place of the complex
-  circuit (reads N_c = 8 or an unresolved visibility, verdict "no reading"), the plain law (unresolved, "no reading"), the
-  swapped kinds ("real strata") and a failed mutation control ("complex side, a control fails").
+  circuit (reads N_c = 8 or an unresolved visibility, verdict "no reading"), the plain law ("no reading"), the swapped kinds
+  ("real strata"), a failed mutation control ("complex side, a control fails") and an unresolved null ("no reading").
+- The run reader `scripts/iqm_complex_kernel_analyze.py RUN_DIR` validates a retained run with `iqm_records.read_run`, refuses a
+  mock run, a run whose cases.json or prediction.json differs from the retained case and a run compiled against another
+  calibration set, tallies the kept shots at the selector bit of each measure locus, applies `analyze` and reports the kept
+  fraction, the billed seconds and the first-half against second-half z of each kind. Tests run it on synthetic run records built
+  from the predicted laws.
 
 ## Predictions and power
 
-Exact density matrix of the touched qubits of each compiled circuit under the case's calibration copy (no sampling), planned at
-a kept fraction of 0.5 of the shots (17,000 kept shots per orientation of a kind; the run's kept counts decide the analysis).
+Exact density matrix of the touched qubits of each compiled circuit under the case's calibration copy (no sampling; ASAP idle
+relaxation, as the idle-schedule case resolved on Garnet at 13 to 59 standard errors,
+[design](../../../../docs/design/iqm-garnet-idle-schedule-train-readout.md)), planned at a kept fraction of 0.5 of the shots
+(14,000 kept shots per orientation of a kind; the run's kept counts decide the analysis).
 
-| Operand | D_c ideal, predicted | D_r ideal, predicted | V predicted | DD predicted | N_c ideal, predicted (SE) | z from 8 |
-|---|---|---|---|---|---|---|
-| s016 | 1.000, 0.980 | 0.000, 0.000 | 0.980 | 0.980 | 16, 16.00 (0.11) | 72.8 |
-| s412 | 0.750, 0.529 | 0.250, 0.170 | 0.699 | 0.359 | 12, 12.11 (0.12) | 34.5 |
-| s808 | 0.500, 0.449 | 0.500, 0.448 | 0.897 | 0.0015 | 8, 8.01 (0.08) | 0.18 |
-| s124 | 0.250, 0.158 | 0.750, 0.481 | 0.639 | -0.323 | 4, 3.96 (0.13) | 31.0 |
+| Operand | D_c ideal, predicted | D_r ideal, predicted | V predicted | N_c ideal, predicted | N_c' predicted (SE) |
+|---|---|---|---|---|---|
+| s016 | 1.000, 0.974 | 0.000, 0.000 | 0.974 | 16, 16.00 | 16.03 (0.15) |
+| s412 | 0.750, 0.565 | 0.250, 0.186 | 0.751 | 12, 12.04 | 12.07 (0.15) |
+| s808 | 0.500, 0.427 | 0.500, 0.430 | 0.857 | 8, 7.97 | null: r_null = -0.0039 |
+| s124 | 0.250, 0.154 | 0.750, 0.480 | 0.634 | 4, 3.88 | 3.92 (0.17) |
 
-The plain kind reads D_p / V = -1.00 at s016 and -0.70 at s412 in the model (ideal -1 and -0.75). Under the model the
-probability that all three discriminating operands and both mutation readings reach 5 standard errors is 1.0 (normal
-approximation, independent circuits). The z of each discriminating operand scales with V: the case still resolves 5 standard
-errors at an absolute visibility of 0.067 (s016), 0.101 (s412) and 0.103 (s124), against the predicted 0.98, 0.70 and 0.64. The
-model has no coherent error or leakage, so the predicted visibility is an upper bound, and the shots buy the margin.
+The plain kind reads D_p / V = -1.00 at s016 and -0.75 at s412. The z of the six conditions of the complex verdict (three
+discriminating operands, two mutation readings, the null visibility) are 53.4, 27.1, 24.0, 125.4, 60.0 and 90.4, so the
+probability that all six reach 5 standard errors is 1.0 under the model (normal approximation, independent circuits). The
+model has no coherent error, so its visibility is an upper bound; the audit below measures the coherent errors.
+
+## Coherent-error audit (first order and beyond, through the noise model)
+
+As `scripts/iqm_probe_audit.py` does, each error enters after the scheduling, and every kind and orientation of the case runs
+through the exact density matrix at the error; the predicted counts pass through the preregistered rule
+(`prediction.json`, `coherent_audit`). Errors: every PRX angle times 1 + e for e = +-1 to +-5 percent; an RZZ(+-0.05 rad) after
+every CZ; the ALAP schedule.
+
+| Error | Verdict | r_null | N_c' s412 (ideal 12) | N_c' s124 (ideal 4) | N_c s412, s124 without subtraction |
+|---|---|---|---|---|---|
+| none | complex strata | -0.004 | 12.07 | 3.92 | 12.04, 3.88 |
+| PRX +1 percent | complex strata | -0.000 | 11.88 | 3.65 | 11.87, 3.64 |
+| PRX +2 percent | complex strata | 0.001 | 11.52 | 3.49 | 11.53, 3.50 |
+| PRX +3 percent | complex strata | 0.001 | 11.05 | 3.47 | 11.05, 3.47 |
+| PRX +5 percent | complex strata | 0.003 | 9.92 | 3.97 | 9.94, 4.00 |
+| PRX -1 percent | complex strata | -0.012 | 12.09 | 4.32 | 11.99, 4.23 |
+| PRX -2 percent | complex strata | -0.027 | 11.94 | 4.92 | 11.73, 4.71 |
+| PRX -3 percent | complex strata | -0.054 | 11.69 | 5.84 | 11.26, 5.41 |
+| PRX -4 percent | no reading | -0.098 | 11.44 | 7.34 | 10.66, 6.55 |
+| PRX -5 percent | no reading | -0.172 | 11.38 | 10.25 | 10.00, 8.87 |
+| RZZ +0.05 rad | complex strata | -0.007 | 12.25 | 4.05 | 12.19, 3.99 |
+| RZZ -0.05 rad | complex strata | 0.008 | 11.94 | 3.84 | 12.00, 3.90 |
+| ALAP schedule | complex strata | -0.001 | 12.06 | 3.91 | 12.05, 3.90 |
+
+Reading. The synthesis removes the amplitude difference between the kinds, and a PRX amplitude error still enters the readings:
+it rotates about axes that differ between the kinds, since their PRX phases differ. The verdict (the side of 8) holds for PRX
+amplitude errors from -3 to +5 percent and for RZZ of 0.05 rad, and fails to "no reading" at -4 percent and below, where r_null
+and the s124 reading cross toward 8. The case proposes the bound: the verdict is valid for a PRX amplitude error of at most 3
+percent in magnitude; the readings N_c' carry biases of up to -1.0 (s412 at +3 percent) and +1.8 (s124 at -3 percent), so they are
+side-of-8 decisions, not values of the nullity to better than about 2. The null subtraction follows the hardware-probe rule; it
+lowers the bias at s412 by 0.4 at -3 percent and raises it by 0.4 at s124, where the null's offset adds to a bias of the
+same sign. Garnet's PRX amplitude error is not measured here; the 3 percent bound is a
+hypothesis about the device. The null's offset r_null reports a negative error (0.054 in magnitude at -3 percent, 0.098 at
+-4 percent) and does not report a positive one (0.003 at +5 percent, where s412 reads 9.9).
 
 ## Cost
 
 Billing v4 sizing (`gororoba_quantum/grover_plane_sizing.py`, inputs pinned in
 `docs/evidence/iqm-garnet-grover-plane/billing_v4_inputs.json`): the three Garnet models v3, v4_max and v4_sum price the job at
-10.37, 9.85 and 9.43 s of execution, expected runtime 10.80 s, expected billed 6.0 credits under each. The ceiling is the largest
-of the models' all-jobs bands: 10.5 credits (21 billed seconds, cancel threshold 20 s); 9.0 credits under the Grover-jobs band.
-The shot count is the largest in steps of 500 whose ceiling stays within 11.0. Margin of the cancel threshold over the longest
-expected runtime: 9.2 s at 1 times, 3.8 s at 1.5 times and -3.8 s at 2.2 times (the sibling Emerald run's overrun), which the
-ceiling does not cover: such a run would be cancelled and billed.
+8.43, 8.00 and 7.65 s of execution, expected runtime 8.87 s, expected billed 5.5, 5.0 and 5.0 credits. The all-jobs band prices
+the ceiling at 9.0 credits at most; the job carries 10.5 credits (21 billed seconds, cancel threshold 20 s), within the owner's
+11.0, so a 2.2 times overrun of the runtime (the overrun of the sibling Emerald run, 19.51 s) stays under the threshold. The
+shot count is the largest in steps of 500 for which the band ceiling stays within 10.5 and that overrun fits: 7,000. Margin of
+the cancel threshold over the runtime: 11.1 s at 1 times, 6.7 s at 1.5 times and 0.49 s at 2.2 times.
 
 DECISION NEEDED (owner): the `garnet:mock` compile estimate (`execution_runtime_estimate_seconds`) is required before approval
 and is not read here; keep 10.5 credits or raise it to 11.0 after reading it. The calibration set above was created 2026-11-22;
@@ -120,9 +178,7 @@ a job pins its set and fails if Garnet no longer holds it, in which case a live 
 ## Steps before a submission
 
 `build --live` (free read of the current calibration set; changes the digest), owner approval of the digest for the mock, mock run
-and collect, owner approval of the identical digest for Garnet, `submit`, `collect`, analysis. Not run. A reader of the
-collected run records that applies `a5_complex_kernel_decision.analyze` to the kept counts at bit d of each measure locus is not
-written; the estimators are tested on synthetic counts.
+and collect, owner approval of the identical digest for Garnet, `submit`, `collect`, `scripts/iqm_complex_kernel_analyze.py`. Not run.
 
 ## Falsifiers
 
@@ -130,8 +186,7 @@ written; the estimators are tested on synthetic counts.
   a discriminating operand falls under 5 standard errors.
 - A failed mutation control (plain reading not negative at 5 standard errors at s016 or s412): the pair-sign diagonal does not
   determine the reading, so the complex readings are not the nullity read through the sign table.
-- A null operand outside 0.10 of its visibility: the S gates alone shift the reading by that much at a stratum where the ideal
-  complex and real readings coincide, a compile or position effect that confounds the three discriminating operands.
+- An unresolved null visibility: the null subtraction has no footing, and the complex verdict is not read.
 
 ## Retention plan
 
@@ -142,13 +197,11 @@ verdict and the estimates in the change that analyzes the run; the QRNG allocati
 
 ## Residual risk
 
-- The layout is not searched: eight transpiler seeds give one compile at three operands. s412 and s124 share the patch QB11, QB5,
-  QB6, QB7, so a defect of the patch affects both.
-- The model has no coherent error, leakage or crosstalk. The depolarizing visibility bound is an upper estimate, and the
-  mutation and null controls guard the reading against an offset that is not the stratum.
+- The layout search covers the patch only; s412 and s124 share the star, so a defect of the patch affects every operand (the
+  null subtraction absorbs a common offset, and the mutation controls guard the sign).
+- The model has no leakage or crosstalk, and the audit covers PRX amplitude, a CZ ZZ rotation and the schedule, each alone.
 - The kept fraction of the heralded shots is planned at 0.5 and unmeasured for these qubit sets.
 - phi = 1.54 is a depth-1 bound of the Grover case applied to these circuits.
-- The model's N_c bias is at most 0.11 (s412); a device offset that is arm-asymmetric enters D and cancels only to first order.
-- The 2.2 times overrun is not covered by the ceiling (above).
+- The 2.2 times overrun fits with 0.49 s to spare; a larger overrun is cancelled and billed.
 - The block-dimension law and the complement-law visibility are checked in exact arithmetic on the repository's A_5 tables; their
   novelty is bounded by the code and notes of this repository, and no literature search was made for them.

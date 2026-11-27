@@ -2,81 +2,11 @@
  "instructions": [
   {
    "args": {
-    "angle": -1.5707963268,
-    "phase": -3.1415926536
-   },
-   "locus": [
-    "QB1"
-   ],
-   "name": "prx"
-  },
-  {
-   "args": {
-    "angle": 3.1415926536,
-    "phase": -0.7853981634
-   },
-   "locus": [
-    "QB1"
-   ],
-   "name": "prx"
-  },
-  {
-   "args": {
-    "angle": -0.0,
+    "angle": 1.5707963268,
     "phase": 1.5707963268
    },
    "locus": [
-    "QB1"
-   ],
-   "name": "prx"
-  },
-  {
-   "args": {
-    "angle": 3.1415926536,
-    "phase": -3.1415926536
-   },
-   "locus": [
-    "QB1"
-   ],
-   "name": "prx"
-  },
-  {
-   "args": {
-    "angle": -1.5707963268,
-    "phase": -3.1415926536
-   },
-   "locus": [
-    "QB2"
-   ],
-   "name": "prx"
-  },
-  {
-   "args": {
-    "angle": 3.1415926536,
-    "phase": -0.7853981634
-   },
-   "locus": [
-    "QB2"
-   ],
-   "name": "prx"
-  },
-  {
-   "args": {
-    "angle": -0.0,
-    "phase": 1.5707963268
-   },
-   "locus": [
-    "QB2"
-   ],
-   "name": "prx"
-  },
-  {
-   "args": {
-    "angle": -1.5707963268,
-    "phase": -3.1415926536
-   },
-   "locus": [
-    "QB2"
+    "QB11"
    ],
    "name": "prx"
   },
@@ -86,27 +16,47 @@
     "phase": 0.0
    },
    "locus": [
-    "QB2"
+    "QB11"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 1.5707963268,
+    "phase": 1.5707963268
+   },
+   "locus": [
+    "QB6"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 3.1415926536,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB6"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 1.5707963268,
+    "phase": -3.1415926536
+   },
+   "locus": [
+    "QB6"
    ],
    "name": "prx"
   },
   {
    "args": {},
    "locus": [
-    "QB2",
-    "QB1"
+    "QB11",
+    "QB6"
    ],
    "name": "cz"
-  },
-  {
-   "args": {
-    "angle": 1.5707963268,
-    "phase": 0.0
-   },
-   "locus": [
-    "QB1"
-   ],
-   "name": "prx"
   },
   {
    "args": {
@@ -114,7 +64,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB2"
+    "QB11"
    ],
    "name": "prx"
   },
@@ -124,7 +74,27 @@
     "phase": -2.3561944902
    },
    "locus": [
-    "QB2"
+    "QB11"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": -1.5707963268,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB6"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 3.1415926536,
+    "phase": -3.1415926536
+   },
+   "locus": [
+    "QB6"
    ],
    "name": "prx"
   },
@@ -133,8 +103,8 @@
     "key": "m"
    },
    "locus": [
-    "QB1",
-    "QB2"
+    "QB6",
+    "QB11"
    ],
    "name": "measure"
   }

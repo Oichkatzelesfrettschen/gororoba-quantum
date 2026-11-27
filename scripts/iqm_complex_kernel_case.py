@@ -5,8 +5,13 @@ The pathion kernel map reads the nullity N of L_(e_i + t e_j) over C from the se
 (gororoba_quantum/pathion_complex_block.py): the selector-zero difference of the two orientations is N / 16 on every
 coset of a subspace whose dimension d is 1 (N = 0 or 16), 3 (N = 4 or 12) or 2 (N = 8), so one block per operand
 reads N. Each operand runs the real kind (t = 1), the complex kind (t = i) and, at two operands, the plain-phase
-mutation, all in the orientations + and - in the order +, -, -, + and mirrored about the center of the job. The
-real and complex kinds share one compiled gate skeleton; only the rotation angles of two phase gates differ.
+mutation, all in the orientations + and - in the order +, -, -, + and mirrored about the center of the job.
+
+The four operands sit on one patch of four qubits (a star about QB6), so the null operand's offset applies to the
+others. The phase gates of a block are Z rotations behind barriers: after the compile every Z rotation moves to the end
+of the circuit as a shift of the phase of each later PRX, so the real and complex circuits (and both orientations) carry
+the same PRX amplitudes and CZ gates and differ in PRX phases alone. A PRX amplitude error is then the same
+over-rotation in every kind of an operand; the audit in prediction.json measures what remains of its effect.
 
 Usage: "$PYTHON" scripts/iqm_complex_kernel_case.py build DIR [--calibration SRC | --live]
        "$PYTHON" scripts/iqm_complex_kernel_case.py check DIR
@@ -17,6 +22,7 @@ from __future__ import annotations
 import argparse
 import copy
 import hashlib
+import itertools
 import json
 import math
 import shutil
@@ -27,13 +33,14 @@ from typing import Any
 
 import numpy as np
 from qiskit import QuantumCircuit, transpile
+from qiskit.circuit.library import RGate, RZZGate
 from qiskit.transpiler import CouplingMap
 from qiskit_aer import AerSimulator
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
 import iqm_sim  # noqa: E402
-from iqm_jobs import CASE_SCHEMA, dump  # noqa: E402
+from iqm_jobs import CANCEL_MARGIN, CASE_SCHEMA, ceiling_seconds, dump  # noqa: E402
 from iqm_platform import sha256  # noqa: E402
 from iqm_signed_probe import CALIBRATION_FILES, OPTIONS, relaxed, target_of  # noqa: E402
 
@@ -47,16 +54,24 @@ CASE = "a5-complex-kernel-garnet"
 QCS = ["garnet:mock", "garnet"]
 PRICED = {"garnet:mock": False, "garnet": True}
 RETAINED_CALIBRATION = ROOT / "results/iqm/cases/grover-plane-mirrored/calibration"
-CEILING_CREDITS = 11.0
+OWNER_BOUND_CREDITS = 11.0
+CEILING_CREDITS = 10.5
 MAX_CIRCUITS = 100
 MAX_EXECUTIONS = 2_000_000
-# Transpiler seeds of the layout search: ANU QRNG draw docs/evidence/anu_qrng/draw-2026-11-27T222523Z.json,
-# indices 10 to 17 (record docs/evidence/qrng_seeds/allocations.json).
+OVERRUNS = (1.0, 1.5, 2.2)
+# Transpiler seeds: ANU QRNG draw docs/evidence/anu_qrng/draw-2026-11-27T222523Z.json, indices 10 to 17 (record
+# docs/evidence/qrng_seeds/allocations.json). The first seed compiles the coset and layout search; the others are
+# trials at the chosen layout.
 TRANSPILER_SEEDS = (37071, 270, 57975, 32200, 15385, 32776, 46268, 18502)
 GATE_DURATIONS = {"prx": 16, "cz": 40, "measure": 480}
 # Planning floor of the herald-kept fraction of the shots (the analysis reads the kept counts of the run).
 PLANNING_RETENTION = 0.5
 ORIENTATIONS = ("plus", "minus", "minus", "plus")
+# One star of four qubits about QB6 holds every operand; local qubit n of a compile is PATCH[n].
+PATCH = ("QB11", "QB5", "QB6", "QB7")
+PATCH_EDGES = ((2, 0), (2, 1), (2, 3))
+PRX_ERRORS = (-0.05, -0.04, -0.03, -0.02, -0.01, 0.01, 0.02, 0.03, 0.04, 0.05)
+ZZ_ERRORS = (-0.05, 0.05)
 
 
 @dataclass(frozen=True)
@@ -79,18 +94,47 @@ OPERANDS = (
 KIND_ORDER = tuple((op.name, kind) for op in OPERANDS for kind in op.kinds)
 
 
+def patch_coupling() -> CouplingMap:
+    return CouplingMap([e for a, b in PATCH_EDGES for e in ((a, b), (b, a))])
+
+
+def structural_compile(block: pcb.Block, plain: bool, layout: tuple[int, ...], seed: int) -> QuantumCircuit:
+    """The symbolic template on the patch star in the basis r, cz and rz (calibration-free)."""
+    return transpile(
+        pcx.block_template(block, plain=plain),
+        basis_gates=["r", "cz", "rz"],
+        coupling_map=patch_coupling(),
+        optimization_level=3,
+        seed_transpiler=seed,
+        initial_layout=list(layout),
+    )
+
+
+def cz_of(circuit: QuantumCircuit) -> int:
+    return int(circuit.count_ops().get("cz", 0))
+
+
 def block_of(operand: Operand) -> pcb.Block:
-    """The block of the operand: the coset of its subspace on which the plain mutation reads lowest (the first coset
-    where the operand has no plain kind)."""
+    """The coset of the operand's subspace that carries its readings. Without a plain kind, the first coset. With one,
+    among the cosets where the plain reading is negative (the mutation flips the sign), the coset whose plain compile
+    has the CZ count closest to the real compile's (identity layout), then the fewest CZ, then the lowest plain
+    reading, then the lowest coset index."""
     i, j = operand.pair
     basis = pcx.normalized_basis((i, j, 1), operand.basis)
     cosets = pcb.cosets(basis)
     if "plain" not in operand.kinds:
         return pcb.Block(operand.name, (i, j, 1), basis, cosets[0])
-    best = min(
-        cosets, key=lambda k0: pcx.selector_marginal(pcb.Block(operand.name, (i, j, 1), basis, k0), 1j, plain=True)
-    )
-    return pcb.Block(operand.name, (i, j, 1), basis, best)
+    layout = tuple(range(len(basis) + 1))
+    rows = []
+    for coset in cosets:
+        block = pcb.Block(operand.name, (i, j, 1), basis, coset)
+        plain = pcx.selector_marginal(block, 1j, plain=True)
+        if plain >= -1e-9:
+            continue
+        real_cz = cz_of(structural_compile(block, False, layout, TRANSPILER_SEEDS[0]))
+        plain_cz = cz_of(structural_compile(block, True, layout, TRANSPILER_SEEDS[0]))
+        rows.append((abs(plain_cz - real_cz), real_cz, plain, coset))
+    return pcb.Block(operand.name, (i, j, 1), basis, min(rows)[3])
 
 
 def ideal_difference(block: pcb.Block, kind: str) -> float:
@@ -100,12 +144,90 @@ def ideal_difference(block: pcb.Block, kind: str) -> float:
     return pcx.selector_marginal(block, 1 if kind == "real" else 1j)
 
 
-def to_iqm(bound: QuantumCircuit, name: str, qubits: list[str]) -> dict[str, Any]:
-    """The native circuit: prx, cz and one joint measure under the key m in classical-bit order."""
+def usable_qubits(calibration: iqm_sim.Calibration) -> set[str]:
+    """Qubits of the calibration with herald-conditioned readout, relaxation times and a PRX fidelity."""
+    return {
+        q
+        for q in calibration.qubits
+        if all(
+            iqm_sim.READOUT_FIELD.format(q=q, kind=kind) + iqm_sim.HERALD_SUFFIX in calibration.values
+            for kind in ("error_0_to_1", "error_1_to_0")
+        )
+        and all(f"characterization.model.{q}.{kind}" in calibration.values for kind in ("t1_time", "t2_time"))
+        and (q in calibration.prx or iqm_sim.PRX_FIELD.format(q=q) in calibration.values)
+    }
+
+
+def check_patch(calibration: iqm_sim.Calibration) -> None:
+    """The patch qubits are usable and the patch edges are calibrated couplers."""
+    missing = [q for q in PATCH if q not in usable_qubits(calibration)]
+    edges = [frozenset((PATCH[a], PATCH[b])) for a, b in PATCH_EDGES]
+    absent = [sorted(e) for e in edges if e not in calibration.cz]
+    if missing or absent:
+        raise ValueError(f"patch {PATCH}: qubits {missing} are unusable and couplers {absent} are uncalibrated")
+
+
+def modeled(calibration: iqm_sim.Calibration) -> iqm_sim.Calibration:
+    """The calibration with the unheralded readout copied into any missing herald-conditioned field, so that the noise
+    model builds for the whole register; the patch holds every circuit, and check_patch keeps its qubits usable."""
+    clone = copy.copy(calibration)
+    clone.values = dict(calibration.values)
+    for q in calibration.qubits:
+        for kind in ("error_0_to_1", "error_1_to_0"):
+            field = iqm_sim.READOUT_FIELD.format(q=q, kind=kind)
+            clone.values.setdefault(field + iqm_sim.HERALD_SUFFIX, calibration.values[field])
+    return clone
+
+
+def eliminate_frames(circuit: QuantumCircuit) -> QuantumCircuit:
+    """The circuit with every Z rotation moved to the end and dropped: r(theta, phi) after Rz(a) equals Rz(a) after
+    r(theta, phi - a), CZ commutes with Z and a Z before a measurement is no change of the outcome. Barriers go."""
+    out = QuantumCircuit(*circuit.qregs, *circuit.cregs)
+    pending: dict[int, float] = {}
+    for item in circuit.data:
+        op = item.operation
+        qubits = [circuit.find_bit(q).index for q in item.qubits]
+        if op.name == "rz":
+            pending[qubits[0]] = pending.get(qubits[0], 0.0) + float(op.params[0])
+        elif op.name == "r":
+            theta, phi = (float(p) for p in op.params)
+            shifted = (phi - pending.get(qubits[0], 0.0) + math.pi) % (2 * math.pi) - math.pi
+            out.append(RGate(theta, shifted), item.qubits)
+        elif op.name != "barrier":
+            out.append(op, item.qubits, item.clbits)
+    return out
+
+
+def bind(compiled: QuantumCircuit, label: str, plus: bool) -> QuantumCircuit:
+    """The bound circuit on its patch qubits with the frames eliminated: PRX and CZ and measures alone."""
+    bound = compiled.assign_parameters({pcx.ORIENTATION: float(np.pi) if plus else 0.0, pcx.PHASE: pcx.ANGLES[label]})
+    return eliminate_frames(bound)
+
+
+def amplitudes(circuit: QuantumCircuit) -> list[tuple[str, tuple[int, ...], float]]:
+    """(name, qubits, theta) of every PRX and CZ in order; equal lists mean equal amplitudes."""
+    return [
+        (i.operation.name, tuple(circuit.find_bit(q).index for q in i.qubits), round(float(i.operation.params[0]), 12))
+        if i.operation.name == "r"
+        else (i.operation.name, tuple(circuit.find_bit(q).index for q in i.qubits), 0.0)
+        for i in circuit.data
+        if i.operation.name in ("r", "cz")
+    ]
+
+
+def embed(circuit: QuantumCircuit, calibration: iqm_sim.Calibration) -> QuantumCircuit:
+    """The patch circuit on the calibration's register (local qubit n on PATCH[n])."""
+    wide = QuantumCircuit(len(calibration.qubits), circuit.num_clbits)
+    wide.compose(circuit, qubits=[calibration.qubits.index(PATCH[n]) for n in range(circuit.num_qubits)], inplace=True)
+    return wide
+
+
+def to_iqm(bound: QuantumCircuit, name: str) -> dict[str, Any]:
+    """The native circuit: prx, cz and one joint measure under the key m in classical-bit order, on PATCH."""
     instructions: list[dict[str, Any]] = []
     measured: dict[int, str] = {}
     for item in bound.data:
-        op, locus = item.operation, [qubits[bound.find_bit(q).index] for q in item.qubits]
+        op, locus = item.operation, [PATCH[bound.find_bit(q).index] for q in item.qubits]
         if op.name == "r":
             angle, phase = (round(float(p), 10) for p in op.params)
             instructions.append({"name": "prx", "locus": locus, "args": {"angle": angle, "phase": phase}})
@@ -131,24 +253,20 @@ def schedule_nanoseconds(circuit: dict[str, Any]) -> int:
     return max(clock.values(), default=0) + GATE_DURATIONS["measure"]
 
 
-def modeled(calibration: iqm_sim.Calibration) -> iqm_sim.Calibration:
-    """The calibration with the unheralded readout copied into any missing herald-conditioned field, so that the noise
-    model builds for the whole register; usable_coupling keeps those qubits out of every layout."""
-    clone = copy.copy(calibration)
-    clone.values = dict(calibration.values)
-    for q in calibration.qubits:
-        for kind in ("error_0_to_1", "error_1_to_0"):
-            field = iqm_sim.READOUT_FIELD.format(q=q, kind=kind)
-            clone.values.setdefault(field + iqm_sim.HERALD_SUFFIX, calibration.values[field])
-    return clone
-
-
-def exact_law(bound: QuantumCircuit, calibration: iqm_sim.Calibration) -> np.ndarray:
-    """The outcome law over the measured bits (index = sum of bit c times 2^c) of the compiled circuit under the
-    calibration: depolarizing PRX and CZ, ASAP idle T1 and T2 relaxation, herald-conditioned readout. Exact density
-    matrix of the touched qubits; no sampling."""
+def exact_law(
+    bound: QuantumCircuit,
+    calibration: iqm_sim.Calibration,
+    *,
+    schedule: str = "asap",
+    prx_scale: float = 0.0,
+    zz: float = 0.0,
+) -> np.ndarray:
+    """The outcome law over the measured bits (index = sum of bit c times 2^c) of the circuit on the calibration's
+    register: depolarizing PRX and CZ, idle T1 and T2 relaxation over the schedule (ASAP, as the idle-schedule case
+    measured on Garnet), herald-conditioned readout; exact density matrix of the touched qubits, no sampling. A coherent
+    error enters after the scheduling: every PRX angle times 1 + prx_scale, and an RZZ(zz) after every CZ."""
     target, _ = target_of(calibration)
-    scheduled = transpile(bound, target=target, optimization_level=0, scheduling_method="alap")
+    scheduled = transpile(embed(bound, calibration), target=target, optimization_level=0, scheduling_method=schedule)
     noisy = relaxed(calibration, scheduled)
     measures = sorted(
         (noisy.find_bit(i.clbits[0]).index, noisy.find_bit(i.qubits[0]).index)
@@ -157,8 +275,16 @@ def exact_law(bound: QuantumCircuit, calibration: iqm_sim.Calibration) -> np.nda
     )
     body = QuantumCircuit(*noisy.qregs)
     for item in noisy.data:
-        if item.operation.name != "measure":
-            body.append(item.operation, item.qubits, item.clbits)
+        op = item.operation
+        if op.name == "measure":
+            continue
+        if op.name == "r" and prx_scale:
+            theta, phi = (float(p) for p in op.params)
+            body.append(RGate(theta * (1 + prx_scale), phi), item.qubits)
+            continue
+        body.append(op, item.qubits, item.clbits)
+        if op.name == "cz" and zz:
+            body.append(RZZGate(zz), item.qubits)
     body.save_probabilities_dict([q for _, q in measures])
     simulator = AerSimulator(method="density_matrix", noise_model=modeled(calibration).noise_model(heralded=True))
     raw = simulator.run(body, shots=1).result().data()["probabilities"]
@@ -177,103 +303,72 @@ def exact_law(bound: QuantumCircuit, calibration: iqm_sim.Calibration) -> np.nda
 
 def selector_zero(law: np.ndarray, d: int) -> float:
     """P(selector bit d = 0) of a law over d + 1 bits."""
-    half = 1 << d
-    return float(law[:half].sum())
+    return float(law[: 1 << d].sum())
 
 
-def usable_coupling(calibration: iqm_sim.Calibration) -> CouplingMap:
-    """Couplers of the calibration whose two qubits carry herald-conditioned readout, relaxation times and a PRX
-    fidelity and whose CZ carries an interleaved fidelity; a qubit or coupler outside the set stays out of every
-    layout."""
-    ok = {
-        q
-        for q in calibration.qubits
-        if all(
-            iqm_sim.READOUT_FIELD.format(q=q, kind=kind) + iqm_sim.HERALD_SUFFIX in calibration.values
-            for kind in ("error_0_to_1", "error_1_to_0")
-        )
-        and all(f"characterization.model.{q}.{kind}" in calibration.values for kind in ("t1_time", "t2_time"))
-        and (q in calibration.prx or iqm_sim.PRX_FIELD.format(q=q) in calibration.values)
-    }
-    index = {q: n for n, q in enumerate(calibration.qubits)}
-    edges = [
-        (index[a], index[b])
-        for pair in calibration.cz
-        for a, b in [sorted(pair, key=calibration.qubits.index)]
-        if a in ok and b in ok
-    ]
-    return CouplingMap([e for a, b in edges for e in ((a, b), (b, a))])
+def operand_named(name: str) -> Operand:
+    return next(op for op in OPERANDS if op.name == name)
 
 
-def compile_template(
-    block: pcb.Block, plain: bool, seed: int, calibration_dir: str, layout: list[int] | None
-) -> QuantumCircuit:
+def layout_trial(item: tuple[str, tuple[int, ...], int, str]) -> dict[str, Any]:
+    """One layout (virtual qubit n on local qubit layout[n]) and seed of one operand: the predicted visibility
+    V = D_c + D_r of the real and complex kinds."""
+    name, layout, seed, calibration_dir = item
+    block = block_of(operand_named(name))
     calibration = iqm_sim.Calibration.from_directory(Path(calibration_dir))
-    coupling = usable_coupling(calibration)
-    return transpile(
-        pcx.block_template(block, plain=plain),
-        basis_gates=["r", "cz"],
-        coupling_map=coupling,
-        optimization_level=3,
-        seed_transpiler=seed,
-        initial_layout=layout,
-    )
-
-
-def bind(compiled: QuantumCircuit, label: str, plus: bool) -> QuantumCircuit:
-    return compiled.assign_parameters({pcx.ORIENTATION: float(np.pi) if plus else 0.0, pcx.PHASE: pcx.ANGLES[label]})
-
-
-def seed_trial(item: tuple[str, int, str]) -> dict[str, Any]:
-    """One transpiler seed on one operand: the real and complex kinds' predicted visibility V = D_c + D_r."""
-    name, seed, calibration_dir = item
-    operand = next(op for op in OPERANDS if op.name == name)
-    block = block_of(operand)
-    calibration = iqm_sim.Calibration.from_directory(Path(calibration_dir))
-    compiled = compile_template(block, False, seed, calibration_dir, None)
-    d = block.d
+    compiled = structural_compile(block, False, layout, seed)
     diffs = {}
     for kind, label in (("real", "1"), ("cplx", "i")):
-        zero = {plus: selector_zero(exact_law(bind(compiled, label, plus), calibration), d) for plus in (True, False)}
+        zero = {
+            plus: selector_zero(exact_law(bind(compiled, label, plus), calibration), block.d) for plus in (True, False)
+        }
         diffs[kind] = zero[True] - zero[False]
     return {
+        "layout": list(layout),
         "seed": seed,
-        "cz": int(compiled.count_ops().get("cz", 0)),
+        "cz": cz_of(compiled),
         "visibility": round(diffs["cplx"] + diffs["real"], 6),
     }
 
 
-def kind_label(kind: str) -> str:
-    return "1" if kind == "real" else "i"
-
-
 def build_operand(operand: Operand, calibration_dir: Path) -> dict[str, Any]:
-    calibration = iqm_sim.Calibration.from_directory(calibration_dir)
     block = block_of(operand)
-    trials = ordered_map(
-        seed_trial, [(operand.name, seed, str(calibration_dir)) for seed in TRANSPILER_SEEDS], min_items=1
+    nq = block.d + 1
+    layouts = list(itertools.permutations(range(len(PATCH)), nq))
+    first = ordered_map(
+        layout_trial,
+        [(operand.name, layout, TRANSPILER_SEEDS[0], str(calibration_dir)) for layout in layouts],
+        min_items=1,
     )
-    chosen = max(trials, key=lambda row: row["visibility"])  # the first seed of the largest visibility
-    compiled = compile_template(block, False, chosen["seed"], str(calibration_dir), None)
-    layout = compiled.layout.initial_index_layout(filter_ancillas=True)
+    best = max(first, key=lambda row: row["visibility"])  # the first layout of the largest visibility
+    layout = tuple(best["layout"])
+    seeds = ordered_map(
+        layout_trial, [(operand.name, layout, seed, str(calibration_dir)) for seed in TRANSPILER_SEEDS[1:]], min_items=1
+    )
+    chosen = max([best, *seeds], key=lambda row: row["visibility"])
+    compiled = structural_compile(block, False, layout, chosen["seed"])
     templates = {"real": compiled, "cplx": compiled}
     if "plain" in operand.kinds:
-        templates["plain"] = compile_template(block, True, chosen["seed"], str(calibration_dir), layout)
+        templates["plain"] = structural_compile(block, True, layout, chosen["seed"])
+    bound: dict[tuple[str, bool], QuantumCircuit] = {}
     circuits: dict[tuple[str, bool], dict[str, Any]] = {}
-    laws: dict[tuple[str, bool], np.ndarray] = {}
     for kind in operand.kinds:
         for plus in (True, False):
-            bound = bind(templates[kind], "1" if kind == "real" else "i", plus)
-            circuits[(kind, plus)] = to_iqm(bound, f"{operand.name}-{kind}", calibration.qubits)
-            laws[(kind, plus)] = exact_law(bound, calibration)
+            bound[(kind, plus)] = bind(templates[kind], "1" if kind == "real" else "i", plus)
+            circuits[(kind, plus)] = to_iqm(bound[(kind, plus)], f"{operand.name}-{kind}")
+    reference = amplitudes(bound[("real", True)])
+    for key in (("real", False), ("cplx", True), ("cplx", False)):
+        if amplitudes(bound[key]) != reference:
+            raise ValueError(f"{operand.name}: kind {key} has PRX amplitudes or CZ gates unlike the real kind")
     return {
         "operand": operand,
         "block": block,
-        "trials": trials,
+        "layout_trials": first,
+        "seed_trials": seeds,
         "chosen": chosen,
+        "bound": bound,
         "circuits": circuits,
-        "laws": laws,
-        "cz": {kind: int(templates[kind].count_ops().get("cz", 0)) for kind in operand.kinds},
+        "cz": {kind: cz_of(templates[kind]) for kind in operand.kinds},
     }
 
 
@@ -294,26 +389,113 @@ def circuit_name(name: str, kind: str, orientation: str, copy: int) -> str:
 
 
 def size_job(circuits: list[dict[str, Any]]) -> dict[str, Any]:
-    """The largest shot count in steps of 500 whose billing v4 ceiling stays within CEILING_CREDITS; the overrun margins
-    of the adopted sizing (1.5 and 2.2 times the expected runtime) are recorded, not enforced."""
+    """The largest shot count in steps of 500 whose billing v4 ceiling stays within CEILING_CREDITS and whose cancel
+    threshold at that ceiling covers an overrun of 2.2 times the longest expected runtime (the overrun of the sibling
+    Emerald run); the job carries CEILING_CREDITS as its ceiling."""
     inputs = sizing.load_inputs()
     seconds = [schedule_nanoseconds(c) * 1e-9 for c in circuits]
     mid = [0 for _ in circuits]
+    price = float(inputs["price_garnet"])
+    threshold = float(ceiling_seconds(CEILING_CREDITS, price) - CANCEL_MARGIN)
     best: dict[str, Any] | None = None
     for shots in range(500, MAX_EXECUTIONS // len(circuits) + 1, 500):
         priced = sizing.price(inputs, seconds, mid, shots)
         chosen = sizing.adopted(inputs, priced)
         if chosen["max_credits"] > CEILING_CREDITS:
             break
-        best = {"shots": shots, "priced": priced, "adopted": chosen}
+        if max(OVERRUNS) * chosen["expected_runtime_seconds"] <= threshold:
+            best = {"shots": shots, "priced": priced, "adopted": chosen}
     if best is None:
-        raise ValueError("no shot count fits the ceiling")
+        raise ValueError("no shot count fits the ceiling and the 2.2 times overrun")
     best["inputs_sha256"] = hashlib.sha256(sizing.INPUTS.read_bytes()).hexdigest()
+    runtime = best["adopted"]["expected_runtime_seconds"]
+    best["ceiling"] = {
+        "max_credits": CEILING_CREDITS,
+        "billed_seconds": float(ceiling_seconds(CEILING_CREDITS, price)),
+        "cancel_threshold_seconds": threshold,
+        "overrun_margins": {
+            f"{f:g}x": {
+                "runtime_seconds": f * runtime,
+                "margin_seconds": threshold - f * runtime,
+                "covered": bool(threshold >= f * runtime),
+            }
+            for f in OVERRUNS
+        },
+    }
     return best
+
+
+def counts_from_zero(zero: dict[str, dict[str, dict[str, float]]], kept: int) -> dict[str, dict[str, decision.Counts]]:
+    """Kept-shot counts at the predicted selector-zero frequencies: operand -> kind -> (k+, n+, k-, n-)."""
+    return {
+        name: {k: (round(z["plus"] * kept), kept, round(z["minus"] * kept), kept) for k, z in kinds.items()}
+        for name, kinds in zero.items()
+    }
+
+
+def audit_item(
+    item: tuple[str, tuple[str, str, bool], QuantumCircuit, dict[str, float | str], str],
+) -> tuple[str, str, bool, float]:
+    label, (name, kind, plus), bound, error, calibration_dir = item
+    calibration = iqm_sim.Calibration.from_directory(Path(calibration_dir))
+    law = exact_law(
+        bound,
+        calibration,
+        schedule=str(error.get("schedule", "asap")),
+        prx_scale=float(error.get("prx_scale", 0.0)),
+        zz=float(error.get("zz", 0.0)),
+    )
+    block = block_of(operand_named(name))
+    return label, f"{name}:{kind}", plus, selector_zero(law, block.d)
+
+
+def summarize(result: dict[str, Any]) -> dict[str, Any]:
+    """The verdict-level facts of one analysis of predicted counts."""
+    return {
+        "verdict": result["verdict"],
+        "null_ratio": round(result["null_ratio"], 6),
+        "n_c_subtracted": {n: round(r["n_c"], 4) for n, r in result["subtracted"].items()},
+        "n_c_uncorrected": {n: round(result["estimates"][n]["n_c"], 4) for n in decision.DISCRIMINATING},
+        "visibility": {n: round(e["visibility"], 4) for n, e in result["estimates"].items()},
+        "mutation_reading": {n: round(m["reading"], 4) for n, m in result["mutations"].items() if m is not None},
+    }
+
+
+def coherent_audit(built: dict[str, dict[str, Any]], calibration_dir: Path, kept: int) -> dict[str, Any]:
+    """The verdict of the preregistered rule under coherent errors the depolarizing model omits, each inserted after
+    the scheduling (as scripts/iqm_probe_audit.py does): PRX amplitude errors, a ZZ rotation after every CZ, and the
+    ALAP schedule. Every kind and orientation runs through the exact density matrix at the error, and the
+    predicted counts pass through decision.analyze."""
+    errors: dict[str, dict[str, float | str]] = {"none": {}}
+    errors.update({f"prx{e:+.2f}": {"prx_scale": e} for e in PRX_ERRORS})
+    errors.update({f"zz{e:+.2f}": {"zz": e} for e in ZZ_ERRORS})
+    errors["alap"] = {"schedule": "alap"}
+    tasks = [
+        (label, (name, kind, plus), info["bound"][(kind, plus)], error, str(calibration_dir))
+        for label, error in errors.items()
+        for name, info in built.items()
+        for kind in info["operand"].kinds
+        for plus in (True, False)
+    ]
+    rows = ordered_map(audit_item, tasks, min_items=1)
+    zero: dict[str, dict[str, dict[str, dict[str, float]]]] = {label: {} for label in errors}
+    for label, key, plus, value in rows:
+        name, kind = key.split(":")
+        zero[label].setdefault(name, {}).setdefault(kind, {})["plus" if plus else "minus"] = value
+    out = {}
+    for label, error in errors.items():
+        out[label] = {**error, **summarize(decision.analyze(counts_from_zero(zero[label], kept)))}
+    complex_prx = [e for e in PRX_ERRORS if out[f"prx{e:+.2f}"]["verdict"] == "complex strata"]
+    bound = max(
+        (m for m in (0.01, 0.02, 0.03, 0.04, 0.05) if all(abs(e) > m or e in complex_prx for e in PRX_ERRORS)),
+        default=0.0,
+    )
+    return {"errors": out, "prx_amplitude_complex_strata_within": bound, "kept_shots_per_orientation": kept}
 
 
 def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
     calibration = iqm_sim.Calibration.from_directory(calibration_dir)
+    check_patch(calibration)
     built = {op.name: build_operand(op, calibration_dir) for op in OPERANDS}
     plan = order_plan()
     files: dict[str, str] = {}
@@ -329,67 +511,69 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
     shots = sized["shots"]
     copies = len(plan) // (2 * len(KIND_ORDER) * 2)  # copies per orientation: 4 per kind
     kept = int(PLANNING_RETENTION * shots * copies * 2)  # two + circuits (or two -) per quad, two quads
+    laws = {
+        name: {
+            kind: {o: exact_law(info["bound"][(kind, o == "plus")], calibration) for o in ("plus", "minus")}
+            for kind in info["operand"].kinds
+        }
+        for name, info in built.items()
+    }
+    zero = {
+        name: {
+            kind: {o: selector_zero(law, built[name]["block"].d) for o, law in by.items()} for kind, by in kinds.items()
+        }
+        for name, kinds in laws.items()
+    }
+    analysis = decision.analyze(counts_from_zero(zero, kept))
+    z = decision.z_values(analysis)
     operands: dict[str, Any] = {}
     for name, info in built.items():
         block = info["block"]
-        d = block.d
         kinds: dict[str, Any] = {}
         for kind in info["operand"].kinds:
-            zero = {o: selector_zero(info["laws"][(kind, o == "plus")], d) for o in ("plus", "minus")}
-            delta = zero["plus"] - zero["minus"]
-            var = decision.PHI * sum(p * (1 - p) / kept for p in zero.values())
+            z0 = zero[name][kind]
+            var = decision.PHI * sum(p * (1 - p) / kept for p in z0.values())
             kinds[kind] = {
                 "ideal_difference": ideal_difference(block, kind),
-                "predicted_zero": {o: round(z, 9) for o, z in zero.items()},
-                "predicted_difference": round(delta, 9),
+                "predicted_zero": {o: round(v, 9) for o, v in z0.items()},
+                "predicted_difference": round(z0["plus"] - z0["minus"], 9),
                 "planned_se": round(math.sqrt(var), 9),
                 "cz": info["cz"][kind],
-                "law": {o: [round(float(x), 9) for x in info["laws"][(kind, o == "plus")]] for o in ("plus", "minus")},
+                "law": {o: [round(float(x), 9) for x in laws[name][kind][o]] for o in ("plus", "minus")},
             }
-        real, cplx = kinds["real"], kinds["cplx"]
-        v_pred = real["predicted_difference"] + cplx["predicted_difference"]
-        se_v = math.sqrt(real["planned_se"] ** 2 + cplx["planned_se"] ** 2)
-        dd_pred = cplx["predicted_difference"] - real["predicted_difference"]
-        n_pred = 16 * cplx["predicted_difference"] / v_pred
-        se_n = (
-            16
-            / v_pred**2
-            * math.sqrt(
-                real["predicted_difference"] ** 2 * cplx["planned_se"] ** 2
-                + cplx["predicted_difference"] ** 2 * real["planned_se"] ** 2
-            )
-        )
+        est = analysis["estimates"][name]
+        sub = analysis["subtracted"].get(name)
         operands[name] = {
             "pair": list(info["operand"].pair),
             "stratum_real_complex": info["operand"].stratum,
-            "block": {"basis": list(block.basis), "coset": block.coset, "data_qubits": d},
-            "transpiler_trials": info["trials"],
+            "block": {"basis": list(block.basis), "coset": block.coset, "data_qubits": block.d},
+            "layout": info["chosen"]["layout"],
             "chosen_seed": info["chosen"]["seed"],
+            "layout_trials": info["layout_trials"],
+            "seed_trials": info["seed_trials"],
             "physical_qubits": sorted(
                 {q for op in info["circuits"][("cplx", True)]["instructions"] for q in op["locus"]}
             ),
             "kinds": kinds,
             "predicted": {
-                "visibility": round(v_pred, 9),
-                "double_difference": round(dd_pred, 9),
-                "nullity_complex": round(n_pred, 6),
-                "se_nullity_complex": round(se_n, 6),
-                "z_nullity_from_midpoint": round(abs(n_pred - decision.MIDPOINT) / se_n, 3),
-                "visibility_for_z_resolve": (
-                    round(v_pred * decision.Z_RESOLVE / (abs(n_pred - decision.MIDPOINT) / se_n), 6)
-                    if name in decision.DISCRIMINATING
-                    else None
-                ),
-                "visibility_over_se": round(v_pred / se_v, 3),
+                "visibility": round(est["visibility"], 9),
+                "double_difference": round(est["dd"], 9),
+                "ratio": round(est["ratio"], 9),
+                "nullity_complex": round(est["n_c"], 6),
+                "se_nullity_complex": round(est["se_n_c"], 6),
+                "nullity_subtracted": None if sub is None else round(sub["n_c"], 6),
+                "se_nullity_subtracted": None if sub is None else round(sub["se"], 6),
+                "visibility_over_se": round(est["visibility"] / est["se_visibility"], 3),
             },
         }
-    z = [operands[n]["predicted"]["z_nullity_from_midpoint"] for n in decision.DISCRIMINATING]
+    audit = coherent_audit(built, calibration_dir, kept)
     prediction = {
         "calibration_set": calibration.set_id,
         "model": (
             "exact density matrix of the touched qubits of each compiled circuit: depolarizing PRX and CZ, ASAP idle "
             "T1/T2, herald-conditioned readout; no coherent error, leakage or crosstalk"
         ),
+        "patch": list(PATCH),
         "order": [circuit_name(*p) for p in plan],
         "shots": shots,
         "copies_per_orientation": copies * 2,
@@ -403,11 +587,13 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
         "decision": {
             "discriminating": decision.DISCRIMINATING,
             "null_operand": decision.NULL_OPERAND,
-            "null_fraction": decision.NULL_FRACTION,
             "mutation_operands": list(decision.MUTATION_OPERANDS),
             "midpoint": decision.MIDPOINT,
+            "null_ratio_predicted": round(analysis["null_ratio"], 9),
+            "z_predicted": [round(v, 3) for v in z],
             "power_complex_truth": round(decision.power(z), 6),
         },
+        "coherent_audit": audit,
         "cost": {
             "inputs_sha256": sized["inputs_sha256"],
             "billing_v4": {k: {kk: round(vv, 6) for kk, vv in row.items()} for k, row in sized["priced"].items()},
@@ -416,11 +602,15 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
                 for k, v in sized["adopted"].items()
                 if k != "overrun_margins"
             },
-            "overrun_margins": sized["adopted"]["overrun_margins"],
+            "job_ceiling": {
+                k: (round(v, 6) if isinstance(v, float) else v)
+                for k, v in sized["ceiling"].items()
+                if k != "overrun_margins"
+            },
+            "overrun_margins": sized["ceiling"]["overrun_margins"],
         },
     }
     files["prediction.json"] = dump(prediction)
-    adopted = sized["adopted"]
     job = {
         "job": "kernel",
         "circuits": [
@@ -429,8 +619,8 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
         ],
         "shots": shots,
         "options": {**OPTIONS, "calibration_set_id": {"garnet": calibration.set_id}},
-        "expected_seconds": round(adopted["expected_execution_seconds"], 3),
-        "max_credits": {qc: (adopted["max_credits"] if PRICED[qc] else 0.0) for qc in QCS},
+        "expected_seconds": round(sized["adopted"]["expected_execution_seconds"], 3),
+        "max_credits": {qc: (CEILING_CREDITS if PRICED[qc] else 0.0) for qc in QCS},
     }
     files["cases.json"] = dump(
         {

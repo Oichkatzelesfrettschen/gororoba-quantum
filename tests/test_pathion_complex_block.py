@@ -70,7 +70,7 @@ def test_gate_form_folded_law_and_six_qubit_map_agree(
                     ),
                 )
                 require(len(restricted) == 2 * size)
-    require(worst < 1e-12)
+    require(worst < 1e-13)
 
 
 def test_real_and_complex_circuits_share_one_gate_skeleton() -> None:
