@@ -195,6 +195,9 @@ follow root AGENTS.md "Hardware services".
    `provider-failure.json` when a job reads `failed`); `scripts/qi_replicated_series_run.sh` runs it after each submit
    and stops with the marker `failed REP: provider jobs failed: MESSAGE`. A restart on such a directory stops with that
    marker and neither collects nor submits again.
+   `"$QI_PYTHON" scripts/qi_platform_collect.py collect RUN_DIR --poll 15 --timeout 3600 [--logs-timeout 20]` collects
+   such a batch: it reads each logs path under the shorter timeout and stores `logs: unavailable (timeout)` as the
+   job's `logs` value when that read times out, with `qi_platform.py` unchanged (retained records pin its bytes).
 7. Analyze with the generator's `--analyze`, then commit the run
    directories, the analysis, its `--replay` gate, a refreshed `usage.json`
    and the `docs/state/research_state.json` registration in one change
