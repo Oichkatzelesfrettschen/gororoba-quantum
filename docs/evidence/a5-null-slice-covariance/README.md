@@ -61,10 +61,15 @@ decompositions.
      g in G), with G = {0..7} u (tau ^ {0..7}), is invariant. An equation at (r, c) carries w only where r ^ c lies in
      the frame, which forces r and c into the same coset. So the covariance algebra is the intersection of the
      per-coset algebras. At n = 6 to 10 the intersection has dimension 14, all rotations, no boost. V alone allows 21.
-   - **Equality with G_2 for every n >= 6 (proved; A5-640).** The four cosets with c in {0, 8, Q, Q + 8},
-     Q = 2^(n-2), exist at every n >= 6. Every index in them is a pattern of the bits n - 1 and n - 2 over an index
-     below 16, so the same two Step 0 peels as for V carry their signs to level 4: their tables do not depend on n.
-     The record checks this at n = 6 to 12. At n = 6 they are the only cosets, and their intersection is 14, all
+   - **Block-sign lemma (proved; checked).** For n >= 6, Q = 2^(n-2), alpha and beta in 0..3 and u, v below 16,
+     s_n(alpha Q + u, beta Q + v) does not depend on n. Step 0 on bit n - 1 applies the case (LL, LH, HL or HH) fixed
+     by the high bits of alpha and beta, Step 0 on bit n - 2 the case fixed by their low bits, and each case's extra
+     sign and early return depend only on whether a remaining low part is zero, a property of (alpha, beta, u, v).
+     After the two steps both indices lie below 16 <= Q, so LL carries the sign to level 4. The record checks the
+     whole 64 x 64 table at n = 6 to 12. Every frame row (a < 8 has alpha = 0; tau = 3Q + 8) and every index of the
+     four anchor cosets has this form.
+   - **Equality with G_2 for every n >= 6 (proved; A5-640).** The four cosets with c in {0, 8, Q, Q + 8} exist at
+     every n >= 6, and by the block-sign lemma their tables do not depend on n. The record checks this at n = 6 to 12. At n = 6 they are the only cosets, and their intersection is 14, all
      rotations. So for every n >= 6, G_2 lies inside the covariance algebra, which lies inside the intersection of
      these four cosets' algebras, which is G_2. No statement about the other cosets is needed. At n = 7 to 10 the
      cosets carry 7 sign types, the same set at each level, and a reviewer recounted the same 7 at n = 11 and 12.
@@ -76,8 +81,10 @@ decompositions.
 
 A derivation D of the octonions satisfies D L_x - L_x D = L_(D x) (the Leibniz rule). If D extends to a matrix X on
 A_n with X L_y - L_y X = L_(D y) for every y of the slice, then X, Y = -X and w = D solve the covariance system.
-That extension is the step a citation would have to supply (a reviewer opened Baez, The Octonions, 2002, section 4.1,
-for Der(O) = g_2; the extension to A_n was not opened here). The record checks it directly instead. With Y = -X
+Statement 5 proves that extension for every n. A reviewer opened Baez, The Octonions (2002), section 4.1, for
+Der(O) = g_2. The nearest published result on the extension, the derivation algebras of Cayley-Dickson algebras
+(Schafer; McCrimmon over arbitrary rings), was located through a zbMATH review and not opened here; it bounds the
+novelty of the inclusion G_2 inside, not of the reverse inclusion. The record also checks the extension directly. With Y = -X
 imposed, the derivation-type system X L_y - L_y X = L_(w y) has covariant dimension 14 at A_6, A_7 and A_8, the
 prediction written before each run. So G_2 lies inside the covariance algebra there through matrices of derivation
 type. The record's further content is the reverse inclusion: arbitrary X and Y admit no other generator, no rotation

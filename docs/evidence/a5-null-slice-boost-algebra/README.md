@@ -161,7 +161,7 @@ record establishes about a relation and what it leaves open.
    formalization in gororoba-math `rocq/quantum`.
 2. A proof of the star criterion as an equivalence. Both families of statement 8 hold for every n
    ([family proof](../a5-null-slice-family-proof/README.md)).
-3. Done: the covariance algebra of the octonion-space slices of A_6 and A_7 is G_2, with no boost
+3. Done: the covariance algebra of the octonion-space slice of A_n is G_2, with no boost, for every n >= 6
    ([covariance blocks](../a5-null-slice-covariance/README.md)).
 4. Done: the 8-dimensional covariance algebra of statement 5 is su(3), the stabilizer of e_2 in G_2
    ([covariance blocks](../a5-null-slice-covariance/README.md)).
