@@ -272,3 +272,5 @@ The [macOS pytest-step review](ci-macos-pytest-step/README.md) (pull request 101
 The [seed-ledger audit split review](ci-seed-ledger-audit-split/README.md) (pull request 1013) records the Advisor's findings on what left the pull-request suite and the clean hosted round.
 
 The [registry regeneration review](registry-regeneration/README.md) (pull request 1023) records the Advisor's checks of the regenerated diff, of pull request 1020's tree and of the merge, and the clean hosted round.
+
+The [slice comparison review](slice-module-map-comparison/README.md) records two invalid controls, the Advisor's finding that the first scalar was tied to neither retained map, and the fixes.
