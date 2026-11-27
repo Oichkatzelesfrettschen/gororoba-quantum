@@ -261,7 +261,7 @@ def compute() -> dict[str, Any]:
     res["Der_J3_O"] = {"dim": d_j8, "rank": rk_j8, "rows": rows_j8, "unknowns": nj * nj}
     res["zero_product_dim_Der"] = derivations(Alg(8, [[{} for _ in range(8)] for _ in range(8)], False))[0]
     pairs = list(MUTATED_PAIRS)
-    dims = parallel.ordered_map(mutant_dims, pairs)
+    dims = parallel.ordered_map(mutant_dims, pairs, min_items=1)
     res["mutants"] = {f"{a},{b}": d for (a, b), d in zip(pairs, dims, strict=True)}
 
     def act_on_j(dvec_flat: list[int]) -> list[int]:
