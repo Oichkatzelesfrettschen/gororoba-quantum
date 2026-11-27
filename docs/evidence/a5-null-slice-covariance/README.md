@@ -49,9 +49,9 @@ decompositions.
    - **No boost, for every n >= 6 (proved).** V = span(e_0..e_7, e_(tau ^ 0)..e_(tau ^ 7)) is invariant under
      L_1..L_7 and L_tau, and a solution (X, Y, w) on A_n restricts to (X_VV, Y_VV, w) on V: the entries of X L_y and
      L_y Y at r, c in V use only X and Y entries inside V. The restricted tables do not depend on n >= 6. By Step 0 of
-     the [family proof](../a5-null-slice-family-proof/README.md), with tau' = 2^(n-2) + 8 and a, j in 0..7:
-     - s_n(a, tau ^ j) = s_(n-1)(tau' ^ j, a) = -s_(n-2)(8 ^ j, a);
-     - s_n(tau, j) = -s_(n-1)(tau', j) = s_(n-2)(8, j);
+     the [family proof](../a5-null-slice-family-proof/README.md), with tau' = 2^(n-2) + 8, a in 1..7 and j in 0..7:
+     - s_n(a, tau ^ j) = s_(n-1)(tau' ^ j, a) = -s_(n-2)(8 ^ j, a) (HL with a != 0);
+     - s_n(tau, j) = -s_(n-1)(tau', j) = s_(n-2)(8, j) for j != 0, and both ends equal 1 at j = 0 (I1);
      - s_n(tau, tau ^ j) = s_(n-1)(tau' ^ j, tau') = s_(n-2)(8, 8 ^ j).
 
      In each case the remaining indices lie below 16 <= 2^(n-2), so LL carries the sign to level 4. The record checks
@@ -61,13 +61,16 @@ decompositions.
      g in G), with G = {0..7} u (tau ^ {0..7}), is invariant. An equation at (r, c) carries w only where r ^ c lies in
      the frame, which forces r and c into the same coset. So the covariance algebra is the intersection of the
      per-coset algebras. At n = 6 to 10 the intersection has dimension 14, all rotations, no boost. V alone allows 21.
-   - **Every n, open (A5-640).** The cosets carry 4 sign types at n = 6 and the same 7 types at every n = 7 to 10.
-     The coset count grows as 2^(n-4) while the type count stays fixed. If no new type appears above n = 10, the
-     intersection is the same for every n >= 7. A Step 0 argument that a coset's type depends only on finitely many
-     bits of its representative would close it.
-   - A reviewer proposed the V route in the red-team round of this record's A_8 extension, predicting 14 on V.
-     The record measured 21 on V, which falsifies that prediction as stated. The coset intersection is the
-     refinement that recovers 14.
+   - **Equality with G_2 for every n >= 6 (proved; A5-640).** The four cosets with c in {0, 8, Q, Q + 8},
+     Q = 2^(n-2), exist at every n >= 6. Every index in them is a pattern of the bits n - 1 and n - 2 over an index
+     below 16, so the same two Step 0 peels as for V carry their signs to level 4: their tables do not depend on n.
+     The record checks this at n = 6 to 12. At n = 6 they are the only cosets, and their intersection is 14, all
+     rotations. So for every n >= 6, G_2 lies inside the covariance algebra, which lies inside the intersection of
+     these four cosets' algebras, which is G_2. No statement about the other cosets is needed. At n = 7 to 10 the
+     cosets carry 7 sign types, the same set at each level, and a reviewer recounted the same 7 at n = 11 and 12.
+   - A reviewer proposed the V route in round 1 of this record's A_8 extension, predicting 14 on V. The record
+     measured 21 on V, which falsifies that prediction as stated. The coset intersection is the refinement that
+     recovers 14, and the same reviewer's round 2 found the four-coset closure.
 
 ## What is new against the known theorem
 

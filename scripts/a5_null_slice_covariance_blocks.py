@@ -20,7 +20,9 @@ This record checks, exactly over Q:
   admits all 21 rotations and no boost, and its tables are the same at every level n = 6 to 12, so no level n >= 6
   admits a boost;
 - the covariance algebra is the intersection over the cosets c ^ G of G = {0..7} u (tau ^ {0..7}); at n = 6 to 10
-  the intersection is 14-dimensional, all rotations, and the cosets carry 7 sign types, the same set from n = 7 on.
+  the intersection is 14-dimensional, all rotations, and the cosets carry 7 sign types, the same set from n = 7 on;
+- the four cosets with c in {0, 8, Q, Q + 8} have the same tables at every n = 6 to 12, and their intersection is 14,
+  which with the README argument gives G_2 for every n >= 6.
 
 Blocks run through parallel.ordered_map. No random draw enters.
 """
@@ -337,6 +339,43 @@ def coset_item(level: int) -> dict[str, Any]:
     }
 
 
+def anchor_coset_tables(level: int) -> list[list[list[list[int]]]]:
+    """Local tables of the four cosets c ^ G with c in {0, 8, Q, Q + 8}, Q = 2^(level-2), present at every level
+    >= 6."""
+    tau = octonion_slice_time(level)
+    dimension = 1 << level
+    q = 1 << (level - 2)
+    group = [*range(8), *(tau ^ j for j in range(8))]
+    frame = [*range(1, 8), tau]
+    signs = sign_rows(dimension, frame)
+    out = []
+    for c in (0, 8, q, q + 8):
+        members = [c ^ g for g in group]
+        position = {m: i for i, m in enumerate(members)}
+        tables = []
+        for row, a in enumerate(frame):
+            matrix = [[0] * 16 for _ in range(16)]
+            for x in members:
+                matrix[position[a ^ x]][position[x]] = int(signs[row, x])
+            tables.append(matrix)
+        out.append(tables)
+    return out
+
+
+def anchor_intersection() -> dict[str, int]:
+    rows: list[list[int]] = []
+    for tables in anchor_coset_tables(6):
+        rows += table_constraints(tables)
+    gens = generators(tuple(range(8)))
+    rotations = [g for g, (_a, _b, boost) in enumerate(gens) if not boost]
+    boosts = [g for g, (_a, _b, boost) in enumerate(gens) if boost]
+    return {
+        "all": len(solution_space(rows, list(range(len(gens))))),
+        "rotations": len(solution_space(rows, rotations)),
+        "boosts": len(solution_space(rows, boosts)),
+    }
+
+
 def hash_key(key: Any) -> str:
     return hashlib.sha256(repr(key).encode()).hexdigest()[:16]
 
@@ -396,6 +435,12 @@ def compute() -> dict[str, Any]:
             ],
         },
         "cosets": parallel.ordered_map(coset_item, list(COSET_LEVELS), min_items=1),
+        "anchor_cosets": {
+            "intersection_at_level_6": anchor_intersection(),
+            "tables_equal_to_level_6": [
+                level for level in RESTRICTED_LEVELS if anchor_coset_tables(level) == anchor_coset_tables(6)
+            ],
+        },
         "a5_against_e2_stabilizer": identification("A5", slices["A5"]["basis"], stabilizer(derivations, 2)),
     }
 
@@ -423,6 +468,9 @@ def validate(result: dict[str, Any]) -> None:
         require((row["all"], row["rotations"], row["boosts"]) == (14, 14, 0), f"coset intersection {row}")
     require([row["types"] for row in cosets] == [4, 7, 7, 7, 7], "coset type counts")
     require(all(row["type_keys"] == cosets[1]["type_keys"] for row in cosets[1:]), "coset types change after n = 7")
+    anchor = result["anchor_cosets"]
+    require(anchor["intersection_at_level_6"] == {"all": 14, "rotations": 14, "boosts": 0}, f"anchor cosets {anchor}")
+    require(anchor["tables_equal_to_level_6"] == list(RESTRICTED_LEVELS), "anchor coset tables depend on the level")
     require(restricted["tables_equal_to_level_6"] == list(RESTRICTED_LEVELS), "restricted tables depend on the level")
     expected_tied = {"A6": 14, "A7": 14, "A8": 14}
     require(result["derivation_type"] == expected_tied, f"derivation-type system {result['derivation_type']}")
