@@ -1,0 +1,6 @@
+RESULT transported modulo header 0 header modulo transported 0
+RESULT generators 69 dim 4 mult 12 det nonzero 1
+RESULT header generators 69 dim 4 mult 12
+RESULT control identity 55 55 control perturbed 2 4 control header generators 1 and 2 swapped 45 34
+INDUCED VERDICT p 32029 root 9115 PASS
+EXIT 0

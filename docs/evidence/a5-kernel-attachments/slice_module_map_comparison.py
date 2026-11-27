@@ -15,7 +15,7 @@ with one nonzero scalar c. Each map carries the normalization of its retained re
 by the leading coefficient of its first image (A5-640) and the header-slice map has its free coordinate set to 1
 (A5-638); the solved maps must equal the retained ones (the table of `weight_slice_module_map.py` with i sent to the
 root, and `expected_map` of `quadric_and_germ_probes.py`), and between them the measured scalar is c = i / 2 on every
-cell, i the root of -1 of the cell. The identity is forced: G carries R_w, N_w and K_w : R_w to their header
+E8-bar cell, i the root of -1 of the cell. The identity is forced: G carries R_w, N_w and K_w : R_w to their header
 counterparts, so it carries a solution of one system to a solution of the other, and both solution spaces are
 one-dimensional. The run is a confirmation that shares its inputs with A5-598 and A5-638 and adds no independent
 evidence for either; a failure would refute one of them or expose a solver that does not compute the intrinsic map.
@@ -27,11 +27,19 @@ in no coordinate of B_w and in no nilpotent form (y(1), say) leaves the test unc
 those ten linear forms alone; the equality of the transported ideal with K_h binds the rest of G.
 
 The cells with a retained header map and a retained reduction of G: N- at (32009, 10754), (32029, 9115) and
-(32057, 8059), N+ at (32009, 10754) and (32029, 9115). Same-sign X has no retained slice map and is not covered.
+(32057, 8059), N+ at (32009, 10754) and (32029, 9115).
+
+--family x runs the same test on same-sign X (X- -> N- and X+ -> N+ at the three primes), with the substitution of
+the 15 generators that "x-induced-slice-map/induced-SOURCE.json" retains, three coordinates of B, a plane (no Euler
+term) and R taken as the one minimal prime, as the header-slice rows of quadric_and_germ_probes.py take it. There
+the scalar is c = 1 / 2 for X- -> N- and c = -1 / 2 for X+ -> N+ at every prime; the value i / 2, written down
+before the run by analogy with E8-bar, did not occur. Like every value of c it depends on the two normalizations.
+The X identity is forced in the same way, by the slice map of A5-644 and the one-dimensional solution spaces, so
+this run too is a confirmation that shares its inputs with those rows and adds no independent evidence.
 
 Usage, from the repository root: "$PYTHON" docs/evidence/a5-kernel-attachments/slice_module_map_comparison.py
---out OUT.json [--check RETAINED.json]. Each cell is one Singular run of a few seconds; the five runs go through
-parallel.ordered_map.
+--out OUT.json [--family x] [--check RETAINED.json]. Each cell is one Singular run of a few seconds; the runs go
+through parallel.ordered_map.
 """
 
 from __future__ import annotations
@@ -48,7 +56,9 @@ HERE = Path(__file__).resolve().parent
 FIBERS = HERE.parent / "a5-exceptional-fibers"
 INDUCED = FIBERS / "working" / "runs" / "e8-induced-slice-map"
 sys.path.insert(0, str(HERE))
+X_INDUCED = FIBERS / "working" / "runs" / "x-induced-slice-map"
 sys.path.insert(0, str(INDUCED))
+sys.path.insert(0, str(X_INDUCED))
 
 sys.path.insert(0, str(FIBERS / "structure"))
 sys.path.insert(0, str(HERE.parents[2] / "gororoba_quantum"))
@@ -57,6 +67,7 @@ import induced_slice_map as induced  # noqa: E402
 import quadric_and_germ_probes as probes  # noqa: E402
 import weight_slice_fiber_relations as ws  # noqa: E402
 import weight_slice_module_map as weight_map  # noqa: E402
+import x_induced_slice_map as x_induced  # noqa: E402
 
 import parallel  # noqa: E402
 
@@ -70,15 +81,43 @@ CELLS: tuple[tuple[str, str, int, int, str], ...] = (
     ("N+", "np", 32009, 10754, "working/runs/e8_a2/e8_k2.rel"),
     ("N+", "np", 32029, 9115, "working/distribute/out/a5-e8-d2/e8np_p2/d2/relations-upto-d2.rel"),
 )
+# Same-sign X (A5-645): (basepoint, source tag of the induced record, prime, root of -1, header relation file).
+X_CELLS: tuple[tuple[str, str, int, int, str], ...] = (
+    ("N-", "xm", 32009, 10754, "working/distribute/out/a5-xm-d4/xm_p1/d2/relations-upto-d2.rel"),
+    ("N-", "xm", 32029, 9115, "working/distribute/out/a5-p2-small/xm_p2/d2/relations-upto-d2.rel"),
+    ("N-", "xm", 32057, 8059, "third-prime/relations/xm-nm/d2/relations-upto-d2.rel"),
+    ("N+", "xp", 32009, 10754, "working/distribute/out/a5-xp-p1-d2/xp_p1/d2/relations-upto-d2.rel"),
+    ("N+", "xp", 32029, 9115, "working/distribute/out/a5-p2-small/xp_p2/d2/relations-upto-d2.rel"),
+    ("N+", "xp", 32057, 8059, "third-prime/relations/xp-np/d2/relations-upto-d2.rel"),
+)
+# Record tag -> (ring label, source key of the weight-slice table, generators, nilpotent linear forms, the Singular
+# expression of R that the header-slice row of quadric_and_germ_probes.py uses, the row of sizes a side reports).
+TAGS: dict[str, tuple[str, str, int, int, str, list[int]]] = {
+    "nm": ("E8-bar -> N-", "e8", 21, 5, "radical(sK)", [5, 1, 5, 16, 1]),
+    "np": ("E8-bar -> N+", "e8", 21, 5, "radical(sK)", [5, 1, 5, 16, 1]),
+    "xm": ("X- -> N-", "xm", 15, 3, "minAssChar(sK)[1]", [3, 1, 3, 12, 0]),
+    "xp": ("X+ -> N+", "xp", 15, 3, "minAssChar(sK)[1]", [3, 1, 3, 12, 0]),
+}
+FAMILIES = {"e8": CELLS, "x": X_CELLS}
+# The scalar of the finding is FACTOR / 2: the root i of -1 of the cell for E8-bar, 1 for X- -> N-, -1 for X+ -> N+.
+SCALAR_NAMES = {"nm": "i / 2", "np": "i / 2", "xm": "1 / 2", "xp": "-1 / 2"}
+
+
+def scalar(tag: str, prime: int, root: int) -> int:
+    """The residue modulo prime of the scalar the finding fixes for a cell of this record tag."""
+    factor = {"nm": root, "np": root, "xm": 1, "xp": -1}[tag]
+    return factor * pow(2, -1, prime) % prime
+
+
 # The first line of the comparison part of induced.check_script; the lines before it define KW, KH and the map f.
 MARKER = "ideal mx=maxideal(1);"
 
 TAIL = """ideal mx=maxideal(1); ideal imgf=f(mx);
 proc side(ideal K)
-{ ideal sK=std(K); ideal R=std(radical(sK)); ideal N=simplify(jet(R,1),2); ideal KN=std(sK+N);
+{ ideal sK=std(K); ideal R=std(@R@); ideal N=simplify(jet(R,1),2); ideal KN=std(sK+N);
   int gn=(size(reduce(R,KN))==0 && size(reduce(KN,R))==0);
   ideal A=std(quotient(sK,R)); ideal Al=std(simplify(jet(A,1),2)); ideal F; int m;
-  for(m=1;m<=21;m++){ if(reduce(y(m),Al)==y(m)){ F[size(F)+1]=y(m); } }
+  for(m=1;m<=@N@;m++){ if(reduce(y(m),Al)==y(m)){ F[size(F)+1]=y(m); } }
   ideal Aq=simplify(reduce(A,Al),2);
   return(list(sK,N,Al,F,Aq,gn)); }
 list SW=side(KW); list SH=side(KH);
@@ -86,17 +125,17 @@ ideal sKW=SW[1]; ideal NW=SW[2]; ideal AlW=SW[3]; ideal FW=SW[4]; ideal AqW=SW[5
 ideal sKH=SH[1]; ideal NH=SH[2]; ideal AlH=SH[3]; ideal FH=SH[4]; ideal AqH=SH[5];
 "RESULT weight_side",size(NW),SW[6],size(FW),size(AlW),size(AqW);
 "RESULT header_side",size(NH),SH[6],size(FH),size(AlH),size(AqH);
-if(size(NW)!=5 || size(FW)!=5 || size(NH)!=5 || size(FH)!=5){ "RESULT abort 1"; quit; }
+if(size(NW)!=@G@ || size(FW)!=@G@ || size(NH)!=@G@ || size(FH)!=@G@){ "RESULT abort 1"; quit; }
 ideal fK=f(KW); ideal fAl=f(AlW); ideal fN=f(NW);
 "RESULT transported",size(reduce(fK,sKH)),size(reduce(KH,std(fK)));
 "RESULT linear_parts",size(reduce(fAl,AlH)),size(reduce(fN,std(NH)));
-ring r1=@P@,(y(1..21),t(1..25)),(dp(21),dp(25));
+ring r1=@P@,(y(1..@N@),t(1..@GG@)),(dp(@N@),dp(@GG@));
 proc collect(poly e, poly ymon)
 { ideal T; int c; if(e!=0){ matrix C=coef(e,ymon); for(c=1;c<=ncols(C);c++){ T[size(T)+1]=C[2,c]; } } return(T); }
 proc solve(string tag, ideal sK, ideal N, ideal F, ideal Aq, int nrm)
-{ int g=5; int m; int j; int k; int c; int sg; poly s; poly e; ideal TH; ideal IM; ideal T; ideal sT; int fr;
+{ int g=@G@; int m; int j; int k; int c; int sg; poly s; poly e; ideal TH; ideal IM; ideal T; ideal sT; int fr;
   matrix M[g][g]; number lc;
-  poly ymon=1; for(m=1;m<=21;m++){ ymon=ymon*y(m); }
+  poly ymon=1; for(m=1;m<=@N@;m++){ ymon=ymon*y(m); }
   for(j=1;j<=g;j++){ s=0; for(m=1;m<=g;m++){ s=s+t((j-1)*g+m)*N[m]; } TH[j]=s; }
   for(sg=-1;sg<=1;sg=sg+2){
     T=0;
@@ -120,26 +159,26 @@ ideal IMW=solve("weight",std(imap(r0,sKW)),imap(r0,NW),imap(r0,FW),imap(r0,AqW),
 ideal IMH=solve("header",std(imap(r0,sKH)),imap(r0,NH),imap(r0,FH),imap(r0,AqH),0);
 setring r0;
 ideal IMW=imap(r1,IMW); ideal IMH=imap(r1,IMH);
-if(size(IMW)!=5 || size(IMH)!=5){ "RESULT abort 2"; quit; }
-int k; for(k=1;k<=5;k++){ "RESULT weight_image",FW[k],IMW[k]; }
-for(k=1;k<=5;k++){ "RESULT header_image",FH[k],IMH[k]; }
+if(size(IMW)!=@G@ || size(IMH)!=@G@){ "RESULT abort 2"; quit; }
+int k; for(k=1;k<=@G@;k++){ "RESULT weight_image",FW[k],IMW[k]; }
+for(k=1;k<=@G@;k++){ "RESULT header_image",FH[k],IMH[k]; }
 proc prop(ideal L, ideal Rr)
 { int k; poly d; number c=0;
-  for(k=1;k<=5;k++){ if(L[k]!=0){ d=diff(Rr[k],leadmonom(L[k])); if(d==0){ return("0 0"); }
+  for(k=1;k<=@G@;k++){ if(L[k]!=0){ d=diff(Rr[k],leadmonom(L[k])); if(d==0){ return("0 0"); }
     c=leadcoef(L[k])/leadcoef(d); break; } }
   if(c==0){ return("0 0"); }
-  for(k=1;k<=5;k++){ if(L[k]-c*Rr[k]!=0){ return("0 0"); } }
+  for(k=1;k<=@G@;k++){ if(L[k]-c*Rr[k]!=0){ return("0 0"); } }
   return("1 "+string(c)); }
 proc compare(ideal img, ideal IMW, ideal FW, ideal AlH, ideal FH, ideal IMH)
-{ map h=basering,img; ideal L; ideal Rr; poly v; poly s; poly x; int k; int j; matrix B[5][5];
-  for(k=1;k<=5;k++){ x=FW[k]; v=reduce(h(x),AlH); s=0;
-    for(j=1;j<=5;j++){ B[k,j]=diff(v,FH[j]); s=s+B[k,j]*IMH[j]; }
+{ map h=basering,img; ideal L; ideal Rr; poly v; poly s; poly x; int k; int j; matrix B[@G@][@G@];
+  for(k=1;k<=@G@;k++){ x=FW[k]; v=reduce(h(x),AlH); s=0;
+    for(j=1;j<=@G@;j++){ B[k,j]=diff(v,FH[j]); s=s+B[k,j]*IMH[j]; }
     x=IMW[k]; L[k]=h(x); Rr[k]=s; }
   return(string(det(B)!=0)+" "+prop(L,Rr)); }
 "RESULT scalar",compare(imgf,IMW,FW,AlH,FH,IMH);
 ideal IMX=IMW; IMX[1]=IMW[2]; IMX[2]=IMW[1];
 "RESULT control_images_exchanged",compare(imgf,IMX,FW,AlH,FH,IMH);
-proc vindex(poly v){ int m; for(m=1;m<=21;m++){ if(y(m)==v){ return(m); } } return(0); }
+proc vindex(poly v){ int m; for(m=1;m<=@N@;m++){ if(y(m)==v){ return(m); } } return(0); }
 int i0=vindex(leadmonom(IMW[1])); int j1=vindex(FH[1]); int j2=vindex(FH[2]);
 "RESULT control_indices",i0,j1,j2;
 ideal img2=imgf; img2[i0]=img2[i0]+FH[1];
@@ -153,18 +192,24 @@ quit;
 
 def script(tag: str, prime: int, root: int, header: str) -> str:
     """The Singular text of one cell: KW, KH and f from the retained Q(i) record, then both systems and the test."""
-    record = json.loads((INDUCED / f"induced-{tag}.json").read_text(encoding="utf-8"))
+    _ring, source, n, g, radical, _sizes = TAGS[tag]
+    directory = INDUCED if source == "e8" else X_INDUCED
+    record = json.loads((directory / f"induced-{tag}.json").read_text(encoding="utf-8"))
     if record.get("pass") is not True or record["relations_sha256"] != record["relations_sha256_retained"]:
         raise RuntimeError(f"induced-{tag}.json is not a passing record bound to the weight-slice digest")
-    text = induced.check_script(record, prime, root, FIBERS / header, None)
-    if text.count(MARKER) != 1 or not text.startswith(f"ring r={prime},(y(1..21)),dp;"):
+    if source == "e8":
+        text = induced.check_script(record, prime, root, FIBERS / header, None)
+    else:
+        text = x_induced.check_script(record, prime, root, FIBERS / header)
+    if text.count(MARKER) != 1 or not text.startswith(f"ring r={prime},(y(1..{n})),dp;"):
         raise RuntimeError("the reduction script of induced_slice_map.py changed its layout")
     head = (
         text[: text.index(MARKER)].replace(f"ring r={prime},", f"ring r0={prime},", 1).replace("map f=r,", "map f=r0,")
     )
     if head.count("map f=r0,") != 1:
         raise RuntimeError("the reduction script of induced_slice_map.py changed its map line")
-    return 'LIB "primdec.lib"; LIB "matrix.lib";\n' + head + TAIL.replace("@P@", str(prime))
+    tail = TAIL.replace("@P@", str(prime)).replace("@N@", str(n)).replace("@GG@", str(g * g)).replace("@G@", str(g))
+    return 'LIB "primdec.lib"; LIB "matrix.lib";\n' + head + tail.replace("@R@", radical)
 
 
 def parse(stdout: str) -> dict[str, Any]:
@@ -190,24 +235,27 @@ def cell(item: tuple[str, str, int, int, str]) -> dict[str, Any]:
         run = subprocess.run(
             command, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=TIMEOUT_SECONDS, check=True
         )
-    return {"ring": f"E8-bar -> {orbit}", "prime": prime, "root": root, "header": header} | parse(run.stdout)
+    return {"ring": TAGS[tag][0], "prime": prime, "root": root, "header": header} | parse(run.stdout)
 
 
 def expected(item: tuple[str, str, int, int, str]) -> dict[str, Any]:
-    """The fields the finding fixes: both maps as their records retain them, and the scalar i / 2 between them."""
-    orbit, _tag, prime, root, header = item
-    retained = [row for row in probes.MAPS if row[0] == f"E8-bar -> {orbit}" and row[1] == prime]
-    if len(retained) != 1:
-        raise RuntimeError(f"no single module-map row of the header slice for E8-bar -> {orbit} at {prime}")
+    """The fields the finding fixes: both maps and the sizes of each side, as the retained records hold them."""
+    orbit, tag, prime, root, header = item
+    ring, source, n, g, radical, sizes = TAGS[tag]
+    retained = [row for row in probes.MAPS if row[0] == ring and row[1] == prime]
+    if len(retained) != 1 or retained[0][3:] != (n, g, radical):
+        raise RuntimeError(f"no single module-map row of the header slice for {ring} at {prime} with these sizes")
+    if (FIBERS / header).resolve() != (probes.W / retained[0][2]).resolve():
+        raise RuntimeError(f"the header relation file of {ring} at {prime} is not the one of the module-map row")
     return {
-        "weight_image": weight_map.images("e8", orbit, prime, root),
+        "weight_image": weight_map.images(source, orbit, prime, root),
         "header_image": probes.expected_map(retained[0])["images"],
-        "ring": f"E8-bar -> {orbit}",
+        "ring": ring,
         "prime": prime,
         "root": root,
         "header": header,
-        "weight_side": [5, 1, 5, 16, 1],
-        "header_side": [5, 1, 5, 16, 1],
+        "weight_side": sizes,
+        "header_side": sizes,
         "transported": [0, 0],
         "linear_parts": [0, 0],
         "weight_solutions": [1],
@@ -223,25 +271,27 @@ def expected(item: tuple[str, str, int, int, str]) -> dict[str, Any]:
 CONTROLS = ("control_images_exchanged", "control_map_perturbed", "control_generators_exchanged")
 
 
-def problems(cells: list[dict[str, Any]]) -> list[str]:
+def problems(cells: list[dict[str, Any]], table: tuple[tuple[str, str, int, int, str], ...] = CELLS) -> list[str]:
     """The departures of the cells from the finding; an empty list for the retained record."""
-    if len(cells) != len(CELLS):
-        return [f"{len(cells)} cells, expected {len(CELLS)}"]
+    if len(cells) != len(table):
+        return [f"{len(cells)} cells, expected {len(table)}"]
     found = []
-    for row, item in zip(cells, CELLS, strict=True):
+    for row, item in zip(cells, table, strict=True):
         want = expected(item)
         name = f"{want['ring']} at {want['prime']}"
         if {k: row.get(k) for k in want} != want:
             found.append(f"{name}: a side, the transport, a solution count or a retained map differs from the finding")
-        scalar = row.get("scalar")
-        half_root = want["root"] * pow(2, -1, want["prime"]) % want["prime"]
-        if not (isinstance(scalar, list) and len(scalar) == 3 and scalar[:2] == [1, 1]) or (
-            scalar[2] % want["prime"] != half_root
+        value = row.get("scalar")
+        target = scalar(item[1], want["prime"], want["root"])
+        if not (isinstance(value, list) and len(value) == 3 and value[:2] == [1, 1]) or (
+            value[2] % want["prime"] != target
         ):
-            found.append(f"{name}: the transported weight-slice map is not i / 2 times the header-slice map")
+            found.append(
+                f"{name}: the transported weight-slice map is not {SCALAR_NAMES[item[1]]} times the header-slice map"
+            )
         for control in CONTROLS:
-            value = row.get(control)
-            if not (isinstance(value, list) and len(value) == 3 and value[1:] == [0, 0]):
+            seen = row.get(control)
+            if not (isinstance(seen, list) and len(seen) == 3 and seen[1:] == [0, 0]):
                 found.append(f"{name}: {control} found a scalar")
         indices = row.get("control_indices")
         if not (isinstance(indices, list) and len(indices) == 3 and min(indices) >= 1 and indices[1] != indices[2]):
@@ -255,14 +305,16 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
     parser.add_argument("--out", type=Path, required=True, help="write the JSON record")
     parser.add_argument("--check", type=Path, help="compare the computed record with this retained one")
+    parser.add_argument("--family", choices=sorted(FAMILIES), default="e8", help="the cells to run (default e8)")
     args = parser.parse_args()
+    table = FAMILIES[args.family]
     banner, version = ws.singular_version()
     record: dict[str, Any] = {
         "schema": SCHEMA,
         "tools": {"singular": banner, "singular_version": version},
-        "cells": list(parallel.ordered_map(cell, list(CELLS), min_items=1)),
+        "cells": list(parallel.ordered_map(cell, list(table), min_items=1)),
     }
-    record["problems"] = problems(record["cells"])
+    record["problems"] = problems(record["cells"], table)
     args.out.write_text(json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     for row in record["cells"]:
         print(row["ring"], row["prime"], "scalar", row.get("scalar"), *(row.get(c) for c in CONTROLS))
