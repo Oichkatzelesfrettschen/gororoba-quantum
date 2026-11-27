@@ -359,7 +359,8 @@ def coset_section() -> dict[str, Any]:
     for types in (*per_level.values(), anchors):
         unique.update(types)
     keys = list(unique)
-    constraint_rows = dict(zip(keys, parallel.ordered_map(table_constraints, [unique[k] for k in keys]), strict=True))
+    solved = parallel.ordered_map(table_constraints, [unique[k] for k in keys], min_items=1)
+    constraint_rows = dict(zip(keys, solved, strict=True))
     cosets = []
     for level, types in per_level.items():
         rows = [row for key in types for row in constraint_rows[key]]
