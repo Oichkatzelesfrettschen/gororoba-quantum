@@ -40,4 +40,10 @@ The `tests (scripts)` and arm lanes at `641df5634` failed the pull-request time 
 took 24 s against 14.8 s. That test now carries the audit mark, and an unmarked counterpart compares the anchor tables
 at n = 6 and 7. All lanes pass at `1848ebb9a`.
 
+## Hosted review (Codex, head `a2e19be95`)
+
+| Finding | Check | Resolution |
+|---|---|---|
+| P1: the coset constraint solves ran in process, since `parallel.ordered_map` defaults to 64 items before it pools | read `coset_section` and `parallel.ordered_map` | Fixed in `207a943c4`: `min_items=1`; `--out` takes 122 s and reproduces the committed result |
+
 After each round, `git status --short` showed no tracked change in any of the six workspace repositories.
