@@ -115,7 +115,7 @@ row below is an exact check of `scripts/a5_null_slice_boost_algebra.py --check`;
 | A5-616 | over the 51 clean slices of dimensions 16, 32 and 64 the cone and the fourfold kernel exist at every level; only the seven slices of A_5 carry both a Clifford space and the so(n,1) relations | proved |
 | A5-617 | the relations hold exactly when the defects have disjoint stars | survives |
 | A5-618 | two families: so(2^(n-2) - 2, 1) at time index 7 * 2^(n-3), computed for n = 4 to 7, and so(7,1) on the octonion-space slice, computed for n = 6 and 7; proved for every n ([family proof](../../evidence/a5-null-slice-family-proof/README.md)) | proved |
-| A5-619 | the covariance algebras are su(3) on A_5 and the G_2 derivations on the octonion-space slice of A_6 ([covariance blocks](../../evidence/a5-null-slice-covariance/README.md)) | proved |
+| A5-619 | the covariance algebras are su(3) on A_5 and the G_2 derivations on the octonion-space slices of A_6, A_7 and A_8 ([covariance blocks](../../evidence/a5-null-slice-covariance/README.md)) | proved |
 | A5-620 | a bracket-preserving map from the corner boost data of arXiv 2611.34924 (equations 3.41 to 3.43, 3.61 to 3.64) to (P_T, K_a) | superseded by A5-628 |
 | A5-621 | the Lorentzian cone with a fourfold kernel distinguishes A_5 in the tower | refuted |
 

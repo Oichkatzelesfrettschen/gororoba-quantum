@@ -1,7 +1,7 @@
 # A_5 and A_6 null slices: covariance algebras by XOR blocks
 
-The covariance algebra of the octonion-space slices of A_6 and A_7 is the derivation algebra of the octonions, G_2,
-dimension 14, with no boost. The covariance algebra of the A_5 slice is the stabilizer of e_2 in G_2, su(3), dimension 8. Ledger row
+The covariance algebra of the octonion-space slices of A_6, A_7 and A_8 is the derivation algebra of the octonions,
+G_2, dimension 14, with no boost. The covariance algebra of the A_5 slice is the stabilizer of e_2 in G_2, su(3), dimension 8. Ledger row
 A5-619 records both.
 [`scripts/a5_null_slice_covariance_blocks.py`](../../../scripts/a5_null_slice_covariance_blocks.py) computes them
 exactly over Q.
@@ -17,7 +17,7 @@ So the dense system splits into blocks:
 - **Constraints.** Each block's left kernel gives linear constraints on the generators. The covariant generators are their common solutions.
 - **Subsystems.** The constraints do not depend on which generators are admitted, so the rotation and boost subsystems take column subsets of one constraint matrix.
 
-The record runs in about 15 s on the compute workstation at 16 workers.
+The record runs in about 3 minutes on the compute workstation at 16 workers, most of it at A_8.
 
 ## Statements, each checked by `--check`
 
@@ -29,6 +29,9 @@ The record runs in about 15 s on the compute workstation at 16 workers.
    rotations, no boost: 652 constraint rows of rank 14 on 28 generators.
 3. **G_2.** The octonion derivations, the solutions of D(e_i e_j) = D(e_i) e_j + e_i D(e_j) in so(7) under the cd_core
    signs, span 14 dimensions. Their span and the A_6 covariant span have a joint rank of 14, so the two spaces are equal.
+3b. **A_8.** On the octonion-space slice of A_8 (space 1..7, time 200; 256 blocks of 2048 equations, 1996 constraint
+   rows of rank 14) the result repeats: 14 dimensions, all rotations, no boost, equal to the octonion derivations,
+   and 14 for the derivation-type system. The prediction was written before the run (pool row MATH-80).
 3a. **A_7.** On the octonion-space slice of A_7 (space 1..7, time 104; 128 blocks of 1024 equations) the covariant
    generators again span 14 dimensions, all rotations, no boost, equal to the octonion derivations. A reviewer
    proposed this extension as a conjecture, and the prediction of 14 was written before the run.
@@ -41,8 +44,8 @@ A derivation D of the octonions satisfies D L_x - L_x D = L_(D x) (the Leibniz r
 A_n with X L_y - L_y X = L_(D y) for every y of the slice, then X, Y = -X and w = D solve the covariance system.
 That extension is the step a citation would have to supply (a reviewer opened Baez, The Octonions, 2002, section 4.1,
 for Der(O) = g_2; the extension to A_n was not opened here). The record checks it directly instead. With Y = -X
-imposed, the derivation-type system X L_y - L_y X = L_(w y) has covariant dimension 14 at A_6 and at A_7, the
-prediction written before the run. So G_2 lies inside the covariance algebra there through matrices of derivation
+imposed, the derivation-type system X L_y - L_y X = L_(w y) has covariant dimension 14 at A_6, A_7 and A_8, the
+prediction written before each run. So G_2 lies inside the covariance algebra there through matrices of derivation
 type. The record's further content is the reverse inclusion: arbitrary X and Y admit no other generator, no rotation
 outside G_2 and no boost.
 
