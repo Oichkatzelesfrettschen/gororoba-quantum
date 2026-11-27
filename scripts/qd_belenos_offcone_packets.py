@@ -6,12 +6,16 @@ distribute and what they scale with:
 
 - bins of each mode's count per cell (0, 1..31, 32..99, 100 and more), off-cone per mode and in-cone pooled; a
   Poisson count with a continuously varying rate fills 1..31, and the in-cone modes do;
-- the single-packet law: counts below PACKET_CEILING on modes other than HOT_MODE, with n, mean and variance (a
-  Poisson count of mean about PACKET_UNIT has variance near its mean);
+- the single-packet law: counts below PACKET_CEILING on modes other than HOT_MODE in the iterated cells, with n,
+  mean and variance (a Poisson count of mean about PACKET_UNIT has variance near its mean), and the same law pooled
+  over all cells, which includes the held-out single-job cells, as a secondary line;
 - packets per iterated cell: each nonzero off-cone count of a mode other than HOT_MODE divided by PACKET_UNIT,
   rounded, minimum 1, summed over the cell;
 - the fit of one rate times an exposure (recorded samples, wall-time share, acquisition-time estimate) to those
   packets, as Poisson deviance with n - 1 degrees of freedom and log-likelihood;
+- the binary-presence model: one indicator per (mode other than HOT_MODE, cell), summed per cell and fitted like
+  the packets, which assumes no packet size;
+- the job-duration fit: duration against a constant, the entries of results_list and the samples of each run;
 - the held-out reading: the single-job cells, outside the fit, against the rate fitted on the iterated cells;
 - mode HOT_MODE, which follows a separate law, and the packets of the other modes, each per 10,000 samples and per
   acquisition second by physical_perf class.
@@ -163,8 +167,42 @@ def fit(y: list[int], exposure: list[float]) -> dict[str, Any]:
     }
 
 
-def exposure_fits(cells: list[dict[str, Any]], unit: float = PACKET_UNIT) -> dict[str, Any]:
-    y = [packets_of(c, unit) for c in cells]
+def presence_of(cell: dict[str, Any]) -> int:
+    """Modes other than HOT_MODE with an off-cone click in the cell: one indicator per (mode, cell)."""
+    return sum(1 for q, n in cell["off_cone_by_mode"].items() if int(q) != HOT_MODE and n > 0)
+
+
+def duration_fit(cells: list[dict[str, Any]]) -> dict[str, Any]:
+    """Least squares of each run's job duration on a constant, its results_list entries and its samples / 1e4."""
+    import numpy as np
+
+    runs: dict[str, dict[str, float]] = {}
+    for c in cells:
+        r = runs.setdefault(c["run"], {"duration": c["job_duration_s"], "entries": 0.0, "samples": 0.0})
+        r["entries"] += 1
+        r["samples"] += c["samples"]
+    design = np.array([[1.0, r["entries"], r["samples"] / 1e4] for r in runs.values()])
+    target = np.array([r["duration"] for r in runs.values()])
+    coef = np.linalg.lstsq(design, target, rcond=None)[0]
+    residual = float(((target - design @ coef) ** 2).sum())
+    total = float(((target - target.mean()) ** 2).sum())
+    return {
+        "runs": len(runs),
+        "constant_s": round(float(coef[0]), 4),
+        "per_entry_s": round(float(coef[1]), 4),
+        "per_10000_samples_s": round(float(coef[2]), 4),
+        "r_squared": round(1.0 - residual / total, 6),
+        "reading": (
+            "duration follows a constant plus a per-entry term with no positive slope in samples, so wall_share_s "
+            "measures mesh-reconfiguration overhead, not exposure; its deviance does not refute noise "
+            "proportional to a true acquisition time, and the per-sample law stands only against the "
+            "acquisition estimate, whose physical_perf model is unconfirmed"
+        ),
+    }
+
+
+def exposure_fits(cells: list[dict[str, Any]], unit: float = PACKET_UNIT, presence: bool = False) -> dict[str, Any]:
+    y = [presence_of(c) if presence else packets_of(c, unit) for c in cells]
     out: dict[str, Any] = {"packets": sum(y), "cells": len(cells)}
     for name in EXPOSURES:
         f = fit(y, [float(c[name]) for c in cells])
@@ -225,10 +263,12 @@ def reading(cone_record: dict[str, Any], runs: list[Path]) -> dict[str, Any]:
         "packet_unit": PACKET_UNIT,
         "bins_iterated_cells": bin_table([r for r in rows if r["cell"]["form"] == "iterated"]),
         "bins_all_cells": bin_table(rows),
-        "single_packet_law_all_cells": packet_law(rows),
-        "single_packet_law_iterated_cells": packet_law([r for r in rows if r["cell"]["form"] == "iterated"]),
+        "single_packet_law": packet_law([r for r in rows if r["cell"]["form"] == "iterated"]),
+        "single_packet_law_pooled_all_cells": packet_law(rows),
         "packets_per_cell": [{"run": c["run"], "name": c["name"], "packets": packets_of(c)} for c in iterated],
         "exposure_fits_iterated": exposure_fits(iterated),
+        "presence_fits_iterated": exposure_fits(iterated, presence=True),
+        "job_duration_fit": duration_fit([r["cell"] for r in rows]),
         "packet_unit_sensitivity": {str(u): exposure_fits(iterated, u) for u in UNIT_SENSITIVITY},
         "held_out_single_cells": held_out(iterated, single),
         "mode_5_by_physical_perf_class": hot_mode(iterated),

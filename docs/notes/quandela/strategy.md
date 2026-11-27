@@ -237,15 +237,27 @@ step.
   `docs/evidence/quandela/belenos_offcone_packets.json`) measures the law in
   the 58 iterated cells: an off-cone mode reads 0 (362 entries), 32 to 99 (51)
   or 100 and more (29) and never 1 to 31, where in-cone modes fill 1 to 31 in
-  305 of 577 nonzero entries; counts below 70 on modes other than 5 have mean
-  47.6 and variance 52.6 (n = 38, all 64 cells), and packets per cell fit one
-  rate times recorded samples (deviance 47.6 on 57 df) better than wall share
-  (80.4) or the acquisition estimate (130.4), with 10 packets observed against
-  8.2 predicted in the six held-out single-job cells. Two mechanisms remain:
-  photon-triggered episodes of about 48 counts, or noise in a true acquisition
-  time proportional to samples, which would refute the physical_perf
-  acquisition model; a per-iteration time base or the firing in-cone channel
-  of each packet separates them.
+  305 of 577 nonzero entries. Counts below 70 on modes other than 5 have mean
+  47.2 and variance 47.7 (n = 35; pooling the six held-out single-job cells
+  gives 47.6 and 52.6, n = 38). Packets per cell fit one rate times recorded
+  samples (deviance 47.6 on 57 df) better than the acquisition estimate
+  (130.4), and a packet-size-free model, one indicator per mode and cell,
+  gives 34.8 (samples), 47.2 (wall share) and 70.9 (acquisition estimate); 10
+  packets are observed against 8.2 predicted in the six held-out cells. Job
+  duration follows 8.16 s plus 6.00 s per results_list entry with a slope of
+  -0.11 s per 10,000 samples (R^2 0.9999 over ten runs), so the wall share
+  measures mesh-reconfiguration overhead: the wall-time comparison does not
+  refute noise proportional to time, and the per-sample law stands only
+  against the acquisition estimate, whose physical_perf model is unconfirmed.
+  Three mechanisms survive: photon-triggered episodes of about 48 counts on
+  hot channels; noise over a true acquisition window proportional to samples;
+  and a server-side DetectorBalancing artifact that scales with samples
+  (shared cell-level factor: modes 0 and 5 co-occur in 20 iterated cells
+  against 13.9 for independent modes). The zero-credit test regresses packet
+  rates on the in-cone occupancy vectors across the 73 retained runs; the
+  one-job Belenos test holds one mesh, sweeps max_samples over 1000, 5000 and
+  20000 on two distant source modes, and switches mitigation off if the API
+  exposes it.
 - **Compilation.** Both the simulator and the QPU return `computed_input`
   and `computed_circuit`. For a 24-mode circuit the compiled circuit is the
   full chip mesh: 552 beam splitters (Rx convention, calibrated angles such as

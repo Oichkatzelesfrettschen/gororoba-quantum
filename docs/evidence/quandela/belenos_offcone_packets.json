@@ -197,6 +197,14 @@
   "wall_share_s": 16.085
  },
  "hot_mode": 5,
+ "job_duration_fit": {
+  "constant_s": 8.1608,
+  "per_10000_samples_s": -0.1102,
+  "per_entry_s": 5.9991,
+  "r_squared": 0.999904,
+  "reading": "duration follows a constant plus a per-entry term with no positive slope in samples, so wall_share_s measures mesh-reconfiguration overhead, not exposure; its deviance does not refute noise proportional to a true acquisition time, and the per-sample law stands only against the acquisition estimate, whose physical_perf model is unconfirmed",
+  "runs": 10
+ },
  "mode_5_by_physical_perf_class": [
   {
    "cells": 14,
@@ -635,6 +643,28 @@
   0.005,
   0.015
  ],
+ "presence_fits_iterated": {
+  "acquisition_s_estimate": {
+   "deviance": 70.898,
+   "df": 57,
+   "log_likelihood": -72.666,
+   "rate": 5.022938
+  },
+  "cells": 58,
+  "packets": 49,
+  "samples": {
+   "deviance": 34.838,
+   "df": 57,
+   "log_likelihood": -54.636,
+   "rate": 0.0001084071
+  },
+  "wall_share_s": {
+   "deviance": 47.166,
+   "df": 57,
+   "log_likelihood": -60.8,
+   "rate": 0.1303192
+  }
+ },
  "runs": [
   "2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04",
   "2026-10-18T025441Z-qpu_belenos-box_kite_photonic_single-job-04",
@@ -648,7 +678,29 @@
   "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16"
  ],
  "schema": "qd-belenos-offcone-packets-v1",
- "single_packet_law_all_cells": {
+ "single_packet_law": {
+  "ceiling": 70,
+  "mean": 47.228571,
+  "multiples_above_ceiling": [
+   70,
+   73,
+   75,
+   76,
+   86,
+   89,
+   91,
+   93,
+   95,
+   104,
+   134,
+   146,
+   214,
+   330
+  ],
+  "n": 35,
+  "variance": 47.652101
+ },
+ "single_packet_law_pooled_all_cells": {
   "ceiling": 70,
   "mean": 47.631579,
   "multiples_above_ceiling": [
@@ -672,28 +724,6 @@
   ],
   "n": 38,
   "variance": 52.5633
- },
- "single_packet_law_iterated_cells": {
-  "ceiling": 70,
-  "mean": 47.228571,
-  "multiples_above_ceiling": [
-   70,
-   73,
-   75,
-   76,
-   86,
-   89,
-   91,
-   93,
-   95,
-   104,
-   134,
-   146,
-   214,
-   330
-  ],
-  "n": 35,
-  "variance": 47.652101
  },
  "source_schema": "qd-belenos-cone-reading-v2"
 }
