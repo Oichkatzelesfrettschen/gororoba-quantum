@@ -142,6 +142,8 @@ The second record, [a5-null-slice-associator-envelope](../../evidence/a5-null-sl
 | A5-636 | the families of A5-618 reduce to one commutation-set lemma, proved for every n by the cd_sign recursion (Lemmas T, U and the peel R) | proved |
 | A5-637 | the first family's relations hold by direct check at n = 10, 11 and 12, every level to 4096 ([record](../../evidence/a5-null-slice-family-relations/README.md)) | proved |
 | A5-642 | the octonion-space covariance algebra is G_2 with no boost for every n >= 6: derivations extend (inside), four anchor cosets with n-independent signs intersect in G_2 (outside) ([covariance blocks](../../evidence/a5-null-slice-covariance/README.md)) | proved |
+| A5-659 | over F_p, p odd, the nonzero nilpotents of A_n are the nonzero pure imaginary vectors of norm 0 and a nontrivial idempotent has Re = 1/2 and N = 0, for every n; the counts p^(2^n - 2) and p^(2^n - 2) + p^(2^(n-1) - 1) hold at seven pairs up to A_4 over F_3 ([counts](../../evidence/a5-nilpotent-idempotent-counts/README.md)) | proved |
+| A5-660 | the two count formulas for every odd p and every n >= 2 (a diagonal quadric point count not opened here) | survives |
 
 What the slice changes for the program:
 
