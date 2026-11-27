@@ -1440,6 +1440,23 @@ and A5-644 together and is no independent evidence for any of them. The gate
 `core-a5-x-slice-module-map-comparison` replays the record, and `tests/test_a5_slice_module_map_comparison.py`
 rejects 22 mutations of an E8-bar fixture and 10 of an X fixture.
 
+[`x_sign_transport.py`](x_sign_transport.py) locates the opposite signs of that scalar. The sign isomorphism of the
+two header presentations that `../a5-exceptional-fibers/witnesses.jsonl` retains (negate t9; signs c on the 15
+generators) carries K_h(X-) onto K_h(X+), and with the slice maps G-, G+ of A5-644 it defines the substitution
+S_w = G+^{-1} S_h G- of the weight-slice generators. Over Q(i) S_w is a diagonal matrix of signs
+(-1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, -1, -1, -1) and carries K_w(X-) onto K_w(X+); the complex conjugate of
+K_w(X-) is K_w(X+) as well. Each substitution carries the module map of X- to a scalar multiple of the module map of
+X+, both in the normalization of their retained records: lambda_h = -1 on the header slice and lambda_w = 1 on the
+weight slice, at 32009, 32029 and 32057, with c+ / c- = lambda_h / lambda_w = -1
+([`x-sign-transport-result.json`](x-sign-transport-result.json), Singular 4.4.1, 4 s on ten workers and 11 s on one;
+ledger row A5-647). The three values were written down before the run and held. The identity is forced by A5-644,
+A5-645 and the one-dimensional solution spaces, so the run is no independent evidence for them; its content is where
+the sign sits: the retained header-slice maps of X- and X+ differ by a sign under the isomorphism, and the retained
+weight-slice maps agree. The run also finds the J and G sign vectors of the witness at 32057, where
+`witnesses.jsonl` has no row, and no substitution with one more generator negated carries ideal to ideal, on either
+slice. The gate `core-a5-x-sign-transport` replays the record, and `tests/test_a5_x_sign_transport.py` rejects 22
+mutations of a fixture.
+
 ## Investigated questions
 
 ### Does the antiholomorphic first-order part survive on a boundary kernel?
