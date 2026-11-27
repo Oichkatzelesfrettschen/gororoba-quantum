@@ -21,4 +21,14 @@ Step 0, the lower half of Lemma R and both compositions before the proof entered
 | 6 | The upper-half cases of Lemmas R and U are proved by four factor ratios each | proved by the reviewer | the README's case split | survives; the README records two agreeing derivations |
 | 7 | Conjecture: the octonion-space slice of A_7 has covariance G_2 | hypothesis, then computed | prediction 14 written before the run; A_7 gives 14, 14, 0 and equality with the derivations | survives; A_7 enters the record and A5-619 |
 
+## Advisor, after the red team
+
+| Finding | Resolution |
+|---|---|
+| The Leibniz inclusion needed D to extend from O to A_n, a step no opened source covered | the record solves the derivation-type system (Y = -X): 14 at A_6 and A_7; the README names the step and the check |
+| The boost-algebra and associator-envelope READMEs and the roadmap still listed these results as open | each points at the new records |
+| A5-626 said "superseded in scope", which collides with the ledger status | "extended by" |
+| Lemma T's special cases for a = H + a' are {0, a'} | corrected |
+| The hosted lanes, not the path explanation alone, decide the replicated-series test | the PR body states the path explanation as a hypothesis |
+
 The reviewer ran in auto mode. Afterwards `git status --short` showed no tracked change in any of the six workspace repositories.
