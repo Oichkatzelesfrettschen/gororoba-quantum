@@ -21,6 +21,9 @@ five settings at least 24 hours after the forward context job on the following P
 The [parallel-analyzer successor](../evidence/ascella-transition-day-repeat-ci/README.md) preserves its
 source identities. Its [scheduler admission amendment](../evidence/ascella-transition-day-repeat-ci/scheduler-admission.md)
 admits the busy `running` platform status and any start at least 24 hours after the baseline.
+The retained `campaign.json` keeps its bytes and its stale producer digests; `campaign-v2.json` beside it binds the
+current producer digests and names the retained campaign by sha256, and `scripts/ascella_transition_ci_check.py`
+reads the successor while replaying a retained `day-repeat-analysis.json` against either campaign.
 The repeat's [findings](../evidence/ascella-transition-day-repeat-ci/findings.md) compare all five
 matched meshes 33.38 hours after the baseline. The [transport-source successor](../evidence/ascella-transition-day-repeat-reviewed-transport/README.md)
 binds the provider wrapper and local launcher; the original cases retain their bytes and timing windows.

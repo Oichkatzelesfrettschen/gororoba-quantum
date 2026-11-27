@@ -13,6 +13,13 @@ import ascella_transition_day_repeat as repeat
 
 repeat.BUNDLE = Path("docs/evidence/ascella-transition-day-repeat-ci")
 
+# The retained campaign binds the producer digests of the commit that froze it and keeps its bytes. The
+# successor binds the current producer digests and names the retained campaign by digest.
+RETAINED_CAMPAIGN = "campaign.json"
+SUCCESSOR_CAMPAIGN = "campaign-v2.json"
+# The two identity fields that bind a retained analysis to the campaign and checker bytes of its own commit.
+BOUND_IDENTITIES = ("campaign_sha256", "scheduled_analysis_source_sha256")
+
 # Ascella's Explorer row reads running while it serves other users' jobs, so the
 # scheduler admits that status beside available (scheduler-admission.md).
 ADMITTED_STATUSES = ["available", "running"]
@@ -37,9 +44,49 @@ def validate_registration(result: dict[str, Any], collected: dict[str, Any], cam
         repeat.time_allowed = original
 
 
+def successor_files() -> dict[str, bytes]:
+    """The case files the check reads: the retained case beside the successor campaign built from current sources."""
+    files = repeat.build_files()
+    campaign = json.loads(files.pop(RETAINED_CAMPAIGN))
+    retained = (repeat.ROOT / repeat.BUNDLE / RETAINED_CAMPAIGN).read_bytes()
+    campaign["successor_of"] = {"file": RETAINED_CAMPAIGN, "sha256": context._sha(retained)}
+    files[SUCCESSOR_CAMPAIGN] = context._json_bytes(campaign)
+    return files
+
+
+def write_successor(bundle: Path) -> None:
+    """Write the successor campaign once; an existing file with other bytes is an error."""
+    path = bundle / SUCCESSOR_CAMPAIGN
+    value = successor_files()[SUCCESSOR_CAMPAIGN]
+    if path.exists() and path.read_bytes() != value:
+        raise ValueError(f"the successor campaign differs: {path}")
+    if not path.exists():
+        path.write_bytes(value)
+
+
+def check_files(bundle: Path) -> None:
+    """Require the successor campaign and the retained case files to equal what the current sources build."""
+    for name, value in successor_files().items():
+        path = bundle / name
+        if not path.is_file() or path.read_bytes() != value:
+            raise ValueError(f"the frozen next-day case differs: {path}")
+
+
+def _reported_case(bundle: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+    check_files(bundle)
+    campaign = context._read(bundle / SUCCESSOR_CAMPAIGN)
+    source = context._read(bundle / campaign["case"]["file"])
+    source.update(
+        acquisition_admission="ready",
+        source_case_sha256=campaign["case"]["sha256"],
+        reviewed_case=campaign["written_case"],
+    )
+    return campaign, source
+
+
 def check_plan(plan: dict[str, Any]) -> None:
     """Reject a scheduler plan that differs from the source-bound case."""
-    _, manifest = repeat._reported_case(repeat.ROOT / repeat.BUNDLE)
+    _, manifest = _reported_case(repeat.ROOT / repeat.BUNDLE)
     expected = context._sha(context._json_bytes(manifest))
     ceiling = plan.get("credit_ceiling")
     if (
@@ -61,7 +108,7 @@ def check_result(directory: Path) -> dict[str, Any]:
     if absolute.parent != (repeat.ROOT / "results/quandela/runs").resolve():
         raise ValueError("the scheduled result must be a retained Quandela run")
     bundle = repeat.ROOT / repeat.BUNDLE
-    campaign, expected = repeat._reported_case(bundle)
+    campaign, expected = _reported_case(bundle)
     manifest, _, _ = repeat.qd.load_case(absolute)
     if manifest != expected:
         raise ValueError("the retained next-day manifest differs from its reviewed case")
@@ -79,7 +126,7 @@ def check_result(directory: Path) -> dict[str, Any]:
     comparisons = context.ordered_map(repeat._comparison_job, list(zip(earlier, later, strict=True)), min_items=1)
     result = {
         "schema": "ascella-transition-day-repeat-analysis-v1",
-        "campaign_sha256": context._sha((bundle / "campaign.json").read_bytes()),
+        "campaign_sha256": context._sha((bundle / SUCCESSOR_CAMPAIGN).read_bytes()),
         "analysis_source_sha256": context._sha(Path(repeat.__file__).read_bytes()),
         "scheduled_analysis_source_sha256": context._sha(Path(__file__).read_bytes()),
         "confidence": 0.95,
@@ -95,16 +142,33 @@ def check_result(directory: Path) -> dict[str, Any]:
         ),
     }
     collected = context._read(absolute / "results.json")
-    validate_registration(
-        result,
-        collected,
-        context._sha((repeat.ROOT / repeat.BUNDLE / "campaign.json").read_bytes()),
-        context._sha(Path(repeat.__file__).read_bytes()),
-    )
-    repeat._retain_json(absolute / "day-repeat-analysis.json", result)
+    producer = context._sha(Path(repeat.__file__).read_bytes())
+    retained_path = absolute / "day-repeat-analysis.json"
+    if retained_path.exists():
+        result = _replay_retained(retained_path, result, bundle)
+        validate_registration(result, collected, result["campaign_sha256"], producer)
+    else:
+        validate_registration(result, collected, result["campaign_sha256"], producer)
+        repeat._retain_json(retained_path, result)
     if result["matched_meshes"] != 5:
         raise ValueError("the analysis was retained but fewer than five returned meshes match")
     return result
+
+
+def _replay_retained(path: Path, recomputed: dict[str, Any], bundle: Path) -> dict[str, Any]:
+    """Accept a retained analysis whose measured fields equal the recomputation and whose campaign is known.
+
+    The retained analysis binds the campaign and checker digests of the commit that wrote it, so only those
+    two identity fields may differ, and the campaign digest must name the retained or the successor campaign.
+    """
+    retained = context._read(path)
+    known = {context._sha((bundle / name).read_bytes()) for name in (RETAINED_CAMPAIGN, SUCCESSOR_CAMPAIGN)}
+    if retained.get("campaign_sha256") not in known:
+        raise ValueError(f"the retained analysis binds an unknown campaign: {path}")
+    measured = {key: value for key, value in recomputed.items() if key not in BOUND_IDENTITIES}
+    if {key: value for key, value in retained.items() if key not in BOUND_IDENTITIES} != measured:
+        raise ValueError(f"the retained result differs: {path}")
+    return retained
 
 
 def main() -> int:
@@ -112,9 +176,13 @@ def main() -> int:
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--plan-check", type=Path)
     group.add_argument("--matched-check", type=Path)
+    group.add_argument("--write-successor", action="store_true")
     args = parser.parse_args()
     try:
-        if args.plan_check:
+        if args.write_successor:
+            write_successor(repeat.ROOT / repeat.BUNDLE)
+            print(f"wrote {SUCCESSOR_CAMPAIGN}")
+        elif args.plan_check:
             check_plan(json.loads(args.plan_check.read_bytes()))
             print("scheduled plan matches the frozen Ascella repeat")
         else:
