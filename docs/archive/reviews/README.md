@@ -121,6 +121,7 @@ repository-relative; a branch name stands for its worktree.
 | [2026-10-25-results-catalog-opposition.md](2026-10-25-results-catalog-opposition.md) | opposition review of the results catalog and storage proposals, with ranked alternatives |
 | [2026-10-26-a5-rank-strata-equations-review.md](2026-10-26-a5-rank-strata-equations-review.md) | adversarial opus review of the A_5 rank-strata equations record: no refutation, seven robustness and wording findings and their disposition |
 | [a5-null-slice-boost-algebra/review.md](a5-null-slice-boost-algebra/review.md) | red-team review (agy on gemini-4-neon-medium, two rounds) and Advisor review of the A_5 null-slice boost-algebra record: no refutation; a refuted tower claim, a vacuous control, a wrong row count and uncovered README statements, all resolved |
+| [a5-null-slice-covariance/review.md](a5-null-slice-covariance/review.md) | Red-team review (agy on gemini-4-neon-low, one round) and Advisor of the covariance blocks and the family proof: no refutation; two derivations of the lemma, A_7 added, stricter controls |
 | [a5-complex-kernel-map/review.md](a5-complex-kernel-map/review.md) | Advisor and red-team review (agy on gemini-4-neon-low, one round) of the complex kernel map, the left-table census and the family relations: no refutation; the recursion exception set, S-form equivalence on every pair and stricter checks adopted |
 | [a5-null-slice-associator-envelope/review.md](a5-null-slice-associator-envelope/review.md) | Advisor and red-team review (agy on gemini-4-neon-medium, one round) of the associator-envelope record: no refutation; an eighth Clifford unit, the strut mechanism, Q(i) points and stricter checks adopted |
 | [2026-10-26-a5-strata-regularity-critical.md](2026-10-26-a5-strata-regularity-critical.md) | critical opus review of the A_5 strata-regularity record: no fatal finding, two serious gaps (irreducibility of X_+- and a `pass` flag that did not guard the germ table) and their disposition |
@@ -269,3 +270,5 @@ The [roadmap item-5 review](rank-locus-item5-nullity4/README.md) (pull request 1
 The [macOS pytest-step review](ci-macos-pytest-step/README.md) (pull request 1012) records the Advisor's findings, the inert worker group and the audit-marker boundary the hosted round raised.
 
 The [seed-ledger audit split review](ci-seed-ledger-audit-split/README.md) (pull request 1013) records the Advisor's findings on what left the pull-request suite and the clean hosted round.
+
+The [registry regeneration review](registry-regeneration/README.md) (pull request 1023) records the Advisor's checks of the regenerated diff, of pull request 1020's tree and of the merge, and the clean hosted round.

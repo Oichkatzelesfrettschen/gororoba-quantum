@@ -1,0 +1,194 @@
+{
+ "checks": {
+  "R": {
+   "2": 0,
+   "3": 0,
+   "4": 0,
+   "5": 0,
+   "6": 0,
+   "7": 0,
+   "8": 0,
+   "9": 0
+  },
+  "T": {
+   "1": 0,
+   "10": 0,
+   "11": 0,
+   "2": 0,
+   "3": 0,
+   "4": 0,
+   "5": 0,
+   "6": 0,
+   "7": 0,
+   "8": 0,
+   "9": 0
+  },
+  "U": {
+   "2": 0,
+   "3": 0,
+   "4": 0,
+   "5": 0,
+   "6": 0,
+   "7": 0,
+   "8": 0,
+   "9": 0
+  },
+  "cd_core": {
+   "1": 0,
+   "10": 0,
+   "2": 0,
+   "3": 0,
+   "4": 0,
+   "5": 0,
+   "6": 0,
+   "7": 0,
+   "8": 0,
+   "9": 0
+  },
+  "identities": {
+   "1": 0,
+   "10": 0,
+   "11": 0,
+   "12": 0,
+   "2": 0,
+   "3": 0,
+   "4": 0,
+   "5": 0,
+   "6": 0,
+   "7": 0,
+   "8": 0,
+   "9": 0
+  }
+ },
+ "families": [
+  {
+   "common_kernel": 4,
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 4,
+   "space_clifford": true,
+   "space_size": 2
+  },
+  {
+   "common_kernel": 4,
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 5,
+   "space_clifford": true,
+   "space_size": 6
+  },
+  {
+   "common_kernel": 4,
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 6,
+   "space_clifford": false,
+   "space_size": 14
+  },
+  {
+   "common_kernel": 32,
+   "failures": 0,
+   "family": "octonion space",
+   "level": 6,
+   "space_clifford": true,
+   "space_size": 7
+  },
+  {
+   "common_kernel": 4,
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 7,
+   "space_clifford": false,
+   "space_size": 30
+  },
+  {
+   "common_kernel": 96,
+   "failures": 0,
+   "family": "octonion space",
+   "level": 7,
+   "space_clifford": true,
+   "space_size": 7
+  },
+  {
+   "common_kernel": 4,
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 8,
+   "space_clifford": false,
+   "space_size": 62
+  },
+  {
+   "common_kernel": 224,
+   "failures": 0,
+   "family": "octonion space",
+   "level": 8,
+   "space_clifford": true,
+   "space_size": 7
+  },
+  {
+   "common_kernel": 4,
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 9,
+   "space_clifford": false,
+   "space_size": 126
+  },
+  {
+   "common_kernel": 480,
+   "failures": 0,
+   "family": "octonion space",
+   "level": 9,
+   "space_clifford": true,
+   "space_size": 7
+  },
+  {
+   "common_kernel": 4,
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 10,
+   "space_clifford": false,
+   "space_size": 254
+  },
+  {
+   "common_kernel": 992,
+   "failures": 0,
+   "family": "octonion space",
+   "level": 10,
+   "space_clifford": true,
+   "space_size": 7
+  },
+  {
+   "common_kernel": 4,
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 11,
+   "space_clifford": false,
+   "space_size": 510
+  },
+  {
+   "common_kernel": 2016,
+   "failures": 0,
+   "family": "octonion space",
+   "level": 11,
+   "space_clifford": true,
+   "space_size": 7
+  },
+  {
+   "common_kernel": 4,
+   "failures": 0,
+   "family": "time 7 * 2^(n-3)",
+   "level": 12,
+   "space_clifford": false,
+   "space_size": 1022
+  },
+  {
+   "common_kernel": 4064,
+   "failures": 0,
+   "family": "octonion space",
+   "level": 12,
+   "space_clifford": true,
+   "space_size": 7
+  }
+ ],
+ "schema": "a5-null-slice-family-proof/1"
+}

@@ -29,7 +29,14 @@
     {
      "d": 2,
      "k2_count": 83,
-     "lower_bounds": [],
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/runs/e8np-d2-receipt-p32009/receipt/receipt-d2.json",
+       "rank": 83,
+       "sha256": "6789aba986a7a924c97f56c8cbd27e808c060b36945a8f535d0d2f0f197d027f"
+      }
+     ],
      "status": "certified",
      "transported_from": {
       "G_signs": [
