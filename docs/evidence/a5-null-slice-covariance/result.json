@@ -19,6 +19,22 @@
   "reference": 14,
   "union": 14
  },
+ "anchor_cosets": {
+  "intersection_at_level_6": {
+   "all": 14,
+   "boosts": 0,
+   "rotations": 14
+  },
+  "tables_equal_to_level_6": [
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ]
+ },
  "cosets": [
   {
    "all": 14,
