@@ -59,6 +59,11 @@ possible relation sets:
 The table is independent of d; the gate enumerates all 16 classes and checks
 the lifted associators for d <= 32.
 
+Lemma 2 is Corollary 4.3 of Albuquerque and Majid (arXiv math/9802116, page
+18) with the arguments exchanged, and Lemma 3 lifts the associator through the
+doubling as their Proposition 4.5 (page 20) does: A_n is the opposite of their
+quasialgebra k_F Z_2^n (A5-648).
+
 **Theorem 1 (total count).** Summing Lemma 3 over the eight top-bit choices
 annihilates every lower triple with nonzero (A, B, C), so
 sum over all D^3 ordered triples of omega_D = 8 sum over rank-at-most-1 lower

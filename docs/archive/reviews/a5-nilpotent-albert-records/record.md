@@ -15,7 +15,7 @@ exit 0 for both (18.5 s and 167.7 s); a copy of the Albert `result.json` with on
 |---|---|---|
 | 1 | Claim 1 justified: the identity x^2 = 2 Re(x) x - N(x) 1 follows from e_i^2 = -1 and anticommutation under cd_core; the scalar case closes. | Accepted. |
 | 2 | Claim 2 justified: the enumeration partitions every index once; int64 products stay below 576; the seven rows match both formulas. | Accepted. |
-| 3 | Claim 3 justified as a hypothesis: N is the sum of 2^n - 1 squares with determinant 1, k = 2^(n-1) - 1 is odd for n >= 2, so chi((-1)^k c) = chi(1/4) = +1. | Accepted; A5-660 stays `survives` until the point-count theorem is opened on the page. |
+| 3 | Claim 3 justified as a hypothesis: N is the sum of 2^n - 1 squares with determinant 1, k = 2^(n-1) - 1 is odd for n >= 2, so chi((-1)^k c) = chi(1/4) = +1. | Accepted; A5-662 stays `survives` until the point-count theorem is opened on the page. |
 | 4 | Claim 4 justified: the derivation system, the Hermitian basis and the doubled Jordan product are encoded as stated; equal dimensions plus equal stacked rank give the subspace equalities. | Accepted. |
 | 5 | Claim 5 justified: `--check` compares the whole serialized record; note that `validate()` checks only the EXPECTED keys. | Accepted; the exact-serialization comparison covers the other fields. |
 | 6 | Claim 6 justified: ledger statuses match the records; the README labels the F_4 facts as known facts confirmed under the convention. | Accepted. |

@@ -137,14 +137,16 @@ The second record, [a5-null-slice-associator-envelope](../../evidence/a5-null-sl
 | A5-631 | the complex map reads the nullity over C on all 465 pairs of A_5, and it is the real map with two S gates and the same cz count | proved |
 | A5-632 | a Heron device reads 16 and 12 with the complex map | open |
 | A5-633 | the left tables of A_n have scalar commutant for n = 3 to 10 and generate M_(2^n)(Q) ([census](../../evidence/a5-left-table-census/README.md)) | proved |
-| A5-634 | (D - 2)(D - 4)(D + 6)/2 ordered basis triples have nonzero associator, D = 4 to 1024 | certified |
+| A5-634 | (D - 2)(D - 4)(D + 6)/2 ordered basis triples have nonzero associator, D = 4 to 1024 | superseded by A5-649 |
 | A5-635 | nullity 12 on the Euclidean cone over Q(sqrt(-d)), d = 1, 2, 3, 5, 6, 7, 11, and at 10 Q_p points | certified |
 | A5-636 | the families of A5-618 reduce to one commutation-set lemma, proved for every n by the cd_sign recursion (Lemmas T, U and the peel R) | proved |
 | A5-637 | the first family's relations hold by direct check at n = 10, 11 and 12, every level to 4096 ([record](../../evidence/a5-null-slice-family-relations/README.md)) | proved |
 | A5-642 | the octonion-space covariance algebra is G_2 with no boost for every n >= 6: derivations extend (inside), four anchor cosets with n-independent signs intersect in G_2 (outside) ([covariance blocks](../../evidence/a5-null-slice-covariance/README.md)) | proved |
-| A5-659 | over F_p, p odd, the nonzero nilpotents of A_n are the nonzero pure imaginary vectors of norm 0 and a nontrivial idempotent has Re = 1/2 and N = 0, for every n; the counts p^(2^n - 2) and p^(2^n - 2) + p^(2^(n-1) - 1) hold at seven pairs up to A_4 over F_3 ([counts](../../evidence/a5-nilpotent-idempotent-counts/README.md)) | proved |
-| A5-660 | the two count formulas for every odd p and every n >= 2 (a diagonal quadric point count not opened here) | survives |
-| A5-661 | dim Der(J_3(O)) = 52 under the cd_core octonions; the stabilizers of J_3(R) and J_3(C_e2) are the entrywise G_2 and su(3) of A5-619 ([stabilizers](../../evidence/a5-albert-derivation-stabilizers/README.md)) | proved |
+| A5-648 | cd_sign is the transposed Albuquerque-Majid cochain at every n, so A_n is a quasialgebra over the dual quasi-Hopf algebra (k Z_2^n, dF) and its signed basis set a quasigroup ([connections](../../design/a5-null-slice-connections-program.md)) | proved |
+| A5-649 | (D - 2)(D - 4)(D + 6)/2 ordered basis triples have nonzero associator for every D >= 4: Theorem 1 of [cd_associator_defect_census.md](cd_associator_defect_census.md), with a second derivation through the doubling recursion of the associativity cocycle ([census](../../evidence/a5-left-table-census/README.md)) | proved |
+| A5-661 | over F_p, p odd, the nonzero nilpotents of A_n are the nonzero pure imaginary vectors of norm 0 and a nontrivial idempotent has Re = 1/2 and N = 0, for every n; the counts p^(2^n - 2) and p^(2^n - 2) + p^(2^(n-1) - 1) hold at seven pairs up to A_4 over F_3 ([counts](../../evidence/a5-nilpotent-idempotent-counts/README.md)) | proved |
+| A5-662 | the two count formulas for every odd p and every n >= 2 (a diagonal quadric point count not opened here) | survives |
+| A5-663 | dim Der(J_3(O)) = 52 under the cd_core octonions; the stabilizers of J_3(R) and J_3(C_e2) are the entrywise G_2 and su(3) of A5-619 ([stabilizers](../../evidence/a5-albert-derivation-stabilizers/README.md)) | proved |
 
 What the slice changes for the program:
 
@@ -170,6 +172,27 @@ What the slice changes for the program:
 - **Machine-checked.** The two-term kernels, e_a + e_26 included, are formal in gororoba-math
   (`rocq/quantum/CdTowerTwoTermNullity.v`, `lean/GororobaMath/CayleyDickson/TwoTermNullity.lean`); the
   multi-direction statements A5-612 to A5-618 and A5-622 to A5-626 are not formalized.
+
+## Results of 2026-11-27: transitions between the nullities
+
+The record [a5-nullity-transitions](../../evidence/a5-nullity-transitions/README.md)
+(`scripts/a5_nullity_transitions.py --check`) checks an outside report's paths and adds the first-order structure at
+a W8 point ([review](../../archive/reviews/a5-outside-transition-report/README.md),
+[program](../../design/a5-nullity-transitions-program.md)).
+
+| Row | Statement | Status |
+|---|---|---|
+| A5-650 | three real lines with nullity profiles 4 -> 8, 8 -> 12 and 12 -> 16, exceptional sets {0}, {1}, {-1, 1} | proved |
+| A5-651 | the junctions lie in W8, VB, N- (s = 1) and N+ (s = -1) | proved |
+| A5-652 | two nullity-4 lines into e_1 + e_10 have orthogonal limiting 4-planes that span the kernel | proved |
+| A5-653 | the first-order compression has rank 4 at all four junctions | proved |
+| A5-654 | at e_1 + e_10 the compression pencil has dimension 7, a quaternion commutant, Lie closure sp(2) and Pfaffian 16 (Q^2 - 4 Delta) on R^3 + R + R^3, the squared modulus of the tangent cone of G at m = 0 | proved |
+| A5-655 | the rank-4 directions are the isotropic vectors of C^3; the limiting plane of each line is the range of (I + n.E)/2, with trace(P P') = 2 (1 + n.n') | proved |
+| A5-656 | every W8 point has a quaternionic pencil | refuted |
+| A5-657 | pencils at VB and N+- with a tangent-cone invariant | open |
+| A5-658 | the t^2 I Gram identity for the doubling unit and the alternating three-form, levels 8 to 64 | proved |
+| A5-659 | the pencil type depends on the point of W8: quaternion commutant at six of eight points, scalar commutant and closure so(8) at two | proved |
+| A5-660 | all nullity-4 arcs into e_1 + e_10 limit on the 2-sphere; a real invariant decides the commutant | open |
 
 ## Next computations
 

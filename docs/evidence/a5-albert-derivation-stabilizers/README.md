@@ -4,7 +4,7 @@ The derivation algebra of the exceptional Jordan algebra J_3(O) has dimension 52
 [`gororoba_quantum/cd_core.py`](../../../gororoba_quantum/cd_core.py), and the algebras G_2 and su(3) of the null-slice
 covariance records sit inside it as stabilizers of Jordan subalgebras.
 [`scripts/a5_albert_derivation_stabilizers.py`](../../../scripts/a5_albert_derivation_stabilizers.py) computes every number exactly, as ranks over Z
-(python-flint `fmpz_mat`). Ledger row A5-661.
+(python-flint `fmpz_mat`). Ledger row A5-663.
 
 ## Chain to the null-slice records
 

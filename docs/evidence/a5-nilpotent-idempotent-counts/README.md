@@ -4,7 +4,7 @@ Over F_p, p odd, the Cayley-Dickson algebra A_n of dimension 2^n with the produc
 [`gororoba_quantum/cd_core.py`](../../../gororoba_quantum/cd_core.py) has these elements and counts, computed by
 exhaustive enumeration at seven pairs (n, p) and proved as a characterization for every odd p and every n.
 [`scripts/a5_nilpotent_idempotent_counts.py`](../../../scripts/a5_nilpotent_idempotent_counts.py) enumerates every element of F_p^(2^n).
-Ledger rows A5-659 (the characterization and the seven counts) and A5-660 (the general count formulas, a hypothesis).
+Ledger rows A5-661 (the characterization and the seven counts) and A5-662 (the general count formulas, a hypothesis).
 
 ## Proof of the characterization (every n, every odd p)
 

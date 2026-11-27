@@ -55,6 +55,27 @@ def _analysis(*arguments: object) -> subprocess.CompletedProcess[str]:
     return _strict("--allow-fabricated", *arguments)
 
 
+BLINDED = ("0.0123", "mean", "residual", "lag1", "order_difference", "block")
+
+
+def _blinded(text: str, *paths: Path) -> bool:
+    """True when the text names none of the blinded quantities once the checkout and scratch paths are removed.
+
+    A warning line carries the source path, and a checkout or worktree path can hold a blinded word.
+    """
+    for path in sorted({ROOT, *paths}, key=lambda p: len(str(p)), reverse=True):
+        text = text.replace(str(path), "<path>")
+    return not any(word in text for word in BLINDED)
+
+
+def test_blinding_check_ignores_the_paths_and_reads_the_rest() -> None:
+    held = Path("/work/a5-covariance-blocks")
+    _check(_blinded(f"{held}/gororoba_quantum/x.py:1: RuntimeWarning\nverdict: continue", held))
+    _check(_blinded(f"{ROOT}/scripts/x.py:1: note"))
+    _check(not _blinded(f"{held}/x.py: block 3", held))
+    _check(not _blinded("verdict: continue\nmean: 0.01"))
+
+
 def test_stage1_continue_prints_the_rule_total_and_never_the_mean(tmp_path: Path) -> None:
     runs = _build(tmp_path / "runs", 12, SIGMA_CONTINUE, effect=0.0123456)
     done = _analysis("--stage1", *runs, "--out", tmp_path / "stage1.json")
@@ -65,9 +86,7 @@ def test_stage1_continue_prints_the_rule_total_and_never_the_mean(tmp_path: Path
     _check(
         set(record) == {"schema", "verdict", "s1", "n", "required_total", "proposal_sha256", "replicates", "batch_jobs"}
     )
-    text = done.stdout + done.stderr + (tmp_path / "stage1.json").read_text()
-    for forbidden in ("0.0123", "mean", "residual", "lag1", "order_difference", "block"):
-        _check(forbidden not in text)
+    _check(_blinded(done.stdout + done.stderr + (tmp_path / "stage1.json").read_text(), tmp_path))
 
 
 @pytest.mark.parametrize(

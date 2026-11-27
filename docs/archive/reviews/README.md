@@ -274,10 +274,14 @@ The [seed-ledger audit split review](ci-seed-ledger-audit-split/README.md) (pull
 
 The [registry regeneration review](registry-regeneration/README.md) (pull request 1023) records the Advisor's checks of the regenerated diff, of pull request 1020's tree and of the merge, and the clean hosted round.
 
+The [stage-1 blinding-path review](qi-stage1-blinding-paths/review.md) (pull request 1030) records the Advisor's checks of the blinding guard, the digest pin and the warning that carries the checkout path.
+
 The [slice comparison review](slice-module-map-comparison/README.md) records two invalid controls, the Advisor's finding that the first scalar was tied to neither retained map, and the fixes.
 
 The [X slice map review](x-induced-slice-map/README.md) (pull request 1026) records the opencode findings on the serial driver, the other-root control and the mutation tests, the Advisor's findings on quoted output, the literature note and the correlated cells, and the fixes.
 
 The [sign-transport review](x-sign-transport/README.md) (pull request 1028) records the opencode findings on the added-sign check, the control indices and the mutation count, the Advisor's findings on the literature sentence, issue 1029 and the pull-request body, and the fixes.
+
+The [Hopf-cochain review](a5-connections-hopf-cochain/review.md) (pull request 1031) records Neon's red team of the Albuquerque-Majid cochain and the triple-count derivation, the Advisor's findings on the unopened citations and the census note's earlier Theorem 1, and the fixes.
 
 The [nilpotent and Albert anchor records review](a5-nilpotent-albert-records/record.md) (pull request 1033) records the agy Neon low red team on the nilpotent and idempotent counts of A_n over F_p and the stabilizers of Der(J_3(O)), and two open conjectures.

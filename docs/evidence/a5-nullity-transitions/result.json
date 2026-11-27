@@ -1,0 +1,1086 @@
+{
+ "clifford": {
+  "clifford_relation_failures": 0,
+  "kernel_identity_entries_outside_ideal": 0,
+  "reversed_normal_entries_outside_ideal": 48
+ },
+ "compressions": [
+  {
+   "compression_rank": 4,
+   "kernel": 8,
+   "name": "gamma1 at 0",
+   "skew": true
+  },
+  {
+   "compression_rank": 4,
+   "kernel": 12,
+   "name": "gamma2 at 1",
+   "skew": true
+  },
+  {
+   "compression_rank": 4,
+   "kernel": 16,
+   "name": "gamma3 at 1",
+   "skew": true
+  },
+  {
+   "compression_rank": 4,
+   "kernel": 16,
+   "name": "gamma3 at -1",
+   "skew": true
+  }
+ ],
+ "convention": [
+  {
+   "dimension": 8,
+   "mismatches": 0,
+   "products": 64
+  },
+  {
+   "dimension": 16,
+   "mismatches": 0,
+   "products": 256
+  },
+  {
+   "dimension": 32,
+   "mismatches": 0,
+   "products": 1024
+  }
+ ],
+ "gram_identity": [
+  {
+   "cross_term_failures": 0,
+   "dimension": 16,
+   "unit": 8,
+   "unit_gram_identity": true
+  },
+  {
+   "cross_term_failures": 0,
+   "dimension": 32,
+   "unit": 16,
+   "unit_gram_identity": true
+  },
+  {
+   "cross_term_failures": 0,
+   "dimension": 64,
+   "unit": 32,
+   "unit_gram_identity": true
+  }
+ ],
+ "limits": {
+  "certificates": [
+   {
+    "endpoint_nullity": 8,
+    "exceptional_polynomial": [
+     1,
+     0,
+     1,
+     0
+    ],
+    "generic_nullity": 4,
+    "projector_constant_on_branch": true
+   },
+   {
+    "endpoint_nullity": 8,
+    "exceptional_polynomial": [
+     1,
+     0,
+     1,
+     0
+    ],
+    "generic_nullity": 4,
+    "projector_constant_on_branch": true
+   }
+  ],
+  "paths": [
+   "gamma1",
+   "beta"
+  ],
+  "product_zero": true,
+  "projectors_idempotent_of_trace_4": true,
+  "sum_inside_endpoint_kernel": true,
+  "sum_rank": 8
+ },
+ "orbits": [
+  {
+   "name": "gamma1(1)",
+   "nullity": 4,
+   "orbit": "S4_VG",
+   "orbit_rank": 13
+  },
+  {
+   "name": "beta(1)",
+   "nullity": 4,
+   "orbit": "S4_VG",
+   "orbit_rank": 13
+  },
+  {
+   "name": "e1+e10",
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12
+  },
+  {
+   "name": "2 gamma2(1/2)",
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12
+  },
+  {
+   "name": "e3+e20",
+   "nullity": 12,
+   "orbit": "VB",
+   "orbit_rank": 7
+  },
+  {
+   "name": "gamma3(1)",
+   "nullity": 16,
+   "orbit": "Nm",
+   "orbit_rank": 6
+  },
+  {
+   "name": "gamma3(-1)",
+   "nullity": 16,
+   "orbit": "Np",
+   "orbit_rank": 6
+  }
+ ],
+ "paths": [
+  {
+   "distinct_real_roots": 1,
+   "generic_nullity": 4,
+   "lowest_coefficient": [
+    1099511627776,
+    0,
+    17592186044416,
+    0,
+    131941395333120,
+    0,
+    615726511554560,
+    0,
+    2001111162552320,
+    0,
+    4802666790125568,
+    0,
+    8804889115230208,
+    0,
+    12578413021757440,
+    0,
+    14150714649477120,
+    0,
+    12578413021757440,
+    0,
+    8804889115230208,
+    0,
+    4802666790125568,
+    0,
+    2001111162552320,
+    0,
+    615726511554560,
+    0,
+    131941395333120,
+    0,
+    17592186044416,
+    0,
+    1099511627776,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "name": "gamma1",
+   "nullity_at_rational_roots": {
+    "0": 8
+   },
+   "nullity_at_samples": {
+    "-1/2": 4,
+    "-3": 4,
+    "1/3": 4,
+    "2": 4,
+    "7/5": 4
+   },
+   "rational_roots": [
+    "0"
+   ],
+   "terms": [
+    [
+     1,
+     1,
+     0
+    ],
+    [
+     10,
+     1,
+     0
+    ],
+    [
+     9,
+     0,
+     1
+    ],
+    [
+     26,
+     0,
+     1
+    ]
+   ]
+  },
+  {
+   "distinct_real_roots": 1,
+   "generic_nullity": 8,
+   "lowest_coefficient": [
+    4503599627370496,
+    -126100789566373888,
+    1747396655419752448,
+    -15969764278655778816,
+    108232758044781445120,
+    -579906006018361917440,
+    2557233940413515038720,
+    -9540436709620727152640,
+    30720777092526505984000,
+    -86679734941086572871680,
+    216832427728904485076992,
+    -485411438104477524033536,
+    979849464585991776894976,
+    -1794590329652630333161472,
+    2997484014415560583413760,
+    -4585540983843187765280768,
+    6447894824403424440745984,
+    -8358643766791301186453504,
+    10014391078797054310350848,
+    -11111614384888559645491200,
+    11437252359555885622624256,
+    -10935491351076766679564288,
+    9722366915355241934225408,
+    -8043446507863703390519296,
+    6195108326179929923256320,
+    -4443005249287181698072576,
+    2966856376082209773191168,
+    -1844011185396353050083328,
+    1066142033258474935156736,
+    -572880244694470937804800,
+    285752076845947616755712,
+    -132106934665791768887296,
+    56499461765574894288896,
+    -22301468789440000294912,
+    8101562666485588951040,
+    -2699456693743302737920,
+    821642966225681121280,
+    -227326838638494351360,
+    56830950910701076480,
+    -12744124714146856960,
+    2540320465201659904,
+    -444994655231148032,
+    67500101160927232,
+    -8694147678470144,
+    925436603269120,
+    -78237124263936,
+    4930622455808,
+    -206158430208,
+    4294967296
+   ],
+   "name": "gamma2",
+   "nullity_at_rational_roots": {
+    "1": 12
+   },
+   "nullity_at_samples": {
+    "-1/2": 8,
+    "-3": 8,
+    "1/3": 8,
+    "2": 8,
+    "7/5": 8
+   },
+   "rational_roots": [
+    "1"
+   ],
+   "terms": [
+    [
+     1,
+     1,
+     -1
+    ],
+    [
+     10,
+     1,
+     -1
+    ],
+    [
+     3,
+     0,
+     1
+    ],
+    [
+     20,
+     0,
+     1
+    ]
+   ]
+  },
+  {
+   "distinct_real_roots": 2,
+   "generic_nullity": 12,
+   "lowest_coefficient": [
+    4294967296,
+    0,
+    17179869184,
+    0,
+    -8589934592,
+    0,
+    -120259084288,
+    0,
+    -81604378624,
+    0,
+    343597383680,
+    0,
+    446676598784,
+    0,
+    -481036337152,
+    0,
+    -1022202216448,
+    0,
+    240518168576,
+    0,
+    1322849927168,
+    0,
+    240518168576,
+    0,
+    -1022202216448,
+    0,
+    -481036337152,
+    0,
+    446676598784,
+    0,
+    343597383680,
+    0,
+    -81604378624,
+    0,
+    -120259084288,
+    0,
+    -8589934592,
+    0,
+    17179869184,
+    0,
+    4294967296
+   ],
+   "name": "gamma3",
+   "nullity_at_rational_roots": {
+    "-1": 16,
+    "1": 16
+   },
+   "nullity_at_samples": {
+    "-1/2": 12,
+    "-3": 12,
+    "1/3": 12,
+    "2": 12,
+    "7/5": 12
+   },
+   "rational_roots": [
+    "-1",
+    "1"
+   ],
+   "terms": [
+    [
+     3,
+     1,
+     0
+    ],
+    [
+     20,
+     1,
+     0
+    ],
+    [
+     12,
+     0,
+     1
+    ],
+    [
+     27,
+     0,
+     -1
+    ]
+   ]
+  },
+  {
+   "distinct_real_roots": 1,
+   "generic_nullity": 4,
+   "lowest_coefficient": [
+    1099511627776,
+    0,
+    17592186044416,
+    0,
+    131941395333120,
+    0,
+    615726511554560,
+    0,
+    2001111162552320,
+    0,
+    4802666790125568,
+    0,
+    8804889115230208,
+    0,
+    12578413021757440,
+    0,
+    14150714649477120,
+    0,
+    12578413021757440,
+    0,
+    8804889115230208,
+    0,
+    4802666790125568,
+    0,
+    2001111162552320,
+    0,
+    615726511554560,
+    0,
+    131941395333120,
+    0,
+    17592186044416,
+    0,
+    1099511627776,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "name": "beta",
+   "nullity_at_rational_roots": {
+    "0": 8
+   },
+   "nullity_at_samples": {
+    "-1/2": 4,
+    "-3": 4,
+    "1/3": 4,
+    "2": 4,
+    "7/5": 4
+   },
+   "rational_roots": [
+    "0"
+   ],
+   "terms": [
+    [
+     1,
+     1,
+     0
+    ],
+    [
+     10,
+     1,
+     0
+    ],
+    [
+     2,
+     0,
+     1
+    ],
+    [
+     17,
+     0,
+     1
+    ]
+   ]
+  }
+ ],
+ "pencil": {
+  "base": [
+   [
+    1,
+    1
+   ],
+   [
+    10,
+    1
+   ]
+  ],
+  "commutant_dimension": 4,
+  "coordinate_units": [
+   1,
+   2,
+   8,
+   16,
+   17,
+   18,
+   24
+  ],
+  "coordinate_units_independent": 7,
+  "frame_gram_scalar": true,
+  "kernel": 8,
+  "lie_closure_dimension": 10,
+  "overlap_law_failures": 0,
+  "overlap_law_pairs": 55,
+  "pencil_dimension": 7,
+  "pfaffian_is_16_times_invariant": true,
+  "same_normal_planes_equal": true,
+  "skew_units": [
+   1,
+   2,
+   8,
+   9,
+   10,
+   16,
+   17,
+   18,
+   24,
+   25,
+   26
+  ],
+  "stiefel": [
+   {
+    "compression_rank": 4,
+    "line_nullity_at_1_2_3": [
+     4,
+     4,
+     4
+    ],
+    "normal": [
+     0,
+     0,
+     -1
+    ],
+    "u": [
+     0,
+     1,
+     0
+    ],
+    "v": [
+     1,
+     0,
+     0
+    ]
+   },
+   {
+    "compression_rank": 4,
+    "line_nullity_at_1_2_3": [
+     4,
+     4,
+     4
+    ],
+    "normal": [
+     0,
+     0,
+     1
+    ],
+    "u": [
+     0,
+     1,
+     0
+    ],
+    "v": [
+     -1,
+     0,
+     0
+    ]
+   },
+   {
+    "compression_rank": 4,
+    "line_nullity_at_1_2_3": [
+     4,
+     4,
+     4
+    ],
+    "normal": [
+     0,
+     0,
+     1
+    ],
+    "u": [
+     1,
+     0,
+     0
+    ],
+    "v": [
+     0,
+     1,
+     0
+    ]
+   },
+   {
+    "compression_rank": 4,
+    "line_nullity_at_1_2_3": [
+     4,
+     4,
+     4
+    ],
+    "normal": [
+     0,
+     -1,
+     0
+    ],
+    "u": [
+     1,
+     0,
+     0
+    ],
+    "v": [
+     0,
+     0,
+     1
+    ]
+   },
+   {
+    "compression_rank": 4,
+    "line_nullity_at_1_2_3": [
+     4,
+     4,
+     4
+    ],
+    "normal": [
+     0,
+     1,
+     0
+    ],
+    "u": [
+     0,
+     0,
+     1
+    ],
+    "v": [
+     1,
+     0,
+     0
+    ]
+   },
+   {
+    "compression_rank": 4,
+    "line_nullity_at_1_2_3": [
+     4,
+     4,
+     4
+    ],
+    "normal": [
+     1,
+     0,
+     0
+    ],
+    "u": [
+     0,
+     1,
+     0
+    ],
+    "v": [
+     0,
+     0,
+     1
+    ]
+   },
+   {
+    "compression_rank": 4,
+    "line_nullity_at_1_2_3": [
+     4,
+     4,
+     4
+    ],
+    "normal": [
+     -6,
+     6,
+     -3
+    ],
+    "u": [
+     1,
+     2,
+     2
+    ],
+    "v": [
+     2,
+     1,
+     -2
+    ]
+   },
+   {
+    "compression_rank": 4,
+    "line_nullity_at_1_2_3": [
+     4,
+     4,
+     4
+    ],
+    "normal": [
+     -12,
+     12,
+     -6
+    ],
+    "u": [
+     3,
+     3,
+     0
+    ],
+    "v": [
+     1,
+     -1,
+     -4
+    ]
+   },
+   {
+    "compression_rank": 4,
+    "line_nullity_at_1_2_3": [
+     4,
+     4,
+     4
+    ],
+    "normal": [
+     -6,
+     -3,
+     6
+    ],
+    "u": [
+     2,
+     -2,
+     1
+    ],
+    "v": [
+     1,
+     2,
+     2
+    ]
+   },
+   {
+    "compression_rank": 4,
+    "line_nullity_at_1_2_3": [
+     4,
+     4,
+     4
+    ],
+    "normal": [
+     42,
+     14,
+     -21
+    ],
+    "u": [
+     2,
+     3,
+     6
+    ],
+    "v": [
+     3,
+     -6,
+     2
+    ]
+   }
+  ],
+  "two_term_limit_planes": 6,
+  "two_term_plane_overlap_traces": {
+   "0": 3,
+   "2": 12
+  },
+  "two_term_planes_are_the_six_axis_planes": true,
+  "two_term_rank_census": {
+   "0": 384,
+   "4": 32,
+   "8": 514
+  }
+ },
+ "prediction_held": {
+  "P1": true,
+  "P10": true,
+  "P11": false,
+  "P2": true,
+  "P3": false,
+  "P4": true,
+  "P5": true,
+  "P6": true,
+  "P7": true,
+  "P8": true,
+  "P9": false
+ },
+ "predictions": {
+  "P1": "gamma1 has nullity 4 at every real s != 0 and 8 at s = 0",
+  "P10": "the upper-half point e17 + e26 and the four-term lower-half point e1 + e10 + e4 + e15 are quaternionic",
+  "P11": "the W8 point e1 + e10 + 2 (e18 - e25), whose halves are linearly independent, is not quaternionic",
+  "P2": "gamma2 has nullity 8 at every real s != 1 and 12 at s = 1",
+  "P3": "gamma3 has nullity 12 off its exceptional set and 16 at s = 1, the only exceptional real parameter",
+  "P4": "the limiting planes of gamma1 and beta at e1 + e10 are orthogonal and span the kernel, and a third limiting plane is orthogonal to neither",
+  "P5": "the first-order compression has rank 4 at every junction",
+  "P6": "L_(a,t)^T L_(a,t) = L_(a,0)^T L_(a,0) + t^2 I for imaginary a at levels 16, 32 and 64",
+  "P7": "<e_i, e_j e_k> is alternating on the imaginary units at levels 8 to 64",
+  "P8": "on u = a e1, v = b e2, mu = i: Q = a^2 + b^2 - 1 and G = ((a+b)^2 - 1)((a-b)^2 - 1)",
+  "P9": "at the second W8 point e1 + e10 + e3 + e20 the pencil has dimension 7, a quaternionic commutant of dimension 4 and a Lie closure of dimension 10"
+ },
+ "section": {
+  "g_matches": true,
+  "q_matches": true
+ },
+ "sources": {
+  "docs/evidence/a5-exceptional-fibers/hardware-orbits/hardware_orbits.py": "5318f176dd44619b1970c70c6b3d0696a8381d433132fee26a33373106aab4bf",
+  "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+  "gororoba_quantum/kernel_limits.py": "46591b43f37086bce51d6d600c0b0ae6e1d5055c0e0c475a5185d0c2d351e6a7",
+  "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
+  "scripts/a5_nullity_transitions.py": "795ed04a760649d5f85920af9aa5849272ad134289769d3ec68f4b295e162858"
+ },
+ "structure": [
+  {
+   "base": [
+    [
+     1,
+     1
+    ],
+    [
+     10,
+     1
+    ]
+   ],
+   "commutant_dimension": 4,
+   "commutant_noncommutative": true,
+   "commutant_trace_form_negative_definite": true,
+   "commutant_traceless_dimension": 3,
+   "kernel": 8,
+   "lie_closure_dimension": 10,
+   "pencil_dimension": 7
+  },
+  {
+   "base": [
+    [
+     1,
+     1
+    ],
+    [
+     10,
+     -1
+    ]
+   ],
+   "commutant_dimension": 4,
+   "commutant_noncommutative": true,
+   "commutant_trace_form_negative_definite": true,
+   "commutant_traceless_dimension": 3,
+   "kernel": 8,
+   "lie_closure_dimension": 10,
+   "pencil_dimension": 7
+  },
+  {
+   "base": [
+    [
+     17,
+     1
+    ],
+    [
+     26,
+     1
+    ]
+   ],
+   "commutant_dimension": 4,
+   "commutant_noncommutative": true,
+   "commutant_trace_form_negative_definite": true,
+   "commutant_traceless_dimension": 3,
+   "kernel": 8,
+   "lie_closure_dimension": 10,
+   "pencil_dimension": 7
+  },
+  {
+   "base": [
+    [
+     1,
+     1
+    ],
+    [
+     4,
+     1
+    ],
+    [
+     10,
+     1
+    ],
+    [
+     15,
+     1
+    ]
+   ],
+   "commutant_dimension": 4,
+   "commutant_noncommutative": true,
+   "commutant_trace_form_negative_definite": true,
+   "commutant_traceless_dimension": 3,
+   "kernel": 8,
+   "lie_closure_dimension": 10,
+   "pencil_dimension": 7
+  },
+  {
+   "base": [
+    [
+     1,
+     1
+    ],
+    [
+     10,
+     1
+    ],
+    [
+     17,
+     1
+    ],
+    [
+     26,
+     1
+    ]
+   ],
+   "commutant_dimension": 4,
+   "commutant_noncommutative": true,
+   "commutant_trace_form_negative_definite": true,
+   "commutant_traceless_dimension": 3,
+   "kernel": 8,
+   "lie_closure_dimension": 10,
+   "pencil_dimension": 7
+  },
+  {
+   "base": [
+    [
+     1,
+     1
+    ],
+    [
+     10,
+     1
+    ],
+    [
+     18,
+     2
+    ],
+    [
+     25,
+     -2
+    ]
+   ],
+   "commutant_dimension": 4,
+   "commutant_noncommutative": true,
+   "commutant_trace_form_negative_definite": true,
+   "commutant_traceless_dimension": 3,
+   "kernel": 8,
+   "lie_closure_dimension": 10,
+   "pencil_dimension": 7
+  },
+  {
+   "base": [
+    [
+     1,
+     1
+    ],
+    [
+     3,
+     1
+    ],
+    [
+     10,
+     1
+    ],
+    [
+     20,
+     1
+    ]
+   ],
+   "commutant_dimension": 1,
+   "commutant_noncommutative": false,
+   "commutant_trace_form_negative_definite": true,
+   "commutant_traceless_dimension": 0,
+   "kernel": 8,
+   "lie_closure_dimension": 28,
+   "pencil_dimension": 7
+  },
+  {
+   "base": [
+    [
+     1,
+     2
+    ],
+    [
+     3,
+     1
+    ],
+    [
+     10,
+     2
+    ],
+    [
+     20,
+     1
+    ]
+   ],
+   "commutant_dimension": 1,
+   "commutant_noncommutative": false,
+   "commutant_trace_form_negative_definite": true,
+   "commutant_traceless_dimension": 0,
+   "kernel": 8,
+   "lie_closure_dimension": 28,
+   "pencil_dimension": 7
+  }
+ ],
+ "structure_orbits": [
+  {
+   "name": "e1+e10",
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12
+  },
+  {
+   "name": "e1-e10",
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12
+  },
+  {
+   "name": "e17+e26",
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12
+  },
+  {
+   "name": "e1+e10+e4+e15",
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12
+  },
+  {
+   "name": "e1+e10+e17+e26",
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12
+  },
+  {
+   "name": "e1+e10+2(e18-e25)",
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12
+  },
+  {
+   "name": "e1+e10+e3+e20",
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12
+  },
+  {
+   "name": "2(e1+e10)+e3+e20",
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12
+  }
+ ],
+ "tangent_cone": {
+  "g_is_s2_zeta2_times_cofactor": true,
+  "pfaffian_at_m0_is_squared_modulus_of_lead": true
+ },
+ "three_form": [
+  {
+   "alternation_failures": 0,
+   "dimension": 8,
+   "ordered_unit_pairs": 42
+  },
+  {
+   "alternation_failures": 0,
+   "dimension": 16,
+   "ordered_unit_pairs": 210
+  },
+  {
+   "alternation_failures": 0,
+   "dimension": 32,
+   "ordered_unit_pairs": 930
+  },
+  {
+   "alternation_failures": 0,
+   "dimension": 64,
+   "ordered_unit_pairs": 3906
+  }
+ ]
+}

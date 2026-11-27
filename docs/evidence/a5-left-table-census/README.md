@@ -25,6 +25,37 @@ The items of pool row MATH-71 and the reduction of pool row MATH-73, each comput
    [e_a, e_b, e_c] != 0 equals (D - 2)(D - 4)(D + 6)/2 for D = 4 to 1024: 0, 168, 1848, 15960, 130200, 1046808,
    8385048, 67101720, 536856600. The associator of basis units is
    (s(a, b) s(a ^ b, c) - s(b, c) s(a, b ^ c)) e_(a ^ b ^ c).
+
+   **Proof for every D (A5-649).** Theorem 1 of [cd_associator_defect_census.md](../../notes/topics/cd_associator_defect_census.md)
+   (2026-10-22) proves the formula for every D: its associator-lifting Lemma 3, summed over the eight top-bit choices,
+   leaves the rank-at-most-1 triples alone. A5-634 called the proof open because the searches of 2026-11-26 looked
+   outside the repository. A second derivation runs through Albuquerque and Majid, whose Corollary 4.3 and
+   Proposition 4.5 are the published forms of that note's sign lifting (Lemma 2) and associator lifting (Lemma 3).
+   Write G = Z_2^n with D = 2^n, and phi(a, b, c) = s(a, b) s(a ^ b, c) s(b, c) s(a, b ^ c), which is -1 exactly when
+   the associator is nonzero.
+   - *The cochain.* s(p, q) = F(q, p), where F = (-1)^f is the cochain of the standard Cayley-Dickson process of
+     Albuquerque and Majid (arXiv math/9802116, Corollary 4.3, page 18). Peeling the top bit, the four branches of
+     `cd_core.cd_sign` are the four cases of their recursion with the arguments exchanged, given F(y, y) = -1 for y != 0
+     (their Proposition 4.2, page 17). So A_n is the opposite of their algebra k_F G, its phi(a, b, c) is theirs at
+     (c, b, a), and the count is the same for both (A5-648).
+   - *The doubling.* Their Proposition 4.5 (page 20) writes the cocycle of the doubled group through phi and
+     R(x, y) = F(x, y)/F(y, x) on G, for x, y, z in G and the new generator v: phi(x, y, z); R(y, z) phi at (vx, y, z);
+     R(y, z) R(xy, z) phi at (x, vy, z); R(x, y) phi at (x, y, vz); R(xy, z) phi at (vx, vy, z); R(y, z) R(x, y) phi at
+     (vx, y, vz); R(x, yz) phi at (x, vy, vz); R(xy, z) R(x, y) phi at (vx, vy, vz). Distinct imaginary units
+     anticommute, so R(x, y) = -1 exactly when x and y are nonzero and distinct.
+   - *Degenerate triples.* phi = 1 outside Gamma = {(x, y, z): x, y nonzero, x != y, z not in {0, x, y, x ^ y}}. A triple
+     of the doubled group outside its Gamma projects to a triple of G outside Gamma, where phi = 1 by induction, so its
+     cocycle is the R product of its case. That product depends only on which sums of x, y, z vanish, and every such
+     pattern occurs in Z_2^3, so the tables at D = 8 and D = 16 (phi = 1 off Gamma at both, hence every R product
+     of the doubling equal to 1; `tests/scripts/test_cd_sign_quasialgebra.py`) settle every n; D = 2 and 4 are
+     associative.
+   - *The count.* On Gamma every R factor is -1: the cases (x, y, z), (x, vy, z), (vx, y, vz) and (vx, vy, vz) keep phi
+     and the other four negate it, giving 4N + 4(|Gamma| - N) = 4(D - 1)(D - 2)(D - 4). Off Gamma phi = 1 and the case
+     (x, y, z) adds none. Each one-factor case adds 4(D - 1)(D - 2): for R(y, z), the pairs y, z nonzero and distinct
+     with x in {0, y, z, y ^ z}, and likewise for R(x, y), R(xy, z) and R(x, yz). Each two-factor case counts the
+     triples where exactly one factor is -1, also 4(D - 1)(D - 2): fixing the shared element w (z, y or xy), each factor
+     is -1 for D - 2 values of its other argument. So N(2D) = 4(D - 1)(D - 2)(D - 4) + 28(D - 1)(D - 2)
+     = 4(D - 1)(D - 2)(D + 3) = (2D - 2)(2D - 4)(2D + 6)/2, and N(4) = 0 gives the formula for every D >= 4.
 4. **Euclidean cone over number fields.** L_y has nullity 12 at 10 points y = x + t e_26 with r^2 + t^2 = 0:
    - over Q(sqrt(-d)) for d = 1, 2, 3, 5, 6, 7, 11, with t = s sqrt(-d) and sum x_a^2 = d s^2;
    - the four Q(i) points add to the three of the [associator envelope](../a5-null-slice-associator-envelope/README.md).
@@ -78,12 +109,13 @@ every cone point has nullity 12. All held.
 
 ## Open
 
-- A proof of statements 1 and 3 for every n (statement 6 is proved; see the family proof). The lower-half orbits (d < 2^n) of A_(n+1) contain the constraint graph
+- A proof of statement 1 for every n (statements 3 and 6 are proved; see above and the family proof). The lower-half orbits (d < 2^n) of A_(n+1) contain the constraint graph
   of A_n, so their inconsistency is inherited; the orbits with d >= 2^n need their own argument; Zhou and Zhou's theorem covers
   statement 1 for every n if it holds. Targeted searches on 2026-11-26 for the triple formula, arXiv
   `all:"Cayley-Dickson" AND all:associator AND all:basis`, `all:"Cayley-Dickson" AND all:triples AND all:associative`
   and `all:sedenion AND all:associator AND all:count`, and zbMATH documents `Cayley-Dickson associator basis`, found
-  Wilmot 2025 (arXiv 2505.11747), which classifies the associativity of basis triples in a graded notation. Its abstract
+  Wilmot 2025 (arXiv 2505.11747), which classifies the associativity of basis triples in a graded notation; they
+  missed the repository's own proof (statement 3). Its abstract
   states no count, and its text was not read.
 - Equality on the Euclidean cone at every point over every field of characteristic 0 (the bound is proved; equality
   is checked at points).
