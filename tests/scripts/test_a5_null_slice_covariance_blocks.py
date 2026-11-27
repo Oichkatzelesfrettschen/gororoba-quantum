@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import a5_null_slice_covariance_blocks as record
+import pytest
 
 
 def require(condition: bool) -> None:
@@ -25,10 +26,17 @@ def test_a5_space_is_the_e2_stabilizer() -> None:
     require(record.identification("A5", basis, stabilizer) == {"covariant": 8, "reference": 8, "union": 8})
 
 
+@pytest.mark.audit
 def test_anchor_cosets_give_g2_at_level_six() -> None:
     anchors = record.coset_tables(6, record.anchor_representatives(6))
     rows = [row for tables in anchors.values() for row in record.table_constraints(tables)]
     require(len(anchors) == 4 and record.intersection(rows) == {"all": 14, "rotations": 14, "boosts": 0})
+
+
+def test_anchor_coset_tables_agree_at_levels_six_and_seven() -> None:
+    six = record.coset_tables(6, record.anchor_representatives(6))
+    seven = record.coset_tables(7, record.anchor_representatives(7))
+    require(len(six) == 4 and list(six) == list(seven))
 
 
 def test_block_signs_agree_at_levels_six_and_seven() -> None:
