@@ -1,0 +1,780 @@
+{
+ "degrees": {
+  "1": {
+   "f": 2,
+   "row_degrees": [
+    1
+   ]
+  },
+  "2": {
+   "f": 2,
+   "row_degrees": [
+    1
+   ]
+  },
+  "3": {
+   "associator": {
+    "degree": 3,
+    "formula": 168,
+    "nonassociating_triples": 168
+   },
+   "f": 3,
+   "row_degrees": [
+    2
+   ]
+  },
+  "4": {
+   "associator": {
+    "degree": 4,
+    "formula": 1848,
+    "nonassociating_triples": 1848
+   },
+   "f": 4,
+   "row_degrees": [
+    3
+   ]
+  },
+  "5": {
+   "associator": {
+    "degree": 5,
+    "formula": 15960,
+    "nonassociating_triples": 15960
+   },
+   "f": 5,
+   "row_degrees": [
+    4
+   ]
+  },
+  "6": {
+   "associator": {
+    "degree": 6,
+    "formula": 130200,
+    "nonassociating_triples": 130200
+   },
+   "f": 6,
+   "row_degrees": [
+    5
+   ]
+  },
+  "7": {
+   "associator": {
+    "degree": 7,
+    "formula": 1046808,
+    "nonassociating_triples": 1046808
+   },
+   "f": 7,
+   "row_degrees": [
+    6
+   ]
+  },
+  "8": {
+   "associator": {
+    "degree": 8,
+    "formula": 8385048,
+    "nonassociating_triples": 8385048
+   },
+   "f": 8,
+   "row_degrees": [
+    7
+   ]
+  }
+ },
+ "lemmas": {
+  "doubling_failures": {
+   "1": 0,
+   "2": 0,
+   "3": 0,
+   "4": 0,
+   "5": 0,
+   "6": 0,
+   "7": 0
+  },
+  "transposition_failures": {
+   "1": 0,
+   "2": 0,
+   "3": 0,
+   "4": 0,
+   "5": 0,
+   "6": 0,
+   "7": 0,
+   "8": 0
+  }
+ },
+ "levels": {
+  "3": {
+   "bound_2^(n-2)-2": 0,
+   "flip_histogram": {
+    "0": 1,
+    "2": 7
+   },
+   "level_sha256": "eb1fe6e3e0cd4ef0bf9b9672921ec266cfff3d8b4d9ea8dba6e8993c86d8a14a",
+   "max_flips": 2,
+   "residue_mod_8": {
+    "flip_violations": 0,
+    "flips_in_class_0": 7,
+    "flips_in_class_r": 7,
+    "outside_set_leaving_images": 0,
+    "pauli_part_mismatches_outside": 0,
+    "rows_checked": 7
+   },
+   "rows": 8,
+   "rows_differing_from_closest_affine": 5,
+   "rows_exact": 8,
+   "rows_with_several_closest_affine": 7,
+   "table": [
+    [
+     0,
+     0,
+     []
+    ],
+    [
+     7,
+     1,
+     [
+      0,
+      1
+     ]
+    ],
+    [
+     6,
+     1,
+     [
+      0,
+      2
+     ]
+    ],
+    [
+     5,
+     1,
+     [
+      0,
+      3
+     ]
+    ],
+    [
+     4,
+     1,
+     [
+      0,
+      4
+     ]
+    ],
+    [
+     1,
+     1,
+     [
+      0,
+      5
+     ]
+    ],
+    [
+     3,
+     1,
+     [
+      0,
+      6
+     ]
+    ],
+    [
+     2,
+     1,
+     [
+      0,
+      7
+     ]
+    ]
+   ]
+  },
+  "4": {
+   "bound_2^(n-2)-2": 2,
+   "flip_histogram": {
+    "0": 1,
+    "2": 15
+   },
+   "level_sha256": "2845b3c27defd28352e981f0edf7874e61aa5924937ddaa1f89be3b596c17022",
+   "max_flips": 2,
+   "residue_mod_8": {
+    "flip_violations": 0,
+    "flips_in_class_0": 14,
+    "flips_in_class_r": 14,
+    "outside_set_leaving_images": 0,
+    "pauli_part_mismatches_outside": 0,
+    "rows_checked": 14
+   },
+   "rows": 16,
+   "rows_differing_from_closest_affine": 0,
+   "rows_exact": 16,
+   "rows_with_several_closest_affine": 0,
+   "table": [
+    [
+     0,
+     0,
+     []
+    ],
+    [
+     15,
+     1,
+     [
+      0,
+      1
+     ]
+    ],
+    [
+     14,
+     1,
+     [
+      0,
+      2
+     ]
+    ],
+    [
+     13,
+     1,
+     [
+      0,
+      3
+     ]
+    ],
+    [
+     12,
+     1,
+     [
+      0,
+      4
+     ]
+    ],
+    [
+     9,
+     1,
+     [
+      0,
+      5
+     ]
+    ],
+    [
+     11,
+     1,
+     [
+      0,
+      6
+     ]
+    ],
+    [
+     10,
+     1,
+     [
+      0,
+      7
+     ]
+    ],
+    [
+     8,
+     1,
+     [
+      0,
+      8
+     ]
+    ],
+    [
+     7,
+     0,
+     [
+      1,
+      8
+     ]
+    ],
+    [
+     6,
+     0,
+     [
+      2,
+      8
+     ]
+    ],
+    [
+     5,
+     0,
+     [
+      3,
+      8
+     ]
+    ],
+    [
+     4,
+     0,
+     [
+      4,
+      8
+     ]
+    ],
+    [
+     1,
+     0,
+     [
+      5,
+      8
+     ]
+    ],
+    [
+     3,
+     0,
+     [
+      6,
+      8
+     ]
+    ],
+    [
+     2,
+     0,
+     [
+      7,
+      8
+     ]
+    ]
+   ]
+  },
+  "5": {
+   "bound_2^(n-2)-2": 6,
+   "flip_histogram": {
+    "0": 1,
+    "2": 17,
+    "6": 14
+   },
+   "level_sha256": "acf073d65674450e445f23de581bc587d81fc4f19ac7011957c001f46d3c8d16",
+   "max_flips": 6,
+   "residue_mod_8": {
+    "flip_violations": 0,
+    "flips_in_class_0": 56,
+    "flips_in_class_r": 56,
+    "outside_set_leaving_images": 0,
+    "pauli_part_mismatches_outside": 0,
+    "rows_checked": 28
+   },
+   "rows": 32,
+   "rows_differing_from_closest_affine": 0,
+   "rows_exact": 32,
+   "rows_with_several_closest_affine": 0,
+   "table": [
+    [
+     0,
+     0,
+     []
+    ],
+    [
+     31,
+     1,
+     [
+      0,
+      1
+     ]
+    ],
+    [
+     30,
+     1,
+     [
+      0,
+      2
+     ]
+    ],
+    [
+     29,
+     1,
+     [
+      0,
+      3
+     ]
+    ],
+    [
+     28,
+     1,
+     [
+      0,
+      4
+     ]
+    ],
+    [
+     25,
+     1,
+     [
+      0,
+      5
+     ]
+    ],
+    [
+     27,
+     1,
+     [
+      0,
+      6
+     ]
+    ],
+    [
+     26,
+     1,
+     [
+      0,
+      7
+     ]
+    ],
+    [
+     24,
+     1,
+     [
+      0,
+      8
+     ]
+    ],
+    [
+     23,
+     0,
+     [
+      1,
+      8,
+      16,
+      17,
+      24,
+      25
+     ]
+    ],
+    [
+     22,
+     0,
+     [
+      2,
+      8,
+      16,
+      18,
+      24,
+      26
+     ]
+    ],
+    [
+     21,
+     0,
+     [
+      3,
+      8,
+      16,
+      19,
+      24,
+      27
+     ]
+    ],
+    [
+     20,
+     0,
+     [
+      4,
+      8,
+      16,
+      20,
+      24,
+      28
+     ]
+    ],
+    [
+     17,
+     0,
+     [
+      5,
+      8,
+      16,
+      21,
+      24,
+      29
+     ]
+    ],
+    [
+     19,
+     0,
+     [
+      6,
+      8,
+      16,
+      22,
+      24,
+      30
+     ]
+    ],
+    [
+     18,
+     0,
+     [
+      7,
+      8,
+      16,
+      23,
+      24,
+      31
+     ]
+    ],
+    [
+     16,
+     1,
+     [
+      0,
+      16
+     ]
+    ],
+    [
+     15,
+     0,
+     [
+      1,
+      16
+     ]
+    ],
+    [
+     14,
+     0,
+     [
+      2,
+      16
+     ]
+    ],
+    [
+     13,
+     0,
+     [
+      3,
+      16
+     ]
+    ],
+    [
+     12,
+     0,
+     [
+      4,
+      16
+     ]
+    ],
+    [
+     9,
+     0,
+     [
+      5,
+      16
+     ]
+    ],
+    [
+     11,
+     0,
+     [
+      6,
+      16
+     ]
+    ],
+    [
+     10,
+     0,
+     [
+      7,
+      16
+     ]
+    ],
+    [
+     8,
+     0,
+     [
+      8,
+      16
+     ]
+    ],
+    [
+     7,
+     1,
+     [
+      0,
+      1,
+      8,
+      17,
+      24,
+      25
+     ]
+    ],
+    [
+     6,
+     1,
+     [
+      0,
+      2,
+      8,
+      18,
+      24,
+      26
+     ]
+    ],
+    [
+     5,
+     1,
+     [
+      0,
+      3,
+      8,
+      19,
+      24,
+      27
+     ]
+    ],
+    [
+     4,
+     1,
+     [
+      0,
+      4,
+      8,
+      20,
+      24,
+      28
+     ]
+    ],
+    [
+     1,
+     1,
+     [
+      0,
+      5,
+      8,
+      21,
+      24,
+      29
+     ]
+    ],
+    [
+     3,
+     1,
+     [
+      0,
+      6,
+      8,
+      22,
+      24,
+      30
+     ]
+    ],
+    [
+     2,
+     1,
+     [
+      0,
+      7,
+      8,
+      23,
+      24,
+      31
+     ]
+    ]
+   ]
+  },
+  "6": {
+   "bound_2^(n-2)-2": 14,
+   "flip_histogram": {
+    "0": 1,
+    "2": 19,
+    "6": 16,
+    "10": 14,
+    "14": 14
+   },
+   "level_sha256": "347333cd70eb2c4bedd32c4b6503574fc5191259d877981187481f409c237feb",
+   "max_flips": 14,
+   "residue_mod_8": {
+    "flip_violations": 0,
+    "flips_in_class_0": 224,
+    "flips_in_class_r": 224,
+    "outside_set_leaving_images": 0,
+    "pauli_part_mismatches_outside": 0,
+    "rows_checked": 56
+   },
+   "rows": 64,
+   "rows_differing_from_closest_affine": 0,
+   "rows_exact": 64,
+   "rows_with_several_closest_affine": 0
+  },
+  "7": {
+   "bound_2^(n-2)-2": 30,
+   "flip_histogram": {
+    "0": 1,
+    "2": 21,
+    "6": 18,
+    "10": 16,
+    "14": 16,
+    "18": 14,
+    "22": 14,
+    "26": 14,
+    "30": 14
+   },
+   "level_sha256": "24145376fd671f7b5392dc122587e8845f37e213d38643944b58d5b84e10882a",
+   "max_flips": 30,
+   "residue_mod_8": {
+    "flip_violations": 0,
+    "flips_in_class_0": 896,
+    "flips_in_class_r": 896,
+    "outside_set_leaving_images": 0,
+    "pauli_part_mismatches_outside": 0,
+    "rows_checked": 112
+   },
+   "rows": 128,
+   "rows_differing_from_closest_affine": 0,
+   "rows_exact": 128,
+   "rows_with_several_closest_affine": 0
+  },
+  "8": {
+   "bound_2^(n-2)-2": 62,
+   "flip_histogram": {
+    "0": 1,
+    "2": 23,
+    "6": 20,
+    "10": 18,
+    "14": 18,
+    "18": 16,
+    "22": 16,
+    "26": 16,
+    "30": 16,
+    "34": 14,
+    "38": 14,
+    "42": 14,
+    "46": 14,
+    "50": 14,
+    "54": 14,
+    "58": 14,
+    "62": 14
+   },
+   "level_sha256": "cfe66374993663effcf74d1fb2a8552f8a1935350073133f44ff5ea92f7dd8fd",
+   "max_flips": 62,
+   "residue_mod_8": {
+    "flip_violations": 0,
+    "flips_in_class_0": 3584,
+    "flips_in_class_r": 3584,
+    "outside_set_leaving_images": 0,
+    "pauli_part_mismatches_outside": 0,
+    "rows_checked": 224
+   },
+   "rows": 256,
+   "rows_differing_from_closest_affine": 0,
+   "rows_exact": 256,
+   "rows_with_several_closest_affine": 0
+  }
+ },
+ "seed": {
+  "c": [
+   0,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "u": [
+   0,
+   7,
+   6,
+   5,
+   4,
+   1,
+   3,
+   2
+  ]
+ }
+}
