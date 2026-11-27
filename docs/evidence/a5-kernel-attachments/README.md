@@ -1417,16 +1417,17 @@ entry by entry. The substitution G of the 21 generators that the change of slice
 in `../a5-exceptional-fibers/working/runs/e8-induced-slice-map/`) is reduced at a prime and a root of -1 together
 with the weight-slice relations; the program solves the system on the reduced weight-slice ideal and on the retained
 header-slice ideal and tests G(theta_w(x)) = c theta_h(G(x)) on the five coordinates x of B_w, with G(x) taken modulo
-the linear forms of K_h : R_h. On N- at 32009, 32029 and 32057 and on N+ at 32009 and 32029 one scalar relates the
-maps, and with each map normalized by the leading coefficient of its first image it is c = -1
+the linear forms of K_h : R_h. On N- at 32009, 32029 and 32057 and on N+ at 32009 and 32029 the solved maps equal the
+retained ones in their own normalizations (the Q(i) map of A5-640 with i sent to the root; the header map of A5-638
+with its free coordinate set to 1), and one scalar relates them: c = i / 2, i the root of -1 of the cell
 ([`slice-module-map-comparison-result.json`](slice-module-map-comparison-result.json), Singular 4.4.1, 17 s; ledger
 row A5-642). The identity is forced by A5-598 and the one-dimensional solution spaces, since G carries the radical,
 its linear forms and the colon ideal of one slice to those of the other; the run confirms that the two retained
-maps are the intrinsic one and adds no independent evidence. Three controls find no scalar: two weight-slice images
+maps, found in unrelated coordinates, are one intrinsic map, and adds no independent evidence for those rows. Three controls find no scalar: two weight-slice images
 exchanged, G perturbed on the leading variable of the first image, and two header coordinates of B_h exchanged.
 Same-sign X has no retained slice map, so its two maps stay compared by invariants. The gate
 `core-a5-slice-module-map-comparison` replays the record, and `tests/test_a5_slice_module_map_comparison.py`
-rejects 19 mutations of a fixture.
+rejects 22 mutations of a fixture.
 
 ## Investigated questions
 

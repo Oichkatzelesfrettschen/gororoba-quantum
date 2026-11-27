@@ -11,8 +11,11 @@ tests the identity
 
     G(theta_w(x)) = c * theta_h(G(x) modulo the linear forms of K_h : R_h)   for the five coordinates x of B_w
 
-with one nonzero scalar c; with each map normalized by the leading coefficient of its first image, as in both
-records, the measured c is -1 on every cell. The identity is forced: G carries R_w, N_w and K_w : R_w to their header counterparts, so
+with one nonzero scalar c. Each map carries the normalization of its retained record: the weight-slice map is divided
+by the leading coefficient of its first image (A5-640) and the header-slice map has its free coordinate set to 1
+(A5-638); the solved maps must equal the retained ones (the table of `weight_slice_module_map.py` with i sent to the
+root, and `expected_map` of `quadric_and_germ_probes.py`), and between them the measured scalar is c = i / 2 on every
+cell, i the root of -1 of the cell. The identity is forced: G carries R_w, N_w and K_w : R_w to their header counterparts, so
 it carries a solution of one system to a solution of the other, and both solution spaces are one-dimensional. The run
 is a confirmation that shares its inputs with A5-598 and A5-638 and adds no independent evidence for either; a
 failure would refute one of them or expose a solver that does not compute the intrinsic map.
@@ -46,8 +49,12 @@ INDUCED = FIBERS / "working" / "runs" / "e8-induced-slice-map"
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(INDUCED))
 
+sys.path.insert(0, str(FIBERS / "structure"))
+
 import induced_slice_map as induced  # noqa: E402
+import quadric_and_germ_probes as probes  # noqa: E402
 import weight_slice_fiber_relations as ws  # noqa: E402
+import weight_slice_module_map as weight_map  # noqa: E402
 
 SCHEMA = "gororoba.a5.slice-module-map-comparison/1"
 TIMEOUT_SECONDS = 1800
@@ -82,7 +89,7 @@ ideal fK=f(KW); ideal fAl=f(AlW); ideal fN=f(NW);
 ring r1=@P@,(y(1..21),t(1..25)),(dp(21),dp(25));
 proc collect(poly e, poly ymon)
 { ideal T; int c; if(e!=0){ matrix C=coef(e,ymon); for(c=1;c<=ncols(C);c++){ T[size(T)+1]=C[2,c]; } } return(T); }
-proc solve(string tag, ideal sK, ideal N, ideal F, ideal Aq)
+proc solve(string tag, ideal sK, ideal N, ideal F, ideal Aq, int nrm)
 { int g=5; int m; int j; int k; int c; int sg; poly s; poly e; ideal TH; ideal IM; ideal T; ideal sT; int fr;
   matrix M[g][g]; number lc;
   poly ymon=1; for(m=1;m<=21;m++){ ymon=ymon*y(m); }
@@ -100,13 +107,13 @@ proc solve(string tag, ideal sK, ideal N, ideal F, ideal Aq)
         for(j=1;j<=g;j++){ for(m=1;m<=g;m++){ M[j,m]=subst(reduce(t((j-1)*g+m),sT),t(fr),1); } }
         print("RESULT "+tag+"_det_nonzero "+string(det(M)!=0));
         for(j=1;j<=g;j++){ s=0; for(m=1;m<=g;m++){ s=s+M[j,m]*N[m]; } IM[j]=s; }
-        lc=leadcoef(IM[1]); IM=IM/lc;
+        if(nrm==1){ lc=leadcoef(IM[1]); IM=IM/lc; }
       }
     }
   }
   return(IM); }
-ideal IMW=solve("weight",std(imap(r0,sKW)),imap(r0,NW),imap(r0,FW),imap(r0,AqW));
-ideal IMH=solve("header",std(imap(r0,sKH)),imap(r0,NH),imap(r0,FH),imap(r0,AqH));
+ideal IMW=solve("weight",std(imap(r0,sKW)),imap(r0,NW),imap(r0,FW),imap(r0,AqW),1);
+ideal IMH=solve("header",std(imap(r0,sKH)),imap(r0,NH),imap(r0,FH),imap(r0,AqH),0);
 setring r0;
 ideal IMW=imap(r1,IMW); ideal IMH=imap(r1,IMH);
 if(size(IMW)!=5 || size(IMH)!=5){ "RESULT abort 2"; quit; }
@@ -181,9 +188,14 @@ def cell(item: tuple[str, str, int, int, str]) -> dict[str, Any]:
 
 
 def expected(item: tuple[str, str, int, int, str]) -> dict[str, Any]:
-    """The fields the finding fixes; SCALAR binds the scalar, and the replay of the retained record the images."""
+    """The fields the finding fixes: both maps as their records retain them, and the scalar i / 2 between them."""
     orbit, _tag, prime, root, header = item
+    retained = [row for row in probes.MAPS if row[0] == f"E8-bar -> {orbit}" and row[1] == prime]
+    if len(retained) != 1:
+        raise RuntimeError(f"no single module-map row of the header slice for E8-bar -> {orbit} at {prime}")
     return {
+        "weight_image": weight_map.images("e8", orbit, prime, root),
+        "header_image": probes.expected_map(retained[0])["images"],
         "ring": f"E8-bar -> {orbit}",
         "prime": prime,
         "root": root,
@@ -201,9 +213,7 @@ def expected(item: tuple[str, str, int, int, str]) -> dict[str, Any]:
     }
 
 
-# [the map G(x) modulo the linear forms is invertible, one scalar relates the two maps, the scalar]: with each map
-# normalized by the leading coefficient of its first image, the measured scalar is -1 on every cell.
-SCALAR = [1, 1, -1]
+# A scalar row reads [the map G(x) modulo the linear forms is invertible, one scalar relates the two maps, the scalar].
 CONTROLS = ("control_images_exchanged", "control_map_perturbed", "control_generators_exchanged")
 
 
@@ -216,20 +226,21 @@ def problems(cells: list[dict[str, Any]]) -> list[str]:
         want = expected(item)
         name = f"{want['ring']} at {want['prime']}"
         if {k: row.get(k) for k in want} != want:
-            found.append(f"{name}: a side, the transport or a solution count differs from the finding")
+            found.append(f"{name}: a side, the transport, a solution count or a retained map differs from the finding")
         scalar = row.get("scalar")
-        if scalar != SCALAR:
-            found.append(f"{name}: the transported weight-slice map is not {SCALAR[2]} times the header-slice map")
+        half_root = want["root"] * pow(2, -1, want["prime"]) % want["prime"]
+        if not (isinstance(scalar, list) and len(scalar) == 3 and scalar[:2] == [1, 1]) or (
+            scalar[2] % want["prime"] != half_root
+        ):
+            found.append(f"{name}: the transported weight-slice map is not i / 2 times the header-slice map")
         for control in CONTROLS:
             value = row.get(control)
             if not (isinstance(value, list) and len(value) == 3 and value[1:] == [0, 0]):
                 found.append(f"{name}: {control} found a scalar")
-        if len(row.get("weight_image", [])) != 5 or len(row.get("header_image", [])) != 5:
-            found.append(f"{name}: a map does not have five images")
         indices = row.get("control_indices")
         if not (isinstance(indices, list) and len(indices) == 3 and min(indices) >= 1 and indices[1] != indices[2]):
             found.append(f"{name}: a control names no generator")
-        if set(row) != {*want, "scalar", *CONTROLS, "control_indices", "weight_image", "header_image"}:
+        if set(row) != {*want, "scalar", *CONTROLS, "control_indices"}:
             found.append(f"{name}: the row holds an unexpected or missing field")
     return found
 

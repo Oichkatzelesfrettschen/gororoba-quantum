@@ -26,9 +26,11 @@ def fixture(mod: ModuleType) -> list[dict[str, Any]]:
     cells = []
     for item in mod.CELLS:
         row = mod.expected(item)
-        row |= {"scalar": list(mod.SCALAR), "control_indices": [3, 13, 15]}
+        _orbit, _tag, prime, root, _header = item
+        row["weight_image"] = [list(pair) for pair in row["weight_image"]]
+        row["header_image"] = [list(pair) for pair in row["header_image"]]
+        row |= {"scalar": [1, 1, root * pow(2, -1, prime) % prime], "control_indices": [3, 13, 15]}
         row |= {control: [1, 0, 0] for control in mod.CONTROLS}
-        row |= {"weight_image": [["y(8)", "y(3)"]] * 5, "header_image": [["y(13)", "y(7)"]] * 5}
         cells.append(row)
     return cells
 
@@ -42,8 +44,9 @@ def test_the_fixture_passes_and_holds_five_cells() -> None:
 
 MUTATIONS = {
     "maps related by no scalar": lambda cells: cells[0].update(scalar=[1, 0, 0]),
-    "another scalar": lambda cells: cells[1].update(scalar=[1, 1, 1]),
-    "a singular map of the coordinates of B": lambda cells: cells[2].update(scalar=[0, 1, -1]),
+    "another scalar": lambda cells: cells[1].update(scalar=[1, 1, -1]),
+    "the scalar of another prime": lambda cells: cells[1].update(scalar=[1, 1, 5377]),
+    "a singular map of the coordinates of B": lambda cells: cells[2].update(scalar=[0, 1, 20058]),
     "exchanged images accepted": lambda cells: cells[0].update(control_images_exchanged=[1, 1, -1]),
     "a perturbed slice map accepted": lambda cells: cells[3].update(control_map_perturbed=[1, 1, -1]),
     "exchanged header coordinates accepted": lambda cells: cells[4].update(control_generators_exchanged=[1, 1, 5]),
@@ -58,6 +61,10 @@ MUTATIONS = {
     "another header relation file": lambda cells: cells[3].update(header="working/runs/other.rel"),
     "another root": lambda cells: cells[2].update(root=24998),
     "four images": lambda cells: cells[0]["weight_image"].pop(),
+    "a header map in another normalization": lambda cells: cells[0]["header_image"][4].__setitem__(1, "-5377*y(4)"),
+    "a weight-slice map with the other sign of i": lambda cells: cells[3]["weight_image"][4].__setitem__(
+        1, "-2*y(12)-10754*y(13)-10754*y(17)"
+    ),
     "a cell removed": lambda cells: cells.pop(),
     "an extra field": lambda cells: cells[0].update(note="x"),
 }
@@ -96,3 +103,11 @@ def test_an_error_line_or_a_missing_end_raises() -> None:
     row = mod.parse("RESULT scalar 1 1 -1\nRESULT weight_image y(8) y(3)\nRESULT done 1\n")
     if row["scalar"] != [1, 1, -1] or row["weight_image"] != [["y(8)", "y(3)"]]:
         raise AssertionError(row)
+
+
+def test_the_symmetric_residue_of_the_scalar_is_accepted() -> None:
+    mod = load()
+    cells = fixture(mod)
+    cells[1]["scalar"] = [1, 1, cells[1]["scalar"][2] - 32029]
+    if mod.problems(cells):
+        raise AssertionError(mod.problems(cells))
