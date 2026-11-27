@@ -17,7 +17,8 @@ So the dense system splits into blocks:
 - **Constraints.** Each block's left kernel gives linear constraints on the generators. The covariant generators are their common solutions.
 - **Subsystems.** The constraints do not depend on which generators are admitted, so the rotation and boost subsystems take column subsets of one constraint matrix.
 
-The record runs in about 3 minutes on the compute workstation at 16 workers, most of it at A_8.
+The record runs in about 4 minutes on the compute workstation at 16 workers, most of it at A_8 and in the coset
+decompositions.
 
 ## Statements, each checked by `--check`
 
@@ -38,29 +39,35 @@ The record runs in about 3 minutes on the compute workstation at 16 workers, mos
 4. **su(3).** The derivations with D e_2 = 0 span 8 dimensions. Written in the A_5 frame, their span and the A_5
    covariant span have a joint rank of 8, so the A_5 covariance algebra is the stabilizer of e_2 in G_2.
 
-5. **Every n >= 6.** The covariance algebra of the octonion-space slice of A_n is G_2, with no boost, for every
-   n >= 6. Proof:
-   - **G_2 lies inside.** A derivation D of A_(k-1) with D(1) = 0 commutes with conjugation. Then
-     (a, b) -> (Da, Db) is a derivation of A_k under (a, b)(c, d) = (ac - d* b, da + b c*). Both sides of the
-     Leibniz rule expand to ((Da) c + a (Dc) - d* (Db) - (Dd)* b, (Dd) a + d (Da) + (Db) c* + b (Dc)*), and the
-     extension again commutes with conjugation, so induction from the octonions gives a derivation of A_n. It kills
-     every e_m with m = 0 mod 8 (a copy of D(1) = 0), so it kills e_tau, and X = D, Y = -D, w = D solves the system.
-     The record's derivation-type count (14 at A_6, A_7 and A_8) agrees.
-   - **Nothing else lies inside.** V = span(e_0..e_7, e_(tau ^ 0)..e_(tau ^ 7)) is invariant under L_1..L_7 and
-     L_tau, since a ^ V = V and tau ^ V = V. So a solution (X, Y, w) on A_n restricts to (X_VV, Y_VV, w) on V: the
-     entries of X L_y and L_y Y at r, c in V use only X and Y entries inside V. The restricted tables do not depend on
-     n >= 6. By Step 0 of the [family proof](../a5-null-slice-family-proof/README.md), with H = 2^(n-1),
-     tau' = 2^(n-2) + 8, a and j in 0..7:
-     - s_n(a, tau ^ j) = s_(n-1)(tau' ^ j, a) (LH) = -s_(n-2)(8 ^ j, a) (HL, a != 0);
-     - s_n(tau, j) = -s_(n-1)(tau', j) = s_(n-2)(8, j) (HL twice, j != 0);
-     - s_n(tau, tau ^ j) = s_(n-1)(tau' ^ j, tau') = s_(n-2)(8, 8 ^ j) (HH twice).
+5. **Every n >= 6, what is proved.** For the octonion-space slice of A_n:
+   - **G_2 lies inside, for every n >= 6 (proved).** A derivation D of A_(k-1) with D(1) = 0 commutes with
+     conjugation. Then (a, b) -> (Da, Db) is a derivation of A_k under (a, b)(c, d) = (ac - d* b, da + b c*). Both
+     sides of the Leibniz rule expand to ((Da) c + a (Dc) - d* (Db) - (Dd)* b, (Dd) a + d (Da) + (Db) c* + b (Dc)*),
+     and the extension again commutes with conjugation, so induction from the octonions gives a derivation of A_n. It
+     kills every e_m with m = 0 mod 8 (a copy of D(1) = 0), so it kills e_tau, and X = D, Y = -D, w = D solves the
+     system. The derivation-type count (14 at A_6, A_7 and A_8) agrees.
+   - **No boost, for every n >= 6 (proved).** V = span(e_0..e_7, e_(tau ^ 0)..e_(tau ^ 7)) is invariant under
+     L_1..L_7 and L_tau, and a solution (X, Y, w) on A_n restricts to (X_VV, Y_VV, w) on V: the entries of X L_y and
+     L_y Y at r, c in V use only X and Y entries inside V. The restricted tables do not depend on n >= 6. By Step 0 of
+     the [family proof](../a5-null-slice-family-proof/README.md), with tau' = 2^(n-2) + 8 and a, j in 0..7:
+     - s_n(a, tau ^ j) = s_(n-1)(tau' ^ j, a) = -s_(n-2)(8 ^ j, a);
+     - s_n(tau, j) = -s_(n-1)(tau', j) = s_(n-2)(8, j);
+     - s_n(tau, tau ^ j) = s_(n-1)(tau' ^ j, tau') = s_(n-2)(8, 8 ^ j).
 
-     In each case the indices of the remaining sign lie below 16 <= 2^(n-2), so LL carries it to level 4. The
-     restricted system on V (16 x 16 unknowns X and Y, 28 generators) has covariant dimension 14 with no boost, so
-     the covariance algebra on A_n has at most 14 dimensions and no boost, and it contains G_2.
-   - The record computes the restricted system once and checks that the restricted tables agree at n = 6 to 12. The
-     direct block computations at A_6, A_7 and A_8 corroborate the result. A reviewer proposed this route in the
-     red-team round of this record's A_8 extension.
+     In each case the remaining indices lie below 16 <= 2^(n-2), so LL carries the sign to level 4. The record checks
+     the tables at n = 6 to 12. The restricted system on V admits all 21 rotations and no generator with a boost
+     part, so the covariance algebra of every level lies in so(7).
+   - **Equality with G_2 at n = 6 to 10 (proved there by exact computation).** Every coset span W_c = span(e_(c ^ g) :
+     g in G), with G = {0..7} u (tau ^ {0..7}), is invariant. An equation at (r, c) carries w only where r ^ c lies in
+     the frame, which forces r and c into the same coset. So the covariance algebra is the intersection of the
+     per-coset algebras. At n = 6 to 10 the intersection has dimension 14, all rotations, no boost. V alone allows 21.
+   - **Every n, open (A5-640).** The cosets carry 4 sign types at n = 6 and the same 7 types at every n = 7 to 10.
+     The coset count grows as 2^(n-4) while the type count stays fixed. If no new type appears above n = 10, the
+     intersection is the same for every n >= 7. A Step 0 argument that a coset's type depends only on finitely many
+     bits of its representative would close it.
+   - A reviewer proposed the V route in the red-team round of this record's A_8 extension, predicting 14 on V.
+     The record measured 21 on V, which falsifies that prediction as stated. The coset intersection is the
+     refinement that recovers 14.
 
 ## What is new against the known theorem
 

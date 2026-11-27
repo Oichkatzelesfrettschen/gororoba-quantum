@@ -1,4 +1,4 @@
-"""Covariance algebras of the A_5 null slice and of the octonion-space slices by XOR blocks; G_2 for every n >= 6.
+"""Covariance algebras of the A_5 null slice and of the octonion-space slices by XOR blocks and by cosets.
 
 For a slice with frame F = (space..., tau) of the Cayley-Dickson algebra of dimension D, the covariance system asks for
 matrices X, Y and a generator w of so(|F| - 1, 1) with X L_y + L_y Y = L_(w y) for every y in the span of F. With
@@ -16,9 +16,11 @@ This record checks, exactly over Q:
   (time 104) and A_8 (time 200) the covariant generators span 14 dimensions, all rotations, no boost;
 - that space equals the derivation algebra of the octonions (G_2) in so(7), and the A_5 space equals the stabilizer
   of e_2 in G_2 restricted to the A_5 frame (su(3));
-- on V = span(e_0..e_7, e_(tau ^ 0)..e_(tau ^ 7)), invariant under the eight frame tables, the restricted system has
-  covariant dimension 14 with no boost, and the restricted tables are the same at every level n = 6 to 12, which with
-  the argument of the README gives G_2 for every n >= 6.
+- on V = span(e_0..e_7, e_(tau ^ 0)..e_(tau ^ 7)), invariant under the eight frame tables, the restricted system
+  admits all 21 rotations and no boost, and its tables are the same at every level n = 6 to 12, so no level n >= 6
+  admits a boost;
+- the covariance algebra is the intersection over the cosets c ^ G of G = {0..7} u (tau ^ {0..7}); at n = 6 to 10
+  the intersection is 14-dimensional, all rotations, and the cosets carry 7 sign types, the same set from n = 7 on.
 
 Blocks run through parallel.ordered_map. No random draw enters.
 """
@@ -26,6 +28,7 @@ Blocks run through parallel.ordered_map. No random draw enters.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from itertools import combinations
@@ -289,6 +292,86 @@ def restricted_covariance(tables: list[list[list[int]]]) -> dict[str, int]:
     return {"all": dimension(list(range(len(gens)))), "rotations": dimension(rotations), "boosts": dimension(boosts)}
 
 
+COSET_LEVELS: tuple[int, ...] = tuple(range(6, 11))
+
+
+def coset_item(level: int) -> dict[str, Any]:
+    """The octonion-space slice of A_level split into the cosets c ^ G of G = {0..7} u (tau ^ {0..7}): each coset span is
+    invariant under the frame tables, and every equation carrying w lies inside one coset, so the covariance algebra is
+    the intersection over cosets. Returns the number of distinct coset sign types and the intersection's dimensions."""
+    tau = octonion_slice_time(level)
+    dimension = 1 << level
+    group = [*range(8), *(tau ^ j for j in range(8))]
+    frame = [*range(1, 8), tau]
+    signs = sign_rows(dimension, frame)
+    seen: set[int] = set()
+    types: dict[Any, list[list[list[int]]]] = {}
+    for c in range(dimension):
+        if c in seen:
+            continue
+        members = [c ^ g for g in group]
+        seen.update(members)
+        position = {m: i for i, m in enumerate(members)}
+        tables = []
+        for row, a in enumerate(frame):
+            matrix = [[0] * 16 for _ in range(16)]
+            for x in members:
+                matrix[position[a ^ x]][position[x]] = int(signs[row, x])
+            tables.append(matrix)
+        types.setdefault(tuple(tuple(tuple(r) for r in m) for m in tables), tables)
+    rows: list[list[int]] = []
+    for tables in types.values():
+        rows += table_constraints(tables)
+    gens = generators(tuple(range(len(frame))))
+    rotations = [g for g, (_a, _b, boost) in enumerate(gens) if not boost]
+    boosts = [g for g, (_a, _b, boost) in enumerate(gens) if boost]
+    return {
+        "level": level,
+        "cosets": dimension // 16,
+        "types": len(types),
+        "type_keys": sorted(hash_key(key) for key in types),
+        "all": len(solution_space(rows, list(range(len(gens))))),
+        "rotations": len(solution_space(rows, rotations)),
+        "boosts": len(solution_space(rows, boosts)),
+    }
+
+
+def hash_key(key: Any) -> str:
+    return hashlib.sha256(repr(key).encode()).hexdigest()[:16]
+
+
+def table_constraints(tables: list[list[list[int]]]) -> list[list[int]]:
+    """Constraint rows on the generators from the left kernel of the 16-dimensional system of one coset."""
+    size = 16
+    gens = generators(tuple(range(len(tables))))
+    plain = []
+    coupled = []
+    for position, table in enumerate(tables):
+        for r in range(size):
+            for c in range(size):
+                row = [0] * (2 * size * size)
+                for k in range(size):
+                    if table[k][c]:
+                        row[r * size + k] += table[k][c]
+                    if table[r][k]:
+                        row[size * size + k * size + c] += table[r][k]
+                plain.append(row)
+                coupled.append(
+                    [
+                        -sum(generator_weight(g, other, position) * tables[other][r][c] for other in range(len(tables)))
+                        for g in gens
+                    ]
+                )
+    kernel, nullity = fmpz_mat(plain).transpose().nullspace()
+    out = []
+    for j in range(nullity):
+        vector = [int(kernel[i, j]) for i in range(len(plain))]
+        constraint = [sum(v * coupled[i][g] for i, v in enumerate(vector) if v) for g in range(len(gens))]
+        if any(constraint):
+            out.append(constraint)
+    return out
+
+
 def identification(name: str, basis: list[list[int]], reference: list[list[int]]) -> dict[str, int]:
     mapped = [frame_coordinates(name, d) for d in reference]
     return {"covariant": rank(basis), "reference": rank(mapped), "union": rank(basis + mapped)}
@@ -311,6 +394,7 @@ def compute() -> dict[str, Any]:
                 level for level in RESTRICTED_LEVELS if restricted_tables(level) == restricted_tables(6)
             ],
         },
+        "cosets": parallel.ordered_map(coset_item, list(COSET_LEVELS), min_items=1),
         "a5_against_e2_stabilizer": identification("A5", slices["A5"]["basis"], stabilizer(derivations, 2)),
     }
 
@@ -331,7 +415,13 @@ def validate(result: dict[str, Any]) -> None:
         row = result["slices"][name]
         require((row["constraint_rows"], row["constraint_rank"]) == counts, f"{name} constraints {row}")
     restricted = result["restricted"]
-    require(restricted["covariance"] == {"all": 14, "rotations": 14, "boosts": 0}, f"restricted {restricted}")
+    require(restricted["covariance"] == {"all": 21, "rotations": 21, "boosts": 0}, f"restricted {restricted}")
+    cosets = result["cosets"]
+    require([row["level"] for row in cosets] == list(COSET_LEVELS), "coset levels")
+    for row in cosets:
+        require((row["all"], row["rotations"], row["boosts"]) == (14, 14, 0), f"coset intersection {row}")
+    require([row["types"] for row in cosets] == [4, 7, 7, 7, 7], "coset type counts")
+    require(all(row["type_keys"] == cosets[1]["type_keys"] for row in cosets[1:]), "coset types change after n = 7")
     require(restricted["tables_equal_to_level_6"] == list(RESTRICTED_LEVELS), "restricted tables depend on the level")
     expected_tied = {"A6": 14, "A7": 14, "A8": 14}
     require(result["derivation_type"] == expected_tied, f"derivation-type system {result['derivation_type']}")
