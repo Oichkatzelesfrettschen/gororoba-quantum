@@ -137,11 +137,13 @@ The second record, [a5-null-slice-associator-envelope](../../evidence/a5-null-sl
 | A5-631 | the complex map reads the nullity over C on all 465 pairs of A_5, and it is the real map with two S gates and the same cz count | proved |
 | A5-632 | a Heron device reads 16 and 12 with the complex map | open |
 | A5-633 | the left tables of A_n have scalar commutant for n = 3 to 10 and generate M_(2^n)(Q) ([census](../../evidence/a5-left-table-census/README.md)) | proved |
-| A5-634 | (D - 2)(D - 4)(D + 6)/2 ordered basis triples have nonzero associator, D = 4 to 1024 | certified |
+| A5-634 | (D - 2)(D - 4)(D + 6)/2 ordered basis triples have nonzero associator, D = 4 to 1024 | superseded by A5-649 |
 | A5-635 | nullity 12 on the Euclidean cone over Q(sqrt(-d)), d = 1, 2, 3, 5, 6, 7, 11, and at 10 Q_p points | certified |
 | A5-636 | the families of A5-618 reduce to one commutation-set lemma, proved for every n by the cd_sign recursion (Lemmas T, U and the peel R) | proved |
 | A5-637 | the first family's relations hold by direct check at n = 10, 11 and 12, every level to 4096 ([record](../../evidence/a5-null-slice-family-relations/README.md)) | proved |
 | A5-642 | the octonion-space covariance algebra is G_2 with no boost for every n >= 6: derivations extend (inside), four anchor cosets with n-independent signs intersect in G_2 (outside) ([covariance blocks](../../evidence/a5-null-slice-covariance/README.md)) | proved |
+| A5-648 | cd_sign is the transposed Albuquerque-Majid cochain at every n, so A_n is a quasialgebra over the dual quasi-Hopf algebra (k Z_2^n, dF) and its signed basis set a quasigroup ([connections](../../design/a5-null-slice-connections-program.md)) | proved |
+| A5-649 | (D - 2)(D - 4)(D + 6)/2 ordered basis triples have nonzero associator for every D >= 4: Theorem 1 of [cd_associator_defect_census.md](cd_associator_defect_census.md), with a second derivation through the doubling recursion of the associativity cocycle ([census](../../evidence/a5-left-table-census/README.md)) | proved |
 
 What the slice changes for the program:
 
