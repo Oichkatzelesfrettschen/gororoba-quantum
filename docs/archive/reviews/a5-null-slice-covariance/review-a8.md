@@ -24,4 +24,14 @@ Pull request 1022, branch `a5-octonion-slice-covariance-a8`. Reviewers, as the o
 | 5 | The derivation extension and the e_tau argument hold | proved | the Leibniz expansion | survives |
 | 6 | The same 7 coset types appear at n = 11 and 12 | computed by the reviewer | not rerun here | noted in the README |
 
+## Advisor, after the red team
+
+| Finding | Resolution |
+|---|---|
+| The anchor-coset n-independence rested on "the same peels as for V", which cover only the V indices | the block-sign lemma states it for every index alpha Q + u, alpha in 0..3, u below 16, and the record checks the 64 x 64 table at n = 6 to 12 |
+| Documents still named A_6 or A_6 and A_7 (roadmap, boost-algebra item 3, connections row, next computation 5, map row); A5-640 lacked status-note and proof-table rows | each states every n >= 6; rows added |
+| Coset constraints ran serially inside level tasks | the parent collects the distinct types across levels and maps them once |
+| The new sections had no bounded test or paired control | a level-6 test and a control (four anchor cosets give 14, V alone does not) |
+| "What is new" said the extension to A_n was not established | it points at statement 5 and names the Schafer and McCrimmon derivation results as unopened leads (a zbMATH review was read) |
+
 After each round, `git status --short` showed no tracked change in any of the six workspace repositories.

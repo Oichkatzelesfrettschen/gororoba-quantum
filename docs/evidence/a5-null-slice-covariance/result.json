@@ -35,6 +35,15 @@
    12
   ]
  },
+ "block_signs_equal_to_level_6": [
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12
+ ],
  "cosets": [
   {
    "all": 14,
