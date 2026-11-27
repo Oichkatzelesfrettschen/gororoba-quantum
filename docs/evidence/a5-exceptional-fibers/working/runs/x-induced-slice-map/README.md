@@ -49,9 +49,11 @@ span.
 ## Scope
 
 - The six header relation files were computed by engines that never saw this map, at three primes.
-- The two cells are one line of evidence at each prime, three in all. `witnesses.jsonl` of the fiber evidence holds a
-  sign isomorphism from the X- header presentation to the X+ one (the flip of t9, with signs on the generators), and
-  the reduction logs of the two cells agree byte for byte at each prime while their scripts differ.
+- The two cells are correlated, so the six reductions are fewer than six independent tests. `witnesses.jsonl` of the
+  fiber evidence holds a sign isomorphism from the X- header presentation to the X+ one (the flip of t9, with signs
+  on the generators) at 32009 and 32029, with the comparison of the quadric ideals recorded at 32029 alone and no
+  witness at 32057. The reduction logs of the two cells agree byte for byte at each prime while their scripts
+  differ; equal logs show equal remainder counts and invariants, and no more.
   `hypothesis:` the opposite signs of the module-map scalar of A5-645 on the two cells follow from that isomorphism;
   the test is to transport the X- module maps by it and compare.
 - The reductions compare ideals. That G is the induced map, and not another equivalence of the two ideals, rests on

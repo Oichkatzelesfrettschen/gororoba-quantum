@@ -229,14 +229,19 @@ def check_script(record: dict[str, Any], prime: int, root: int, header_rel: Path
 
 
 def _singular(script: Path) -> list[str]:
-    """Run one script with stdin from /dev/null, write its output beside it as .log and return the lines."""
+    """Run one script with stdin from /dev/null, write its output beside it as .log and return the lines.
+
+    The address-space cap and the timeout are those of the weight-slice producer."""
+    import weight_slice_fiber_relations as ws
+
     process = subprocess.run(
-        ["Singular", "-q", "--no-warn", "--no-rc", str(script)],
+        ["prlimit", f"--as={ws.SINGULAR_ADDRESS_SPACE_BYTES}", "Singular", "-q", "--no-warn", "--no-rc", str(script)],
         stdin=subprocess.DEVNULL,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
         check=False,
+        timeout=ws.SINGULAR_TIMEOUT_SECONDS,
     )
     script.with_suffix(".log").write_text(process.stdout, encoding="utf-8")
     lines = process.stdout.splitlines()
