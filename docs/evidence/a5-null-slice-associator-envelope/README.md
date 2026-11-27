@@ -144,6 +144,8 @@ The check takes about 60 s on a 32-thread pool (gate `core-a5-null-slice-associa
   the nullity-12 and nullity-16 points of statement 2; the record does not place them.
 - The nullity on the Euclidean cone over Q(i) beyond three points, and equality over Q_p, beyond the bound of
   statement 2.
-- The so(m,1) relations at n >= 10 by direct check, and the families beyond n = 12.
+- Done: the so(m,1) relations at n = 10 to 12 by direct check
+  ([family relations](../a5-null-slice-family-relations/README.md)), and the families for every n
+  ([family proof](../a5-null-slice-family-proof/README.md)).
 - A machine-checked form of statements 1, 3 and 6; the two-term kernels of statement 5 are already formal in
   gororoba-math (`rocq/quantum/CdTowerTwoTermNullity.v` and `lean/GororobaMath/CayleyDickson/TwoTermNullity.lean`).

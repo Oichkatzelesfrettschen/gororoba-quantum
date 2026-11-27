@@ -1,0 +1,49 @@
+{
+ "a5_against_e2_stabilizer": {
+  "covariant": 8,
+  "reference": 8,
+  "union": 8
+ },
+ "a6_against_g2": {
+  "covariant": 14,
+  "reference": 14,
+  "union": 14
+ },
+ "a7_against_g2": {
+  "covariant": 14,
+  "reference": 14,
+  "union": 14
+ },
+ "derivation_type": {
+  "A6": 14,
+  "A7": 14
+ },
+ "octonion_derivations": 14,
+ "schema": "a5-null-slice-covariance-blocks/1",
+ "slices": {
+  "A5": {
+   "all": 8,
+   "boosts": 0,
+   "constraint_rank": 13,
+   "constraint_rows": 344,
+   "generators": 21,
+   "rotations": 8
+  },
+  "A6": {
+   "all": 14,
+   "boosts": 0,
+   "constraint_rank": 14,
+   "constraint_rows": 652,
+   "generators": 28,
+   "rotations": 14
+  },
+  "A7": {
+   "all": 14,
+   "boosts": 0,
+   "constraint_rank": 14,
+   "constraint_rows": 1100,
+   "generators": 28,
+   "rotations": 14
+  }
+ }
+}
