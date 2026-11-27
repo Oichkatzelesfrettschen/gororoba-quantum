@@ -179,15 +179,16 @@ def seed_value(seed: Any, owner: str) -> int:
 
 def iteration_form(manifest: dict[str, Any]) -> str:
     """How a case's iterations differ: "single" (one computation), "mesh" (each binds its own phases), "seeded"
-    (a fixed circuit whose iterations set only their compilation_seed and, optionally, their own budgets) or
-    "phase" (phi = k pi/4).
+    (a fixed circuit whose iterations set only their compilation_seed and, optionally, their own budgets and the
+    one source mode their photon enters) or "phase" (phi = k pi/4).
 
     A one-iteration case is one computation unless its manifest sets "iterator": true, which sends its one
     seeded setting as a ComputationIterator holding one entry, the payload class of every iterated job.
 
     A non-mesh iterated case with settings is seeded only when every setting names a valid compilation_seed and
-    nothing else but its name, and the settings count its iterations. A seeded or template case names per-iteration
-    max_samples and max_shots on every setting or on none; named budgets are positive integers with
+    nothing else but its name, its input_mode and its budgets, and the settings count its iterations. A seeded or
+    template case names per-iteration max_samples and max_shots on every setting or on none, and a seeded case names
+    input_mode, a non-negative integer, on every setting or on none; named budgets are positive integers with
     max_shots >= max_samples that sum to the manifest's (check_budgets). Any other settings list raises.
     """
     owner = manifest["job"]
@@ -221,14 +222,20 @@ def iteration_form(manifest: dict[str, Any]) -> str:
     if not isinstance(settings, list) or len(settings) != steps:
         raise RecordError(f"{owner}: {steps} iterations need {steps} settings")
     plain, budgeted = {"name", "compilation_seed"}, {"name", "compilation_seed", "max_samples", "max_shots"}
+    sourced = {"input_mode"}
     keys = {frozenset(setting) if isinstance(setting, dict) else frozenset() for setting in settings}
-    if keys not in ({frozenset(plain)}, {frozenset(budgeted)}):
+    forms = [frozenset(base | extra) for base in (plain, budgeted) for extra in (set(), sourced)]
+    if len(keys) != 1 or not keys <= set(forms):
         raise RecordError(
-            f"{owner}: every seeded iteration names its name and compilation_seed, and all or none their budgets"
+            f"{owner}: every seeded iteration names its name and compilation_seed, and all or none their budgets "
+            "and their input_mode"
         )
     for setting in settings:
         seed_value(setting["compilation_seed"], f"{owner}/{setting['name']}")
-    if keys == {frozenset(budgeted)}:
+        mode = setting.get("input_mode", 0)
+        if isinstance(mode, bool) or not isinstance(mode, int) or mode < 0:
+            raise RecordError(f"{owner}/{setting['name']}: input_mode {mode!r} is not a non-negative integer")
+    if frozenset(budgeted) <= next(iter(keys)):
         check_budgets(manifest, settings)
     return "seeded"
 

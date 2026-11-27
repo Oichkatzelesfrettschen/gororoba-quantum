@@ -867,6 +867,16 @@ def mesh_experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> tuple[
     return built, iterations
 
 
+def source_state(setting: dict[str, Any], circuit: dict[str, Any]) -> list[int]:
+    """The input occupation of a seeded setting that names input_mode: one photon on that mode of the circuit."""
+    mode = setting["input_mode"]
+    if not 0 <= mode < circuit["modes"]:
+        raise PlatformError(f"{setting['name']}: input_mode {mode} lies outside the {circuit['modes']}-mode circuit")
+    state = [0] * circuit["modes"]
+    state[mode] = 1
+    return state
+
+
 def job_seed(manifest: dict[str, Any], settings: list[dict[str, Any]]) -> int | None:
     """The compilation seed of a one-circuit job's computation: its one mesh setting's or its manifest's.
 
@@ -1262,10 +1272,17 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
                 )
                 continue
             if form == "seeded":
+                # A setting's input_mode moves the one photon to that source mode on the job's fixed circuit.
+                moved = (
+                    {"input_state": pcvl.BasicState(source_state(settings[k], circuit))}
+                    if "input_mode" in settings[k]
+                    else {}
+                )
                 factory.add_iteration(
                     max_samples=budgets[k][0],
                     max_shots=budgets[k][1],
                     compilation_seed=settings[k]["compilation_seed"],
+                    **moved,
                 )
                 continue
             factory.add_iteration(
@@ -2279,6 +2296,32 @@ def seed_self_test() -> None:
         except PlatformError:
             continue
         raise SystemExit(f"self-test: iteration_form accepted ladder {bad_ladder}")
+    sourced = [{**ladder[0], "input_mode": 20}, {**ladder[1], "input_mode": 22}]
+    if iteration_form({**laddered, "settings": sourced}) != "seeded" or iteration_budgets(
+        {**laddered, "settings": sourced}
+    ) != [(10, 20), (30, 60)]:
+        raise SystemExit("self-test: a seeded case with input_mode lost its form or its budgets")
+    if iteration_form({**many, "settings": [{**s, "input_mode": 4} for s in seeded]}) != "seeded":
+        raise SystemExit("self-test: an unbudgeted seeded case with input_mode lost its form")
+    for bad_sources in (
+        [sourced[0], ladder[1]],
+        [sourced[0], {**sourced[1], "input_mode": -1}],
+        [sourced[0], {**sourced[1], "input_mode": True}],
+        [sourced[0], {**sourced[1], "input_mode": "22"}],
+    ):
+        try:
+            iteration_form({**laddered, "settings": bad_sources})
+        except PlatformError:
+            continue
+        raise SystemExit(f"self-test: iteration_form accepted sources {bad_sources}")
+    if source_state({"name": "s", "input_mode": 2}, {"modes": 4}) != [0, 0, 1, 0]:
+        raise SystemExit("self-test: source_state misplaced the photon")
+    try:
+        source_state({"name": "s", "input_mode": 4}, {"modes": 4})
+    except PlatformError:
+        pass
+    else:
+        raise SystemExit("self-test: source_state accepted a mode outside the circuit")
     template: list[dict[str, Any]] = [{"name": n, "circuit_params": {}, "column": []} for n in ("a", "b")]
     budgeted = [
         {**template[0], "max_samples": 10, "max_shots": 30},
