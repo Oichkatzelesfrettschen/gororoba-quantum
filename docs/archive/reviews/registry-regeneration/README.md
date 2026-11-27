@@ -21,4 +21,8 @@ This record was committed after the hosted round; it changes no file the round r
 ## Open
 
 Whether a canonical-header receipt of a cell without a K2 source in `k2-hilbert.jsonl` should add a registry entry
-is observed here (it adds none) and is left undecided.
+was observed here (it adds none) and left undecided. Decided 2026-11-27: it adds none, and the transported entry of
+X+ at 32009 is the intended one. `k2-hilbert.jsonl` keeps its bytes, since 40 retained records bind its sha256 as an
+input (20 under `arc-jets/records/`, 18 under `monomial-ladder/target-records/` and 2 under
+`a5-kernel-attachments/`); the reason and the successor-file route are in the
+[evidence README](../../../evidence/a5-exceptional-fibers/README.md) beside `k2_hilbert.py`.

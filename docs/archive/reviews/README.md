@@ -277,3 +277,5 @@ The [registry regeneration review](registry-regeneration/README.md) (pull reques
 The [slice comparison review](slice-module-map-comparison/README.md) records two invalid controls, the Advisor's finding that the first scalar was tied to neither retained map, and the fixes.
 
 The [X slice map review](x-induced-slice-map/README.md) (pull request 1026) records the opencode findings on the serial driver, the other-root control and the mutation tests, the Advisor's findings on quoted output, the literature note and the correlated cells, and the fixes.
+
+The [sign-transport review](x-sign-transport/README.md) (pull request 1028) records the opencode findings on the added-sign check, the control indices and the mutation count, the Advisor's findings on the literature sentence, issue 1029 and the pull-request body, and the fixes.
