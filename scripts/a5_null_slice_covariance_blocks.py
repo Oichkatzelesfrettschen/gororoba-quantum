@@ -1,4 +1,4 @@
-"""Covariance algebras of the A_5 and A_6 null slices by XOR-block decomposition, and their G_2 identifications.
+"""Covariance algebras of the A_5 null slice and of the octonion-space slices by XOR blocks; G_2 for every n >= 6.
 
 For a slice with frame F = (space..., tau) of the Cayley-Dickson algebra of dimension D, the covariance system asks for
 matrices X, Y and a generator w of so(|F| - 1, 1) with X L_y + L_y Y = L_(w y) for every y in the span of F. With
@@ -15,7 +15,10 @@ This record checks, exactly over Q:
 - on the octonion-space slices of A_6 (space 1..7, time 56; the dense system has 32768 x 8220 entries) and of A_7
   (time 104) and A_8 (time 200) the covariant generators span 14 dimensions, all rotations, no boost;
 - that space equals the derivation algebra of the octonions (G_2) in so(7), and the A_5 space equals the stabilizer
-  of e_2 in G_2 restricted to the A_5 frame (su(3)).
+  of e_2 in G_2 restricted to the A_5 frame (su(3));
+- on V = span(e_0..e_7, e_(tau ^ 0)..e_(tau ^ 7)), invariant under the eight frame tables, the restricted system has
+  covariant dimension 14 with no boost, and the restricted tables are the same at every level n = 6 to 12, which with
+  the argument of the README gives G_2 for every n >= 6.
 
 Blocks run through parallel.ordered_map. No random draw enters.
 """
@@ -229,6 +232,61 @@ def tied_dimension(name: str) -> int:
     return count - rank(rows) if rows else count
 
 
+RESTRICTED_LEVELS: tuple[int, ...] = tuple(range(6, 13))
+
+
+def octonion_slice_time(level: int) -> int:
+    return (1 << (level - 1)) + (1 << (level - 2)) + 8
+
+
+def restricted_tables(level: int) -> list[list[list[int]]]:
+    """The eight frame tables L_a (a = 1..7, tau) on V = span(e_0..e_7, e_(tau ^ 0)..e_(tau ^ 7)), local index j or 8 + j."""
+    tau = octonion_slice_time(level)
+    dimension = 1 << level
+    local = [*range(8), *(tau ^ j for j in range(8))]
+    position = {index: i for i, index in enumerate(local)}
+    signs = sign_rows(dimension, [*range(1, 8), tau])
+    out = []
+    for row, a in enumerate([*range(1, 8), tau]):
+        matrix = [[0] * 16 for _ in range(16)]
+        for c in local:
+            matrix[position[a ^ c]][position[c]] = int(signs[row, c])
+        out.append(matrix)
+    return out
+
+
+def restricted_covariance(tables: list[list[list[int]]]) -> dict[str, int]:
+    """Covariant dimensions of X L_y + L_y Y = L_(w y) on the 16-dimensional V, for all generators, rotations, boosts."""
+    size = 16
+    frame_size = len(tables)
+    gens = generators(tuple(range(frame_size)))
+    rows = []
+    for position, table in enumerate(tables):
+        for r in range(size):
+            for c in range(size):
+                row = [0] * (2 * size * size + len(gens))
+                for k in range(size):
+                    if table[k][c]:
+                        row[r * size + k] += table[k][c]
+                    if table[r][k]:
+                        row[size * size + k * size + c] += table[r][k]
+                for g, generator in enumerate(gens):
+                    row[2 * size * size + g] = -sum(
+                        generator_weight(generator, other, position) * tables[other][r][c] for other in range(frame_size)
+                    )
+                rows.append(row)
+    plain = 2 * size * size
+    rank_plain = rank([row[:plain] for row in rows])
+
+    def dimension(columns: list[int]) -> int:
+        chosen = [row[:plain] + [row[plain + g] for g in columns] for row in rows]
+        return (plain + len(columns) - rank(chosen)) - (plain - rank_plain)
+
+    rotations = [g for g, (_a, _b, boost) in enumerate(gens) if not boost]
+    boosts = [g for g, (_a, _b, boost) in enumerate(gens) if boost]
+    return {"all": dimension(list(range(len(gens)))), "rotations": dimension(rotations), "boosts": dimension(boosts)}
+
+
 def identification(name: str, basis: list[list[int]], reference: list[list[int]]) -> dict[str, int]:
     mapped = [frame_coordinates(name, d) for d in reference]
     return {"covariant": rank(basis), "reference": rank(mapped), "union": rank(basis + mapped)}
@@ -245,6 +303,12 @@ def compute() -> dict[str, Any]:
         "a7_against_g2": identification("A7", slices["A7"]["basis"], derivations),
         "a8_against_g2": identification("A8", slices["A8"]["basis"], derivations),
         "derivation_type": {name: tied_dimension(name) for name in ("A6", "A7", "A8")},
+        "restricted": {
+            "covariance": restricted_covariance(restricted_tables(6)),
+            "tables_equal_to_level_6": [
+                level for level in RESTRICTED_LEVELS if restricted_tables(level) == restricted_tables(6)
+            ],
+        },
         "a5_against_e2_stabilizer": identification("A5", slices["A5"]["basis"], stabilizer(derivations, 2)),
     }
 
@@ -261,6 +325,12 @@ def validate(result: dict[str, Any]) -> None:
     a8 = result["slices"]["A8"]
     require((a8["generators"], a8["all"], a8["rotations"], a8["boosts"]) == (28, 14, 14, 0), f"A8 covariance {a8}")
     require(result["a8_against_g2"] == {"covariant": 14, "reference": 14, "union": 14}, "A8 space is not G_2")
+    for name, counts in (("A7", (1100, 14)), ("A8", (1996, 14))):
+        row = result["slices"][name]
+        require((row["constraint_rows"], row["constraint_rank"]) == counts, f"{name} constraints {row}")
+    restricted = result["restricted"]
+    require(restricted["covariance"] == {"all": 14, "rotations": 14, "boosts": 0}, f"restricted {restricted}")
+    require(restricted["tables_equal_to_level_6"] == list(RESTRICTED_LEVELS), "restricted tables depend on the level")
     expected_tied = {"A6": 14, "A7": 14, "A8": 14}
     require(result["derivation_type"] == expected_tied, f"derivation-type system {result['derivation_type']}")
     require(result["octonion_derivations"] == 14, "octonion derivations")
