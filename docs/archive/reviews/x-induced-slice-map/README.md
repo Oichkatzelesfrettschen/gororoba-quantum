@@ -30,6 +30,7 @@ dispositions below are in af4d57df2 and in the commit that adds this record, bot
 | Advisor: "one line of evidence at each prime" overstated the witness | fixed with the structural statement above |
 | Advisor: `--run` started Singular without a timeout or an address-space cap | fixed: the cap and the timeout of the weight-slice producer; the retained files are unchanged |
 | Advisor: the scalar depends on G as well as on the two normalizations; A5-598 still read "not covered: X" | fixed in A5-645 and A5-598 |
+| Hosted Codex round on head 4d32879c3, P1: `tests/test_a5_x_induced_slice_map.py` read the retained records, logs and digest list in the pull-request lane, against the rule that historical and digest checks run on demand | fixed: the checks are `x_induced_slice_map.py --verify` behind the on-demand gate `core-a5-x-induced-slice-map-records`; the test module exercises `reduction_good`, `record_problems` and `digest_problems` on constructed lines, records and directories and reads no retained file |
 | Advisor: a second id race | checked before the hosted round: no branch on the remote adds a row A5-643 to A5-649 |
 
 ## Open

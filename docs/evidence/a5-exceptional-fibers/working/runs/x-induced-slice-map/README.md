@@ -69,11 +69,13 @@ from the repository root, with Singular on PATH and sympy and python-flint in th
 `parallel.ordered_map`, and exits nonzero unless both records pass their internal checks, all six reductions print
 `INDUCED VERDICT ... PASS` and all six reductions at the other root print `FAIL` with nonzero remainders in both
 directions. The retained run used Singular 4.4.1 and Python 3.14.7 on an x86-64 Linux host: 11 s in all on its workers and 22 s on one, 89 MiB at the peak, with the same bytes in every retained file.
-`tests/test_a5_x_induced_slice_map.py` reads the retained records, logs and digest list.
+`x_induced_slice_map.py --verify` reads the retained records, logs and digest list and runs no Singular; the
+on-demand gate `core-a5-x-induced-slice-map-records` calls it. `tests/test_a5_x_induced_slice_map.py` tests the same
+checks on constructed lines, records and directories.
 
 | File | Content |
 |---|---|
-| `x_induced_slice_map.py` | script generator (`--emit`), record builder (`--collect`), reduction check (`--check`) and the whole run (`--run`) |
+| `x_induced_slice_map.py` | script generator (`--emit`), record builder (`--collect`), reduction check (`--check`), the whole run (`--run`) and the check of the retained files (`--verify`) |
 | `run_x_induced.sh` | the replay command: `x_induced_slice_map.py --run` |
 | `map-SOURCE-qi.sing`, `.log` | the induced map over Q(i) |
 | `relations-SOURCE-qi.sing`, `.log` | the weight-slice producer's script for the cell and its 69 relations |

@@ -13,7 +13,9 @@ imported from that module, whose bytes its own digest list binds; this module ho
 --check OUT.json PRIME ROOT HEADER_REL writes to stdout a Singular script that reduces the Q(i) record at (PRIME, ROOT)
 and compares the transported ideal with a retained header relation file;
 --run writes and runs every script of the retained record in this directory: the six Q(i) scripts, then the six
-reductions and the six reductions at the other root of -1, each stage through parallel.ordered_map.
+reductions and the six reductions at the other root of -1, each stage through parallel.ordered_map;
+--verify reads the retained records, logs and digest list of this directory, runs no Singular, and exits nonzero on
+any departure (the on-demand gate core-a5-x-induced-slice-map-records).
 """
 
 from __future__ import annotations
@@ -261,25 +263,91 @@ def stage(item: tuple[str, str]) -> bool:
     return mode != "high" or "RESULT header_high_weight_outside 0" in lines
 
 
+def reduction_good(kind: str, prime: int, root: int, lines: list[str]) -> bool:
+    """Whether the output lines of one reduction show what its kind requires: a check passes with zero remainders in
+    both directions, and a control, run at the other root of -1, fails with nonzero remainders in both."""
+    found = [match for match in map(REMAINDERS.match, lines) if match is not None]
+    if len(found) != 1:
+        return False
+    remainders = (int(found[0].group(1)), int(found[0].group(2)))
+    if kind == "check":
+        return remainders == (0, 0) and f"INDUCED VERDICT p {prime} root {root} PASS" in lines
+    return kind == "control" and min(remainders) > 0 and f"INDUCED VERDICT p {prime} root {root} FAIL" in lines
+
+
 def reduction(item: tuple[str, str, int, int]) -> bool:
-    """One reduction of (kind, source, prime, root): a check must pass, and a control, at the other root of -1, must
-    fail with nonzero remainders in both directions."""
+    """Write and run one reduction of (kind, source, prime, root)."""
     kind, source, prime, root = item
     record = json.loads((HERE / f"induced-{source}.json").read_text(encoding="utf-8"))
     script = HERE / f"{kind}-{source}-p{prime}-r{root}.sing"
     script.write_text(check_script(record, prime, root, FIBERS / HEADERS[(source, prime)]), encoding="utf-8")
-    lines = _singular(script)
-    found = [match for match in map(REMAINDERS.match, lines) if match is not None]
-    base._require(len(found) == 1, f"{script.name}: no single line of remainders")
-    remainders = (int(found[0].group(1)), int(found[0].group(2)))
-    if kind == "check":
-        return remainders == (0, 0) and f"INDUCED VERDICT p {prime} root {root} PASS" in lines
-    return min(remainders) > 0 and f"INDUCED VERDICT p {prime} root {root} FAIL" in lines
+    return reduction_good(kind, prime, root, _singular(script))
 
 
 def reductions() -> list[tuple[str, str, int, int]]:
     items = [("check", source, prime, root) for source in SOURCES for prime, root in ROOTS]
     return items + [("control", source, prime, prime - root) for source in SOURCES for prime, root in ROOTS]
+
+
+def digest_problems(directory: Path) -> list[str]:
+    """The departures of a directory from its sha256.txt, which lists every other file of the directory."""
+    listed = {}
+    for line in (directory / "sha256.txt").read_text(encoding="utf-8").splitlines():
+        digest, _separator, name = line.partition("  ")
+        listed[name] = digest
+    present = {path.name for path in directory.iterdir() if path.is_file() and path.name != "sha256.txt"}
+    found = [f"{name}: listed and absent, or present and unlisted" for name in sorted(set(listed) ^ present)]
+    for name in sorted(set(listed) & present):
+        if hashlib.sha256((directory / name).read_bytes()).hexdigest() != listed[name]:
+            found.append(f"{name}: the digest differs from sha256.txt")
+    return found
+
+
+def record_problems(record: dict[str, Any], generators: int, quadrics: int, selected: list[int]) -> list[str]:
+    """The departures of a retained induced-SOURCE.json from a passing record of these sizes and this selection."""
+    values = record.get("values", {})
+    tests = {
+        "the record does not pass": record.get("pass") is True and record.get("problems") == [],
+        "the relation digest differs from the retained weight-slice record": record.get("relations_sha256")
+        == record.get("relations_sha256_retained"),
+        "the weight-slice selection differs from the retained record": record.get("selected_weight")
+        == record.get("selected_weight_retained"),
+        "the header selection differs from the header record": record.get("selected_header") == selected,
+        "the relation count differs": len(record.get("relations", [])) == quadrics,
+        "the map has another shape": [len(row) for row in record.get("map", [])] == [generators] * generators,
+        "a header Pfaffian lies outside the span": values.get("header_outside_span") == ["0"],
+        "the lift has another shape or degree": values.get("lift_shape") == [f"{generators} {generators} 0"],
+        "the non-member control was accepted": values.get("control_nonmember_residual") not in (None, ["0"]),
+    }
+    return [message for message, good in tests.items() if not good]
+
+
+def verify() -> list[str]:
+    """Every departure of the retained files of this directory from the finding; no Singular runs."""
+    found = digest_problems(HERE)
+    for source in SOURCES:
+        generators, quadrics = counts(source)
+        dimension, multiplicity = cone(source)
+        record = json.loads((HERE / f"induced-{source}.json").read_text(encoding="utf-8"))
+        found += [
+            f"induced-{source}.json: {message}"
+            for message in record_problems(record, generators, quadrics, header_selected(source))
+        ]
+        high = (HERE / f"high-{source}-qi.log").read_text(encoding="utf-8").splitlines()
+        if "RESULT header_high_weight_outside 0" not in high or "RESULT done 1" not in high:
+            found.append(f"high-{source}-qi.log: a high-weight part outside J + m I, or an unfinished run")
+        invariants = f"RESULT generators {quadrics} dim {dimension} mult {multiplicity} det nonzero 1"
+        for kind, _source, prime, root in (item for item in reductions() if item[1] == source):
+            lines = (HERE / f"{kind}-{source}-p{prime}-r{root}.log").read_text(encoding="utf-8").splitlines()
+            if not reduction_good(kind, prime, root, lines) or (kind == "check" and invariants not in lines):
+                found.append(f"{kind}-{source}-p{prime}-r{root}.log: not the {kind} the record states")
+    first, second = SOURCES
+    for kind, _source, prime, root in (item for item in reductions() if item[1] == first):
+        logs = [(HERE / f"{kind}-{source}-p{prime}-r{root}.log").read_bytes() for source in (first, second)]
+        scripts = [(HERE / f"{kind}-{source}-p{prime}-r{root}.sing").read_bytes() for source in (first, second)]
+        if logs[0] != logs[1] or scripts[0] == scripts[1]:
+            found.append(f"{kind} at {prime}, root {root}: the logs of the two cells differ or their scripts agree")
+    return found
 
 
 def run() -> int:
@@ -310,6 +378,12 @@ def main() -> None:
     arguments = sys.argv[1:]
     if arguments == ["--run"]:
         raise SystemExit(run())
+    if arguments == ["--verify"]:
+        found = verify()
+        for line in found:
+            print("PROBLEM", line, file=sys.stderr)
+        print("verify_x_induced:", "FAIL" if found else "PASS")
+        raise SystemExit(1 if found else 0)
     if arguments[:1] == ["--emit"] and arguments[1] in SOURCES:
         mode = arguments[4] if len(arguments) > 4 else "map"
         sys.stdout.write(emit(arguments[1], int(arguments[2]), int(arguments[3]), mode))
