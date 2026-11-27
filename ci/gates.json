@@ -4889,6 +4889,24 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_nullity_transitions.py --check docs/evidence/a5-nullity-transitions/result.json",
+      "name": "core-a5-nullity-transitions",
+      "seconds": 10.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-nullity-transitions/result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_nullity_transitions.py --self-test && \"$PYTHON\" -B -W error -O scripts/a5_nullity_transitions.py --self-test",
+      "name": "core-a5-nullity-transitions-self-test",
+      "seconds": 5.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/a5_null_slice_associator_envelope.py --check docs/evidence/a5-null-slice-associator-envelope/result.json",
       "name": "core-a5-null-slice-associator-envelope",
       "seconds": 90.0,

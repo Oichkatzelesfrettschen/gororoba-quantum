@@ -168,6 +168,25 @@ What the slice changes for the program:
   (`rocq/quantum/CdTowerTwoTermNullity.v`, `lean/GororobaMath/CayleyDickson/TwoTermNullity.lean`); the
   multi-direction statements A5-612 to A5-618 and A5-622 to A5-626 are not formalized.
 
+## Results of 2026-11-27: transitions between the nullities
+
+The record [a5-nullity-transitions](../../evidence/a5-nullity-transitions/README.md)
+(`scripts/a5_nullity_transitions.py --check`) checks an outside report's paths and adds the first-order structure at
+a W8 point ([review](../../archive/reviews/a5-outside-transition-report/README.md),
+[program](../../design/a5-nullity-transitions-program.md)).
+
+| Row | Statement | Status |
+|---|---|---|
+| A5-650 | three real lines with nullity profiles 4 -> 8, 8 -> 12 and 12 -> 16, exceptional sets {0}, {1}, {-1, 1} | proved |
+| A5-651 | the junctions lie in W8, VB, N- (s = 1) and N+ (s = -1) | proved |
+| A5-652 | two nullity-4 lines into e_1 + e_10 have orthogonal limiting 4-planes that span the kernel | proved |
+| A5-653 | the first-order compression has rank 4 at all four junctions | proved |
+| A5-654 | at e_1 + e_10 the compression pencil has dimension 7, commutant 4, Lie closure 10 and Pfaffian 16 (Q^2 - 4 Delta) on R^3 + R + R^3 | proved |
+| A5-655 | the rank-4 cone is the cone over V_2(R^3); limiting planes depend on u x v with trace(P P') = 2 (1 + cos) | survives |
+| A5-656 | the limiting planes of all nullity-4 arcs into a W8 point form a round 2-sphere in HP^1 | open |
+| A5-657 | pencils at VB and N+- with the same structure one step up | open |
+| A5-658 | the t^2 I Gram identity for the doubling unit and the alternating three-form, levels 8 to 64 | proved |
+
 ## Next computations
 
 | Layer | Computation | Decides | Estimate from retained timings |
