@@ -36,9 +36,25 @@ words; "no link found" records a search with its scope.
 | Nilpotents | y^2 = 0 on the Euclidean cone; L_y is square-zero on ker K(x) there and L_y^2 = 0 on the null space | computed over F_p (A5-623) | certified | a Euclidean-cone point with L_y^2 of rank other than 8 |
 | p-adic fields | the seven-variable form is isotropic over every Q_p, so the Euclidean cone has Q_p points, where nullity >= 12 holds (characteristic 0) | cited theorem and the README argument | the bound proved; equality a hypothesis | the nullity at a Q_p point by a Hensel lift of an F_p point |
 | Albert and Jordan algebras | the chain su(3) in G_2 in F_4 = Der(J_3(O)) would join the slice covariance (A5-615, A5-619) to the Albert algebra; dim Der(J_3(O)) = 52 over F_32009 and F_32003 was computed in review ([review record](../archive/reviews/a5-null-slice-associator-envelope/review.md)) and is not recorded | computed in review | hypothesis | a recorded derivation count other than 52 over Q, or a covariance algebra outside G_2 |
-| Hopf algebras and fibrations | Adams's Hopf-invariant-one theorem closes sphere fibrations past the octonions; Hopf algebras were searched only in the document manifests | documented (fibrations); read (manifests, algebras) | fibrations closed; algebras unsearched | a coproduct compatible with the slice tables |
+| Hopf fibrations | Adams's Hopf-invariant-one theorem closes sphere fibrations past the octonions | documented | closed | none |
+| Quasi-Hopf algebras and Hopf quasigroups | cd_sign(p, q) = F(q, p) for the cochain F = (-1)^f of the standard Cayley-Dickson process of Albuquerque and Majid (arXiv math/9802116, Corollary 4.3, page 18), so A_n is the opposite of their quasialgebra k_F Z_2^n, an algebra among the comodules of the dual quasi-Hopf algebra (k Z_2^n, phi = dF) (pages 1 to 4), at every n (A5-648); their Proposition 4.5 (page 20) carries phi through the doubling and proves the triple count of A5-634 at every D (A5-649); phi(a, a, b) = phi(b, a, a) = 1 makes the signed basis set {+-1} x Z_2^n a quasigroup (Klim and Majid, arXiv 0906.5026, Proposition 3.7, page 10), whose quasigroup algebra is a Hopf quasigroup (their Section 4, page 2); their Proposition 3.6 (page 9) makes the unit sphere a quasigroup only for a cochain with the composition property, n <= 3; enveloping algebras of Malcev and Sabinin algebras carry Hopf-type structures (arXiv 1106.4302; Zbl 1186.17003), read from abstracts only | read on the page (math/9802116 pages 1 to 4 and 17 to 22; 0906.5026 pages 1, 2 and 9 to 12); proved (A5-648, A5-649); computed to D = 64 (`tests/scripts/test_cd_sign_quasialgebra.py`) | link | a coproduct on the slice tables, or the defects K_a written through phi; whether Proposition 4.5 also gives the commutation-set and block-sign lemmas (targets F7 and F8) is a hypothesis |
 | arXiv 2611.34924 | one abelian unitary boost generator | read on pages 28 and 39 (A5-628) | boundary | a non-abelian boost algebra in the paper |
 | arXiv 2606.06404 | the same author's earlier JT-gravity paper: the corner phase space carries the pairs (q, J) and (s, K) with J = A_L + A_R and K = A_R - A_L (eqs. 1.1 and 1.2); gluing imposes J = 0 and keeps (s, K) alone (page 5), so the glued theory has one boost generator, as in 2611.34924; the edge-mode vertex quantizes SO(1,1) group multiplication, s_{C,y} = s_{C,1} + s_{C,2} (page 6, Figure 3); dressing makes the interior algebra the crossed product End(H) ⋊ R under the one-sided boost s_L (eq. 1.3), noncommutative between matter and boost while the boosts stay abelian (A5-646; [review record](../archive/reviews/a5-connections-jt-boost/review.md)) | read on pages 5 to 7 and 25; J and K commute as functions of independent canonical pairs (inferred); a search of the filed transcription for sl(2), so(2,1), non-abelian and noncommuting returns no use | boundary | a non-abelian boost algebra in the paper |
+
+### Hopf-type structures: the search (MATH-75, 2026-11-27)
+
+arXiv: `"Hopf algebra" AND octonions` (7 hits), `"Hopf algebra" AND "Cayley-Dickson"` (1), `bialgebra AND octonions`
+(1), `quasialgebra AND octonions` (6), `twisted group algebra AND Cayley-Dickson` (6), `cochain twist Cayley-Dickson`
+(0), `quasi-Hopf AND octonions` (4), coquasi-Hopf or coquasitriangular with octonions (0), `"Hopf quasigroup" AND
+octonions` (3), `"Hopf coquasigroup" AND sphere` (2), Moufang loop with loop algebra and Hopf (0), Malcev with
+universal enveloping and Hopf (1), Sabinin with enveloping and Hopf (1), `sedenion AND loop AND Hopf` (0),
+`nonassociative AND "Hopf algebra"` (15), `"H-bialgebra" AND nonassociative` (0). zbMATH: Hopf algebra octonions (30),
+Cayley-Dickson Hopf algebra (15), Hopf quasigroup (66), quasialgebra octonions (7), Moufang loop Hopf algebra (10),
+Malcev algebra enveloping Hopf (11), Sabinin algebra Hopf (10). OpenAlex: Hopf algebra octonions (54), Cayley-Dickson
+Hopf algebra bialgebra (0), sedenion loop Hopf algebra (0). Read on the page: Albuquerque and Majid (math/9802116) and
+Klim and Majid (0906.5026). Unopened leads: Bulacu 2009 (Zbl 1247.17001, a weak braided Hopf algebra structure on
+some Cayley-Dickson algebras; title and keywords only) and Smith 2016 (Zbl 1350.20051, quantum quasigroups and loops).
+The searches found no Hopf-type structure on the sedenion or higher unit loops beyond the signed basis quasigroup.
 
 ## Proved for every dimension, and checked only up to a bound
 
@@ -53,7 +69,7 @@ words; "no link found" records a search with its scope.
 | The two families carry so(m,1) (A5-618, A5-626, A5-636, A5-637) | every n: the commutation-set lemma (L_a and L_tau commute exactly on T u (T ^ a ^ tau)) from the cd_sign recursion ([family proof](../evidence/a5-null-slice-family-proof/README.md)), then disjoint stars | lemma at n = 4 to 12; the first family: direct relations to 4096; the octonion-space family: direct relations to 4096 |
 | Octonion-space covariance algebra is G_2 for every n >= 6 (A5-642) | derivation extension (inside); four anchor cosets with n-independent signs (outside) | anchor tables and block signs n = 6 to 12; full coset intersection n = 6 to 10 |
 | Left tables of A_n generate M_(2^n)(Q) for n >= 3 (A5-633) | from scalar commutant and closure under transposition | commutant n = 1 to 10 |
-| (D - 2)(D - 4)(D + 6)/2 non-associating ordered basis triples (A5-634) | open | D = 4 to 1024 |
+| (D - 2)(D - 4)(D + 6)/2 non-associating ordered basis triples (A5-634, A5-649) | every D: the doubling recursion of the associativity cocycle (Albuquerque and Majid, Proposition 4.5) gives N(2D) = 4(D - 1)(D - 2)(D + 3) from N(D) ([census](../evidence/a5-left-table-census/README.md) statement 3) | D = 4 to 1024; phi = 1 off the generic triples to D = 64 |
 | Envelope M_16(R) and Cl(0,8) of the seven slice tables (A5-624, A5-625) | the A_5 slice (exact ranks) | dimension 32 only; other levels unchecked |
 | Two-term strata 15, 84, 126 and the strut criterion (A5-627) | A_5 (exhaustive) | other dimensions unchecked |
 
