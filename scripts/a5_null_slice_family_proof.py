@@ -37,6 +37,8 @@ IDENTITY_LEVELS = tuple(range(1, 13))
 T_LEVELS = tuple(range(1, 12))
 RU_LEVELS = tuple(range(2, 10))
 FAMILY_LEVELS = tuple(range(4, 13))
+# Indices a per U or R task, so the largest level spreads over the pool.
+SHARD = 8
 
 
 def require(condition: bool, message: str) -> None:
@@ -70,9 +72,9 @@ def sigma(k: Any, members: list[int]) -> Any:
     return np.where(np.isin(k, members), 1, -1)
 
 
-def check_item(task: tuple[str, int]) -> int:
-    """Failures of one check at one level."""
-    name, level = task
+def check_item(task: tuple[str, int, int, int]) -> int:
+    """Failures of one check at one level; the U and R checks cover the first indices a in [start, stop)."""
+    name, level, start, stop = task
     table = recursion_table(level).astype(np.int16)
     dimension = 1 << level
     half = dimension >> 1
@@ -95,7 +97,7 @@ def check_item(task: tuple[str, int]) -> int:
     previous = recursion_table(level - 1).astype(np.int16)
     reduced = k % half
     failures = 0
-    for a in range(1, half):
+    for a in range(max(start, 1), min(stop, half)):
         for t in range(1, half):
             if t == a:
                 continue
@@ -140,14 +142,18 @@ def family_item(level: int) -> dict[str, Any]:
 
 
 def compute() -> dict[str, Any]:
-    tasks = [("cd_core", n) for n in CD_CORE_LEVELS]
-    tasks += [("identities", n) for n in IDENTITY_LEVELS]
-    tasks += [("T", n) for n in T_LEVELS]
-    tasks += [("U", n) for n in RU_LEVELS] + [("R", n) for n in RU_LEVELS]
+    tasks: list[tuple[str, int, int, int]] = [("cd_core", n, 0, 0) for n in CD_CORE_LEVELS]
+    tasks += [("identities", n, 0, 0) for n in IDENTITY_LEVELS]
+    tasks += [("T", n, 0, 0) for n in T_LEVELS]
+    for name in ("U", "R"):
+        for n in RU_LEVELS:
+            half = 1 << (n - 1)
+            tasks += [(name, n, start, min(start + SHARD, half)) for start in range(1, half, SHARD)]
     failures = parallel.ordered_map(check_item, tasks, min_items=1)
     checks: dict[str, dict[str, int]] = {}
-    for (name, level), count in zip(tasks, failures, strict=True):
-        checks.setdefault(name, {})[str(level)] = count
+    for (name, level, _start, _stop), count in zip(tasks, failures, strict=True):
+        row = checks.setdefault(name, {})
+        row[str(level)] = row.get(str(level), 0) + count
     families = parallel.ordered_map(family_item, list(FAMILY_LEVELS), min_items=1)
     return {
         "schema": "a5-null-slice-family-proof/1",
