@@ -31,4 +31,10 @@ Step 0, the lower half of Lemma R and both compositions before the proof entered
 | Lemma T's special cases for a = H + a' are {0, a'} | corrected |
 | The hosted lanes, not the path explanation alone, decide the replicated-series test | the PR body states the path explanation as a hypothesis |
 
+## Hosted review (Codex, head `ecfc17ec6`)
+
+| Finding | Check | Resolution |
+|---|---|---|
+| P1: the U and R checks ran one whole level per task, so the 64,770 pairs of level 9 stayed serial | read `check_item` and `compute` | Fixed in `e01aebf51`: the parent maps shards of 8 indices a per task and sums them per level; the result is unchanged (sha256 e0fe71d2) |
+
 The reviewer ran in auto mode. Afterwards `git status --short` showed no tracked change in any of the six workspace repositories.
