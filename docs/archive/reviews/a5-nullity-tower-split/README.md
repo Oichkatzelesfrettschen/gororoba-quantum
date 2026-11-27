@@ -48,3 +48,10 @@ The Advisor reviewed last, on the findings above and the fixed head. Its finding
 | The point counts overlap (the named C and H points inside the scan, the 474 representatives inside the census) | stated in statement 13 and in A5-664 |
 | The post-red-team results rested on one implementation | an implementation that shares no code recomputed type C at the two named points (closure 15, a commutant element with X^2 = -I), the 168-case scan, the VB identity as det B = \|q1\|^4 \|g2\|^4 at 25 rational points, and the nullity tally of the 29,232 census points (3,648 of nullity 8, the sum of the census rows; it rejected a wrong expected count written into its brief) |
 | The retained Neon report named the worktree directory | replaced by `WORKTREE-NAME` |
+
+## Hosted Codex round
+
+The round on head `41165584e` returned one finding: the two curved-arc certificates and the census of the twenty
+unit lines ran serially inside `arcs_item`. Confirmed and fixed in `f28c40cc9` (`curved_arc_item` and
+`zero_unit_item` through `parallel.ordered_map`); both records were regenerated on the compute workstation with
+every value unchanged, the script digest in `sources` aside.
