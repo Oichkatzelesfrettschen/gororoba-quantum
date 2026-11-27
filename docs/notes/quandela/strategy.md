@@ -233,6 +233,19 @@ step.
   exclusion, and independent noise fits it only if the acquisition is not
   pulse-gated. Neither time base of the receipt's rate predicts these
   clicks; the light-cone reading excludes them without a model.
+  The packet reading (`scripts/qd_belenos_offcone_packets.py`,
+  `docs/evidence/quandela/belenos_offcone_packets.json`) measures the law in
+  the 58 iterated cells: an off-cone mode reads 0 (362 entries), 32 to 99 (51)
+  or 100 and more (29) and never 1 to 31, where in-cone modes fill 1 to 31 in
+  305 of 577 nonzero entries; counts below 70 on modes other than 5 have mean
+  47.6 and variance 52.6 (n = 38, all 64 cells), and packets per cell fit one
+  rate times recorded samples (deviance 47.6 on 57 df) better than wall share
+  (80.4) or the acquisition estimate (130.4), with 10 packets observed against
+  8.2 predicted in the six held-out single-job cells. Two mechanisms remain:
+  photon-triggered episodes of about 48 counts, or noise in a true acquisition
+  time proportional to samples, which would refute the physical_perf
+  acquisition model; a per-iteration time base or the firing in-cone channel
+  of each packet separates them.
 - **Compilation.** Both the simulator and the QPU return `computed_input`
   and `computed_circuit`. For a 24-mode circuit the compiled circuit is the
   full chip mesh: 552 beam splitters (Rx convention, calibrated angles such as
