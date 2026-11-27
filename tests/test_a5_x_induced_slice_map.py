@@ -97,3 +97,25 @@ def test_the_digest_list_names_every_other_file() -> None:
     for name, digest in listed.items():
         if hashlib.sha256((DIRECTORY / name).read_bytes()).hexdigest() != digest:
             raise AssertionError(name)
+
+
+def test_the_run_lists_six_checks_and_six_controls_at_the_other_root() -> None:
+    mod = load()
+    items = mod.reductions()
+    checks = [item[1:] for item in items if item[0] == "check"]
+    controls = [item[1:] for item in items if item[0] == "control"]
+    if checks != CHECKS or controls != [(source, prime, prime - root) for source, prime, root in CHECKS]:
+        raise AssertionError(items)
+    for source, prime, _root in CHECKS:
+        if not (mod.FIBERS / mod.HEADERS[(source, prime)]).is_file():
+            raise AssertionError((source, prime))
+
+
+def test_the_two_basepoints_give_equal_reduction_logs() -> None:
+    for kind, prime, root in [("check", p, r) for p, r in ((32009, 10754), (32029, 9115), (32057, 8059))] + [
+        ("control", p, p - r) for p, r in ((32009, 10754), (32029, 9115), (32057, 8059))
+    ]:
+        logs = [(DIRECTORY / f"{kind}-{source}-p{prime}-r{root}.log").read_bytes() for source in ("xm", "xp")]
+        scripts = [(DIRECTORY / f"{kind}-{source}-p{prime}-r{root}.sing").read_bytes() for source in ("xm", "xp")]
+        if logs[0] != logs[1] or scripts[0] == scripts[1]:
+            raise AssertionError((kind, prime, root))

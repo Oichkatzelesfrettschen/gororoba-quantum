@@ -11,7 +11,9 @@ imported from that module, whose bytes its own digest list binds; this module ho
 --emit SOURCE CHAR ROOT [map|relations|high] writes a Singular script (SOURCE xm or xp, CHAR 0 for Q(i));
 --collect MAP_LOG RELATION_LOG SOURCE OUT.json reads the outputs;
 --check OUT.json PRIME ROOT HEADER_REL writes to stdout a Singular script that reduces the Q(i) record at (PRIME, ROOT)
-and compares the transported ideal with a retained header relation file.
+and compares the transported ideal with a retained header relation file;
+--run writes and runs every script of the retained record in this directory: the six Q(i) scripts, then the six
+reductions and the six reductions at the other root of -1, each stage through parallel.ordered_map.
 """
 
 from __future__ import annotations
@@ -19,6 +21,8 @@ from __future__ import annotations
 import hashlib
 import itertools
 import json
+import re
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -28,8 +32,22 @@ sys.path.insert(0, str(HERE.parent / "e8-induced-slice-map"))
 
 import induced_slice_map as base  # noqa: E402
 
+FIBERS = HERE.parents[2]
 # Source key of the weight-slice producer -> the basepoint of its same-sign incidence.
 SOURCES = {"xm": "N-", "xp": "N+"}
+MODES = ("map", "relations", "high")
+# (prime, the root of -1 of the header files at that prime); the other root is the control.
+ROOTS = ((32009, 10754), (32029, 9115), (32057, 8059))
+# The retained header relation files of same-sign X, under a5-exceptional-fibers/.
+HEADERS = {
+    ("xm", 32009): "working/distribute/out/a5-xm-d4/xm_p1/d2/relations-upto-d2.rel",
+    ("xm", 32029): "working/distribute/out/a5-p2-small/xm_p2/d2/relations-upto-d2.rel",
+    ("xm", 32057): "third-prime/relations/xm-nm/d2/relations-upto-d2.rel",
+    ("xp", 32009): "working/distribute/out/a5-xp-p1-d2/xp_p1/d2/relations-upto-d2.rel",
+    ("xp", 32029): "working/distribute/out/a5-p2-small/xp_p2/d2/relations-upto-d2.rel",
+    ("xp", 32057): "third-prime/relations/xp-np/d2/relations-upto-d2.rel",
+}
+REMAINDERS = re.compile(r"^RESULT transported modulo header (\d+) header modulo transported (\d+)$")
 
 
 def incidence(source: str) -> str:
@@ -210,8 +228,83 @@ def check_script(record: dict[str, Any], prime: int, root: int, header_rel: Path
     return "\n".join(lines) + "\n"
 
 
+def _singular(script: Path) -> list[str]:
+    """Run one script with stdin from /dev/null, write its output beside it as .log and return the lines."""
+    process = subprocess.run(
+        ["Singular", "-q", "--no-warn", "--no-rc", str(script)],
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=False,
+    )
+    script.with_suffix(".log").write_text(process.stdout, encoding="utf-8")
+    lines = process.stdout.splitlines()
+    base._require(
+        process.returncode == 0 and not any(line.lstrip().startswith("?") for line in lines),
+        f"Singular failed on {script.name}",
+    )
+    return lines
+
+
+def stage(item: tuple[str, str]) -> bool:
+    """One Q(i) script of (source, mode); the high mode must find no high-weight part outside J + m I."""
+    source, mode = item
+    script = HERE / f"{mode}-{source}-qi.sing"
+    script.write_text(emit(source, 0, 0, mode), encoding="utf-8")
+    lines = _singular(script)
+    return mode != "high" or "RESULT header_high_weight_outside 0" in lines
+
+
+def reduction(item: tuple[str, str, int, int]) -> bool:
+    """One reduction of (kind, source, prime, root): a check must pass, and a control, at the other root of -1, must
+    fail with nonzero remainders in both directions."""
+    kind, source, prime, root = item
+    record = json.loads((HERE / f"induced-{source}.json").read_text(encoding="utf-8"))
+    script = HERE / f"{kind}-{source}-p{prime}-r{root}.sing"
+    script.write_text(check_script(record, prime, root, FIBERS / HEADERS[(source, prime)]), encoding="utf-8")
+    lines = _singular(script)
+    found = [match for match in map(REMAINDERS.match, lines) if match is not None]
+    base._require(len(found) == 1, f"{script.name}: no single line of remainders")
+    remainders = (int(found[0].group(1)), int(found[0].group(2)))
+    if kind == "check":
+        return remainders == (0, 0) and f"INDUCED VERDICT p {prime} root {root} PASS" in lines
+    return min(remainders) > 0 and f"INDUCED VERDICT p {prime} root {root} FAIL" in lines
+
+
+def reductions() -> list[tuple[str, str, int, int]]:
+    items = [("check", source, prime, root) for source in SOURCES for prime, root in ROOTS]
+    return items + [("control", source, prime, prime - root) for source in SOURCES for prime, root in ROOTS]
+
+
+def run() -> int:
+    import weight_slice_fiber_relations as ws
+
+    stages = [(source, mode) for source in SOURCES for mode in MODES]
+    done = ws.parallel.ordered_map(stage, stages, min_items=1)
+    failed: list[tuple[Any, ...]] = [item for item, good in zip(stages, done, strict=True) if not good]
+    for source in SOURCES:
+        record = collect(HERE / f"map-{source}-qi.log", HERE / f"relations-{source}-qi.log", source)
+        (HERE / f"induced-{source}.json").write_text(
+            json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        print("COLLECT", source, "PASS" if record["pass"] else f"FAIL {record['problems']}")
+        if not record["pass"]:
+            failed.append((source, "collect"))
+    if not failed:
+        items = reductions()
+        results = ws.parallel.ordered_map(reduction, items, min_items=1)
+        failed += [item for item, good in zip(items, results, strict=True) if not good]
+    for item in failed:
+        print("FAILED", *item, file=sys.stderr)
+    print("run_x_induced:", "FAIL" if failed else "PASS")
+    return 1 if failed else 0
+
+
 def main() -> None:
     arguments = sys.argv[1:]
+    if arguments == ["--run"]:
+        raise SystemExit(run())
     if arguments[:1] == ["--emit"] and arguments[1] in SOURCES:
         mode = arguments[4] if len(arguments) > 4 else "map"
         sys.stdout.write(emit(arguments[1], int(arguments[2]), int(arguments[3]), mode))

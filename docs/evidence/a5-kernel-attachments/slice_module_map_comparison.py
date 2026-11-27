@@ -34,6 +34,8 @@ the 15 generators that "x-induced-slice-map/induced-SOURCE.json" retains, three 
 term) and R taken as the one minimal prime, as the header-slice rows of quadric_and_germ_probes.py take it. There
 the scalar is c = 1 / 2 for X- -> N- and c = -1 / 2 for X+ -> N+ at every prime; the value i / 2, written down
 before the run by analogy with E8-bar, did not occur. Like every value of c it depends on the two normalizations.
+The X identity is forced in the same way, by the slice map of A5-644 and the one-dimensional solution spaces, so
+this run too is a confirmation that shares its inputs with those rows and adds no independent evidence.
 
 Usage, from the repository root: "$PYTHON" docs/evidence/a5-kernel-attachments/slice_module_map_comparison.py
 --out OUT.json [--family x] [--check RETAINED.json]. Each cell is one Singular run of a few seconds; the runs go
