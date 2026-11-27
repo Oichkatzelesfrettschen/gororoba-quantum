@@ -24,17 +24,17 @@ def load() -> ModuleType:
 
 def fixture(mod: ModuleType) -> list[dict[str, Any]]:
     cells = []
-    for source, orbit, g in mod.CELLS:
-        row = mod.expected(source, orbit, g)
+    for job in mod.jobs():
+        row = mod.expected(*job)
         row["images"] = [list(pair) for pair in row["images"]]
         cells.append(row | {"relations_sha256": "0" * 64})
     return cells
 
 
-def test_the_fixture_passes_and_holds_four_cells() -> None:
+def test_the_fixture_passes_and_holds_four_cells_over_three_fields() -> None:
     mod = load()
     cells = fixture(mod)
-    if len(cells) != 4 or mod.problems(cells):
+    if len(cells) != 12 or mod.problems(cells):
         raise AssertionError(mod.problems(cells))
 
 
@@ -48,6 +48,8 @@ MUTATIONS = {
         relations_match_retained=False
     ),
     "a changed image": lambda cells: cells[1]["images"][1].__setitem__(1, "(i)*y(5)"),
+    "a modular map with the root of the other prime": lambda cells: cells[4]["images"][1].__setitem__(1, "9115*y(5)"),
+    "a modular map off by the free scalar": lambda cells: cells[6]["images"][0].__setitem__(1, "16004*y(3)"),
     "a cone with a second quadric": lambda cells: cells[3].update(cone=[5, 16, 2]),
     "a cell removed": lambda cells: cells.pop(),
     "an extra field": lambda cells: cells[0].update(note="x"),
@@ -63,7 +65,19 @@ def test_a_changed_record_is_reported(name: str) -> None:
         raise AssertionError(f"{name}: the changed record passes")
 
 
-def test_the_numerator_identity_separates_a_plane_from_a_line() -> None:
+def test_the_modular_images_are_the_gaussian_images_with_i_sent_to_the_root() -> None:
+    mod = load()
+    if mod.images("xm", "N-", 0, 0)[1] != ["y(10)", "(i)*y(5)"] or mod.images("xp", "N+", 0, 0)[1][1] != "(-i)*y(5)":
+        raise AssertionError("the sign of i follows the basepoint for X")
+    if mod.images("xm", "N-", 32009, 10754)[1][1] != "10754*y(5)":
+        raise AssertionError(mod.images("xm", "N-", 32009, 10754))
+    if mod.images("e8", "N-", 32029, 9115)[4][1] != "-2*y(12)-9115*y(13)-9115*y(17)":
+        raise AssertionError(mod.images("e8", "N-", 32029, 9115))
+    if mod.images("e8", "N+", 0, 0)[4][1] != "-2*y(12)+(i)*y(13)+(i)*y(17)":
+        raise AssertionError(mod.images("e8", "N+", 0, 0))
+
+
+def test_the_numerator_identity_separates_a_double_line_from_the_origin() -> None:
     mod = load()
     # K = (x^2) in k[x, y]: R = (x), A = K : R = (x), and R / K = (x) / (x^2) is the irrelevant ideal (y) of k[y].
     num_k, num_r, num_a = [1, 0, -1], [1, -1], [1, -1]

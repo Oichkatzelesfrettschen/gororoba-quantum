@@ -1395,7 +1395,9 @@ the syzygies of the irrelevant ideal m of B, so a solution extends to a B-linear
 solution space has dimension one, its generator is invertible with entries 1, -1, 2 and +-i, R = K + N, the
 sign-flipped control system has the zero solution alone, and N_K - N_R = N_A - (1 - t)^n; the map is therefore an
 isomorphism of graded modules ([`weight-slice-module-map-result.json`](weight-slice-module-map-result.json),
-Singular 4.4.1, 33 s; ledger row A5-640). The same system on the header slices modulo 32009, 32029 and 32057 is the
+Singular 4.4.1, 34 s; ledger row A5-640). The program also runs each cell modulo (32009, 10754) and (32029, 9115):
+with every map normalized by the leading coefficient of its first image, the modular map equals the Q(i) map with i
+sent to the root. The same system on the header slices modulo 32009, 32029 and 32057 is the
 `module-map` row kind of the [structure probes](../a5-exceptional-fibers/structure/README.md) (A5-638).
 
 [`e8_vb_quadric_ring_qi.py`](e8_vb_quadric_ring_qi.py) reruns the Q(i) relations of E8-bar -> VB from
@@ -1408,7 +1410,7 @@ above, the nine quadric rings of the fiber track are Cohen-Macaulay exactly when
 The gates `core-a5-weight-slice-module-map` and `core-a5-e8-vb-quadric-ring-qi` of
 [ci/gates.json](../../../ci/gates.json) replay the two records, skipping the Singular banner;
 `tests/test_a5_weight_slice_module_map.py` and `tests/test_a5_e8_vb_quadric_ring_qi.py` apply each program's check
-to a fixture and reject 10 and 7 mutations.
+to a fixture and reject 12 and 7 mutations.
 
 ## Investigated questions
 

@@ -57,7 +57,7 @@ def probe_fixture(mod: ModuleType) -> list[dict[str, Any]]:
                      "square": [1], "colon": [4, 2, 17, 16, 1, 1], "bicolon": [1], "numK": list(mod.NUM_K_E8),
                      "numR": list(num_r), "numA": list(mod.NUM_A_E8)})  # fmt: skip
     rows += [mod.expected_map(item) for item in mod.MAPS]
-    for fiber, p, rel in mod.E8S:
+    for fiber, p, rel in mod.PRIME_CELLS:
         parts = [
             {"projdim": dim, "degree": e, "linear": linear, "sections": sections(mod, e)}
             for dim, e, linear in ((4, 11, 9), (3, 4, 14))

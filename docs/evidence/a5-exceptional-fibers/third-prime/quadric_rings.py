@@ -232,6 +232,8 @@ def main() -> int:
     qp.VB = [(PRIME, rel["e8-vb"])]
     qp.XS = [("X- -> N-", PRIME, rel["xm-nm"]), ("X+ -> N+", PRIME, rel["xp-np"])]
     qp.E8S = [("E8-bar -> N-", PRIME, rel["e8-nm"])]
+    # This program runs the component and colon rows alone; the other row kinds of the probe module stay empty.
+    qp.MAPS, qp.PRIME_CELLS, qp.RECEIPTS = [], [], []
     probes: list[tuple[str, Any]] = [("vb-components", v) for v in qp.VB]
     probes += [("x-colon", x) for x in qp.XS] + [("e8-colon", e) for e in qp.E8S]
     cms, reds, probe_rows = two_phase([(f, PRIME, n, relations(s)) for f, n, s in CELLS], probes)

@@ -1,4 +1,4 @@
-"""The check of the E8-bar -> VB quadric-ring record over Q(i), on a fixture built from the module's prediction.
+"""The check of the E8-bar -> VB quadric-ring record over Q(i), on a fixture built from the module's expected values.
 
 The retained record replays on demand through the gate core-a5-e8-vb-quadric-ring-qi of ci/gates.json.
 """

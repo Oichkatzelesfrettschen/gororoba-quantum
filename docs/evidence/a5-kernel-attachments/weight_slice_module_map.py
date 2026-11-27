@@ -12,13 +12,17 @@ when theta is invertible and R = K + N, and then an isomorphism when the two mod
 which the first Hilbert numerators decide: N_K - N_R = N_A - (1 - t)^n. The control system, with
 x_j theta(x_k) + x_k theta(x_j), has the zero solution alone; a solver that dropped its equations would return g^2.
 
+Each cell also runs modulo the split primes (32009, i = 10754) and (32029, i = 9115), on the relations the producer
+regenerates there. Every map is normalized by the leading coefficient of its first image, which fixes the scalar the
+one-dimensional solution space leaves free; the modular map must then equal the Q(i) map with i sent to the root.
+
 The same system on the header slices modulo 32009, 32029 and 32057 is the `module-map` row kind of
 `a5-exceptional-fibers/structure/quadric_and_germ_probes.py` (ledger row A5-638); the slices carry different
 coordinates, so the maps are compared by their invariants and not entry by entry.
 
 Usage, from the repository root: "$PYTHON" docs/evidence/a5-kernel-attachments/weight_slice_module_map.py
---out OUT.json [--check RETAINED.json]. The four cells run through parallel.ordered_map; each Singular call holds
-the address-space limit of the producer.
+--out OUT.json [--check RETAINED.json]. The twelve runs (four cells over three fields) go through
+parallel.ordered_map; each Singular call holds the address-space limit of the producer.
 """
 
 from __future__ import annotations
@@ -47,7 +51,7 @@ TIMEOUT_SECONDS = 1800
 CELLS = (("xm", "N-", 3), ("xp", "N+", 3), ("e8", "N-", 5), ("e8", "N+", 5))
 
 SCRIPT = """LIB "primdec.lib"; LIB "matrix.lib";
-ring r0=(0,i),(y(1..@N@)),dp; minpoly=i^2+1;
+ring r0=@FIELD@,(y(1..@N@)),dp; @MINPOLY@
 ideal K=
 @POLYS@;
 ideal sK=std(K); list P=minAssGTZ(K); ideal R=P[1]; int k; for(k=2;k<=size(P);k++){ R=intersect(R,P[k]); } R=std(R);
@@ -61,7 +65,7 @@ ideal Aq=simplify(reduce(A,Al),2);
 "RESULT cone",size(F),size(Al),size(Aq);
 "RESULT numK",hilb(sK,1); "RESULT numR",hilb(R,1); "RESULT numA",hilb(A,1);
 if(size(F)!=@G@ || g!=@G@){ "RESULT abort 1"; quit; }
-ring r1=(0,i),(y(1..@N@),t(1..@GG@)),(dp(@N@),dp(@GG@)); minpoly=i^2+1;
+ring r1=@FIELD@,(y(1..@N@),t(1..@GG@)),(dp(@N@),dp(@GG@)); @MINPOLY@
 ideal sK=std(imap(r0,sK)); ideal N=imap(r0,N); ideal F=imap(r0,F); ideal Aq=imap(r0,Aq);
 int g=@G@; int m; int j; int k; int c; int sg;
 poly ymon=1; for(m=1;m<=@N@;m++){ ymon=ymon*y(m); }
@@ -81,7 +85,9 @@ for(sg=-1;sg<=1;sg=sg+2){
       int fr=0; for(m=1;m<=g*g;m++){ if(reduce(t(m),sT)==t(m)){ fr=m; } }
       matrix M[g][g]; for(j=1;j<=g;j++){ for(m=1;m<=g;m++){ M[j,m]=subst(reduce(t((j-1)*g+m),sT),t(fr),1); } }
       "RESULT det_nonzero",det(M)!=0;
-      for(j=1;j<=g;j++){ s=0; for(m=1;m<=g;m++){ s=s+M[j,m]*N[m]; } "RESULT image",F[j],s; }
+      ideal IM; for(j=1;j<=g;j++){ s=0; for(m=1;m<=g;m++){ s=s+M[j,m]*N[m]; } IM[j]=s; }
+      number lc=leadcoef(IM[1]);
+      for(j=1;j<=g;j++){ "RESULT image",F[j],IM[j]/lc; }
     }
   }
   kill T; kill sT;
@@ -90,25 +96,55 @@ for(sg=-1;sg<=1;sg=sg+2){
 quit;
 """
 
-# The normalized map of each cell, in the generator order of the weight-slice producer.
-IMAGES: dict[str, list[list[str]]] = {
-    "X-->N-": [["y(7)", "y(3)"], ["y(10)", "(i)*y(5)"], ["y(12)", "y(6)"]],
-    "X+->N+": [["y(7)", "y(3)"], ["y(10)", "(-i)*y(5)"], ["y(12)", "y(6)"]],
-    "E8bar->N-": [
-        ["y(8)", "-y(3)"],
-        ["y(14)", "y(6)"],
-        ["y(16)", "y(5)"],
-        ["y(17)", "-y(7)"],
-        ["y(19)", "2*y(12)+(i)*y(13)+(i)*y(17)"],
-    ],
-    "E8bar->N+": [
-        ["y(8)", "-y(3)"],
-        ["y(14)", "y(6)"],
-        ["y(16)", "y(5)"],
-        ["y(17)", "-y(7)"],
-        ["y(19)", "2*y(12)+(-i)*y(13)+(-i)*y(17)"],
-    ],
+# (characteristic, root of -1); characteristic 0 is Q(i)
+FIELDS = ((0, 0), (32009, 10754), (32029, 9115))
+# The map of each cell over Q(i), normalized by the leading coefficient of its first image, in the generator order
+# of the weight-slice producer: variable -> terms (coefficient, variable), a coefficient an integer or "i". The sign
+# of i is + for X at N- and E8-bar at N+, and - for X at N+ and E8-bar at N-.
+X_MAP: list[tuple[int, list[tuple[int | str, int]]]] = [(7, [(1, 3)]), (10, [("i", 5)]), (12, [(1, 6)])]
+E8_MAP: list[tuple[int, list[tuple[int | str, int]]]] = [
+    (8, [(1, 3)]),
+    (14, [(-1, 6)]),
+    (16, [(-1, 5)]),
+    (17, [(1, 7)]),
+    (19, [(-2, 12), ("i", 13), ("i", 17)]),
+]
+# The relation digests of the modular cells, which the retained weight-slice record does not hold.
+MODULAR_DIGESTS: dict[str, str] = {
+    "X-->N- 32009": "49b09b286265c9e519e60f78503461e58e849acd09ac68d9f4e33a4c7e2091e6",
+    "X+->N+ 32009": "885969840cd94d5e80e06d6ebee3da560a92bdfc453d59481fcef95b6a1eb0ba",
+    "E8bar->N- 32009": "42b1d8ff03d4c505597b39fe303c52ac45fcdc4d35bbf01d0b8e7e23a97367d0",
+    "E8bar->N+ 32009": "b9b7372bce35e7ce286aa572f9b1ebf656d1ac04ba0e63349c640efed88658ee",
+    "X-->N- 32029": "5b950ee66306c05a1888d61b9f6a06d3bc8c30a47fcede139c30222a7261c9f9",
+    "X+->N+ 32029": "e38b521b7c36ea231786b9d7dbcd82898b042afa18c5271716a4019d92e397b0",
+    "E8bar->N- 32029": "bbbb4a5f8b178cc7e001c93bcaa790bd421a5b168bab2598d75fbef6e03b1f31",
+    "E8bar->N+ 32029": "7c04530f75570b6e4e8eade28042a592b4029dfac983bc5c78a386680ffe105b",
 }
+
+
+def field_name(characteristic: int) -> str:
+    return "Q(i)" if characteristic == 0 else f"F_{characteristic}"
+
+
+def images(source: str, orbit: str, characteristic: int, root: int) -> list[list[str]]:
+    """The expected normalized map as Singular prints it: over Q(i), or with i sent to the root over F_p."""
+    sign = 1 if (source != "e8") == (orbit == "N-") else -1
+    found = []
+    for variable, terms in X_MAP if source != "e8" else E8_MAP:
+        text = ""
+        for coefficient, index in terms:
+            if characteristic == 0 and coefficient == "i":
+                piece = f"({'' if sign == 1 else '-'}i)*y({index})"
+            else:
+                value = sign * root if coefficient == "i" else int(coefficient)
+                if characteristic:
+                    value %= characteristic
+                    value = value - characteristic if value > characteristic // 2 else value
+                body = f"y({index})" if abs(value) == 1 else f"{abs(value)}*y({index})"
+                piece = ("-" if value < 0 else "") + body
+            text += piece if not text or piece.startswith("-") else "+" + piece
+        found.append([f"y({variable})", text])
+    return found
 
 
 def numerator_identity(num_k: list[int], num_r: list[int], num_a: list[int], n: int) -> bool:
@@ -119,10 +155,11 @@ def numerator_identity(num_k: list[int], num_r: list[int], num_a: list[int], n: 
     return all(pad[0][d] - pad[1][d] == pad[2][d] - unit[d] for d in range(width))
 
 
-def solve(n: int, g: int, polynomials: list[str]) -> dict[str, Any]:
+def solve(n: int, g: int, characteristic: int, polynomials: list[str]) -> dict[str, Any]:
     """The RESULT lines of one Singular run of SCRIPT, as a row."""
+    field, minpoly = ("(0,i)", "minpoly=i^2+1;") if characteristic == 0 else (str(characteristic), "")
     text = SCRIPT.replace("@N@", str(n)).replace("@GG@", str(g * g)).replace("@G@", str(g))
-    text = text.replace("@POLYS@", ",\n".join(polynomials))
+    text = text.replace("@FIELD@", field).replace("@MINPOLY@", minpoly).replace("@POLYS@", ",\n".join(polynomials))
     with tempfile.TemporaryDirectory() as tmp:
         source = Path(tmp, "map.sing")
         source.write_text(text, encoding="utf-8")
@@ -148,27 +185,33 @@ def solve(n: int, g: int, polynomials: list[str]) -> dict[str, Any]:
     return row
 
 
-def cell(item: tuple[str, str, int, dict[str, str]]) -> dict[str, Any]:
-    source, orbit, g, retained = item
+def retained_digest(name: str, characteristic: int, retained: dict[str, str]) -> str | None:
+    """The digest that binds a cell's relations: the weight-slice record over Q(i), MODULAR_DIGESTS over F_p."""
+    return retained.get(name) if characteristic == 0 else MODULAR_DIGESTS.get(f"{name} {characteristic}")
+
+
+def cell(item: tuple[str, str, int, int, int, dict[str, str]]) -> dict[str, Any]:
+    source, orbit, g, characteristic, root, retained = item
     name = ws.incidence_name(orbit, source)
-    run = ws.run_singular(ws.fiber_script(ws.orbit_task(orbit), source, 0, 0))
+    run = ws.run_singular(ws.fiber_script(ws.orbit_task(orbit), source, characteristic, root))
     summary = ws.summarize_fiber_run(run)
     n = summary["generator_count"]
-    row = {"ring": name, "variables": n} | solve(n, g, wq.polynomials(sorted(run["relations"])))
+    row = {"ring": name, "field": field_name(characteristic), "variables": n}
+    row |= solve(n, g, characteristic, wq.polynomials(sorted(run["relations"])))
     row |= {
         "relations_sha256": summary["relations_sha256"],
-        "relations_match_retained": summary["relations_sha256"] == retained.get(name),
+        "relations_match_retained": summary["relations_sha256"] == retained_digest(name, characteristic, retained),
     }
     return row
 
 
-def expected(source: str, orbit: str, g: int) -> dict[str, Any]:
-    """The fields of a cell that the findings fix; the relation digest is bound by the retained weight-slice record."""
-    name = ws.incidence_name(orbit, source)
+def expected(source: str, orbit: str, g: int, characteristic: int, root: int) -> dict[str, Any]:
+    """The fields of a cell that the findings fix; the relation digest is bound by relations_match_retained."""
     return {
-        "ring": name,
+        "ring": ws.incidence_name(orbit, source),
+        "field": field_name(characteristic),
         "variables": 15 if g == 3 else 21,
-        "images": IMAGES[name],
+        "images": images(source, orbit, characteristic, root),
         "generation": [g, 1],
         "cone": [3, 12, 0] if g == 3 else [5, 16, 1],
         "solutions": [1],
@@ -179,16 +222,21 @@ def expected(source: str, orbit: str, g: int) -> dict[str, Any]:
     }
 
 
+def jobs() -> list[tuple[str, str, int, int, int]]:
+    return [(source, orbit, g, characteristic, root) for characteristic, root in FIELDS for source, orbit, g in CELLS]
+
+
 def problems(cells: list[dict[str, Any]]) -> list[str]:
     """The departures of the cells from the findings; an empty list for the retained record."""
-    if len(cells) != len(CELLS):
-        return [f"{len(cells)} cells, expected {len(CELLS)}"]
+    if len(cells) != len(jobs()):
+        return [f"{len(cells)} cells, expected {len(jobs())}"]
     found = []
-    for row, (source, orbit, g) in zip(cells, CELLS, strict=True):
-        want = expected(source, orbit, g)
+    for row, job in zip(cells, jobs(), strict=True):
+        want = expected(*job)
         if {k: row.get(k) for k in want} != want or set(row) != {*want, "relations_sha256"}:
             found.append(
-                f"{want['ring']}: the row differs from one invertible map, an empty control and equal numerators"
+                f"{want['ring']} over {want['field']}: the row differs from one invertible map equal to the Q(i) map, "
+                "an empty control and equal numerators"
             )
     return found
 
@@ -204,17 +252,22 @@ def main() -> int:
         if item["characteristic"] == 0
     }
     banner, version = ws.singular_version()
-    items = [(source, orbit, g, retained) for source, orbit, g in CELLS]
     record: dict[str, Any] = {
         "schema": SCHEMA,
-        "field": "Q(i)",
         "tools": {"singular": banner, "singular_version": version},
-        "cells": list(parallel.ordered_map(cell, items, min_items=1)),
+        "cells": list(parallel.ordered_map(cell, [(*job, retained) for job in jobs()], min_items=1)),
     }
     record["problems"] = problems(record["cells"])
     args.out.write_text(json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     for row in record["cells"]:
-        print(row["ring"], row["solutions"], row["det_nonzero"], row["control_solutions"], row["numerator_identity"])
+        print(
+            row["ring"],
+            row["field"],
+            row["solutions"],
+            row["det_nonzero"],
+            row["control_solutions"],
+            row["images"][-1][1],
+        )
     for line in record["problems"]:
         print("PROBLEM", line, file=sys.stderr)
     if args.check is not None:

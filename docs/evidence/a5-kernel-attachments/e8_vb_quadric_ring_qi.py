@@ -8,8 +8,8 @@ reduced echelon form of the retained relation file, and passes the 21 quadrics o
 procedure of `weight_slice_quadric_rings.decide`: a system of parameters from the fixed list of sparse forms, the
 length of the Artinian quotient against the degree, the chart certificate and the radical probe.
 
-Prediction, from the two primes and 32057 (A5-010, A5-020, A5-560): dimension 4, degree 7, length 7, so
-Cohen-Macaulay, and K radical. The program exits 1 on any other row.
+Expected from the modular cells at 32009, 32029 and 32057 (A5-010, A5-020, A5-560): dimension 4, degree 7, length 7,
+so Cohen-Macaulay, and K radical. The program exits 1 on any other row.
 
 Usage, from the repository root: "$PYTHON" docs/evidence/a5-kernel-attachments/e8_vb_quadric_ring_qi.py --out OUT.json
 """
@@ -80,7 +80,7 @@ def relations() -> tuple[list[str], dict[str, Any]]:
 
 
 def problems(record: dict[str, Any]) -> list[str]:
-    """The departures of a record from the prediction; an empty list for the retained record."""
+    """The departures of a record from the expected values; an empty list for the retained record."""
     found = []
     cell = record.get("cell", {})
     if {k: cell.get(k) for k in EXPECTED} != EXPECTED:

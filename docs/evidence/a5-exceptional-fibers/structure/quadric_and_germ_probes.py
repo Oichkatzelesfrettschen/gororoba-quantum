@@ -114,6 +114,8 @@ MAPS: list[tuple[str, int, str, int, int, str]] = [
     ("X+ -> N+", 32057, "../third-prime/relations/xp-np/d2/relations-upto-d2.rel", 15, 3, "minAssChar(sK)[1]"),
     ("E8-bar -> N-", 32057, "../third-prime/relations/e8-nm/d2/relations-upto-d2.rel", 21, 5, "radical(sK)"),
 ]
+# The cells whose two minimal primes the e8-primes rows cut by sections.
+PRIME_CELLS: list[tuple[str, int, str]] = list(E8S)
 # (fiber, prime, receipt, canonical header), both under working/
 RECEIPTS: list[tuple[str, int, str, str]] = [
     ("X+ -> N+", 32009, "distribute/out/a5-xp-p1-d2/xp_p1/d2/receipt-d2.json", "build/inputs/p32009-r10754/xp-np.sing"),
@@ -557,7 +559,7 @@ def check(rows: list[dict[str, Any]]) -> list[str]:
     Rows are compared in the order of the job list. A germ row equals its expected row field for field; a component
     or colon row carries its identity, its fixed values and the section condition.
     """
-    total = len(GERMS) + len(VB) + len(XS) + 2 * len(E8S) + len(MAPS) + len(RECEIPTS)
+    total = len(GERMS) + len(VB) + len(XS) + len(E8S) + len(MAPS) + len(PRIME_CELLS) + len(RECEIPTS)
     if len(rows) != total:
         return [f"{len(rows)} rows, expected {total}"]
     bad: list[str] = []
@@ -603,12 +605,12 @@ def check(rows: list[dict[str, Any]]) -> list[str]:
             bad.append(
                 f"module-map {map_item[0]} {map_item[1]}: the row differs from one invertible map and an empty control"
             )
-    for r, receipt_item in zip(rows[colons + len(MAPS) + len(E8S) :], RECEIPTS, strict=False):
+    for r, receipt_item in zip(rows[colons + len(MAPS) + len(PRIME_CELLS) :], RECEIPTS, strict=False):
         if r != expected_receipt(receipt_item):
             bad.append(
                 f"receipt {receipt_item[0]} {receipt_item[1]}: the row differs from a certified degree-2 receipt"
             )
-    for r, (fiber, p, rel) in zip(rows[colons + len(MAPS) :], E8S, strict=False):
+    for r, (fiber, p, rel) in zip(rows[colons + len(MAPS) :], PRIME_CELLS, strict=False):
         tag = f"e8-primes {fiber} {p}"
         identity = {"check": "e8-primes", "fiber": fiber, "prime": p, "relations": rel, "primes": 2}
         if {k: r.get(k) for k in identity} != identity or set(r) != {*identity, "components"}:
@@ -649,7 +651,9 @@ def main() -> int:
 
     jobs: list[tuple[str, Any]] = [("germ-prime", g) for g in GERMS]
     jobs += [("vb-components", v) for v in VB] + [("x-colon", x) for x in XS] + [("e8-colon", e) for e in E8S]
-    jobs += [("module-map", m) for m in MAPS] + [("e8-primes", e) for e in E8S] + [("receipt", c) for c in RECEIPTS]
+    jobs += (
+        [("module-map", m) for m in MAPS] + [("e8-primes", e) for e in PRIME_CELLS] + [("receipt", c) for c in RECEIPTS]
+    )
     rows = parallel.ordered_map(run, jobs, min_items=1)
     Path(sys.argv[1]).write_text("[\n" + ",\n".join(json.dumps(r) for r in rows) + "\n]\n")
     problems = check(rows)
