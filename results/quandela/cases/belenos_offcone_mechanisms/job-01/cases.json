@@ -1,0 +1,563 @@
+{
+ "schema": "qd-box-kite-cases-v1",
+ "family": "belenos_offcone_mechanisms",
+ "job": "job-01",
+ "platforms": [
+  "qpu:belenos"
+ ],
+ "command": "sample_count",
+ "gate_form": "unitary",
+ "min_detected_photons": 1,
+ "iterations": 36,
+ "max_samples": 724000,
+ "max_shots": 1448000,
+ "max_duration": 300,
+ "max_credits": 1.12,
+ "expected_seconds": 224.16,
+ "mitigations": [],
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "circuit": {
+  "file": "circuit.json",
+  "sha256": "69326bf0674a45e8c0005b10e2ac72cee36c122691ec0a5b542dbabb6e1fffb9"
+ },
+ "blocks": [
+  {
+   "config": "two_label-04",
+   "kind": "two_label",
+   "offset": 20,
+   "photons": [
+    20
+   ],
+   "m": [
+    [
+     1,
+     1
+    ],
+    [
+     -1,
+     -1
+    ]
+   ],
+   "t": 1,
+   "roles": [
+    "label_0",
+    "label_1",
+    "dilation",
+    "dilation"
+   ],
+   "ideal": [
+    "1/2",
+    "1/2",
+    "0",
+    "0"
+   ],
+   "p_algebra": "1",
+   "rows": [
+    [
+     "within_kite",
+     4
+    ],
+    [
+     "within_kite",
+     10
+    ],
+    [
+     "within_kite",
+     54
+    ],
+    [
+     "within_kite",
+     56
+    ],
+    [
+     "within_kite",
+     100
+    ],
+    [
+     "within_kite",
+     106
+    ],
+    [
+     "within_kite",
+     144
+    ],
+    [
+     "within_kite",
+     154
+    ],
+    [
+     "within_kite",
+     168
+    ],
+    [
+     "within_kite",
+     178
+    ],
+    [
+     "within_kite",
+     182
+    ],
+    [
+     "within_kite",
+     184
+    ],
+    [
+     "within_kite",
+     244
+    ],
+    [
+     "within_kite",
+     258
+    ],
+    [
+     "within_kite",
+     290
+    ],
+    [
+     "within_kite",
+     292
+    ],
+    [
+     "within_kite",
+     320
+    ],
+    [
+     "within_kite",
+     326
+    ],
+    [
+     "within_kite",
+     430
+    ],
+    [
+     "within_kite",
+     436
+    ],
+    [
+     "within_kite",
+     442
+    ],
+    [
+     "within_kite",
+     452
+    ],
+    [
+     "within_kite",
+     466
+    ],
+    [
+     "within_kite",
+     476
+    ],
+    [
+     "within_kite",
+     482
+    ],
+    [
+     "within_kite",
+     496
+    ],
+    [
+     "within_kite",
+     520
+    ],
+    [
+     "within_kite",
+     530
+    ],
+    [
+     "within_kite",
+     588
+    ],
+    [
+     "within_kite",
+     598
+    ],
+    [
+     "within_kite",
+     600
+    ],
+    [
+     "within_kite",
+     610
+    ],
+    [
+     "within_kite",
+     626
+    ],
+    [
+     "within_kite",
+     632
+    ],
+    [
+     "within_kite",
+     680
+    ],
+    [
+     "within_kite",
+     698
+    ],
+    [
+     "within_kite",
+     744
+    ],
+    [
+     "within_kite",
+     750
+    ],
+    [
+     "within_kite",
+     762
+    ],
+    [
+     "within_kite",
+     776
+    ],
+    [
+     "within_kite",
+     824
+    ],
+    [
+     "within_kite",
+     838
+    ]
+   ]
+  }
+ ],
+ "settings": [
+  {
+   "name": "e00-s20-n1500",
+   "compilation_seed": 20,
+   "input_mode": 20,
+   "max_samples": 1500,
+   "max_shots": 3000
+  },
+  {
+   "name": "e01-s22-n1500",
+   "compilation_seed": 20,
+   "input_mode": 22,
+   "max_samples": 1500,
+   "max_shots": 3000
+  },
+  {
+   "name": "e02-s22-n10000",
+   "compilation_seed": 20,
+   "input_mode": 22,
+   "max_samples": 10000,
+   "max_shots": 20000
+  },
+  {
+   "name": "e03-s20-n10000",
+   "compilation_seed": 20,
+   "input_mode": 20,
+   "max_samples": 10000,
+   "max_shots": 20000
+  },
+  {
+   "name": "e04-s20-n60000",
+   "compilation_seed": 20,
+   "input_mode": 20,
+   "max_samples": 60000,
+   "max_shots": 120000
+  },
+  {
+   "name": "e05-s22-n60000",
+   "compilation_seed": 20,
+   "input_mode": 22,
+   "max_samples": 60000,
+   "max_shots": 120000
+  },
+  {
+   "name": "e06-s22-n1500",
+   "compilation_seed": 20,
+   "input_mode": 22,
+   "max_samples": 1500,
+   "max_shots": 3000
+  },
+  {
+   "name": "e07-s20-n1500",
+   "compilation_seed": 20,
+   "input_mode": 20,
+   "max_samples": 1500,
+   "max_shots": 3000
+  },
+  {
+   "name": "e08-s20-n10000",
+   "compilation_seed": 20,
+   "input_mode": 20,
+   "max_samples": 10000,
+   "max_shots": 20000
+  },
+  {
+   "name": "e09-s22-n10000",
+   "compilation_seed": 20,
+   "input_mode": 22,
+   "max_samples": 10000,
+   "max_shots": 20000
+  },
+  {
+   "name": "e10-s22-n60000",
+   "compilation_seed": 20,
+   "input_mode": 22,
+   "max_samples": 60000,
+   "max_shots": 120000
+  },
+  {
+   "name": "e11-s20-n60000",
+   "compilation_seed": 20,
+   "input_mode": 20,
+   "max_samples": 60000,
+   "max_shots": 120000
+  },
+  {
+   "name": "e12-s20-n1500",
+   "compilation_seed": 20,
+   "input_mode": 20,
+   "max_samples": 1500,
+   "max_shots": 3000
+  },
+  {
+   "name": "e13-s22-n1500",
+   "compilation_seed": 20,
+   "input_mode": 22,
+   "max_samples": 1500,
+   "max_shots": 3000
+  },
+  {
+   "name": "e14-s22-n10000",
+   "compilation_seed": 20,
+   "input_mode": 22,
+   "max_samples": 10000,
+   "max_shots": 20000
+  },
+  {
+   "name": "e15-s20-n10000",
+   "compilation_seed": 20,
+   "input_mode": 20,
+   "max_samples": 10000,
+   "max_shots": 20000
+  },
+  {
+   "name": "e16-s20-n60000",
+   "compilation_seed": 20,
+   "input_mode": 20,
+   "max_samples": 60000,
+   "max_shots": 120000
+  },
+  {
+   "name": "e17-s22-n60000",
+   "compilation_seed": 20,
+   "input_mode": 22,
+   "max_samples": 60000,
+   "max_shots": 120000
+  },
+  {
+   "name": "e18-s22-n1500",
+   "compilation_seed": 20,
+   "input_mode": 22,
+   "max_samples": 1500,
+   "max_shots": 3000
+  },
+  {
+   "name": "e19-s20-n1500",
+   "compilation_seed": 20,
+   "input_mode": 20,
+   "max_samples": 1500,
+   "max_shots": 3000
+  },
+  {
+   "name": "e20-s20-n10000",
+   "compilation_seed": 20,
+   "input_mode": 20,
+   "max_samples": 10000,
+   "max_shots": 20000
+  },
+  {
+   "name": "e21-s22-n10000",
+   "compilation_seed": 20,
+   "input_mode": 22,
+   "max_samples": 10000,
+   "max_shots": 20000
+  },
+  {
+   "name": "e22-s22-n60000",
+   "compilation_seed": 20,
+   "input_mode": 22,
+   "max_samples": 60000,
+   "max_shots": 120000
+  },
+  {
+   "name": "e23-s20-n60000",
+   "compilation_seed": 20,
+   "input_mode": 20,
+   "max_samples": 60000,
+   "max_shots": 120000
+  },
+  {
+   "name": "e24-s20-n1500",
+   "compilation_seed": 20,
+   "input_mode": 20,
+   "max_samples": 1500,
+   "max_shots": 3000
+  },
+  {
+   "name": "e25-s22-n1500",
+   "compilation_seed": 20,
+   "input_mode": 22,
+   "max_samples": 1500,
+   "max_shots": 3000
+  },
+  {
+   "name": "e26-s22-n10000",
+   "compilation_seed": 20,
+   "input_mode": 22,
+   "max_samples": 10000,
+   "max_shots": 20000
+  },
+  {
+   "name": "e27-s20-n10000",
+   "compilation_seed": 20,
+   "input_mode": 20,
+   "max_samples": 10000,
+   "max_shots": 20000
+  },
+  {
+   "name": "e28-s20-n60000",
+   "compilation_seed": 20,
+   "input_mode": 20,
+   "max_samples": 60000,
+   "max_shots": 120000
+  },
+  {
+   "name": "e29-s22-n60000",
+   "compilation_seed": 20,
+   "input_mode": 22,
+   "max_samples": 60000,
+   "max_shots": 120000
+  },
+  {
+   "name": "e30-s22-n1500",
+   "compilation_seed": 20,
+   "input_mode": 22,
+   "max_samples": 1500,
+   "max_shots": 3000
+  },
+  {
+   "name": "e31-s20-n1500",
+   "compilation_seed": 20,
+   "input_mode": 20,
+   "max_samples": 1500,
+   "max_shots": 3000
+  },
+  {
+   "name": "e32-s20-n1500",
+   "compilation_seed": 20,
+   "input_mode": 20,
+   "max_samples": 1500,
+   "max_shots": 3000
+  },
+  {
+   "name": "e33-s22-n1500",
+   "compilation_seed": 20,
+   "input_mode": 22,
+   "max_samples": 1500,
+   "max_shots": 3000
+  },
+  {
+   "name": "e34-s22-n1500",
+   "compilation_seed": 20,
+   "input_mode": 22,
+   "max_samples": 1500,
+   "max_shots": 3000
+  },
+  {
+   "name": "e35-s20-n1500",
+   "compilation_seed": 20,
+   "input_mode": 20,
+   "max_samples": 1500,
+   "max_shots": 3000
+  }
+ ],
+ "design": "docs/design/belenos-offcone-mechanisms-case.md",
+ "seeded_from": {
+  "case": "belenos_mesh/job-16",
+  "cases_sha256": "3cff3dec9eacb3e54b3657875507ee7f50f15bbf2bb4efe7290c838dae3d973b",
+  "use": "circuit.json byte for byte and compilation_seed 20, the identifier of mesh 29dc6ef8"
+ },
+ "preregistered": {
+  "series": "off-cone packet origin on the job-16 circuit and seed (pool row QPU-43)",
+  "mesh_variance": {
+   "kind": "anchors",
+   "anchors": 1,
+   "repeats_per_anchor": 36
+  },
+  "void": "an entry is void when its served mesh sha256 does not start with 29dc6ef8, its computed_input is not one photon on its setting's input_mode, or its recorded samples differ from its max_samples; a job whose results_list length differs from iterations is void; job-00 with fewer than 25 presences in all entries reads 'rate not reproduced' and no contrast reads",
+  "observable": "per entry, over the modes outside the cone of the entry's returned mesh and source (scripts/qd_belenos_cone.py), the presences: the off-cone modes whose one-click count is at least 32. An off-cone count from 1 to 31 is a break of the zero-or-packet law and is reported beside the presences",
+  "mechanisms": {
+   "episodes": "the photon triggers packets: presences per sample differ between the two sources, which light different detectors (source 20 reaches modes 20 and 21 on the ideal block, source 22 all four)",
+   "window_samples": "noise over a window proportional to the recorded samples at a source-independent rate: equal presences per sample for both sources and at every level",
+   "window_time": "noise over the true acquisition window, samples over physical_perf: equal for both sources, and presences per sample at 1500 samples above those at 60000 by physical_perf(60000) / physical_perf(1500) = 17.6",
+   "balancing": "the default DetectorBalancing processing makes the packets: job-01 (mitigations = []) reads none"
+  },
+  "contrasts": {
+   "mitigation": "total presences of job-01 against job-00 over their equal exposures: two-sided exact binomial test of job-01's share of the pair at 1/2, alpha 0.05",
+   "source": "presences of source 22 against source 20 within a job: two-sided exact binomial test of source 22's share at the exposure share, alpha 0.05; pooled over both jobs when the mitigation contrast does not reject",
+   "level": "presences at 1500 samples against those at 60000: two-sided exact binomial test of the 1500 share at the sample-law share, alpha 0.05, and the same test at the time-law share"
+  },
+  "readings": {
+   "balancing": "the mitigation contrast rejects with job-01's share below 1/2",
+   "episodes": "the mitigation contrast does not reject and the source contrast rejects",
+   "window_samples": "neither the mitigation nor the source contrast rejects, the sample-law share holds and the time-law share is rejected",
+   "window_time": "neither the mitigation nor the source contrast rejects, the time-law share holds and the sample-law share is rejected",
+   "no attribution": "any other pattern, a void job, or a level contrast whose two tests both hold or both reject"
+  },
+  "power": {
+   "expected_presences_per_job": 78.57,
+   "expected_presences_by_source": {
+    "20": 39.29,
+    "22": 39.29
+   },
+   "source_contrast": {
+    "null_share_of_second_source": 0.5,
+    "power_by_rate_ratio": {
+     "1.0": 0.0381,
+     "1.5": 0.4711,
+     "2.0": 0.9469,
+     "3.0": 1.0
+    }
+   },
+   "level_contrast": {
+    "levels": [
+     1500,
+     60000
+    ],
+    "expected_presences_sample_law": {
+     "1500": 2.6,
+     "10000": 10.85,
+     "60000": 65.12
+    },
+    "expected_presences_time_law": {
+     "1500": 26.4,
+     "10000": 14.67,
+     "60000": 37.5
+    },
+    "reject_sample_law_when_time_law_holds": 1.0,
+    "reject_time_law_when_sample_law_holds": 1.0,
+    "size_of_sample_law_test": 0.0314
+   },
+   "mitigation_contrast": {
+    "null_share_of_job_01": 0.5,
+    "power_by_rate_ratio_of_job_01": {
+     "0.0": 1.0,
+     "0.25": 1.0,
+     "0.5": 0.9469,
+     "1.0": 0.0414
+    }
+   }
+  },
+  "power_basis": "exact Poisson counts at 1.0853e-04 presences per sample (49 in 451,500 samples of the 58 iterated cells of docs/evidence/quandela/belenos_offcone_packets.json); retained packets of one cell co-occur across modes 0 and 5 (20 cells against 13.9 expected), so the table is an upper bound on every power entry"
+ }
+}
