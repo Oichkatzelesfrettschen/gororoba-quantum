@@ -68,7 +68,7 @@ decompositions.
      After the two steps both indices lie below 16 <= Q, so LL carries the sign to level 4. The record checks the
      whole 64 x 64 table at n = 6 to 12. Every frame row (a < 8 has alpha = 0; tau = 3Q + 8) and every index of the
      four anchor cosets has this form.
-   - **Equality with G_2 for every n >= 6 (proved; A5-640).** The four cosets with c in {0, 8, Q, Q + 8} exist at
+   - **Equality with G_2 for every n >= 6 (proved; A5-642).** The four cosets with c in {0, 8, Q, Q + 8} exist at
      every n >= 6, and by the block-sign lemma their tables do not depend on n. The record checks this at n = 6 to 12. At n = 6 they are the only cosets, and their intersection is 14, all
      rotations. So for every n >= 6, G_2 lies inside the covariance algebra, which lies inside the intersection of
      these four cosets' algebras, which is G_2. No statement about the other cosets is needed. At n = 7 to 10 the
