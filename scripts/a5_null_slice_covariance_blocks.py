@@ -1,4 +1,4 @@
-"""Covariance algebras of the A_5 and A_6 null slices by XOR-block decomposition, and their G_2 identifications.
+"""Covariance algebras of the A_5 null slice and of the octonion-space slices by XOR blocks and by cosets.
 
 For a slice with frame F = (space..., tau) of the Cayley-Dickson algebra of dimension D, the covariance system asks for
 matrices X, Y and a generator w of so(|F| - 1, 1) with X L_y + L_y Y = L_(w y) for every y in the span of F. With
@@ -13,9 +13,17 @@ This record checks, exactly over Q:
 - calibration: on the A_5 slice (space 1, 3, 4, 5, 6, 7; time 26) the method returns 8, 8, 0 for all generators,
   rotations and boosts, the values the dense 7168-row system of a5-null-slice-boost-algebra records (A5-615);
 - on the octonion-space slices of A_6 (space 1..7, time 56; the dense system has 32768 x 8220 entries) and of A_7
-  (time 104) the covariant generators span 14 dimensions, all rotations, no boost;
+  (time 104) and A_8 (time 200) the covariant generators span 14 dimensions, all rotations, no boost;
 - that space equals the derivation algebra of the octonions (G_2) in so(7), and the A_5 space equals the stabilizer
-  of e_2 in G_2 restricted to the A_5 frame (su(3)).
+  of e_2 in G_2 restricted to the A_5 frame (su(3));
+- on V = span(e_0..e_7, e_(tau ^ 0)..e_(tau ^ 7)), invariant under the eight frame tables, the restricted system
+  admits all 21 rotations and no boost, and its tables are the same at every level n = 6 to 12, so no level n >= 6
+  admits a boost;
+- the covariance algebra is the intersection over the cosets c ^ G of G = {0..7} u (tau ^ {0..7}); at n = 6 to 10
+  the intersection is 14-dimensional, all rotations, and the cosets carry 7 sign types, the same set from n = 7 on;
+- the four cosets with c in {0, 8, Q, Q + 8} have the same tables at every n = 6 to 12, and their intersection is 14,
+  which with the README argument gives G_2 for every n >= 6; the signs s_n(alpha Q + u, beta Q + v), alpha and beta in
+  0..3, u and v below 16, which cover the frame rows and every anchor-coset index, agree at n = 6 to 12.
 
 Blocks run through parallel.ordered_map. No random draw enters.
 """
@@ -23,6 +31,7 @@ Blocks run through parallel.ordered_map. No random draw enters.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from itertools import combinations
@@ -43,6 +52,7 @@ SLICES: dict[str, tuple[int, tuple[int, ...], int]] = {
     "A5": (32, (1, 3, 4, 5, 6, 7), 26),
     "A6": (64, (1, 2, 3, 4, 5, 6, 7), 56),
     "A7": (128, (1, 2, 3, 4, 5, 6, 7), 104),
+    "A8": (256, (1, 2, 3, 4, 5, 6, 7), 200),
 }
 OCTONION = 8
 
@@ -228,6 +238,195 @@ def tied_dimension(name: str) -> int:
     return count - rank(rows) if rows else count
 
 
+RESTRICTED_LEVELS: tuple[int, ...] = tuple(range(6, 13))
+
+
+def octonion_slice_time(level: int) -> int:
+    return (1 << (level - 1)) + (1 << (level - 2)) + 8
+
+
+def restricted_tables(level: int) -> list[list[list[int]]]:
+    """The eight frame tables L_a (a = 1..7, tau) on V = span(e_0..e_7, e_(tau ^ 0)..e_(tau ^ 7)), local index j or
+    8 + j."""
+    tau = octonion_slice_time(level)
+    dimension = 1 << level
+    local = [*range(8), *(tau ^ j for j in range(8))]
+    position = {index: i for i, index in enumerate(local)}
+    signs = sign_rows(dimension, [*range(1, 8), tau])
+    out = []
+    for row, a in enumerate([*range(1, 8), tau]):
+        matrix = [[0] * 16 for _ in range(16)]
+        for c in local:
+            matrix[position[a ^ c]][position[c]] = int(signs[row, c])
+        out.append(matrix)
+    return out
+
+
+def restricted_covariance(tables: list[list[list[int]]]) -> dict[str, int]:
+    """Covariant dimensions of X L_y + L_y Y = L_(w y) on the 16-dimensional V: all generators, rotations, boosts."""
+    size = 16
+    frame_size = len(tables)
+    gens = generators(tuple(range(frame_size)))
+    rows = []
+    for position, table in enumerate(tables):
+        for r in range(size):
+            for c in range(size):
+                row = [0] * (2 * size * size + len(gens))
+                for k in range(size):
+                    if table[k][c]:
+                        row[r * size + k] += table[k][c]
+                    if table[r][k]:
+                        row[size * size + k * size + c] += table[r][k]
+                for g, generator in enumerate(gens):
+                    row[2 * size * size + g] = -sum(
+                        generator_weight(generator, other, position) * tables[other][r][c]
+                        for other in range(frame_size)
+                    )
+                rows.append(row)
+    plain = 2 * size * size
+    rank_plain = rank([row[:plain] for row in rows])
+
+    def dimension(columns: list[int]) -> int:
+        chosen = [row[:plain] + [row[plain + g] for g in columns] for row in rows]
+        return (plain + len(columns) - rank(chosen)) - (plain - rank_plain)
+
+    rotations = [g for g, (_a, _b, boost) in enumerate(gens) if not boost]
+    boosts = [g for g, (_a, _b, boost) in enumerate(gens) if boost]
+    return {"all": dimension(list(range(len(gens)))), "rotations": dimension(rotations), "boosts": dimension(boosts)}
+
+
+COSET_LEVELS: tuple[int, ...] = tuple(range(6, 11))
+
+
+def coset_tables(level: int, representatives: tuple[int, ...] | None = None) -> dict[Any, list[list[list[int]]]]:
+    """Distinct local sign tables of the cosets c ^ G of G = {0..7} u (tau ^ {0..7}) under the eight frame tables,
+    keyed by the tables themselves; representatives restricts to the cosets of the named c."""
+    tau = octonion_slice_time(level)
+    dimension = 1 << level
+    group = [*range(8), *(tau ^ j for j in range(8))]
+    frame = [*range(1, 8), tau]
+    signs = sign_rows(dimension, frame)
+    seen: set[int] = set()
+    types: dict[Any, list[list[list[int]]]] = {}
+    for c in range(dimension) if representatives is None else representatives:
+        if c in seen:
+            continue
+        members = [c ^ g for g in group]
+        seen.update(members)
+        position = {m: i for i, m in enumerate(members)}
+        tables = []
+        for row, a in enumerate(frame):
+            matrix = [[0] * 16 for _ in range(16)]
+            for x in members:
+                matrix[position[a ^ x]][position[x]] = int(signs[row, x])
+            tables.append(matrix)
+        types.setdefault(tuple(tuple(tuple(r) for r in m) for m in tables), tables)
+    return types
+
+
+def anchor_representatives(level: int) -> tuple[int, ...]:
+    """c in {0, 8, Q, Q + 8}, Q = 2^(level-2): four cosets present at every level >= 6."""
+    q = 1 << (level - 2)
+    return (0, 8, q, q + 8)
+
+
+def intersection(rows: list[list[int]]) -> dict[str, int]:
+    gens = generators(tuple(range(8)))
+    rotations = [g for g, (_a, _b, boost) in enumerate(gens) if not boost]
+    boosts = [g for g, (_a, _b, boost) in enumerate(gens) if boost]
+    return {
+        "all": len(solution_space(rows, list(range(len(gens))))),
+        "rotations": len(solution_space(rows, rotations)),
+        "boosts": len(solution_space(rows, boosts)),
+    }
+
+
+def block_sign_table(level: int) -> list[list[int]]:
+    """s_level(alpha Q + u, beta Q + v) for alpha, beta in 0..3 and u, v < 16, Q = 2^(level-2): every frame row and
+    every index of the four anchor cosets has this form."""
+    q = 1 << (level - 2)
+    indices = [alpha * q + u for alpha in range(4) for u in range(16)]
+    signs = sign_rows(1 << level, indices)
+    return [[int(signs[i, beta * q + v]) for beta in range(4) for v in range(16)] for i in range(len(indices))]
+
+
+def coset_section() -> dict[str, Any]:
+    """Coset decompositions of levels 6 to 10 and the anchor cosets, with every distinct type's constraints computed
+    once through one flat pool."""
+    per_level = {level: coset_tables(level) for level in COSET_LEVELS}
+    anchors = coset_tables(6, anchor_representatives(6))
+    unique: dict[Any, list[list[list[int]]]] = {}
+    for types in (*per_level.values(), anchors):
+        unique.update(types)
+    keys = list(unique)
+    solved = parallel.ordered_map(table_constraints, [unique[k] for k in keys], min_items=1)
+    constraint_rows = dict(zip(keys, solved, strict=True))
+    cosets = []
+    for level, types in per_level.items():
+        rows = [row for key in types for row in constraint_rows[key]]
+        cosets.append(
+            {
+                "level": level,
+                "cosets": (1 << level) // 16,
+                "types": len(types),
+                "type_keys": sorted(hash_key(key) for key in types),
+                **intersection(rows),
+            }
+        )
+    anchor_rows = [row for key in anchors for row in constraint_rows[key]]
+    reference = coset_tables(6, anchor_representatives(6))
+    return {
+        "cosets": cosets,
+        "anchor_cosets": {
+            "intersection_at_level_6": intersection(anchor_rows),
+            "tables_equal_to_level_6": [
+                level
+                for level in RESTRICTED_LEVELS
+                if list(coset_tables(level, anchor_representatives(level))) == list(reference)
+            ],
+        },
+        "block_signs_equal_to_level_6": [
+            level for level in RESTRICTED_LEVELS if block_sign_table(level) == block_sign_table(6)
+        ],
+    }
+
+
+def hash_key(key: Any) -> str:
+    return hashlib.sha256(repr(key).encode()).hexdigest()[:16]
+
+
+def table_constraints(tables: list[list[list[int]]]) -> list[list[int]]:
+    """Constraint rows on the generators from the left kernel of the 16-dimensional system of one coset."""
+    size = 16
+    gens = generators(tuple(range(len(tables))))
+    plain = []
+    coupled = []
+    for position, table in enumerate(tables):
+        for r in range(size):
+            for c in range(size):
+                row = [0] * (2 * size * size)
+                for k in range(size):
+                    if table[k][c]:
+                        row[r * size + k] += table[k][c]
+                    if table[r][k]:
+                        row[size * size + k * size + c] += table[r][k]
+                plain.append(row)
+                coupled.append(
+                    [
+                        -sum(generator_weight(g, other, position) * tables[other][r][c] for other in range(len(tables)))
+                        for g in gens
+                    ]
+                )
+    kernel, nullity = fmpz_mat(plain).transpose().nullspace()
+    out = []
+    for j in range(nullity):
+        vector = [int(kernel[i, j]) for i in range(len(plain))]
+        constraint = [sum(v * coupled[i][g] for i, v in enumerate(vector) if v) for g in range(len(gens))]
+        if any(constraint):
+            out.append(constraint)
+    return out
+
+
 def identification(name: str, basis: list[list[int]], reference: list[list[int]]) -> dict[str, int]:
     mapped = [frame_coordinates(name, d) for d in reference]
     return {"covariant": rank(basis), "reference": rank(mapped), "union": rank(basis + mapped)}
@@ -242,7 +441,15 @@ def compute() -> dict[str, Any]:
         "octonion_derivations": len(derivations),
         "a6_against_g2": identification("A6", slices["A6"]["basis"], derivations),
         "a7_against_g2": identification("A7", slices["A7"]["basis"], derivations),
-        "derivation_type": {name: tied_dimension(name) for name in ("A6", "A7")},
+        "a8_against_g2": identification("A8", slices["A8"]["basis"], derivations),
+        "derivation_type": {name: tied_dimension(name) for name in ("A6", "A7", "A8")},
+        "restricted": {
+            "covariance": restricted_covariance(restricted_tables(6)),
+            "tables_equal_to_level_6": [
+                level for level in RESTRICTED_LEVELS if restricted_tables(level) == restricted_tables(6)
+            ],
+        },
+        **coset_section(),
         "a5_against_e2_stabilizer": identification("A5", slices["A5"]["basis"], stabilizer(derivations, 2)),
     }
 
@@ -256,7 +463,27 @@ def validate(result: dict[str, Any]) -> None:
     require((a5["constraint_rows"], a5["constraint_rank"]) == (344, 13), f"A5 constraints {a5}")
     require((a6["constraint_rows"], a6["constraint_rank"]) == (652, 14), f"A6 constraints {a6}")
     require(result["a7_against_g2"] == {"covariant": 14, "reference": 14, "union": 14}, "A7 space is not G_2")
-    require(result["derivation_type"] == {"A6": 14, "A7": 14}, f"derivation-type system {result['derivation_type']}")
+    a8 = result["slices"]["A8"]
+    require((a8["generators"], a8["all"], a8["rotations"], a8["boosts"]) == (28, 14, 14, 0), f"A8 covariance {a8}")
+    require(result["a8_against_g2"] == {"covariant": 14, "reference": 14, "union": 14}, "A8 space is not G_2")
+    for name, counts in (("A7", (1100, 14)), ("A8", (1996, 14))):
+        row = result["slices"][name]
+        require((row["constraint_rows"], row["constraint_rank"]) == counts, f"{name} constraints {row}")
+    restricted = result["restricted"]
+    require(restricted["covariance"] == {"all": 21, "rotations": 21, "boosts": 0}, f"restricted {restricted}")
+    cosets = result["cosets"]
+    require([row["level"] for row in cosets] == list(COSET_LEVELS), "coset levels")
+    for row in cosets:
+        require((row["all"], row["rotations"], row["boosts"]) == (14, 14, 0), f"coset intersection {row}")
+    require([row["types"] for row in cosets] == [4, 7, 7, 7, 7], "coset type counts")
+    require(all(row["type_keys"] == cosets[1]["type_keys"] for row in cosets[1:]), "coset types change after n = 7")
+    anchor = result["anchor_cosets"]
+    require(anchor["intersection_at_level_6"] == {"all": 14, "rotations": 14, "boosts": 0}, f"anchor cosets {anchor}")
+    require(anchor["tables_equal_to_level_6"] == list(RESTRICTED_LEVELS), "anchor coset tables depend on the level")
+    require(restricted["tables_equal_to_level_6"] == list(RESTRICTED_LEVELS), "restricted tables depend on the level")
+    require(result["block_signs_equal_to_level_6"] == list(RESTRICTED_LEVELS), "block signs depend on the level")
+    expected_tied = {"A6": 14, "A7": 14, "A8": 14}
+    require(result["derivation_type"] == expected_tied, f"derivation-type system {result['derivation_type']}")
     require(result["octonion_derivations"] == 14, "octonion derivations")
     require(result["a6_against_g2"] == {"covariant": 14, "reference": 14, "union": 14}, "A6 space is not G_2")
     require(result["a5_against_e2_stabilizer"] == {"covariant": 8, "reference": 8, "union": 8}, "A5 space is not su(3)")
@@ -277,6 +504,11 @@ def self_test() -> None:
     e2 = identification("A5", basis, stabilizer(derivations, 2))
     e3 = identification("A5", basis, stabilizer(derivations, 3))
     control(e2["union"] == e2["covariant"] == 8, e3["union"] == e3["covariant"], "stabilized unit")
+    anchors = coset_tables(6, anchor_representatives(6))
+    zero = coset_tables(6, (0,))
+    four = intersection([row for tables in anchors.values() for row in table_constraints(tables)])
+    one = intersection([row for tables in zero.values() for row in table_constraints(tables)])
+    control(four["all"] == 14, one["all"] == 14, "anchor cosets against V alone")
 
 
 def main() -> int:
@@ -288,7 +520,7 @@ def main() -> int:
     args = parser.parse_args()
     if args.self_test:
         self_test()
-        print("self-test: 3 paired controls pass")
+        print("self-test: 4 paired controls pass")
         return 0
     result = compute()
     validate(result)

@@ -4945,7 +4945,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/a5_null_slice_covariance_blocks.py --check docs/evidence/a5-null-slice-covariance/result.json",
       "name": "core-a5-null-slice-covariance",
-      "seconds": 30.0,
+      "seconds": 400.0,
       "workers": "all",
       "replays": [
         "docs/evidence/a5-null-slice-covariance/result.json"
