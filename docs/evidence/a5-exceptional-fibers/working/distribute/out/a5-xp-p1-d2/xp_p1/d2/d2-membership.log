@@ -1,0 +1,13 @@
+RESULT generators 15
+RESULT targets 120
+RESULT products_ms 137
+RESULT membership_failures 0
+RESULT membership_ms 930
+
+--- stderr ---
+Running as unit: run-p2214953-i10611458.service; invocation ID: f89f75ffe2624369a4ab0eb54b034f87
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 1.106s
+             CPU time consumed: 1.081s
+                   Memory peak: 27.1M (swap: 0B)

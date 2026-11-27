@@ -193,8 +193,8 @@ pullback, a residual of a different dimension, or any disagreement between the t
 
 ## Germ ideals and three quadric schemes, probed exactly
 
-`quadric_and_germ_probes.py` writes `quadric-and-germ-probes.json` (21 rows, Singular 4.4.1 in dp, under a minute
-on a 6-core desktop). Its `check()` compares every field of a record with the expected value, row by row:
+`quadric_and_germ_probes.py` writes `quadric-and-germ-probes.json` (34 rows, Singular 4.4.1 in dp, 6 s on
+the 32-thread compute workstation). Its `check()` compares every field of a record with the expected value, row by row:
 
 - `germ-prime`, 12 rows: the germ ideal J of X- -> N-, E8-bar -> VB, Iso -> N-, W8 -> N-, E8-bar -> N+ and
   E8-bar -> N- at 32009 (`working/runs/k2struct/`, `working/build/inputs/p32009-r10754/e8-nm.sing`) and at 32029
@@ -204,17 +204,25 @@ on a 6-core desktop). Its `check()` compares every field of a record with the ex
 - `vb-components`, 2 rows: each minimal prime of the quadric ideal of E8-bar -> VB has a reduced section by three
   linear forms with an F_p-point, so it is absolutely prime; the two components meet in one reduced plane, and
   HF(k[y]/K2, d) = 7 C(d + 2, 3) + C(d + 2, 2) for d = 1..7 (A5-020).
-- `x-colon`, 3 rows: for same-sign X the minimal prime P is absolutely prime by the same section test, K2 : P is
+- `x-colon`, 4 rows (X- -> N- and X+ -> N+ at both primes): for same-sign X the minimal prime P is absolutely prime by the same section test, K2 : P is
   the ideal of the embedded plane, K2 : (K2 : P) = P, and the first Hilbert numerators satisfy
   N_K2 - N_P = N_A - (1 - t)^15, so dim (P / K2)_d = C(d + 2, 2) for every d >= 1 (A5-022, A5-544).
 - `e8-colon`, 4 rows: for E8-bar -> N- and N+ at both primes the radical R is K2 plus five linear forms of square
   zero, K2 : R is a prime of dimension 4 and multiplicity 2, K2 : (K2 : R) = R, and
   N_K2 - N_R = N_A - (1 - t)^21, so R / K2 has the Hilbert function 5, 14, 30, 55, 91, 140, 204, ... of the
   irrelevant ideal of a quadric threefold cone in every degree (A5-547).
+- `module-map`, 8 rows: on each X and E8-bar relation file the linear system for a map from the coordinates of
+  k[y] / A to the nilpotent linear forms, compatible with the Koszul relations and with the Euler relation of the
+  quadric of A, has a one-dimensional solution space spanned by an invertible map, and the sign-flipped control
+  system has the zero solution alone. With R = K2 + N and the numerator identities above, the nilradical module is
+  isomorphic to the irrelevant ideal of k[y] / A as a graded module (A5-638).
+- `e8-primes`, 4 rows: the radical of the E8-bar quadric ideal has two minimal primes, of dimension 5 and degree 11
+  with 9 linear forms and of dimension 4 and degree 4 with 14, and each has a reduced linear section with an
+  F_p-point at both primes and both basepoints, so each is absolutely prime (A5-639).
 
 ## Where the embedded plane of same-sign X sits in the Pluecker space
 
-`embedded_plane_images.py` writes `embedded-plane-images.json` (5 rows, exact arithmetic, under a second) from the
+`embedded_plane_images.py` writes `embedded-plane-images.json` (6 rows, exact arithmetic, under a second) from the
 embedding matrices of the [nullity-16 Rees record](../../a5-kernel-attachments/README.md) and the 12 forms above:
 
 - over Q(i), at N- and at N+, the embedding matrices of the same-sign and of the opposite-sign X incidence have

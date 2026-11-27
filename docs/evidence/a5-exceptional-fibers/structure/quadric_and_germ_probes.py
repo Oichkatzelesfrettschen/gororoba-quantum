@@ -1,6 +1,6 @@
 """Exact probes of the germ ideals and of three quadric schemes of the fiber track.
 
-Three kinds of row, each one Singular run in the global ordering dp on retained inputs:
+Six kinds of row, each one Singular run in the global ordering dp on retained inputs:
 
 - `germ-prime`: the germ ideal J and the generators G of a retained input, a p = 32009 text
   (`working/runs/k2struct/<name>_J.sing`, `working/build/inputs/p32009-r10754/e8-nm.sing`) or the canonical p = 32029
@@ -22,6 +22,19 @@ Three kinds of row, each one Singular run in the global ordering dp on retained 
   forms N of R, whether R = K2 + N and N^2 lies in K2, the dimension, multiplicity and primality of A, whether
   K2 : A = R, and the first Hilbert numerators; N_K2 - N_R = N_A - (1 - t)^21 states
   dim (R / K2)_d = dim (k[y] / A)_d for every d >= 1.
+
+- `module-map`: for same-sign X and E8-bar -> N+-, with R the radical of K2, N its g linear forms, A = K2 : R and
+  B = k[y] / A, whose g coordinates are the variables that the linear forms of A leave free. The row solves the
+  linear system for a k-linear map theta from the coordinates of B to the span of N that makes
+  x_j theta(x_k) - x_k theta(x_j) lie in K2 for every pair and, where A holds a quadric q, sends
+  sum_j (dq/dx_j) theta(x_j) into K2. Those are the images of the generating syzygies of the irrelevant ideal m of B
+  (the Koszul relations, and the Euler relation of q), so a solution extends to a B-linear map m -> R / K2; it is
+  onto when theta is invertible and R = K2 + N, and then an isomorphism, since the two modules have one Hilbert
+  function (the numerator identities of the colon rows). The row records the dimension of the solution space, the
+  solution normalized at its free coordinate, whether its determinant is nonzero, and the solution count of the
+  control system with x_j theta(x_k) + x_k theta(x_j), which only theta = 0 solves.
+- `e8-primes`: the two minimal primes of the radical of K2 of E8-bar -> N+-, each with its sections by linear forms
+  at the four bases (absolute primality as for `vb-components`).
 
 No random source enters: the linear forms are fixed by their base. check() compares every field of a record with the
 expected value, row by row in the order of the job list, so a missing, relabeled or altered row is reported, and
@@ -77,6 +90,7 @@ XS: list[tuple[str, int, str]] = [
     ("X- -> N-", 32009, "distribute/out/a5-xm-d4/xm_p1/d2/relations-upto-d2.rel"),
     ("X- -> N-", P2, "distribute/out/a5-p2-small/xm_p2/d2/relations-upto-d2.rel"),
     ("X+ -> N+", P2, "distribute/out/a5-p2-small/xp_p2/d2/relations-upto-d2.rel"),
+    ("X+ -> N+", 32009, "distribute/out/a5-xp-p1-d2/xp_p1/d2/relations-upto-d2.rel"),
 ]
 E8S: list[tuple[str, int, str]] = [
     ("E8-bar -> N-", 32009, "distribute/out/a5-e8-d2/e8nm_p1/d2/relations-upto-d2.rel"),
@@ -85,6 +99,11 @@ E8S: list[tuple[str, int, str]] = [
     ("E8-bar -> N+", P2, "distribute/out/a5-e8-d2/e8np_p2/d2/relations-upto-d2.rel"),
 ]
 BASES = (2, 3, 4, 5)
+# (fiber, prime, relation file, number of variables, number of nilpotent linear forms, Singular expression of R)
+MAPS: list[tuple[str, int, str, int, int, str]] = [
+    *((fiber, p, rel, 15, 3, "minAssChar(sK)[1]") for fiber, p, rel in XS),
+    *((fiber, p, rel, 21, 5, "radical(sK)") for fiber, p, rel in E8S),
+]
 
 GERM_SING = """LIB "primdec.lib";
 ring r={p},({ring}),dp; number I={root};
@@ -151,6 +170,64 @@ ideal A=std(quotient(sK,R)); list M=minAssChar(A);
 "RESULT colon",dim(A),mult(A),size(A),size(simplify(jet(A,1),2)),size(reduce(std(radical(A)),A))==0,size(M);
 ideal B=std(quotient(sK,A)); "RESULT bicolon",size(reduce(B,R))==0 && size(reduce(R,B))==0;
 "RESULT numK",hilb(sK,1); "RESULT numR",hilb(R,1); "RESULT numA",hilb(A,1);
+quit;
+"""
+
+
+MAP_SING = """LIB "primdec.lib"; LIB "matrix.lib";
+ring r0=@P@,(y(1..@N@)),dp;
+execute("ideal K="+read("@REL@")+";");
+ideal sK=std(K); ideal R=std(@RAD@);
+ideal N=simplify(jet(R,1),2); int g=size(N);
+ideal KN=std(sK+N);
+"RESULT generation",g,size(reduce(R,KN))==0 && size(reduce(KN,R))==0;
+ideal A=std(quotient(sK,R)); ideal Al=std(simplify(jet(A,1),2));
+ideal F; int i; int j; int k; int c;
+for(i=1;i<=@N@;i++){ if(reduce(y(i),Al)==y(i)){ F[size(F)+1]=y(i); } }
+ideal Aq=simplify(reduce(A,Al),2);
+"RESULT cone",size(F),size(Al),size(Aq);
+if(size(F)!=@G@ || g!=@G@){ "RESULT abort 1"; quit; }
+ring r1=@P@,(y(1..@N@),t(1..@GG@)),(dp(@N@),dp(@GG@));
+ideal sK=std(imap(r0,sK)); ideal N=imap(r0,N); ideal F=imap(r0,F); ideal Aq=imap(r0,Aq);
+int g=@G@; int i; int j; int k; int c; int sg;
+poly ymon=1; for(i=1;i<=@N@;i++){ ymon=ymon*y(i); }
+ideal TH; poly s; poly e;
+for(j=1;j<=g;j++){ s=0; for(i=1;i<=g;i++){ s=s+t((j-1)*g+i)*N[i]; } TH[j]=s; }
+proc collect(poly e, poly ymon)
+{ ideal T; int c; if(e!=0){ matrix C=coef(e,ymon); for(c=1;c<=ncols(C);c++){ T[size(T)+1]=C[2,c]; } } return(T); }
+for(sg=-1;sg<=1;sg=sg+2){
+  ideal T;
+  for(j=1;j<=g;j++){ for(k=j+1;k<=g;k++){ T=T+collect(reduce(F[j]*TH[k]+sg*F[k]*TH[j],sK),ymon); } }
+  for(c=1;c<=size(Aq);c++){ e=0; for(j=1;j<=g;j++){ e=e+diff(Aq[c],F[j])*TH[j]; } T=T+collect(reduce(e,sK),ymon); }
+  ideal sT=std(T);
+  if(sg==1){ "RESULT control_solutions",g*g-size(sT); }
+  if(sg==-1){
+    "RESULT solutions",g*g-size(sT);
+    if(g*g-size(sT)==1){
+      int fr=0; for(i=1;i<=g*g;i++){ if(reduce(t(i),sT)==t(i)){ fr=i; } }
+      matrix M[g][g]; for(j=1;j<=g;j++){ for(i=1;i<=g;i++){ M[j,i]=subst(reduce(t((j-1)*g+i),sT),t(fr),1); } }
+      "RESULT det_nonzero",det(M)!=0;
+      for(j=1;j<=g;j++){ s=0; for(i=1;i<=g;i++){ s=s+M[j,i]*N[i]; } "RESULT image",F[j],s; }
+    }
+  }
+  kill T; kill sT;
+}
+quit;
+"""
+
+E8P_SING = """LIB "primdec.lib";
+proc orbits(ideal P, int n, int off, int p)
+{ ideal sP=std(P); int a=dim(sP)-1; ideal Lf; int i; int j; int c; poly g;
+  for(i=1;i<=a;i++){g=0;c=1; for(j=1;j<=n;j++){c=(c*(i+off)) mod p; g=g+((c+17*j*i) mod p)*var(j);} Lf[i]=g;}
+  ideal Q=std(P+Lf); list M=minAssGTZ(Q); int s; string out="";
+  for(s=1;s<=size(M);s++){ out=out+" "+string(vdim(std(M[s]+ideal(var(n)-1)))); }
+  return(string(dim(Q)-1)+" "+string(mult(Q))+" "+string(size(reduce(radical(Q),Q))==0)+out); }
+ring r=@P@,(y(1..21)),dp;
+execute("ideal K="+read("@REL@")+";");
+ideal sK=std(K); ideal R=std(radical(sK)); list P=minAssChar(R); int s; int off;
+"RESULT primes",size(P);
+for(s=1;s<=size(P);s++){ "RESULT component",s,dim(std(P[s]))-1,mult(std(P[s])),size(simplify(jet(std(P[s]),1),2));
+  for(off=2;off<=5;off++){ "RESULT section",s,off,orbits(P[s],21,off,@P@); } }
 quit;
 """
 
@@ -258,6 +335,40 @@ def e8_colon(item: tuple[str, int, str]) -> dict[str, Any]:
     return rec
 
 
+def fill(template: str, **values: object) -> str:
+    """The template with each @NAME@ token replaced; Singular braces stay literal."""
+    for name, value in values.items():
+        template = template.replace(f"@{name}@", str(value))
+    return template
+
+
+def module_map(item: tuple[str, int, str, int, int, str]) -> dict[str, Any]:
+    fiber, p, rel, n, g, radical = item
+    rec: dict[str, Any] = {"check": "module-map", "fiber": fiber, "prime": p, "relations": rel, "images": []}
+    for f in singular(fill(MAP_SING, P=p, N=n, G=g, GG=g * g, REL=W / rel, RAD=radical)):
+        if f[0] == "image":
+            rec["images"].append([f[1], "".join(f[2:])])
+        else:
+            rec[f[0]] = [int(x) for x in f[1:]]
+    return rec
+
+
+def e8_primes(item: tuple[str, int, str]) -> dict[str, Any]:
+    fiber, p, rel = item
+    rec: dict[str, Any] = {"check": "e8-primes", "fiber": fiber, "prime": p, "relations": rel, "components": []}
+    for f in singular(fill(E8P_SING, P=p, REL=W / rel)):
+        v = [int(x) for x in f[1:]]
+        if f[0] == "primes":
+            rec["primes"] = v[0]
+        elif f[0] == "component":
+            rec["components"].append({"projdim": v[1], "degree": v[2], "linear": v[3], "sections": {}})
+        elif f[0] == "section":
+            rec["components"][v[0] - 1]["sections"][str(v[1])] = {
+                "projdim": v[2], "degree": v[3], "reduced": v[4] == 1, "orbits": sorted(v[5:])
+            }  # fmt: skip
+    return rec
+
+
 def run(job: tuple[str, Any]) -> dict[str, Any]:
     kind, item = job
     if kind == "germ-prime":
@@ -266,6 +377,10 @@ def run(job: tuple[str, Any]) -> dict[str, Any]:
         return vb_components(item)
     if kind == "e8-colon":
         return e8_colon(item)
+    if kind == "module-map":
+        return module_map(item)
+    if kind == "e8-primes":
+        return e8_primes(item)
     return x_colon(item)
 
 
@@ -350,6 +465,27 @@ def section_problems(sections: Any, degree: int) -> list[str]:
     return bad
 
 
+# The coefficient that the normalized module map carries at each prime.
+MAP_COEFFICIENT = {32009: 10501, 32029: 13799}
+
+
+def expected_map(item: tuple[str, int, str, int, int, str]) -> dict[str, Any]:
+    fiber, p, rel, _, g, _ = item
+    c = MAP_COEFFICIENT[p]
+    if g == 3:
+        first = "2*y(6)" if fiber == "X- -> N-" else "-2*y(6)"
+        images = [["y(4)", first], ["y(10)", f"-{c}*y(5)"], ["y(15)", "y(1)"]]
+        cone = [3, 12, 0]
+    else:
+        images = [["y(13)", f"-{c}*y(7)-2*y(12)"], ["y(15)", "-2*y(6)"], ["y(16)", f"{c}*y(14)"]]
+        images += [["y(18)", "2*y(12)"], ["y(21)", "y(4)"]]
+        cone = [5, 16, 1]
+    return {
+        "check": "module-map", "fiber": fiber, "prime": p, "relations": rel, "images": images, "generation": [g, 1],
+        "cone": cone, "solutions": [1], "det_nonzero": [1], "control_solutions": [0],
+    }  # fmt: skip
+
+
 def expected_germ(item: tuple[str, int, str, str | None, int | None]) -> dict[str, Any]:
     fiber, p, source_path, legacy, pivot = item
     gens, dim, generators = GERM_TABLE[fiber][3:]
@@ -370,7 +506,7 @@ def check(rows: list[dict[str, Any]]) -> list[str]:
     Rows are compared in the order of the job list. A germ row equals its expected row field for field; a component
     or colon row carries its identity, its fixed values and the section condition.
     """
-    total = len(GERMS) + len(VB) + len(XS) + len(E8S)
+    total = len(GERMS) + len(VB) + len(XS) + 2 * len(E8S) + len(MAPS)
     if len(rows) != total:
         return [f"{len(rows)} rows, expected {total}"]
     bad: list[str] = []
@@ -410,6 +546,24 @@ def check(rows: list[dict[str, Any]]) -> list[str]:
             bad.append(f"{tag}: the row differs from R = K2 + N, N^2 in K2, K2 : R a prime quadric cone, K2 : A = R")
         elif not numerator_identity(r, "numR", 21) or hilbert_function(r["numK"], 21, range(1, 8)) != HF_E8:
             bad.append(f"{tag}: N_K2 - N_R differs from N_A - (1 - t)^21, or N_K2 from the retained Hilbert function")
+    colons = len(GERMS) + len(VB) + len(XS) + len(E8S)
+    for r, map_item in zip(rows[colons:], MAPS, strict=False):
+        if r != expected_map(map_item):
+            bad.append(
+                f"module-map {map_item[0]} {map_item[1]}: the row differs from one invertible map and an empty control"
+            )
+    for r, (fiber, p, rel) in zip(rows[colons + len(MAPS) :], E8S, strict=False):
+        tag = f"e8-primes {fiber} {p}"
+        identity = {"check": "e8-primes", "fiber": fiber, "prime": p, "relations": rel, "primes": 2}
+        if {k: r.get(k) for k in identity} != identity or set(r) != {*identity, "components"}:
+            bad.append(f"{tag}: identity or fields")
+            continue
+        shape = [(c.get("projdim"), c.get("degree"), c.get("linear")) for c in r["components"]]
+        if shape != [(4, 11, 9), (3, 4, 14)]:
+            bad.append(f"{tag}: components")
+            continue
+        for c in r["components"]:
+            bad += [f"{tag}: degree-{c['degree']} prime: {x}" for x in section_problems(c.get("sections"), c["degree"])]
     for r, (fiber, p, rel) in zip(rows[len(GERMS) + len(VB) :], XS, strict=False):
         tag = f"x-colon {fiber} {p}"
         sign = "-" if fiber == "X- -> N-" else "+"
@@ -439,6 +593,7 @@ def main() -> int:
 
     jobs: list[tuple[str, Any]] = [("germ-prime", g) for g in GERMS]
     jobs += [("vb-components", v) for v in VB] + [("x-colon", x) for x in XS] + [("e8-colon", e) for e in E8S]
+    jobs += [("module-map", m) for m in MAPS] + [("e8-primes", e) for e in E8S]
     rows = parallel.ordered_map(run, jobs, min_items=1)
     Path(sys.argv[1]).write_text("[\n" + ",\n".join(json.dumps(r) for r in rows) + "\n]\n")
     problems = check(rows)
