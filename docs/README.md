@@ -646,6 +646,7 @@ differs from it only in the `cd_core.py` digest.
 | [tuna17-interleaved-characterization-2026-11-20.md](notes/quantum_inspire/tuna17-interleaved-characterization-2026-11-20.md) | Tuna-17 interleaved characterization of 2026-11-20 (30 batches): the pooled T1 tail verdict and why the replicate check zeroes it, 29 of 98 flagged crosstalk contrasts, the q1/q2 pair, the falsified q12 phase prediction and the post-hoc round split |
 | [tuna17-interleaved-submit-gate.md](notes/quantum_inspire/tuna17-interleaved-submit-gate.md) | Tuna-17 interleaved characterization: the submit gate after 2026-11-21 (own queue empty, device idle or executing), the batch that prompted it and the records under the new rule; amends the approved case without changing its CASE.md |
 | [quandela/literature.md](notes/quandela/literature.md) | published methods for characterizing a Belenos-class mesh |
+| [quandela/platform-surface.md](notes/quandela/platform-surface.md) | fields the live Quandela server presents per platform on 2026-11-27, those absent or changed against the retained catalogue with dates and the runner paths that fail closed on them, and the `scripts/qd_surface.py diff` watch |
 | [quandela/quickstart.md](notes/quandela/quickstart.md) | Quandela Cloud quick start |
 | [quandela/roadmap-2026-03.md](notes/quandela/roadmap-2026-03.md) | Quandela March 2026 roadmap and the Welinq interconnect announcement: networking and modular-system statements with page and target year |
 | [iqm/python-stack.md](notes/iqm/python-stack.md) | Python stack for IQM Resonance |
