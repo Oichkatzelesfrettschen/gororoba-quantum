@@ -34,4 +34,10 @@ Pull request 1022, branch `a5-octonion-slice-covariance-a8`. Reviewers, as the o
 | The new sections had no bounded test or paired control | a level-6 test and a control (four anchor cosets give 14, V alone does not) |
 | "What is new" said the extension to A_n was not established | it points at statement 5 and names the Schafer and McCrimmon derivation results as unopened leads (a zbMATH review was read) |
 
+## Hosted checks
+
+The `tests (scripts)` and arm lanes at `641df5634` failed the pull-request time budget: the level-6 anchor-coset test
+took 24 s against 14.8 s. That test now carries the audit mark, and an unmarked counterpart compares the anchor tables
+at n = 6 and 7. All lanes pass at `1848ebb9a`.
+
 After each round, `git status --short` showed no tracked change in any of the six workspace repositories.
