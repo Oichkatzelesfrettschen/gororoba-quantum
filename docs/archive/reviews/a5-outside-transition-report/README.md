@@ -119,6 +119,11 @@ structure run were all lower-half operands, an untested confound, and that two o
 the record now classifies eight points and holds the predictions P10 and P11 written before the runs that separate
 "two terms", "one half" and "proportional halves", the last of which failed. A second independent implementation
 recomputed the round's new items (closed form of G, involutions and kernel identity, the eight structure rows).
+
+The hosted Codex round on head `469cf24b8` returned one finding: the census of the 930 two-term directions ran
+serially inside `pencil_item`, against the repository rule that independent CPU-bound items run through
+`parallel.py`. Confirmed and fixed in `2aa4323d2` (`two_term_chunk` through `parallel.ordered_map`); the record keeps
+every value.
  The prior-art search of
 [the annihilator-variety note](../../../notes/topics/cd-annihilator-varieties-prior-art.md) found no work on limits
 of annihilators or closures of strata in a Grassmannian; that bound is the scope of the novelty claim.
