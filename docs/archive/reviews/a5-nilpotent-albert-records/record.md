@@ -36,4 +36,6 @@ predictions held at these sizes; the split case beyond n = 2 and the F_2 case be
 - The mutant loop of the Albert script ran serially, against the parallel.py rule. Fixed: `mutant_dims` runs through
   `parallel.ordered_map`; `--check` (18.9 s) and `--self-test` (plain and `-O`) pass again; the counts script already
   used `parallel.ordered_map`.
-- mypy through `ci/pinned_tool.py` was not run locally; the hosted `types` check decides.
+- mypy through `ci/pinned_tool.py` was not run by the author: the hosted `types` check then failed on one missing
+  annotation (`rows` in `der_system`). Fixed in 20e4efa6c; pinned mypy reports no issue in the four new files, and
+  all ten pr.yml checks pass on 20e4efa6c.
