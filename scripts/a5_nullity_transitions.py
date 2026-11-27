@@ -720,16 +720,39 @@ def zero_line_limit_item(direction: tuple[tuple[int, int], ...]) -> str:
     return "off the span" if normal is None else ",".join(normal)
 
 
+def zero_unit_item(unit: int) -> str:
+    """Nullities at the CENSUS_PARAMETERS of the line e_1 + e_10 + s e_unit."""
+    return ",".join(str(integer_nullity({**BASE, unit: step})) for step in CENSUS_PARAMETERS)
+
+
+def curved_arc_item(parameter: int) -> dict[str, Any]:
+    """The arc y_0 + s w(parameter + s) along the conic zeta(t) = (1 - t^2, i (1 + t^2), 2 t): its generic
+    nullity, the normal of its limiting plane and the normal of its base direction w(parameter)."""
+    frame = kernel_frame(BASE)
+    t = parameter + S
+    u_arc, v_arc = (1 - t**2, 0, 2 * t), (0, 1 + t**2, 0)
+    coefficients: list[Any] = [sp.Integer(0)] * DIMENSION
+    coefficients[1] += 1
+    coefficients[10] += 1
+    for w, value in zip((*U_UNITS, *V_UNITS), (*u_arc, *v_arc), strict=True):
+        coefficients[w] += sp.expand(S * value)
+    certificate = kernel_limits.certify_kernel_limit(kernel_limits.cd_polynomial_matrix(coefficients, S), S, 0)
+    u0, v0 = (1 - parameter**2, 0, 2 * parameter), (0, 1 + parameter**2, 0)
+    return {
+        "parameter": parameter,
+        "generic_nullity": certificate.generic_nullity,
+        "normal": sphere_normal(frame, axis_involutions(frame), sp.Matrix(certificate.limit_projector)),
+        "expected_normal": [str(sp.Rational(value, sum(a * a for a in u0))) for value in cross(u0, v0)],
+    }
+
+
 def arcs_item(_: int) -> dict[str, Any]:
     """Arcs into e_1 + e_10 outside the lines of the six coordinate units: lines along the units of zero
     compression and their signed pairs, and two curved arcs along the conic zeta(t) = (1 - t^2, i (1 + t^2), 2 t)."""
     frame = kernel_frame(BASE)
     forms = {w: frame.T * left_matrix(DIMENSION, {w: 1}) * frame for w in range(1, DIMENSION)}
-    involutions = axis_involutions(frame)
     zero_units = [w for w in range(1, DIMENSION) if forms[w].is_zero_matrix]
-    unit_census: Counter[str] = Counter()
-    for w in zero_units:
-        unit_census[",".join(str(integer_nullity({**BASE, w: step})) for step in CENSUS_PARAMETERS)] += 1
+    unit_census: Counter[str] = Counter(parallel.ordered_map(zero_unit_item, zero_units, 1))
     pair_census: Counter[str] = Counter()
     nullity_four: list[tuple[tuple[int, int], ...]] = []
     for chunk in parallel.ordered_map(zero_pair_chunk, [(tuple(zero_units), a) for a in zero_units[:-1]], 1):
@@ -740,26 +763,7 @@ def arcs_item(_: int) -> dict[str, Any]:
     normals: Counter[str] = Counter()
     for normal in parallel.ordered_map(zero_line_limit_item, nullity_four, 1):
         normals[normal] += 1
-    curved = []
-    for parameter in CONIC_PARAMETERS:
-        t = parameter + S
-        u_arc, v_arc = (1 - t**2, 0, 2 * t), (0, 1 + t**2, 0)
-        coefficients: list[Any] = [sp.Integer(0)] * DIMENSION
-        coefficients[1] += 1
-        coefficients[10] += 1
-        for w, value in zip((*U_UNITS, *V_UNITS), (*u_arc, *v_arc), strict=True):
-            coefficients[w] += sp.expand(S * value)
-        certificate = kernel_limits.certify_kernel_limit(kernel_limits.cd_polynomial_matrix(coefficients, S), S, 0)
-        u0, v0 = (1 - parameter**2, 0, 2 * parameter), (0, 1 + parameter**2, 0)
-        expected = [str(sp.Rational(value, sum(a * a for a in u0))) for value in cross(u0, v0)]
-        curved.append(
-            {
-                "parameter": parameter,
-                "generic_nullity": certificate.generic_nullity,
-                "normal": sphere_normal(frame, involutions, sp.Matrix(certificate.limit_projector)),
-                "expected_normal": expected,
-            }
-        )
+    curved = parallel.ordered_map(curved_arc_item, list(CONIC_PARAMETERS), 1)
     return {
         "zero_compression_units": zero_units,
         "census_parameters": list(CENSUS_PARAMETERS),
