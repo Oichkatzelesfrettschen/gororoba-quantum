@@ -1,0 +1,2 @@
+model	exit	verdict	reason
+opencode-go/glm-5.3	-	fail	allowance spent: the weekly window reads 79 percent (ceiling 79); five-hour window 0, weekly window 79, monthly window 52
