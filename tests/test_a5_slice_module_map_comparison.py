@@ -22,14 +22,14 @@ def load() -> ModuleType:
     return mod
 
 
-def fixture(mod: ModuleType) -> list[dict[str, Any]]:
+def fixture(mod: ModuleType, family: str = "e8") -> list[dict[str, Any]]:
     cells = []
-    for item in mod.CELLS:
+    for item in mod.FAMILIES[family]:
         row = mod.expected(item)
-        _orbit, _tag, prime, root, _header = item
+        _orbit, tag, prime, root, _header = item
         row["weight_image"] = [list(pair) for pair in row["weight_image"]]
         row["header_image"] = [list(pair) for pair in row["header_image"]]
-        row |= {"scalar": [1, 1, root * pow(2, -1, prime) % prime], "control_indices": [3, 13, 15]}
+        row |= {"scalar": [1, 1, mod.scalar(tag, prime, root)], "control_indices": [3, 13, 15]}
         row |= {control: [1, 0, 0] for control in mod.CONTROLS}
         cells.append(row)
     return cells
@@ -111,3 +111,48 @@ def test_the_symmetric_residue_of_the_scalar_is_accepted() -> None:
     cells[1]["scalar"] = [1, 1, cells[1]["scalar"][2] - 32029]
     if mod.problems(cells):
         raise AssertionError(mod.problems(cells))
+
+
+def test_the_x_fixture_passes_and_holds_six_cells() -> None:
+    mod = load()
+    cells = fixture(mod, "x")
+    if len(cells) != 6 or mod.problems(cells, mod.X_CELLS):
+        raise AssertionError(mod.problems(cells, mod.X_CELLS))
+    if [row["scalar"][2] for row in cells] != [16005, 16015, 16029, 16004, 16014, 16028]:
+        raise AssertionError([row["scalar"] for row in cells])
+
+
+X_MUTATIONS = {
+    "the scalar of E8-bar on an X cell": lambda cells: cells[0].update(scalar=[1, 1, 5377]),
+    "the sign of the other basepoint on X- -> N-": lambda cells: cells[1].update(scalar=[1, 1, 16014]),
+    "the sign of the other basepoint on X+ -> N+": lambda cells: cells[4].update(scalar=[1, 1, 16015]),
+    "no scalar": lambda cells: cells[5].update(scalar=[1, 0, 0]),
+    "a quadric among the generators of the colon ideal": lambda cells: cells[2].update(header_side=[3, 1, 3, 12, 1]),
+    "five nilpotent forms": lambda cells: cells[3].update(weight_side=[5, 1, 5, 16, 1]),
+    "a perturbed slice map accepted": lambda cells: cells[0].update(control_map_perturbed=[1, 1, 16005]),
+    "a transported ideal that differs from the header ideal": lambda cells: cells[4].update(transported=[35, 31]),
+    "a header map of the other basepoint": lambda cells: cells[0]["header_image"][0].__setitem__(1, "-2*y(6)"),
+    "a cell removed": lambda cells: cells.pop(),
+}
+
+
+@pytest.mark.parametrize("name", sorted(X_MUTATIONS))
+def test_a_changed_x_record_is_reported(name: str) -> None:
+    mod = load()
+    cells = fixture(mod, "x")
+    X_MUTATIONS[name](cells)
+    if not mod.problems(cells, mod.X_CELLS):
+        raise AssertionError(f"{name}: the changed record passes")
+
+
+def test_the_e8_table_rejects_the_x_cells_and_the_reverse() -> None:
+    mod = load()
+    if not mod.problems(fixture(mod, "x")[:5], mod.CELLS) or not mod.problems(fixture(mod), mod.X_CELLS[:5]):
+        raise AssertionError("a record of one family passes the table of the other")
+
+
+def test_the_x_cells_name_existing_header_files_and_roots() -> None:
+    mod = load()
+    for _orbit, tag, prime, root, header in mod.X_CELLS:
+        if pow(root, 2, prime) != prime - 1 or not (mod.FIBERS / header).is_file() or tag not in ("xm", "xp"):
+            raise AssertionError(header)

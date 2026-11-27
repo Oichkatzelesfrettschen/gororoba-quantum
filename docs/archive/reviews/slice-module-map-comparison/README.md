@@ -18,4 +18,6 @@ before the hosted round; no command-line reviewer ran before this record was wri
 
 ## Open
 
-Same-sign X has no retained slice map; its module maps stay compared by invariants.
+Same-sign X had no retained slice map when this record was written; rows A5-644 and A5-645 and the
+[X slice map review](../x-induced-slice-map/README.md) hold it. The slice-comparison row carried the id A5-642 until
+that id proved to be in use, and reads A5-643 since.

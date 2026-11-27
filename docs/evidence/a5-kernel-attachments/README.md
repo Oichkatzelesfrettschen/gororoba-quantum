@@ -1425,9 +1425,20 @@ and 4.5 s on five; ledger row A5-643). The identity is forced by A5-598 and the 
 its linear forms and the colon ideal of one slice to those of the other; the run confirms that the two retained
 maps, found in unrelated coordinates, are one intrinsic map, and adds no independent evidence for those rows. Three controls find no scalar: two weight-slice images
 exchanged, G perturbed on the leading variable of the first image, and two header coordinates of B_h exchanged.
-Same-sign X has no retained slice map, so its two maps stay compared by invariants. The gate
-`core-a5-slice-module-map-comparison` replays the record, and `tests/test_a5_slice_module_map_comparison.py`
-rejects 22 mutations of a fixture.
+The gate `core-a5-slice-module-map-comparison` replays the record.
+
+With `--family x` the program runs the same test on same-sign X, under the substitution of the 15 generators that
+[`x-induced-slice-map/`](../a5-exceptional-fibers/working/runs/x-induced-slice-map/README.md) retains over Q(i)
+(ledger row A5-644): three coordinates of B, a plane with no Euler term, and R taken as the one minimal prime. On
+X- -> N- and X+ -> N+ at 32009, 32029 and 32057 the solved maps equal the retained ones and one scalar relates them:
+c = 1 / 2 for X- -> N- and c = -1 / 2 for X+ -> N+ at every prime
+([`x-slice-module-map-comparison-result.json`](x-slice-module-map-comparison-result.json), Singular 4.4.1, 2.5 s on six
+workers; ledger row A5-645). The value i / 2 of E8-bar, written down before the run, did not occur; the scalar depends
+on the two normalizations, and its sign follows the signs by which the retained X+ maps differ from the X- maps. The
+same three controls find no scalar, and the identity is forced in the same way, so the run confirms A5-638, A5-640
+and A5-644 together and is no independent evidence for any of them. The gate
+`core-a5-x-slice-module-map-comparison` replays the record, and `tests/test_a5_slice_module_map_comparison.py`
+rejects 22 mutations of an E8-bar fixture and 10 of an X fixture.
 
 ## Investigated questions
 
