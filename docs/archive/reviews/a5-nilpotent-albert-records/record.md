@@ -42,4 +42,6 @@ predictions held at these sizes; the split case beyond n = 2 and the F_2 case be
 
 ## Hosted review: Codex (one round, head a8834f4ba)
 
-- P1, :  runs in process below its default , so the three mutant computations stayed serial. Fixed in '7e0584abb': ;  passes in 10.3 s against 18.9 s, and  passes plain and under .
+- P1, `scripts/a5_albert_derivation_stabilizers.py`: `parallel.ordered_map` runs in process below its default
+  `min_items=64`, so the three mutant computations stayed serial. Fixed in 7e0584abb: `min_items=1`; `--check` passes
+  in 10.3 s against 18.9 s, and `--self-test` passes plain and under `-O`.
