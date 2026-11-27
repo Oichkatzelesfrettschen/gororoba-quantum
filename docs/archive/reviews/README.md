@@ -279,3 +279,5 @@ The [slice comparison review](slice-module-map-comparison/README.md) records two
 The [X slice map review](x-induced-slice-map/README.md) (pull request 1026) records the opencode findings on the serial driver, the other-root control and the mutation tests, the Advisor's findings on quoted output, the literature note and the correlated cells, and the fixes.
 
 The [sign-transport review](x-sign-transport/README.md) (pull request 1028) records the opencode findings on the added-sign check, the control indices and the mutation count, the Advisor's findings on the literature sentence, issue 1029 and the pull-request body, and the fixes.
+
+The [Hopf-cochain review](a5-connections-hopf-cochain/review.md) (pull request 1031) records Neon's red team of the Albuquerque-Majid cochain and the triple-count derivation, the Advisor's findings on the unopened citations and the census note's earlier Theorem 1, and the fixes.

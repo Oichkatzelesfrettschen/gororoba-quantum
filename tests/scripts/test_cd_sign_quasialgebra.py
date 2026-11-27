@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import pytest
 
+import parallel
 from cd_core import cd_sign
 
 Table = list[list[int]]
@@ -30,9 +31,14 @@ def majid_cochain(n: int) -> Table:
     return [[-1 if value else 1 for value in row] for row in f]
 
 
+def sign_row(item: tuple[int, int]) -> list[int]:
+    dim, p = item
+    return [cd_sign(dim, p, q) for q in range(dim)]
+
+
 def cd_table(n: int) -> Table:
     dim = 1 << n
-    return [[cd_sign(dim, p, q) for q in range(dim)] for p in range(dim)]
+    return parallel.ordered_map(sign_row, [(dim, p) for p in range(dim)])
 
 
 def phi(s: Table, a: int, b: int, c: int) -> int:
@@ -44,16 +50,22 @@ def generic(x: int, y: int, z: int) -> bool:
     return x != 0 and y != 0 and x != y and z not in (0, x, y, x ^ y)
 
 
+def census_slice(item: tuple[Table, int]) -> tuple[int, bool]:
+    """The triples with first index x: how many have phi = -1, and whether phi = 1 on each outside Gamma."""
+    s, x = item
+    count, degenerate = 0, True
+    for y in range(len(s)):
+        for z in range(len(s)):
+            value = phi(s, x, y, z)
+            count += value == -1
+            degenerate = degenerate and (value == 1 or generic(x, y, z))
+    return count, degenerate
+
+
 def census(s: Table) -> tuple[int, bool]:
     """Triples with phi = -1, and whether phi = 1 on every triple outside Gamma."""
-    dim, count, degenerate = len(s), 0, True
-    for x in range(dim):
-        for y in range(dim):
-            for z in range(dim):
-                value = phi(s, x, y, z)
-                count += value == -1
-                degenerate = degenerate and (value == 1 or generic(x, y, z))
-    return count, degenerate
+    slices = parallel.ordered_map(census_slice, [(s, x) for x in range(len(s))])
+    return sum(c for c, _ in slices), all(d for _, d in slices)
 
 
 @pytest.mark.parametrize("n", range(1, 7))
