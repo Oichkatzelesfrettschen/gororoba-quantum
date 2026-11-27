@@ -39,3 +39,7 @@ predictions held at these sizes; the split case beyond n = 2 and the F_2 case be
 - mypy through `ci/pinned_tool.py` was not run by the author: the hosted `types` check then failed on one missing
   annotation (`rows` in `der_system`). Fixed in 20e4efa6c; pinned mypy reports no issue in the four new files, and
   all ten pr.yml checks pass on 20e4efa6c.
+
+## Hosted review: Codex (one round, head a8834f4ba)
+
+- P1, :  runs in process below its default , so the three mutant computations stayed serial. Fixed in '7e0584abb': ;  passes in 10.3 s against 18.9 s, and  passes plain and under .
