@@ -15,10 +15,10 @@ with one nonzero scalar c. Each map carries the normalization of its retained re
 by the leading coefficient of its first image (A5-640) and the header-slice map has its free coordinate set to 1
 (A5-638); the solved maps must equal the retained ones (the table of `weight_slice_module_map.py` with i sent to the
 root, and `expected_map` of `quadric_and_germ_probes.py`), and between them the measured scalar is c = i / 2 on every
-cell, i the root of -1 of the cell. The identity is forced: G carries R_w, N_w and K_w : R_w to their header counterparts, so
-it carries a solution of one system to a solution of the other, and both solution spaces are one-dimensional. The run
-is a confirmation that shares its inputs with A5-598 and A5-638 and adds no independent evidence for either; a
-failure would refute one of them or expose a solver that does not compute the intrinsic map.
+cell, i the root of -1 of the cell. The identity is forced: G carries R_w, N_w and K_w : R_w to their header
+counterparts, so it carries a solution of one system to a solution of the other, and both solution spaces are
+one-dimensional. The run is a confirmation that shares its inputs with A5-598 and A5-638 and adds no independent
+evidence for either; a failure would refute one of them or expose a solver that does not compute the intrinsic map.
 
 Controls, each of which must find no scalar: the weight-slice images of the first two coordinates exchanged; the map
 G with the first header coordinate of B_h added to the image of the leading variable of the first weight-slice image;
@@ -155,7 +155,9 @@ def script(tag: str, prime: int, root: int, header: str) -> str:
     text = induced.check_script(record, prime, root, FIBERS / header, None)
     if text.count(MARKER) != 1 or not text.startswith(f"ring r={prime},(y(1..21)),dp;"):
         raise RuntimeError("the reduction script of induced_slice_map.py changed its layout")
-    head = text[: text.index(MARKER)].replace(f"ring r={prime},", f"ring r0={prime},", 1).replace("map f=r,", "map f=r0,")
+    head = (
+        text[: text.index(MARKER)].replace(f"ring r={prime},", f"ring r0={prime},", 1).replace("map f=r,", "map f=r0,")
+    )
     if head.count("map f=r0,") != 1:
         raise RuntimeError("the reduction script of induced_slice_map.py changed its map line")
     return 'LIB "primdec.lib"; LIB "matrix.lib";\n' + head + TAIL.replace("@P@", str(prime))
