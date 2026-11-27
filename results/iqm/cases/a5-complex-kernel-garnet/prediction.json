@@ -1,0 +1,855 @@
+{
+ "calibration_set": "a0e725eb-a020-43d3-8aaf-072b926e425a",
+ "copies_per_orientation": 4,
+ "cost": {
+  "adopted": {
+   "billed_seconds_of_ceiling": 21.0,
+   "cancel_threshold_seconds": 20.0,
+   "expected_execution_seconds": 10.365089,
+   "expected_runtime_seconds": 10.801946,
+   "max_credits": 10.5,
+   "max_credits_grover_band": 9.0
+  },
+  "billing_v4": {
+   "v3": {
+    "band_seconds_all_jobs": 2.473812,
+    "band_seconds_grover_jobs": 0.356868,
+    "excess_seconds": 5.316317,
+    "execution_seconds": 10.365089,
+    "expected_billed_credits": 6.0,
+    "expected_runtime_seconds": 10.801946,
+    "max_credits_all_jobs": 10.5,
+    "max_credits_grover_jobs": 9.0,
+    "schedule_seconds": 5.048773,
+    "worst_case_runtime_seconds_all_jobs": 13.275759,
+    "worst_case_runtime_seconds_grover_jobs": 11.158814
+   },
+   "v4_max": {
+    "band_seconds_all_jobs": 2.41831,
+    "band_seconds_grover_jobs": 0.301366,
+    "excess_seconds": 4.798978,
+    "execution_seconds": 9.847751,
+    "expected_billed_credits": 6.0,
+    "expected_runtime_seconds": 10.284608,
+    "max_credits_all_jobs": 10.5,
+    "max_credits_grover_jobs": 8.5,
+    "schedule_seconds": 5.048773,
+    "worst_case_runtime_seconds_all_jobs": 12.702918,
+    "worst_case_runtime_seconds_grover_jobs": 10.585974
+   },
+   "v4_sum": {
+    "band_seconds_all_jobs": 2.41997,
+    "band_seconds_grover_jobs": 0.303026,
+    "excess_seconds": 4.379825,
+    "execution_seconds": 9.428598,
+    "expected_billed_credits": 6.0,
+    "expected_runtime_seconds": 9.865455,
+    "max_credits_all_jobs": 10.0,
+    "max_credits_grover_jobs": 8.5,
+    "schedule_seconds": 5.048773,
+    "worst_case_runtime_seconds_all_jobs": 12.285425,
+    "worst_case_runtime_seconds_grover_jobs": 10.168481
+   }
+  },
+  "inputs_sha256": "d00da1b1cee3bbf953f27f2729e5e28d018294a92518938b83e1c138cdbd411c",
+  "overrun_margins": {
+   "1.5x": {
+    "covered": true,
+    "margin_seconds": 3.7970803880000012,
+    "runtime_seconds": 16.202919612
+   },
+   "1x": {
+    "covered": true,
+    "margin_seconds": 9.198053592,
+    "runtime_seconds": 10.801946408
+   },
+   "2.2x": {
+    "covered": false,
+    "margin_seconds": -3.764282097599999,
+    "runtime_seconds": 23.7642820976
+   }
+  }
+ },
+ "decision": {
+  "discriminating": {
+   "s016": 1,
+   "s124": -1,
+   "s412": 1
+  },
+  "midpoint": 8.0,
+  "mutation_operands": [
+   "s016",
+   "s412"
+  ],
+  "null_fraction": 0.1,
+  "null_operand": "s808",
+  "power_complex_truth": 1.0
+ },
+ "model": "exact density matrix of the touched qubits of each compiled circuit: depolarizing PRX and CZ, ASAP idle T1/T2, herald-conditioned readout; no coherent error, leakage or crosstalk",
+ "operands": {
+  "s016": {
+   "block": {
+    "basis": [
+     2
+    ],
+    "coset": 1,
+    "data_qubits": 1
+   },
+   "chosen_seed": 37071,
+   "kinds": {
+    "cplx": {
+     "cz": 1,
+     "ideal_difference": 0.9999999999999996,
+     "law": {
+      "minus": [
+       0.006956658,
+       0.006765381,
+       0.500013039,
+       0.486264922
+      ],
+      "plus": [
+       0.503750682,
+       0.489899797,
+       0.003219015,
+       0.003130506
+      ]
+     },
+     "planned_se": 0.001340723,
+     "predicted_difference": 0.979928441,
+     "predicted_zero": {
+      "minus": 0.013722038,
+      "plus": 0.993650479
+     }
+    },
+    "plain": {
+     "cz": 1,
+     "ideal_difference": -0.9999999999999996,
+     "law": {
+      "minus": [
+       0.503750682,
+       0.489899797,
+       0.003219015,
+       0.003130506
+      ],
+      "plus": [
+       0.006956658,
+       0.006765381,
+       0.500013039,
+       0.486264922
+      ]
+     },
+     "planned_se": 0.001340723,
+     "predicted_difference": -0.979928441,
+     "predicted_zero": {
+      "minus": 0.993650479,
+      "plus": 0.013722038
+     }
+    },
+    "real": {
+     "cz": 1,
+     "ideal_difference": 0.0,
+     "law": {
+      "minus": [
+       0.49478323,
+       0.008903028,
+       0.012186467,
+       0.484127275
+      ],
+      "plus": [
+       0.015924109,
+       0.487762149,
+       0.491045588,
+       0.005268154
+      ]
+     },
+     "planned_se": 0.006729908,
+     "predicted_difference": 0.0,
+     "predicted_zero": {
+      "minus": 0.503686258,
+      "plus": 0.503686258
+     }
+    }
+   },
+   "pair": [
+    1,
+    3
+   ],
+   "physical_qubits": [
+    "QB1",
+    "QB2"
+   ],
+   "predicted": {
+    "double_difference": 0.979928441,
+    "nullity_complex": 16.0,
+    "se_nullity_complex": 0.109884,
+    "visibility": 0.979928441,
+    "visibility_for_z_resolve": 0.067299,
+    "visibility_over_se": 142.802,
+    "z_nullity_from_midpoint": 72.804
+   },
+   "stratum_real_complex": "0/16",
+   "transpiler_trials": [
+    {
+     "cz": 1,
+     "seed": 37071,
+     "visibility": 0.979928
+    },
+    {
+     "cz": 1,
+     "seed": 270,
+     "visibility": 0.979928
+    },
+    {
+     "cz": 1,
+     "seed": 57975,
+     "visibility": 0.979928
+    },
+    {
+     "cz": 1,
+     "seed": 32200,
+     "visibility": 0.979928
+    },
+    {
+     "cz": 1,
+     "seed": 15385,
+     "visibility": 0.979928
+    },
+    {
+     "cz": 1,
+     "seed": 32776,
+     "visibility": 0.979928
+    },
+    {
+     "cz": 1,
+     "seed": 46268,
+     "visibility": 0.979928
+    },
+    {
+     "cz": 1,
+     "seed": 18502,
+     "visibility": 0.979928
+    }
+   ]
+  },
+  "s124": {
+   "block": {
+    "basis": [
+     19,
+     4,
+     8
+    ],
+    "coset": 0,
+    "data_qubits": 3
+   },
+   "chosen_seed": 37071,
+   "kinds": {
+    "cplx": {
+     "cz": 29,
+     "ideal_difference": 0.24999999999999994,
+     "law": {
+      "minus": [
+       0.03438542,
+       0.027082885,
+       0.099244948,
+       0.02309307,
+       0.106113219,
+       0.026019324,
+       0.095654082,
+       0.022723807,
+       0.102900676,
+       0.105501152,
+       0.023268156,
+       0.095207922,
+       0.025436346,
+       0.101015329,
+       0.021725925,
+       0.090627738
+      ],
+      "plus": [
+       0.106840888,
+       0.109250997,
+       0.026764631,
+       0.098012012,
+       0.029196814,
+       0.104014681,
+       0.025081492,
+       0.093299793,
+       0.030452627,
+       0.02332585,
+       0.095741007,
+       0.020296217,
+       0.102351636,
+       0.023021318,
+       0.092297318,
+       0.020052718
+      ]
+     },
+     "planned_se": 0.006642955,
+     "predicted_difference": 0.158144553,
+     "predicted_zero": {
+      "minus": 0.434316756,
+      "plus": 0.592461309
+     }
+    },
+    "real": {
+     "cz": 29,
+     "ideal_difference": 0.7499999999999998,
+     "law": {
+      "minus": [
+       0.102484249,
+       0.029575999,
+       0.025334944,
+       0.023385485,
+       0.025331172,
+       0.023958894,
+       0.02159773,
+       0.020831999,
+       0.03480413,
+       0.103003859,
+       0.097175865,
+       0.094919698,
+       0.106218219,
+       0.103076295,
+       0.095781767,
+       0.092519695
+      ],
+      "plus": [
+       0.038367971,
+       0.10649062,
+       0.100361143,
+       0.097997452,
+       0.109636786,
+       0.106378108,
+       0.098831465,
+       0.09546343,
+       0.098923262,
+       0.026090405,
+       0.02214679,
+       0.020306586,
+       0.021911839,
+       0.020657354,
+       0.018547855,
+       0.017888933
+      ]
+     },
+     "planned_se": 0.00589771,
+     "predicted_difference": 0.481026504,
+     "predicted_zero": {
+      "minus": 0.272500472,
+      "plus": 0.753526977
+     }
+    }
+   },
+   "pair": [
+    1,
+    18
+   ],
+   "physical_qubits": [
+    "QB11",
+    "QB5",
+    "QB6",
+    "QB7"
+   ],
+   "predicted": {
+    "double_difference": -0.322881951,
+    "nullity_complex": 3.958741,
+    "se_nullity_complex": 0.130368,
+    "visibility": 0.639171057,
+    "visibility_for_z_resolve": 0.103096,
+    "visibility_over_se": 71.953,
+    "z_nullity_from_midpoint": 30.999
+   },
+   "stratum_real_complex": "12/4",
+   "transpiler_trials": [
+    {
+     "cz": 29,
+     "seed": 37071,
+     "visibility": 0.639171
+    },
+    {
+     "cz": 29,
+     "seed": 270,
+     "visibility": 0.639171
+    },
+    {
+     "cz": 29,
+     "seed": 57975,
+     "visibility": 0.639171
+    },
+    {
+     "cz": 29,
+     "seed": 32200,
+     "visibility": 0.639171
+    },
+    {
+     "cz": 29,
+     "seed": 15385,
+     "visibility": 0.639171
+    },
+    {
+     "cz": 29,
+     "seed": 32776,
+     "visibility": 0.639171
+    },
+    {
+     "cz": 29,
+     "seed": 46268,
+     "visibility": 0.639171
+    },
+    {
+     "cz": 29,
+     "seed": 18502,
+     "visibility": 0.639171
+    }
+   ]
+  },
+  "s412": {
+   "block": {
+    "basis": [
+     27,
+     4,
+     9
+    ],
+    "coset": 1,
+    "data_qubits": 3
+   },
+   "chosen_seed": 37071,
+   "kinds": {
+    "cplx": {
+     "cz": 23,
+     "ideal_difference": 0.7499999999999996,
+     "law": {
+      "minus": [
+       0.023852652,
+       0.021586396,
+       0.019915232,
+       0.019190822,
+       0.102972752,
+       0.022019483,
+       0.020506478,
+       0.018595118,
+       0.113792962,
+       0.111342349,
+       0.104363135,
+       0.100824811,
+       0.026730513,
+       0.103234422,
+       0.096586508,
+       0.094486367
+      ],
+      "plus": [
+       0.117388807,
+       0.114814971,
+       0.107609775,
+       0.103960091,
+       0.030118873,
+       0.106506547,
+       0.099645438,
+       0.097440501,
+       0.020256806,
+       0.018113774,
+       0.016668592,
+       0.016055541,
+       0.099584392,
+       0.018747358,
+       0.017447548,
+       0.015640985
+      ]
+     },
+     "planned_se": 0.005709241,
+     "predicted_difference": 0.528846072,
+     "predicted_zero": {
+      "minus": 0.248638933,
+      "plus": 0.777485004
+     }
+    },
+    "plain": {
+     "cz": 29,
+     "ideal_difference": -0.7499999999999996,
+     "law": {
+      "minus": [
+       0.115183681,
+       0.109952045,
+       0.104218692,
+       0.1006392,
+       0.105782395,
+       0.031517703,
+       0.097223186,
+       0.092814628,
+       0.022899898,
+       0.023400802,
+       0.018900338,
+       0.018255729,
+       0.025067739,
+       0.094854294,
+       0.019443259,
+       0.019846413
+      ],
+      "plus": [
+       0.026763614,
+       0.027147365,
+       0.021845381,
+       0.021094399,
+       0.028203069,
+       0.09840387,
+       0.022219364,
+       0.022535583,
+       0.111313327,
+       0.106212063,
+       0.101280325,
+       0.09779391,
+       0.102647852,
+       0.027965147,
+       0.094448361,
+       0.09012637
+      ]
+     },
+     "planned_se": 0.005867582,
+     "predicted_difference": -0.489118884,
+     "predicted_zero": {
+      "minus": 0.757331529,
+      "plus": 0.268212645
+     }
+    },
+    "real": {
+     "cz": 23,
+     "ideal_difference": 0.2499999999999999,
+     "law": {
+      "minus": [
+       0.11363747,
+       0.023669317,
+       0.103721998,
+       0.021597699,
+       0.027566116,
+       0.021211638,
+       0.096809272,
+       0.020000322,
+       0.024008143,
+       0.109259428,
+       0.020556369,
+       0.098417934,
+       0.102137149,
+       0.104042267,
+       0.020283714,
+       0.093081164
+      ],
+      "plus": [
+       0.027603989,
+       0.11273205,
+       0.023803009,
+       0.101553214,
+       0.105525509,
+       0.107314392,
+       0.023342644,
+       0.096035298,
+       0.110041625,
+       0.020196695,
+       0.100475358,
+       0.018462418,
+       0.024177756,
+       0.017939513,
+       0.093750342,
+       0.017046188
+      ]
+     },
+     "planned_se": 0.006630149,
+     "predicted_difference": 0.169696272,
+     "predicted_zero": {
+      "minus": 0.428213832,
+      "plus": 0.597910105
+     }
+    }
+   },
+   "pair": [
+    1,
+    26
+   ],
+   "physical_qubits": [
+    "QB11",
+    "QB5",
+    "QB6",
+    "QB7"
+   ],
+   "predicted": {
+    "double_difference": 0.3591498,
+    "nullity_complex": 12.113134,
+    "se_nullity_complex": 0.119279,
+    "visibility": 0.698542344,
+    "visibility_for_z_resolve": 0.101287,
+    "visibility_over_se": 79.838,
+    "z_nullity_from_midpoint": 34.483
+   },
+   "stratum_real_complex": "4/12",
+   "transpiler_trials": [
+    {
+     "cz": 23,
+     "seed": 37071,
+     "visibility": 0.698542
+    },
+    {
+     "cz": 23,
+     "seed": 270,
+     "visibility": 0.698542
+    },
+    {
+     "cz": 23,
+     "seed": 57975,
+     "visibility": 0.698542
+    },
+    {
+     "cz": 23,
+     "seed": 32200,
+     "visibility": 0.698542
+    },
+    {
+     "cz": 23,
+     "seed": 15385,
+     "visibility": 0.698542
+    },
+    {
+     "cz": 23,
+     "seed": 32776,
+     "visibility": 0.698542
+    },
+    {
+     "cz": 23,
+     "seed": 46268,
+     "visibility": 0.698542
+    },
+    {
+     "cz": 23,
+     "seed": 18502,
+     "visibility": 0.698542
+    }
+   ]
+  },
+  "s808": {
+   "block": {
+    "basis": [
+     11,
+     4
+    ],
+    "coset": 0,
+    "data_qubits": 2
+   },
+   "chosen_seed": 37071,
+   "kinds": {
+    "cplx": {
+     "cz": 11,
+     "ideal_difference": 0.49999999999999983,
+     "law": {
+      "minus": [
+       0.027542236,
+       0.014873164,
+       0.220495575,
+       0.016125152,
+       0.239863789,
+       0.245180394,
+       0.019068097,
+       0.216851593
+      ],
+      "plus": [
+       0.241815641,
+       0.247078579,
+       0.020834162,
+       0.218569099,
+       0.025590384,
+       0.012974979,
+       0.21872951,
+       0.014407646
+      ]
+     },
+     "planned_se": 0.006012463,
+     "predicted_difference": 0.449261353,
+     "predicted_zero": {
+      "minus": 0.279036127,
+      "plus": 0.728297481
+     }
+    },
+    "real": {
+     "cz": 11,
+     "ideal_difference": 0.49999999999999983,
+     "law": {
+      "minus": [
+       0.234503737,
+       0.018410972,
+       0.013637067,
+       0.011955565,
+       0.032902287,
+       0.241642586,
+       0.225926605,
+       0.22102118
+      ],
+      "plus": [
+       0.034798554,
+       0.243486714,
+       0.226441052,
+       0.221521482,
+       0.232607471,
+       0.016566844,
+       0.01312262,
+       0.011455263
+      ]
+     },
+     "planned_se": 0.006017717,
+     "predicted_difference": 0.44774046,
+     "predicted_zero": {
+      "minus": 0.278507342,
+      "plus": 0.726247801
+     }
+    }
+   },
+   "pair": [
+    1,
+    10
+   ],
+   "physical_qubits": [
+    "QB1",
+    "QB2",
+    "QB4",
+    "QB5"
+   ],
+   "predicted": {
+    "double_difference": 0.001520893,
+    "nullity_complex": 8.013564,
+    "se_nullity_complex": 0.075867,
+    "visibility": 0.897001813,
+    "visibility_for_z_resolve": null,
+    "visibility_over_se": 105.447,
+    "z_nullity_from_midpoint": 0.179
+   },
+   "stratum_real_complex": "8/8",
+   "transpiler_trials": [
+    {
+     "cz": 11,
+     "seed": 37071,
+     "visibility": 0.897002
+    },
+    {
+     "cz": 9,
+     "seed": 270,
+     "visibility": 0.887856
+    },
+    {
+     "cz": 9,
+     "seed": 57975,
+     "visibility": 0.887856
+    },
+    {
+     "cz": 9,
+     "seed": 32200,
+     "visibility": 0.887856
+    },
+    {
+     "cz": 11,
+     "seed": 15385,
+     "visibility": 0.897002
+    },
+    {
+     "cz": 9,
+     "seed": 32776,
+     "visibility": 0.887856
+    },
+    {
+     "cz": 11,
+     "seed": 46268,
+     "visibility": 0.897002
+    },
+    {
+     "cz": 11,
+     "seed": 18502,
+     "visibility": 0.897002
+    }
+   ]
+  }
+ },
+ "order": [
+  "s016-real-plus-00",
+  "s016-real-minus-00",
+  "s016-real-minus-01",
+  "s016-real-plus-01",
+  "s016-cplx-plus-00",
+  "s016-cplx-minus-00",
+  "s016-cplx-minus-01",
+  "s016-cplx-plus-01",
+  "s016-plain-plus-00",
+  "s016-plain-minus-00",
+  "s016-plain-minus-01",
+  "s016-plain-plus-01",
+  "s412-real-plus-00",
+  "s412-real-minus-00",
+  "s412-real-minus-01",
+  "s412-real-plus-01",
+  "s412-cplx-plus-00",
+  "s412-cplx-minus-00",
+  "s412-cplx-minus-01",
+  "s412-cplx-plus-01",
+  "s412-plain-plus-00",
+  "s412-plain-minus-00",
+  "s412-plain-minus-01",
+  "s412-plain-plus-01",
+  "s808-real-plus-00",
+  "s808-real-minus-00",
+  "s808-real-minus-01",
+  "s808-real-plus-01",
+  "s808-cplx-plus-00",
+  "s808-cplx-minus-00",
+  "s808-cplx-minus-01",
+  "s808-cplx-plus-01",
+  "s124-real-plus-00",
+  "s124-real-minus-00",
+  "s124-real-minus-01",
+  "s124-real-plus-01",
+  "s124-cplx-plus-00",
+  "s124-cplx-minus-00",
+  "s124-cplx-minus-01",
+  "s124-cplx-plus-01",
+  "s124-cplx-plus-02",
+  "s124-cplx-minus-02",
+  "s124-cplx-minus-03",
+  "s124-cplx-plus-03",
+  "s124-real-plus-02",
+  "s124-real-minus-02",
+  "s124-real-minus-03",
+  "s124-real-plus-03",
+  "s808-cplx-plus-02",
+  "s808-cplx-minus-02",
+  "s808-cplx-minus-03",
+  "s808-cplx-plus-03",
+  "s808-real-plus-02",
+  "s808-real-minus-02",
+  "s808-real-minus-03",
+  "s808-real-plus-03",
+  "s412-plain-plus-02",
+  "s412-plain-minus-02",
+  "s412-plain-minus-03",
+  "s412-plain-plus-03",
+  "s412-cplx-plus-02",
+  "s412-cplx-minus-02",
+  "s412-cplx-minus-03",
+  "s412-cplx-plus-03",
+  "s412-real-plus-02",
+  "s412-real-minus-02",
+  "s412-real-minus-03",
+  "s412-real-plus-03",
+  "s016-plain-plus-02",
+  "s016-plain-minus-02",
+  "s016-plain-minus-03",
+  "s016-plain-plus-03",
+  "s016-cplx-plus-02",
+  "s016-cplx-minus-02",
+  "s016-cplx-minus-03",
+  "s016-cplx-plus-03",
+  "s016-real-plus-02",
+  "s016-real-minus-02",
+  "s016-real-minus-03",
+  "s016-real-plus-03"
+ ],
+ "planning": {
+  "kept_fraction_floor": 0.5,
+  "kept_shots_per_orientation": 17000,
+  "phi": 1.54,
+  "z_resolve": 5.0
+ },
+ "shots": 8500
+}

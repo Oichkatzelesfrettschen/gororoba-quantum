@@ -1,0 +1,350 @@
+{
+ "case": "a5-complex-kernel-garnet",
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/s016-real-plus-00.json",
+     "sha256": "24c2bb1f20e8621cc2073cbd5eb9cdf4d33593a9242c8b25855e982f183f7227"
+    },
+    {
+     "file": "circuits/s016-real-minus-00.json",
+     "sha256": "ccfdb0fd22b22cf7c85600d0d0432c968af5069d30bc952b36ec868f66791ab3"
+    },
+    {
+     "file": "circuits/s016-real-minus-01.json",
+     "sha256": "cd3cfbd29f2194f06cea15b43cd5ad4d88393c8df67f057a1caafa360a0950c2"
+    },
+    {
+     "file": "circuits/s016-real-plus-01.json",
+     "sha256": "0b607c07348a52543e57686d119c91e7af742cfc780702a77687d1765345e3c9"
+    },
+    {
+     "file": "circuits/s016-cplx-plus-00.json",
+     "sha256": "0f1fab212ed8be9989d37fc7d179d9cd51b64f830691bf1bcc459c2d32b1b0e5"
+    },
+    {
+     "file": "circuits/s016-cplx-minus-00.json",
+     "sha256": "4d837f18e33ed6f48ec543dbca6c453d2e69cdc865413818ab41263d8f5878e3"
+    },
+    {
+     "file": "circuits/s016-cplx-minus-01.json",
+     "sha256": "9f6d3e98b87e23682e95224c88ad6a9293923136262b37b35360464db20aab94"
+    },
+    {
+     "file": "circuits/s016-cplx-plus-01.json",
+     "sha256": "11152b251b90eefc1acc2a4c9573b8924e2dbed0d776dd16eb9eb5fa84fca2d7"
+    },
+    {
+     "file": "circuits/s016-plain-plus-00.json",
+     "sha256": "3a0c6a09493656e684d42d1389f33446d6d706caa72914474689b69aa30b6e10"
+    },
+    {
+     "file": "circuits/s016-plain-minus-00.json",
+     "sha256": "d7d41b688771e6a66dd31bdda609f9120ab4a5d64b7079ca4429202d7f8642ae"
+    },
+    {
+     "file": "circuits/s016-plain-minus-01.json",
+     "sha256": "64257058e45f273fcc962a6c137186d2cfc30df474caf48ea44a7f2f8da603f6"
+    },
+    {
+     "file": "circuits/s016-plain-plus-01.json",
+     "sha256": "139f866b9c97f777423dc5b7a16b3810f2e46a655966091c3c8c8a75bc688893"
+    },
+    {
+     "file": "circuits/s412-real-plus-00.json",
+     "sha256": "676cd5a4d562a0508046ff584760a55eabb73a5f5040421e6b18af239b02c4a6"
+    },
+    {
+     "file": "circuits/s412-real-minus-00.json",
+     "sha256": "acc1585b34e17132e439fe13a7328987ddebb7680c9aca6710eb074bb10dd2ee"
+    },
+    {
+     "file": "circuits/s412-real-minus-01.json",
+     "sha256": "e09827d44087a42ec7b636291c89dcf652939bf4241524bbbb0418e3ea133ae0"
+    },
+    {
+     "file": "circuits/s412-real-plus-01.json",
+     "sha256": "c7b1dfea2a988493c62ff0f54a0fb78c0f987f2b75998d2c8b342ae2e8f29d6a"
+    },
+    {
+     "file": "circuits/s412-cplx-plus-00.json",
+     "sha256": "f213a58fe7ade6bc2efa4bc735ea0423e5cfff8e5bf30ae92f6b84874b761ee2"
+    },
+    {
+     "file": "circuits/s412-cplx-minus-00.json",
+     "sha256": "e23013bf3acc1371a2851364611eb789bf63a213ca8c32f21879ae7b1fdf02f3"
+    },
+    {
+     "file": "circuits/s412-cplx-minus-01.json",
+     "sha256": "20a7b73d99b082d01c1788112f606c0ec8f7a03b49419b0e75a3994937356196"
+    },
+    {
+     "file": "circuits/s412-cplx-plus-01.json",
+     "sha256": "9472d0ff7b37b8cd2533fce8b3b2148c01785b5b0a19ac6de9f44af8e2631b80"
+    },
+    {
+     "file": "circuits/s412-plain-plus-00.json",
+     "sha256": "2132d6b93a353f679269e3c79a6c2341618455a4e4a9b571ba4a61eaba0ae8e5"
+    },
+    {
+     "file": "circuits/s412-plain-minus-00.json",
+     "sha256": "80d3be2f3834d1b331000343110fb3906eb1e9894499db9772eb2385b941425b"
+    },
+    {
+     "file": "circuits/s412-plain-minus-01.json",
+     "sha256": "4da592b2abedbaec1d69b58c15fdcf674f72c6cf14e0732ea1284d8d275a2177"
+    },
+    {
+     "file": "circuits/s412-plain-plus-01.json",
+     "sha256": "684f7a1941ffa703263f688c99bc836e2f203b37f6ffdcd03908b4441b1b5ee2"
+    },
+    {
+     "file": "circuits/s808-real-plus-00.json",
+     "sha256": "5c7c983af1e2b9473d552165963b9130c87776f0fe52c0acdeccf38039a35bdd"
+    },
+    {
+     "file": "circuits/s808-real-minus-00.json",
+     "sha256": "330b500b4ca4a2d559818d9af45c8e6bf4833b7efb3706313b7d452f51896fbd"
+    },
+    {
+     "file": "circuits/s808-real-minus-01.json",
+     "sha256": "bbe497d940b74bbc4a86e064aa751bf9ca7f09e1138d974eaa73cbec9fb0a145"
+    },
+    {
+     "file": "circuits/s808-real-plus-01.json",
+     "sha256": "db50bbe5906ff59e23dce2947f75ecfe33b612203f9d5ff449863fb50110646c"
+    },
+    {
+     "file": "circuits/s808-cplx-plus-00.json",
+     "sha256": "014354151bcc946a66533fd86994d4297335e11970c41e4256e009fd6ed921fd"
+    },
+    {
+     "file": "circuits/s808-cplx-minus-00.json",
+     "sha256": "a6a25cafd0c53e1ec5560621bd58eb4056ef13e0f5ba6a6dee7924675f4b1312"
+    },
+    {
+     "file": "circuits/s808-cplx-minus-01.json",
+     "sha256": "37cd5a192ddf0028e74fbb64be930b44aef51763ff9e8b07d7615d32009d83a6"
+    },
+    {
+     "file": "circuits/s808-cplx-plus-01.json",
+     "sha256": "e95d0c3961adbec9b739b1d4c6afda4ea22ced2268b08b6b8c054ad86f630a1a"
+    },
+    {
+     "file": "circuits/s124-real-plus-00.json",
+     "sha256": "7297809fd50bbc64c572ade26ee407cfc561095dcf457a449b53e1f415e5e156"
+    },
+    {
+     "file": "circuits/s124-real-minus-00.json",
+     "sha256": "bc70ac7c89c96c2be015742123f8c734bfe7621ce5cfdbd1a3672e18eadfe513"
+    },
+    {
+     "file": "circuits/s124-real-minus-01.json",
+     "sha256": "1cfce6a4aae973e8f4251e1596b4583e71be7e4b8f7cfb14376745f72caf89e1"
+    },
+    {
+     "file": "circuits/s124-real-plus-01.json",
+     "sha256": "001b5db4ea2bbbcec252f57fbb34df260fa275ce94bc493d771d2d0bc617257b"
+    },
+    {
+     "file": "circuits/s124-cplx-plus-00.json",
+     "sha256": "57330d5c321bad5194b0989c0b3e40c0d931de233d644ba2145008d47bfdaf90"
+    },
+    {
+     "file": "circuits/s124-cplx-minus-00.json",
+     "sha256": "c0455d126ad02a64678cb034b4a4c9a40866a2d27d1ddd69c86b7bae05d125e7"
+    },
+    {
+     "file": "circuits/s124-cplx-minus-01.json",
+     "sha256": "a362fa63b284fb47e68478a083ceb5620d97031916e71f734ebaf35cda1f7e8f"
+    },
+    {
+     "file": "circuits/s124-cplx-plus-01.json",
+     "sha256": "0716d9b7ecf0d7b7480f777e05b9cce95d84a04e97c86fc4457df244f146ebb8"
+    },
+    {
+     "file": "circuits/s124-cplx-plus-02.json",
+     "sha256": "4716577abdb50f648f1cb9c23bcb4c7a4520a76cfe4f3e8a3a1dc13838ce39c8"
+    },
+    {
+     "file": "circuits/s124-cplx-minus-02.json",
+     "sha256": "562c427fae9a8085d08384da89cca69f3abb73c2cd98f5f1bbc5c01aac6dec32"
+    },
+    {
+     "file": "circuits/s124-cplx-minus-03.json",
+     "sha256": "f4bfdabf489d81224c3643cd5e49dcd040ee080520befa474d266ace01f05465"
+    },
+    {
+     "file": "circuits/s124-cplx-plus-03.json",
+     "sha256": "5ed0f265ab7c8cf8eedc2b78e2f75957df71db5c144d6d5cbd9e5ed7442de050"
+    },
+    {
+     "file": "circuits/s124-real-plus-02.json",
+     "sha256": "dac385f67780539fef341f73311ebf168986c7c26f68b2ecfb8d6e5d4376f59f"
+    },
+    {
+     "file": "circuits/s124-real-minus-02.json",
+     "sha256": "33cdef832d338f8aeade3ab45aa0e7a28dae231d48af996401fe05920c5d9fcc"
+    },
+    {
+     "file": "circuits/s124-real-minus-03.json",
+     "sha256": "c0d8738bc1583fbbfa2c1aa8d21a16bfd60d1aa6e24eeb8f441d5ef038c03bec"
+    },
+    {
+     "file": "circuits/s124-real-plus-03.json",
+     "sha256": "4ef73fc9a01cee1fe08e5822e8e93d400296cb213cf344cc1557a91d8338c7dc"
+    },
+    {
+     "file": "circuits/s808-cplx-plus-02.json",
+     "sha256": "ac79306cdf7787b97d12e6a2b85561a05a2c38a9c2d7637ffcfe992872385e64"
+    },
+    {
+     "file": "circuits/s808-cplx-minus-02.json",
+     "sha256": "b3c8777227c13233889b7f97ce7c52afb5b4ffdaa98cb7dc95e3331efd894877"
+    },
+    {
+     "file": "circuits/s808-cplx-minus-03.json",
+     "sha256": "abd2f58c61281832b55da4997d2bdaca9fb19fb20ca439dadb5997ba73aedab1"
+    },
+    {
+     "file": "circuits/s808-cplx-plus-03.json",
+     "sha256": "ce98850b4ed08720ec5d47d5ebf4bea0021407d38f3a5f02b6591cf903b47c47"
+    },
+    {
+     "file": "circuits/s808-real-plus-02.json",
+     "sha256": "984b074feff9e273bfe5f80bc281c2e2176b24c9d994807c62bb602177d50970"
+    },
+    {
+     "file": "circuits/s808-real-minus-02.json",
+     "sha256": "d0de3e1625994834a750aff120329cae031ce1a9effd9a30ec5b987f7ac1d0df"
+    },
+    {
+     "file": "circuits/s808-real-minus-03.json",
+     "sha256": "136772071203ebfa8d426fa488bf9e0c13adf99fd112da98727a3d005bf36fea"
+    },
+    {
+     "file": "circuits/s808-real-plus-03.json",
+     "sha256": "0a27ec75cbf25f333f29cf0e3dab7bd91054aefb41591e0823214a40916058e3"
+    },
+    {
+     "file": "circuits/s412-plain-plus-02.json",
+     "sha256": "977fd9f93935c80737cfcef15e971c5631b41e62763246e93e6a14d31e533fb0"
+    },
+    {
+     "file": "circuits/s412-plain-minus-02.json",
+     "sha256": "22c96e8c639842bc9c8f1e20d2c8b60f9d3ff35124639a894a879c5f91152f03"
+    },
+    {
+     "file": "circuits/s412-plain-minus-03.json",
+     "sha256": "05a64df2da567750e885e7bfb0e3cfc98d22c6c958bbc15c8d48d2e9cdced484"
+    },
+    {
+     "file": "circuits/s412-plain-plus-03.json",
+     "sha256": "9c1d9a42ee9f3d9046665e1c0acc53208bf745ed27f0577b9660d2f95dd0cefa"
+    },
+    {
+     "file": "circuits/s412-cplx-plus-02.json",
+     "sha256": "247c2a8e1866c864c73183dca29190a0daba46f96a4df87aa9a42da5b32b0cfc"
+    },
+    {
+     "file": "circuits/s412-cplx-minus-02.json",
+     "sha256": "9d08516ae1816bbc32d33076606eba7c4d5c142871081bf1aa241abfaf359572"
+    },
+    {
+     "file": "circuits/s412-cplx-minus-03.json",
+     "sha256": "b3acae6b8c431ceec667f05876371dc4a54a5f9ad1dae4bb3b5416e0ebb1ea9f"
+    },
+    {
+     "file": "circuits/s412-cplx-plus-03.json",
+     "sha256": "32911b4daabe5d9233beb57e004c2fd6f873aca6efef5bbe3adc752bf654a274"
+    },
+    {
+     "file": "circuits/s412-real-plus-02.json",
+     "sha256": "078f8c8eae802842b4d9f652fd0897df8fe3e03222dd13ec3c3c3a569b9edc9e"
+    },
+    {
+     "file": "circuits/s412-real-minus-02.json",
+     "sha256": "54ca0d08810f3a5fd478478d03c77f66ca74a46778919fa97ffa045b1222d6c8"
+    },
+    {
+     "file": "circuits/s412-real-minus-03.json",
+     "sha256": "27a9eabe700fa2c5e2cdc9e7c9434830017ea9b352839cf5233e404e218a4000"
+    },
+    {
+     "file": "circuits/s412-real-plus-03.json",
+     "sha256": "c9ca77dd4f02ebd301afb174cc31ee64eee7d076e4821a50002d0871936620d9"
+    },
+    {
+     "file": "circuits/s016-plain-plus-02.json",
+     "sha256": "257e1e6735b0e1ceee6da6bf54fa2e5bcc1a67f57d17fb4dd0b5d4642c6fcb1e"
+    },
+    {
+     "file": "circuits/s016-plain-minus-02.json",
+     "sha256": "701050f6a8a9359ad3380419ca16c83d69fffdb067942347a261c1fc2a544b33"
+    },
+    {
+     "file": "circuits/s016-plain-minus-03.json",
+     "sha256": "b53304e7b66954757eed959c9ec993611a1d14c574e9c2f3bccde8a00497c82a"
+    },
+    {
+     "file": "circuits/s016-plain-plus-03.json",
+     "sha256": "da4c3a78695fe73a5b32b149d1a880fd273d32d37a852c2b55fd9f687f3da270"
+    },
+    {
+     "file": "circuits/s016-cplx-plus-02.json",
+     "sha256": "762235066e5e577ebbe89dc0ce25a8f24e7faf138f36402c58b93df916ce27dd"
+    },
+    {
+     "file": "circuits/s016-cplx-minus-02.json",
+     "sha256": "331a31a0bee278b033cf735e43d14ccaad9bf6deeb529c2b29010efc5e50f841"
+    },
+    {
+     "file": "circuits/s016-cplx-minus-03.json",
+     "sha256": "f2a62655d6fb98f1df6f7e8d9f2b1a056e28597d06cd003e2bedb906dff512d2"
+    },
+    {
+     "file": "circuits/s016-cplx-plus-03.json",
+     "sha256": "2a40020c3804286cd1ce5f6fefea97163e10dbfad7a9f262adb8805d6f84a05c"
+    },
+    {
+     "file": "circuits/s016-real-plus-02.json",
+     "sha256": "11b6ce5123049d42740e8f3e95bf1641d3c99347bf0b6c63034e087fb5dbe7a6"
+    },
+    {
+     "file": "circuits/s016-real-minus-02.json",
+     "sha256": "9c3f8080ccc85548006c88bbc8517c9dbcf59fb8a7225948a473f1406c03a0b8"
+    },
+    {
+     "file": "circuits/s016-real-minus-03.json",
+     "sha256": "b955d49c8867e1a0c41c125dda400edb231484c37d0e0f548b968b6f90af47aa"
+    },
+    {
+     "file": "circuits/s016-real-plus-03.json",
+     "sha256": "dbb04b446d3b33b36b59e0b1666bc67619f0fa22948d8e92c3fa7a6e47b48e77"
+    }
+   ],
+   "expected_seconds": 10.365,
+   "job": "kernel",
+   "max_credits": {
+    "garnet": 10.5,
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {
+     "garnet": "a0e725eb-a020-43d3-8aaf-072b926e425a"
+    },
+    "heralding_mode": "zeros"
+   },
+   "shots": 8500
+  }
+ ],
+ "prediction_sha256": "0a922e8c3e16b80f19779fb317210b4eea6dc8652db4907684e4b25645684237",
+ "qcs": [
+  "garnet:mock",
+  "garnet"
+ ],
+ "question": "On Garnet, does the selector-zero difference of the coset-block kernel map of A_5 read the complex nullity of e_i + i e_j (16, 12, 8 and 4 at the strata 0/16, 4/12, 8/8 and 12/4 of the pairs e_1 + e_3, e_1 + e_26, e_1 + e_10 and e_1 + e_18) rather than the real one (0, 4, 8, 12), and does the plain-phase mutation read the opposite sign?",
+ "schema": "iqm-circuit-case-v1"
+}
