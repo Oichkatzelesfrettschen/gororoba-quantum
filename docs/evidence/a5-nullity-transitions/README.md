@@ -6,11 +6,11 @@ or 16 ([rank strata](../a5-zero-divisor-strata/README.md)). The record joins the
 polynomial paths, certifies the limiting kernels at one junction, and determines the first-order structure that
 governs every nullity-4 approach to the nullity-8 point e_1 + e_10. Every decision is an exact rational rank, a
 polynomial identity or an exact real-root count; no random draw enters. `--check` recomputes the record and compares
-its bytes; `--self-test` runs six controls, each a property that fails on a mutated input, in normal and `-O` modes.
+its bytes; `--self-test` runs eight controls, each a property that fails on a mutated input, in normal and `-O` modes.
 
 The paths gamma_1, gamma_2, gamma_3 and the pair of limiting planes of statement 3 come from an outside report
 ([review](../../archive/reviews/a5-outside-transition-report/README.md)); statements 2 (the second end of gamma_3)
-and 5 to 9 are computed here first. Ledger rows A5-650 to A5-660 of
+and 5 to 9 are computed here first. Ledger rows A5-650 to A5-665 of
 [the claim ledger](../a5-exceptional-fibers/ledger.tsv) carry the statements.
 
 ## Conventions
@@ -89,14 +89,52 @@ Each statement has a `require` in the script's `validate`; the name of the recor
     <e_i, e_j e_k> is alternating on the imaginary units at levels 8 to 64. On u = a e_1, v = b e_2, mu = i,
     Q = a^2 + b^2 - 1 and G = ((a + b)^2 - 1)((a - b)^2 - 1).
 
+11. **Order of vanishing at the junctions** (`paths`). At each exceptional parameter the lowest coefficient c_k(s)
+    vanishes to order 8 with a positive cofactor (2^40 on gamma_1, 2^32 on gamma_2, 2^52 at both ends of gamma_3):
+    four Gram eigenvalues vanish quadratically, so four singular values of L vanish linearly.
+12. **Tower** (`tower`). At e_1 + e_10 in A_4 the kernel has dimension 4, the pencil and its Lie closure have
+    dimension 3 and the commutant is a quaternion algebra. At the same element in A_6 the kernel has dimension 16
+    and splits as two equal 8-dimensional parts across the halves, the pencil has dimension 15, the commutant is a
+    quaternion algebra and the Lie closure has dimension 36. With statement 5 the three levels read sp(1), sp(2),
+    sp(4) on H, H^2, H^4, with pencil dimensions 3, 7, 15.
+13. **The kernel split decides the type on W8** (`structure`, `sampled_structure`). For each of the 8 named points
+    and of 36 sampled points of W8, either ker L_y meets the lower half A_4 + 0 and the upper half 0 + A_4 in one
+    4-dimensional subspace A each, so that the kernel is A + A, and the pencil is quaternionic (7, 4, 10); or the
+    kernel meets each half in 0 and the pencil has a scalar commutant and Lie closure so(8) (7, 1, 28). The sample
+    is every ninth of the 474 four-term points e_1 +- e_a +- e_b +- e_c of nullity 8 in a fixed order: 53 points,
+    of which 36 lie in W8, 6 of the first type and 30 of the second. The rule "XOR group of the support of order
+    8" fails on the sample in both directions (e_1 + e_12 + e_13 + e_30 has order 8 and a scalar commutant).
+14. **Pencils at VB and N+-** (`strata_pencils`, `vb_pfaffian`). At e_3 + e_20 the kernel has dimension 12, the
+    pencil dimension 9, the commutant is the scalars and the Lie closure is so(12), of dimension 66. At the N- and
+    N+ ends of gamma_3 the kernel has dimension 16 and meets each half in one 4-dimensional subspace, the pencil
+    has dimension 19, the commutant is the scalars and the Lie closure is so(16), of dimension 120: the split rule
+    of statement 13 belongs to W8. The Pfaffian of the VB pencil, in a frame with Gram 2 I, is -64 times an
+    irreducible polynomial of degree 6 with 50 terms in nine coordinates, while Q vanishes to order 1 and G to
+    order 2 on the lines through the point: it is not a product of squared moduli of their leading forms.
+15. **Arcs outside the coordinate lines** (`arcs`). Twenty imaginary units have zero compression at e_1 + e_10.
+    The line along each has nullity 0 at s = 3. Of the 380 signed pairs of them, 200 give nullity 0, 160 give
+    nullity 8 and 20 give nullity 4; each of the 20 has generic nullity 4 and, with a zero first-order form, a
+    limiting plane equal to the plane of the normal e_3 (10 lines) or -e_3 (10 lines). Two curved arcs
+    y_0 + s w(t_0 + s) along the conic zeta(t) = (1 - t^2, i (1 + t^2), 2 t), at t_0 = 1 and 2, have generic
+    nullity 4 and limit on the plane of the normal of w(t_0).
+
 ## Reading and open questions (ledger rows A5-656, A5-657, A5-660)
 
 At e_1 + e_10 the limiting planes of the lines of statement 7 are the points of the conic zeta.zeta = 0 in the
 projective plane of C^3, a 2-sphere, embedded in the quaternionic lines HP^1 = S^4 of the kernel H^2 with the round
-overlap law. The record covers lines in the six coordinate units; curved arcs, and directions with a component on
-the twenty units of zero compression, are open (A5-660). The quaternion commutant is absent at two W8
-points, so the hypothesis that every W8 point carries it is refuted (A5-656); which real invariant of a W8 point
-decides the commutant, and which type is generic, are open (A5-660), as are the pencils at VB and N+- (A5-657).
+overlap law. The record covers lines in the six coordinate units, two curved arcs along the conic and the lines along pairs
+of zero-compression units (statement 15), all of which limit on the 2-sphere; a proof for every arc is open (A5-660). The quaternion commutant is absent at two W8
+points, so the hypothesis that every W8 point carries it is refuted (A5-656). The kernel split of statement 13 decides
+the type on all 44 tested points (A5-664, survives); a proof, and the invariant that cuts out limiting kernels at
+VB and N+-, are open (A5-657, A5-664).
+
+The nearest published result is S. Koebisu, "Principal angles between annihilators of real sedenion zero
+divisors", arXiv 2611.30652 (abstract read): two sedenion annihilators with axes at angle theta have principal
+cosines (p, p, q, q) with cos^2(theta/2) <= p <= cos(theta/2) and q <= p. The limiting planes of statement 8
+satisfy P P' P = cos^2(theta/2) P by the Clifford relations, so all four cosines equal cos(theta/2), the upper
+end of that range; the planes here are limits of A_5 annihilators inside one 8-dimensional kernel, indexed by a
+2-sphere. Three arXiv queries of 2026-11-27 on limits, tangent cones and Pfaffians of Cayley-Dickson
+left multiplication returned no other work; that search bounds the novelty claim.
 
 ## Predictions
 
@@ -104,7 +142,9 @@ Written before the runs they concern (`predictions`, `prediction_held`). P1, P2 
 clause: it named s = 1 as the only exceptional parameter of gamma_3, and the count of real roots gives s = -1 as well.
 P9 failed: it predicted the quaternion commutant at the four-term W8 point e_1 + e_10 + e_3 + e_20. P10 held (an
 upper-half and a four-term lower-half point are quaternionic). P11 failed: it predicted a non-quaternionic commutant
-at e_1 + e_10 + 2 (e_18 - e_25), whose halves are linearly independent.
+at e_1 + e_10 + 2 (e_18 - e_25), whose halves are linearly independent. Of the second round, P12 and P13 (the tower),
+P16 (curved arcs) and P17 (the kernel split) held; P14 (the VB Pfaffian as a product of leading forms) and P15 (the
+XOR-order rule) failed.
 
 ## Reviews
 
@@ -117,4 +157,4 @@ quaternions from the other algebras of dimension 4.
     "$PYTHON" -B -W error scripts/a5_nullity_transitions.py --check docs/evidence/a5-nullity-transitions/result.json
     "$PYTHON" -B -W error scripts/a5_nullity_transitions.py --self-test
 
-Measured on the compute workstation: 10 s and 90 MiB for the record, 4 s and 110 MiB for the self-test.
+Measured on the compute workstation (32 threads): 103 s and 260 MiB for the record, 8 s for the self-test.

@@ -4891,7 +4891,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/a5_nullity_transitions.py --check docs/evidence/a5-nullity-transitions/result.json",
       "name": "core-a5-nullity-transitions",
-      "seconds": 10.0,
+      "seconds": 120.0,
       "workers": "all",
       "replays": [
         "docs/evidence/a5-nullity-transitions/result.json"
@@ -4902,7 +4902,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/a5_nullity_transitions.py --self-test && \"$PYTHON\" -B -W error -O scripts/a5_nullity_transitions.py --self-test",
       "name": "core-a5-nullity-transitions-self-test",
-      "seconds": 5.0
+      "seconds": 20.0
     },
     {
       "suite": "core",
