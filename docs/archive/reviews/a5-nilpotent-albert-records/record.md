@@ -1,9 +1,8 @@
 # Review record: nilpotent and idempotent counts of A_n over F_p, and the Albert anchor stabilizers
 
 Pull request: gororoba-quantum PR 1033 (branch a5-nilpotent-albert-records, head 443408924).
-Owner decisions (2026-11-27): local reviewer a DeepSeek red team through opencode; the free model answered
-`provider.free-limit` and the OpenCode Go model was refused by the allowance guard (weekly window at its 79 percent
-ceiling), so the owner chose the agy Neon low red team in its place.
+Owner decisions (2026-11-27): local reviewer a DeepSeek red team through opencode; both DeepSeek routes were
+unavailable at the time of the review, so the owner chose the agy Neon low red team in its place.
 
 ## Acceptance before review
 
@@ -22,7 +21,19 @@ exit 0 for both (18.5 s and 167.7 s); a copy of the Albert `result.json` with on
 | 6 | Claim 6 justified: ledger statuses match the records; the README labels the F_4 facts as known facts confirmed under the convention. | Accepted. |
 | Q | No host, private path or private identifier in the diff. | Accepted; the session's own grep agrees. |
 
-Conjectures the red team names (open, not run here): (a) the split Cayley-Dickson algebras over F_p, p odd, have
+Conjectures the red team names, tested after the review (predictions written first; exhaustive, one run): (a) the split Cayley-Dickson algebras over F_p, p odd, have
 the same counts (split imaginary norm with determinant +1; cheapest test: M_2(F_3), 81 elements, expect 9 and 12);
 (b) over F_2, x^2 = (sum of the coordinates) 1, so the elements with x^2 = 0 form the even-weight hyperplane
 (2^(2^n - 1) elements) and no idempotent other than 0 and 1 exists (cheapest test: A_2 and A_3 over F_2).
+Results: M_2(F_3) gives 9 and 12, M_2(F_5) gives 25 and 30; A_1, A_2, A_3 over F_2 give 2, 8 and 128 elements with
+x^2 = 0, the same with x^4 = 0, no other idempotent, and x^2 = (sum of the coordinates) 1 at every element. Both
+predictions held at these sizes; the split case beyond n = 2 and the F_2 case beyond n = 3 stay untested.
+
+## Advisor
+
+- The pull-request body said pr.yml runs the four gates.json entries; the repository guide runs them on demand.
+  Fixed: the body names the direct `--check` and `--self-test` runs.
+- The mutant loop of the Albert script ran serially, against the parallel.py rule. Fixed: `mutant_dims` runs through
+  `parallel.ordered_map`; `--check` (18.9 s) and `--self-test` (plain and `-O`) pass again; the counts script already
+  used `parallel.ordered_map`.
+- mypy through `ci/pinned_tool.py` was not run locally; the hosted `types` check decides.
