@@ -8,12 +8,12 @@
  "command": "sample_count",
  "gate_form": "unitary",
  "min_detected_photons": 1,
- "iterations": 36,
- "max_samples": 724000,
- "max_shots": 1448000,
+ "iterations": 30,
+ "max_samples": 715000,
+ "max_shots": 1430000,
  "max_duration": 300,
  "max_credits": 1.12,
- "expected_seconds": 224.16,
+ "expected_seconds": 227.16,
  "census": {
   "path": "docs/evidence/box_kite_census/census.json",
   "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
@@ -436,48 +436,6 @@
    "input_mode": 22,
    "max_samples": 60000,
    "max_shots": 120000
-  },
-  {
-   "name": "e30-s22-n1500",
-   "compilation_seed": 20,
-   "input_mode": 22,
-   "max_samples": 1500,
-   "max_shots": 3000
-  },
-  {
-   "name": "e31-s20-n1500",
-   "compilation_seed": 20,
-   "input_mode": 20,
-   "max_samples": 1500,
-   "max_shots": 3000
-  },
-  {
-   "name": "e32-s20-n1500",
-   "compilation_seed": 20,
-   "input_mode": 20,
-   "max_samples": 1500,
-   "max_shots": 3000
-  },
-  {
-   "name": "e33-s22-n1500",
-   "compilation_seed": 20,
-   "input_mode": 22,
-   "max_samples": 1500,
-   "max_shots": 3000
-  },
-  {
-   "name": "e34-s22-n1500",
-   "compilation_seed": 20,
-   "input_mode": 22,
-   "max_samples": 1500,
-   "max_shots": 3000
-  },
-  {
-   "name": "e35-s20-n1500",
-   "compilation_seed": 20,
-   "input_mode": 20,
-   "max_samples": 1500,
-   "max_shots": 3000
   }
  ],
  "design": "docs/design/belenos-offcone-mechanisms-case.md",
@@ -491,72 +449,121 @@
   "mesh_variance": {
    "kind": "anchors",
    "anchors": 1,
-   "repeats_per_anchor": 36
+   "repeats_per_anchor": 30
   },
-  "void": "an entry is void when its served mesh sha256 does not start with 29dc6ef8, its computed_input is not one photon on its setting's input_mode, or its recorded samples differ from its max_samples; a job whose results_list length differs from iterations is void; job-00 with fewer than 25 presences in all entries reads 'rate not reproduced' and no contrast reads",
-  "observable": "per entry, over the modes outside the cone of the entry's returned mesh and source (scripts/qd_belenos_cone.py), the presences: the off-cone modes whose one-click count is at least 32. An off-cone count from 1 to 31 is a break of the zero-or-packet law and is reported beside the presences",
+  "jobs": "job-00 and job-02 send the server's default mitigations and job-01 sends mitigations = [], run in the order job-00, job-01, job-02; the three run unconditionally, and no presence count of an earlier job gates a later one",
+  "void": "a source-20 entry is void when its served mesh sha256 does not start with 29dc6ef8; a source-22 entry is void when its returned mesh, whichever it is, leaves any of modes 0, 1, 5 inside the cone of that mesh and source (scripts/qd_belenos_cone.py); an entry of either source is void when its computed_input is not one photon on its setting's input_mode or its recorded samples differ from its max_samples. The returned mesh sha256 of every entry is reported beside its presences. Entries come in adjacent source pairs of one level, and a results_list that ends before iterations (a cut at max_duration) keeps its completed pairs: the contrasts read the observed exposures of the valid entries and the unpaired trailing entry is dropped. No presence count voids a job",
+  "observable": "per entry, over the modes outside the cone of the entry's returned mesh and source (scripts/qd_belenos_cone.py) other than mode 5, the presences (the primary count): the off-cone modes whose one-click count is at least 32. Mode 5 is a separate secondary readout with its own presences, never added to the primary count. An off-cone count from 1 to 31 is a break of the zero-or-packet law and is reported beside the presences",
+  "source_separation": {
+   "lit_detectors_of_source_20": [
+    20,
+    21
+   ],
+   "ideal_share_on_detectors_20_21": {
+    "20": 1.0,
+    "22": 0.5983
+   },
+   "ideal_share_on_modes_10_19": {
+    "20": 0.0,
+    "22": 0.2123
+   },
+   "max_rate_ratio_source_20_over_22": 1.671,
+   "disjoint_source_pair": "none on mesh 29dc6ef8: of the twelve connected sources only 20 and 22 keep modes 0, 1 and 5 off-cone, and their lit detector sets overlap; a source 22 entry that returns another mesh brings its own cone and ideal shares, which the live plan read of the returned meshes states before submission",
+   "degenerate_with_window_samples": "source-independent photon-triggered episodes (a packet per photon burst on any detector) give equal presences per sample for both sources and at every level, which is the window_samples prediction; the design separates detector-resolved episodes only, and the reading 'window_samples or source-independent episodes' stays one reading"
+  },
   "mechanisms": {
-   "episodes": "the photon triggers packets: presences per sample differ between the two sources, which light different detectors (source 20 reaches modes 20 and 21 on the ideal block, source 22 all four)",
-   "window_samples": "noise over a window proportional to the recorded samples at a source-independent rate: equal presences per sample for both sources and at every level",
+   "episodes": "detector-resolved photon-triggered packets: presences per sample follow the photons on the detectors the source lights, so source 20 reads up to 1.671 times the presences per sample of source 22 on 29dc6ef8 (ratio 1 would read no source effect)",
+   "window_samples": "noise over a window proportional to the recorded samples at a source-independent rate, or source-independent photon-triggered episodes: equal presences per sample for both sources and at every level",
    "window_time": "noise over the true acquisition window, samples over physical_perf: equal for both sources, and presences per sample at 1500 samples above those at 60000 by physical_perf(60000) / physical_perf(1500) = 17.6",
-   "balancing": "the default DetectorBalancing processing makes the packets: job-01 (mitigations = []) reads none"
+   "balancing": "the default DetectorBalancing processing amplifies rare raw clicks into packets (it creates no click on a zero-count mode): job-01 (mitigations = []) reads fewer presences than the default jobs on both sides of it"
   },
   "contrasts": {
-   "mitigation": "total presences of job-01 against job-00 over their equal exposures: two-sided exact binomial test of job-01's share of the pair at 1/2, alpha 0.05",
-   "source": "presences of source 22 against source 20 within a job: two-sided exact binomial test of source 22's share at the exposure share, alpha 0.05; pooled over both jobs when the mitigation contrast does not reject",
-   "level": "presences at 1500 samples against those at 60000: two-sided exact binomial test of the 1500 share at the sample-law share, alpha 0.05, and the same test at the time-law share"
+   "drift": "presences of job-02 against job-00 over their equal exposures: two-sided exact binomial test of job-02's share of the pair at 1/2, alpha 0.05",
+   "mitigation": "presences of job-01 against the pooled job-00 and job-02 over their equal exposures: two-sided exact binomial test of job-01's share of the three at 1/3, alpha 0.05",
+   "source": "presences of source 22 against source 20 over the pooled default jobs: two-sided exact binomial test of source 22's share at the exposure share, alpha 0.05; pooled over all three jobs when the mitigation contrast does not reject",
+   "level": "presences at 1500 samples against those at 60000 over the same pooled jobs: two-sided exact binomial test of the 1500 share at the sample-law share, alpha 0.05, and the same test at the time-law share"
   },
   "readings": {
-   "balancing": "the mitigation contrast rejects with job-01's share below 1/2",
-   "episodes": "the mitigation contrast does not reject and the source contrast rejects",
-   "window_samples": "neither the mitigation nor the source contrast rejects, the sample-law share holds and the time-law share is rejected",
+   "balancing": "the drift contrast does not reject and the mitigation contrast rejects with job-01's share below 1/3",
+   "episodes": "the mitigation contrast does not reject and the source contrast rejects with source 22's share below the exposure share",
+   "window_samples": "neither the mitigation nor the source contrast rejects, the sample-law share holds and the time-law share is rejected (or source-independent photon-triggered episodes)",
    "window_time": "neither the mitigation nor the source contrast rejects, the time-law share holds and the sample-law share is rejected",
-   "no attribution": "any other pattern, a void job, or a level contrast whose two tests both hold or both reject"
+   "no attribution": "any other pattern, a rejected drift contrast, a void job, or a level contrast whose two tests both hold or both reject"
   },
   "power": {
-   "expected_presences_per_job": 78.57,
-   "expected_presences_by_source": {
-    "20": 39.29,
-    "22": 39.29
+   "expected_presences_per_job": 77.51,
+   "expected_presences_by_source_per_job": {
+    "20": 38.76,
+    "22": 38.76
    },
+   "expected_mode_5_presences_per_job": 49.04,
    "source_contrast": {
+    "pooled_jobs": [
+     "job-00",
+     "job-02"
+    ],
     "null_share_of_second_source": 0.5,
-    "power_by_rate_ratio": {
-     "1.0": 0.0381,
-     "1.5": 0.4711,
-     "2.0": 0.9469,
-     "3.0": 1.0
+    "rate_ratio_bound_on_29dc6ef8": 1.671,
+    "power_by_rate_ratio_source_20_over_22": {
+     "fixed_total": {
+      "1.0": 0.0414,
+      "1.25": 0.2561,
+      "1.5": 0.6774,
+      "1.671": 0.8667,
+      "2.0": 0.985,
+      "3.0": 1.0
+     },
+     "source_22_scaled": {
+      "1.0": 0.0414,
+      "1.25": 0.233,
+      "1.5": 0.5927,
+      "1.671": 0.7779,
+      "2.0": 0.944,
+      "3.0": 0.9993
+     }
     }
    },
    "level_contrast": {
+    "pooled_jobs": [
+     "job-00",
+     "job-02"
+    ],
     "levels": [
      1500,
      60000
     ],
     "expected_presences_sample_law": {
-     "1500": 2.6,
-     "10000": 10.85,
-     "60000": 65.12
+     "1500": 3.25,
+     "10000": 21.68,
+     "60000": 130.09
     },
     "expected_presences_time_law": {
-     "1500": 26.4,
-     "10000": 14.67,
-     "60000": 37.5
+     "1500": 37.25,
+     "10000": 33.11,
+     "60000": 84.66
     },
     "reject_sample_law_when_time_law_holds": 1.0,
     "reject_time_law_when_sample_law_holds": 1.0,
-    "size_of_sample_law_test": 0.0314
+    "size_of_sample_law_test": 0.0328
    },
    "mitigation_contrast": {
-    "null_share_of_job_01": 0.5,
+    "null_share_of_job_01": 0.3333,
     "power_by_rate_ratio_of_job_01": {
      "0.0": 1.0,
      "0.25": 1.0,
-     "0.5": 0.9469,
-     "1.0": 0.0414
+     "0.5": 0.9861,
+     "1.0": 0.0462
+    }
+   },
+   "drift_contrast": {
+    "null_share_of_job_00": 0.5,
+    "power_by_rate_ratio_job_02_over_job_00": {
+     "1.0": 0.0414,
+     "1.5": 0.778,
+     "2.0": 0.9991
     }
    }
   },
-  "power_basis": "exact Poisson counts at 1.0853e-04 presences per sample (49 in 451,500 samples of the 58 iterated cells of docs/evidence/quandela/belenos_offcone_packets.json); retained packets of one cell co-occur across modes 0 and 5 (20 cells against 13.9 expected), so the table is an upper bound on every power entry"
+  "power_basis": "exact Poisson counts at 1.0841e-04 primary presences per sample (49 in 452,000 samples of the 58 iterated cells of docs/evidence/quandela/belenos_offcone_packets.json, modes other than 5); the source rows hold the pooled total at the retained rate (fixed_total) or scale source 22 down to 1 / ratio of the retained rate (source_22_scaled); retained packets of one cell co-occur across modes 0 and 5 (20 cells against 13.9 expected), so the table is an upper bound on every power entry"
  }
 }

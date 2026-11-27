@@ -37,14 +37,22 @@ def test_the_written_jobs_read_as_one_seeded_iterator_with_sources_and_budgets()
         case = manifest(job)
         if qd_records.iteration_form(case) != "seeded":
             raise AssertionError(job)
-        if case["max_samples"] != sum(s["max_samples"] for s in case["settings"]) or case["iterations"] != 36:
+        if case["max_samples"] != sum(s["max_samples"] for s in case["settings"]) or case["iterations"] != 30:
             raise AssertionError(job)
         if {s["compilation_seed"] for s in case["settings"]} != {20}:
             raise AssertionError("the compilation seed is the identifier of mesh 29dc6ef8")
         if case["expected_seconds"] > boc.DURATION_MARGIN * boc.MAX_DURATION:
             raise AssertionError(case["expected_seconds"])
-    if "mitigations" in manifest("job-00") or manifest("job-01")["mitigations"] != []:
+    if (
+        "mitigations" in manifest("job-00")
+        or "mitigations" in manifest("job-02")
+        or manifest("job-01")["mitigations"] != []
+    ):
         raise AssertionError("only job-01 turns the server mitigations off")
+    if json.loads(documents()["job-00/cases.json"])["settings"] != manifest("job-02")["settings"]:
+        raise AssertionError("the default jobs repeat one schedule")
+    if not 24 <= len(manifest()["settings"]) <= 30 or boc.worst_seconds(boc.schedule()) > boc.MAX_DURATION:
+        raise AssertionError("the entry count leaves the duration bound")
 
 
 def test_a_mixed_input_mode_list_is_refused() -> None:
@@ -101,14 +109,75 @@ def test_the_binomial_rejection_region_is_exact() -> None:
 
 def test_power_keeps_its_size_and_rises_with_the_rate_ratio() -> None:
     table = boc.power_table(boc.schedule())
-    by_ratio = table["source_contrast"]["power_by_rate_ratio"]
-    if by_ratio["1.0"] > boc.ALPHA or not by_ratio["1.5"] < by_ratio["2.0"] < by_ratio["3.0"]:
-        raise AssertionError(by_ratio)
+    for scenario, by_ratio in table["source_contrast"]["power_by_rate_ratio_source_20_over_22"].items():
+        if by_ratio["1.0"] > boc.ALPHA or not by_ratio["1.5"] < by_ratio["2.0"] < by_ratio["3.0"]:
+            raise AssertionError((scenario, by_ratio))
+    fixed = table["source_contrast"]["power_by_rate_ratio_source_20_over_22"]["fixed_total"]
+    scaled = table["source_contrast"]["power_by_rate_ratio_source_20_over_22"]["source_22_scaled"]
+    if any(scaled[r] > fixed[r] for r in fixed if r != "1.0"):
+        raise AssertionError("halving source 22 lowers the total and cannot add power")
+    if table["drift_contrast"]["power_by_rate_ratio_job_02_over_job_00"]["1.0"] > boc.ALPHA:
+        raise AssertionError(table["drift_contrast"])
     if table["level_contrast"]["size_of_sample_law_test"] > boc.ALPHA:
         raise AssertionError(table["level_contrast"])
-    if table["mitigation_contrast"]["power_by_rate_ratio_of_job_01"]["0.0"] < 0.99:
+    mitigation = table["mitigation_contrast"]["power_by_rate_ratio_of_job_01"]
+    if mitigation["0.0"] < 0.99 or mitigation["1.0"] > boc.ALPHA:
         raise AssertionError(table["mitigation_contrast"])
 
 
 def test_the_retained_case_files_equal_the_rebuild() -> None:
     boc.build(check_only=True)
+
+
+def test_the_primary_rate_excludes_mode_5_and_the_total_is_not_inflated() -> None:
+    if boc.PRESENCE_PER_SAMPLE != 49 / 452_000 or boc.MODE5_PER_SAMPLE != 31 / 452_000:
+        raise AssertionError((boc.PRESENCE_PER_SAMPLE, boc.MODE5_PER_SAMPLE))
+    table = boc.power_table(boc.schedule())
+    total = sum(r["max_samples"] for r in boc.schedule())
+    if table["expected_presences_per_job"] != round(49 / 452_000 * total, 2):
+        raise AssertionError(table["expected_presences_per_job"])
+    split = table["expected_presences_by_source_per_job"]
+    if abs(sum(split.values()) - table["expected_presences_per_job"]) > 0.02:
+        raise AssertionError(split)
+    observable = manifest()["preregistered"]["observable"]
+    if "other than mode 5" not in observable or "separate secondary readout" not in observable:
+        raise AssertionError(observable)
+
+
+def test_the_source_ratio_bound_follows_the_served_mesh_and_degeneracy_is_named() -> None:
+    shares = boc.ideal_shares()
+    if not (shares[20]["detectors_20_21"] > 0.999 and 0.59 < shares[22]["detectors_20_21"] < 0.60):
+        raise AssertionError(shares)
+    if not math.isclose(boc.source_ratio_bound(), 1 / shares[22]["detectors_20_21"], abs_tol=2e-3):
+        raise AssertionError(boc.source_ratio_bound())
+    prereg = manifest()["preregistered"]
+    separation = prereg["source_separation"]
+    if separation["max_rate_ratio_source_20_over_22"] != boc.source_ratio_bound():
+        raise AssertionError(separation)
+    if "source-independent photon-triggered episodes" not in separation["degenerate_with_window_samples"]:
+        raise AssertionError(separation)
+    if (
+        str(boc.source_ratio_bound())
+        not in prereg["power"]["source_contrast"]["power_by_rate_ratio_source_20_over_22"]["fixed_total"]
+    ):
+        raise AssertionError("the power table omits the attainable bound")
+
+
+def test_the_mitigation_arm_is_unconditional_and_source_22_may_return_its_own_mesh() -> None:
+    prereg = manifest()["preregistered"]
+    if (
+        "25 presences" in prereg["void"]
+        or "rate not reproduced" in prereg["void"]
+        or "gates a later one" not in prereg["jobs"]
+    ):
+        raise AssertionError(prereg["jobs"])
+    if (
+        "source-22 entry is void when its returned mesh" not in prereg["void"]
+        or "whichever it is" not in prereg["void"]
+    ):
+        raise AssertionError(prereg["void"])
+    if (
+        "completed pairs" not in prereg["void"]
+        or "creates no click on a zero-count mode" not in prereg["mechanisms"]["balancing"]
+    ):
+        raise AssertionError(prereg)
