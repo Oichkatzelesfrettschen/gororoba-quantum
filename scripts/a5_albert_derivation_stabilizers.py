@@ -37,6 +37,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import cd_core  # noqa: E402
+import parallel  # noqa: E402
 
 MUTATED_PAIRS = ((1, 2), (1, 4), (3, 5))
 Sign = list[list[int]]
@@ -237,6 +238,15 @@ def baseline() -> dict[str, Any]:
     }
 
 
+def mutant_dims(pair: tuple[int, int]) -> dict[str, int]:
+    """Derivation dimensions of O and J_3(O) with the sign of one basis pair (and its reverse) negated."""
+    s = mutated_sign(octonion_sign(), *pair)
+    return {
+        "dim_Der_O": derivations(octonion_algebra(s))[0],
+        "dim_Der_J3_O": derivations(jordan_algebra(s, 8)[0])[0],
+    }
+
+
 def compute() -> dict[str, Any]:
     base = baseline()
     d_o, b_o, rk_o, rows_o = base["O"]
@@ -250,14 +260,9 @@ def compute() -> dict[str, Any]:
     res["Der_J3_R"] = {"dim": d_j1, "rank": rk_j1, "rows": rows_j1}
     res["Der_J3_O"] = {"dim": d_j8, "rank": rk_j8, "rows": rows_j8, "unknowns": nj * nj}
     res["zero_product_dim_Der"] = derivations(Alg(8, [[{} for _ in range(8)] for _ in range(8)], False))[0]
-    mutants = {}
-    for a, b in MUTATED_PAIRS:
-        s = mutated_sign(sign, a, b)
-        mutants[f"{a},{b}"] = {
-            "dim_Der_O": derivations(octonion_algebra(s))[0],
-            "dim_Der_J3_O": derivations(jordan_algebra(s, 8)[0])[0],
-        }
-    res["mutants"] = mutants
+    pairs = list(MUTATED_PAIRS)
+    dims = parallel.ordered_map(mutant_dims, pairs)
+    res["mutants"] = {f"{a},{b}": d for (a, b), d in zip(pairs, dims, strict=True)}
 
     def act_on_j(dvec_flat: list[int]) -> list[int]:
         """Entrywise action of a derivation of O on each basis element of J_3(O), as a flat nj x nj matrix."""
