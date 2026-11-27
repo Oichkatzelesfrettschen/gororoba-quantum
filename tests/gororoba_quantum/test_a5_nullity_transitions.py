@@ -39,7 +39,9 @@ def test_three_form_alternates() -> None:
 
 def test_sedenion_point_has_quaternion_commutant() -> None:
     row = record.structure_item((16, ((1, 1), (10, 1))))
-    expect((row["kernel"], row["pencil_dimension"], row["commutant_dimension"], row["lie_closure_dimension"]), (4, 3, 4, 3))
+    expect(
+        (row["kernel"], row["pencil_dimension"], row["commutant_dimension"], row["lie_closure_dimension"]), (4, 3, 4, 3)
+    )
     expect(record.tower_ok(row, 4, 3, 3), True)
 
 
