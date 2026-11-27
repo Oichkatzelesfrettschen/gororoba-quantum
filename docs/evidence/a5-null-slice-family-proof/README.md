@@ -31,7 +31,7 @@ follows by induction on n through Step 0, splitting on whether x and y are below
 
 **Lemma T.** chi_n(a, H, k) = -1 for every a outside {0, H} and every k, so L_a and L_H anticommute everywhere.
 Expanding the four factors with Step 0 splits on a below or above H, and k below or above H. In each part, the
-generic case and the cases k (or k') in {0, a} each give -1.
+generic case and the special cases each give -1: k (or k') in {0, a} for a < H, and in {0, a'} for a = H + a'.
 
 **Lemma U.** If a, t < H are distinct and nonzero, then chi_n(a, t, k) = chi_(n-1)(a, t, k mod H).
 - For k < H, every argument stays low (LL).

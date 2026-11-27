@@ -159,12 +159,12 @@ record establishes about a relation and what it leaves open.
 
 1. A proof of statements 2 to 4 from the doubling formula, replacing the coefficient checks, and its Rocq
    formalization in gororoba-math `rocq/quantum`.
-2. A proof of the star criterion as an equivalence, and of both families of statement 8 for every n from the
-   bit structure of the time index; the next computed case is n = 8.
-3. The covariance algebra of the octonion-space slices of statement 8; hypothesis: all 14 derivations of G_2 act,
-   since they fix e_8, e_16 and e_32. The exact system has 32768 x 8220 entries at n = 6.
-4. The identification of the 8-dimensional covariance algebra of statement 5 with su(3), the stabilizer of e_2 in
-   G_2 acting on the six directions.
+2. A proof of the star criterion as an equivalence. Both families of statement 8 hold for every n
+   ([family proof](../a5-null-slice-family-proof/README.md)).
+3. Done: the covariance algebra of the octonion-space slices of A_6 and A_7 is G_2, with no boost
+   ([covariance blocks](../a5-null-slice-covariance/README.md)).
+4. Done: the 8-dimensional covariance algebra of statement 5 is su(3), the stabilizer of e_2 in G_2
+   ([covariance blocks](../a5-null-slice-covariance/README.md)).
 5. The limits of the frame Phi_m along the larger cones of statement 1 into the nullity-12 rays, and their
    position in the kernel fibers of [a5-kernel-bundles](../a5-kernel-bundles/README.md).
 6. Prior art for statement 3. The two sources cited in statements 2 and 4 cover the determinant and the kernel;

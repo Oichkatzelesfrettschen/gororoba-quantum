@@ -67,10 +67,10 @@ def generator_weight(generator: tuple[int, int, bool], other: int, position: int
     return 0
 
 
-def block_constraints(task: tuple[str, int, tuple[int, int] | None]) -> list[list[int]]:
+def block_constraints(task: tuple[str, int, tuple[int, int] | None, bool]) -> list[list[int]]:
     """Constraint rows on the generator coefficients from the left kernel of block e; flip negates one sign s(a, c)
-    of the equations (self-test only)."""
-    name, e, flip = task
+    of the equations (self-test only); tied imposes Y = -X, the derivation-type system X L_y - L_y X = L_(w y)."""
+    name, e, flip, tied = task
     dimension, space, tau = SLICES[name]
     frame = (*space, tau)
     gens = generators(frame)
@@ -87,7 +87,10 @@ def block_constraints(task: tuple[str, int, tuple[int, int] | None]) -> list[lis
             c = r ^ e ^ a
             row = [0] * (2 * dimension)
             row[r] += sign(a, c)
-            row[dimension + (a ^ r)] += sign(a, a ^ r)
+            if tied:
+                row[a ^ r] -= sign(a, a ^ r)
+            else:
+                row[dimension + (a ^ r)] += sign(a, a ^ r)
             plain.append(row)
             image = []
             for generator in gens:
@@ -108,9 +111,10 @@ def block_constraints(task: tuple[str, int, tuple[int, int] | None]) -> list[lis
     return rows
 
 
-def constraints(name: str, flip: tuple[int, int] | None = None) -> list[list[int]]:
+def constraints(name: str, flip: tuple[int, int] | None = None, *, tied: bool = False) -> list[list[int]]:
     dimension = SLICES[name][0]
-    blocks = parallel.ordered_map(block_constraints, [(name, e, flip) for e in range(dimension)], min_items=1)
+    tasks = [(name, e, flip, tied) for e in range(dimension)]
+    blocks = parallel.ordered_map(block_constraints, tasks, min_items=1)
     return [row for block in blocks for row in block]
 
 
@@ -217,6 +221,13 @@ def slice_result(name: str) -> dict[str, Any]:
     }
 
 
+def tied_dimension(name: str) -> int:
+    """Covariant dimension of the derivation-type system X L_y - L_y X = L_(w y) (Y = -X)."""
+    rows = constraints(name, tied=True)
+    count = len(generators((*SLICES[name][1], SLICES[name][2])))
+    return count - rank(rows) if rows else count
+
+
 def identification(name: str, basis: list[list[int]], reference: list[list[int]]) -> dict[str, int]:
     mapped = [frame_coordinates(name, d) for d in reference]
     return {"covariant": rank(basis), "reference": rank(mapped), "union": rank(basis + mapped)}
@@ -231,6 +242,7 @@ def compute() -> dict[str, Any]:
         "octonion_derivations": len(derivations),
         "a6_against_g2": identification("A6", slices["A6"]["basis"], derivations),
         "a7_against_g2": identification("A7", slices["A7"]["basis"], derivations),
+        "derivation_type": {name: tied_dimension(name) for name in ("A6", "A7")},
         "a5_against_e2_stabilizer": identification("A5", slices["A5"]["basis"], stabilizer(derivations, 2)),
     }
 
@@ -244,6 +256,7 @@ def validate(result: dict[str, Any]) -> None:
     require((a5["constraint_rows"], a5["constraint_rank"]) == (344, 13), f"A5 constraints {a5}")
     require((a6["constraint_rows"], a6["constraint_rank"]) == (652, 14), f"A6 constraints {a6}")
     require(result["a7_against_g2"] == {"covariant": 14, "reference": 14, "union": 14}, "A7 space is not G_2")
+    require(result["derivation_type"] == {"A6": 14, "A7": 14}, f"derivation-type system {result['derivation_type']}")
     require(result["octonion_derivations"] == 14, "octonion derivations")
     require(result["a6_against_g2"] == {"covariant": 14, "reference": 14, "union": 14}, "A6 space is not G_2")
     require(result["a5_against_e2_stabilizer"] == {"covariant": 8, "reference": 8, "union": 8}, "A5 space is not su(3)")

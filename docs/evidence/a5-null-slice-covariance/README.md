@@ -17,7 +17,7 @@ So the dense system splits into blocks:
 - **Constraints.** Each block's left kernel gives linear constraints on the generators. The covariant generators are their common solutions.
 - **Subsystems.** The constraints do not depend on which generators are admitted, so the rotation and boost subsystems take column subsets of one constraint matrix.
 
-The record runs in about 2 s on the compute workstation.
+The record runs in about 15 s on the compute workstation at 16 workers.
 
 ## Statements, each checked by `--check`
 
@@ -37,10 +37,14 @@ The record runs in about 2 s on the compute workstation.
 
 ## What is new against the known theorem
 
-Every derivation D of the octonions satisfies D L_x - L_x D = L_(D x) (the Leibniz rule). So X = D, Y = -D, w = D
-solves the covariance system, and G_2 = Der(O) (Cartan) lies inside the covariance algebra of any slice whose space
-is e_1..e_7. The record's content is the reverse inclusion. Arbitrary X and Y, with X not tied to -Y, admit no further
-generator: no rotation outside G_2 and no boost.
+A derivation D of the octonions satisfies D L_x - L_x D = L_(D x) (the Leibniz rule). If D extends to a matrix X on
+A_n with X L_y - L_y X = L_(D y) for every y of the slice, then X, Y = -X and w = D solve the covariance system.
+That extension is the step a citation would have to supply (a reviewer opened Baez, The Octonions, 2002, section 4.1,
+for Der(O) = g_2; the extension to A_n was not opened here). The record checks it directly instead. With Y = -X
+imposed, the derivation-type system X L_y - L_y X = L_(w y) has covariant dimension 14 at A_6 and at A_7, the
+prediction written before the run. So G_2 lies inside the covariance algebra there through matrices of derivation
+type. The record's further content is the reverse inclusion: arbitrary X and Y admit no other generator, no rotation
+outside G_2 and no boost.
 
 ## Prediction
 
