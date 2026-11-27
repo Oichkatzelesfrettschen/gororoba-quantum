@@ -296,8 +296,8 @@ COSET_LEVELS: tuple[int, ...] = tuple(range(6, 11))
 
 
 def coset_item(level: int) -> dict[str, Any]:
-    """The octonion-space slice of A_level split into the cosets c ^ G of G = {0..7} u (tau ^ {0..7}): each coset span is
-    invariant under the frame tables, and every equation carrying w lies inside one coset, so the covariance algebra is
+    """The octonion-space slice of A_level split into the cosets c ^ G of G = {0..7} u (tau ^ {0..7}): each coset span
+    is invariant under the frame tables, and every equation carrying w lies inside one coset, so the covariance algebra is
     the intersection over cosets. Returns the number of distinct coset sign types and the intersection's dimensions."""
     tau = octonion_slice_time(level)
     dimension = 1 << level
