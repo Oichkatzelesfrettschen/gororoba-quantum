@@ -240,7 +240,8 @@ def octonion_slice_time(level: int) -> int:
 
 
 def restricted_tables(level: int) -> list[list[list[int]]]:
-    """The eight frame tables L_a (a = 1..7, tau) on V = span(e_0..e_7, e_(tau ^ 0)..e_(tau ^ 7)), local index j or 8 + j."""
+    """The eight frame tables L_a (a = 1..7, tau) on V = span(e_0..e_7, e_(tau ^ 0)..e_(tau ^ 7)), local index j or
+    8 + j."""
     tau = octonion_slice_time(level)
     dimension = 1 << level
     local = [*range(8), *(tau ^ j for j in range(8))]
@@ -256,7 +257,7 @@ def restricted_tables(level: int) -> list[list[list[int]]]:
 
 
 def restricted_covariance(tables: list[list[list[int]]]) -> dict[str, int]:
-    """Covariant dimensions of X L_y + L_y Y = L_(w y) on the 16-dimensional V, for all generators, rotations, boosts."""
+    """Covariant dimensions of X L_y + L_y Y = L_(w y) on the 16-dimensional V: all generators, rotations, boosts."""
     size = 16
     frame_size = len(tables)
     gens = generators(tuple(range(frame_size)))
@@ -272,7 +273,8 @@ def restricted_covariance(tables: list[list[list[int]]]) -> dict[str, int]:
                         row[size * size + k * size + c] += table[r][k]
                 for g, generator in enumerate(gens):
                     row[2 * size * size + g] = -sum(
-                        generator_weight(generator, other, position) * tables[other][r][c] for other in range(frame_size)
+                        generator_weight(generator, other, position) * tables[other][r][c]
+                        for other in range(frame_size)
                     )
                 rows.append(row)
     plain = 2 * size * size
