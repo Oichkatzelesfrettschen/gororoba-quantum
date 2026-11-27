@@ -46,5 +46,5 @@ The Advisor reviewed last, on the findings above and the fixed head. Its finding
 | The scan labels carry dim A and the commutant only, so the closure 15 is required at the two named type-C points | statement 13 says so |
 | "su(4)" needs its argument | added: a 15-dimensional subalgebra of the skew operators commuting with C, which form u(4) |
 | The point counts overlap (the named C and H points inside the scan, the 474 representatives inside the census) | stated in statement 13 and in A5-664 |
-| The post-red-team results rested on one implementation | an implementation that shares no code recomputed type C at the two named points, the 168-case scan, the VB identity and the nullity tally of the 29,232 census points |
+| The post-red-team results rested on one implementation | an implementation that shares no code recomputed type C at the two named points (closure 15, a commutant element with X^2 = -I), the 168-case scan, the VB identity as det B = \|q1\|^4 \|g2\|^4 at 25 rational points, and the nullity tally of the 29,232 census points (3,648 of nullity 8, the sum of the census rows; it rejected a wrong expected count written into its brief) |
 | The retained Neon report named the worktree directory | replaced by `WORKTREE-NAME` |
