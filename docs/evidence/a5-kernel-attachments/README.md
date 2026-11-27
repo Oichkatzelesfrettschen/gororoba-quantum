@@ -1420,8 +1420,8 @@ header-slice ideal and tests G(theta_w(x)) = c theta_h(G(x)) on the five coordin
 the linear forms of K_h : R_h. On N- at 32009, 32029 and 32057 and on N+ at 32009 and 32029 the solved maps equal the
 retained ones in their own normalizations (the Q(i) map of A5-640 with i sent to the root; the header map of A5-638
 with its free coordinate set to 1), and one scalar relates them: c = i / 2, i the root of -1 of the cell
-([`slice-module-map-comparison-result.json`](slice-module-map-comparison-result.json), Singular 4.4.1, 25 s; ledger
-row A5-642). The identity is forced by A5-598 and the one-dimensional solution spaces, since G carries the radical,
+([`slice-module-map-comparison-result.json`](slice-module-map-comparison-result.json), Singular 4.4.1, 25 s on one worker
+and 4.5 s on five; ledger row A5-642). The identity is forced by A5-598 and the one-dimensional solution spaces, since G carries the radical,
 its linear forms and the colon ideal of one slice to those of the other; the run confirms that the two retained
 maps, found in unrelated coordinates, are one intrinsic map, and adds no independent evidence for those rows. Three controls find no scalar: two weight-slice images
 exchanged, G perturbed on the leading variable of the first image, and two header coordinates of B_h exchanged.

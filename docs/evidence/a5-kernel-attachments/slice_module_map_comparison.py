@@ -30,7 +30,8 @@ The cells with a retained header map and a retained reduction of G: N- at (32009
 (32057, 8059), N+ at (32009, 10754) and (32029, 9115). Same-sign X has no retained slice map and is not covered.
 
 Usage, from the repository root: "$PYTHON" docs/evidence/a5-kernel-attachments/slice_module_map_comparison.py
---out OUT.json [--check RETAINED.json]. Each cell is one Singular run of a few seconds.
+--out OUT.json [--check RETAINED.json]. Each cell is one Singular run of a few seconds; the five runs go through
+parallel.ordered_map.
 """
 
 from __future__ import annotations
@@ -50,11 +51,14 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(INDUCED))
 
 sys.path.insert(0, str(FIBERS / "structure"))
+sys.path.insert(0, str(HERE.parents[2] / "gororoba_quantum"))
 
 import induced_slice_map as induced  # noqa: E402
 import quadric_and_germ_probes as probes  # noqa: E402
 import weight_slice_fiber_relations as ws  # noqa: E402
 import weight_slice_module_map as weight_map  # noqa: E402
+
+import parallel  # noqa: E402
 
 SCHEMA = "gororoba.a5.slice-module-map-comparison/1"
 TIMEOUT_SECONDS = 1800
@@ -256,7 +260,7 @@ def main() -> int:
     record: dict[str, Any] = {
         "schema": SCHEMA,
         "tools": {"singular": banner, "singular_version": version},
-        "cells": [cell(item) for item in CELLS],
+        "cells": list(parallel.ordered_map(cell, list(CELLS), min_items=1)),
     }
     record["problems"] = problems(record["cells"])
     args.out.write_text(json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8")
