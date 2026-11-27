@@ -13,7 +13,8 @@ then the Advisor. `opencode` ran `opencode/deepseek-v4.1-flash-free` through `op
 [review-opencode.md](review-opencode.md)); the brief and the report are retained with the worktree path written as
 WORKTREE. Its 63 shell calls were `grep`, `sed`, `git`, `head`, `wc`, `ls` and one `sha256sum`; it started no
 interpreter. The Advisor read head f5b596e75 with that report. The dispositions below are in f5b596e75 and in the
-commit that adds this record, both before the hosted round.
+commit that adds this record, both before the hosted round. The row on the hosted round was added after it and changes no file the round read
+apart from this record.
 
 ## Findings and dispositions
 
@@ -29,6 +30,7 @@ commit that adds this record, both before the hosted round.
 | Advisor: the A5-548 sentence named "the search terms" where the first search had used another list | rerun with the row's own terms on the two transcriptions (Macaulay, Hilbert, nilradical, reduced, Pfaffian, variety, scheme, ideal, quadric): one hit, "reduced to", as the sentence says; the second zbMATH record read: arXiv:math/0512517 |
 | Advisor: issue 1029 said the hosted lanes were green and named an idle core, neither measured | corrected in the issue: hosted run 46052574002 on head 10aed094b passed, its durations are in the table, and the serial timing is marked as taken under load |
 | Advisor: the pull-request body named an old head and counts and said the full lane had not run | body rewritten for the final head |
+| Hosted Codex round on head 3495da4d2 | clean, no review thread; the ten checks passed on that head |
 | Advisor: `build_registry.py` reads `k2-hilbert.jsonl` alone, so a successor file by itself would not reach the registry | the README sentence now says the route needs a registry change and a `k2-span` witness as well |
 
 ## Open
