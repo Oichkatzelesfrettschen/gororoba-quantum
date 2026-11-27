@@ -19,7 +19,7 @@ recomputed claims (paths, real roots, limiting planes, Pfaffian, overlap law, co
 
 - The acknowledgements state that several calculations and proofs were developed with GPT-6 Astra over many months,
   about 400 M tokens, on compute OpenAI provided (page 54).
-- The abstract lists the results the report tabulates: a reduced phase space on intersecting null cones, a
+- The abstract (page 1 read) lists the results the report tabulates: a reduced phase space on intersecting null cones, a
   Hilbert-space representation whose algebra generates a type I factor, a finite graviton-pair amplitude, the
   Bekenstein-Hawking entropy with Sen's logarithmic coefficient, and the semiclassical Einstein equations to one
   loop (page 1). The abstract's verb is "we propose"; the theory covers vacuum gravity in four dimensions.
@@ -57,7 +57,7 @@ recomputed claims (paths, real roots, limiting planes, Pfaffian, overlap law, co
 |---|---|
 | gamma_3 reaches nullity 16 at s = 1 | also at s = -1, in the other orbit N+ (A5-651) |
 | "two exact 4D sectors" at e_1 + e_10, with the direct projection between them zero, as an obstruction | the two planes are one antipodal pair of a 2-sphere of limiting planes, the isotropic lines of C^3, with trace(P P') = 2 (1 + n.n'); six planes come from two-term directions alone, and planes of perpendicular normals overlap with trace 2 (A5-655) |
-| each junction "identifies four additional annihilator directions" | the rank-4 compression identifies the four kernel directions that leave; at e_1 + e_10 the step 4 has a mechanism: the commutant of the compression pencil is a quaternion algebra, so a compression has rank 0, 4 or 8 (A5-654); the four-term W8 point has a scalar commutant (A5-659) |
+| each junction "identifies four additional annihilator directions" | the rank-4 compression identifies the four kernel directions that leave; at e_1 + e_10 the step 4 has a mechanism: the commutant of the compression pencil is a quaternion algebra, so a compression has rank 0, 4 or 8 (A5-654); two of eight W8 points have a scalar commutant (A5-659) |
 | the section of Q and G is "an exact section" of the real variety | it is a section at the complex point mu = i; the real zero divisors of that plane need mu real |
 | the paper has "essentially solved" quantum gravity | a preprint that proposes a quantization of vacuum gravity; no independent verification is on record |
 
@@ -77,7 +77,7 @@ At e_1 + e_10 the compression forms span a seven-dimensional pencil whose commut
 Lie closure is sp(2), and the Pfaffian of the pencil is 16 (Q^2 - 4 Delta) on (u, m, v) in R^3 + R + R^3, the squared
 modulus of the tangent cone of G at m = 0 (A5-654). The real rank-4 directions are the isotropic vectors of C^3, and
 the limiting planes of their lines are the ranges of (I + n.E)/2 for three anticommuting involutions E_k, with the
-overlap law on the whole cone (A5-655). The structure is a property of the real point: a four-term W8 point has a
+overlap law on the whole cone (A5-655). The structure is a property of the real point: two of eight W8 points have a
 scalar commutant (A5-659), which refutes the hypothesis that every W8 point is quaternionic (A5-656). Curved arcs
 and the pencils at VB and N+- are open (A5-657, A5-660).
 
@@ -99,7 +99,7 @@ Each finding was checked against the source; "fixed" names the change in the hea
 | Commutant dimension 4 and closure dimension 10 fit other algebra pairs (C + C on C^3 + C, R^4 on R^5 + R^3), so "quaternion algebra" was unsupported | Neon | confirmed; fixed: `structure_item` requires a noncommutative commutant with a negative-definite trace form on its traceless part |
 | The Pfaffian at m = 0 is the squared modulus of the s^2 coefficient of G along the direction, with zeta = u + i v on (z_1, z_2, z_8) | Neon | confirmed and sharpened by computation: G = s^2 (zeta.zeta)(4 + 4 s zeta_1 + s^2 zeta.zeta) (`tangent_cone`) |
 | Conjecture: P = (I + n.E)/2 with three anticommuting involutions proves the overlap law | Neon | confirmed: the Clifford relations hold and the kernel identity holds modulo the Stiefel ideal (`clifford`) |
-| The pencil structure holds at every W8 point | Neon (conjecture), DeepSeek (C3) | refuted by the run each proposed: the four-term point has commutant 1 and closure 28 (A5-659) |
+| The pencil structure holds at every W8 point | Neon (conjecture), DeepSeek (C3) | refuted at the point DeepSeek named: e_1 + e_10 + e_3 + e_20 has commutant 1 and closure 28 (A5-659). Neon's representative of the generic isotropic plane classifies as the orbit Iso, so its test does not bear on W8; the hyperbolic representative is quaternionic (unrecorded probe) |
 | README sentences without a `require` (exceptional polynomial, junction kernels, list lengths, coordinate and skew units) | both | confirmed; fixed |
 | Self-test mutant "u = v" required only rank != 4 | DeepSeek | confirmed; fixed to rank == 8 |
 | Mutant message "a unit below the doubling unit" for unit 26 | both | confirmed; fixed in the script and in A5-658 |
@@ -111,6 +111,14 @@ Each finding was checked against the source; "fixed" names the change in the hea
 | The six two-term planes are the axis planes | DeepSeek (C2) | confirmed by a `require` |
 | No self-test mutant for the pencil items | Neon | partly fixed: the VB base point and the reversed normal are mutants; a mutant of the Pfaffian identity is not added |
 | `self_test` rebinds the module global PATHS, which a spawned pool would ignore | Neon | boundary: the self-test calls the items in-process; no change |
+
+The brief, both reports and the attempt tables are retained beside this record ([brief](redteam/brief.md), [agy Neon report](redteam/report-agy-neon.md),
+[opencode report](redteam/report-opencode-deepseek-free.md)), with local paths replaced by
+`WORKSPACE` and `WORKTREE`. The Advisor reviewed last. It found that the three quaternionic points of the first
+structure run were all lower-half operands, an untested confound, and that two of the four points were unclassified;
+the record now classifies eight points and holds the predictions P10 and P11 written before the runs that separate
+"two terms", "one half" and "proportional halves", the last of which failed. A second independent implementation
+recomputed the round's new items (closed form of G, involutions and kernel identity, the eight structure rows).
  The prior-art search of
 [the annihilator-variety note](../../../notes/topics/cd-annihilator-varieties-prior-art.md) found no work on limits
 of annihilators or closures of strata in a Grassmannian; that bound is the scope of the novelty claim.

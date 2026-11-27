@@ -84,8 +84,18 @@ ORBIT_EXPECTED = {
     "gamma3(-1)": ("Np", 16),
 }
 BASE = {1: 1, 10: 1}
-W8_POINTS: tuple[dict[int, int], ...] = ({1: 1, 10: 1}, {1: 1, 10: -1}, {2: 1, 9: 1}, {1: 1, 10: 1, 3: 1, 20: 1})
-"""Four points of the orbit W8: three two-term points and the four-term midpoint of gamma2."""
+W8_POINTS: dict[str, tuple[dict[int, int], bool]] = {
+    "e1+e10": ({1: 1, 10: 1}, True),
+    "e1-e10": ({1: 1, 10: -1}, True),
+    "e17+e26": ({17: 1, 26: 1}, True),
+    "e1+e10+e4+e15": ({1: 1, 10: 1, 4: 1, 15: 1}, True),
+    "e1+e10+e17+e26": ({1: 1, 10: 1, 17: 1, 26: 1}, True),
+    "e1+e10+2(e18-e25)": ({1: 1, 10: 1, 18: 2, 25: -2}, True),
+    "e1+e10+e3+e20": ({1: 1, 10: 1, 3: 1, 20: 1}, False),
+    "2(e1+e10)+e3+e20": ({1: 2, 10: 2, 3: 1, 20: 1}, False),
+}
+"""Points of the orbit W8 with the type of the compression pencil: True for a quaternion commutant with Lie closure
+of dimension 10, False for a scalar commutant with Lie closure of dimension 28."""
 U_UNITS = (1, 2, 8)
 M_UNIT = 16
 V_UNITS = (17, 18, 24)
@@ -114,6 +124,8 @@ PREDICTIONS = {
     "P8": "on u = a e1, v = b e2, mu = i: Q = a^2 + b^2 - 1 and G = ((a+b)^2 - 1)((a-b)^2 - 1)",
     "P9": "at the second W8 point e1 + e10 + e3 + e20 the pencil has dimension 7, a quaternionic commutant of "
     "dimension 4 and a Lie closure of dimension 10",
+    "P10": "the upper-half point e17 + e26 and the four-term lower-half point e1 + e10 + e4 + e15 are quaternionic",
+    "P11": "the W8 point e1 + e10 + 2 (e18 - e25), whose halves are linearly independent, is not quaternionic",
 }
 
 
@@ -205,7 +217,8 @@ def path_item(name: str) -> dict[str, Any]:
 
 
 def orbit_item(name: str) -> dict[str, Any]:
-    row = hardware_orbits.classify({index: Fraction(value) for index, value in ORBIT_POINTS[name].items()})
+    point = ORBIT_POINTS[name] if name in ORBIT_POINTS else W8_POINTS[name][0]
+    row = hardware_orbits.classify({index: Fraction(value) for index, value in point.items()})
     return {"name": name, "orbit": row["orbit"], "nullity": row["nullity"], "orbit_rank": row["orbit_rank"]}
 
 
@@ -594,6 +607,7 @@ def outcomes(result: dict[str, Any]) -> dict[str, bool]:
         )
 
     limits, pencil = result["limits"], result["pencil"]
+    structure = dict(zip(W8_POINTS, result["structure"], strict=True))
     return {
         "P1": profile("gamma1", 4, {"0": 8}),
         "P2": profile("gamma2", 8, {"1": 12}),
@@ -603,7 +617,9 @@ def outcomes(result: dict[str, Any]) -> dict[str, bool]:
         "P6": all(r["cross_term_failures"] == 0 and r["unit_gram_identity"] for r in result["gram_identity"]),
         "P7": all(row["alternation_failures"] == 0 for row in result["three_form"]),
         "P8": result["section"]["q_matches"] and result["section"]["g_matches"],
-        "P9": structure_ok(result["structure"][3]),
+        "P9": structure_ok(structure["e1+e10+e3+e20"]),
+        "P10": structure_ok(structure["e17+e26"]) and structure_ok(structure["e1+e10+e4+e15"]),
+        "P11": not structure_ok(structure["e1+e10+2(e18-e25)"]),
     }
 
 
@@ -612,10 +628,13 @@ def build_result() -> dict[str, Any]:
         "convention": parallel.ordered_map(convention_item, [8, 16, 32], 1),
         "paths": parallel.ordered_map(path_item, list(PATHS), 1),
         "orbits": parallel.ordered_map(orbit_item, list(ORBIT_POINTS), 1),
+        "structure_orbits": parallel.ordered_map(orbit_item, list(W8_POINTS), 1),
         "limits": limits_item(("gamma1", "beta")),
         "compressions": parallel.ordered_map(compression_item, list(JUNCTIONS), 1),
         "pencil": pencil_item(tuple(sorted(BASE.items()))),
-        "structure": parallel.ordered_map(structure_item, [tuple(sorted(point.items())) for point in W8_POINTS], 1),
+        "structure": parallel.ordered_map(
+            structure_item, [tuple(sorted(point.items())) for point, _ in W8_POINTS.values()], 1
+        ),
         "tangent_cone": tangent_cone_item(0),
         "clifford": clifford_item(tuple(sorted(BASE.items()))),
         "gram_identity": parallel.ordered_map(gram_identity_item, [(16, 8), (32, 16), (64, 32)], 1),
@@ -662,14 +681,16 @@ def validate(result: dict[str, Any]) -> None:
     require(pencil["skew_units"] == [1, 2, 8, 9, 10, 16, 17, 18, 24, 25, 26], "units with a nonzero form")
     require(len(pencil["stiefel"]) == len(STIEFEL_PAIRS) == 10, "ten Stiefel directions")
     require(pencil["two_term_planes_are_the_six_axis_planes"], "the six two-term planes are the axis planes")
-    structure = result["structure"]
-    require(len(structure) == 4 and all(structure_ok(row) for row in structure[:3]), "two-term W8 points")
-    generic = structure[3]
-    require(
-        (generic["kernel"], generic["pencil_dimension"], generic["commutant_dimension"]) == (8, 7, 1)
-        and generic["lie_closure_dimension"] == 28,
-        "the four-term W8 point has a scalar commutant and Lie closure so(8)",
-    )
+    require(len(result["structure"]) == len(result["structure_orbits"]) == len(W8_POINTS) == 8, "eight W8 points")
+    for (name, (_, quaternionic)), row, orbit in zip(
+        W8_POINTS.items(), result["structure"], result["structure_orbits"], strict=True
+    ):
+        require((orbit["orbit"], orbit["nullity"], orbit["orbit_rank"]) == ("W8", 8, 12), f"{name} lies in W8")
+        if quaternionic:
+            require(structure_ok(row), f"{name}: quaternion commutant and Lie closure of dimension 10")
+        else:
+            scalar = (row["kernel"], row["pencil_dimension"], row["commutant_dimension"]) == (8, 7, 1)
+            require(scalar and row["lie_closure_dimension"] == 28, f"{name}: scalar commutant and closure so(8)")
     cone = result["tangent_cone"]
     require(cone["g_is_s2_zeta2_times_cofactor"], "closed form of G on the lines through the base point")
     require(cone["pfaffian_at_m0_is_squared_modulus_of_lead"], "Pfaffian at m = 0 from the leading form of G")
@@ -695,7 +716,8 @@ def validate(result: dict[str, Any]) -> None:
         require(row["ordered_unit_pairs"] == (dimension - 1) * (dimension - 2), "three-form support count")
     require(result["section"]["q_matches"] and result["section"]["g_matches"], "section of Q and G")
     held = result["prediction_held"]
-    require(held == {**dict.fromkeys(PREDICTIONS, True), "P3": False, "P9": False}, "recorded prediction outcomes")
+    failed = {"P3": False, "P9": False, "P11": False}
+    require(held == {**dict.fromkeys(PREDICTIONS, True), **failed}, "recorded prediction outcomes")
 
 
 def self_test() -> list[str]:

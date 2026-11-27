@@ -181,11 +181,13 @@ a W8 point ([review](../../archive/reviews/a5-outside-transition-report/README.m
 | A5-651 | the junctions lie in W8, VB, N- (s = 1) and N+ (s = -1) | proved |
 | A5-652 | two nullity-4 lines into e_1 + e_10 have orthogonal limiting 4-planes that span the kernel | proved |
 | A5-653 | the first-order compression has rank 4 at all four junctions | proved |
-| A5-654 | at e_1 + e_10 the compression pencil has dimension 7, commutant 4, Lie closure 10 and Pfaffian 16 (Q^2 - 4 Delta) on R^3 + R + R^3 | proved |
-| A5-655 | the rank-4 cone is the cone over V_2(R^3); limiting planes depend on u x v with trace(P P') = 2 (1 + cos) | survives |
-| A5-656 | the limiting planes of all nullity-4 arcs into a W8 point form a round 2-sphere in HP^1 | open |
-| A5-657 | pencils at VB and N+- with the same structure one step up | open |
+| A5-654 | at e_1 + e_10 the compression pencil has dimension 7, a quaternion commutant, Lie closure sp(2) and Pfaffian 16 (Q^2 - 4 Delta) on R^3 + R + R^3, the squared modulus of the tangent cone of G at m = 0 | proved |
+| A5-655 | the rank-4 directions are the isotropic vectors of C^3; the limiting plane of each line is the range of (I + n.E)/2, with trace(P P') = 2 (1 + n.n') | proved |
+| A5-656 | every W8 point has a quaternionic pencil | refuted |
+| A5-657 | pencils at VB and N+- with a tangent-cone invariant | open |
 | A5-658 | the t^2 I Gram identity for the doubling unit and the alternating three-form, levels 8 to 64 | proved |
+| A5-659 | the pencil type depends on the point of W8: quaternion commutant at six of eight points, scalar commutant and closure so(8) at two | proved |
+| A5-660 | all nullity-4 arcs into e_1 + e_10 limit on the 2-sphere; a real invariant decides the commutant | open |
 
 ## Next computations
 

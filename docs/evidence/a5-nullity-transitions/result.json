@@ -778,6 +778,8 @@
  },
  "prediction_held": {
   "P1": true,
+  "P10": true,
+  "P11": false,
   "P2": true,
   "P3": false,
   "P4": true,
@@ -789,6 +791,8 @@
  },
  "predictions": {
   "P1": "gamma1 has nullity 4 at every real s != 0 and 8 at s = 0",
+  "P10": "the upper-half point e17 + e26 and the four-term lower-half point e1 + e10 + e4 + e15 are quaternionic",
+  "P11": "the W8 point e1 + e10 + 2 (e18 - e25), whose halves are linearly independent, is not quaternionic",
   "P2": "gamma2 has nullity 8 at every real s != 1 and 12 at s = 1",
   "P3": "gamma3 has nullity 12 off its exceptional set and 16 at s = 1, the only exceptional real parameter",
   "P4": "the limiting planes of gamma1 and beta at e1 + e10 are orthogonal and span the kernel, and a third limiting plane is orthogonal to neither",
@@ -807,7 +811,7 @@
   "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
   "gororoba_quantum/kernel_limits.py": "46591b43f37086bce51d6d600c0b0ae6e1d5055c0e0c475a5185d0c2d351e6a7",
   "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
-  "scripts/a5_nullity_transitions.py": "bb114dea89fa37927eab49eb207902721102770406b308f2416dc5e5f26aacb9"
+  "scripts/a5_nullity_transitions.py": "bc74bdffef3a41179005d28169f5a86e2c8137d88e57f8ba442e158e92411f22"
  },
  "structure": [
   {
@@ -851,12 +855,93 @@
   {
    "base": [
     [
-     2,
+     17,
      1
     ],
     [
-     9,
+     26,
      1
+    ]
+   ],
+   "commutant_dimension": 4,
+   "commutant_noncommutative": true,
+   "commutant_trace_form_negative_definite": true,
+   "commutant_traceless_dimension": 3,
+   "kernel": 8,
+   "lie_closure_dimension": 10,
+   "pencil_dimension": 7
+  },
+  {
+   "base": [
+    [
+     1,
+     1
+    ],
+    [
+     4,
+     1
+    ],
+    [
+     10,
+     1
+    ],
+    [
+     15,
+     1
+    ]
+   ],
+   "commutant_dimension": 4,
+   "commutant_noncommutative": true,
+   "commutant_trace_form_negative_definite": true,
+   "commutant_traceless_dimension": 3,
+   "kernel": 8,
+   "lie_closure_dimension": 10,
+   "pencil_dimension": 7
+  },
+  {
+   "base": [
+    [
+     1,
+     1
+    ],
+    [
+     10,
+     1
+    ],
+    [
+     17,
+     1
+    ],
+    [
+     26,
+     1
+    ]
+   ],
+   "commutant_dimension": 4,
+   "commutant_noncommutative": true,
+   "commutant_trace_form_negative_definite": true,
+   "commutant_traceless_dimension": 3,
+   "kernel": 8,
+   "lie_closure_dimension": 10,
+   "pencil_dimension": 7
+  },
+  {
+   "base": [
+    [
+     1,
+     1
+    ],
+    [
+     10,
+     1
+    ],
+    [
+     18,
+     2
+    ],
+    [
+     25,
+     -2
     ]
    ],
    "commutant_dimension": 4,
@@ -893,6 +978,83 @@
    "kernel": 8,
    "lie_closure_dimension": 28,
    "pencil_dimension": 7
+  },
+  {
+   "base": [
+    [
+     1,
+     2
+    ],
+    [
+     3,
+     1
+    ],
+    [
+     10,
+     2
+    ],
+    [
+     20,
+     1
+    ]
+   ],
+   "commutant_dimension": 1,
+   "commutant_noncommutative": false,
+   "commutant_trace_form_negative_definite": true,
+   "commutant_traceless_dimension": 0,
+   "kernel": 8,
+   "lie_closure_dimension": 28,
+   "pencil_dimension": 7
+  }
+ ],
+ "structure_orbits": [
+  {
+   "name": "e1+e10",
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12
+  },
+  {
+   "name": "e1-e10",
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12
+  },
+  {
+   "name": "e17+e26",
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12
+  },
+  {
+   "name": "e1+e10+e4+e15",
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12
+  },
+  {
+   "name": "e1+e10+e17+e26",
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12
+  },
+  {
+   "name": "e1+e10+2(e18-e25)",
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12
+  },
+  {
+   "name": "e1+e10+e3+e20",
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12
+  },
+  {
+   "name": "2(e1+e10)+e3+e20",
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12
   }
  ],
  "tangent_cone": {

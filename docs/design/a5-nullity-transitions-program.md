@@ -36,16 +36,17 @@ their tables.
 6. **Limits.** The limiting plane is the range of (I + n.E)/2 for three anticommuting involutions E_k and
    n = u x v / |u|^2, so the cone maps onto the conic of isotropic lines, a 2-sphere; the overlap 2 (1 + n.n') is 0
    for antipodal normals and 2 for perpendicular ones.
-7. **Scope.** The four-term W8 point e_1 + e_10 + e_3 + e_20 has the same pencil dimension, a scalar commutant and
-   Lie closure so(8) (A5-659): the mechanism of item 3 belongs to the real point, and the orbit W8 is one orbit of
-   the complex group only.
+7. **Scope.** Of eight W8 points, six are quaternionic and two, both on gamma_2, have a scalar commutant and Lie
+   closure so(8) (A5-659): the mechanism of item 3 belongs to the real point, and W8 is one orbit of the complex
+   group only. The number of terms, the half the point lies in and proportionality of its halves each fail as the
+   criterion.
 
 ## Deliverables
 
 | # | Item | Depends on | Acceptance check |
 |---|---|---|---|
 | T1 | Proof of the overlap law over the whole Stiefel cone | A5-654 | done: the kernel identity modulo the Stiefel ideal and the Clifford relations (A5-655, proved) |
-| T2 | The real invariant of a W8 point that decides the commutant: the pencil type over the real orbits of W8 (the plane types of the strata record), and the rank-drop locus and limiting planes at a point with scalar commutant | A5-659 | a rule that predicts the type at points written before their runs; A5-660 decided in its second clause |
+| T2 | The real invariant of a W8 point that decides the commutant: the pencil type over the real orbits of W8 (the plane types of the strata record), and the rank-drop locus and limiting planes at a point with scalar commutant | A5-659 | a rule that predicts the type at points written before their runs, starting from the real G_2 invariants of the halves at the eight recorded points and from points drawn from a parametrization of the real points of W8; A5-660 decided in its second clause |
 | T3 | Arcs into the W8 point whose first-order form has rank 0 or 8: the second-order Schur form of the nullity-8 record applied one stratum down | A5-653 | each tested arc has a limiting plane on or off the 2-sphere, recorded either way |
 | T4 | Pencils at VB (kernel 12) and N+- (kernel 16): dimension, commutant, Lie closure, rank-drop invariant | none | `pencil_item` generalized to a base point with an odd-rank-free invariant; A5-657 decided |
 | T5 | Closed Gauss graph of the nullity-4 stratum over a W8 point as a subset of Gr(4, 8), against the Nash blow-up question of the attachments program (section 5) | T1, T3 | the fiber over the point identified as a set with a two-sided certificate (A5-250 for this incidence) |
@@ -72,5 +73,5 @@ their tables.
 The record is byte-stable with source digests; its predictions precede the run and the failed clause is kept; each
 README sentence has a `require`; controls fail on mutants; an implementation that shares no code reproduces the
 first nine values; two red-team reports were reconciled against the source; scope is stated by the loop bounds (the
-full pencil at one W8 point, its type at four); novelty is bounded by the searches of
+full pencil at one W8 point, its type at eight); novelty is bounded by the searches of
 the prior-art note.

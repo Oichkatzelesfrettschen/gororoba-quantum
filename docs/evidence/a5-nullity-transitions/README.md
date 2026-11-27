@@ -76,11 +76,13 @@ Each statement has a `require` in the script's `validate`; the name of the recor
    trace(P P') = 2 (1 + n.n') for every pair, since trace E_j E_k = 8 delta_jk. The 55 pairs of the ten rational
    directions agree. Among the 930 signed two-term directions e_i +- e_j, 32 have rank 4, and their six planes are
    the planes of the normals +-e_1, +-e_2, +-e_3; the planes of statement 3 are one antipodal pair.
-9. **The structure depends on the point of W8** (`structure`). The two-term points e_1 + e_10, e_1 - e_10 and
-   e_2 + e_9 have pencil dimension 7, a quaternion commutant and Lie closure of dimension 10. The four-term point
-   e_1 + e_10 + e_3 + e_20 of the same orbit has pencil dimension 7, commutant the scalars and Lie closure of
-   dimension 28, all of so(8). At the VB point e_3 + e_20 the self-test reads kernel 12, pencil 9, commutant 1 and
-   closure 66.
+9. **The structure depends on the point of W8** (`structure`, `structure_orbits`). Eight points classify as W8
+   with orbit rank 12, and each has pencil dimension 7. Six have a quaternion commutant and Lie closure of dimension
+   10: e_1 + e_10, e_1 - e_10, e_17 + e_26, e_1 + e_10 + e_4 + e_15, e_1 + e_10 + e_17 + e_26 and
+   e_1 + e_10 + 2 (e_18 - e_25). Two, both on the line gamma_2, have commutant the scalars and Lie closure of
+   dimension 28, all of so(8): e_1 + e_10 + e_3 + e_20 and 2 (e_1 + e_10) + e_3 + e_20. Three candidate criteria are
+   refuted by these points: the number of terms (the fourth point), lying in one half (the fifth) and proportional
+   halves (the sixth). At the VB point e_3 + e_20 the self-test reads kernel 12, pencil 9, commutant 1 and closure 66.
 10. **Elementary identities** (`gram_identity`, `three_form`, `section`). At levels 16, 32, 64, with J the left
     table of the doubling unit, L_a^T J + J^T L_a = 0 for every imaginary unit a of the lower half and J^T J = I, so
     L_(a,t)^T L_(a,t) = L_(a,0)^T L_(a,0) + t^2 I for imaginary a; this is A5-622 with a vanishing mixed associator.
@@ -92,15 +94,17 @@ Each statement has a `require` in the script's `validate`; the name of the recor
 At e_1 + e_10 the limiting planes of the lines of statement 7 are the points of the conic zeta.zeta = 0 in the
 projective plane of C^3, a 2-sphere, embedded in the quaternionic lines HP^1 = S^4 of the kernel H^2 with the round
 overlap law. The record covers lines in the six coordinate units; curved arcs, and directions with a component on
-the twenty units of zero compression, are open (A5-660). The quaternion commutant is absent at the four-term W8
-point, so the hypothesis that every W8 point carries it is refuted (A5-656); which real invariant of a W8 point
-decides the commutant is open (A5-660), as are the pencils at VB and N+- (A5-657).
+the twenty units of zero compression, are open (A5-660). The quaternion commutant is absent at two W8
+points, so the hypothesis that every W8 point carries it is refuted (A5-656); which real invariant of a W8 point
+decides the commutant, and which type is generic, are open (A5-660), as are the pencils at VB and N+- (A5-657).
 
 ## Predictions
 
 Written before the runs they concern (`predictions`, `prediction_held`). P1, P2 and P4 to P8 held. P3 failed in one
 clause: it named s = 1 as the only exceptional parameter of gamma_3, and the count of real roots gives s = -1 as well.
-P9 failed: it predicted the quaternion commutant at the four-term W8 point.
+P9 failed: it predicted the quaternion commutant at the four-term W8 point e_1 + e_10 + e_3 + e_20. P10 held (an
+upper-half and a four-term lower-half point are quaternionic). P11 failed: it predicted a non-quaternionic commutant
+at e_1 + e_10 + 2 (e_18 - e_25), whose halves are linearly independent.
 
 ## Reviews
 
@@ -113,4 +117,4 @@ quaternions from the other algebras of dimension 4.
     "$PYTHON" -B -W error scripts/a5_nullity_transitions.py --check docs/evidence/a5-nullity-transitions/result.json
     "$PYTHON" -B -W error scripts/a5_nullity_transitions.py --self-test
 
-Measured on the compute workstation: 8 s and 90 MiB for the record, 4 s and 110 MiB for the self-test.
+Measured on the compute workstation: 10 s and 90 MiB for the record, 4 s and 110 MiB for the self-test.
