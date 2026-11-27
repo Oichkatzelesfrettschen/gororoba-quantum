@@ -162,7 +162,7 @@ the closure gives the same r_N (Iso degree 3, N = 9: 216). The E8-bar -> N- degr
 7 and jumps to 83 at N = 8: a measured plateau below h_d, which is why a plateau certifies nothing.
 
 **Pivot saturation of the Rees ideal (H : g^inf, then t = 0).** The pivot is a nonzerodivisor modulo J on every pair
-tried, and J is radical and prime through the origin on all five pairs checked, so the route is valid. It never
+tried, and J is prime on the six pairs of ledger row A5-027 at both primes, so the route is valid. It never
 finished:
 
 | Pair | Pivot | Limit reached | Peak |

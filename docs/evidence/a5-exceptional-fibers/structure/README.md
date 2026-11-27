@@ -194,7 +194,7 @@ pullback, a residual of a different dimension, or any disagreement between the t
 ## Germ ideals and three quadric schemes, probed exactly
 
 `quadric_and_germ_probes.py` writes `quadric-and-germ-probes.json` (21 rows, Singular 4.4.1 in dp, under a minute
-on the laptop). Its `check()` compares every field of a record with the expected value, row by row:
+on a 6-core desktop). Its `check()` compares every field of a record with the expected value, row by row:
 
 - `germ-prime`, 12 rows: the germ ideal J of X- -> N-, E8-bar -> VB, Iso -> N-, W8 -> N-, E8-bar -> N+ and
   E8-bar -> N- at 32009 (`working/runs/k2struct/`, `working/build/inputs/p32009-r10754/e8-nm.sing`) and at 32029
