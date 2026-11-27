@@ -2,8 +2,8 @@
 
 Pull request 1020 decides ledger rows A5-638 and A5-639 of
 [ledger.tsv](../../../evidence/a5-exceptional-fibers/ledger.tsv) and adds the cell X+ -> N+ at 32009 to the probes of
-[structure/](../../../evidence/a5-exceptional-fibers/structure/README.md). One local reviewer read its first two
-commits; the Advisor reviewed last, on the head with the fixes of that audit.
+[structure/](../../../evidence/a5-exceptional-fibers/structure/README.md). One local reviewer read head 3ff708458, the
+first two commits; the Advisor reviewed heads d1fcfc037 and 2d8c90406.
 
 | File | Reviewer | Role |
 |---|---|---|
@@ -28,3 +28,6 @@ Local paths in the two files are replaced by repository-relative paths and `SCRA
 | Advisor: the phrase that the 32057 constant was computed before the run repeats the unretained ordering claim | fixed: phrase removed |
 | Advisor: the registry gave no entry for the new receipt | read: `build_registry.py` validates the receipt against the canonical header; `claims.json` is not regenerated here and holds no entry for it (A5-151) |
 | Advisor: the two tests of A5-548 over Q(i) were owed | run in the pull request: the module map over Q(i) (A5-640) and the E8-bar -> VB ring over Q(i) (A5-641) |
+| Advisor, second round: `third-prime/quadric_rings.py` reuses `check()` of the probe module, whose row count changed | confirmed: its gate failed (4 rows against 17); fixed by an explicit `PRIME_CELLS` list and by emptying the row kinds that program does not run; the gate passes and validates the numerator identity at 32057 |
+| Advisor, second round: the docstring of `e8_vb_quadric_ring_qi.py` and A5-641 called values a prediction that a scratch run had returned first | fixed: "expected from the modular cells" |
+| Advisor, second round: A5-640 dropped the claim that the Q(i) map reduces to the modular maps | tested: the modular weight-slice cells at both split primes give the Q(i) map with i sent to the root (A5-640); the link to the header-slice maps stays with the owed test of A5-425 |
