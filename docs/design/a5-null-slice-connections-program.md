@@ -116,9 +116,9 @@ digest reference in the record (a digest reference per table, the pattern of the
    p^(2^n - 2) + p^(2^(n-1) - 1) match by brute force at A_2 and A_3 over F_3, F_5, F_7 and at A_4 over F_3
    ([counts](../evidence/a5-nilpotent-idempotent-counts/README.md)); the formulas for every odd p and n stay a hypothesis
    (A5-660). The Euclidean cone of A5-623 is the slice's part of the variety.
-2. **Albert anchor.** dim Der(J_3(O)) = 52 over Q under the cd_core octonion convention, and the su(3) and G_2
-   covariance algebras of A5-615 and A5-619 as stabilizers inside it. Accept: the derivation rank over Q, and the
-   inclusions as rank equalities.
+2. **Albert anchor.** Done: dim Der(J_3(O)) = 52 over Q under the cd_core octonion convention, and the G_2 and su(3)
+   covariance algebras of A5-619 as the entrywise stabilizers of J_3(R) and J_3(C_e2) inside it, as rank equalities
+   (A5-661, [stabilizers](../evidence/a5-albert-derivation-stabilizers/README.md)).
 3. **Relations above 512.** Done for n = 10, 11 and 12 (A5-637,
    [family relations](../evidence/a5-null-slice-family-relations/README.md)). What remains for
    every n is the commutation-set lemma of A5-636 ([census](../evidence/a5-left-table-census/README.md), statement 6).

@@ -1,0 +1,85 @@
+{
+ "Der_J3_O": {
+  "dim": 52,
+  "rank": 677,
+  "rows": 9063,
+  "unknowns": 729
+ },
+ "Der_J3_R": {
+  "dim": 3,
+  "rank": 33,
+  "rows": 117
+ },
+ "Der_O": {
+  "dim": 14,
+  "rank": 50,
+  "rows": 512
+ },
+ "G2_in_Der_J3_O": {
+  "nonzero_residual_entries": 0,
+  "rank_Der_J3_O": 52,
+  "rank_G2_images": 14,
+  "rank_stacked": 52
+ },
+ "basis_pairs_checked": 64,
+ "control_non_derivation": {
+  "nonzero_residual_entries": 26,
+  "rank_stacked": 53
+ },
+ "control_stab_J3_C_e3": {
+  "dim": 8,
+  "dim_su3_e3": 8,
+  "rank_with_entrywise_su3_e2": 13,
+  "rank_with_entrywise_su3_e3": 8
+ },
+ "mutants": {
+  "1,2": {
+   "dim_Der_J3_O": 7,
+   "dim_Der_O": 4
+  },
+  "1,4": {
+   "dim_Der_J3_O": 7,
+   "dim_Der_O": 4
+  },
+  "3,5": {
+   "dim_Der_J3_O": 7,
+   "dim_Der_O": 4
+  }
+ },
+ "schema": "a5-albert-derivation-stabilizers/1",
+ "stab_E1": 36,
+ "stab_E1_E2_E3": 28,
+ "stab_J3_C_e2": {
+  "dim": 8,
+  "indices": [
+   0,
+   1,
+   2,
+   3,
+   11,
+   19,
+   5,
+   13,
+   21
+  ],
+  "rank_with_entrywise_su3_e2": 8
+ },
+ "stab_J3_R": {
+  "dim": 14,
+  "indices": [
+   0,
+   1,
+   2,
+   3,
+   11,
+   19
+  ],
+  "rank_with_entrywise_G2": 14
+ },
+ "su3": {
+  "dim_stab_e2_in_Der_O": 8,
+  "rank_D_to_De2": 6,
+  "rank_su3_images": 8
+ },
+ "zero_product_dim_Der": 64
+}
