@@ -26,8 +26,13 @@ The items of pool row MATH-71 and the reduction of pool row MATH-73, each comput
    8385048, 67101720, 536856600. The associator of basis units is
    (s(a, b) s(a ^ b, c) - s(b, c) s(a, b ^ c)) e_(a ^ b ^ c).
 
-   **Proof for every D (A5-649).** Write G = Z_2^n with D = 2^n, and phi(a, b, c) = s(a, b) s(a ^ b, c) s(b, c)
-   s(a, b ^ c), which is -1 exactly when the associator is nonzero.
+   **Proof for every D (A5-649).** Theorem 1 of [cd_associator_defect_census.md](../../notes/topics/cd_associator_defect_census.md)
+   (2026-10-22) proves the formula for every D: its associator-lifting Lemma 3, summed over the eight top-bit choices,
+   leaves the rank-at-most-1 triples alone. A5-634 called the proof open because the searches of 2026-11-26 looked
+   outside the repository. A second derivation runs through Albuquerque and Majid, whose Corollary 4.3 and
+   Proposition 4.5 are the published forms of that note's sign lifting (Lemma 2) and associator lifting (Lemma 3).
+   Write G = Z_2^n with D = 2^n, and phi(a, b, c) = s(a, b) s(a ^ b, c) s(b, c) s(a, b ^ c), which is -1 exactly when
+   the associator is nonzero.
    - *The cochain.* s(p, q) = F(q, p), where F = (-1)^f is the cochain of the standard Cayley-Dickson process of
      Albuquerque and Majid (arXiv math/9802116, Corollary 4.3, page 18). Peeling the top bit, the four branches of
      `cd_core.cd_sign` are the four cases of their recursion with the arguments exchanged, given F(y, y) = -1 for y != 0
@@ -109,7 +114,8 @@ every cone point has nullity 12. All held.
   statement 1 for every n if it holds. Targeted searches on 2026-11-26 for the triple formula, arXiv
   `all:"Cayley-Dickson" AND all:associator AND all:basis`, `all:"Cayley-Dickson" AND all:triples AND all:associative`
   and `all:sedenion AND all:associator AND all:count`, and zbMATH documents `Cayley-Dickson associator basis`, found
-  Wilmot 2025 (arXiv 2505.11747), which classifies the associativity of basis triples in a graded notation. Its abstract
+  Wilmot 2025 (arXiv 2505.11747), which classifies the associativity of basis triples in a graded notation; they
+  missed the repository's own proof (statement 3). Its abstract
   states no count, and its text was not read.
 - Equality on the Euclidean cone at every point over every field of characteristic 0 (the bound is proved; equality
   is checked at points).

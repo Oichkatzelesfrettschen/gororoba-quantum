@@ -143,7 +143,7 @@ The second record, [a5-null-slice-associator-envelope](../../evidence/a5-null-sl
 | A5-637 | the first family's relations hold by direct check at n = 10, 11 and 12, every level to 4096 ([record](../../evidence/a5-null-slice-family-relations/README.md)) | proved |
 | A5-642 | the octonion-space covariance algebra is G_2 with no boost for every n >= 6: derivations extend (inside), four anchor cosets with n-independent signs intersect in G_2 (outside) ([covariance blocks](../../evidence/a5-null-slice-covariance/README.md)) | proved |
 | A5-648 | cd_sign is the transposed Albuquerque-Majid cochain at every n, so A_n is a quasialgebra over the dual quasi-Hopf algebra (k Z_2^n, dF) and its signed basis set a quasigroup ([connections](../../design/a5-null-slice-connections-program.md)) | proved |
-| A5-649 | (D - 2)(D - 4)(D + 6)/2 ordered basis triples have nonzero associator for every D >= 4, by the doubling recursion of the associativity cocycle ([census](../../evidence/a5-left-table-census/README.md)) | proved |
+| A5-649 | (D - 2)(D - 4)(D + 6)/2 ordered basis triples have nonzero associator for every D >= 4: Theorem 1 of [cd_associator_defect_census.md](cd_associator_defect_census.md), with a second derivation through the doubling recursion of the associativity cocycle ([census](../../evidence/a5-left-table-census/README.md)) | proved |
 
 What the slice changes for the program:
 
