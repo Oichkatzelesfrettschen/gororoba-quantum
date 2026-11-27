@@ -219,7 +219,8 @@ condition; the orbit partitions of a section are measured data, held to that con
   quadric of A, has a one-dimensional solution space spanned by an invertible map, and the sign-flipped control
   system has the zero solution alone. With R = K2 + N and the numerator identities above, the nilradical module is
   isomorphic to the irrelevant ideal of k[y] / A as a graded module (A5-638). The one field constant of the
-  normalized map is 2 / i at each prime, which suggests one map over Z[i, 1/2] (A5-640, open).
+  normalized map is 2 / i at each prime, and the same system over Q(i) on the weight slice has an
+  invertible solution with entries in Z[i] (A5-640).
 - `e8-primes`, 4 rows: the radical of the E8-bar quadric ideal has two minimal primes, of dimension 5 and degree 11
   with 9 linear forms and of dimension 4 and degree 4 with 14, and each has a reduced linear section with an
   F_p-point at both primes and both basepoints, so each is absolutely prime (A5-639).
