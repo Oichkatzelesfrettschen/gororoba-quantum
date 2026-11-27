@@ -1,0 +1,538 @@
+{
+ "cells": [
+  {
+   "cone": [
+    3,
+    12,
+    0
+   ],
+   "control_solutions": [
+    0
+   ],
+   "det_nonzero": [
+    1
+   ],
+   "field": "Q(i)",
+   "generation": [
+    3,
+    1
+   ],
+   "images": [
+    [
+     "y(7)",
+     "y(3)"
+    ],
+    [
+     "y(10)",
+     "(i)*y(5)"
+    ],
+    [
+     "y(12)",
+     "y(6)"
+    ]
+   ],
+   "numerator_identity": true,
+   "relations_match_retained": true,
+   "relations_sha256": "55b9928144fd01d6de2b4438418e1ea8c765e8658016c3524eacc616298525de",
+   "ring": "X-->N-",
+   "solutions": [
+    1
+   ],
+   "variables": 15
+  },
+  {
+   "cone": [
+    3,
+    12,
+    0
+   ],
+   "control_solutions": [
+    0
+   ],
+   "det_nonzero": [
+    1
+   ],
+   "field": "Q(i)",
+   "generation": [
+    3,
+    1
+   ],
+   "images": [
+    [
+     "y(7)",
+     "y(3)"
+    ],
+    [
+     "y(10)",
+     "(-i)*y(5)"
+    ],
+    [
+     "y(12)",
+     "y(6)"
+    ]
+   ],
+   "numerator_identity": true,
+   "relations_match_retained": true,
+   "relations_sha256": "6a41e14d70d75c4a72e768630ef77d9f1ec9e6582b626fa05e759cd3a130011d",
+   "ring": "X+->N+",
+   "solutions": [
+    1
+   ],
+   "variables": 15
+  },
+  {
+   "cone": [
+    5,
+    16,
+    1
+   ],
+   "control_solutions": [
+    0
+   ],
+   "det_nonzero": [
+    1
+   ],
+   "field": "Q(i)",
+   "generation": [
+    5,
+    1
+   ],
+   "images": [
+    [
+     "y(8)",
+     "y(3)"
+    ],
+    [
+     "y(14)",
+     "-y(6)"
+    ],
+    [
+     "y(16)",
+     "-y(5)"
+    ],
+    [
+     "y(17)",
+     "y(7)"
+    ],
+    [
+     "y(19)",
+     "-2*y(12)+(-i)*y(13)+(-i)*y(17)"
+    ]
+   ],
+   "numerator_identity": true,
+   "relations_match_retained": true,
+   "relations_sha256": "f4c808509571d7830d453654b16de85c254f876ef65c541f879a5097265d3b6e",
+   "ring": "E8bar->N-",
+   "solutions": [
+    1
+   ],
+   "variables": 21
+  },
+  {
+   "cone": [
+    5,
+    16,
+    1
+   ],
+   "control_solutions": [
+    0
+   ],
+   "det_nonzero": [
+    1
+   ],
+   "field": "Q(i)",
+   "generation": [
+    5,
+    1
+   ],
+   "images": [
+    [
+     "y(8)",
+     "y(3)"
+    ],
+    [
+     "y(14)",
+     "-y(6)"
+    ],
+    [
+     "y(16)",
+     "-y(5)"
+    ],
+    [
+     "y(17)",
+     "y(7)"
+    ],
+    [
+     "y(19)",
+     "-2*y(12)+(i)*y(13)+(i)*y(17)"
+    ]
+   ],
+   "numerator_identity": true,
+   "relations_match_retained": true,
+   "relations_sha256": "cb9c0862b2dedc4a46d2fc579904e5efd18f07b5b3976e5b29e84bb2af7bcb7a",
+   "ring": "E8bar->N+",
+   "solutions": [
+    1
+   ],
+   "variables": 21
+  },
+  {
+   "cone": [
+    3,
+    12,
+    0
+   ],
+   "control_solutions": [
+    0
+   ],
+   "det_nonzero": [
+    1
+   ],
+   "field": "F_32009",
+   "generation": [
+    3,
+    1
+   ],
+   "images": [
+    [
+     "y(7)",
+     "y(3)"
+    ],
+    [
+     "y(10)",
+     "10754*y(5)"
+    ],
+    [
+     "y(12)",
+     "y(6)"
+    ]
+   ],
+   "numerator_identity": true,
+   "relations_match_retained": true,
+   "relations_sha256": "49b09b286265c9e519e60f78503461e58e849acd09ac68d9f4e33a4c7e2091e6",
+   "ring": "X-->N-",
+   "solutions": [
+    1
+   ],
+   "variables": 15
+  },
+  {
+   "cone": [
+    3,
+    12,
+    0
+   ],
+   "control_solutions": [
+    0
+   ],
+   "det_nonzero": [
+    1
+   ],
+   "field": "F_32009",
+   "generation": [
+    3,
+    1
+   ],
+   "images": [
+    [
+     "y(7)",
+     "y(3)"
+    ],
+    [
+     "y(10)",
+     "-10754*y(5)"
+    ],
+    [
+     "y(12)",
+     "y(6)"
+    ]
+   ],
+   "numerator_identity": true,
+   "relations_match_retained": true,
+   "relations_sha256": "885969840cd94d5e80e06d6ebee3da560a92bdfc453d59481fcef95b6a1eb0ba",
+   "ring": "X+->N+",
+   "solutions": [
+    1
+   ],
+   "variables": 15
+  },
+  {
+   "cone": [
+    5,
+    16,
+    1
+   ],
+   "control_solutions": [
+    0
+   ],
+   "det_nonzero": [
+    1
+   ],
+   "field": "F_32009",
+   "generation": [
+    5,
+    1
+   ],
+   "images": [
+    [
+     "y(8)",
+     "y(3)"
+    ],
+    [
+     "y(14)",
+     "-y(6)"
+    ],
+    [
+     "y(16)",
+     "-y(5)"
+    ],
+    [
+     "y(17)",
+     "y(7)"
+    ],
+    [
+     "y(19)",
+     "-2*y(12)-10754*y(13)-10754*y(17)"
+    ]
+   ],
+   "numerator_identity": true,
+   "relations_match_retained": true,
+   "relations_sha256": "42b1d8ff03d4c505597b39fe303c52ac45fcdc4d35bbf01d0b8e7e23a97367d0",
+   "ring": "E8bar->N-",
+   "solutions": [
+    1
+   ],
+   "variables": 21
+  },
+  {
+   "cone": [
+    5,
+    16,
+    1
+   ],
+   "control_solutions": [
+    0
+   ],
+   "det_nonzero": [
+    1
+   ],
+   "field": "F_32009",
+   "generation": [
+    5,
+    1
+   ],
+   "images": [
+    [
+     "y(8)",
+     "y(3)"
+    ],
+    [
+     "y(14)",
+     "-y(6)"
+    ],
+    [
+     "y(16)",
+     "-y(5)"
+    ],
+    [
+     "y(17)",
+     "y(7)"
+    ],
+    [
+     "y(19)",
+     "-2*y(12)+10754*y(13)+10754*y(17)"
+    ]
+   ],
+   "numerator_identity": true,
+   "relations_match_retained": true,
+   "relations_sha256": "b9b7372bce35e7ce286aa572f9b1ebf656d1ac04ba0e63349c640efed88658ee",
+   "ring": "E8bar->N+",
+   "solutions": [
+    1
+   ],
+   "variables": 21
+  },
+  {
+   "cone": [
+    3,
+    12,
+    0
+   ],
+   "control_solutions": [
+    0
+   ],
+   "det_nonzero": [
+    1
+   ],
+   "field": "F_32029",
+   "generation": [
+    3,
+    1
+   ],
+   "images": [
+    [
+     "y(7)",
+     "y(3)"
+    ],
+    [
+     "y(10)",
+     "9115*y(5)"
+    ],
+    [
+     "y(12)",
+     "y(6)"
+    ]
+   ],
+   "numerator_identity": true,
+   "relations_match_retained": true,
+   "relations_sha256": "5b950ee66306c05a1888d61b9f6a06d3bc8c30a47fcede139c30222a7261c9f9",
+   "ring": "X-->N-",
+   "solutions": [
+    1
+   ],
+   "variables": 15
+  },
+  {
+   "cone": [
+    3,
+    12,
+    0
+   ],
+   "control_solutions": [
+    0
+   ],
+   "det_nonzero": [
+    1
+   ],
+   "field": "F_32029",
+   "generation": [
+    3,
+    1
+   ],
+   "images": [
+    [
+     "y(7)",
+     "y(3)"
+    ],
+    [
+     "y(10)",
+     "-9115*y(5)"
+    ],
+    [
+     "y(12)",
+     "y(6)"
+    ]
+   ],
+   "numerator_identity": true,
+   "relations_match_retained": true,
+   "relations_sha256": "e38b521b7c36ea231786b9d7dbcd82898b042afa18c5271716a4019d92e397b0",
+   "ring": "X+->N+",
+   "solutions": [
+    1
+   ],
+   "variables": 15
+  },
+  {
+   "cone": [
+    5,
+    16,
+    1
+   ],
+   "control_solutions": [
+    0
+   ],
+   "det_nonzero": [
+    1
+   ],
+   "field": "F_32029",
+   "generation": [
+    5,
+    1
+   ],
+   "images": [
+    [
+     "y(8)",
+     "y(3)"
+    ],
+    [
+     "y(14)",
+     "-y(6)"
+    ],
+    [
+     "y(16)",
+     "-y(5)"
+    ],
+    [
+     "y(17)",
+     "y(7)"
+    ],
+    [
+     "y(19)",
+     "-2*y(12)-9115*y(13)-9115*y(17)"
+    ]
+   ],
+   "numerator_identity": true,
+   "relations_match_retained": true,
+   "relations_sha256": "bbbb4a5f8b178cc7e001c93bcaa790bd421a5b168bab2598d75fbef6e03b1f31",
+   "ring": "E8bar->N-",
+   "solutions": [
+    1
+   ],
+   "variables": 21
+  },
+  {
+   "cone": [
+    5,
+    16,
+    1
+   ],
+   "control_solutions": [
+    0
+   ],
+   "det_nonzero": [
+    1
+   ],
+   "field": "F_32029",
+   "generation": [
+    5,
+    1
+   ],
+   "images": [
+    [
+     "y(8)",
+     "y(3)"
+    ],
+    [
+     "y(14)",
+     "-y(6)"
+    ],
+    [
+     "y(16)",
+     "-y(5)"
+    ],
+    [
+     "y(17)",
+     "y(7)"
+    ],
+    [
+     "y(19)",
+     "-2*y(12)+9115*y(13)+9115*y(17)"
+    ]
+   ],
+   "numerator_identity": true,
+   "relations_match_retained": true,
+   "relations_sha256": "7c04530f75570b6e4e8eade28042a592b4029dfac983bc5c78a386680ffe105b",
+   "ring": "E8bar->N+",
+   "solutions": [
+    1
+   ],
+   "variables": 21
+  }
+ ],
+ "problems": [],
+ "schema": "gororoba.a5.weight-slice-module-map/1",
+ "tools": {
+  "singular": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Dec  6 2025 11:10:58",
+  "singular_version": "4.4.1"
+ }
+}

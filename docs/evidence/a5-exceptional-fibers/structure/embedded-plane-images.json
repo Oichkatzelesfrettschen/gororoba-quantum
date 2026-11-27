@@ -3,5 +3,6 @@
 {"check": "spans", "basepoint": "N+", "same": "X+->N+", "opposite": "X-->N+", "ranks": [15, 3, 18]},
 {"check": "plane", "fiber": "X- -> N-", "prime": 32009, "opposite": "X+->N-", "ranks": [3, 3, 6], "VB": {"stratum": "VB->N-", "conditions": 9, "with_forms": 14, "on_opposite": 0}, "Va": {"stratum": "Va-->N-", "conditions": 9, "with_forms": 12, "on_opposite": 3}},
 {"check": "plane", "fiber": "X- -> N-", "prime": 32029, "opposite": "X+->N-", "ranks": [3, 3, 6], "VB": {"stratum": "VB->N-", "conditions": 9, "with_forms": 14, "on_opposite": 0}, "Va": {"stratum": "Va-->N-", "conditions": 9, "with_forms": 12, "on_opposite": 3}},
-{"check": "plane", "fiber": "X+ -> N+", "prime": 32029, "opposite": "X-->N+", "ranks": [3, 3, 6], "VB": {"stratum": "VB->N+", "conditions": 9, "with_forms": 14, "on_opposite": 0}, "Va": {"stratum": "Va+->N+", "conditions": 9, "with_forms": 12, "on_opposite": 3}}
+{"check": "plane", "fiber": "X+ -> N+", "prime": 32029, "opposite": "X-->N+", "ranks": [3, 3, 6], "VB": {"stratum": "VB->N+", "conditions": 9, "with_forms": 14, "on_opposite": 0}, "Va": {"stratum": "Va+->N+", "conditions": 9, "with_forms": 12, "on_opposite": 3}},
+{"check": "plane", "fiber": "X+ -> N+", "prime": 32009, "opposite": "X-->N+", "ranks": [3, 3, 6], "VB": {"stratum": "VB->N+", "conditions": 9, "with_forms": 14, "on_opposite": 0}, "Va": {"stratum": "Va+->N+", "conditions": 9, "with_forms": 12, "on_opposite": 3}}
 ]

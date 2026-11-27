@@ -1,0 +1,47 @@
+{
+ "binding": {
+  "reductions": [
+   {
+    "echelon_equal": true,
+    "prime": 32029,
+    "root": 9115
+   }
+  ],
+  "relations": 21,
+  "relations_sha256": "e8d24710a12a2ab52468fe06ea1d377e06df0884be247e0f314ae6b52f1179be"
+ },
+ "cell": {
+  "chart": {
+   "dim": 0,
+   "length": 7,
+   "squarefree_eliminants": 3,
+   "variables": 10
+  },
+  "cohen_macaulay": true,
+  "degree": 7,
+  "generators": 21,
+  "hypothesis_holds": true,
+  "krull_dim": 4,
+  "length": 7,
+  "parameter_forms": "y(1),y(8),y(2)+y(3)+y(9),y(5)+y(7)+y(10)",
+  "radical": {
+   "linear_forms": 0,
+   "linear_outside_K": true,
+   "linear_square_in_K": true,
+   "radical_degree": 7,
+   "radical_dim": 4,
+   "radical_equal": true
+  },
+  "reduced": true,
+  "reduced_basis": "rad K = K",
+  "ring": "E8bar->VB",
+  "variables": 10
+ },
+ "field": "Q(i)",
+ "problems": [],
+ "schema": "gororoba.a5.e8-vb-quadric-ring-qi/1",
+ "tools": {
+  "singular": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Dec  6 2025 11:10:58",
+  "singular_version": "4.4.1"
+ }
+}
