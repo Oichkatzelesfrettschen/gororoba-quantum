@@ -6,6 +6,8 @@ Every cost and noise number below is labeled "retained snapshot": it comes from 
 (ibm_fez, calibration 2026-10-14), and the live Target, the calibration of the day and the quota read are owed to the
 binding dry run.
 
+The device and circuit architecture of this case (why the dry runs place 4, 8 and 3 regions, the per-stage CZ ledger, the merged-diagonal redesign) is in [pathion-kernel-map-orientation-architecture.md](pathion-kernel-map-orientation-architecture.md).
+
 ## Question
 
 On the retained ibm_fez full kernel map the paired gap lambda_16 - lambda_0 of the Walsh-character contractions (lambda_a
