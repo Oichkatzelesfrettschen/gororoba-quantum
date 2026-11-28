@@ -475,6 +475,16 @@ class Run:
     body: dict[str, Any]
 
 
+def check_couplers(owner: str, submission: dict[str, Any], collected: dict[str, Any]) -> None:
+    """A run planned with an architecture_source carries the collect-time couplers_checked: "live-match" or
+    "unread" read; "live-differ" or an absent field refuses the run."""
+    if "architecture_source" not in submission:
+        return
+    state = collected.get("couplers_checked")
+    if state not in ("live-match", "unread"):
+        raise RecordError(f"{owner}: couplers_checked is {state!r}, not live-match or unread")
+
+
 def validate_run(records: Records) -> Run:
     """Offline rules of one retained run: receipt, digests, approval, collection and raw result bytes.
 
@@ -506,6 +516,7 @@ def validate_run(records: Records) -> Run:
         raise RecordError(f"{owner}: results.json names another job or schema")
     if carried := sorted(set(FORBIDDEN_KEYS) & keys(collected)):
         raise RecordError(f"{owner}: results.json carries {carried}")
+    check_couplers(owner, submission, collected)
     returned = collected.get("data", {}).get("payload")
     if (
         manifest.get("schema") == "qd-hypercomplex-cases-v1"
@@ -565,6 +576,11 @@ def validate_run(records: Records) -> Run:
         "statuses": {status: 1},
         "detail": f"job {submission['job_id']}, {collected.get('samples', 0)} samples, {shots} shots",
     }
+    if "architecture_source" in submission:
+        facts |= {
+            "architecture_source": submission["architecture_source"],
+            "couplers_checked": collected["couplers_checked"],
+        }
     return Run(submission, manifest, circuit, collected, summary, shots, facts, cases_sha256, body)
 
 

@@ -1093,21 +1093,79 @@ def live_mesh(processor: dict[str, Any], circuit: dict[str, Any], platform: str)
             raise PlatformError("the live architecture operation sequence differs from the case's native template")
 
 
-def live_architecture(processor: dict[str, Any], platform: str) -> None:
-    """Refuse a case seeded from a retained run on its chip when the live couplers or symbols differ from the
-    retained catalogue's, since a comparison with that run then crosses a coupler recalibration."""
+def carried_provenance() -> dict[str, str]:
+    """The retained catalogue's chip architecture with its digests and observation stamp, the provenance of a case
+    admitted without a live specs.architecture; a catalogue without the chip record or its stamp refuses."""
+    import qd_belenos_mesh as mesh
+
+    catalogue = mesh.load_catalogue()
+    blob = chip_architecture(catalogue.get("processors", {}).get(mesh.CHIP))
+    stamp = catalogue.get("architecture_observed_utc", {}).get(mesh.CHIP)
+    if blob is None:
+        raise PlatformError(f"{mesh.CHIP}: the retained catalogue holds no specs.architecture to carry")
+    try:
+        datetime.datetime.fromisoformat(stamp)
+    except (TypeError, ValueError):
+        raise PlatformError(f"{mesh.CHIP}: the retained catalogue has no usable architecture_observed_utc") from None
+    return {
+        "architecture_catalogue_sha256": sha256_bytes(mesh.CATALOGUE.read_bytes()),
+        "architecture_sha256": sha256_bytes(blob.encode()),
+        "architecture_observed_utc": stamp,
+    }
+
+
+def couplers_differ(blob: str) -> bool:
+    """Whether the blob's couplers or phase symbols differ from the retained catalogue's."""
+    import qd_belenos_mesh as mesh
+
+    live = mesh.decode(blob)
+    retained = mesh.architecture(mesh.load_catalogue())
+    return [(k, m, p) for k, m, p in live if k == "bs"] != [(k, m, p) for k, m, p in retained if k == "bs"] or [
+        p for k, _, p in live if k == "ps"
+    ] != [p for k, _, p in retained if k == "ps"]
+
+
+def live_architecture(processor: dict[str, Any], platform: str) -> dict[str, str] | None:
+    """Admit a case seeded from a retained run on its chip, and return the provenance the plan records.
+
+    A live specs.architecture whose couplers or symbols differ from the retained catalogue's refuses, since a
+    comparison with that run then crosses a coupler recalibration. A live record that omits the field (the
+    service omits it intermittently) admits the case on the retained catalogue's architecture, recorded as
+    architecture_source "carried" beside the catalogue's sha256 and observation stamp; collect then checks the
+    couplers (couplers_state). Another platform returns None.
+    """
     import qd_belenos_mesh as mesh
 
     if platform != mesh.CHIP:
-        return
-    live = mesh.decode(architecture_blob(processor, platform))
-    retained = mesh.architecture(mesh.load_catalogue())
-    if [(k, m, p) for k, m, p in live if k == "bs"] != [(k, m, p) for k, m, p in retained if k == "bs"] or [
-        p for k, _, p in live if k == "ps"
-    ] != [p for k, _, p in retained if k == "ps"]:
+        return None
+    provenance = carried_provenance()
+    blob = chip_architecture(processor)
+    if blob is None:
+        return {"architecture_source": "carried", **provenance}
+    if couplers_differ(blob):
         raise PlatformError(
             "the live architecture differs from the retained catalogue: the seeded case's source ran on other couplers"
         )
+    return {"architecture_source": "live", **provenance}
+
+
+def couplers_state(submission: dict[str, Any], platform: str, read: Callable[[], Any]) -> dict[str, str]:
+    """The collect-time coupler check of a run planned with an architecture_source.
+
+    read returns the platform's record now. A present specs.architecture is compared with the retained
+    catalogue's: "live-match", or "live-differ" when its couplers or symbols differ. An absent one, or a retained
+    architecture other than the digest the plan recorded, leaves "unread", and the run keeps the architecture
+    source its plan recorded.
+    """
+    import qd_belenos_mesh as mesh
+
+    state = {"architecture_source": submission["architecture_source"], "couplers_checked": "unread"}
+    blob = chip_architecture(read())
+    retained = chip_architecture(mesh.load_catalogue().get("processors", {}).get(platform))
+    if blob is None or retained is None or sha256_bytes(retained.encode()) != submission.get("architecture_sha256"):
+        return state
+    state["couplers_checked"] = "live-differ" if couplers_differ(blob) else "live-match"
+    return state
 
 
 def explorer_row(platform: str) -> dict[str, Any]:
@@ -1509,8 +1567,7 @@ def plan(
             print(message, file=sys.stderr)
     if manifest.get("gate_form") == "mesh" or "architecture" in circuit:
         live_mesh(processor, circuit, platform)
-    if "seeded_from" in manifest:
-        live_architecture(processor, platform)
+    carried = live_architecture(processor, platform) if "seeded_from" in manifest else None
     counters = availability()
     require_token_capacity(manifest, counters)
     built = payload(case_dir, manifest, circuit, platform)
@@ -1539,6 +1596,7 @@ def plan(
         "status_at_plan": {"explorer": row["status"], "processor": processor.get("status")},
         "versions": built["versions"],
         "payload_version_basis": built["payload_version_basis"],
+        **(carried or {}),
     }
 
 
@@ -2007,6 +2065,15 @@ def collect(case_dir: Path, poll: float, timeout: float) -> dict[str, Any]:
         )
     except PlatformError as error:
         collected["usage_absent"] = str(error)
+    if "architecture_source" in submission:
+        collected.update(
+            couplers_state(
+                submission,
+                submission["platform"],
+                lambda: patient(lambda: get(platform_route(submission["platform"])), job, "platform", deadline, poll),
+            )
+        )
+        collected["couplers_checked_utc"] = now()
     if result_bytes is None:
         collected["result_absent"] = absent
     else:
@@ -2016,15 +2083,21 @@ def collect(case_dir: Path, poll: float, timeout: float) -> dict[str, Any]:
         )
     if retained_path.exists():
         retained = json.loads(retained_path.read_text(encoding="utf-8"))
-        moving = ("collected_utc", "usage_after", "usage_absent")
+        moving = ("collected_utc", "usage_after", "usage_absent", "couplers_checked", "couplers_checked_utc")
         if {k: v for k, v in retained.items() if k not in moving} != {
             k: v for k, v in collected.items() if k not in moving and not predates(retained, collected, k)
         }:
             raise PlatformError(f"{retained_path} differs from the recollection; nothing was rewritten")
         if result_bytes is not None:
             retain_bytes(raw_dir / "result.json", result_bytes)
-        return dict(retained)
-    write_json(retained_path, collected, exclusive=True)
+        collected = dict(retained)
+    else:
+        write_json(retained_path, collected, exclusive=True)
+    if collected.get("couplers_checked") == "live-differ":
+        raise PlatformError(
+            f"job {job}: couplers_checked live-differ: the live specs.architecture differs from the retained "
+            "catalogue; the raw result is kept and its readers refuse the run"
+        )
     return collected
 
 

@@ -420,6 +420,19 @@ error or canceled job (or records its absence), requires the result's job id
 and shots to match the receipt and status, and parses the BSCount string itself: a result is service data,
 and `perceval.serialization.deserialize` evaluates parameter expressions.
 
+A case that names `seeded_from` on qpu:belenos plans against the retained catalogue's chip architecture. A live
+record with `specs.architecture` keeps the coupler and phase-symbol comparison (a differing blob refuses, and the plan
+records `architecture_source` "live"). The service omits the field intermittently, and a record without it admits the
+case on the retained architecture: the plan and `submission.json` record `architecture_source` "carried", the
+retained catalogue's sha256 (`architecture_catalogue_sha256`), the sha256 of its architecture blob
+(`architecture_sha256`) and its observation stamp (`architecture_observed_utc`), and every other missing field and
+every mesh case (`live_mesh`) still refuses. `collect` re-reads the platform and writes `couplers_checked` to
+`results.json`: "live-match" when the live `specs.architecture` equals the retained one, "live-differ" when it differs
+(`collect` fails after it retains the raw bytes, and `qd_records.validate_run` refuses the run), and "unread" when the
+record omits the field or the retained blob no longer has the planned digest. The job record exposes no coupler field
+(its `payload` is the sent computation, which `validate_run` already compares with `job-body.json`), so the platform
+record is the only coupler source. `qd_platform.py runs` prints `architecture_source` and `couplers_checked`.
+
 Spaced jobs of an approved case run unattended from a committed schedule
 through GitHub Actions, which calls the same plan, submit and collect
 ([quandela-scheduled-runs.md](../../runbooks/quandela-scheduled-runs.md)).
