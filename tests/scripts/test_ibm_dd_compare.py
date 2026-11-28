@@ -72,3 +72,15 @@ def test_control_flow_is_refused() -> None:
     with circuit.if_test((circuit.clbits[0], 1)):
         circuit.x(0)
     require(dd.refusal(circuit) is not None, "dd.refusal(circuit) is not None")
+
+
+def test_tvd_standard_error_is_the_binomial_error_fraction_for_a_deterministic_ideal() -> None:
+    import math
+
+    import numpy as np
+
+    law = np.array([0.276, 0.724])
+    ideal = np.array([0.0, 1.0])
+    expected = 0.5 * math.sqrt(4.0 * 0.276 * 0.724 / 4000)
+    require(abs(dd.tvd_standard_error(law, ideal, 4000) - expected) < 1e-12, "the multinomial covariance is used")
+    require(abs(expected - 0.00707) < 1e-4, "the retained 0.276 case gives 0.00707, not 0.00500")

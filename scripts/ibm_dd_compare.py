@@ -10,7 +10,10 @@ own DD pass manager, so the idle windows are identical and only the pulses diffe
 density-matrix noise model that live_run.noise_simulator builds from the Target and properties.
 
 That noise model relaxes a qubit by T1 and T2 channels that act at random and carry no memory. A refocusing pulse
-cannot undo a Markovian channel, so the model alone charges DD its pulse error and credits it nothing. The
+cannot undo the dephasing part of such a channel, and on the tested circuit and placement (the idle_ramsey fixture and
+the experiment groups on the layouts the compile chose) DD gains no credit. The result does not extend to every
+circuit: an XX pair changes how long a qubit occupies the excited state under amplitude damping, and an Aer
+thermal-relaxation control at 80 us idle and 100 us T1 raised the excited-state survival from 0.4493 to 0.7192. The
 optional --detuning-hz arm adds the mechanism DD exists for: a quasi-static detuning that rotates each idle qubit
 about Z by 2 pi f t. The circuit's own X pulses conjugate those rotations, so a pulse sequence refocuses them
 without a sign bookkeeping in the tool. The arm is a model input, never a measurement, and the report names it.
@@ -136,9 +139,15 @@ def tvd(p: np.ndarray, q: np.ndarray) -> float:
     return 0.5 * float(np.abs(p - q).sum())
 
 
-def tvd_standard_error(law: np.ndarray, shots: int) -> float:
-    """Delta-method bound on the standard error of a total-variation distance estimated from shots."""
-    return 0.5 * math.sqrt(float((law * (1.0 - law)).sum()) / shots)
+def tvd_standard_error(law: np.ndarray, ideal: np.ndarray, shots: int) -> float:
+    """Delta-method standard error of 0.5 sum |law - ideal| from one multinomial sample of shots outcomes.
+
+    With s_i the sign of law_i - ideal_i, the distance is 0.5 sum s_i law_i locally, and the multinomial covariance
+    gives Var = 0.25 (sum s_i^2 law_i - (sum s_i law_i)^2) / shots. A deterministic ideal outcome reduces this to the
+    binomial error fraction f: 0.5 sqrt(f (1 - f) 4 / shots)."""
+    sign = np.sign(law - ideal)
+    variance = float((sign**2 * law).sum() - ((sign * law).sum()) ** 2)
+    return 0.5 * math.sqrt(max(variance, 0.0) / shots)
 
 
 def compile_cases(
@@ -217,7 +226,7 @@ def compare(
         entry = report["cases"].setdefault(case.name, {"active_qubits": len(active_qubits(isa[index])), "arms": {}})
         entry["arms"][arm] = {
             "tvd_to_ideal": tvd(law, case.ideal),
-            "tvd_standard_error": tvd_standard_error(law, shots),
+            "tvd_standard_error": tvd_standard_error(law, case.ideal, shots),
             "duration_dt": arms[(index, arm)].estimate_duration(target, unit="dt"),
             **pulse_and_delay_counts(arms[(index, arm)], active_qubits(isa[index])),
         }
