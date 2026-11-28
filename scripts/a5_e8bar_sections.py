@@ -15,9 +15,13 @@ Any other outcome is inconclusive, not a refutation. Inference: if the top-dimen
 two F_p-defined pieces of degrees d and 24 - d, every section in general position would have d as a sub-sum; an empty
 intersection excludes that. If it were F_p-irreducible but split into m > 1 conjugate geometric components, every
 Frobenius orbit of a general section would have length divisible by m; gcd 1 excludes that. Radical vdim = vdim = 24
-on a section in general position excludes a top component along which Y is not reduced. The inference rests on the
-sections being in general position (a random choice over F_p, not a proof of genericity); embedded and lower-dimensional
-components are outside its reach, and characteristic 0 is not addressed.
+on a section in general position excludes a top component along which Y is not reduced. Each section also reports
+the dimension of Y(A w) (b = 0), the cone of the section's directions: dimension 0 there means the affine 4-space meets
+the closure of V(Y) in no point at infinity, so by Bezout each top-dimensional component of degree e contributes
+exactly e points counted with multiplicity, and the inference holds for these five sections without a general-position
+assumption on the top-dimensional part. Embedded and lower-dimensional components are outside its reach (a lower
+component that meets a section would add points, which vdim = 24 = mult excludes only for the sampled sections), and
+characteristic 0 is not addressed.
 
 Seeds: docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json, indices 16, 17, 18, 19, 20 in order, one per section,
 each seeding random.Random for that section's A, b and ell.
@@ -95,6 +99,7 @@ def section(seed: int) -> dict[str, Any]:
 
 def singular_script(gens: str, sec: dict[str, Any]) -> str:
     images = ",".join(f"{sec['b'][r]}" + "".join(f"+{sec['a'][r][c]}*w({c + 1})" for c in range(4)) for r in range(15))
+    images0 = ",".join("+".join(f"{sec['a'][r][c]}*w({c + 1})" for c in range(4)) for r in range(15))
     ell = "+".join(f"{sec['ell'][c]}*w({c + 1})" for c in range(4))
     return "\n".join(
         [
@@ -104,6 +109,8 @@ def singular_script(gens: str, sec: dict[str, Any]) -> str:
             f"ring S={PRIME},(w(1..4)),dp;",
             f"map phi=R,{images};",
             "ideal Ys=phi(Y); ideal G=std(Ys);",
+            f"map phi0=R,{images0};",
+            'ideal Yh=phi0(Y); "RESULT dim_at_infinity",dim(std(Yh));',
             '"RESULT dim",dim(G); "RESULT vdim",vdim(G);',
             'ideal Rd=radical(Ys); "RESULT rad_vdim",vdim(std(Rd));',
             f"ring T={PRIME},(t,w(1..4)),dp;",
@@ -139,6 +146,7 @@ def run_section(job: tuple[int, str]) -> dict[str, Any]:
     return {
         "seed": seed,
         "dim": vals["dim"][0][0],
+        "dim_at_infinity": vals["dim_at_infinity"][0][0],
         "vdim": vals["vdim"][0][0],
         "rad_vdim": vals["rad_vdim"][0][0],
         "eliminant_generators": vals["eliminant"][0][0],
@@ -160,6 +168,7 @@ def decide(rows: list[dict[str, Any]], degree: int) -> dict[str, Any]:
     """The rule of the docstring on a list of section rows."""
     clean = all(
         r["dim"] == 0
+        and r.get("dim_at_infinity", 0) == 0
         and r["vdim"] == degree
         and r["rad_vdim"] == degree
         and r["eliminant_generators"] == 1

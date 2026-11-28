@@ -19,6 +19,7 @@
  "mutant_sections": [
   {
    "dim": 0,
+   "dim_at_infinity": 0,
    "eliminant_degree": 25,
    "eliminant_generators": 1,
    "orbits": [
@@ -35,6 +36,7 @@
   },
   {
    "dim": 0,
+   "dim_at_infinity": 0,
    "eliminant_degree": 25,
    "eliminant_generators": 1,
    "orbits": [
@@ -51,6 +53,7 @@
   },
   {
    "dim": 0,
+   "dim_at_infinity": 0,
    "eliminant_degree": 25,
    "eliminant_generators": 1,
    "orbits": [
@@ -67,6 +70,7 @@
   },
   {
    "dim": 0,
+   "dim_at_infinity": 0,
    "eliminant_degree": 25,
    "eliminant_generators": 1,
    "orbits": [
@@ -80,6 +84,7 @@
   },
   {
    "dim": 0,
+   "dim_at_infinity": 0,
    "eliminant_degree": 25,
    "eliminant_generators": 1,
    "orbits": [
@@ -98,6 +103,7 @@
  "sections": [
   {
    "dim": 0,
+   "dim_at_infinity": 0,
    "eliminant_degree": 24,
    "eliminant_generators": 1,
    "orbits": [
@@ -113,6 +119,7 @@
   },
   {
    "dim": 0,
+   "dim_at_infinity": 0,
    "eliminant_degree": 24,
    "eliminant_generators": 1,
    "orbits": [
@@ -128,6 +135,7 @@
   },
   {
    "dim": 0,
+   "dim_at_infinity": 0,
    "eliminant_degree": 24,
    "eliminant_generators": 1,
    "orbits": [
@@ -143,6 +151,7 @@
   },
   {
    "dim": 0,
+   "dim_at_infinity": 0,
    "eliminant_degree": 24,
    "eliminant_generators": 1,
    "orbits": [
@@ -155,6 +164,7 @@
   },
   {
    "dim": 0,
+   "dim_at_infinity": 0,
    "eliminant_degree": 24,
    "eliminant_generators": 1,
    "orbits": [

@@ -29,7 +29,7 @@ The rule required all of the following for K = 5 sections:
 
 Any other outcome would have been inconclusive.
 
-| Seed index | Orbit lengths | dim, vdim, radical vdim |
+| Seed index | Orbit lengths | dim, vdim, radical vdim (each section's direction cone Y(A w) has dimension 0) |
 |---|---|---|
 | 16 | 2, 4, 5, 13 | 0, 24, 24 |
 | 17 | 1, 2, 5, 16 | 0, 24, 24 |
@@ -48,9 +48,10 @@ split into m > 1 conjugate components over F_p-bar. Then every orbit of such a s
 by m. An empty common sub-sum and gcd 1 exclude both cases. Radical vdim = vdim = 24 excludes a top component along
 which Y is not reduced.
 
-So, modulo 32009, the top-dimensional (dimension 11) part of V(Y) is irreducible over F_p-bar and Y is generically
-reduced along it. This holds conditionally on the five sections being in general position, which a random draw makes
-likely but does not prove. Embedded and lower-dimensional components of Y are not tested: a section of dimension 0
+Each section's direction cone Y(A w) (b = 0) has dimension 0, so the affine 4-space meets the closure of V(Y) in no
+point at infinity, and by Bezout each top-dimensional component of degree e meets it in exactly e points counted with
+multiplicity. So, modulo 32009, the top-dimensional (dimension 11) part of V(Y) is irreducible over F_p-bar and Y is
+generically reduced along it, without a general-position assumption on that part. Embedded and lower-dimensional components of Y are not tested: a section of dimension 0
 misses them. Characteristic 0 is not addressed either. The global equidimMax and radical of A5-605 remain unfinished.
 
 ## Control
