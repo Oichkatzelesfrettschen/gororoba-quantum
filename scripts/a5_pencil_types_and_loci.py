@@ -313,7 +313,12 @@ def vb_singular(_: int) -> dict[str, Any]:
         path = Path(directory) / "vb.sing"
         path.write_text(script, encoding="utf-8")
         output = subprocess.run(
-            [SINGULAR, "-q", str(path)], capture_output=True, text=True, check=True, timeout=1800
+            [SINGULAR, "-q", str(path)],
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=1800,
+            stdin=subprocess.DEVNULL,
         ).stdout
     members = {line.split()[1]: int(line.split()[2]) for line in output.splitlines() if line.startswith("member")}
     dimension = next(int(line.split()[1]) for line in output.splitlines() if line.startswith("dim"))
@@ -679,7 +684,43 @@ def self_test() -> list[str]:
         h_point["orbit"] == "W8" and type_of(h_point) == "H",
         r_point["orbit"] == "W8" and type_of(r_point) == "R",
     )
+    routes = [route_types(point) for point in ROUTE_POINTS]
+    control(
+        "the bounds route and the rational route give the same type at an R, a C and an H point",
+        routes == [("R", "R"), ("C", "C"), ("H", "H")],
+        routes[0][1] != routes[1][0],
+    )
     return passed
+
+
+ROUTE_POINTS: tuple[tuple[tuple[int, int], ...], ...] = (
+    ((1, 1), (3, 1), (10, 1), (20, 1)),
+    ((1, 1), (10, 1), (20, 2), (31, 2)),
+    ((1, 1), (10, 1)),
+)
+"""Three points of W8 in A_5 with pencil types R, C and H (README statement 13)."""
+
+
+def route_types(point: tuple[tuple[int, int], ...]) -> tuple[str, str]:
+    """The type of a point from the two-sided bounds of a5_pencil_certificates and from the exact dimensions of
+    a5_nullity_transitions."""
+    import a5_nullity_transitions
+
+    bounds = certificates.structure_item((32, point))
+    exact = a5_nullity_transitions.structure_item((32, point))
+    first = type_of(
+        {
+            "commutant": [bounds["commutant_lower"], bounds["commutant_upper"]],
+            "closure": [bounds["closure_lower"], bounds["closure_upper"]],
+        }
+    )
+    second = type_of(
+        {
+            "commutant": [exact["commutant_dimension"]] * 2,
+            "closure": [exact["lie_closure_dimension"]] * 2,
+        }
+    )
+    return first, second
 
 
 def source_digests() -> dict[str, str]:

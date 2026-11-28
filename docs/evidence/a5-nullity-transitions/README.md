@@ -209,7 +209,9 @@ Each statement has a `require` in the script's `validate`; the name of the recor
     (commutant 2, closure 15) and 139 of type H (commutant 4, closure 10). The other points lie in Iso (nullity 8,
     dim A = 0), S0, S4_VQ, B9 (nullity 12, dim A = 2) and N+- (nullity 16, dim A = 4). Where the integer frame
     exceeds the int64 bound of statement 16 (33 points of type R), the rational route of `a5_nullity_transitions`
-    gives the type from exact dimensions; the fallback catches that bound alone and re-raises every other error.
+    gives the type from exact dimensions; the fallback catches that bound alone and re-raises every other error, and
+    the self-test compares the two routes at an R, a C and an H point. Every census point has halves that are both
+    zero divisors, so W8 points with an invertible half lie outside this census.
 21. **Normal form of the type rule** (`normal_form`). The proof of Theorem 14.6 of Biss, Dugger and Isaksen
     (arXiv math/0511691, pages 23 to 26) brings a pair a, b of A_4 with Ann a n Ann b nonzero, up to an
     automorphism of the octonions and scaling, to a = (t, kt) and b = (alpha t, (alpha k) t), with H = <1, i, j, k>,
@@ -286,7 +288,9 @@ the review found. The record now draws them modulo 1009, and they are 60 distinc
 ([fourth-round-predictions.md](fourth-round-predictions.md), kept verbatim): P27 (the full Pfaffians are irreducible),
 P28 (types on the census: P25, not run in `certificates.json`, run here on these points), P29 (J_k), P30 (the VB real rank-4 locus), P31 (the second-order form
 decides the VB lines), P32 and P33 (second- and third-order terms in the pencil) held. P31 was written after the
-nullities of six of its eight first directions had been read; the record then scanned 284 directions. P28 was first
+nullities of six of its eight first directions had been read; the record then scanned 284 directions. P29 named five
+values of alpha that the agy Neon red team of the certificate change had already tested; of its seven values only
+alpha = 3 + 2j was new. P28 was first
 run on dim-0 pairs that shared few first halves; the record samples them across the census. A first calibration run used
 two pencil elements as Lie generators and read the bounds 2 and 15 at the type-R point. Its bounds did not meet,
 so it certified nothing, and three generators close them. P25 (the pencil type on W8 points of the census) is not

@@ -194,7 +194,7 @@
   "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
   "scripts/a5_nullity_transitions.py": "1e073fea876d399a59784f804d175df6ae0d20da096a038769f8a039d0dbb49d",
   "scripts/a5_pencil_certificates.py": "19009f3208103167115fac1127e27703d4b5427bcd87aa24d7223b2e398c1a80",
-  "scripts/a5_pencil_types_and_loci.py": "3b2109ac951e462d39fa5564bfe15c146317d4f2717a3c4b774e18b4055f2f65",
+  "scripts/a5_pencil_types_and_loci.py": "3761e3f0d97d2c1826e03cef13f1f9b9a7b68b0337201da811803d31b514c2a9",
   "scripts/a5_zero_divisor_strata.py": "09fd6941e7945638d37e53d24f6d4cd7e49c45b724e313394091b2bee9f1b0d4"
  },
  "type_census": {

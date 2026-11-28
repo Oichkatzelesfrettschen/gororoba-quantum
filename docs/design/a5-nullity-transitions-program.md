@@ -68,22 +68,24 @@ their tables.
   move into `gororoba_quantum/` is a separate change, since retained records bind the file's digest.
 - **Gap 4.** The paper link stays a boundary (A5-628). A correspondence needs a non-abelian algebra or a positivity
   structure on the A_5 side that matches the corner charge; no deliverable here supplies one.
-- **Gap 5 (audit of 2026-11-28).** Four A_5 records have no gate: `a5-rank-strata-equations` and
-  `a5-strata-regularity` call themselves retained replays because Singular is absent from the hosted image, and
-  `a5-w8-a4-restriction` and `a5-w8-twisted-product` name no replay at all. `ci/gates.json` now supports
-  `"requires": ["singular"]`, which skips where Singular is absent (ci/AGENTS.md), so each can take a gate pair.
-  `a5-gaussian-certificates` stays ungated on purpose: its generator is live in gororoba-math.
-- **Gap 6.** The ledger holds 12 open and 10 stalled rows. Eleven of the open rows date from 2026-11-08 to
-  2026-11-12 and have not moved: engine hypotheses (A5-258, A5-263, A5-278, A5-283), structure (A5-250, A5-254,
-  A5-259, A5-325, A5-389) and hardware readings (A5-202, A5-242). Every stalled row is a computation that reached its
-  cap (Singular standard bases, msolve eliminations, Rees special fibers on E8-bar, Iso and W8 into N+- and VB). Each
-  needs a route decision from the cheap-question table of the
+- **Gap 5 (a mechanical first pass of 2026-11-28, not the full track audit).** Four A_5 records sit outside
+  `ci/gates.json`. `a5-rank-strata-equations` and `a5-strata-regularity` call themselves retained replays because
+  Singular is absent from the hosted image. `a5-w8-a4-restriction` reproduces through its `run.sh`, and
+  `a5-w8-twisted-product` through its script. `ci/gates.json` supports `"requires": ["singular"]`, which skips where
+  Singular is absent (ci/AGENTS.md), so each can take a gate pair. `a5-gaussian-certificates` stays ungated on purpose,
+  since its generator is live in gororoba-math.
+- **Gap 6.** The ledger holds 12 open and 10 stalled rows. Ten of the open rows date from 2026-11-08 to 2026-11-12:
+  engine hypotheses (A5-258, A5-263, A5-278, A5-283), structure (A5-250, A5-254, A5-259, A5-325) and hardware readings
+  (A5-202, A5-242). Open pull requests touch A5-242, A5-254, A5-259 and A5-263. Every stalled row is a computation that
+  reached its cap: Singular standard bases, msolve eliminations, and Rees special fibers on E8-bar, Iso and W8 into N+-
+  and VB. Each needs a route decision from the cheap-question table of the
   [computer-algebra runbook](../runbooks/computer-algebra.md), not a rerun.
-- **Gap 7.** `a5_pencil_certificates.structure_item` refuses an integer kernel frame whose entries exceed 2^20, and
-  33 census points of statement 20 fall back to the sympy route. An LLL-reduced frame removes the fallback; probes of
-  2026-11-28 found that it resolves 19 of 25 such points.
-- **Gap 8.** The type rule (A5-667) has a normal form for dim A > 0 (A5-678) but none for dim A = 0. That half rests
-  on the census of A5-677 and the earlier samples alone.
+- **Gap 7.** `a5_pencil_certificates.structure_item` refuses an integer kernel frame whose entries exceed 2^20, and 33
+  census points of statement 20 fall back to the sympy route. In the probes of 2026-11-28 an LLL-reduced frame
+  resolved 19 of 25 such points; the other six still exceeded the bound.
+- **Gap 8.** The type rule (A5-667) has a normal form for dim A > 0 (A5-678) and none for dim A = 0. That half rests on
+  the census of A5-677, whose points have halves that are both zero divisors, and on earlier samples. W8 points whose
+  halves are invertible lie outside that census: the red team found 64 on nullity-8 lines through VB, all of type R.
 
 ## Standard of the record as a data source
 

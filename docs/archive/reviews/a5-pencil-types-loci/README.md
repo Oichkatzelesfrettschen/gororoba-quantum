@@ -38,4 +38,24 @@ No reviewer refuted a mathematical claim. Each reproduced the record and added c
 | The order-4 term alone leaves the pencil, while total forms of orders 4 to 6 return to it | Neon | recorded in A5-660, A5-680 and the program note (T3) as a lead |
 | Conjectures: the Schur complement as U^T P U (Neon); an Sp(2) x Sp(1)-equivariant pair structure (Codex); a graph-kernel route for dim A = 0 (Neon) | Neon, Codex | recorded in the program note; untested here |
 
+| Codex's retained control comparing the two type routes | Codex | confirmed; the self-test compares them at an R, a C and an H point |
+| The ledger's `certified` (Codex asked for exact computations to stay distinct from proofs) | Codex | the ledger already uses `certified` for exact computational certificates in characteristic 0 (A5-423, A5-551, A5-564, A5-591, A5-598, A5-608, A5-635, A5-644 among others), so the change uses it for the computed rows and keeps `proved` for the real locus |
+| W8 points with both halves invertible lie outside the census (64 on VB lines, all type R) | Neon | confirmed as scope; A5-677, statement 20 and Gap 8 of the program note say so |
+| The PR body abbreviated commands to flags | Codex | confirmed; the body gives the exact commands |
+
 Codex's browser left two snapshot files in the workspace root; they went to the trash.
+
+## Advisor
+
+The Advisor reviewed last, on the findings above and the fix commit 647b0dcb9, and named these gaps; the commit after
+it resolves them:
+
+| Finding | Resolution |
+|---|---|
+| The `certified` relabel was argued from a truncated listing | the full listing shows ten earlier char0 rows marked `certified`; the relabel stands, with the reason in the table above |
+| Gaps 5 to 8 had errors: ten open rows in the date range, not eleven; open pull requests touch four of them; Gap 7 contradicted itself; a README names `run.sh` | corrected, and the gaps are called a mechanical first pass, not the track audit |
+| The review record lacked the route control, the invertible-halves scope and the commands finding | rows added; the route control is in the self-test |
+| Singular read stdin | `stdin=subprocess.DEVNULL` |
+| The -O self-test had not run since the fix commit | 6 controls pass in normal and -O modes |
+| P29 was not a blind prediction for five of its seven alpha | the README Predictions say so |
+
