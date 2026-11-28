@@ -428,8 +428,7 @@ retained catalogue's sha256 (`architecture_catalogue_sha256`), the sha256 of its
 (`architecture_sha256`) and its observation stamp (`architecture_observed_utc`), and every mesh case (`live_mesh`) still
 refuses. A `specs.architecture` that is present and not a non-empty string refuses at plan and collect. Of the other
 missing fields, `specs.commands` is restored from a frozen processor record of the same worker versions
-(`payload_version_basis`, `retained_commands`), and `perfs`, `default_mitigations`, `known_mitigations` and
-`specs.type` read as absent without refusing the plan. `couplers_differ` compares the whole element sequence (kind,
+(`payload_version_basis`, `retained_commands`), and an absent `perfs` reads as empty at plan. `couplers_differ` compares the whole element sequence (kind,
 mode and parameter of every coupler and phase shifter, in order). `collect` re-reads the platform and writes
 `couplers_checked` to `results.json`: "live-match" when the live `specs.architecture` equals the retained one,
 "live-differ" when it differs (`collect` fails after it retains the raw bytes, and `qd_records.validate_run` refuses

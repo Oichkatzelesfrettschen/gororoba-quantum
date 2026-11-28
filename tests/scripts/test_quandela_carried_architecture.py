@@ -438,3 +438,14 @@ def test_a_recollection_keeps_a_read_state_when_the_platform_omits_the_field(
 
     monkeypatch.setattr(qd_platform, "request", omitted)
     require(qd_platform.collect(case, 0.0, 5.0)["couplers_checked"] == "live-match", "a read state is kept")
+
+
+@MUTANT_KINDS
+def test_collect_fails_on_a_live_architecture_with_other_phase_shifters(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, mutant: str
+) -> None:
+    case = collect_fixture(tmp_path, monkeypatch, live(mutant))
+    with pytest.raises(qd_platform.PlatformError, match="live-differ"):
+        qd_platform.collect(case, 0.0, 5.0)
+    stored = json.loads((case / "results.json").read_text(encoding="utf-8"))
+    require(stored["couplers_checked"] == "live-differ", 'stored["couplers_checked"] == "live-differ"')
