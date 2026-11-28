@@ -192,13 +192,18 @@ a W8 point ([review](../../archive/reviews/a5-outside-transition-report/README.m
 | A5-657 | on the 30 doubly pure units the Pfaffian of the pencil is c \|lead Q\|^2 \|lead G\|^2 at VB (Q order 1, G order 2) and at N+- (Q order 1, G order 3; a quadratic times an irreducible sextic) | proved |
 | A5-658 | the t^2 I Gram identity for the doubling unit and the alternating three-form, levels 8 to 64 | proved |
 | A5-659 | the pencil type depends on the point of W8: quaternion commutant at six of eight points, scalar commutant and closure so(8) at two | proved |
-| A5-660 | every nullity-4 arc into e_1 + e_10 limits on the 2-sphere | open |
+| A5-660 | every nullity-4 arc into e_1 + e_10 limits on the 2-sphere; proved through effective order 3 (A5-680) | survives |
 | A5-664 | tower at e_1 + e_10: sp(1), sp(2), sp(4) on H, H^2, H^4 in A_4, A_5, A_6, pencil dimensions 3, 7, 15 | proved |
 | A5-665 | the lowest Gram coefficient vanishes to order 8 at every junction | proved |
 | A5-666 | pencils at VB (so(12)) and N+- (so(16)) with scalar commutants | proved |
 | A5-667 | on W8 the pencil has type R, C or H (closures so(8), su(4), sp(2)) as ker L_p n ker L_q has dimension 0, 2, 4; 2,448 census points and 53 others; dimensions 1 and 3 excluded by A5-671 | survives |
 | A5-668 | twenty lines of zero first-order compression and two curved arcs limit on the 2-sphere | proved |
 | A5-670 | tower at e_1 + e_10 continued: sp(8) and sp(16) in A_7 and A_8, pencil dimensions 31 and 63, by closure bounds that meet | proved |
+| A5-676 | the full Pfaffians at VB (degree 6) and N+- (degree 8), with the coordinate on e_16, are irreducible | proved |
+| A5-677 | 3,598 W8 points of the sedenion zero-divisor census, each of the type its dim A names | proved |
+| A5-678 | in the normal form of Biss-Dugger-Isaksen Theorem 14.6 the kernel splits and J_k commutes with the pencil at seven alpha | survives |
+| A5-679 | the VB real rank-4 locus is a 4-plane of rank exactly 4; the second-order form decides which of its lines reach nullity 8 | proved |
+| A5-680 | at e_1 + e_10 the second- and third-order Schur terms lie in the pencil, so arcs of effective order at most 3 limit on the sphere | proved |
 | A5-671 | L_(e_8) anticommutes with every other imaginary unit of A_4 (known: Biss, Dugger and Isaksen, Lemmas 9.5, 9.6, 9.9), so sedenion zero divisors are doubly pure and ker L_p n ker L_q is complex, of dimension 0, 2 or 4 | proved |
 
 ## Next computations

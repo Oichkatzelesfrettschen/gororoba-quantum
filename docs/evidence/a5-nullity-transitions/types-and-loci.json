@@ -1,0 +1,262 @@
+{
+ "full_pfaffians": [
+  {
+   "content": "-64",
+   "degree": 6,
+   "factor_degrees": [
+    [
+     6,
+     1
+    ]
+   ],
+   "point": "VB",
+   "terms": 50,
+   "units": [
+    3,
+    4,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    16
+   ]
+  },
+  {
+   "content": "-64",
+   "degree": 8,
+   "factor_degrees": [
+    [
+     8,
+     1
+    ]
+   ],
+   "point": "N-",
+   "terms": 12579,
+   "units": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    19,
+    20,
+    24
+   ]
+  },
+  {
+   "content": "64",
+   "degree": 8,
+   "factor_degrees": [
+    [
+     8,
+     1
+    ]
+   ],
+   "point": "N+",
+   "terms": 12579,
+   "units": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    19,
+    20,
+    24
+   ]
+  }
+ ],
+ "normal_form": {
+  "1+i": {
+   "alpha": "1+i",
+   "commutes_with_all_31": true,
+   "dim_a": 2,
+   "kernel": 8,
+   "kernel_splits": true,
+   "omega_part_same_as_alpha_2": true,
+   "perp_part_same_as_alpha_2": false,
+   "preserves_kernel": true,
+   "square_is_minus_identity": true
+  },
+  "1+i+j+k": {
+   "alpha": "1+i+j+k",
+   "commutes_with_all_31": true,
+   "dim_a": 2,
+   "kernel": 8,
+   "kernel_splits": true,
+   "omega_part_same_as_alpha_2": true,
+   "perp_part_same_as_alpha_2": false,
+   "preserves_kernel": true,
+   "square_is_minus_identity": true
+  },
+  "2": {
+   "alpha": "2",
+   "commutes_with_all_31": true,
+   "dim_a": 4,
+   "kernel": 8,
+   "kernel_splits": true,
+   "omega_part_same_as_alpha_2": true,
+   "perp_part_same_as_alpha_2": true,
+   "preserves_kernel": true,
+   "square_is_minus_identity": true
+  },
+  "2i": {
+   "alpha": "2i",
+   "commutes_with_all_31": true,
+   "dim_a": 2,
+   "kernel": 8,
+   "kernel_splits": true,
+   "omega_part_same_as_alpha_2": true,
+   "perp_part_same_as_alpha_2": false,
+   "preserves_kernel": true,
+   "square_is_minus_identity": true
+  },
+  "2k": {
+   "alpha": "2k",
+   "commutes_with_all_31": true,
+   "dim_a": 4,
+   "kernel": 8,
+   "kernel_splits": true,
+   "omega_part_same_as_alpha_2": true,
+   "perp_part_same_as_alpha_2": true,
+   "preserves_kernel": true,
+   "square_is_minus_identity": true
+  },
+  "3+2j": {
+   "alpha": "3+2j",
+   "commutes_with_all_31": true,
+   "dim_a": 2,
+   "kernel": 8,
+   "kernel_splits": true,
+   "omega_part_same_as_alpha_2": true,
+   "perp_part_same_as_alpha_2": false,
+   "preserves_kernel": true,
+   "square_is_minus_identity": true
+  },
+  "i+k": {
+   "alpha": "i+k",
+   "commutes_with_all_31": true,
+   "dim_a": 2,
+   "kernel": 8,
+   "kernel_splits": true,
+   "omega_part_same_as_alpha_2": true,
+   "perp_part_same_as_alpha_2": false,
+   "preserves_kernel": true,
+   "square_is_minus_identity": true
+  }
+ },
+ "prediction_held": {
+  "P27": true,
+  "P28": true,
+  "P29": true,
+  "P30": true,
+  "P31": true,
+  "P32": true,
+  "P33": true
+ },
+ "predictions": {
+  "P27": "at N- and N+ the full Pfaffian of the 19-dimensional pencil, with the coordinate on e_16, is irreducible over Q and of degree 8",
+  "P28": "every point y = (p, q) of A_5 built from a census pair of sedenion zero divisors that lies in W8 has pencil type R, C or H as dim (ker L_p n ker L_q) is 0, 2 or 4",
+  "P29": "in the normal form of Theorem 14.6 of Biss, Dugger and Isaksen the operator J_k preserves the kernel, squares to -I there and commutes with all 31 compressions at alpha = 2, 2k (dim A = 4) and alpha = 2i, 1 + i, i + k (dim A = 2)",
+  "P30": "at VB the real points of compression rank at most 4 are exactly m = 0, lead Q = 0 and lead G = 0",
+  "P31": "for a line VB + s w whose compression has rank 4, the second-order form on its kernel vanishes exactly on the directions whose line has nullity 8",
+  "P32": "at e_1 + e_10 the second-order form -K^T L_w L_0^+ L_w K of every w in the kernel of the compression map lies in the pencil span, checked through its polarization on every pair of a basis of that kernel",
+  "P33": "at e_1 + e_10 the symmetrized mixed terms with one zero-space direction and the symmetrized cubic terms over the zero space lie in the pencil span"
+ },
+ "schema": "a5-pencil-types-and-loci/1",
+ "sources": {
+  "docs/evidence/a5-exceptional-fibers/hardware-orbits/hardware_orbits.py": "5318f176dd44619b1970c70c6b3d0696a8381d433132fee26a33373106aab4bf",
+  "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+  "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
+  "scripts/a5_nullity_transitions.py": "1e073fea876d399a59784f804d175df6ae0d20da096a038769f8a039d0dbb49d",
+  "scripts/a5_pencil_certificates.py": "19009f3208103167115fac1127e27703d4b5427bcd87aa24d7223b2e398c1a80",
+  "scripts/a5_pencil_types_and_loci.py": "199301b7e586547a74ff22ca1a613d19bb7ed103547c2749bc48ce30a9928348",
+  "scripts/a5_zero_divisor_strata.py": "09fd6941e7945638d37e53d24f6d4cd7e49c45b724e313394091b2bee9f1b0d4"
+ },
+ "type_census": {
+  "dim0_distinct_p": 3005,
+  "dim0_distinct_q": 3005,
+  "pairs_by_dim": {
+   "0": 3005,
+   "2": 4268,
+   "4": 417
+  },
+  "tally": {
+   "dim 0, Iso, nullity 8": 54,
+   "dim 0, S0, nullity 0": 2236,
+   "dim 0, S4_VQ, nullity 4": 538,
+   "dim 0, W8, commutant [1, 1], closure [28, 28], bounds": 144,
+   "dim 0, W8, commutant [1, 1], closure [28, 28], sympy": 33,
+   "dim 2, B9, nullity 12": 986,
+   "dim 2, W8, commutant [2, 2], closure [15, 15], bounds": 3282,
+   "dim 4, Nm, nullity 16": 139,
+   "dim 4, Np, nullity 16": 139,
+   "dim 4, W8, commutant [4, 4], closure [10, 10], bounds": 139
+  }
+ },
+ "vb_lines": {
+  "plane_rank4_directions": 284,
+  "tally": {
+   "second-order rank 0, nullity [8, 8]": 100,
+   "second-order rank 4, nullity [0, 0]": 88,
+   "second-order rank 4, nullity [4, 4]": 96
+  }
+ },
+ "vb_plane_rank": {
+  "distinct_sub_pfaffians": 6,
+  "sums_of_squares_present": {
+   "x10^2+x13^2": true,
+   "x9^2+x14^2": true
+  }
+ },
+ "vb_singular": {
+  "all_vanish_on_plane": true,
+  "ideal_dimension": 4,
+  "power_in_ideal": {
+   "m": 3,
+   "x11^2+x12^2": 2,
+   "x3^2+x4^2": 2
+  },
+  "sub_pfaffians": 768
+ },
+ "w8_schur": {
+  "cubic": {
+   "outside": 0,
+   "terms": 2600
+  },
+  "mixed": {
+   "outside": 0,
+   "terms": 744
+  },
+  "pencil_rank": 7,
+  "quadratic": {
+   "outside": 0,
+   "terms": 300
+  },
+  "zero_space": 24
+ }
+}
