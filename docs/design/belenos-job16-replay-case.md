@@ -79,3 +79,38 @@ session leaves alone, and the binding `approved_run.sh` check follows owner appr
   collect then reads the compiled couplers.
 - Entry 0 carries the first-entry confound of job-16; a failing entry 0 beside three healthy post-load entries reads
   "case property".
+
+## Findings (run of 2026-11-28)
+
+Job a3eb02eb-26e4-4ffc-af3c-b64ea9631b6b ran at 2026-11-28T06:26:51Z under the bounded watcher (first admitted plan after
+the calibration window; cases.json e280f39f, payload version basis equal to the reviewed plan), 10 entries, 100,000
+samples, collected complete. Couplers: live unread (specs.architecture absent), compiled match (the served
+computed_circuit equals the retained 2026-10-17 architecture). Per-entry values from qd_belenos_cone.run_cells (measured):
+
+| Entry | Seed | Served mesh | in_block_cone | tvd_cone_from_ideal | Modes 0, 1, 5 at 32 or more | Mode 6 |
+|---:|---:|---|---:|---:|---|---:|
+| 0 | 20 | 29dc6ef8 | 0.712 | 0.618 | none | 24 |
+| 1 | 46667 | 14a96ca6 | 0.994 | 0.110 | none | 0 |
+| 2 | 20 | 29dc6ef8 | 0.995 | 0.131 | none | 0 |
+| 3 | 46667 | 14a96ca6 | 0.992 | 0.121 | none | 0 |
+| 4 | 20 | 29dc6ef8 | 0.995 | 0.118 | none | 0 |
+| 5 | 46667 | 14a96ca6 | 0.992 | 0.120 | none | 0 |
+| 6 | 20 | 29dc6ef8 | 0.994 | 0.121 | none | 0 |
+| 7 | 46667 | 14a96ca6 | 0.992 | 0.111 | none | 0 |
+| 8 | 20 | 29dc6ef8 | 0.993 | 0.106 | none | 0 |
+| 9 | 46667 | 14a96ca6 | 0.994 | 0.114 | none | 0 |
+
+Preregistered reading: neither. compiler_changed does not fire (every served mesh is the retained one).
+chip_or_server_changed fails: 4 of 4 post-load seed-20 entries sit inside the job-16 envelope (the reading allows at most
+1). case_property fails on two of its three parts: 4 of 4 post-load entries read in_block_cone 0.98 or more (holds), but 0
+of 10 entries carry a packet of 32 or more clicks on modes 0, 1 and 5 (the reading needs 8; job-16 had 23 of 24), and
+mode 6 reads 24 clicks on entry 0 (the reading needs 0 on every seed-20 entry).
+
+What the run separates (inference from one job, outside the preregistered rule): the routing collapse of the off-cone
+mechanisms runs (in_block_cone 0.16 to 0.20 on mesh 29dc6ef8) does not occur on job-16's own circuit after a load, so
+the collapse is a property of the off-cone case (its per-iteration input_mode on seeded settings is the leading
+difference) and not a broken chip. The 47-click packets on modes 0, 1 and 5 are absent from both cases after the outage,
+so their disappearance is a chip or server change. The first entry of a job reads degraded routing in both job-16
+(0.450, 0.457 on its first two entries) and here (0.712), a first-entry effect. Next discriminating check: one job of the
+off-cone case's circuit without the per-iteration input_mode override, which the case reading predicts healthy.
+
