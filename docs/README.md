@@ -1,3 +1,6 @@
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
 # Documentation map
 
 This page is the single entry to the repository's documents. Rules live in the agent guides, measured facts in the
@@ -46,7 +49,8 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Simulation | Kaggle CPU and GPU kernels, host Aer build | [kaggle/README.md](notes/kaggle/README.md) |
 | Local simulator cross-check | full-output photonic probabilities and precision-preserving cQASM export | [simulation evidence](../results/local-simulation/README.md), [complete optical outputs](../results/local-simulation/optical-operator-replay.json), [serialized Ascella request](../results/local-simulation/ascella-serialized-order-replay/README.md), [compiler replay provenance](../results/local-simulation/compiler-replay-provenance.md) |
 | Packages and tools | hypercomplex stack, quantum tool manuals, Aer packaging | [packages/README.md](notes/packages/README.md) |
-| Python | interpreters, library roles, optimization ladder | [PYTHON.md](PYTHON.md) |
+| Python | default interpreters per task, library roles, optimization ladder | [PYTHON.md](PYTHON.md#defaults) |
+| Hypercomplex libraries | which algebra library serves which dimension, with the map and speed of each | [hypercomplex-libraries.md](notes/hypercomplex-libraries.md) |
 | CI and gates | gate list, ledger, runtime measurements | [ci/AGENTS.md](../ci/AGENTS.md) |
 | Planning | work records, next actions, blockers and completion receipts | [plan records](state/plans/), [commands](runbooks/plan-tracker.md), [migration evidence](evidence/plan-reconciliation/README.md) |
 | Repository layout | measured checkout shape, producer-side record slimming, document and code homes, package hierarchy waves, owner decisions | [layout reconciliation](design/repository-layout-reconciliation.md) |
@@ -630,6 +634,8 @@ differs from it only in the `cd_core.py` digest.
 | [qiskit-ecosystem.md](notes/qiskit-ecosystem.md) | Qiskit ecosystem audit |
 | [qiskit-ecosystem-install-plan.md](notes/qiskit-ecosystem-install-plan.md) | Qiskit ecosystem install plan |
 | [qiskit-packages/README.md](notes/qiskit-packages/README.md) | installed Qiskit-adjacent packages: install surfaces, per-package notes, interconnections, open items |
+| [hypercomplex-libraries.md](notes/hypercomplex-libraries.md) | selection table of the hypercomplex and Clifford libraries: dimension, map onto `cd_core`, measured speed, hosts and role |
+| [gq-max.lock.txt](notes/gq-max.lock.txt) | the frozen manifest of the exploratory `gq-max` environment |
 
 ### Providers
 
