@@ -4076,6 +4076,34 @@
       "question": "On Garnet, does the mark 101 Grover retention depart from the geometric law at depths 1 to 4 on mirrored pairs, and does the plane rotation fit adequately?"
     },
     {
+      "id": "iqm-garnet-mock-a5-complex-kernel-6500",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-28T003432Z-garnet_mock-a5-complex-kernel-garnet-kernel",
+      "family": "A_5 complex kernel map, coset blocks on Garnet",
+      "question": "Does the garnet:mock station accept the 6,500-shot A_5 complex-kernel case and what runtime does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-mock-a5-complex-kernel-6000",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-28T025536Z-garnet_mock-a5-complex-kernel-garnet-kernel",
+      "family": "A_5 complex kernel map, coset blocks on Garnet",
+      "question": "Does the garnet:mock station accept the 6,000-shot A_5 complex-kernel case and what runtime does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-mock-a5-complex-kernel-5800",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-28T034252Z-garnet_mock-a5-complex-kernel-garnet-kernel",
+      "family": "A_5 complex kernel map, coset blocks on Garnet",
+      "question": "Does the garnet:mock station accept the 5,800-shot A_5 complex-kernel case and what runtime does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-a5-complex-kernel",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-11-28T034418Z-garnet-a5-complex-kernel-garnet-kernel",
+      "family": "A_5 complex kernel map, coset blocks on Garnet",
+      "question": "On Garnet, does the null-subtracted coset-block reading of the complex kernel map read the complex nullities 16, 12 and 4 within the preregistered tolerance?"
+    },
+    {
       "id": "qi-pathion-null-phase-scan-qx-2026-11-21t1650-batch-00",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-21T1650Z-pathion_null_phase_scan_qx-batch-00",
