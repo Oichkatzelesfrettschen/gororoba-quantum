@@ -207,6 +207,7 @@ a W8 point ([review](../../archive/reviews/a5-outside-transition-report/README.m
 | A5-259 | the A_6 base-point stabilizer contains G_2 and the (Z/2)^5 characters: they act, but the stabilizer has a G_2 part of dimension 8 and characters of order 8 ([A_6 stabilizer](../../evidence/a5-a6-stabilizer/README.md)) | refuted |
 | A5-672 | Der(A_n) = g_2 for n = 3..6 over Q; at A_6 the lift of N- has nullity 36, the real doubling 32 | proved |
 | A5-673 | modulo 32009 the top-dimensional part of the E8-bar closure is irreducible over F_p-bar and generically reduced, from five zero-dimensional sections in 1.2 s (A5-605 stopped at 1 h) ([sections](../../evidence/a5-e8bar-sections/README.md)) | certified |
+| A5-674 | engine v16 skips the structural zero rows of the generator operator: equal ranks, products stage 1.37 times shorter at W8 d = 4, N = 12 ([memory-bounded](../../evidence/a5-exceptional-fibers/memory-bounded/README.md#structural-zero-rows-engine-v16)) | certified |
 
 ## Next computations
 

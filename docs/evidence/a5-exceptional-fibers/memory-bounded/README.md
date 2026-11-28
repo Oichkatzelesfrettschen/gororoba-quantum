@@ -20,6 +20,33 @@ independent product fails, and an unrelated arithmetic mutation fails the source
 acceptance is not run; the W8 measurement below belongs to the retained v14 source and launch manifest. New
 selected-array admission uses v15, while the historical reproduction command preserves v14's identity.
 
+## Structural zero rows (engine v16)
+
+[`fiber_rank_v16.py`](../replay/engine/fiber_rank_v16.py) succeeds v15 with one change in quotient mode. The operator row
+of a generator g at the standard monomial B is NF(g B), and g B lies in m^N once deg B >= N - d_min(g), where d_min(g) is
+the least degree in the normal form of g. Such rows are zero. A zero row has only zero children in the order-ideal walk,
+so the cached and the streamed operator routes build only the levels of degree below N - d_min(g). Every other line of
+arithmetic is v15's, and the preflight terms are unchanged, so they stay upper bounds.
+[`test_a5_fiber_rank_v16.py`](../../../../tests/test_a5_fiber_rank_v16.py) checks the level cut and compares the v15 and
+v16 ranks on a fixture whose generators skip levels.
+
+Measured on the compute workstation for W8 -> N-, degree 4, N = 12, p = 32009, without a receipt (all products), with
+`--stream-products --echelon compact`, four workers, two BLAS threads, a 24 GiB scope, one run each
+([`w8-nm-d4-n12-zero-rows/`](w8-nm-d4-n12-zero-rows/), engine stdout and GNU `time`):
+
+| Route | Engine | products | closure | total wall | max RSS | r_12 |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| cached operator | v15 | 44.4 s | 156.9 s | 259.8 s | 2.34 GiB | 1,644 |
+| cached operator | v16 | 32.3 s | 158.4 s | 248.8 s | 2.27 GiB | 1,644 |
+| streamed operator | v15 | 114.7 s | 137.7 s | 308.9 s | 2.41 GiB | 1,644 |
+| streamed operator | v16 | 84.3 s | 175.4 s | 317.7 s | 2.36 GiB | 1,644 |
+
+The quotient has dimension 20,384. The four block ranks (425, 415, 402, 402) and the closure ranks (2,772, 2,729, 2,757,
+2,757) agree in all four runs. The skip shortens the products stage 1.37 times on both routes, inside the 1.4 to 1.8
+range that the quotient degree counts predict for L (A5-263). It leaves the closure untouched, and the closure spread
+between runs (137.7 s to 175.4 s) exceeds the products saving, so the total wall time does not improve measurably at this
+size. CSR storage of the operator (density 0.48 percent at N = 8, from the red-team report) is not implemented.
+
 ## Run configuration and tool versions
 
 The acceptance run used `GOROROBA_WORKERS=4`, `OPENBLAS_NUM_THREADS=2` and `OMP_NUM_THREADS=1`: independent
