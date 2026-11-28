@@ -1922,7 +1922,7 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" -W error scripts/heron_target_snapshot.py --check docs/evidence/heron_platform/targets.json",
+      "cmd": "\"$PYTHON\" -W error scripts/heron_target_snapshot.py --check docs/evidence/heron_platform/targets.json docs/evidence/heron_platform/targets-v2.json",
       "name": "core-254",
       "seconds": 0.2
     },

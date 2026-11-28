@@ -22,7 +22,7 @@ and the captures with `"$PYTHON" scripts/capture_qi_docs.py`.
 | [usage.md](usage.md) | the transaction ledger and what it charged, structural limits, measured seconds per job and shot, queue rules, calibration and maintenance, the conditions of use |
 | [shot-record-literature.md](shot-record-literature.md) | the registered flux-CZ, control-stack, shot-record noise and readout-crosstalk sources for the Tuna-17 periodic line and context-dependent state-1 misassignment: what each establishes, where the literature stops, and the measurement each candidate mechanism invites |
 | [platform-facts.md](platform-facts.md) | every fact the knowledge-base capture establishes, each with its source: per-backend constraints, retired backends, calibration, maintenance, account rules, tooling |
-| [tuna-17.md](tuna-17.md) | Tuna-17 result registers, the retained record of its readout drift, the readout ring-down verdicts and the runner and account rules the series established |
+| [tuna-17.md](tuna-17.md) | Tuna-17 capabilities (live device read, calibration availability, the table of primitives), result registers, the retained record of its readout drift, the readout ring-down verdicts, cost and queue rules, measured figures and anomalies of the retained series, and the runner and account rules the series established |
 | [experiments.md](experiments.md) | the Tuna-17 spectator-drive, teleportation and zero-divisor runs, their analyses and the Kingston-noise comparison |
 | [mcp.md](mcp.md) | the `quantum-inspire` MCP server: tools, permissions, registration and [public Grafana status and calibration dashboards](mcp.md#public-performance-dashboards) |
 | [cqasm.md](cqasm.md) | a working cQASM 3.0 reference with per-backend support |
