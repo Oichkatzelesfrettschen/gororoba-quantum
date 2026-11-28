@@ -6,9 +6,14 @@ recombination). The three mitigations of the quantum cloud divide by that split:
 - DetectorBalancing needs one computation, the probabilities of the unmitigated experiment, so its parse_results
   applies offline to the retained counts of a run submitted with mitigations: [] (the explicit empty list; a run
   without the field carries the server's default mitigation, and balancing it twice is wrong, so read_run refuses
-  it unless allow_server_default is set, and the record then says so). The detector model is the catalogue's
-  specs.detector (threshold on Belenos) at unit efficiency; the receipt's t_out is a relative weight, not an
-  efficiency, so no per-mode efficiency enters.
+  it unless allow_server_default is set, and the record then says so). The mitigation state comes from the body
+  the receipt sent (job-body.json, payload.mitigations, the pcvlar text of an empty list) and must agree with
+  cases.json. The detector model is the catalogue's specs.detector (threshold on Belenos) at unit efficiency;
+  the receipt's t_out is a relative weight, not an efficiency, so no per-mode efficiency enters. A threshold
+  detector at unit efficiency makes DetectorBalancing the identity on every threshold count, whatever the photon
+  number: each detected state (entries 0 or 1) has the single sub-state itself, so the perf factor is 1 and the
+  distribution is returned unchanged. The balancing row of the record carries "identity" for that reading, and a
+  balancing that changes a count needs calibrated per-mode efficiencies, which no retained run holds.
 - PhotonRecycling is a function of a count distribution and the ideal photon number, so it applies offline when
   the ideal photon number is at least 3 and the counts hold states with n - 1 and n - 2 photons; any other run is
   recorded as not applicable with Perceval's reason.
@@ -19,7 +24,8 @@ recombination). The three mitigations of the quantum cloud divide by that split:
 probs_to_sample_count (the conversion of a distribution to counts) draws from numpy's global generator, which
 Perceval leaves unseeded; seeded_counts calls perceval.random_seed(seed) first, and a caller that writes counts takes
 the seed through qrng_seeds.add_seed_argument, so a value of a retained QRNG draw is the only admitted source.
-This CLI converts no distribution to counts and holds no seed flag.
+This CLI converts no distribution to counts and holds no seed flag; the self-test seeds the conversion with
+SELF_TEST_SEED, a value of a retained QRNG draw.
 
 Usage: "$PYTHON" scripts/qd_offline_mitigation.py (--write OUT RUN... | --check OUT RUN... | --self-test)
          [--allow-server-default]
@@ -44,6 +50,9 @@ SCHEMA = "qd-offline-mitigation-v1"
 MODES = mesh_lib.MODES
 DIGITS = 9
 MIN_RECYCLING_PHOTONS = 3
+EMPTY_MITIGATIONS = "pcvlar 0 1 0 list 0"
+# Value 1 of docs/evidence/anu_qrng/draw-2026-11-28T081947Z.json: the generator state of the self-test conversion.
+SELF_TEST_SEED = 48665
 
 
 class MitigationError(ValueError):
@@ -55,6 +64,16 @@ def mitigation_state(manifest: dict[str, Any]) -> str:
     if "mitigations" not in manifest:
         return "server_default"
     return "none" if manifest["mitigations"] == [] else "explicit"
+
+
+def body_state(body: dict[str, Any]) -> str:
+    """The mitigation state of the body the receipt sent: payload.mitigations as the pcvlar text of an empty list."""
+    payload = body.get("payload")
+    if not isinstance(payload, dict):
+        raise MitigationError("job-body.json carries no payload")
+    if "mitigations" not in payload:
+        return "server_default"
+    return "none" if payload["mitigations"] == EMPTY_MITIGATIONS else "explicit"
 
 
 def counts_distribution(text: str) -> Any:
@@ -102,6 +121,13 @@ def balance_with_factor(distribution: Any, modes: int, detectors: list[Any]) -> 
 
 def balance_detectors(distribution: Any, modes: int, detectors: list[Any]) -> Any:
     return balance_with_factor(distribution, modes, detectors)[0]
+
+
+def is_identity(before: Any, after: Any, factor: float) -> bool:
+    """True when balancing returned the distribution it was given, state by state, with perf factor 1."""
+    if abs(factor - 1.0) > 1e-12 or set(before) != set(after):
+        return False
+    return all(abs(float(before[s]) - float(after[s])) < 1e-12 for s in before)
 
 
 def recycle(distribution: Any, ideal_photons: int) -> dict[str, Any]:
@@ -157,8 +183,13 @@ def round_tree(value: Any) -> Any:
 
 def read_run(run: Path, allow_server_default: bool = False, only: tuple[int, ...] | None = None) -> dict[str, Any]:
     """Apply the offline mitigations to the entries of a retained run (all, or the indices in only)."""
-    manifest = qd_records.load_run(run).json_of("cases.json")
+    records = qd_records.load_run(run)
+    qd_records.validate_run(records)
+    manifest = records.json_of("cases.json")
     state = mitigation_state(manifest)
+    sent = body_state(records.json_of("job-body.json"))
+    if sent != state:
+        raise MitigationError(f"{run.name}: cases.json reads mitigations {state}, the body sent reads {sent}")
     if state == "server_default" and not allow_server_default:
         raise MitigationError(
             f"{run.name} carries no mitigations field, so the server applied its default mitigation to the counts"
@@ -191,6 +222,7 @@ def read_run(run: Path, allow_server_default: bool = False, only: tuple[int, ...
                     "states_before": len(raw),
                     "states_after": len(balanced),
                     "one_click_tvd_after_vs_before": tvd(before, after),
+                    "identity": is_identity(raw, balanced, factor),
                 },
                 "photon_recycling": recycle(raw, photons),
                 "distinguishable_photon": {
@@ -215,13 +247,20 @@ def dump(value: dict[str, Any]) -> str:
     return json.dumps(value, indent=1, sort_keys=True) + "\n"
 
 
+def three_to_one(dist: Any) -> bool:
+    """True for the normalized distribution of the counts |1,0>=3 and |0,1>=1."""
+    from perceval.utils import BasicState
+
+    return abs(dist[BasicState([1, 0])] - 0.75) <= 1e-12 and abs(sum(dist.values()) - 1.0) <= 1e-12
+
+
 def self_test() -> int:
     dist = counts_distribution("|1,0>=3\n|0,1>=1\n")
-    if abs(dist[next(iter(dist))] - 0.75) > 1e-12 and abs(sum(dist.values()) - 1.0) > 1e-12:
+    if not three_to_one(dist):
         raise MitigationError("counts_distribution")
     if recycle(dist, 1)["status"] != "not_applicable":
         raise MitigationError("recycle")
-    if seeded_counts(dist, 100, 7) != seeded_counts(dist, 100, 7):
+    if seeded_counts(dist, 100, SELF_TEST_SEED) != seeded_counts(dist, 100, SELF_TEST_SEED):
         raise MitigationError("seeded_counts")
     print("qd_offline_mitigation self-test passed")
     return 0

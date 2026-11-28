@@ -5,6 +5,7 @@
     {
      "detector_balancing": {
       "detector": "threshold",
+      "identity": true,
       "mass_after": 1.0,
       "mass_before": 1.0,
       "one_click_tvd_after_vs_before": 0.0,
@@ -27,6 +28,7 @@
     {
      "detector_balancing": {
       "detector": "threshold",
+      "identity": true,
       "mass_after": 1.0,
       "mass_before": 1.0,
       "one_click_tvd_after_vs_before": 0.0,
@@ -49,6 +51,7 @@
     {
      "detector_balancing": {
       "detector": "threshold",
+      "identity": true,
       "mass_after": 1.0,
       "mass_before": 1.0,
       "one_click_tvd_after_vs_before": 0.0,
@@ -71,6 +74,7 @@
     {
      "detector_balancing": {
       "detector": "threshold",
+      "identity": true,
       "mass_after": 1.0,
       "mass_before": 1.0,
       "one_click_tvd_after_vs_before": 0.0,
@@ -93,6 +97,7 @@
     {
      "detector_balancing": {
       "detector": "threshold",
+      "identity": true,
       "mass_after": 1.0,
       "mass_before": 1.0,
       "one_click_tvd_after_vs_before": 0.0,
@@ -115,6 +120,7 @@
     {
      "detector_balancing": {
       "detector": "threshold",
+      "identity": true,
       "mass_after": 1.0,
       "mass_before": 1.0,
       "one_click_tvd_after_vs_before": 0.0,
@@ -137,6 +143,7 @@
     {
      "detector_balancing": {
       "detector": "threshold",
+      "identity": true,
       "mass_after": 1.0,
       "mass_before": 1.0,
       "one_click_tvd_after_vs_before": 0.0,
@@ -159,6 +166,7 @@
     {
      "detector_balancing": {
       "detector": "threshold",
+      "identity": true,
       "mass_after": 1.0,
       "mass_before": 1.0,
       "one_click_tvd_after_vs_before": 0.0,
@@ -181,6 +189,7 @@
     {
      "detector_balancing": {
       "detector": "threshold",
+      "identity": true,
       "mass_after": 1.0,
       "mass_before": 1.0,
       "one_click_tvd_after_vs_before": 0.0,
@@ -203,6 +212,7 @@
     {
      "detector_balancing": {
       "detector": "threshold",
+      "identity": true,
       "mass_after": 1.0,
       "mass_before": 1.0,
       "one_click_tvd_after_vs_before": 0.0,
@@ -225,6 +235,7 @@
     {
      "detector_balancing": {
       "detector": "threshold",
+      "identity": true,
       "mass_after": 1.0,
       "mass_before": 1.0,
       "one_click_tvd_after_vs_before": 0.0,
@@ -247,6 +258,7 @@
     {
      "detector_balancing": {
       "detector": "threshold",
+      "identity": true,
       "mass_after": 1.0,
       "mass_before": 1.0,
       "one_click_tvd_after_vs_before": 0.0,

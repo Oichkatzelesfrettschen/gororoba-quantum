@@ -1534,6 +1534,27 @@
    "value": 9923,
    "record": "docs/evidence/anu_qrng/draw-2026-11-28T081947Z.json",
    "index": 0
+  },
+  {
+   "path": "scripts/qd_offline_mitigation.py",
+   "name": "SELF_TEST_SEED",
+   "value": 48665,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-28T081947Z.json",
+   "index": 1
+  },
+  {
+   "path": "tests/scripts/test_qd_offline_mitigation.py",
+   "name": "TEST_SEEDS",
+   "value": 38115,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-28T081947Z.json",
+   "index": 2
+  },
+  {
+   "path": "tests/scripts/test_qd_offline_mitigation.py",
+   "name": "TEST_SEEDS",
+   "value": 8531,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-28T081947Z.json",
+   "index": 3
   }
  ],
  "runtime": [
