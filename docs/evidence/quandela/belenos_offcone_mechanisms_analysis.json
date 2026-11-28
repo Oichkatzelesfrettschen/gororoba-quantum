@@ -1,7 +1,7 @@
 {
  "alpha": 0.05,
  "case": "docs/design/belenos-offcone-mechanisms-case.md",
- "caveat": "couplers_checked is unread at plan and collect for every job: only the 2026-10-17 catalogue stamp backs the carried architecture, so a coupler change between that stamp and the runs is unchecked",
+ "caveat": "architecture_source ['carried']: couplers_checked reads ['unread'] across the jobs, so the live couplers were not all read; the computed circuits of every entry carry the couplers of the plan's architecture (compiled_couplers_checked match), which fixes the server's compile model and leaves the physical routing unchecked",
  "cells": [
   {
    "acquisition_s": 1.06244,
@@ -202,6 +202,78 @@
    "source": 22
   }
  ],
+ "click_contrast": {
+  "binary_indicator_saturated": true,
+  "by_level": {
+   "10000": {
+    "clicks_per_sample": {
+     "job-00": 0.00072,
+     "job-01": 0.00076,
+     "job-02": 0.00074
+    }
+   },
+   "1500": {
+    "clicks_per_sample": {
+     "job-00": 0.0012,
+     "job-01": 0.000933333,
+     "job-02": 0.000733333
+    }
+   },
+   "60000": {
+    "clicks_per_sample": {
+     "job-00": 0.000923333,
+     "job-01": 0.000601667,
+     "job-02": 0.000893333
+    }
+   }
+  },
+  "default_over_mitigations_off_click_rate": 1.4024,
+  "job_01_share_test": {
+   "direction": "below",
+   "k": 451,
+   "n": 1716,
+   "null_share": 0.333333333,
+   "observed_share": 0.262820513,
+   "p": 2.787e-10,
+   "rejects": true
+  },
+  "primary_clicks": {
+   "job-00": 644,
+   "job-01": 451,
+   "job-02": 621
+  },
+  "samples": {
+   "job-00": 715000,
+   "job-01": 715000,
+   "job-02": 715000
+  },
+  "saturated_cells": [
+   {
+    "clicks": {
+     "job-00": 306,
+     "job-01": 201,
+     "job-02": 287
+    },
+    "default_over_mitigations_off_click_rate": 1.4751,
+    "entries": 15,
+    "job_01_share_test": {
+     "direction": "below",
+     "k": 201,
+     "n": 794,
+     "null_share": 0.333333333,
+     "observed_share": 0.253148615,
+     "p": 1.126e-06,
+     "rejects": true
+    },
+    "level": 60000,
+    "modes": [
+     6
+    ],
+    "source": 20
+   }
+  ],
+  "test_note": "exact binomial on pooled clicks; packet counts are overdispersed, so p is optimistic"
+ },
  "contrasts": {
   "drift": {
    "direction": null,
@@ -280,15 +352,27 @@
     "breaks_1_to_31": 2,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.702811,
     "level": 1500,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e00-s20-n1500",
+    "off_cone_clicks": {
+     "0": 2,
+     "6": 4
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 6,
     "samples": 1500,
     "source": 20,
+    "tvd_cone_from_ideal": 0.641231,
     "void": false
    },
    {
@@ -296,15 +380,24 @@
     "breaks_1_to_31": 0,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.994667,
     "level": 1500,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e01-s22-n1500",
+    "off_cone_clicks": {},
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 0,
     "samples": 1500,
     "source": 22,
+    "tvd_cone_from_ideal": 0.188586,
     "void": false
    },
    {
@@ -312,15 +405,28 @@
     "breaks_1_to_31": 3,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.988892,
     "level": 10000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 1,
     "mode_5_presence": 0,
     "name": "e02-s22-n10000",
+    "off_cone_clicks": {
+     "0": 2,
+     "6": 2,
+     "8": 2
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 6,
     "samples": 10000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.228029,
     "void": false
    },
    {
@@ -328,15 +434,30 @@
     "breaks_1_to_31": 5,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.148497,
     "level": 10000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 1,
     "mode_5_presence": 0,
     "name": "e03-s20-n10000",
+    "off_cone_clicks": {
+     "0": 4,
+     "1": 2,
+     "3": 3,
+     "4": 1,
+     "6": 7
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 2
+    },
+    "primary_clicks": 17,
     "samples": 10000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.895791,
     "void": false
    },
    {
@@ -344,17 +465,34 @@
     "breaks_1_to_31": 6,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.159709,
     "level": 60000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 3,
     "mode_5_presence": 0,
     "name": "e04-s20-n60000",
+    "off_cone_clicks": {
+     "0": 7,
+     "1": 3,
+     "2": 3,
+     "3": 2,
+     "4": 17,
+     "6": 59,
+     "7": 4
+    },
     "presence_modes": [
      6
     ],
     "presences": 1,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 1,
+     "2.0": 3
+    },
+    "primary_clicks": 95,
     "samples": 60000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.887627,
     "void": false
    },
    {
@@ -362,15 +500,30 @@
     "breaks_1_to_31": 5,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.990812,
     "level": 60000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e05-s22-n60000",
+    "off_cone_clicks": {
+     "0": 6,
+     "1": 3,
+     "2": 2,
+     "8": 5,
+     "9": 3
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 19,
     "samples": 60000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.219162,
     "void": false
    },
    {
@@ -378,15 +531,24 @@
     "breaks_1_to_31": 0,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.987333,
     "level": 1500,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e06-s22-n1500",
+    "off_cone_clicks": {},
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 0,
     "samples": 1500,
     "source": 22,
+    "tvd_cone_from_ideal": 0.234586,
     "void": false
    },
    {
@@ -394,15 +556,24 @@
     "breaks_1_to_31": 0,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.163333,
     "level": 1500,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e07-s20-n1500",
+    "off_cone_clicks": {},
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 1
+    },
+    "primary_clicks": 0,
     "samples": 1500,
     "source": 20,
+    "tvd_cone_from_ideal": 0.871999,
     "void": false
    },
    {
@@ -410,15 +581,26 @@
     "breaks_1_to_31": 1,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.15701,
     "level": 10000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e08-s20-n10000",
+    "off_cone_clicks": {
+     "6": 4
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 2
+    },
+    "primary_clicks": 4,
     "samples": 10000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.884919,
     "void": false
    },
    {
@@ -426,15 +608,26 @@
     "breaks_1_to_31": 1,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.988294,
     "level": 10000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e09-s22-n10000",
+    "off_cone_clicks": {
+     "0": 3
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 3,
     "samples": 10000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.211575,
     "void": false
    },
    {
@@ -442,15 +635,29 @@
     "breaks_1_to_31": 4,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.991562,
     "level": 60000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 10,
     "mode_5_presence": 0,
     "name": "e10-s22-n60000",
+    "off_cone_clicks": {
+     "0": 5,
+     "1": 5,
+     "4": 2,
+     "7": 2
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 14,
     "samples": 60000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.218595,
     "void": false
    },
    {
@@ -458,17 +665,31 @@
     "breaks_1_to_31": 3,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.15884,
     "level": 60000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 5,
     "mode_5_presence": 0,
     "name": "e11-s20-n60000",
+    "off_cone_clicks": {
+     "0": 5,
+     "1": 3,
+     "4": 11,
+     "6": 49
+    },
     "presence_modes": [
      6
     ],
     "presences": 1,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 1,
+     "2.0": 3
+    },
+    "primary_clicks": 68,
     "samples": 60000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.887904,
     "void": false
    },
    {
@@ -476,15 +697,27 @@
     "breaks_1_to_31": 2,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.166667,
     "level": 1500,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e12-s20-n1500",
+    "off_cone_clicks": {
+     "4": 2,
+     "6": 4
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 1
+    },
+    "primary_clicks": 6,
     "samples": 1500,
     "source": 20,
+    "tvd_cone_from_ideal": 0.889558,
     "void": false
    },
    {
@@ -492,15 +725,24 @@
     "breaks_1_to_31": 0,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.991995,
     "level": 1500,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e13-s22-n1500",
+    "off_cone_clicks": {},
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 0,
     "samples": 1500,
     "source": 22,
+    "tvd_cone_from_ideal": 0.238411,
     "void": false
    },
    {
@@ -508,15 +750,28 @@
     "breaks_1_to_31": 3,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.989289,
     "level": 10000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e14-s22-n10000",
+    "off_cone_clicks": {
+     "0": 1,
+     "1": 1,
+     "9": 2
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 4,
     "samples": 10000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.219038,
     "void": false
    },
    {
@@ -524,15 +779,28 @@
     "breaks_1_to_31": 3,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.158132,
     "level": 10000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e15-s20-n10000",
+    "off_cone_clicks": {
+     "2": 3,
+     "4": 7,
+     "6": 9
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 2
+    },
+    "primary_clicks": 19,
     "samples": 10000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.89097,
     "void": false
    },
    {
@@ -540,17 +808,32 @@
     "breaks_1_to_31": 4,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.156388,
     "level": 60000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 6,
     "mode_5_presence": 0,
     "name": "e16-s20-n60000",
+    "off_cone_clicks": {
+     "0": 9,
+     "3": 4,
+     "4": 10,
+     "6": 60,
+     "7": 7
+    },
     "presence_modes": [
      6
     ],
     "presences": 1,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 1,
+     "2.0": 3
+    },
+    "primary_clicks": 90,
     "samples": 60000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.888473,
     "void": false
    },
    {
@@ -558,15 +841,28 @@
     "breaks_1_to_31": 3,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.990446,
     "level": 60000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 1,
     "mode_5_presence": 0,
     "name": "e17-s22-n60000",
+    "off_cone_clicks": {
+     "0": 11,
+     "2": 2,
+     "8": 2
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 15,
     "samples": 60000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.222867,
     "void": false
    },
    {
@@ -574,15 +870,26 @@
     "breaks_1_to_31": 1,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.98998,
     "level": 1500,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e18-s22-n1500",
+    "off_cone_clicks": {
+     "1": 3
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 3,
     "samples": 1500,
     "source": 22,
+    "tvd_cone_from_ideal": 0.216686,
     "void": false
    },
    {
@@ -590,15 +897,26 @@
     "breaks_1_to_31": 1,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.153538,
     "level": 1500,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e19-s20-n1500",
+    "off_cone_clicks": {
+     "0": 2
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 1
+    },
+    "primary_clicks": 2,
     "samples": 1500,
     "source": 20,
+    "tvd_cone_from_ideal": 0.888517,
     "void": false
    },
    {
@@ -606,15 +924,27 @@
     "breaks_1_to_31": 2,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.166366,
     "level": 10000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e20-s20-n10000",
+    "off_cone_clicks": {
+     "0": 1,
+     "4": 6
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 2
+    },
+    "primary_clicks": 7,
     "samples": 10000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.88098,
     "void": false
    },
    {
@@ -622,15 +952,26 @@
     "breaks_1_to_31": 1,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.988597,
     "level": 10000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e21-s22-n10000",
+    "off_cone_clicks": {
+     "3": 3
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 3,
     "samples": 10000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.222035,
     "void": false
    },
    {
@@ -638,15 +979,30 @@
     "breaks_1_to_31": 5,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.989962,
     "level": 60000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 1,
     "mode_5_presence": 0,
     "name": "e22-s22-n60000",
+    "off_cone_clicks": {
+     "0": 10,
+     "1": 2,
+     "3": 4,
+     "8": 1,
+     "9": 3
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 20,
     "samples": 60000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.224331,
     "void": false
    },
    {
@@ -654,17 +1010,34 @@
     "breaks_1_to_31": 6,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.156906,
     "level": 60000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 2,
     "mode_5_presence": 0,
     "name": "e23-s20-n60000",
+    "off_cone_clicks": {
+     "0": 8,
+     "1": 2,
+     "2": 2,
+     "3": 4,
+     "4": 23,
+     "6": 80,
+     "7": 3
+    },
     "presence_modes": [
      6
     ],
     "presences": 1,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 1,
+     "2.0": 3
+    },
+    "primary_clicks": 122,
     "samples": 60000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.887344,
     "void": false
    },
    {
@@ -672,15 +1045,26 @@
     "breaks_1_to_31": 1,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.157649,
     "level": 1500,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e24-s20-n1500",
+    "off_cone_clicks": {
+     "4": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 1
+    },
+    "primary_clicks": 1,
     "samples": 1500,
     "source": 20,
+    "tvd_cone_from_ideal": 0.883099,
     "void": false
    },
    {
@@ -688,15 +1072,24 @@
     "breaks_1_to_31": 0,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.992,
     "level": 1500,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e25-s22-n1500",
+    "off_cone_clicks": {},
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 0,
     "samples": 1500,
     "source": 22,
+    "tvd_cone_from_ideal": 0.227252,
     "void": false
    },
    {
@@ -704,15 +1097,24 @@
     "breaks_1_to_31": 0,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.990297,
     "level": 10000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e26-s22-n10000",
+    "off_cone_clicks": {},
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 0,
     "samples": 10000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.206031,
     "void": false
    },
    {
@@ -720,15 +1122,28 @@
     "breaks_1_to_31": 3,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.162279,
     "level": 10000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e27-s20-n10000",
+    "off_cone_clicks": {
+     "0": 1,
+     "4": 2,
+     "6": 6
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 2
+    },
+    "primary_clicks": 9,
     "samples": 10000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.887476,
     "void": false
    },
    {
@@ -736,17 +1151,33 @@
     "breaks_1_to_31": 5,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.161905,
     "level": 60000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 1,
     "mode_5_presence": 0,
     "name": "e28-s20-n60000",
+    "off_cone_clicks": {
+     "0": 10,
+     "1": 10,
+     "2": 2,
+     "4": 16,
+     "6": 58,
+     "7": 2
+    },
     "presence_modes": [
      6
     ],
     "presences": 1,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 1,
+     "2.0": 3
+    },
+    "primary_clicks": 98,
     "samples": 60000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.884276,
     "void": false
    },
    {
@@ -754,15 +1185,28 @@
     "breaks_1_to_31": 3,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.990347,
     "level": 60000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 3,
     "mode_5_presence": 0,
     "name": "e29-s22-n60000",
+    "off_cone_clicks": {
+     "0": 8,
+     "1": 1,
+     "9": 4
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 13,
     "samples": 60000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.223722,
     "void": false
    }
   ],
@@ -772,15 +1216,26 @@
     "breaks_1_to_31": 1,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.175134,
     "level": 1500,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e00-s20-n1500",
+    "off_cone_clicks": {
+     "6": 3
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 1
+    },
+    "primary_clicks": 3,
     "samples": 1500,
     "source": 20,
+    "tvd_cone_from_ideal": 0.860294,
     "void": false
    },
    {
@@ -788,15 +1243,26 @@
     "breaks_1_to_31": 1,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.995327,
     "level": 1500,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e01-s22-n1500",
+    "off_cone_clicks": {
+     "3": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 1,
     "samples": 1500,
     "source": 22,
+    "tvd_cone_from_ideal": 0.209532,
     "void": false
    },
    {
@@ -804,15 +1270,27 @@
     "breaks_1_to_31": 2,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.990295,
     "level": 10000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e02-s22-n10000",
+    "off_cone_clicks": {
+     "1": 1,
+     "2": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 2,
     "samples": 10000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.217478,
     "void": false
    },
    {
@@ -820,15 +1298,29 @@
     "breaks_1_to_31": 4,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.171374,
     "level": 10000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e03-s20-n10000",
+    "off_cone_clicks": {
+     "0": 1,
+     "4": 3,
+     "6": 9,
+     "7": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 2
+    },
+    "primary_clicks": 14,
     "samples": 10000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.867588,
     "void": false
    },
    {
@@ -836,17 +1328,31 @@
     "breaks_1_to_31": 3,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.171088,
     "level": 60000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 2,
     "mode_5_presence": 0,
     "name": "e04-s20-n60000",
+    "off_cone_clicks": {
+     "0": 5,
+     "3": 1,
+     "4": 7,
+     "6": 39
+    },
     "presence_modes": [
      6
     ],
     "presences": 1,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 1,
+     "2.0": 3
+    },
+    "primary_clicks": 52,
     "samples": 60000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.867467,
     "void": false
    },
    {
@@ -854,15 +1360,30 @@
     "breaks_1_to_31": 5,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.989613,
     "level": 60000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e05-s22-n60000",
+    "off_cone_clicks": {
+     "0": 5,
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "9": 2
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 10,
     "samples": 60000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.212256,
     "void": false
    },
    {
@@ -870,15 +1391,24 @@
     "breaks_1_to_31": 0,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.984,
     "level": 1500,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e06-s22-n1500",
+    "off_cone_clicks": {},
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 0,
     "samples": 1500,
     "source": 22,
+    "tvd_cone_from_ideal": 0.201919,
     "void": false
    },
    {
@@ -886,15 +1416,27 @@
     "breaks_1_to_31": 2,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.172897,
     "level": 1500,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e07-s20-n1500",
+    "off_cone_clicks": {
+     "6": 1,
+     "7": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 1
+    },
+    "primary_clicks": 2,
     "samples": 1500,
     "source": 20,
+    "tvd_cone_from_ideal": 0.866488,
     "void": false
    },
    {
@@ -902,15 +1444,27 @@
     "breaks_1_to_31": 2,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.170424,
     "level": 10000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e08-s20-n10000",
+    "off_cone_clicks": {
+     "4": 5,
+     "6": 12
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 2
+    },
+    "primary_clicks": 17,
     "samples": 10000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.86885,
     "void": false
    },
    {
@@ -918,15 +1472,26 @@
     "breaks_1_to_31": 1,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.987297,
     "level": 10000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 1,
     "mode_5_presence": 0,
     "name": "e09-s22-n10000",
+    "off_cone_clicks": {
+     "2": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 1,
     "samples": 10000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.221063,
     "void": false
    },
    {
@@ -934,15 +1499,28 @@
     "breaks_1_to_31": 3,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.990614,
     "level": 60000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 2,
     "mode_5_presence": 0,
     "name": "e10-s22-n60000",
+    "off_cone_clicks": {
+     "0": 7,
+     "1": 2,
+     "9": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 10,
     "samples": 60000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.207624,
     "void": false
    },
    {
@@ -950,17 +1528,32 @@
     "breaks_1_to_31": 4,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.17241,
     "level": 60000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 2,
     "mode_5_presence": 0,
     "name": "e11-s20-n60000",
+    "off_cone_clicks": {
+     "0": 1,
+     "1": 4,
+     "4": 16,
+     "6": 40,
+     "7": 1
+    },
     "presence_modes": [
      6
     ],
     "presences": 1,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 1,
+     "2.0": 3
+    },
+    "primary_clicks": 62,
     "samples": 60000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.865436,
     "void": false
    },
    {
@@ -968,15 +1561,26 @@
     "breaks_1_to_31": 1,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.163442,
     "level": 1500,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e12-s20-n1500",
+    "off_cone_clicks": {
+     "6": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 1
+    },
+    "primary_clicks": 1,
     "samples": 1500,
     "source": 20,
+    "tvd_cone_from_ideal": 0.871914,
     "void": false
    },
    {
@@ -984,15 +1588,24 @@
     "breaks_1_to_31": 0,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.983333,
     "level": 1500,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e13-s22-n1500",
+    "off_cone_clicks": {},
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 0,
     "samples": 1500,
     "source": 22,
+    "tvd_cone_from_ideal": 0.214586,
     "void": false
    },
    {
@@ -1000,15 +1613,27 @@
     "breaks_1_to_31": 2,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.990496,
     "level": 10000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 1,
     "mode_5_presence": 0,
     "name": "e14-s22-n10000",
+    "off_cone_clicks": {
+     "0": 2,
+     "1": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 3,
     "samples": 10000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.211003,
     "void": false
    },
    {
@@ -1016,15 +1641,30 @@
     "breaks_1_to_31": 5,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.171823,
     "level": 10000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e15-s20-n10000",
+    "off_cone_clicks": {
+     "0": 1,
+     "2": 1,
+     "4": 1,
+     "6": 7,
+     "7": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 2
+    },
+    "primary_clicks": 11,
     "samples": 10000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.863923,
     "void": false
    },
    {
@@ -1032,17 +1672,33 @@
     "breaks_1_to_31": 5,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.169595,
     "level": 60000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 1,
     "mode_5_presence": 0,
     "name": "e16-s20-n60000",
+    "off_cone_clicks": {
+     "0": 5,
+     "2": 1,
+     "3": 1,
+     "4": 11,
+     "6": 42,
+     "7": 6
+    },
     "presence_modes": [
      6
     ],
     "presences": 1,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 1,
+     "2.0": 3
+    },
+    "primary_clicks": 66,
     "samples": 60000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.869036,
     "void": false
    },
    {
@@ -1050,15 +1706,32 @@
     "breaks_1_to_31": 7,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.990178,
     "level": 60000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 3,
     "mode_5_presence": 0,
     "name": "e17-s22-n60000",
+    "off_cone_clicks": {
+     "0": 5,
+     "1": 3,
+     "2": 1,
+     "4": 1,
+     "7": 1,
+     "8": 1,
+     "9": 2
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 14,
     "samples": 60000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.208135,
     "void": false
    },
    {
@@ -1066,15 +1739,26 @@
     "breaks_1_to_31": 1,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.991328,
     "level": 1500,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e18-s22-n1500",
+    "off_cone_clicks": {
+     "1": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 1,
     "samples": 1500,
     "source": 22,
+    "tvd_cone_from_ideal": 0.208391,
     "void": false
    },
    {
@@ -1082,15 +1766,27 @@
     "breaks_1_to_31": 2,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.156313,
     "level": 1500,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e19-s20-n1500",
+    "off_cone_clicks": {
+     "4": 1,
+     "6": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 1
+    },
+    "primary_clicks": 2,
     "samples": 1500,
     "source": 20,
+    "tvd_cone_from_ideal": 0.874415,
     "void": false
    },
    {
@@ -1098,15 +1794,29 @@
     "breaks_1_to_31": 4,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.167785,
     "level": 10000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 1,
     "mode_5_presence": 0,
     "name": "e20-s20-n10000",
+    "off_cone_clicks": {
+     "0": 1,
+     "1": 1,
+     "6": 5,
+     "7": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 2
+    },
+    "primary_clicks": 8,
     "samples": 10000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.869456,
     "void": false
    },
    {
@@ -1114,15 +1824,28 @@
     "breaks_1_to_31": 3,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.988693,
     "level": 10000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e21-s22-n10000",
+    "off_cone_clicks": {
+     "0": 1,
+     "1": 2,
+     "7": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 4,
     "samples": 10000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.220151,
     "void": false
    },
    {
@@ -1130,15 +1853,31 @@
     "breaks_1_to_31": 6,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.989946,
     "level": 60000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 1,
     "mode_5_presence": 0,
     "name": "e22-s22-n60000",
+    "off_cone_clicks": {
+     "0": 6,
+     "1": 3,
+     "2": 1,
+     "4": 1,
+     "6": 1,
+     "7": 2
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 14,
     "samples": 60000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.215021,
     "void": false
    },
    {
@@ -1146,17 +1885,33 @@
     "breaks_1_to_31": 5,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.169459,
     "level": 60000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 2,
     "mode_5_presence": 0,
     "name": "e23-s20-n60000",
+    "off_cone_clicks": {
+     "0": 5,
+     "1": 2,
+     "3": 1,
+     "4": 11,
+     "6": 38,
+     "7": 3
+    },
     "presence_modes": [
      6
     ],
     "presences": 1,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 1,
+     "2.0": 3
+    },
+    "primary_clicks": 60,
     "samples": 60000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.868304,
     "void": false
    },
    {
@@ -1164,15 +1919,27 @@
     "breaks_1_to_31": 2,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.153641,
     "level": 1500,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e24-s20-n1500",
+    "off_cone_clicks": {
+     "3": 1,
+     "6": 2
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 1
+    },
+    "primary_clicks": 3,
     "samples": 1500,
     "source": 20,
+    "tvd_cone_from_ideal": 0.881095,
     "void": false
    },
    {
@@ -1180,15 +1947,26 @@
     "breaks_1_to_31": 1,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.989993,
     "level": 1500,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e25-s22-n1500",
+    "off_cone_clicks": {
+     "1": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 1,
     "samples": 1500,
     "source": 22,
+    "tvd_cone_from_ideal": 0.214395,
     "void": false
    },
    {
@@ -1196,15 +1974,27 @@
     "breaks_1_to_31": 2,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.987289,
     "level": 10000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e26-s22-n10000",
+    "off_cone_clicks": {
+     "0": 4,
+     "8": 3
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 7,
     "samples": 10000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.210258,
     "void": false
    },
    {
@@ -1212,15 +2002,29 @@
     "breaks_1_to_31": 4,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.171389,
     "level": 10000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e27-s20-n10000",
+    "off_cone_clicks": {
+     "0": 1,
+     "1": 3,
+     "4": 2,
+     "6": 3
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 2
+    },
+    "primary_clicks": 9,
     "samples": 10000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.867854,
     "void": false
    },
    {
@@ -1228,17 +2032,33 @@
     "breaks_1_to_31": 5,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.169676,
     "level": 60000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 1,
     "mode_5_presence": 0,
     "name": "e28-s20-n60000",
+    "off_cone_clicks": {
+     "0": 3,
+     "1": 2,
+     "3": 1,
+     "4": 8,
+     "6": 42,
+     "7": 1
+    },
     "presence_modes": [
      6
     ],
     "presences": 1,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 1,
+     "2.0": 3
+    },
+    "primary_clicks": 57,
     "samples": 60000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.867666,
     "void": false
    },
    {
@@ -1246,15 +2066,30 @@
     "breaks_1_to_31": 5,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.989529,
     "level": 60000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 2,
     "mode_5_presence": 0,
     "name": "e29-s22-n60000",
+    "off_cone_clicks": {
+     "0": 10,
+     "1": 2,
+     "2": 1,
+     "8": 1,
+     "9": 2
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 16,
     "samples": 60000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.216181,
     "void": false
    }
   ],
@@ -1264,15 +2099,26 @@
     "breaks_1_to_31": 1,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.171237,
     "level": 1500,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e00-s20-n1500",
+    "off_cone_clicks": {
+     "6": 2
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 2
+    },
+    "primary_clicks": 2,
     "samples": 1500,
     "source": 20,
+    "tvd_cone_from_ideal": 0.870902,
     "void": false
    },
    {
@@ -1280,15 +2126,24 @@
     "breaks_1_to_31": 0,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.994,
     "level": 1500,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e01-s22-n1500",
+    "off_cone_clicks": {},
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 0,
     "samples": 1500,
     "source": 22,
+    "tvd_cone_from_ideal": 0.200586,
     "void": false
    },
    {
@@ -1296,15 +2151,26 @@
     "breaks_1_to_31": 1,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.990899,
     "level": 10000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e02-s22-n10000",
+    "off_cone_clicks": {
+     "0": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 1,
     "samples": 10000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.225891,
     "void": false
    },
    {
@@ -1312,15 +2178,28 @@
     "breaks_1_to_31": 3,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.155095,
     "level": 10000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e03-s20-n10000",
+    "off_cone_clicks": {
+     "0": 3,
+     "4": 2,
+     "6": 13
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 2
+    },
+    "primary_clicks": 18,
     "samples": 10000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.888588,
     "void": false
    },
    {
@@ -1328,17 +2207,31 @@
     "breaks_1_to_31": 3,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.157201,
     "level": 60000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 2,
     "mode_5_presence": 0,
     "name": "e04-s20-n60000",
+    "off_cone_clicks": {
+     "0": 3,
+     "3": 3,
+     "4": 19,
+     "6": 57
+    },
     "presence_modes": [
      6
     ],
     "presences": 1,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 1,
+     "2.0": 3
+    },
+    "primary_clicks": 82,
     "samples": 60000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.889161,
     "void": false
    },
    {
@@ -1346,15 +2239,31 @@
     "breaks_1_to_31": 6,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.990028,
     "level": 60000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 3,
     "mode_5_presence": 0,
     "name": "e05-s22-n60000",
+    "off_cone_clicks": {
+     "0": 8,
+     "1": 3,
+     "2": 2,
+     "4": 1,
+     "7": 2,
+     "9": 2
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 18,
     "samples": 60000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.223497,
     "void": false
    },
    {
@@ -1362,15 +2271,24 @@
     "breaks_1_to_31": 0,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.990667,
     "level": 1500,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e06-s22-n1500",
+    "off_cone_clicks": {},
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 0,
     "samples": 1500,
     "source": 22,
+    "tvd_cone_from_ideal": 0.231919,
     "void": false
    },
    {
@@ -1378,15 +2296,24 @@
     "breaks_1_to_31": 0,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.168,
     "level": 1500,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e07-s20-n1500",
+    "off_cone_clicks": {},
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 1
+    },
+    "primary_clicks": 0,
     "samples": 1500,
     "source": 20,
+    "tvd_cone_from_ideal": 0.874666,
     "void": false
    },
    {
@@ -1394,15 +2321,28 @@
     "breaks_1_to_31": 3,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.165782,
     "level": 10000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e08-s20-n10000",
+    "off_cone_clicks": {
+     "1": 1,
+     "4": 3,
+     "6": 11
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 2
+    },
+    "primary_clicks": 15,
     "samples": 10000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.885004,
     "void": false
    },
    {
@@ -1410,15 +2350,24 @@
     "breaks_1_to_31": 0,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.990293,
     "level": 10000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e09-s22-n10000",
+    "off_cone_clicks": {},
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 0,
     "samples": 10000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.221524,
     "void": false
    },
    {
@@ -1426,15 +2375,30 @@
     "breaks_1_to_31": 5,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.991331,
     "level": 60000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 2,
     "mode_5_presence": 0,
     "name": "e10-s22-n60000",
+    "off_cone_clicks": {
+     "0": 1,
+     "1": 4,
+     "6": 2,
+     "7": 1,
+     "9": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 9,
     "samples": 60000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.215679,
     "void": false
    },
    {
@@ -1442,17 +2406,33 @@
     "breaks_1_to_31": 5,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.157612,
     "level": 60000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e11-s20-n60000",
+    "off_cone_clicks": {
+     "0": 9,
+     "1": 1,
+     "3": 3,
+     "4": 23,
+     "6": 59,
+     "7": 3
+    },
     "presence_modes": [
      6
     ],
     "presences": 1,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 1,
+     "2.0": 3
+    },
+    "primary_clicks": 98,
     "samples": 60000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.887734,
     "void": false
    },
    {
@@ -1460,15 +2440,26 @@
     "breaks_1_to_31": 1,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.159866,
     "level": 1500,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 2,
     "mode_5_presence": 0,
     "name": "e12-s20-n1500",
+    "off_cone_clicks": {
+     "6": 3
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 2
+    },
+    "primary_clicks": 3,
     "samples": 1500,
     "source": 20,
+    "tvd_cone_from_ideal": 0.888963,
     "void": false
    },
    {
@@ -1476,15 +2467,26 @@
     "breaks_1_to_31": 1,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.985991,
     "level": 1500,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e13-s22-n1500",
+    "off_cone_clicks": {
+     "0": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 1,
     "samples": 1500,
     "source": 22,
+    "tvd_cone_from_ideal": 0.230406,
     "void": false
    },
    {
@@ -1492,15 +2494,26 @@
     "breaks_1_to_31": 1,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.993299,
     "level": 10000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e14-s22-n10000",
+    "off_cone_clicks": {
+     "0": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 1,
     "samples": 10000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.20466,
     "void": false
    },
    {
@@ -1508,15 +2521,27 @@
     "breaks_1_to_31": 2,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.155171,
     "level": 10000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e15-s20-n10000",
+    "off_cone_clicks": {
+     "4": 4,
+     "6": 7
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 2
+    },
+    "primary_clicks": 11,
     "samples": 10000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.892181,
     "void": false
    },
    {
@@ -1524,17 +2549,32 @@
     "breaks_1_to_31": 4,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.158048,
     "level": 60000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 5,
     "mode_5_presence": 0,
     "name": "e16-s20-n60000",
+    "off_cone_clicks": {
+     "0": 1,
+     "1": 6,
+     "4": 20,
+     "6": 41,
+     "7": 9
+    },
     "presence_modes": [
      6
     ],
     "presences": 1,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 1,
+     "2.0": 3
+    },
+    "primary_clicks": 77,
     "samples": 60000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.88537,
     "void": false
    },
    {
@@ -1542,15 +2582,31 @@
     "breaks_1_to_31": 6,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.991312,
     "level": 60000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 5,
     "mode_5_presence": 0,
     "name": "e17-s22-n60000",
+    "off_cone_clicks": {
+     "0": 5,
+     "3": 4,
+     "4": 3,
+     "7": 2,
+     "8": 2,
+     "9": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 17,
     "samples": 60000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.218357,
     "void": false
    },
    {
@@ -1558,15 +2614,26 @@
     "breaks_1_to_31": 1,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.977227,
     "level": 1500,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 3,
     "mode_5_presence": 0,
     "name": "e18-s22-n1500",
+    "off_cone_clicks": {
+     "0": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 1,
     "samples": 1500,
     "source": 22,
+    "tvd_cone_from_ideal": 0.240039,
     "void": false
    },
    {
@@ -1574,15 +2641,27 @@
     "breaks_1_to_31": 2,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.149064,
     "level": 1500,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e19-s20-n1500",
+    "off_cone_clicks": {
+     "0": 2,
+     "6": 2
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 1
+    },
+    "primary_clicks": 4,
     "samples": 1500,
     "source": 20,
+    "tvd_cone_from_ideal": 0.893048,
     "void": false
    },
    {
@@ -1590,15 +2669,28 @@
     "breaks_1_to_31": 3,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.159007,
     "level": 10000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e20-s20-n10000",
+    "off_cone_clicks": {
+     "1": 1,
+     "4": 3,
+     "6": 9
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 2
+    },
+    "primary_clicks": 13,
     "samples": 10000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.888955,
     "void": false
    },
    {
@@ -1606,15 +2698,27 @@
     "breaks_1_to_31": 2,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.990796,
     "level": 10000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e21-s22-n10000",
+    "off_cone_clicks": {
+     "0": 1,
+     "9": 3
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 4,
     "samples": 10000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.216806,
     "void": false
    },
    {
@@ -1622,15 +2726,30 @@
     "breaks_1_to_31": 5,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.990577,
     "level": 60000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e22-s22-n60000",
+    "off_cone_clicks": {
+     "0": 7,
+     "1": 4,
+     "3": 4,
+     "4": 3,
+     "9": 4
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 22,
     "samples": 60000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.221893,
     "void": false
    },
    {
@@ -1638,17 +2757,34 @@
     "breaks_1_to_31": 6,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.161225,
     "level": 60000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 4,
     "mode_5_presence": 0,
     "name": "e23-s20-n60000",
+    "off_cone_clicks": {
+     "0": 11,
+     "1": 4,
+     "2": 3,
+     "3": 8,
+     "4": 14,
+     "6": 50,
+     "7": 4
+    },
     "presence_modes": [
      6
     ],
     "presences": 1,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 1,
+     "2.0": 3
+    },
+    "primary_clicks": 94,
     "samples": 60000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.88627,
     "void": false
    },
    {
@@ -1656,15 +2792,24 @@
     "breaks_1_to_31": 0,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.135333,
     "level": 1500,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e24-s20-n1500",
+    "off_cone_clicks": {},
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 1
+    },
+    "primary_clicks": 0,
     "samples": 1500,
     "source": 20,
+    "tvd_cone_from_ideal": 0.897999,
     "void": false
    },
    {
@@ -1672,15 +2817,24 @@
     "breaks_1_to_31": 0,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.988667,
     "level": 1500,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e25-s22-n1500",
+    "off_cone_clicks": {},
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 0,
     "samples": 1500,
     "source": 22,
+    "tvd_cone_from_ideal": 0.203252,
     "void": false
    },
    {
@@ -1688,15 +2842,24 @@
     "breaks_1_to_31": 0,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.991398,
     "level": 10000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e26-s22-n10000",
+    "off_cone_clicks": {},
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 0,
     "samples": 10000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.216562,
     "void": false
    },
    {
@@ -1704,15 +2867,28 @@
     "breaks_1_to_31": 3,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.156888,
     "level": 10000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 0,
     "mode_5_presence": 0,
     "name": "e27-s20-n10000",
+    "off_cone_clicks": {
+     "4": 5,
+     "6": 4,
+     "7": 2
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 2
+    },
+    "primary_clicks": 11,
     "samples": 10000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.890668,
     "void": false
    },
    {
@@ -1720,17 +2896,32 @@
     "breaks_1_to_31": 4,
     "cone_size": 16,
     "ideal_share_detectors": 0.999999,
+    "in_block_cone": 0.159045,
     "level": 60000,
     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
     "mode_5_clicks": 5,
     "mode_5_presence": 0,
     "name": "e28-s20-n60000",
+    "off_cone_clicks": {
+     "0": 5,
+     "1": 2,
+     "4": 18,
+     "6": 80,
+     "7": 8
+    },
     "presence_modes": [
      6
     ],
     "presences": 1,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 1,
+     "2.0": 3
+    },
+    "primary_clicks": 113,
     "samples": 60000,
     "source": 20,
+    "tvd_cone_from_ideal": 0.888625,
     "void": false
    },
    {
@@ -1738,18 +2929,76 @@
     "breaks_1_to_31": 3,
     "cone_size": 14,
     "ideal_share_detectors": 0.499966,
+    "in_block_cone": 0.990764,
     "level": 60000,
     "mesh_sha256": "500c4fab76a339db03af01d0c0dd986c96a5792fa9bc3a4c8718f03a26d6400a",
     "mode_5_clicks": 1,
     "mode_5_presence": 0,
     "name": "e29-s22-n60000",
+    "off_cone_clicks": {
+     "0": 2,
+     "1": 3,
+     "4": 1
+    },
     "presence_modes": [],
     "presences": 0,
+    "presences_by_floor": {
+     "0.5": 0,
+     "1.0": 0,
+     "2.0": 0
+    },
+    "primary_clicks": 6,
     "samples": 60000,
     "source": 22,
+    "tvd_cone_from_ideal": 0.220268,
     "void": false
    }
   ]
+ },
+ "floor_sensitivity": {
+  "0.5": {
+   "mitigation": null,
+   "noisy_floor": 0.0005,
+   "presences": {
+    "job-00": 0,
+    "job-01": 0,
+    "job-02": 0
+   }
+  },
+  "1.0": {
+   "mitigation": {
+    "direction": null,
+    "k": 5,
+    "n": 15,
+    "null_share": 0.333333333,
+    "observed_share": 0.333333333,
+    "p": 1.0,
+    "rejects": false
+   },
+   "noisy_floor": 0.001,
+   "presences": {
+    "job-00": 5,
+    "job-01": 5,
+    "job-02": 5
+   }
+  },
+  "2.0": {
+   "mitigation": {
+    "direction": "below",
+    "k": 30,
+    "n": 91,
+    "null_share": 0.333333333,
+    "observed_share": 0.32967033,
+    "p": 1.0,
+    "rejects": false
+   },
+   "noisy_floor": 0.002,
+   "presences": {
+    "job-00": 29,
+    "job-01": 30,
+    "job-02": 32
+   }
+  }
  },
  "jobs": {
   "job-00": {
@@ -1763,6 +3012,8 @@
    },
    "architecture_source": "carried",
    "cases_sha256": "3cfea723a031a0ec359c0dbcd38d0c97e873d0c7e25b4b63f806eeaa8e9d86d7",
+   "compiled_couplers_checked": "match",
+   "compiled_couplers_checked_from": "offline from raw/result.json",
    "couplers_checked": "unread",
    "distinct_returned_meshes": [
     "29dc6ef8",
@@ -1793,6 +3044,8 @@
    },
    "architecture_source": "carried",
    "cases_sha256": "b3aaa1bd08aae40346ea989d12d3ff474e29d2b94fe39a60b1e6256552be4383",
+   "compiled_couplers_checked": "match",
+   "compiled_couplers_checked_from": "offline from raw/result.json",
    "couplers_checked": "unread",
    "distinct_returned_meshes": [
     "29dc6ef8",
@@ -1823,6 +3076,8 @@
    },
    "architecture_source": "carried",
    "cases_sha256": "d0ec6c4906d1b0b7aceac735e61fa107026b3670563be20f4cb9663f7a937117",
+   "compiled_couplers_checked": "match",
+   "compiled_couplers_checked_from": "offline from raw/result.json",
    "couplers_checked": "unread",
    "distinct_returned_meshes": [
     "29dc6ef8",
@@ -1891,6 +3146,21 @@
   }
  },
  "presence_rule": "off-cone mode other than 5 with one-click count >= 32; mode 5 separate",
+ "routing_baseline": {
+  "entries": 13,
+  "entries_at_in_block_cone_0_98_or_more": 11,
+  "in_block_cone": {
+   "median": 0.991671,
+   "min": 0.450353
+  },
+  "mesh": "29dc6ef8",
+  "rule": "a job passes when the median of its valid source-20 entries has in_block_cone at or above the minimum and tvd_cone_from_ideal at or below the maximum of belenos_mesh/job-16's 29dc6ef8 entries; a job without such an entry fails",
+  "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+  "tvd_cone_from_ideal": {
+   "max": 0.819035,
+   "median": 0.091524
+  }
+ },
  "schema": "qd-belenos-offcone-mechanisms-analysis-v1",
  "sources": {
   "20": {
@@ -1917,18 +3187,46 @@
   }
  },
  "verdict": {
-  "case_reading": "episodes",
+  "case_reading": "routing collapsed, mechanisms unread",
   "drift_rejected": false,
   "episodes_exceeded_by_source_split": true,
   "falsifier_layer": {
-   "balancing": "falsified",
-   "episodes": "survives",
-   "window_samples": "survives",
-   "window_time": "falsified"
+   "balancing": "withheld",
+   "episodes": "withheld",
+   "window_samples": "withheld",
+   "window_time": "withheld"
   },
   "reading_conditions_met": [
    "episodes"
   ],
+  "routing_collapsed_jobs": [
+   "job-00",
+   "job-01",
+   "job-02"
+  ],
+  "routing_gate": {
+   "job-00": {
+    "entries": 15,
+    "entries_inside_envelope": 1,
+    "median_in_block_cone": 0.15884,
+    "median_tvd_cone_from_ideal": 0.887476,
+    "passes": false
+   },
+   "job-01": {
+    "entries": 15,
+    "entries_inside_envelope": 0,
+    "median_in_block_cone": 0.170424,
+    "median_tvd_cone_from_ideal": 0.867854,
+    "passes": false
+   },
+   "job-02": {
+    "entries": 15,
+    "entries_inside_envelope": 0,
+    "median_in_block_cone": 0.158048,
+    "median_tvd_cone_from_ideal": 0.888625,
+    "passes": false
+   }
+  },
   "void_jobs": []
  }
 }

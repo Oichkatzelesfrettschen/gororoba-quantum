@@ -290,8 +290,14 @@ def test_the_click_contrast_reads_an_amplification_the_binary_count_saturates_on
     got = ana.click_contrast(jobs)
     if got["default_over_mitigations_off_click_rate"] != 1.5:
         raise AssertionError(got["default_over_mitigations_off_click_rate"])
-    if got["saturated_cells"] != [{"source": 20, "level": 60000, "modes": [6], "entries": 15}]:
-        raise AssertionError(got["saturated_cells"])
+    (cell,) = got["saturated_cells"]
+    if (cell["source"], cell["level"], cell["modes"], cell["entries"]) != (20, 60000, [6], 15):
+        raise AssertionError(cell)
+    if (
+        cell["clicks"] != {"job-00": 300, "job-01": 200, "job-02": 300}
+        or cell["default_over_mitigations_off_click_rate"] != 1.5
+    ):
+        raise AssertionError(cell)
     if not got["binary_indicator_saturated"] or not got["job_01_share_test"]["rejects"]:
         raise AssertionError(got)
 

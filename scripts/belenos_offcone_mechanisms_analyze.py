@@ -405,7 +405,26 @@ def click_contrast(jobs: dict[str, dict[str, Any]]) -> dict[str, Any]:
             modes = sorted({int(q) for e in cell for q in e["off_cone_clicks"]})
             full = [q for q in modes if cell and all(e["off_cone_clicks"].get(str(q), 0) >= PRESENCE_MIN for e in cell)]
             if full:
-                saturated.append({"source": source, "level": level, "modes": full, "entries": len(cell)})
+                counts = {
+                    name: sum(e["off_cone_clicks"].get(str(q), 0) for e in rows for q in full if e in cell)
+                    for name, rows in entries.items()
+                }
+                exposed = {name: sum(e["samples"] for e in rows if e in cell) for name, rows in entries.items()}
+                n_total, n_exposed = sum(counts.values()), sum(exposed.values())
+                cell_default = (counts["job-00"] + counts["job-02"]) / (exposed["job-00"] + exposed["job-02"])
+                saturated.append(
+                    {
+                        "source": source,
+                        "level": level,
+                        "modes": full,
+                        "entries": len(cell),
+                        "clicks": counts,
+                        "job_01_share_test": contrast(counts["job-01"], n_total, exposed["job-01"] / n_exposed),
+                        "default_over_mitigations_off_click_rate": round(
+                            cell_default / (counts["job-01"] / exposed["job-01"]), 4
+                        ),
+                    }
+                )
     return {
         "primary_clicks": clicks,
         "samples": samples,

@@ -148,12 +148,38 @@ and cut-run handling; the script docstring lists them.
   500c4fab (source 20 puts 0.999999 on them of 29dc6ef8), so detector-resolved episodes give source 22 at most the
   presence share 0.3333. Observed 0 of 15 rejects that share (p = 4.1e-3): the source split exceeds what episodes on
   detectors 20 and 21 can produce on equal samples.
-- **Falsifier layer (Pre-flight 3).** `balancing` falsified (job-01 reads the same 5 presences as each default job).
-  `episodes` survives its falsifier (the two sources do not read equal presences per sample). `window_samples`
-  survives its falsifier (the sample-law share is not rejected). `window_time` falsified (time-law share rejected).
-- **Case reading (cases.json `readings`).** `episodes`: the mitigation contrast does not reject and the source
-  contrast rejects with source 22 below. `window_samples` is excluded by the same source contrast. The reading is
-  `episodes` as written; the bound above and the next item qualify it.
+- **Routing gate (post hoc).** The analyzer compares each job's source-20 entries on mesh 29dc6ef8 with the 13 entries
+  of the same circuit and mesh in belenos_mesh/job-16 (2026-10-18). Job-16's in_block_cone spans 0.4504 to 0.9941
+  (median 0.9917; 11 entries at 0.98 or more, its first two entries at 0.45) and its tvd_cone_from_ideal spans 0.0775
+  to 0.8190 (median 0.0915). The rule passes a job whose median lies inside that envelope on both statistics, so
+  it rejects only a routing state job-16 never produced; it derives from job-16 alone, and the red team's means for the
+  new runs were known when it was written. Medians: job-00 0.1588 and 0.8875, job-01 0.1704 and 0.8679, job-02 0.1580
+  and 0.8886 (in_block_cone and tvd_cone_from_ideal); 1, 0 and 0 of 15 entries lie inside the envelope. All three jobs
+  fail the gate: the routing of mesh 29dc6ef8 collapsed relative to its pre-outage state while the computed circuits
+  still carry the 2026-10-17 couplers (`compiled_couplers_checked` "match", below). The gate reads source 20 only,
+  since source 22 returned mesh 500c4fab, which has no baseline.
+- **Falsifier layer and case reading (withdrawn).** The gated rule gives "routing collapsed, mechanisms unread": every
+  mechanism's verdict reads "withheld". The earlier reading `episodes` is withdrawn: its source contrast compares
+  source 20 on a collapsed mesh with source 22 on another mesh, so the 15 presences against 0 measure the leakage of
+  mode 6 past the cone threshold (below) and not detector-resolved packets. "Balancing falsified" is withdrawn for
+  counts: the binary presence indicator saturates at source 20 and 60,000 samples, where every entry of every job
+  carries at least 32 clicks on mode 6, and the raw clicks differ between the arms (next item). `window_time`
+  "falsified" is withdrawn with them, since its test pools presences that the saturated indicator produced. The
+  contrasts above stay as computed and carry no attribution.
+- **Cone-floor sensitivity (post hoc).** Mode 6 sits at a noisy-channel occupation of 8.39e-4 on 29dc6ef8 at source 20,
+  16 percent under NOISY_FLOOR 1e-3. At 0.5 times the floor mode 6 joins the cone and the presences read 0, 0 and 0
+  (job-00, job-01, job-02); at the case floor 5, 5 and 5; at 2 times the floor 29, 30 and 32 (mitigation contrast
+  p = 1.0 at 1 and 2 times). The presence count depends on a cone threshold that a 16 percent change of its level
+  removes entirely, so no presence contrast of these runs carries a mechanism.
+- **Continuous click contrast (post hoc).** The primary off-cone clicks read 644, 451 and 621 (job-00, job-01,
+  job-02) over equal 715,000 samples: the default jobs read 1.40 times the click rate of job-01 (job-01 holds 0.263 of
+  the clicks against the exposure share 1/3; exact binomial p = 2.8e-10, optimistic under overdispersion). In the
+  saturated cell (source 20, 60,000 samples, mode 6: 306, 201 and 287 clicks) the ratio is 1.48 (job-01 share 0.253 of 794,
+  p = 1.1e-6). DetectorBalancing amplifies the mode-6 clicks; the binary count could not see it, and this ratio is
+  the measured size of the amplification on the one channel the presences read.
+- **Presence rule.** This analysis counts an off-cone mode at 32 or more one-click samples (the case's packet floor).
+  PR 1036 (`qd_belenos_offcone_packets`) counts a mode at any positive count (n > 0); 232 off-cone counts of 1 to 31
+  here make the totals differ (247 at n > 0 against 15 at the case rule), so the two analyses do not compare.
 - **Prediction as recorded against outcome.** The case predicted 77.5 presences per job (38.8 per source) and 49.0
   mode-5 presences per job at the retained rate of 1.084e-4 per sample, and the family `window_samples` or
   source-independent episodes. Observed: 5 per job (0.065 of the predicted rate; Poisson p 9e-27) and 0 mode-5
@@ -162,12 +188,15 @@ and cut-run handling; the script docstring lists them.
   entries) do not reappear in the 90 entries here, so the contrasts read another phenomenon, and the retained zero
   or packet law does not hold on this circuit, seed and server mode. The 15 presences are one channel: mode 6 at source
   20 reads tens of clicks at 60,000 samples (job-00: 49 to 80) and 0 to 9 below, and the source-20 cone begins at mode
-  8. In job-16 mode 6 read no click at source 20 and 10,000 samples in 12 of 12 entries, against 4 of 5 entries here.
+  8. In job-16 mode 6 read no click at source 20 and 10,000 samples in 13 of 13 entries of mesh 29dc6ef8, against clicks in 14 of 15 entries here (4 of 5 in job-00 and 5 of 5 in each of job-01 and job-02).
   hypothesis: mode 6 is photon-linked leakage just outside the cone threshold of source 20, a different channel from
   the retained packets; the cheapest discriminating check is the mode-6 count against samples at source 20 on mesh
   29dc6ef8 with the cone floor lowered until mode 6 joins the cone.
-- **Caveat.** Couplers were unread at plan and at collect; only the 2026-10-17 catalogue stamp backs the carried
-  architecture. hypothesis: the retained packet law and these runs straddle the month-long Belenos outage (the
+- **Caveat.** The live couplers were unread at plan and at collect (`couplers_checked` "unread"), and only the 2026-10-17
+  catalogue stamp backs the carried architecture. The computed circuit of every entry in the three raw results carries
+  the planned architecture's couplers (`compiled_couplers_checked` "match", computed offline from raw/result.json by
+  `qd_platform.compiled_couplers_state`, since the runs were collected before the field existed), so the server's
+  compile model matches the 2026-10-17 catalogue and the physical routing is what changed. hypothesis: the retained packet law and these runs straddle the month-long Belenos outage (the
   server returned 2026-11-27 with changed source and detector figures, docs/notes/quandela/platform-surface.md on
   branch quandela-platform-surface), so a chip-side change after recalibration explains the missing packets as well as
   a server-mode or circuit difference does; the discriminating check is a rerun of a retained belenos_mesh job-16
