@@ -31,7 +31,7 @@ chose that route after an audit of the plan's usage.
 | N- and N+ are exchanged by the automorphism e_k -> (-1)^(bit 3 of k) e_k | Codex (proved) | confirmed and recorded (`automorphism`): the character is multiplicative, it maps N- to N+, and the Pfaffians correspond under x_w -> chi(w) x_w |
 | The type-C self-test control asserted only that the lower bound differs from 16 | opencode | confirmed; the control requires 15 at both bounds and 16 from the container alone |
 | The e_16 mutant is weak because Q and G cannot see e_16 | opencode | boundary: e_16 lies outside the doubly pure domain of Q and G by definition (the strata record), so the mutant tests exactly the scope the statement names, the off-domain coordinate that P14 found to break the identity |
-| The census rebuilds all 26,096 matrices in each of 64 workers and enumerates serially | Codex | boundary: the census takes a small share of the 359 s record, dominated by the A_8 item; a shared-memory layout is left for a change that needs it |
+| The census rebuilds all 26,096 matrices in each of 64 workers and enumerates serially | Codex | the serial enumeration is fixed after the hosted round below; the per-worker matrix rebuild stays a boundary, since the census takes a small share of the record's wall time, dominated by the A_8 item |
 | `strata_item` returns a partial row on its mutant path, and the schema is untyped | Codex | partly fixed: the partial row is reachable only with the mutant flag, which `require` now enforces; a TypedDict schema is left open |
 | The PR body said hosted checks were not run and called the type-C check a mutant | Codex | confirmed; the body is updated |
 | A5-667 words a universal rule ("for a real point y = (p, q) of W8") from finite samples | Codex | boundary: the row's status is `survives`, which the ledger uses for a tested hypothesis that no check has refuted, and its falsifier names the counterexample; README statement 13 scopes the evidence to the points of the record. The rule stays open (MATH-225) |
@@ -56,3 +56,11 @@ the trace condition and the 30-unit reduction, and named these gaps, each resolv
 | Theorem 14.6 was cited from a report, and the J_k and Clifford results are reviewer computations | the theorem's pages were opened; both results are labeled reviewer-reported, not reproduced |
 | The record's digests at the pushed head were unconfirmed | the four `sources` digests of `certificates.json` equal `git show 73868afb6:PATH \| sha256sum` |
 | The workstation checkout was one commit behind the head the briefs named, so Codex ran no computation | recorded here; a later round syncs that checkout before launch |
+
+## Hosted Codex round
+
+The round on head `7e7aa0aab` returned one finding: `sedenion_zero_divisors` enumerated its candidates serially
+before the census pool started. Confirmed and fixed in `65989ac5d`: `zero_divisor_block` builds the block of one
+first half, and the blocks map through `parallel.ordered_map` in product order. The regenerated record differs from
+the previous one only in the script digest, and `--check` and `--self-test` pass on the compute workstation. The
+thread was answered and resolved.
