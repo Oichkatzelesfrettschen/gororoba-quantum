@@ -189,15 +189,17 @@ a W8 point ([review](../../archive/reviews/a5-outside-transition-report/README.m
 | A5-654 | at e_1 + e_10 the compression pencil has dimension 7, a quaternion commutant, Lie closure sp(2) and Pfaffian 16 (Q^2 - 4 Delta) on R^3 + R + R^3, the squared modulus of the tangent cone of G at m = 0 | proved |
 | A5-655 | the rank-4 directions are the isotropic vectors of C^3; the limiting plane of each line is the range of (I + n.E)/2, with trace(P P') = 2 (1 + n.n') | proved |
 | A5-656 | every W8 point has a quaternionic pencil | refuted |
-| A5-657 | pencils at VB and N+- with a tangent-cone invariant: at VB the Pfaffian on the doubly pure coordinates is -\|lead Q\|^2 \|lead G\|^2; N+- not computed | survives |
+| A5-657 | on the doubly pure coordinates the Pfaffian of the pencil is c \|lead Q\|^2 \|lead G\|^2 at VB (Q order 1, G order 2) and at N+- (Q order 1, G order 3; a quadratic times an irreducible sextic) | proved |
 | A5-658 | the t^2 I Gram identity for the doubling unit and the alternating three-form, levels 8 to 64 | proved |
 | A5-659 | the pencil type depends on the point of W8: quaternion commutant at six of eight points, scalar commutant and closure so(8) at two | proved |
 | A5-660 | every nullity-4 arc into e_1 + e_10 limits on the 2-sphere | open |
 | A5-664 | tower at e_1 + e_10: sp(1), sp(2), sp(4) on H, H^2, H^4 in A_4, A_5, A_6, pencil dimensions 3, 7, 15 | proved |
 | A5-665 | the lowest Gram coefficient vanishes to order 8 at every junction | proved |
 | A5-666 | pencils at VB (so(12)) and N+- (so(16)) with scalar commutants | proved |
-| A5-667 | on W8 the pencil has type R, C or H (closures so(8), su(4), sp(2)) as ker L_p n ker L_q has dimension 0, 2, 4; 2,448 census points and 53 others | survives |
+| A5-667 | on W8 the pencil has type R, C or H (closures so(8), su(4), sp(2)) as ker L_p n ker L_q has dimension 0, 2, 4; 2,448 census points and 53 others; dimensions 1 and 3 excluded by A5-671 | survives |
 | A5-668 | twenty lines of zero first-order compression and two curved arcs limit on the 2-sphere | proved |
+| A5-670 | tower at e_1 + e_10 continued: sp(8) and sp(16) in A_7 and A_8, pencil dimensions 31 and 63, by closure bounds that meet | proved |
+| A5-671 | L_(e_8) anticommutes with every other imaginary unit of A_4, so sedenion zero divisors are doubly pure and ker L_p n ker L_q is complex, of dimension 0, 2 or 4 | proved |
 
 ## Next computations
 
