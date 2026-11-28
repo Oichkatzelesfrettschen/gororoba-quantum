@@ -4,12 +4,14 @@ The pathion kernel map reads the nullity N of L_(e_i + t e_j) over C from the se
 (docs/evidence/a5-complex-kernel-map). This case reads the same strata on coset blocks of 2 to 4 qubits
 (gororoba_quantum/pathion_complex_block.py): the selector-zero difference of the two orientations is N / 16 on every
 coset of a subspace whose dimension d is 1 (N = 0 or 16), 3 (N = 4 or 12) or 2 (N = 8), so one block per operand
-reads N. Each operand runs the real kind (t = 1), the complex kind (t = i) and, at two operands, the plain-phase
-mutation, all in the orientations + and - in the order +, -, -, + and mirrored about the center of the job.
+reads N. Each operand runs the real kind (t = 1) and the complex kind (t = i); s412 also runs the plain-phase
+mutation on a coset whose pair sign is not constant, and s808 a sentinel (its real kind again, at the center of the
+job). Every kind runs in the orientations + and - in the order +, -, -, + and mirrored about the center of the job.
 
-The four operands sit on one patch of four qubits (a star about QB6), so the null operand's offset applies to the
-others. The phase gates of a block are Z rotations behind barriers: after the compile every Z rotation moves to the end
-of the circuit as a shift of the phase of each later PRX, so the real and complex circuits (and both orientations) carry
+The four operands sit on one patch of four qubits, the star that a written rule (rank_stars) selects from the
+calibration set, so the null operand's offset applies to the others. The phase gates of a block are Z rotations behind
+barriers: after the compile every Z rotation moves to the end of the circuit as a shift of the phase of each later
+PRX, so the real and complex circuits (and both orientations) carry
 the same PRX amplitudes and CZ gates and differ in PRX phases alone. A PRX amplitude error is then the same
 over-rotation in every kind of an operand; the audit in prediction.json measures what remains of its effect.
 
@@ -33,7 +35,7 @@ from typing import Any
 
 import numpy as np
 from qiskit import QuantumCircuit, transpile
-from qiskit.circuit.library import RGate, RZZGate
+from qiskit.circuit.library import CPhaseGate, RGate, RZGate, RZZGate
 from qiskit.transpiler import CouplingMap
 from qiskit_aer import AerSimulator
 
@@ -59,6 +61,13 @@ CEILING_CREDITS = 10.5
 MAX_CIRCUITS = 100
 MAX_EXECUTIONS = 2_000_000
 OVERRUNS = (1.0, 1.5, 2.2)
+SHOTS = 6500
+# The cancel threshold of the ceiling must clear the 2.2 times overrun of the expected runtime by this many seconds, the
+# latency of the station-control stop that follows a cancel.
+OVERRUN_MARGIN_MIN_SECONDS = 1.5
+# The plain kind is kept only on a coset where its outcome law differs from the complex kind with the orientations
+# swapped by at least this much (the swap is what a constant pair sign leaves).
+PLAIN_GAP_MIN = 0.05
 # Transpiler seeds: ANU QRNG draw docs/evidence/anu_qrng/draw-2026-11-27T222523Z.json, indices 10 to 17 (record
 # docs/evidence/qrng_seeds/allocations.json). The first seed compiles the coset and layout search; the others are
 # trials at the chosen layout.
@@ -67,11 +76,20 @@ GATE_DURATIONS = {"prx": 16, "cz": 40, "measure": 480}
 # Planning floor of the herald-kept fraction of the shots (the analysis reads the kept counts of the run).
 PLANNING_RETENTION = 0.5
 ORIENTATIONS = ("plus", "minus", "minus", "plus")
-# One star of four qubits about QB6 holds every operand; local qubit n of a compile is PATCH[n].
-PATCH = ("QB11", "QB5", "QB6", "QB7")
+# One star of four qubits holds every operand; local qubit n of a compile is patch[n], with the center at local index 2
+# and the leaves (sorted by name) at 0, 1 and 3.
 PATCH_EDGES = ((2, 0), (2, 1), (2, 3))
+LINEARITY = ROOT / "results/iqm/idle_schedule_probe_analysis.json"
+PRIOR_STAR = ("QB11", "QB5", "QB6", "QB7")  # the star of the first draft of the case, ranked for the record
+# Coherent errors of the audit (each enters after the scheduling).
 PRX_ERRORS = (-0.05, -0.04, -0.03, -0.02, -0.01, 0.01, 0.02, 0.03, 0.04, 0.05)
+QUBIT_PRX_ERRORS = (-0.05, -0.03, 0.03, 0.05)
 ZZ_ERRORS = (-0.05, 0.05)
+CPHASE_ERRORS = (-0.10, -0.05, 0.05, 0.10)
+ZRES_ERRORS = (-0.15, -0.05, 0.05, 0.15)
+# The combined error scales a base of (PRX amplitude, CZ conditional phase, residual Z rotation after each CZ).
+COMBINED_BASE = (-0.02, -0.05, -0.05)
+COMBINED_SCALES = (0.25, 0.5, 1.0, 1.5)
 
 
 @dataclass(frozen=True)
@@ -82,16 +100,29 @@ class Operand:
     pair: tuple[int, int]
     basis: tuple[int, ...]
     stratum: str  # real / complex nullity of e_i + e_j and e_i + i e_j
-    kinds: tuple[str, ...]
+    kinds: tuple[str, ...]  # sent is the real kind again, at the center of the job
 
 
 OPERANDS = (
-    Operand("s016", (1, 3), (2,), "0/16", ("real", "cplx", "plain")),
+    Operand("s016", (1, 3), (2,), "0/16", ("real", "cplx")),
     Operand("s412", (1, 26), (27, 4, 9), "4/12", ("real", "cplx", "plain")),
-    Operand("s808", (1, 10), (11, 4), "8/8", ("real", "cplx")),
+    Operand("s808", (1, 10), (11, 4), "8/8", ("real", "cplx", "sent")),
     Operand("s124", (1, 18), (19, 4, 8), "12/4", ("real", "cplx")),
 )
-KIND_ORDER = tuple((op.name, kind) for op in OPERANDS for kind in op.kinds)
+# The first half of the job; the second half runs the kinds in reverse. The null pair sits at the outer end, the
+# sentinel (the null operand's real kind again) at the center, and the weakest kind (s124 cplx) away from both.
+KIND_ORDER = (
+    ("s808", "real"),
+    ("s808", "cplx"),
+    ("s124", "real"),
+    ("s124", "cplx"),
+    ("s016", "real"),
+    ("s016", "cplx"),
+    ("s412", "real"),
+    ("s412", "cplx"),
+    ("s412", "plain"),
+    ("s808", "sent"),
+)
 
 
 def patch_coupling() -> CouplingMap:
@@ -114,27 +145,35 @@ def cz_of(circuit: QuantumCircuit) -> int:
     return int(circuit.count_ops().get("cz", 0))
 
 
+def plain_gap(block: pcb.Block) -> float:
+    """The largest distance between the outcome law of the plain kind and that of the complex kind with the
+    orientations swapped. A pair sign that is constant on the upper members turns the plain kind into that swap (the
+    sign multiplies every upper amplitude by -1, which is the orientation phase pi), and the gap vanishes."""
+    return max(
+        float(np.max(np.abs(pcx.block_law(block, 1j, plus, plain=True) - pcx.block_law(block, 1j, not plus))))
+        for plus in (True, False)
+    )
+
+
 def block_of(operand: Operand) -> pcb.Block:
-    """The coset of the operand's subspace that carries its readings. Without a plain kind, the first coset. With one,
-    among the cosets where the plain reading is negative (the mutation flips the sign), the coset whose plain compile
-    has the CZ count closest to the real compile's (identity layout), then the fewest CZ, then the lowest plain
-    reading, then the lowest coset index."""
+    """The coset of the operand's subspace that carries its readings. Without a plain kind, the first coset. With
+    one, among the cosets where the plain reading is negative (the mutation flips the sign) and the plain kind differs
+    from the orientation-swapped complex kind by at least PLAIN_GAP_MIN, the coset of the largest gap, then the lowest
+    coset index. The choice reads the exact laws alone, never a compile."""
     i, j = operand.pair
     basis = pcx.normalized_basis((i, j, 1), operand.basis)
     cosets = pcb.cosets(basis)
     if "plain" not in operand.kinds:
         return pcb.Block(operand.name, (i, j, 1), basis, cosets[0])
-    layout = tuple(range(len(basis) + 1))
     rows = []
     for coset in cosets:
         block = pcb.Block(operand.name, (i, j, 1), basis, coset)
-        plain = pcx.selector_marginal(block, 1j, plain=True)
-        if plain >= -1e-9:
-            continue
-        real_cz = cz_of(structural_compile(block, False, layout, TRANSPILER_SEEDS[0]))
-        plain_cz = cz_of(structural_compile(block, True, layout, TRANSPILER_SEEDS[0]))
-        rows.append((abs(plain_cz - real_cz), real_cz, plain, coset))
-    return pcb.Block(operand.name, (i, j, 1), basis, min(rows)[3])
+        gap = plain_gap(block)
+        if pcx.selector_marginal(block, 1j, plain=True) < -1e-9 and gap >= PLAIN_GAP_MIN:
+            rows.append((-gap, coset))
+    if not rows:
+        raise ValueError(f"{operand.name}: no coset carries a plain kind distinct from the swapped complex kind")
+    return pcb.Block(operand.name, (i, j, 1), basis, min(rows)[1])
 
 
 def ideal_difference(block: pcb.Block, kind: str) -> float:
@@ -158,24 +197,68 @@ def usable_qubits(calibration: iqm_sim.Calibration) -> set[str]:
     }
 
 
-def check_patch(calibration: iqm_sim.Calibration) -> None:
+def check_patch(calibration: iqm_sim.Calibration, patch: tuple[str, ...]) -> None:
     """The patch qubits are usable and the patch edges are calibrated couplers."""
-    missing = [q for q in PATCH if q not in usable_qubits(calibration)]
-    edges = [frozenset((PATCH[a], PATCH[b])) for a, b in PATCH_EDGES]
+    missing = [q for q in patch if q not in usable_qubits(calibration)]
+    edges = [frozenset((patch[a], patch[b])) for a, b in PATCH_EDGES]
     absent = [sorted(e) for e in edges if e not in calibration.cz]
     if missing or absent:
-        raise ValueError(f"patch {PATCH}: qubits {missing} are unusable and couplers {absent} are uncalibrated")
+        raise ValueError(f"patch {patch}: qubits {missing} are unusable and couplers {absent} are uncalibrated")
+
+
+def parallel_train_linearity() -> tuple[dict[str, bool], str]:
+    """Per qubit, whether the retained Garnet parallel PRX train (results/iqm/idle_schedule_probe_analysis.json, set
+    a18a947f of 2026-10-25) fits the linear over-rotation model, and the sha256 of that file."""
+    data = LINEARITY.read_bytes()
+    trains = json.loads(data)["parallel_trains"]
+    return {q: bool(row["linear"]) for q, row in trains.items()}, hashlib.sha256(data).hexdigest()
+
+
+def rank_stars(calibration: iqm_sim.Calibration, linearity: dict[str, bool]) -> list[dict[str, Any]]:
+    """Every star of four usable qubits (a center and three neighbors on calibrated couplers), best first. The rule,
+    written before any live read: fewest qubits whose retained parallel train is not linear, then fewest qubits the
+    train did not measure, then the largest product of the three CZ fidelities, then the largest PRX RB fidelity of
+    the weakest qubit, then the patch names. A patch lists the leaves in name order around the center at index 2."""
+    usable = usable_qubits(calibration)
+    rows = []
+    for center in sorted(usable):
+        leaves = sorted(q for q in usable if q != center and frozenset((center, q)) in calibration.cz)
+        for trio in itertools.combinations(leaves, 3):
+            patch = (trio[0], trio[1], center, trio[2])
+            product = math.prod(calibration.cz[frozenset((center, q))] for q in trio)
+            prx = min(calibration.prx.get(q, calibration.values.get(iqm_sim.PRX_FIELD.format(q=q), 0.0)) for q in patch)
+            rows.append(
+                {
+                    "patch": list(patch),
+                    "nonlinear_train_qubits": sum(1 for q in patch if linearity.get(q) is False),
+                    "unmeasured_train_qubits": sum(1 for q in patch if q not in linearity),
+                    "cz_product": round(product, 6),
+                    "min_prx_rb_fidelity": round(prx, 6),
+                }
+            )
+    rows.sort(
+        key=lambda r: (
+            r["nonlinear_train_qubits"],
+            r["unmeasured_train_qubits"],
+            -r["cz_product"],
+            -r["min_prx_rb_fidelity"],
+            r["patch"],
+        )
+    )
+    return rows
 
 
 def modeled(calibration: iqm_sim.Calibration) -> iqm_sim.Calibration:
     """The calibration with the unheralded readout copied into any missing herald-conditioned field, so that the noise
-    model builds for the whole register; the patch holds every circuit, and check_patch keeps its qubits usable."""
+    model builds for the whole register. A qubit whose set holds no unheralded readout stays without a readout error
+    (the noise model skips it); check_patch keeps the patch qubits usable."""
     clone = copy.copy(calibration)
     clone.values = dict(calibration.values)
     for q in calibration.qubits:
-        for kind in ("error_0_to_1", "error_1_to_0"):
-            field = iqm_sim.READOUT_FIELD.format(q=q, kind=kind)
-            clone.values.setdefault(field + iqm_sim.HERALD_SUFFIX, calibration.values[field])
+        fields = [iqm_sim.READOUT_FIELD.format(q=q, kind=kind) for kind in ("error_0_to_1", "error_1_to_0")]
+        if all(field in calibration.values for field in fields):
+            for field in fields:
+                clone.values.setdefault(field + iqm_sim.HERALD_SUFFIX, calibration.values[field])
     return clone
 
 
@@ -215,19 +298,19 @@ def amplitudes(circuit: QuantumCircuit) -> list[tuple[str, tuple[int, ...], floa
     ]
 
 
-def embed(circuit: QuantumCircuit, calibration: iqm_sim.Calibration) -> QuantumCircuit:
-    """The patch circuit on the calibration's register (local qubit n on PATCH[n])."""
+def embed(circuit: QuantumCircuit, calibration: iqm_sim.Calibration, patch: tuple[str, ...]) -> QuantumCircuit:
+    """The patch circuit on the calibration's register (local qubit n on patch[n])."""
     wide = QuantumCircuit(len(calibration.qubits), circuit.num_clbits)
-    wide.compose(circuit, qubits=[calibration.qubits.index(PATCH[n]) for n in range(circuit.num_qubits)], inplace=True)
+    wide.compose(circuit, qubits=[calibration.qubits.index(patch[n]) for n in range(circuit.num_qubits)], inplace=True)
     return wide
 
 
-def to_iqm(bound: QuantumCircuit, name: str) -> dict[str, Any]:
-    """The native circuit: prx, cz and one joint measure under the key m in classical-bit order, on PATCH."""
+def to_iqm(bound: QuantumCircuit, name: str, patch: tuple[str, ...]) -> dict[str, Any]:
+    """The native circuit: prx, cz and one joint measure under the key m in classical-bit order, on the patch."""
     instructions: list[dict[str, Any]] = []
     measured: dict[int, str] = {}
     for item in bound.data:
-        op, locus = item.operation, [PATCH[bound.find_bit(q).index] for q in item.qubits]
+        op, locus = item.operation, [patch[bound.find_bit(q).index] for q in item.qubits]
         if op.name == "r":
             angle, phase = (round(float(p), 10) for p in op.params)
             instructions.append({"name": "prx", "locus": locus, "args": {"angle": angle, "phase": phase}})
@@ -256,17 +339,24 @@ def schedule_nanoseconds(circuit: dict[str, Any]) -> int:
 def exact_law(
     bound: QuantumCircuit,
     calibration: iqm_sim.Calibration,
+    patch: tuple[str, ...],
     *,
     schedule: str = "asap",
-    prx_scale: float = 0.0,
-    zz: float = 0.0,
+    errors: dict[str, Any] | None = None,
 ) -> np.ndarray:
     """The outcome law over the measured bits (index = sum of bit c times 2^c) of the circuit on the calibration's
     register: depolarizing PRX and CZ, idle T1 and T2 relaxation over the schedule (ASAP, as the idle-schedule case
     measured on Garnet), herald-conditioned readout; exact density matrix of the touched qubits, no sampling. A coherent
-    error enters after the scheduling: every PRX angle times 1 + prx_scale, and an RZZ(zz) after every CZ."""
+    error enters after the scheduling (errors): prx_scale, every PRX angle times 1 + e (a number for every qubit, or a
+    qubit name to number map); zz, an RZZ rotation after every CZ; cphase, a conditional phase after every CZ; zres, a
+    Z rotation on both qubits after every CZ."""
+    errors = errors or {}
+    prx_scale = errors.get("prx_scale", 0.0)
+    zz, cphase, zres = (float(errors.get(key, 0.0)) for key in ("zz", "cphase", "zres"))
     target, _ = target_of(calibration)
-    scheduled = transpile(embed(bound, calibration), target=target, optimization_level=0, scheduling_method=schedule)
+    scheduled = transpile(
+        embed(bound, calibration, patch), target=target, optimization_level=0, scheduling_method=schedule
+    )
     noisy = relaxed(calibration, scheduled)
     measures = sorted(
         (noisy.find_bit(i.clbits[0]).index, noisy.find_bit(i.qubits[0]).index)
@@ -278,13 +368,22 @@ def exact_law(
         op = item.operation
         if op.name == "measure":
             continue
-        if op.name == "r" and prx_scale:
-            theta, phi = (float(p) for p in op.params)
-            body.append(RGate(theta * (1 + prx_scale), phi), item.qubits)
-            continue
+        qubits = [noisy.find_bit(q).index for q in item.qubits]
+        if op.name == "r":
+            scale = prx_scale.get(calibration.qubits[qubits[0]], 0.0) if isinstance(prx_scale, dict) else prx_scale
+            if scale:
+                theta, phi = (float(p) for p in op.params)
+                body.append(RGate(theta * (1 + scale), phi), item.qubits)
+                continue
         body.append(op, item.qubits, item.clbits)
-        if op.name == "cz" and zz:
-            body.append(RZZGate(zz), item.qubits)
+        if op.name == "cz":
+            if zz:
+                body.append(RZZGate(zz), item.qubits)
+            if cphase:
+                body.append(CPhaseGate(cphase), item.qubits)
+            if zres:
+                for q in item.qubits:
+                    body.append(RZGate(zres), [q])
     body.save_probabilities_dict([q for _, q in measures])
     simulator = AerSimulator(method="density_matrix", noise_model=modeled(calibration).noise_model(heralded=True))
     raw = simulator.run(body, shots=1).result().data()["probabilities"]
@@ -310,17 +409,18 @@ def operand_named(name: str) -> Operand:
     return next(op for op in OPERANDS if op.name == name)
 
 
-def layout_trial(item: tuple[str, tuple[int, ...], int, str]) -> dict[str, Any]:
+def layout_trial(item: tuple[str, tuple[int, ...], int, str, tuple[str, ...]]) -> dict[str, Any]:
     """One layout (virtual qubit n on local qubit layout[n]) and seed of one operand: the predicted visibility
     V = D_c + D_r of the real and complex kinds."""
-    name, layout, seed, calibration_dir = item
+    name, layout, seed, calibration_dir, patch = item
     block = block_of(operand_named(name))
     calibration = iqm_sim.Calibration.from_directory(Path(calibration_dir))
     compiled = structural_compile(block, False, layout, seed)
     diffs = {}
     for kind, label in (("real", "1"), ("cplx", "i")):
         zero = {
-            plus: selector_zero(exact_law(bind(compiled, label, plus), calibration), block.d) for plus in (True, False)
+            plus: selector_zero(exact_law(bind(compiled, label, plus), calibration, patch), block.d)
+            for plus in (True, False)
         }
         diffs[kind] = zero[True] - zero[False]
     return {
@@ -331,31 +431,33 @@ def layout_trial(item: tuple[str, tuple[int, ...], int, str]) -> dict[str, Any]:
     }
 
 
-def build_operand(operand: Operand, calibration_dir: Path) -> dict[str, Any]:
+def build_operand(operand: Operand, calibration_dir: Path, patch: tuple[str, ...]) -> dict[str, Any]:
     block = block_of(operand)
     nq = block.d + 1
-    layouts = list(itertools.permutations(range(len(PATCH)), nq))
+    layouts = list(itertools.permutations(range(len(patch)), nq))
     first = ordered_map(
         layout_trial,
-        [(operand.name, layout, TRANSPILER_SEEDS[0], str(calibration_dir)) for layout in layouts],
+        [(operand.name, layout, TRANSPILER_SEEDS[0], str(calibration_dir), patch) for layout in layouts],
         min_items=1,
     )
     best = max(first, key=lambda row: row["visibility"])  # the first layout of the largest visibility
     layout = tuple(best["layout"])
     seeds = ordered_map(
-        layout_trial, [(operand.name, layout, seed, str(calibration_dir)) for seed in TRANSPILER_SEEDS[1:]], min_items=1
+        layout_trial,
+        [(operand.name, layout, seed, str(calibration_dir), patch) for seed in TRANSPILER_SEEDS[1:]],
+        min_items=1,
     )
     chosen = max([best, *seeds], key=lambda row: row["visibility"])
     compiled = structural_compile(block, False, layout, chosen["seed"])
-    templates = {"real": compiled, "cplx": compiled}
+    templates = {"real": compiled, "cplx": compiled, "sent": compiled}
     if "plain" in operand.kinds:
         templates["plain"] = structural_compile(block, True, layout, chosen["seed"])
     bound: dict[tuple[str, bool], QuantumCircuit] = {}
     circuits: dict[tuple[str, bool], dict[str, Any]] = {}
     for kind in operand.kinds:
         for plus in (True, False):
-            bound[(kind, plus)] = bind(templates[kind], "1" if kind == "real" else "i", plus)
-            circuits[(kind, plus)] = to_iqm(bound[(kind, plus)], f"{operand.name}-{kind}")
+            bound[(kind, plus)] = bind(templates[kind], "1" if kind in ("real", "sent") else "i", plus)
+            circuits[(kind, plus)] = to_iqm(bound[(kind, plus)], f"{operand.name}-{kind}", patch)
     reference = amplitudes(bound[("real", True)])
     for key in (("real", False), ("cplx", True), ("cplx", False)):
         if amplitudes(bound[key]) != reference:
@@ -369,6 +471,7 @@ def build_operand(operand: Operand, calibration_dir: Path) -> dict[str, Any]:
         "bound": bound,
         "circuits": circuits,
         "cz": {kind: cz_of(templates[kind]) for kind in operand.kinds},
+        "plain_gap": plain_gap(block) if "plain" in operand.kinds else None,
     }
 
 
@@ -389,26 +492,26 @@ def circuit_name(name: str, kind: str, orientation: str, copy: int) -> str:
 
 
 def size_job(circuits: list[dict[str, Any]]) -> dict[str, Any]:
-    """The largest shot count in steps of 500 whose billing v4 ceiling stays within CEILING_CREDITS and whose cancel
-    threshold at that ceiling covers an overrun of 2.2 times the longest expected runtime (the overrun of the sibling
-    Emerald run); the job carries CEILING_CREDITS as its ceiling."""
+    """The job at SHOTS shots: its billing v4 ceiling stays within CEILING_CREDITS, and the cancel threshold at that
+    ceiling clears an overrun of 2.2 times the expected runtime (the overrun of the sibling Emerald run) by at least
+    OVERRUN_MARGIN_MIN_SECONDS; the job carries CEILING_CREDITS as its ceiling."""
     inputs = sizing.load_inputs()
     seconds = [schedule_nanoseconds(c) * 1e-9 for c in circuits]
     mid = [0 for _ in circuits]
     price = float(inputs["price_garnet"])
     threshold = float(ceiling_seconds(CEILING_CREDITS, price) - CANCEL_MARGIN)
-    best: dict[str, Any] | None = None
-    for shots in range(500, MAX_EXECUTIONS // len(circuits) + 1, 500):
-        priced = sizing.price(inputs, seconds, mid, shots)
-        chosen = sizing.adopted(inputs, priced)
-        if chosen["max_credits"] > CEILING_CREDITS:
-            break
-        if max(OVERRUNS) * chosen["expected_runtime_seconds"] <= threshold:
-            best = {"shots": shots, "priced": priced, "adopted": chosen}
-    if best is None:
-        raise ValueError("no shot count fits the ceiling and the 2.2 times overrun")
+    if SHOTS * len(circuits) > MAX_EXECUTIONS:
+        raise ValueError(f"{SHOTS} shots on {len(circuits)} circuits exceed {MAX_EXECUTIONS} executions")
+    priced = sizing.price(inputs, seconds, mid, SHOTS)
+    chosen = sizing.adopted(inputs, priced)
+    if chosen["max_credits"] > CEILING_CREDITS:
+        raise ValueError(f"{SHOTS} shots price the ceiling at {chosen['max_credits']} credits, over {CEILING_CREDITS}")
+    runtime = chosen["expected_runtime_seconds"]
+    margin = threshold - max(OVERRUNS) * runtime
+    if margin < OVERRUN_MARGIN_MIN_SECONDS:
+        raise ValueError(f"the 2.2 times overrun clears the cancel threshold by {margin:.3f} s at {SHOTS} shots")
+    best: dict[str, Any] = {"shots": SHOTS, "priced": priced, "adopted": chosen}
     best["inputs_sha256"] = hashlib.sha256(sizing.INPUTS.read_bytes()).hexdigest()
-    runtime = best["adopted"]["expected_runtime_seconds"]
     best["ceiling"] = {
         "max_credits": CEILING_CREDITS,
         "billed_seconds": float(ceiling_seconds(CEILING_CREDITS, price)),
@@ -434,47 +537,76 @@ def counts_from_zero(zero: dict[str, dict[str, dict[str, float]]], kept: int) ->
 
 
 def audit_item(
-    item: tuple[str, tuple[str, str, bool], QuantumCircuit, dict[str, float | str], str],
+    item: tuple[str, tuple[str, str, bool], QuantumCircuit, dict[str, Any], str, tuple[str, ...]],
 ) -> tuple[str, str, bool, float]:
-    label, (name, kind, plus), bound, error, calibration_dir = item
+    label, (name, kind, plus), bound, error, calibration_dir, patch = item
     calibration = iqm_sim.Calibration.from_directory(Path(calibration_dir))
-    law = exact_law(
-        bound,
-        calibration,
-        schedule=str(error.get("schedule", "asap")),
-        prx_scale=float(error.get("prx_scale", 0.0)),
-        zz=float(error.get("zz", 0.0)),
-    )
+    law = exact_law(bound, calibration, patch, schedule=str(error.get("schedule", "asap")), errors=error)
     block = block_of(operand_named(name))
     return label, f"{name}:{kind}", plus, selector_zero(law, block.d)
 
 
 def summarize(result: dict[str, Any]) -> dict[str, Any]:
     """The verdict-level facts of one analysis of predicted counts."""
+
+    def rounded(value: float | None, digits: int) -> float | None:
+        return None if value is None else round(value, digits)
+
     return {
         "verdict": result["verdict"],
-        "null_ratio": round(result["null_ratio"], 6),
-        "n_c_subtracted": {n: round(r["n_c"], 4) for n, r in result["subtracted"].items()},
-        "n_c_uncorrected": {n: round(result["estimates"][n]["n_c"], 4) for n in decision.DISCRIMINATING},
+        "null_ratio": rounded(result["null_ratio"], 6),
+        "n_c_subtracted": {n: rounded(r["n_c"], 4) for n, r in result["subtracted"].items()},
+        "n_c_uncorrected": {n: rounded(result["estimates"][n]["n_c"], 4) for n in decision.DISCRIMINATING},
         "visibility": {n: round(e["visibility"], 4) for n, e in result["estimates"].items()},
         "mutation_reading": {n: round(m["reading"], 4) for n, m in result["mutations"].items() if m is not None},
     }
 
 
-def coherent_audit(built: dict[str, dict[str, Any]], calibration_dir: Path, kept: int) -> dict[str, Any]:
+def audit_errors(patch: tuple[str, ...]) -> list[tuple[str, str, float, dict[str, Any]]]:
+    """(label, family, magnitude, error) of every audited coherent error; the families are PRX amplitude on every
+    qubit, PRX amplitude on one qubit, ZZ rotation after each CZ, CZ conditional phase, residual Z rotation after each
+    CZ, the three combined (scaled COMBINED_BASE) and the ALAP schedule."""
+    rows: list[tuple[str, str, float, dict[str, Any]]] = [("none", "none", 0.0, {})]
+    rows += [(f"prx{e:+.2f}", "prx", abs(e), {"prx_scale": e}) for e in PRX_ERRORS]
+    rows += [(f"prx{e:+.2f}@{q}", "qubit_prx", abs(e), {"prx_scale": {q: e}}) for q in patch for e in QUBIT_PRX_ERRORS]
+    rows += [(f"zz{e:+.2f}", "zz", abs(e), {"zz": e}) for e in ZZ_ERRORS]
+    rows += [(f"cphase{e:+.2f}", "cphase", abs(e), {"cphase": e}) for e in CPHASE_ERRORS]
+    rows += [(f"zres{e:+.2f}", "zres", abs(e), {"zres": e}) for e in ZRES_ERRORS]
+    prx, cphase, zres = COMBINED_BASE
+    for s in COMBINED_SCALES:
+        rows.append((f"combined-{s:g}x", "combined", s, {"prx_scale": s * prx, "cphase": s * cphase, "zres": s * zres}))
+    rows.append(("combined+1x", "combined_opposite", 1.0, {"prx_scale": -prx, "cphase": -cphase, "zres": -zres}))
+    rows.append(("alap", "alap", 0.0, {"schedule": "alap"}))
+    return rows
+
+
+def bound_of(rows: list[tuple[float, bool]]) -> float:
+    """The largest magnitude m for which every error of magnitude at most m reads the complex strata."""
+    best = 0.0
+    for m in sorted({magnitude for magnitude, _ in rows}):
+        if all(ok for magnitude, ok in rows if magnitude <= m):
+            best = m
+        else:
+            break
+    return best
+
+
+def coherent_audit(
+    built: dict[str, dict[str, Any]], calibration_dir: Path, kept: int, patch: tuple[str, ...]
+) -> dict[str, Any]:
     """The verdict of the preregistered rule under coherent errors the depolarizing model omits, each inserted after
-    the scheduling (as scripts/iqm_probe_audit.py does): PRX amplitude errors, a ZZ rotation after every CZ, and the
-    ALAP schedule. Every kind and orientation runs through the exact density matrix at the error, and the
-    predicted counts pass through decision.analyze."""
-    errors: dict[str, dict[str, float | str]] = {"none": {}}
-    errors.update({f"prx{e:+.2f}": {"prx_scale": e} for e in PRX_ERRORS})
-    errors.update({f"zz{e:+.2f}": {"zz": e} for e in ZZ_ERRORS})
-    errors["alap"] = {"schedule": "alap"}
+    the scheduling (as scripts/iqm_probe_audit.py does). Every kind and orientation runs through the exact density
+    matrix at the error (the sentinel is the real kind again), and the predicted counts pass through
+    decision.analyze. The bound of a family is the largest magnitude below which every row reads the complex strata;
+    the combined family scales one (PRX amplitude, CZ conditional phase, residual Z rotation) triple."""
+    specs = audit_errors(patch)
+    errors = {label: error for label, _, _, error in specs}
     tasks = [
-        (label, (name, kind, plus), info["bound"][(kind, plus)], error, str(calibration_dir))
+        (label, (name, kind, plus), info["bound"][(kind, plus)], error, str(calibration_dir), patch)
         for label, error in errors.items()
         for name, info in built.items()
         for kind in info["operand"].kinds
+        if kind != "sent"
         for plus in (True, False)
     ]
     rows = ordered_map(audit_item, tasks, min_items=1)
@@ -482,21 +614,34 @@ def coherent_audit(built: dict[str, dict[str, Any]], calibration_dir: Path, kept
     for label, key, plus, value in rows:
         name, kind = key.split(":")
         zero[label].setdefault(name, {}).setdefault(kind, {})["plus" if plus else "minus"] = value
+    for label in errors:
+        zero[label]["s808"]["sent"] = dict(zero[label]["s808"]["real"])
     out = {}
     for label, error in errors.items():
         out[label] = {**error, **summarize(decision.analyze(counts_from_zero(zero[label], kept)))}
-    complex_prx = [e for e in PRX_ERRORS if out[f"prx{e:+.2f}"]["verdict"] == "complex strata"]
-    bound = max(
-        (m for m in (0.01, 0.02, 0.03, 0.04, 0.05) if all(abs(e) > m or e in complex_prx for e in PRX_ERRORS)),
-        default=0.0,
-    )
-    return {"errors": out, "prx_amplitude_complex_strata_within": bound, "kept_shots_per_orientation": kept}
+    families: dict[str, list[tuple[float, bool]]] = {}
+    for label, family, magnitude, _ in specs:
+        if family not in ("none", "alap"):
+            families.setdefault(family, []).append(
+                (magnitude, out[label]["verdict"] == "complex strata within tolerance")
+            )
+    return {
+        "errors": out,
+        "complex_strata_within": {family: bound_of(rows) for family, rows in families.items()},
+        "combined_base": {"prx_scale": COMBINED_BASE[0], "cphase": COMBINED_BASE[1], "zres": COMBINED_BASE[2]},
+        "kept_shots_per_orientation": kept,
+    }
 
 
 def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
     calibration = iqm_sim.Calibration.from_directory(calibration_dir)
-    check_patch(calibration)
-    built = {op.name: build_operand(op, calibration_dir) for op in OPERANDS}
+    linearity, linearity_sha256 = parallel_train_linearity()
+    ranking = rank_stars(calibration, linearity)
+    if not ranking:
+        raise ValueError(f"calibration set {calibration.set_id} holds no usable star of four qubits")
+    patch = tuple(ranking[0]["patch"])
+    check_patch(calibration, patch)
+    built = {op.name: build_operand(op, calibration_dir, patch) for op in OPERANDS}
     plan = order_plan()
     files: dict[str, str] = {}
     circuits_in_order: list[dict[str, Any]] = []
@@ -513,11 +658,15 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
     kept = int(PLANNING_RETENTION * shots * copies * 2)  # two + circuits (or two -) per quad, two quads
     laws = {
         name: {
-            kind: {o: exact_law(info["bound"][(kind, o == "plus")], calibration) for o in ("plus", "minus")}
+            kind: {o: exact_law(info["bound"][(kind, o == "plus")], calibration, patch) for o in ("plus", "minus")}
             for kind in info["operand"].kinds
+            if kind != "sent"
         }
         for name, info in built.items()
     }
+    for name, info in built.items():
+        if "sent" in info["operand"].kinds:
+            laws[name]["sent"] = laws[name]["real"]  # the sentinel is the real circuit again
     zero = {
         name: {
             kind: {o: selector_zero(law, built[name]["block"].d) for o, law in by.items()} for kind, by in kinds.items()
@@ -566,14 +715,32 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
                 "visibility_over_se": round(est["visibility"] / est["se_visibility"], 3),
             },
         }
-    audit = coherent_audit(built, calibration_dir, kept)
+    audit = coherent_audit(built, calibration_dir, kept, patch)
+    counts = counts_from_zero(zero, kept)
+    rule_source = Path(decision.__file__).read_bytes()
+    star_rows = {tuple(row["patch"]): rank for rank, row in enumerate(ranking, start=1)}
     prediction = {
         "calibration_set": calibration.set_id,
         "model": (
             "exact density matrix of the touched qubits of each compiled circuit: depolarizing PRX and CZ, ASAP idle "
             "T1/T2, herald-conditioned readout; no coherent error, leakage or crosstalk"
         ),
-        "patch": list(PATCH),
+        "patch": list(patch),
+        "star": {
+            "rule": (
+                "rank every star of four usable qubits (a center and three neighbors on calibrated couplers) by "
+                "fewest qubits with a non-linear retained parallel PRX train, then fewest qubits the train did not "
+                "measure, then the largest product of the three CZ fidelities, then the largest PRX RB fidelity of "
+                "the weakest qubit, then the names; the first row is the patch"
+            ),
+            "linearity_source": "results/iqm/idle_schedule_probe_analysis.json",
+            "linearity_sha256": linearity_sha256,
+            "stars": len(ranking),
+            "chosen_rank": 1,
+            "prior_star": list(PRIOR_STAR),
+            "prior_star_rank": star_rows.get(PRIOR_STAR),
+            "ranking": ranking,
+        },
         "order": [circuit_name(*p) for p in plan],
         "shots": shots,
         "copies_per_orientation": copies * 2,
@@ -586,12 +753,23 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
         "operands": operands,
         "decision": {
             "discriminating": decision.DISCRIMINATING,
+            "ideal_complex": decision.IDEAL_COMPLEX,
             "null_operand": decision.NULL_OPERAND,
             "mutation_operands": list(decision.MUTATION_OPERANDS),
             "midpoint": decision.MIDPOINT,
+            "rule": {
+                "n_tolerance": decision.N_TOLERANCE,
+                "v_s016_min": decision.V_S016_MIN,
+                "r_null_max": decision.R_NULL_MAX,
+                "drift_z_max": decision.DRIFT_Z_MAX,
+                "z_resolve": decision.Z_RESOLVE,
+                "source_sha256": hashlib.sha256(rule_source).hexdigest(),
+            },
             "null_ratio_predicted": round(analysis["null_ratio"], 9),
+            "drift_z_predicted": analysis["drift_z"],
+            "verdict_predicted": analysis["verdict"],
             "z_predicted": [round(v, 3) for v in z],
-            "power_complex_truth": round(decision.power(z), 6),
+            "power_complex_truth": round(decision.simulated_power(counts), 3),
         },
         "coherent_audit": audit,
         "cost": {

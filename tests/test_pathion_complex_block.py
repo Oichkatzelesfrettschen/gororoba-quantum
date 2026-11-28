@@ -64,7 +64,10 @@ def test_gate_form_folded_law_and_six_qubit_map_agree(
                     worst,
                     float(np.abs(gates - folded).max()),
                     max(
-                        abs(folded[y + size * s] - six[labels[y] + 32 * s] * 32 / size)
+                        max(
+                            abs(folded[y + size * s] - six[labels[y] + 32 * s] * 32 / size),
+                            abs(gates[y + size * s] - six[labels[y] + 32 * s] * 32 / size),
+                        )
                         for y in range(size)
                         for s in (0, 1)
                     ),
