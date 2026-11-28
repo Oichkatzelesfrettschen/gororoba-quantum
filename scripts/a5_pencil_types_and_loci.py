@@ -443,10 +443,10 @@ def type_of(row: dict[str, Any]) -> str:
 
 def build_normal_form() -> dict[str, Any]:
     rows = parallel.ordered_map(normal_form_item, [(name, -1) for name in ALPHAS], 1)
-    reference = rows[0]
+    reference_omega, reference_perp = rows[0]["omega_part"], rows[0]["perp_part"]
     for row in rows:
-        row["omega_part_same_as_alpha_2"] = same_span(row.pop("omega_part"), reference["omega_part"])
-        row["perp_part_same_as_alpha_2"] = same_span(row.pop("perp_part"), reference["perp_part"])
+        row["omega_part_same_as_alpha_2"] = same_span(row.pop("omega_part"), reference_omega)
+        row["perp_part_same_as_alpha_2"] = same_span(row.pop("perp_part"), reference_perp)
     return {row["alpha"]: row for row in rows}
 
 
