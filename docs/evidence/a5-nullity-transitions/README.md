@@ -260,4 +260,4 @@ quaternions from the other algebras of dimension 4.
 Measured on the compute workstation (32 threads): the record takes 102 s of wall time and 992 CPU seconds at
 260 MiB, the self-test 12 s, the sign census 326 s of wall time and 3,470 CPU seconds. The certificates take 359 s of wall
 time and 968 CPU seconds at a peak of 3.3 GiB resident; the level-8 item takes most of the wall time, and the
-self-test takes 3 s.
+self-test takes 11 s.

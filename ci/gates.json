@@ -4931,7 +4931,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/a5_pencil_certificates.py --self-test && \"$PYTHON\" -B -W error -O scripts/a5_pencil_certificates.py --self-test",
       "name": "core-a5-pencil-certificates-self-test",
-      "seconds": 6.0
+      "seconds": 25.0
     },
     {
       "suite": "core",

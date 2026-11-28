@@ -34,9 +34,25 @@ chose that route after an audit of the plan's usage.
 | The census rebuilds all 26,096 matrices in each of 64 workers and enumerates serially | Codex | boundary: the census takes a small share of the 359 s record, dominated by the A_8 item; a shared-memory layout is left for a change that needs it |
 | `strata_item` returns a partial row on its mutant path, and the schema is untyped | Codex | partly fixed: the partial row is reachable only with the mutant flag, which `require` now enforces; a TypedDict schema is left open |
 | The PR body said hosted checks were not run and called the type-C check a mutant | Codex | confirmed; the body is updated |
-| Three-type rule: on the family of Theorem 14.6 of Biss, Dugger and Isaksen, an operator J_k commutes with all compressions at dim A = 2 and 4 | Neon (computed at six points) | recorded as a lead in the program note (T2); not in the record |
-| Elements of A generate the commutant | opencode (tested) | refuted by its computation: their compressions vanish on the kernel; recorded in the program note |
+| A5-667 words a universal rule ("for a real point y = (p, q) of W8") from finite samples | Codex | boundary: the row's status is `survives`, which the ledger uses for a tested hypothesis that no check has refuted, and its falsifier names the counterexample; README statement 13 scopes the evidence to the points of the record. The rule stays open (MATH-225) |
+| Both Pfaffian routes share the frame-normalization formula and FLINT's kernel frame | Codex | boundary: the formula is the transformation law Pf(T^T A T) = det(T) Pf(A) for K = K_2 T with K_2^T K_2 = 2 I (derived in the Neon report), so c_2^2 = c^2 2^k / det(K^T K) holds for any frame; a wrong frame would change both routes by the same factor, so the routes check the multiplication and the polynomial evaluation independently and the frame jointly |
+| Three-type rule: in the normal form a = (t, kt), b = (alpha t, (alpha k) t) of the proof of Theorem 14.6 of Biss, Dugger and Isaksen (pages 23 to 25, read for this record), an operator J_k (+L_k on H x H, -L_k on its complement) commutes with all 31 compressions at dim A = 2 and 4 | Neon (computed at six points) | reviewer-reported, not reproduced; recorded as a lead in the program note (T2) with its falsifier |
+| Elements of A generate the commutant | opencode (tested) | reviewer-reported refutation, not reproduced: their compressions vanish on the kernel; recorded in the program note |
+| Conjectures without a check here: a symbolic proof of the J_k statement over alpha, the converse for dim A = 0, the full N+- Pfaffian with e_16, a 30-unit determinant identity as a polynomial | Neon, opencode | recorded, untested; the last is now proved by the 30-unit reduction of `strata_item` |
 
 Neon and opencode both ran computations on the compute workstation in a scratch directory, and codex ran none,
 because the workstation checkout sat one commit behind the head. No reviewer changed a checkout. The codex browser
 left two snapshot files in the workspace root, and they were moved to the trash.
+
+## Advisor
+
+The Advisor reviewed last, on the findings above and the fix commit `73868afb6`. It confirmed every bound direction,
+the trace condition and the 30-unit reduction, and named these gaps, each resolved in the commit after it:
+
+| Finding | Resolution |
+|---|---|
+| The table lacked rows for two Codex findings (the universal wording of A5-667, the shared normalization) and for the reviewers' conjectures | rows added above |
+| The self-test time (3 s) and the gate estimate (6 s) predate the new checks | measured 11 s a run; README and gate updated |
+| Theorem 14.6 was cited from a report, and the J_k and Clifford results are reviewer computations | the theorem's pages were opened; both results are labeled reviewer-reported, not reproduced |
+| The record's digests at the pushed head were unconfirmed | the four `sources` digests of `certificates.json` equal `git show 73868afb6:PATH \| sha256sum` |
+| The workstation checkout was one commit behind the head the briefs named, so Codex ran no computation | recorded here; a later round syncs that checkout before launch |
