@@ -290,7 +290,7 @@
   },
   "question": "do the seed-20 entries of belenos_mesh/job-16's circuit route as they did before the outage (a property of the off-cone mechanisms case moved them) or as the 2026-11-28 runs did (the chip or the server moved them)",
   "entries": "ten entries alternating compilation seeds 20 and 46667 from seed 20; every entry is one single-source computation of belenos_mesh/job-16's circuit.json with no input_mode override and the server's default mitigations",
-  "void": "a seed-20 entry is void when its served mesh sha256 does not start with 29dc6ef8; a seed-46667 entry is void when it does not start with 14a96ca6; the first entry (index 0) is read and reported, and decides nothing, since the first two entries of job-16 failed at in_block_cone 0.45",
+  "void": "a seed-20 entry is void when its served mesh sha256 does not start with 29dc6ef8; a seed-46667 entry is void when it does not start with 14a96ca6. A void entry at any index, the first included, is read and reported. A seed-20 entry that follows a void seed-46667 entry is excluded from the post-load count, since a load of another mesh invalidates the read that follows it; the first entry (index 0) decides nothing, since the first two entries of job-16 failed at in_block_cone 0.45",
   "observables": "per seed-20 entry on indices 2, 4, 6, 8: in_block_cone and tvd_cone_from_ideal (scripts/qd_belenos_cone.py run_cells); per entry: the modes 0, 1 and 5 with at least 32 one-click samples off the cone, and the mode-6 clicks",
   "envelope": {
    "in_block_cone_min": 0.450353,
@@ -300,9 +300,12 @@
   "readings": {
    "chip_or_server_changed": "at most 1 of the 4 post-load seed-20 entries inside the job-16 envelope (in_block_cone at or above 0.450353 and tvd_cone_from_ideal at or below 0.819035); no entry of the ten with a mode among 0, 1 and 5 at 32 or more clicks (0 of 90 in belenos_offcone_mechanisms); mode 6 reading about 7 clicks per seed-20 entry (mean 7.07 over the 15 source-20 10000-sample entries there, range 0 to 13)",
    "case_property": "at least 3 of the 4 post-load seed-20 entries at in_block_cone 0.98 or more (11 of 11 post-load entries in job-16); at least 8 of the 10 entries with a mode among 0, 1 and 5 at 32 or more clicks (23 of 24 in job-16); mode 6 at 0 clicks on every seed-20 entry (13 of 13 in job-16)",
-   "neither": "any other pattern, or a void post-load entry: the routing of 29dc6ef8 is intermittent and the replay attributes nothing"
+   "compiler_changed": "a served mesh prefix other than 29dc6ef8 on a seed-20 entry or other than 14a96ca6 on a seed-46667 entry, on any of the ten entries; the server compiled a different mesh, so the routing comparison has no fixed mesh to read",
+   "neither": "any other pattern: the served meshes are intact and the routing matches neither reading, so the routing of 29dc6ef8 is intermittent or unexplained and the replay attributes nothing"
   },
+  "precedence": "compiler_changed, chip_or_server_changed, case_property, neither; the first reading whose conditions hold is the reading, and compiler_changed is decided first",
   "falsifiers": {
+   "compiler_changed": "every one of the ten entries serves its seed's retained mesh prefix",
    "chip_or_server_changed": "3 or more post-load seed-20 entries at in_block_cone 0.98 or more",
    "case_property": "at most 1 post-load seed-20 entry at in_block_cone 0.98 or more, or every entry free of a mode among 0, 1 and 5 at 32 or more clicks"
   }

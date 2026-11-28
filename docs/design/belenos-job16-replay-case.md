@@ -17,7 +17,7 @@ routing. A noise simulation cannot answer it, since the question concerns the de
 The job sends job-16's `circuit.json` unchanged (sha256 `69326bf0674a45e8c0005b10e2ac72cee36c122691ec0a5b542dbabb6e1fffb9`),
 single source mode 20, no per-iteration input_mode and the server's default mitigations: ten entries of 10,000 samples,
 alternating compilation seeds 20 (mesh 29dc6ef8, entries 0, 2, 4, 6, 8) and 46667 (mesh 14a96ca6, entries 1, 3, 5, 7, 9).
-`cases.json` has sha256 `c47f262aa4ed3dab11cb2b226ab42ccc5e73d1cce0e89c1955501881a40538de`.
+`cases.json` has sha256 `e280f39f59c45579caa174d76667a39b888a0c8554a17222392062a3b331e725`.
 
 ## Seeds
 
@@ -42,8 +42,7 @@ a seed-46667 load (entries 2, 4, 6, 8), the position of job-16's 11 healthy entr
 | mode-6 clicks per seed-20 entry | about 7 (mean 7.07, range 0 to 13, over the 15 10,000-sample entries) | 0 (job-16: 13 of 13) |
 
 Falsifiers: three or more post-load seed-20 entries at in_block_cone 0.98 or more falsify "chip or server changed"; at most
-one such entry, or no entry with a mode among 0, 1, 5 at 32 or more clicks, falsifies "case property". Any other pattern, or a
-void post-load entry, attributes nothing. The figures come from the retained runs by `run_cells` (job-16) and
+one such entry, or no entry with a mode among 0, 1, 5 at 32 or more clicks, falsifies "case property". A served mesh prefix other than the seed's retained one on any entry reads "compiler changed", decided first, since the routing comparison then has no fixed mesh; a seed-20 entry after a void seed-46667 entry is excluded from the post-load count. Any other pattern attributes nothing. The figures come from the retained runs by `run_cells` (job-16) and
 `docs/evidence/quandela/belenos_offcone_mechanisms_analysis.json` (the new runs), recomputed for this case. The red-team
 figure of 0, 1, 5 packets at 23 of 24 in job-16 holds for the entries of both seeds (13 of 13 at seed 20, 10 of 11 at seed
 46667); the post-load seed-46667 entries are a second control that a chip-wide change would also move.
@@ -64,9 +63,7 @@ figure of 0, 1, 5 packets at 23 of 24 in job-16 holds for the entries of both se
 `"$PYTHON" scripts/belenos_job16_replay.py --offline-plan` runs `qd_platform.plan` with every provider read replaced by the
 retained catalogue of 2026-10-20 (explorer row, processor record, availability) and a stand-in token, with both
 statuses set to "available" because the retained records read "calibration". It gives `expected_seconds` 81.16,
-`estimated_shots` 100,000 (cap 200,000), `credit_ceiling` 1.02, `body_sha256`
-`881d9fb22c853ff655cde7d0d83893d4389c586ceb69cd1d81b326f12a2c3d57` and a plan sha256 (sorted keys) of
-`d1d7e70f965de1960c394f97945dde5d4c8227a750d7dd17a52f608d9de4c045`.
+`estimated_shots` 100,000 (cap 200,000), `credit_ceiling` 1.02, `body_sha256_without_process_id` `b42f917126c39858e7ffaccc4be381e5e7ae58117c5c3ea90aa78bcdb86b63f5`. The raw `body_sha256` includes the per-process `process_id` (a uuid4 that Perceval draws at module load), so it differs between two invocations; the stripped digest is the one that agrees across processes (`tests/scripts/test_belenos_job16_replay.py`).
 That plan rehearses the arithmetic and the payload only. The live plan (`qd_platform.py plan` with `QUANDELA_TOKEN_FILE`,
 `--max-credits 1.02 --expected-seconds 81.16 --per-job-credits 1`) was not run: it reads the job token, which this
 session leaves alone, and the binding `approved_run.sh` check follows owner approval.
@@ -75,7 +72,7 @@ session leaves alone, and the binding `approved_run.sh` check follows owner appr
 
 - The live plan refuses unless qpu:belenos reads "available" on both records; the retained catalogue reads "calibration".
   The case admits no other status.
-- A live plan whose digest differs from the offline plan's `body_sha256` signals a changed payload format or command set
+- A live plan whose `body_sha256` with `process_id` removed differs from the offline plan's `body_sha256_without_process_id` signals a changed payload format or command set
   (`payload_version_basis` names the frozen record that supplies `specs.commands`).
 - The live architecture comparison refuses a live `specs.architecture` that differs from the catalogue's; a carried
   architecture (`architecture_source` "carried") leaves the live couplers unread, and `compiled_couplers_checked` at

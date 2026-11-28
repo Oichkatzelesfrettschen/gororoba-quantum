@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import subprocess
+import sys
 from pathlib import Path
 
 import belenos_job16_replay as replay
@@ -65,3 +68,37 @@ def test_the_offline_plan_prices_the_case_without_a_provider_read() -> None:
     planned = replay.offline_plan()
     if (planned["estimated_shots"], planned["credit_ceiling"], planned["expected_seconds"]) != (100000, 1.02, 81.16):
         raise AssertionError(planned)
+
+
+def test_the_offline_plan_digest_without_process_id_agrees_across_processes() -> None:
+    pytest.importorskip("perceval")
+    script = ROOT / "scripts/belenos_job16_replay.py"
+    plans = [
+        json.loads(
+            subprocess.run(
+                [sys.executable, str(script), "--offline-plan"],
+                check=True,
+                capture_output=True,
+                text=True,
+                env=dict(os.environ),
+                cwd=ROOT,
+            ).stdout
+        )
+        for _ in range(2)
+    ]
+    stripped = [plan["body_sha256_without_process_id"] for plan in plans]
+    if stripped[0] != stripped[1]:
+        raise AssertionError(stripped)
+    if plans[0]["body_sha256"] == plans[1]["body_sha256"]:
+        raise AssertionError("the raw body digest no longer varies with process_id; the stripped digest is unneeded")
+
+
+def test_the_readings_order_compiler_changed_ahead_of_neither_and_the_exclusion_is_stated() -> None:
+    readings = replay.preregistered()["readings"]
+    if list(readings) != ["chip_or_server_changed", "case_property", "compiler_changed", "neither"]:
+        raise AssertionError(list(readings))
+    if "29dc6ef8" not in readings["compiler_changed"] or "14a96ca6" not in readings["compiler_changed"]:
+        raise AssertionError(readings["compiler_changed"])
+    void = replay.preregistered()["void"]
+    if "excluded from the post-load count" not in void or "void seed-46667" not in void:
+        raise AssertionError(void)

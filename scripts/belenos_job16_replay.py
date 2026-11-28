@@ -81,8 +81,10 @@ def preregistered() -> dict[str, Any]:
         "single-source computation of belenos_mesh/job-16's circuit.json with no input_mode override and the "
         "server's default mitigations",
         "void": "a seed-20 entry is void when its served mesh sha256 does not start with " + offcone.MESH_PREFIX + "; "
-        "a seed-46667 entry is void when it does not start with 14a96ca6; the first entry (index 0) is read and "
-        "reported, and decides nothing, since the first two entries of job-16 failed at in_block_cone 0.45",
+        "a seed-46667 entry is void when it does not start with 14a96ca6. A void entry at any index, the first "
+        "included, is read and reported. A seed-20 entry that follows a void seed-46667 entry is excluded from the "
+        "post-load count, since a load of another mesh invalidates the read that follows it; the first entry "
+        "(index 0) decides nothing, since the first two entries of job-16 failed at in_block_cone 0.45",
         "observables": "per seed-20 entry on indices " + ", ".join(str(i) for i in POST_LOAD_ENTRIES) + ": "
         "in_block_cone and tvd_cone_from_ideal (scripts/qd_belenos_cone.py run_cells); per entry: the modes 0, 1 "
         "and 5 with at least 32 one-click samples off the cone, and the mode-6 clicks",
@@ -98,10 +100,16 @@ def preregistered() -> dict[str, Any]:
             + " or more (11 of 11 post-load entries in job-16); at least 8 of the 10 entries with a mode among 0, 1 "
             "and 5 at 32 or more clicks (23 of 24 in job-16); mode 6 at 0 clicks on every seed-20 entry (13 of 13 in "
             "job-16)",
-            "neither": "any other pattern, or a void post-load entry: the routing of 29dc6ef8 is intermittent "
-            "and the replay attributes nothing",
+            "compiler_changed": "a served mesh prefix other than 29dc6ef8 on a seed-20 entry or other than 14a96ca6 "
+            "on a seed-46667 entry, on any of the ten entries; the server compiled a different mesh, so the routing "
+            "comparison has no fixed mesh to read",
+            "neither": "any other pattern: the served meshes are intact and the routing matches neither reading, so "
+            "the routing of 29dc6ef8 is intermittent or unexplained and the replay attributes nothing",
         },
+        "precedence": "compiler_changed, chip_or_server_changed, case_property, neither; the first reading whose "
+        "conditions hold is the reading, and compiler_changed is decided first",
         "falsifiers": {
+            "compiler_changed": "every one of the ten entries serves its seed's retained mesh prefix",
             "chip_or_server_changed": "3 or more post-load seed-20 entries at in_block_cone 0.98 or more",
             "case_property": "at most 1 post-load seed-20 entry at in_block_cone 0.98 or more, or every entry "
             "free of a mode among 0, 1 and 5 at 32 or more clicks",
@@ -179,6 +187,12 @@ def offline_plan() -> dict[str, Any]:
         "retained catalogue " + str(catalogue.get("retrieved_utc")) + " with the explorer and processor status set to "
         "available (the retained records read calibration)"
     )
+    # body_sha256 hashes the body with process_id, a uuid4 that Perceval draws per process, so it differs between
+    # two processes. This digest drops process_id and compares across processes; submit() pins the reviewed value.
+    stripped = {key: value for key, value in planned["body"].items() if key != "process_id"}
+    planned["body_sha256_without_process_id"] = hashlib.sha256(
+        json.dumps(stripped, sort_keys=True).encode()
+    ).hexdigest()
     return planned
 
 
