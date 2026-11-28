@@ -26,14 +26,15 @@ prx phases) is not checked here and is the next step before any use.
 ## Offline readout mitigation: `scripts/iqm_rem_offline.py`
 
 The tool inverts the selector qubit's readout channel with the heralded error rates of the run's calibration metrics
-(QB8: e(0 to 1) 0.0002, e(1 to 0) 0.0115) and reruns the preregistered tally and decision on the corrected zero
-counts. `iqm-error-reduction` and mthree are not installed, so the inversion is written out. N_c per operand,
+(QB8: e(0 to 1) 0.0002, e(1 to 0) 0.0115) and propagates the observed arm differences and variances through the inversion (`propagate_rem`). `iqm-error-reduction` and mthree are not installed, so the inversion is written out. N_c per operand,
 raw against corrected: s016 15.9391, s124 4.8344, s412 12.1205, s808 8.1297, with deltas below 2e-15. The estimator
 is a ratio of arm differences, and a readout channel is affine in the zero fraction, so inversion scales every
 difference by one common factor, 1 / (1 - e01 - e10), that cancels in the ratio. N_c is invariant to this readout
-mitigation by construction. The standard errors in the corrected analysis shrink slightly, which is an artifact of
-applying the binomial formula to inverted counts (the true variance grows by the same factor); the corrected
-standard errors carry no weight. The preregistered analysis keeps its verdict.
+mitigation by construction. The corrected differences, visibilities and their standard errors scale by that factor
+(the variance by its square), so N_c, its standard error and the visibility-resolution test equal the raw values. A
+binomial variance recomputed on inverted counts reads another spread from the same shots: on counts (597, 1000, 500,
+1000) in both arms it moved an unresolved N_c to 8.0, and the tool avoids it. Only a rule that compares an absolute
+visibility to a fixed floor (the s016 floor of 0.5) reads the scaled value. The preregistered analysis keeps its verdict.
 
 ## Transport bytes: `scripts/iqm_transport_capture.py`
 
@@ -55,4 +56,6 @@ their defaults (`dd_mode`, `dd_strategy`, `max_circuit_duration_over_t2`, `move_
 compactly in model order. The circuits agree as data. Moving submission to iqm-client therefore keeps the digest
 binding only if the receipt keeps hashing the canonical body and a second field records the transport hash of the
 bytes actually posted; the defaults it adds (strict move validation, DD disabled) are explicit, but they are
-server-visible request fields the approval did not name. Decision for the owner: whether the receipt adds the transport hash.
+server-visible request fields the approval did not name. Answered: the receipt adds the transport hash. `scripts/iqm_jobs.py` retains the posted bytes as
+`submitted-body.json` and records their digest as `wire_sha256` in the checkpoint and the receipt, beside the
+unchanged canonical `body_sha256`.

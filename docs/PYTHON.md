@@ -383,8 +383,10 @@ has shown the two agree.
 
 ## Native SDK tools
 
-Each tool below compares a native vendor feature with the repository's own submission path, offline: it sends no
-job and changes no default of the submitters, and its note names the interpreter it runs on.
+Each tool below compares a native vendor feature with the repository's own submission path: it sends no job and
+changes no default of the submitters, and its note names the interpreter it runs on. Every mode runs offline except
+`--backend live:NAME` of the dynamical-decoupling and resilience tools, which reads a free live calibration of the
+saved account.
 
 - IBM (qiskit, qiskit-ibm-runtime): dynamical decoupling, fractional gates, EstimatorV2 resilience and stretch
   support, in [ibm_quantum/native-sdk-opt-ins.md](notes/ibm_quantum/native-sdk-opt-ins.md).
