@@ -260,6 +260,12 @@ decision; missing schedule evidence withholds the inference. See the
    unchanged experimental contrasts, and noise performance. Automatic Sampler
    DD remains outside the dynamic execution path; explicit scheduled echoes
    require their own implementation and evidence.
+   Qiskit 2.6.2 does provide the construct the guide builds on:
+   `QuantumCircuit.add_stretch`, a `Delay` whose duration is a `Stretch` or
+   an `expr` Duration expression (`expr.mul`, `expr.add`, `Duration.dt`),
+   and a transpile of a stretch delay against the Heron Target that keeps the
+   delay symbolic; `tests/test_qiskit_stretch_support.py` checks each. The
+   open work is the echo design and its evidence, never client support.
 4. **Keep mitigation selective.** The broad [Sampler manual][sampler] allows
    some twirling outside conditional blocks. The retained Runtime 0.50
    samplomatic probe nevertheless rejects `if_else`, so that installed path
