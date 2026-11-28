@@ -435,6 +435,9 @@ per-iteration time of each job shape) lives in
 [quandela-credit-optimization.md](../../runbooks/quandela-credit-optimization.md).
 Every run updates them in the change that retains the run.
 
+[belenos-capabilities.md](belenos-capabilities.md) lists what a Belenos job can be programmed to do, with each
+capability's limit, cost, mitigation behavior (Perceval 1.3.1 source), runner checks and retained run.
+
 ## Dark-subspace certificate
 
 [bdsc.md](bdsc.md) specifies the certificate of a four-dimensional

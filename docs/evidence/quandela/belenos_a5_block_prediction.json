@@ -1,0 +1,233 @@
+{
+ "e1+e10": {
+  "block_nullities": [
+   0,
+   0,
+   2,
+   2,
+   0,
+   0,
+   2,
+   2
+  ],
+  "first_blocks": [
+   {
+    "basis_input_0_in_block": 0.5,
+    "block_indices": [
+     0,
+     1,
+     10,
+     11
+    ],
+    "modes_halmos": 8,
+    "nullity": 0,
+    "prepared_right_singular_inputs": [
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     },
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     },
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     },
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     }
+    ]
+   },
+   {
+    "basis_input_0_in_block": 0.5,
+    "block_indices": [
+     2,
+     3,
+     8,
+     9
+    ],
+    "modes_halmos": 8,
+    "nullity": 0,
+    "prepared_right_singular_inputs": [
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     },
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     },
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     },
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     }
+    ]
+   }
+  ],
+  "global_nullity": 8,
+  "support": [
+   1,
+   10
+  ]
+ },
+ "e1+e17": {
+  "block_nullities": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "first_blocks": [
+   {
+    "basis_input_0_in_block": 0.5,
+    "block_indices": [
+     0,
+     1,
+     16,
+     17
+    ],
+    "modes_halmos": 8,
+    "nullity": 0,
+    "prepared_right_singular_inputs": [
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     },
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     },
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     },
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     }
+    ]
+   },
+   {
+    "basis_input_0_in_block": 0.5,
+    "block_indices": [
+     2,
+     3,
+     18,
+     19
+    ],
+    "modes_halmos": 8,
+    "nullity": 0,
+    "prepared_right_singular_inputs": [
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     },
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     },
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     },
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     }
+    ]
+   }
+  ],
+  "global_nullity": 0,
+  "support": [
+   1,
+   17
+  ]
+ },
+ "e1+e26": {
+  "block_nullities": [
+   0,
+   2,
+   0,
+   0,
+   2,
+   0,
+   0,
+   0
+  ],
+  "first_blocks": [
+   {
+    "basis_input_0_in_block": 0.5,
+    "block_indices": [
+     0,
+     1,
+     26,
+     27
+    ],
+    "modes_halmos": 8,
+    "nullity": 0,
+    "prepared_right_singular_inputs": [
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     },
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     },
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     },
+     {
+      "in_block": 0.5,
+      "sigma": 1.414213562
+     }
+    ]
+   },
+   {
+    "basis_input_0_in_block": 0.5,
+    "block_indices": [
+     2,
+     3,
+     24,
+     25
+    ],
+    "modes_halmos": 8,
+    "nullity": 2,
+    "prepared_right_singular_inputs": [
+     {
+      "in_block": 1.0,
+      "sigma": 2.0
+     },
+     {
+      "in_block": 1.0,
+      "sigma": 2.0
+     },
+     {
+      "in_block": 0.0,
+      "sigma": 0.0
+     },
+     {
+      "in_block": 0.0,
+      "sigma": 0.0
+     }
+    ]
+   }
+  ],
+  "global_nullity": 4,
+  "support": [
+   1,
+   26
+  ]
+ }
+}
