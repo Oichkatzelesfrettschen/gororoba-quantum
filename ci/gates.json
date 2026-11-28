@@ -7010,6 +7010,16 @@
       "replays": [
         "results/quantum_inspire/pathion_null_rotation_scan_tuna_17_phase_refit.json"
       ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/belenos_offcone_mechanisms_analyze.py --check docs/evidence/quandela/belenos_offcone_mechanisms_analysis.json results/quandela/cases/belenos_offcone_mechanisms/job-00 results/quandela/cases/belenos_offcone_mechanisms/job-01 results/quandela/cases/belenos_offcone_mechanisms/job-02",
+      "name": "core-belenos-offcone-mechanisms-analysis-replay",
+      "seconds": 5.0,
+      "replays": [
+        "docs/evidence/quandela/belenos_offcone_mechanisms_analysis.json"
+      ]
     }
   ],
   "excluded": [
