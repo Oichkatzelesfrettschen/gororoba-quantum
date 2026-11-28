@@ -1,13 +1,13 @@
 """Belenos job-16 byte replay: one iterated qpu:belenos job that separates a chip change after the 2026-11-27 outage
 from a property of the off-cone mechanisms case.
 
-belenos_offcone_mechanisms job-00 to job-02 (2026-11-28) read mesh 29dc6ef8 with routing far outside the
-envelope of belenos_mesh/job-16 (2026-10-18), whose circuit and compilation seed 20 they reuse
+belenos_offcone_mechanisms job-00 to job-02 (2026-11-28) read mesh 29dc6ef8 with routing far outside the envelope of
+belenos_mesh/job-16 (2026-10-18), whose circuit and compilation seed 20 they reuse
 (docs/design/belenos-offcone-mechanisms-case.md, Findings). The two differ by the outage and by the case's own
-choices (a per-iteration input_mode, 715,000 samples per job, sources 20 and 22). This job removes the case's choices: it replays job-16's circuit.json byte for byte, with its
-single source mode 20, no per-iteration input_mode and the default mitigations, at 10000 samples per entry and the two
-compilation seeds of job-16 (20, the identifier of mesh 29dc6ef8, and 46667, the identifier of mesh 14a96ca6),
-alternating.
+choices (a per-iteration input_mode, 715,000 samples per job, sources 20 and 22). This job removes the case's
+choices: it replays job-16's circuit.json byte for byte, with its single source mode 20, no per-iteration input_mode
+and the default mitigations, at 10000 samples per entry and the two compilation seeds of job-16 (20, the identifier
+of mesh 29dc6ef8, and 46667, the identifier of mesh 14a96ca6), alternating.
 
 Usage: "$PYTHON" scripts/belenos_job16_replay.py (--build | --check)
   --build  write results/quandela/cases/belenos_job16_replay/job-00
