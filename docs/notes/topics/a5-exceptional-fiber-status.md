@@ -144,6 +144,9 @@ The second record, [a5-null-slice-associator-envelope](../../evidence/a5-null-sl
 | A5-642 | the octonion-space covariance algebra is G_2 with no boost for every n >= 6: derivations extend (inside), four anchor cosets with n-independent signs intersect in G_2 (outside) ([covariance blocks](../../evidence/a5-null-slice-covariance/README.md)) | proved |
 | A5-648 | cd_sign is the transposed Albuquerque-Majid cochain at every n, so A_n is a quasialgebra over the dual quasi-Hopf algebra (k Z_2^n, dF) and its signed basis set a quasigroup ([connections](../../design/a5-null-slice-connections-program.md)) | proved |
 | A5-649 | (D - 2)(D - 4)(D + 6)/2 ordered basis triples have nonzero associator for every D >= 4: Theorem 1 of [cd_associator_defect_census.md](cd_associator_defect_census.md), with a second derivation through the doubling recursion of the associativity cocycle ([census](../../evidence/a5-left-table-census/README.md)) | proved |
+| A5-661 | over F_p, p odd, the nonzero nilpotents of A_n are the nonzero pure imaginary vectors of norm 0 and a nontrivial idempotent has Re = 1/2 and N = 0, for every n; the counts p^(2^n - 2) and p^(2^n - 2) + p^(2^(n-1) - 1) hold at seven pairs up to A_4 over F_3 ([counts](../../evidence/a5-nilpotent-idempotent-counts/README.md)) | proved |
+| A5-662 | the two count formulas for every odd p and every n >= 2 (a diagonal quadric point count not opened here) | survives |
+| A5-663 | dim Der(J_3(O)) = 52 under the cd_core octonions; the stabilizers of J_3(R) and J_3(C_e2) are the entrywise G_2 and su(3) of A5-619 ([stabilizers](../../evidence/a5-albert-derivation-stabilizers/README.md)) | proved |
 
 What the slice changes for the program:
 
