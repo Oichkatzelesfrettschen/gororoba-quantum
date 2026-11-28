@@ -468,7 +468,11 @@ def post_job(
                 {"state": "posting", "qc": qc, "job": job, "body_sha256": sha256(encoded), "wire_sha256": sha256(wire)}
             )
         )
-    status, reply = client.post_bytes(f"{API}/jobs/{qc}/circuit", wire)
+    try:
+        status, reply = client.post_bytes(f"{API}/jobs/{qc}/circuit", wire)
+    except iqm_platform.NonJsonReply as error:
+        # The status survives a body that is not JSON, so a plain-text refusal is settled like a JSON one.
+        status, reply = error.status, error.text
     if 400 <= status < 500:
         # A 4xx refusal created no job, so the copy goes and the corrected case can be submitted again.
         shutil.rmtree(run_dir)

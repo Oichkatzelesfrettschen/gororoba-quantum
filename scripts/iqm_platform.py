@@ -115,6 +115,15 @@ Transport = Callable[[str, str, bytes | None, dict[str, str]], tuple[int, dict[s
 PlatformError = RecordError
 
 
+class NonJsonReply(PlatformError):
+    """A reply whose body is not JSON, with the HTTP status kept for a caller that acts on it."""
+
+    def __init__(self, path: str, status: int, text: str) -> None:
+        super().__init__(f"POST {path} answered {status} with a non-JSON body")
+        self.status = status
+        self.text = text[:200]
+
+
 def now() -> str:
     return dt.datetime.now(dt.UTC).isoformat(timespec="seconds").replace("+00:00", "Z")
 
@@ -208,7 +217,7 @@ class Client:
         try:
             return status, json.loads(body)
         except ValueError as error:
-            raise PlatformError(f"POST {path} answered {status} with a non-JSON body") from error
+            raise NonJsonReply(path, status, body.decode("utf-8", "replace")) from error
 
     def graphql(self, query: str, variables: dict[str, Any] | None = None) -> dict[str, Any]:
         status, reply = self.post("api/graphql", {"query": query, "variables": variables or {}})
