@@ -3269,7 +3269,7 @@ def choice_structure(choice: Choice) -> dict[str, Any]:
     the approved record's group before it copies that group's predictions.
     """
     target = choice.snap.backend.target
-    structure: dict[str, Any] = {
+    return {
         "group": choice.group.name,
         "backend": choice.snap.name,
         "seed_transpiler": choice.seed,
@@ -3282,9 +3282,6 @@ def choice_structure(choice: Choice) -> dict[str, Any]:
             for entry in choice.entries
         ],
     }
-    if (tile := TILE_TEMPLATES.get(choice.group.name)) is not None:
-        structure["tile_template"] = _tile_template_fields(choice, tile)
-    return structure
 
 
 def _tile_template_fields(choice: Choice, tile: tuple[tuple[int, int], ...]) -> dict[str, Any]:
@@ -3372,7 +3369,7 @@ def _choice_record(
         }
         for entry in choice.entries
     ]
-    return {
+    record = {
         "group": choice.group.name,
         "backend": choice.snap.name,
         **choice.snap.identity,
@@ -3391,6 +3388,9 @@ def _choice_record(
         **choice_calibration_values(choice),
         "members": members,
     }
+    if (tile := TILE_TEMPLATES.get(choice.group.name)) is not None:
+        record["tile_template"] = _tile_template_fields(choice, tile)
+    return record
 
 
 def choice_calibration_values(choice: Choice) -> dict[str, Any]:

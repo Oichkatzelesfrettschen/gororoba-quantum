@@ -7,9 +7,11 @@ every placed region (docs/design/pathion-kernel-map-orientation-merged.md, "Pin 
 
 from __future__ import annotations
 
+from types import SimpleNamespace
+
 import rustworkx as rx
 from qiskit import QuantumCircuit
-from qiskit.transpiler import CouplingMap
+from qiskit.transpiler import CouplingMap, Target
 
 import live_run
 
@@ -89,3 +91,26 @@ def test_source_manifest_binds_the_merged_module() -> None:
         "pathion_kernel_map_orientation_merged.py" in live_run.EXPERIMENT_SOURCE_MANIFEST,
         "the source manifest omits the merged module",
     )
+
+
+def test_record_fields_state_the_template_and_flag_a_region_off_the_couplers() -> None:
+    coupling = CouplingMap.from_heavy_hex(5, bidirectional=False)
+    target = Target.from_configuration(basis_gates=["cz", "rz", "sx"], coupling_map=coupling)
+    graph = _graph(coupling)
+    layout = _require(live_run.tile_template_layout(graph, TEMPLATE, frozenset()), "no embedding")
+    broken = list(layout)
+    broken[4] = next(q for q in range(coupling.size()) if q not in layout and not graph.has_edge(q, layout[1]))
+    replicas = [
+        SimpleNamespace(index=0, mapping={q: q for q in layout}),
+        SimpleNamespace(index=1, mapping=dict(zip(layout, broken, strict=True))),
+    ]
+    choice = SimpleNamespace(
+        snap=SimpleNamespace(backend=SimpleNamespace(target=target)), layout=layout, replicas=replicas
+    )
+    fields = live_run._tile_template_fields(choice, TEMPLATE)  # type: ignore[arg-type]
+    _expect(fields["edges"] == [list(edge) for edge in TEMPLATE], f"the template is not recorded: {fields}")
+    _expect(
+        [a["template_on_couplers"] for a in fields["assignments"]] == [True, False],
+        f"the per-region coupler flags are wrong: {fields['assignments']}",
+    )
+    _expect(fields["assignments"][1]["initial_layout"] == broken, "the region's assignment is not recorded")
