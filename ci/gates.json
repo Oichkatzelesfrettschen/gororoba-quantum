@@ -5008,6 +5008,23 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_e8bar_sections.py --check docs/evidence/a5-e8bar-sections/result.json",
+      "name": "core-a5-e8bar-sections",
+      "seconds": 30.0,
+      "replays": [
+        "docs/evidence/a5-e8bar-sections/result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_e8bar_sections.py --self-test && \"$PYTHON\" -B -W error -O scripts/a5_e8bar_sections.py --self-test",
+      "name": "core-a5-e8bar-sections-self-test",
+      "seconds": 30.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/a5_klein_torus.py --check docs/evidence/a5-klein-torus/result.json",
       "name": "core-a5-klein-torus",
       "seconds": 30.0,
