@@ -199,11 +199,12 @@ a W8 point ([review](../../archive/reviews/a5-outside-transition-report/README.m
 | A5-667 | on W8 the pencil has type R, C or H (closures so(8), su(4), sp(2)) as ker L_p n ker L_q has dimension 0, 2, 4; 2,448 census points and 53 others; dimensions 1 and 3 excluded by A5-671 | survives |
 | A5-668 | twenty lines of zero first-order compression and two curved arcs limit on the 2-sphere | proved |
 | A5-670 | tower at e_1 + e_10 continued: sp(8) and sp(16) in A_7 and A_8, pencil dimensions 31 and 63, by closure bounds that meet | proved |
-| A5-676 | the full Pfaffians at VB (degree 6) and N+- (degree 8), with the coordinate on e_16, are irreducible | proved |
-| A5-677 | 3,598 W8 points of the sedenion zero-divisor census, each of the type its dim A names | proved |
+| A5-676 | the full Pfaffians at VB (degree 6) and N+- (degree 8), with the coordinate on e_16, are irreducible | certified |
+| A5-677 | 3,598 W8 points of the sedenion zero-divisor census (all dim A = 2, 4 pairs and a dim-0 sample), each of the type its dim A names | certified |
 | A5-678 | in the normal form of Biss-Dugger-Isaksen Theorem 14.6 the kernel splits and J_k commutes with the pencil at seven alpha | survives |
-| A5-679 | the VB real rank-4 locus is a 4-plane of rank exactly 4; the second-order form decides which of its lines reach nullity 8 | proved |
-| A5-680 | at e_1 + e_10 the second- and third-order Schur terms lie in the pencil, so arcs of effective order at most 3 limit on the sphere | proved |
+| A5-679 | the VB real rank-4 locus is a 4-plane of rank exactly 4 | proved |
+| A5-680 | at e_1 + e_10 the second- and third-order Schur terms lie in the pencil, so arcs of effective order at most 3 limit on the sphere | certified |
+| A5-681 | on 284 unit-sum directions of the VB plane the second-order form vanishes exactly on the nullity-8 lines | certified |
 | A5-671 | L_(e_8) anticommutes with every other imaginary unit of A_4 (known: Biss, Dugger and Isaksen, Lemmas 9.5, 9.6, 9.9), so sedenion zero divisors are doubly pure and ker L_p n ker L_q is complex, of dimension 0, 2 or 4 | proved |
 
 ## Next computations

@@ -35,6 +35,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+import sympy as sp
 from flint import fmpq_mat, fmpz_mat, fmpz_mpoly_ctx
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -67,6 +68,18 @@ ALPHAS: dict[str, tuple[int, ...]] = {
     "i+k": (0, 1, 0, 1, 0, 0, 0, 0),
     "1+i+j+k": (1, 1, 1, 1, 0, 0, 0, 0),
     "3+2j": (3, 0, 2, 0, 0, 0, 0, 0),
+}
+CENSUS_TALLY = {
+    "dim 0, Iso, nullity 8": 54,
+    "dim 0, S0, nullity 0": 2236,
+    "dim 0, S4_VQ, nullity 4": 538,
+    "dim 0, W8, commutant [1, 1], closure [28, 28], bounds": 144,
+    "dim 0, W8, commutant [1, 1], closure [28, 28], sympy": 33,
+    "dim 2, B9, nullity 12": 986,
+    "dim 2, W8, commutant [2, 2], closure [15, 15], bounds": 3282,
+    "dim 4, Nm, nullity 16": 139,
+    "dim 4, Np, nullity 16": 139,
+    "dim 4, W8, commutant [4, 4], closure [10, 10], bounds": 139,
 }
 VB_PLANE = (9, 10, 13, 14)
 VB_OFF_PLANE = (3, 4, 11, 12, 16)
@@ -145,7 +158,9 @@ def type_item(job: tuple[int, tuple[int, ...], tuple[int, ...]]) -> dict[str, An
         commutant = (s["commutant_lower"], s["commutant_upper"])
         closure = (s["closure_lower"], s["closure_upper"])
         route = "bounds"
-    except ValueError:
+    except ValueError as error:
+        if "int64 bound" not in str(error):
+            raise
         import a5_nullity_transitions
 
         old = a5_nullity_transitions.structure_item((32, base))
@@ -245,6 +260,24 @@ def same_span(first: list[list[int]], second: list[list[int]]) -> bool:
     )
 
 
+SUB_PFAFFIAN_CHUNKS = 16
+
+
+def sub_pfaffian_chunk(job: tuple[int, list[int], int]) -> list[dict[tuple[int, ...], int]]:
+    """The nonzero sub-Pfaffians of order job[0] of the VB pencil in the coordinates job[1], for the index subsets whose
+    position in combination order is job[2] modulo SUB_PFAFFIAN_CHUNKS."""
+    order, coordinates, chunk = job
+    size, _gram, forms, _units = certificates.pencil_frame("VB")
+    out = []
+    for n, subset in enumerate(combinations(range(size), order)):
+        if n % SUB_PFAFFIAN_CHUNKS == chunk:
+            index = list(subset)
+            terms = certificates.pfaffian_terms(order, {w: forms[w][index][:, index] for w in coordinates}, coordinates)
+            if terms:
+                out.append(terms)
+    return out
+
+
 def vb_singular(_: int) -> dict[str, Any]:
     """The 6x6 sub-Pfaffians of the VB pencil (rank at most 4) and powers of m, x3^2 + x4^2 and x11^2 + x12^2 in their
     ideal, by one Singular standard basis over Q in dp."""
@@ -258,14 +291,11 @@ def vb_singular(_: int) -> dict[str, Any]:
             parts.append(f"({c})" + (f"*{monomial}" if monomial else ""))
         return "+".join(parts)
 
-    pfaffians = []
-    plane_vanish = True
     plane_index = [units.index(u) for u in VB_PLANE]
-    for subset in combinations(range(size), 6):
-        terms = certificates.pfaffian_terms(6, {w: forms[w][list(subset)][:, list(subset)] for w in units}, units)
-        if terms:
-            pfaffians.append(text(terms))
-            plane_vanish = plane_vanish and all(any(e for i, e in enumerate(m) if i not in plane_index) for m in terms)
+    chunks = parallel.ordered_map(sub_pfaffian_chunk, [(6, units, c) for c in range(SUB_PFAFFIAN_CHUNKS)], 1)
+    all_terms = [terms for chunk in chunks for terms in chunk]
+    pfaffians = [text(terms) for terms in all_terms]
+    plane_vanish = all(any(e for i, e in enumerate(m) if i not in plane_index) for terms in all_terms for m in terms)
     script = "\n".join(
         [
             f"ring R = 0, ({','.join(names)}), dp;",
@@ -302,13 +332,8 @@ def vb_singular(_: int) -> dict[str, Any]:
 def vb_plane_rank(_: int) -> dict[str, Any]:
     """The 4x4 sub-Pfaffians of the pencil restricted to the plane coordinates; two of them are -4 (x9^2 + x14^2) and
     4 (x10^2 + x13^2), so the rank is at least 4 off the origin."""
-    size, _gram, forms, _units = certificates.pencil_frame("VB")
-    found = set()
-    for subset in combinations(range(size), 4):
-        terms = certificates.pfaffian_terms(
-            4, {w: forms[w][list(subset)][:, list(subset)] for w in VB_PLANE}, list(VB_PLANE)
-        )
-        found.add(tuple(sorted(terms.items())))
+    chunks = parallel.ordered_map(sub_pfaffian_chunk, [(4, list(VB_PLANE), c) for c in range(SUB_PFAFFIAN_CHUNKS)], 1)
+    found = {tuple(sorted(terms.items())) for chunk in chunks for terms in chunk}
     sums = {
         "x9^2+x14^2": ((((0, 0, 0, 2), -4), ((2, 0, 0, 0), -4))),
         "x10^2+x13^2": ((((0, 0, 2, 0), 4), ((0, 2, 0, 0), 4))),
@@ -424,12 +449,28 @@ def w8_schur_item(job: tuple[str, int]) -> dict[str, int]:
 
 
 def w8_schur() -> dict[str, Any]:
-    out: dict[str, Any] = {}
-    for kind in ("quadratic", "mixed", "cubic"):
-        rows = parallel.ordered_map(w8_schur_item, [(kind, b) for b in range(8)], 1)
-        out[kind] = {"terms": sum(r["terms"] for r in rows), "outside": sum(r["outside"] for r in rows)}
-        out["zero_space"], out["pencil_rank"] = rows[0]["zero_space"], rows[0]["pencil_rank"]
+    kinds = ("quadratic", "mixed", "cubic")
+    rows = parallel.ordered_map(w8_schur_item, [(kind, b) for kind in kinds for b in range(8)], 1)
+    out: dict[str, Any] = {"zero_space": rows[0]["zero_space"], "pencil_rank": rows[0]["pencil_rank"]}
+    for n, kind in enumerate(kinds):
+        part = rows[8 * n : 8 * n + 8]
+        out[kind] = {"terms": sum(r["terms"] for r in part), "outside": sum(r["outside"] for r in part)}
     return out
+
+
+def vb_compression_rank(direction: tuple[tuple[int, int], ...]) -> int:
+    size, _gram, forms, _units = certificates.pencil_frame("VB")
+    compression = sum((v * forms[u] for u, v in direction), np.zeros((size, size), np.int64))
+    return int(fmpz_mat(to_int(compression)).rank())
+
+
+def vb_leading_forms(_: int) -> dict[str, str]:
+    """lead Q and lead G of the strata record on the lines through VB along the eight doubly pure pencil units."""
+    _size, _gram, _forms, units = certificates.pencil_frame("VB")
+    pure = [w for w in units if w % 16]
+    xs = sp.symbols([f"x{w}" for w in pure], real=True)
+    lead_q, lead_g, order_q, order_g = certificates.leading_forms("VB", pure, sp.Symbol("s", real=True), xs)
+    return {"lead_q": str(sp.expand(lead_q)), "lead_g": str(sp.expand(lead_g)), "orders": f"{order_q} {order_g}"}
 
 
 def type_of(row: dict[str, Any]) -> str:
@@ -487,6 +528,7 @@ def validate(result: dict[str, Any]) -> None:
         full["VB"]["terms"] == 50 and full["VB"]["degree"] == 6 and full["VB"]["factor_degrees"] == [[6, 1]],
         "VB: the full Pfaffian is an irreducible sextic with 50 terms",
     )
+    require(16 in full["VB"]["units"], "VB: the coordinate on e_16 is among the units")
     for name in ("N-", "N+"):
         row = full[name]
         require(len(row["units"]) == 19 and 16 in row["units"], f"{name}: 19 units, e_16 among them")
@@ -496,8 +538,12 @@ def validate(result: dict[str, Any]) -> None:
         )
     census = result["type_census"]
     require(census["pairs_by_dim"]["2"] == 4268 and census["pairs_by_dim"]["4"] == 417, "every dim-2 and dim-4 pair")
-    require(census["pairs_by_dim"]["0"] > 2000, "a dim-0 sample of more than 2,000 pairs")
-    require(census["dim0_distinct_p"] > 1000 and census["dim0_distinct_q"] > 1000, "the dim-0 sample spreads")
+    require(census["pairs_by_dim"]["0"] == 3005, "a dim-0 sample of 3,005 pairs")
+    require(census["dim0_distinct_p"] == census["dim0_distinct_q"] == 3005, "3,005 distinct p and q in the sample")
+    require(
+        census["tally"] == CENSUS_TALLY,
+        "census: 177 R (33 through the rational route), 3,282 C, 139 H, and the named orbits off W8",
+    )
     w8 = [key for key in census["tally"] if ", W8," in key]
     require(
         all(census_type_matches(int(key.split(",")[0].split()[1]), key) for key in w8), "every W8 type follows dim A"
@@ -507,6 +553,7 @@ def validate(result: dict[str, Any]) -> None:
         if ", W8," not in key:
             require(not key.endswith("nullity 8") or key.startswith("dim 0"), "nullity 8 with dim A > 0 lies in W8")
     normal = result["normal_form"]
+    require(set(normal) == set(ALPHAS), "the seven values of alpha")
     for name, row in normal.items():
         require(row["kernel"] == 8 and row["kernel_splits"], f"alpha {name}: kernel 8, split into the two parts")
         require(
@@ -522,7 +569,27 @@ def validate(result: dict[str, Any]) -> None:
         singular["sub_pfaffians"] == 768 and singular["all_vanish_on_plane"],
         "VB: 768 sub-Pfaffians vanish on the plane",
     )
-    require(all(v > 0 for v in singular["power_in_ideal"].values()), "VB: m, x3^2 + x4^2, x11^2 + x12^2 in the radical")
+    require(
+        singular["power_in_ideal"] == {"m": 3, "x3^2+x4^2": 2, "x11^2+x12^2": 2} and singular["ideal_dimension"] == 4,
+        "VB: m^3, (x3^2 + x4^2)^2 and (x11^2 + x12^2)^2 lie in the ideal, of dimension 4",
+    )
+    leading = result["vb_leading_forms"]
+    x3, x4, x11, x12 = sp.symbols("x3 x4 x11 x12", real=True)
+    require(
+        sp.expand(sp.sympify(leading["lead_q"], locals={"x3": x3, "x4": x4}) - 2 * (x3 + sp.I * x4)) == 0
+        and sp.expand(
+            sp.sympify(leading["lead_g"], locals={"x3": x3, "x4": x4, "x11": x11, "x12": x12})
+            - 4 * ((x3 + sp.I * x4) ** 2 + (x11 + sp.I * x12) ** 2)
+        )
+        == 0,
+        "VB: lead Q = 2 (x3 + i x4) and lead G = 4 ((x3 + i x4)^2 + (x11 + i x12)^2)",
+    )
+    named = result["vb_named_lines"]
+    require(
+        named["e10"][1:] == [4, [0, 0]] and named["e1+e10"][1:] == [0, [8, 8]],
+        "VB: e10 and e1 + e10 share a compression; only e1 + e10 has zero second-order form and nullity 8",
+    )
+    require(result["vb_e1_compression_rank"] == 0, "VB: the unit e1 has zero compression")
     require(all(result["vb_plane_rank"]["sums_of_squares_present"].values()), "VB: rank at least 4 off the origin")
     lines = result["vb_lines"]
     require(lines["plane_rank4_directions"] == 284, "VB: 284 unit-sum directions of rank 4 in the plane")
@@ -561,6 +628,12 @@ def build_result() -> dict[str, Any]:
         "vb_plane_rank": vb_plane_rank(0),
         "vb_lines": vb_lines(),
         "w8_schur": w8_schur(),
+        "vb_named_lines": {
+            "e10": vb_line_item(((10, 1),)),
+            "e1+e10": vb_line_item(((1, 1), (10, 1))),
+        },
+        "vb_leading_forms": vb_leading_forms(0),
+        "vb_e1_compression_rank": vb_compression_rank(((1, 1),)),
         "predictions": PREDICTIONS,
     }
     result["prediction_held"] = outcomes(result)
@@ -589,9 +662,9 @@ def self_test() -> list[str]:
     )
     on_plane = vb_line_item(((1, 1), (10, 1)))
     control(
-        "e1 + e10 has rank-4 compression in the plane and zero second-order form; e3 + e9 is off the plane",
+        "e1 + e10: rank-4 compression in the plane, zero second-order form; e3 + e9: off the plane, rank above 4",
         on_plane is not None and on_plane[1] == 0 and on_plane[2] == [8, 8],
-        vb_line_item(((3, 1), (9, 1))) is None,
+        vb_line_item(((3, 1), (9, 1))) is None and vb_compression_rank(((3, 1), (9, 1))) > 4,
     )
     restricted = certificates.strata_item(("VB", False))["pfaffian_factor_degrees"]
     control(
@@ -604,7 +677,7 @@ def self_test() -> list[str]:
     control(
         "e1 + e10 reads type H and e1 + e10 + e3 + e20 type R",
         h_point["orbit"] == "W8" and type_of(h_point) == "H",
-        r_point["orbit"] == "W8" and type_of(r_point) != "H",
+        r_point["orbit"] == "W8" and type_of(r_point) == "R",
     )
     return passed
 

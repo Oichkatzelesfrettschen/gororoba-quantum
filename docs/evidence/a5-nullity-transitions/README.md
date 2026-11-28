@@ -205,13 +205,13 @@ Each statement has a `require` in the script's `validate`; the name of the recor
 20. **Types on the census** (`type_census`). Each census pair (p, q) of statement 18 gives the point
     y = (p, q) of A_5. The census takes every pair with dim A = 2 (4,268) or 4 (417), and the 3,005 pairs with
     dim A = 0 and 131 i + j divisible by 1,171 (3,005 distinct p and q). Every point that lies in W8 has the type
-    its dim A names, with matched bounds: 177 points of type R (commutant 1, closure 28), 3,282 of type C
+    its dim A names, with matched two-sided bounds except where the rational route below gives exact dimensions: 177 points of type R (commutant 1, closure 28), 3,282 of type C
     (commutant 2, closure 15) and 139 of type H (commutant 4, closure 10). The other points lie in Iso (nullity 8,
     dim A = 0), S0, S4_VQ, B9 (nullity 12, dim A = 2) and N+- (nullity 16, dim A = 4). Where the integer frame
     exceeds the int64 bound of statement 16 (33 points of type R), the rational route of `a5_nullity_transitions`
-    gives the type.
+    gives the type from exact dimensions; the fallback catches that bound alone and re-raises every other error.
 21. **Normal form of the type rule** (`normal_form`). The proof of Theorem 14.6 of Biss, Dugger and Isaksen
-    (arXiv math/0511691, pages 23 to 25) brings a pair a, b of A_4 with Ann a n Ann b nonzero, up to an
+    (arXiv math/0511691, pages 23 to 26) brings a pair a, b of A_4 with Ann a n Ann b nonzero, up to an
     automorphism of the octonions and scaling, to a = (t, kt) and b = (alpha t, (alpha k) t), with H = <1, i, j, k>,
     t orthogonal to H and alpha in H. At t = e_4, k = e_3 and seven values of alpha, the kernel of y = (a, b) has
     dimension 8. It splits into a part in Omega x Omega, Omega = H x H, that is the same for every alpha, and a part in
@@ -227,7 +227,8 @@ Each statement has a `require` in the script's `validate`; the name of the recor
     origin. The first-order form does not decide the line. Among the 31 units and their signed pair sums, 284
     directions have rank-4 compression in the plane. For each, the second-order form
     N^T K^T L_w L_0^+ L_w K N on the kernel N of the compression decides the line. It vanishes on the 100 directions
-    whose line VB + s w has nullity 8 at s = 2 and 3, such as e_1 + e_10 (the direction of gamma_2). It has rank 4 on
+    whose line VB + s w has nullity 8 at s = 2 and 3, such as e_1 + e_10 (the direction of gamma_2). Here L_0^+ is the
+    Moore-Penrose inverse, computed as (L_0^T L_0 + K (K^T K)^-1 K^T)^-1 L_0^T. It has rank 4 on
     the other 184, whose lines have nullity 0 (88) or 4 (96). The directions e_10 and e_1 + e_10 have the same
     compression; the unit e_1, of zero compression, enters only at second order.
 23. **Arcs into e_1 + e_10 to third order** (`w8_schur`). The compression map w -> K^T L_w K has a kernel Z of
@@ -283,7 +284,7 @@ integer points. Its first run drew the coordinates modulo 11, so its 60 evaluati
 the review found. The record now draws them modulo 1009, and they are 60 distinct points; the ratio held at both. The fourth round, in
 `types-and-loci.json`, was written to a scratch file before its runs
 ([fourth-round-predictions.md](fourth-round-predictions.md), kept verbatim): P27 (the full Pfaffians are irreducible),
-P28 (types on the census, P25 on these points), P29 (J_k), P30 (the VB real rank-4 locus), P31 (the second-order form
+P28 (types on the census: P25, not run in `certificates.json`, run here on these points), P29 (J_k), P30 (the VB real rank-4 locus), P31 (the second-order form
 decides the VB lines), P32 and P33 (second- and third-order terms in the pencil) held. P31 was written after the
 nullities of six of its eight first directions had been read; the record then scanned 284 directions. P28 was first
 run on dim-0 pairs that shared few first halves; the record samples them across the census. A first calibration run used
@@ -293,7 +294,8 @@ run.
 
 ## Reviews
 
-The certificate change has its own [review record](../../archive/reviews/a5-pencil-certificates/README.md). Two
+The certificate change has its own [review record](../../archive/reviews/a5-pencil-certificates/README.md), and so
+does the [types-and-loci change](../../archive/reviews/a5-pencil-types-loci/README.md). Two
 red-team reports ([review record](../../archive/reviews/a5-outside-transition-report/README.md), "Red team") supplied the
 tangent-cone derivation of statement 6, the involution formula of statement 8 and the test that separates the
 quaternions from the other algebras of dimension 4.

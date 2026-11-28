@@ -194,7 +194,7 @@
   "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
   "scripts/a5_nullity_transitions.py": "1e073fea876d399a59784f804d175df6ae0d20da096a038769f8a039d0dbb49d",
   "scripts/a5_pencil_certificates.py": "19009f3208103167115fac1127e27703d4b5427bcd87aa24d7223b2e398c1a80",
-  "scripts/a5_pencil_types_and_loci.py": "199301b7e586547a74ff22ca1a613d19bb7ed103547c2749bc48ce30a9928348",
+  "scripts/a5_pencil_types_and_loci.py": "3b2109ac951e462d39fa5564bfe15c146317d4f2717a3c4b774e18b4055f2f65",
   "scripts/a5_zero_divisor_strata.py": "09fd6941e7945638d37e53d24f6d4cd7e49c45b724e313394091b2bee9f1b0d4"
  },
  "type_census": {
@@ -218,6 +218,12 @@
    "dim 4, W8, commutant [4, 4], closure [10, 10], bounds": 139
   }
  },
+ "vb_e1_compression_rank": 0,
+ "vb_leading_forms": {
+  "lead_g": "4*x11**2 + 8*I*x11*x12 - 4*x12**2 + 4*x3**2 + 8*I*x3*x4 - 4*x4**2",
+  "lead_q": "2*x3 + 2*I*x4",
+  "orders": "1 2"
+ },
  "vb_lines": {
   "plane_rank4_directions": 284,
   "tally": {
@@ -226,8 +232,40 @@
    "second-order rank 4, nullity [4, 4]": 96
   }
  },
+ "vb_named_lines": {
+  "e1+e10": [
+   [
+    [
+     1,
+     1
+    ],
+    [
+     10,
+     1
+    ]
+   ],
+   0,
+   [
+    8,
+    8
+   ]
+  ],
+  "e10": [
+   [
+    [
+     10,
+     1
+    ]
+   ],
+   4,
+   [
+    0,
+    0
+   ]
+  ]
+ },
  "vb_plane_rank": {
-  "distinct_sub_pfaffians": 6,
+  "distinct_sub_pfaffians": 5,
   "sums_of_squares_present": {
    "x10^2+x13^2": true,
    "x9^2+x14^2": true
