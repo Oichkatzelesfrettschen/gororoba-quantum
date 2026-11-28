@@ -285,3 +285,7 @@ The [sign-transport review](x-sign-transport/README.md) (pull request 1028) reco
 The [Hopf-cochain review](a5-connections-hopf-cochain/review.md) (pull request 1031) records Neon's red team of the Albuquerque-Majid cochain and the triple-count derivation, the Advisor's findings on the unopened citations and the census note's earlier Theorem 1, and the fixes.
 
 The [nilpotent and Albert anchor records review](a5-nilpotent-albert-records/record.md) (pull request 1033) records the agy Neon low red team on the nilpotent and idempotent counts of A_n over F_p and the stabilizers of Der(J_3(O)), and two open conjectures.
+
+The [outside transition report review](a5-outside-transition-report/README.md) (pull request 1032) records what survives of an outside report on arXiv 2611.34924 and the A_5 nullity transitions, the agy Neon and opencode red team, the Advisor's findings and the hosted Codex round.
+
+The [tower and kernel-split review](a5-nullity-tower-split/README.md) (pull request 1037) records the codex and Nemotron reviews and the agy Neon red team of the tower, the three pencil types on W8 and the VB Pfaffian, the reversal of one ledger verdict, the Advisor's findings and the hosted Codex round.

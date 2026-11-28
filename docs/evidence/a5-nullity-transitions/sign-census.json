@@ -1,0 +1,22 @@
+{
+ "points": 29232,
+ "sources": {
+  "docs/evidence/a5-exceptional-fibers/hardware-orbits/hardware_orbits.py": "5318f176dd44619b1970c70c6b3d0696a8381d433132fee26a33373106aab4bf",
+  "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+  "gororoba_quantum/kernel_limits.py": "46591b43f37086bce51d6d600c0b0ae6e1d5055c0e0c475a5185d0c2d351e6a7",
+  "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
+  "scripts/a5_nullity_transitions.py": "1e073fea876d399a59784f804d175df6ae0d20da096a038769f8a039d0dbb49d"
+ },
+ "tally": {
+  "nullity 0": 15976,
+  "nullity 12": 1016,
+  "nullity 16": 24,
+  "nullity 4": 8568,
+  "nullity 8, Ehat": 144,
+  "nullity 8, Iso": 864,
+  "nullity 8, W8, type 0,0,False,7,1,28": 1920,
+  "nullity 8, W8, type 4,4,True,7,4,10": 528,
+  "nullity 8, Xm": 96,
+  "nullity 8, Xp": 96
+ }
+}

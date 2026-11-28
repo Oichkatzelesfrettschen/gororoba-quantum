@@ -37,6 +37,20 @@ def test_three_form_alternates() -> None:
     expect(record.three_form_item(16), {"dimension": 16, "ordered_unit_pairs": 210, "alternation_failures": 0})
 
 
+def test_sedenion_point_has_quaternion_commutant() -> None:
+    row = record.structure_item((16, ((1, 1), (10, 1))))
+    expect(
+        (row["kernel"], row["pencil_dimension"], row["commutant_dimension"], row["lie_closure_dimension"]), (4, 3, 4, 3)
+    )
+    expect(record.tower_ok(row, 4, 3, 3), True)
+
+
+def test_xor_order_and_integer_nullity() -> None:
+    expect(record.xor_order([1, 12, 13, 30]), 8)
+    expect(record.integer_nullity({1: 1, 10: 1}), 8)
+    expect(record.integer_nullity({1: 1, 10: 1, 9: 1, 27: 1}), 0)
+
+
 def test_validate_rejects_a_convention_mismatch() -> None:
     with pytest.raises(ValueError, match="doubling formula"):
         record.validate({"convention": [{"mismatches": 1}]})

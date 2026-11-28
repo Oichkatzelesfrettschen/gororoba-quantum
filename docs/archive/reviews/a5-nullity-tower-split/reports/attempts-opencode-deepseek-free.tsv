@@ -1,0 +1,2 @@
+model	exit	verdict	reason
+opencode/deepseek-v4.1-flash-free	1	fail	provider.free-limit: Free usage limit reached. Connect a provider or subscribe to OpenCode Go to keep going, or switch models.
