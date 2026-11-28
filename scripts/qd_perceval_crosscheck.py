@@ -3,21 +3,27 @@
 Four checks, each an equality or a recorded divergence:
 
 1. unitary: the numeric mesh of qd_belenos_mesh (decode, run_architecture, mesh_phases, unitary) against
-   Circuit.compute_unitary() of the served computed_circuit, per retained entry, with the component counts of the
-   chip (couplers, phase shifters, Mach-Zehnder cells);
-2. optimizer: perceval.utils.algorithms.CircuitOptimizer started from the served phases (first_guess, one trial,
-   so no random start runs) over the served architecture with symbolic phases, and Perceval's matrix fidelity of
+   Circuit.compute_unitary() of the Perceval Circuit that qd_native_circuit builds from the same decoded couplers
+   and numeric phases, per retained entry, with the component counts of the chip (couplers, phase shifters,
+   Mach-Zehnder cells). The comparison tests our coupler and phase algebra against Perceval's; the decoder is
+   checked against exqalibur by qd_belenos_mesh --self-test. A served string reaches no Perceval deserializer,
+   which sympy-evaluates symbolic parameter expressions;
+2. optimizer: perceval.utils.algorithms.CircuitOptimizer started from qd_belenos_mesh.mesh_phases (first_guess,
+   one trial, so no random start runs) over the served architecture with symbolic phases, the fidelity of the
+   template at that start against the target (a permuted mesh_phases fails it), and Perceval's matrix fidelity of
    our unitary against its own;
 3. decomposition: Circuit.decomposition (triangle, BS(theta, phi_tr), PS) of the served 24-mode unitary beside the
-   same call on a deterministic dense control, the 24-mode Fourier matrix, each with the circuit's component count
-   and largest entry error, and the allow_error retry; the call returns None when it finds no decomposition;
+   same call on a dense control, the 24-mode Fourier matrix, each with the circuit's component count and largest
+   entry error, and the allow_error retry; the call returns None when it finds no decomposition;
 4. cz: the success probability of Catalog "postprocessed cz" with NoiseModel(indistinguishability=M) for each
    rail input against 1/9 (inputs 00, 01, 11) and (5 - 4M)/9 (input 10), the law of
    ascella_cz_tomography_reference_case.rail_rate_ratio, and the success probability of Catalog "heralded cz".
 
-CircuitOptimizer.optimize without first_guess, Matrix.random_unitary and Perceval's own random starts draw from an
-unseeded generator, so this module never calls them; a random start needs a value of a retained QRNG draw
-(AGENTS.md, Seeds) passed through the optimizer's seed argument.
+Circuit.decomposition draws its random starting point from Python's random generator on every call
+(perceval/utils/algorithms/decomposition.py, decompose_triangle), so every decomposition call runs after
+perceval.random_seed(DECOMPOSITION_SEED), a value of a retained QRNG draw (AGENTS.md, Seeds); the same seed
+reproduces the record on one Perceval and exqalibur version. CircuitOptimizer.optimize without first_guess and
+Matrix.random_unitary draw from an unseeded generator, so this module never calls them.
 
 Usage: "$PYTHON" scripts/qd_perceval_crosscheck.py (--write OUT RUN... | --check OUT RUN... | --self-test)
 """
@@ -34,7 +40,10 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
 
+import ascella_cz_tomography_case as tomo  # noqa: E402
+import ascella_cz_tomography_reference_case as cz_reference  # noqa: E402
 import qd_belenos_mesh as mesh_lib  # noqa: E402
+import qd_native_circuit as native  # noqa: E402
 
 import parallel  # noqa: E402
 
@@ -42,6 +51,8 @@ SCHEMA = "qd-perceval-crosscheck-v1"
 OVERLAPS = (1.0, 0.8, 0.5, 0.0)
 RAIL_INPUTS = {"00": [1, 0, 1, 0], "01": [1, 0, 0, 1], "10": [0, 1, 1, 0], "11": [0, 1, 0, 1]}
 DIGITS = 9
+# Value 0 of docs/evidence/anu_qrng/draw-2026-11-28T081947Z.json: the seed of every Circuit.decomposition call.
+DECOMPOSITION_SEED = 9923
 
 
 class CrosscheckError(ValueError):
@@ -73,12 +84,31 @@ def cz_success(item: str, rail_input: str, overlap: float) -> float:
     return float(processor.probs()["global_perf"])
 
 
+def rates_of(success: dict[str, float]) -> Any:
+    """The eligible-rate vector of the reference case whose per-input totals are the given success probabilities."""
+    import numpy as np
+
+    schedule = tomo.schedule()
+    rows = {i: sum(1 for row in schedule if row["input"] == i) for i in RAIL_INPUTS}
+    rates = np.zeros(4 * len(schedule))
+    for row in schedule:
+        if row["input"] in success:
+            index = row["schedule_index"]
+            rates[4 * index : 4 * index + 4] = success[row["input"]] * len(tomo.BASES) / (4 * rows[row["input"]])
+    return rates
+
+
+def rate_ratio(success: dict[str, float]) -> float:
+    """D of ascella_cz_tomography_reference_case.rail_rate_ratio for per-input success probabilities."""
+    return float(cz_reference.rail_rate_ratio(rates_of(success)))
+
+
 def cz_table() -> dict[str, Any]:
     rows = []
     for overlap in OVERLAPS:
         perceval = {i: cz_success("postprocessed cz", i, overlap) for i in RAIL_INPUTS}
         ours = {i: our_success(i, overlap) for i in RAIL_INPUTS}
-        ratio = perceval["10"] * perceval["01"] / (perceval["00"] * perceval["11"])
+        ratio = rate_ratio(perceval)
         rows.append(
             {
                 "overlap": overlap,
@@ -93,19 +123,22 @@ def cz_table() -> dict[str, Any]:
     return {"postprocessed": rows, "heralded_at_overlap_1": heralded, "heralded_law": 2.0 / 27.0}
 
 
+def served_circuit(entry: dict[str, Any]) -> Any:
+    """The Perceval Circuit of the served mesh, built from the decoded couplers and numeric phases."""
+    return native.circuit_from_text(entry["computed_circuit"], mesh_lib.MODES)
+
+
 def served_matrix(entry: dict[str, Any]) -> Any:
     import numpy as np
-    from perceval.serialization import deserialize
 
-    return np.array(deserialize(entry["computed_circuit"]).compute_unitary())
+    return np.array(served_circuit(entry).compute_unitary())
 
 
 def served_unitary(entry: dict[str, Any]) -> dict[str, Any]:
     import numpy as np
-    from perceval.serialization import deserialize
 
-    circuit = deserialize(entry["computed_circuit"])
-    reference = served_matrix(entry)
+    circuit = served_circuit(entry)
+    reference = np.array(circuit.compute_unitary())
     elements = mesh_lib.decode(entry["computed_circuit"])
     arch = mesh_lib.run_architecture(elements)
     ours = mesh_lib.unitary(arch, mesh_lib.mesh_phases(arch, elements))
@@ -136,19 +169,36 @@ def symbolic_template(circuit: Any) -> tuple[Any, list[float]]:
     return template, phases
 
 
-def optimizer_check(entry: dict[str, Any]) -> dict[str, Any]:
+def start_fidelity(template: Any, guess: list[float], target: Any) -> float:
+    """Perceval's matrix fidelity of the symbolic template at the given phases against the target."""
     import numpy as np
-    from perceval.serialization import deserialize
+    from perceval.utils import Matrix
+    from perceval.utils.algorithms.norm import fidelity
+
+    by_name = {p.name: p for p in template.get_parameters(all_params=True)}
+    for k, value in enumerate(guess):
+        by_name[f"phi{k}"].set_value(value)
+    return float(fidelity(target, Matrix(np.array(template.compute_unitary()))))
+
+
+def optimizer_check(entry: dict[str, Any], guess: list[float] | None = None) -> dict[str, Any]:
+    """Start the optimizer at mesh_phases (or at guess), so a permutation of mesh_phases lowers the start fidelity."""
+    import numpy as np
     from perceval.utils import Matrix
     from perceval.utils.algorithms.circuit_optimizer import CircuitOptimizer
     from perceval.utils.algorithms.norm import fidelity
 
-    circuit = deserialize(entry["computed_circuit"])
+    circuit = served_circuit(entry)
     target = Matrix(np.array(circuit.compute_unitary()))
     template, phases = symbolic_template(circuit)
-    result, achieved = CircuitOptimizer(threshold=1e-9, ntrials=1).optimize(target, template, first_guess=phases)
+    elements = mesh_lib.decode(entry["computed_circuit"])
+    arch = mesh_lib.run_architecture(elements)
+    start = mesh_lib.mesh_phases(arch, elements) if guess is None else guess
+    started = start_fidelity(symbolic_template(circuit)[0], start, target)
+    result, achieved = CircuitOptimizer(threshold=1e-9, ntrials=1).optimize(target, template, first_guess=start)
     return {
         "variable_phases": len(phases),
+        "start_fidelity": started,
         "optimizer_fidelity": float(achieved),
         "optimized_vs_target_fidelity": float(fidelity(target, Matrix(np.array(result.compute_unitary())))),
     }
@@ -163,9 +213,11 @@ def fourier(size: int) -> Any:
 
 def decompose(unitary: Any, **options: Any) -> dict[str, Any]:
     import numpy as np
+    import perceval as pcvl
     from perceval.components import BS, PS, Circuit
     from perceval.utils import InterferometerShape, Matrix, P
 
+    pcvl.random_seed(DECOMPOSITION_SEED)
     found = Circuit.decomposition(
         Matrix(np.array(unitary)),
         BS(theta=P("theta"), phi_tr=P("phi")),
@@ -181,8 +233,9 @@ def decompose(unitary: Any, **options: Any) -> dict[str, Any]:
 
 
 def stable(result: dict[str, Any]) -> dict[str, Any]:
-    """The reproducible part of a decomposition result: allow_error retries draw from an unseeded generator, so
-    their component count and error vary between runs and only the error class is kept."""
+    """The platform-stable part of a decomposition result: the seeded draw fixes the component count of one
+    Perceval build, and the error of an allow_error retry shifts with floating-point order, so its error class is
+    kept."""
     if result["status"] == "none":
         return result
     error = result["max_abs_error"]
@@ -204,6 +257,19 @@ def decomposition_table(entry: dict[str, Any]) -> dict[str, Any]:
         "fourier_control": [stable(decompose(fourier(size)))],
         "size": size,
     }
+
+
+def decade(value: float) -> int | None:
+    """floor(log10(value)): the order of magnitude that a 9-digit rounding of 5e-16 would erase; None for 0."""
+    return math.floor(math.log10(value)) if value > 0 else None
+
+
+def decade_row(row: dict[str, Any]) -> dict[str, Any]:
+    """A unitary row with each floating-point error replaced by its decade."""
+    out = dict(row)
+    for key in ("max_abs_difference", "unitarity_error_perceval"):
+        out[f"{key}_decade"] = decade(out.pop(key))
+    return out
 
 
 def round_tree(value: Any) -> Any:
@@ -236,7 +302,7 @@ def record(runs: list[Path]) -> dict[str, Any]:
         out.append(
             {
                 "run": run.name,
-                "unitary": results[: len(entries)],
+                "unitary": [decade_row(row) for row in results[: len(entries)]],
                 "optimizer": results[len(entries)],
                 "decomposition": results[len(entries) + 1],
             }
@@ -254,6 +320,8 @@ def self_test() -> int:
     require(abs(table["heralded_at_overlap_1"]["10"] - 2.0 / 27.0) < 1e-12, "heralded CZ law")
     result = decompose(fourier(4))
     require(result["status"] == "circuit" and result["max_abs_error"] < 1e-6, f"Fourier control decomposes: {result}")
+    require(decompose(fourier(4)) == result, "a decomposition under one seed repeats")
+    require(decade(5.3e-16) == -16 and decade(4.9e-10) == -10, "the decade keeps 5e-16 and 5e-10 apart")
     print("qd_perceval_crosscheck self-test passed")
     return 0
 

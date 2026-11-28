@@ -112,201 +112,202 @@
    "optimizer": {
     "optimized_vs_target_fidelity": 1.0,
     "optimizer_fidelity": 1.0,
+    "start_fidelity": 1.0,
     "variable_phases": 574
    },
    "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
    "unitary": [
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -16
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -16
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -15
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -16
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -15
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -16
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -15
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -16
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -15
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -16
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -15
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -16
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -15
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -16
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -15
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -16
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -15
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -16
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -15
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -16
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -15
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -16
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -15
     },
     {
      "couplers": 552,
-     "max_abs_difference": 0.0,
+     "max_abs_difference_decade": -16,
      "mzi_cells": 276,
-     "perceval_components": 1150,
+     "perceval_components": 1126,
      "phase_shifters": 574,
-     "unitarity_error_perceval": 0.0
+     "unitarity_error_perceval_decade": -16
     }
    ]
   }

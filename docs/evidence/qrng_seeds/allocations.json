@@ -1527,6 +1527,13 @@
    "value": 11079,
    "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
    "index": 15
+  },
+  {
+   "path": "scripts/qd_perceval_crosscheck.py",
+   "name": "DECOMPOSITION_SEED",
+   "value": 9923,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-28T081947Z.json",
+   "index": 0
   }
  ],
  "runtime": [
