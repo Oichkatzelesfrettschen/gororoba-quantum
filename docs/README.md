@@ -32,6 +32,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Open Quantum | brokered IonQ, Rigetti, IQM and AQT backends | [open_quantum/README.md](notes/open_quantum/README.md) |
 | Quandela | Belenos and Ascella photonic campaign | [quandela/README.md](notes/quandela/README.md) |
 | Photonic estimation | Gurvits/root and Husimi estimates, fixed-mode marginals and Gaussian references | [Gurvits computational boundaries](notes/topics/gurvits-computational-boundaries.md) |
+| Machine routing | routing table, case contract, six pre-flight gates and the run envelope across IBM, Quandela, IQM and Quantum Inspire | [machine-routing.md](notes/machine-routing.md) |
 | IQM Resonance | Emerald, Garnet and Sirius | [iqm/README.md](notes/iqm/README.md) |
 | qBraid | broker, Lab compute profiles, free CPU/GPU simulators, and the hosted MCP server; captured docs, REST OpenAPI and pins | [qbraid/README.md](notes/qbraid/README.md) |
 | IonQ | cloud simulator with IonQ noise models; Forte QPUs without credit | [ionq/README.md](notes/ionq/README.md) |
