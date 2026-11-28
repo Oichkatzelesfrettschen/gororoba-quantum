@@ -1,9 +1,3 @@
-** WARNING: connection is not using a post-quantum key exchange algorithm.
-** This session may be vulnerable to "store now, decrypt later" attacks.
-** The server may need to be upgraded. See https://openssh.com/pq.html
-** WARNING: connection is not using a post-quantum key exchange algorithm.
-** This session may be vulnerable to "store now, decrypt later" attacks.
-** The server may need to be upgraded. See https://openssh.com/pq.html
 # Provider environments and MCP servers
 
 Start here: interpreters and their rules are in the [Defaults of PYTHON.md](../PYTHON.md#defaults); the machine skills are `program-ibm-heron`, `program-quandela-belenos` and `program-quantum-inspire-tuna17`; the capability notes are `docs/notes/ibm_quantum/machine-capabilities.md` and `docs/notes/quandela/belenos-capabilities.md`, and the routing table is `docs/notes/machine-routing.md`, each landing through its own pull request.

@@ -1,9 +1,3 @@
-** WARNING: connection is not using a post-quantum key exchange algorithm.
-** This session may be vulnerable to "store now, decrypt later" attacks.
-** The server may need to be upgraded. See https://openssh.com/pq.html
-** WARNING: connection is not using a post-quantum key exchange algorithm.
-** This session may be vulnerable to "store now, decrypt later" attacks.
-** The server may need to be upgraded. See https://openssh.com/pq.html
 # Hypercomplex and Clifford libraries: which one to import
 
 [packages/README.md](packages/README.md) holds each package's measured relation to `gororoba_quantum/cd_core.py`, and [packages/interplay.md](packages/interplay.md) holds the maps. This note selects: for a dimension and a purpose it names the library, its measured speed, its hosts and its role. The speeds come from one audit (a single run per library on the compute workstation, 2026-11-28, a loop of 10^5 products); they rank libraries and carry no tolerance.
@@ -16,9 +10,9 @@ A package result enters evidence only through a declared map onto `cd_core`, che
 
 | Library | Dimensions | Map onto `cd_core` | Speed, 10^5 products | Hosts | Role |
 | --- | --- | --- | --- | --- | --- |
-| [hypercomplex-engine](packages/hypercomplex-engine.md) `build_table("standard", n)` | 4 to 32 audited; the test covers 4 to 64 | identity | 1.6 s | build host; not in `gq-max` | evidence through the identity map; first choice for a sign or a full table at any dimension |
-| [Octonion-Sedenion](packages/octonion-sedenion.md) | 8 and 16 | identity | 0.05 s (D = 8), 0.35 s (D = 16) | build host; not in `gq-max` | evidence through the identity map; fastest for float coefficients at D = 8 and 16; its sedenion module needs the import binding in [octonion-sedenion.md](packages/octonion-sedenion.md) |
-| [pyoctonion](packages/pyoctonion.md) | 8 | identity | 2.9 s | build host; not in `gq-max` | evidence through the identity map; slow |
+| [hypercomplex-engine](packages/hypercomplex-engine.md) `build_table("standard", n)` | 4 to 32 audited; the test covers 4 to 64 | identity | 1.6 s | build host and `gq-max` | evidence through the identity map; first choice for a sign or a full table at any dimension |
+| [Octonion-Sedenion](packages/octonion-sedenion.md) | 8 and 16 | identity | 0.05 s (D = 8), 0.35 s (D = 16) | build host and `gq-max` | evidence through the identity map; fastest for float coefficients at D = 8 and 16; its sedenion module needs the import binding in [octonion-sedenion.md](packages/octonion-sedenion.md) |
+| [pyoctonion](packages/pyoctonion.md) | 8 | identity | 2.9 s | build host and `gq-max` | evidence through the identity map; slow |
 | [numpy-quaternion](packages/numpy-quaternion.md) | 4 | identity | 0.01 s | both | evidence through the identity map; first choice at D = 4 |
 | [pyquaternion](packages/pyquaternion.md) | 4 | identity | 0.34 s | both | evidence through the identity map |
 | [quaternionic](packages/quaternionic.md) | 4 | identity | 0.41 s | both | evidence through the identity map |
