@@ -1,0 +1,288 @@
+{
+ "runs": [
+  {
+   "entries": [
+    {
+     "detector_balancing": {
+      "detector": "threshold",
+      "identity": true,
+      "mass_after": 1.0,
+      "mass_before": 1.0,
+      "one_click_tvd_after_vs_before": 0.0,
+      "perf_factor": 1.0,
+      "states_after": 31,
+      "states_before": 31,
+      "status": "applied"
+     },
+     "distinguishable_photon": {
+      "status": "needs_server",
+      "sub_computations_order_1": 2
+     },
+     "index": 0,
+     "input_photons": 1,
+     "photon_recycling": {
+      "reason": "ideal photon count 1 is below 3",
+      "status": "not_applicable"
+     }
+    },
+    {
+     "detector_balancing": {
+      "detector": "threshold",
+      "identity": true,
+      "mass_after": 1.0,
+      "mass_before": 1.0,
+      "one_click_tvd_after_vs_before": 0.0,
+      "perf_factor": 1.0,
+      "states_after": 31,
+      "states_before": 31,
+      "status": "applied"
+     },
+     "distinguishable_photon": {
+      "status": "needs_server",
+      "sub_computations_order_1": 2
+     },
+     "index": 1,
+     "input_photons": 1,
+     "photon_recycling": {
+      "reason": "ideal photon count 1 is below 3",
+      "status": "not_applicable"
+     }
+    },
+    {
+     "detector_balancing": {
+      "detector": "threshold",
+      "identity": true,
+      "mass_after": 1.0,
+      "mass_before": 1.0,
+      "one_click_tvd_after_vs_before": 0.0,
+      "perf_factor": 1.0,
+      "states_after": 30,
+      "states_before": 30,
+      "status": "applied"
+     },
+     "distinguishable_photon": {
+      "status": "needs_server",
+      "sub_computations_order_1": 2
+     },
+     "index": 2,
+     "input_photons": 1,
+     "photon_recycling": {
+      "reason": "ideal photon count 1 is below 3",
+      "status": "not_applicable"
+     }
+    },
+    {
+     "detector_balancing": {
+      "detector": "threshold",
+      "identity": true,
+      "mass_after": 1.0,
+      "mass_before": 1.0,
+      "one_click_tvd_after_vs_before": 0.0,
+      "perf_factor": 1.0,
+      "states_after": 39,
+      "states_before": 39,
+      "status": "applied"
+     },
+     "distinguishable_photon": {
+      "status": "needs_server",
+      "sub_computations_order_1": 2
+     },
+     "index": 3,
+     "input_photons": 1,
+     "photon_recycling": {
+      "reason": "ideal photon count 1 is below 3",
+      "status": "not_applicable"
+     }
+    },
+    {
+     "detector_balancing": {
+      "detector": "threshold",
+      "identity": true,
+      "mass_after": 1.0,
+      "mass_before": 1.0,
+      "one_click_tvd_after_vs_before": 0.0,
+      "perf_factor": 1.0,
+      "states_after": 31,
+      "states_before": 31,
+      "status": "applied"
+     },
+     "distinguishable_photon": {
+      "status": "needs_server",
+      "sub_computations_order_1": 2
+     },
+     "index": 4,
+     "input_photons": 1,
+     "photon_recycling": {
+      "reason": "ideal photon count 1 is below 3",
+      "status": "not_applicable"
+     }
+    },
+    {
+     "detector_balancing": {
+      "detector": "threshold",
+      "identity": true,
+      "mass_after": 1.0,
+      "mass_before": 1.0,
+      "one_click_tvd_after_vs_before": 0.0,
+      "perf_factor": 1.0,
+      "states_after": 37,
+      "states_before": 37,
+      "status": "applied"
+     },
+     "distinguishable_photon": {
+      "status": "needs_server",
+      "sub_computations_order_1": 2
+     },
+     "index": 5,
+     "input_photons": 1,
+     "photon_recycling": {
+      "reason": "ideal photon count 1 is below 3",
+      "status": "not_applicable"
+     }
+    },
+    {
+     "detector_balancing": {
+      "detector": "threshold",
+      "identity": true,
+      "mass_after": 1.0,
+      "mass_before": 1.0,
+      "one_click_tvd_after_vs_before": 0.0,
+      "perf_factor": 1.0,
+      "states_after": 39,
+      "states_before": 39,
+      "status": "applied"
+     },
+     "distinguishable_photon": {
+      "status": "needs_server",
+      "sub_computations_order_1": 2
+     },
+     "index": 6,
+     "input_photons": 1,
+     "photon_recycling": {
+      "reason": "ideal photon count 1 is below 3",
+      "status": "not_applicable"
+     }
+    },
+    {
+     "detector_balancing": {
+      "detector": "threshold",
+      "identity": true,
+      "mass_after": 1.0,
+      "mass_before": 1.0,
+      "one_click_tvd_after_vs_before": 0.0,
+      "perf_factor": 1.0,
+      "states_after": 34,
+      "states_before": 34,
+      "status": "applied"
+     },
+     "distinguishable_photon": {
+      "status": "needs_server",
+      "sub_computations_order_1": 2
+     },
+     "index": 7,
+     "input_photons": 1,
+     "photon_recycling": {
+      "reason": "ideal photon count 1 is below 3",
+      "status": "not_applicable"
+     }
+    },
+    {
+     "detector_balancing": {
+      "detector": "threshold",
+      "identity": true,
+      "mass_after": 1.0,
+      "mass_before": 1.0,
+      "one_click_tvd_after_vs_before": 0.0,
+      "perf_factor": 1.0,
+      "states_after": 34,
+      "states_before": 34,
+      "status": "applied"
+     },
+     "distinguishable_photon": {
+      "status": "needs_server",
+      "sub_computations_order_1": 2
+     },
+     "index": 8,
+     "input_photons": 1,
+     "photon_recycling": {
+      "reason": "ideal photon count 1 is below 3",
+      "status": "not_applicable"
+     }
+    },
+    {
+     "detector_balancing": {
+      "detector": "threshold",
+      "identity": true,
+      "mass_after": 1.0,
+      "mass_before": 1.0,
+      "one_click_tvd_after_vs_before": 0.0,
+      "perf_factor": 1.0,
+      "states_after": 33,
+      "states_before": 33,
+      "status": "applied"
+     },
+     "distinguishable_photon": {
+      "status": "needs_server",
+      "sub_computations_order_1": 2
+     },
+     "index": 9,
+     "input_photons": 1,
+     "photon_recycling": {
+      "reason": "ideal photon count 1 is below 3",
+      "status": "not_applicable"
+     }
+    },
+    {
+     "detector_balancing": {
+      "detector": "threshold",
+      "identity": true,
+      "mass_after": 1.0,
+      "mass_before": 1.0,
+      "one_click_tvd_after_vs_before": 0.0,
+      "perf_factor": 1.0,
+      "states_after": 37,
+      "states_before": 37,
+      "status": "applied"
+     },
+     "distinguishable_photon": {
+      "status": "needs_server",
+      "sub_computations_order_1": 2
+     },
+     "index": 10,
+     "input_photons": 1,
+     "photon_recycling": {
+      "reason": "ideal photon count 1 is below 3",
+      "status": "not_applicable"
+     }
+    },
+    {
+     "detector_balancing": {
+      "detector": "threshold",
+      "identity": true,
+      "mass_after": 1.0,
+      "mass_before": 1.0,
+      "one_click_tvd_after_vs_before": 0.0,
+      "perf_factor": 1.0,
+      "states_after": 31,
+      "states_before": 31,
+      "status": "applied"
+     },
+     "distinguishable_photon": {
+      "status": "needs_server",
+      "sub_computations_order_1": 2
+     },
+     "index": 11,
+     "input_photons": 1,
+     "photon_recycling": {
+      "reason": "ideal photon count 1 is below 3",
+      "status": "not_applicable"
+     }
+    }
+   ],
+   "run": "2026-10-21T162332Z-qpu_belenos-bdsc_qualification-tc-none-e1",
+   "state": "none",
+   "warning": null
+  }
+ ],
+ "schema": "qd-offline-mitigation-v1"
+}

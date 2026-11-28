@@ -1,0 +1,3615 @@
+{
+ "arms": [
+  "ideal",
+  "noise",
+  "noise_eff",
+  "noise_dark",
+  "noise_eff_dark"
+ ],
+ "perfs_sources": [
+  {
+   "perfs": "submission.json",
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "sha256": "197b2948484dcbf24033a7a7be2603d2a44850400a5aec0274bf3e01fd362e72"
+  }
+ ],
+ "runs": [
+  {
+   "entries": [
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.993443,
+        "in_block": 0.993443,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 66,
+        "one_click_samples": 10065,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.993443,
+        "in_block": 0.993443,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 66,
+        "one_click_samples": 10065,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.993443,
+        "in_block": 0.993443,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 66,
+        "one_click_samples": 10065,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.993443,
+        "in_block": 0.993443,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 66,
+        "one_click_samples": 10065,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+     "name": "c0-s20-n10000",
+     "retained": {
+      "cone_share": 0.948364,
+      "in_block": 0.427099,
+      "in_block_cone": 0.450353,
+      "n_block": 4268,
+      "n_off_cone": 516,
+      "one_click_samples": 9993,
+      "shot_floor": 0.004109,
+      "tvd_cone_from_ideal": 0.819035
+     },
+     "served_physical_perf": 0.008556
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.993147,
+        "in_block": 0.993147,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 69,
+        "one_click_samples": 10068,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.993147,
+        "in_block": 0.993147,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 69,
+        "one_click_samples": 10068,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.993147,
+        "in_block": 0.993147,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 69,
+        "one_click_samples": 10068,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.993147,
+        "in_block": 0.993147,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 69,
+        "one_click_samples": 10068,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+     "name": "c1-s20-n10000",
+     "retained": {
+      "cone_share": 0.975495,
+      "in_block": 0.445589,
+      "in_block_cone": 0.456783,
+      "n_block": 4455,
+      "n_off_cone": 245,
+      "one_click_samples": 9998,
+      "shot_floor": 0.004051,
+      "tvd_cone_from_ideal": 0.814108
+     },
+     "served_physical_perf": 0.008348
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.994035,
+        "in_block": 0.994035,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 60,
+        "one_click_samples": 10059,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.994035,
+        "in_block": 0.994035,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 60,
+        "one_click_samples": 10059,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.994035,
+        "in_block": 0.994035,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 60,
+        "one_click_samples": 10059,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.994035,
+        "in_block": 0.994035,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 60,
+        "one_click_samples": 10059,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+     "name": "r2-s46667-n10000",
+     "retained": {
+      "cone_share": 0.907,
+      "in_block": 0.8956,
+      "in_block_cone": 0.987431,
+      "n_block": 8956,
+      "n_off_cone": 930,
+      "one_click_samples": 10000,
+      "shot_floor": 0.004201,
+      "tvd_cone_from_ideal": 0.095787
+     },
+     "served_physical_perf": 0.009519
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.997606,
+        "in_block": 0.997606,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 24,
+        "one_click_samples": 10023,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.997606,
+        "in_block": 0.997606,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 24,
+        "one_click_samples": 10023,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.997606,
+        "in_block": 0.997606,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 24,
+        "one_click_samples": 10023,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.997606,
+        "in_block": 0.997606,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 24,
+        "one_click_samples": 10023,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+     "name": "t3-s20-n10000",
+     "retained": {
+      "cone_share": 0.9512,
+      "in_block": 0.9341,
+      "in_block_cone": 0.982023,
+      "n_block": 9341,
+      "n_off_cone": 488,
+      "one_click_samples": 10000,
+      "shot_floor": 0.004102,
+      "tvd_cone_from_ideal": 0.080407
+     },
+     "served_physical_perf": 0.023505
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.993541,
+        "in_block": 0.993541,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 65,
+        "one_click_samples": 10064,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.993541,
+        "in_block": 0.993541,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 65,
+        "one_click_samples": 10064,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.993541,
+        "in_block": 0.993541,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 65,
+        "one_click_samples": 10064,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.993541,
+        "in_block": 0.993541,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 65,
+        "one_click_samples": 10064,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+     "name": "r4-s46667-n10000",
+     "retained": {
+      "cone_share": 0.995798,
+      "in_block": 0.976791,
+      "in_block_cone": 0.980912,
+      "n_block": 9764,
+      "n_off_cone": 42,
+      "one_click_samples": 9996,
+      "shot_floor": 0.00401,
+      "tvd_cone_from_ideal": 0.093818
+     },
+     "served_physical_perf": 0.0087
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.997208,
+        "in_block": 0.997208,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 28,
+        "one_click_samples": 10027,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.997208,
+        "in_block": 0.997208,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 28,
+        "one_click_samples": 10027,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.997208,
+        "in_block": 0.997208,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 28,
+        "one_click_samples": 10027,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.997208,
+        "in_block": 0.997208,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 28,
+        "one_click_samples": 10027,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+     "name": "t5-s20-n10000",
+     "retained": {
+      "cone_share": 0.9961,
+      "in_block": 0.990199,
+      "in_block_cone": 0.994076,
+      "n_block": 9901,
+      "n_off_cone": 39,
+      "one_click_samples": 9999,
+      "shot_floor": 0.004008,
+      "tvd_cone_from_ideal": 0.083922
+     },
+     "served_physical_perf": 0.02084
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.997307,
+        "in_block": 0.997307,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 27,
+        "one_click_samples": 10026,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.997307,
+        "in_block": 0.997307,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 27,
+        "one_click_samples": 10026,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.997307,
+        "in_block": 0.997307,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 27,
+        "one_click_samples": 10026,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.997307,
+        "in_block": 0.997307,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 27,
+        "one_click_samples": 10026,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+     "name": "r6-s46667-n10000",
+     "retained": {
+      "cone_share": 0.969991,
+      "in_block": 0.961288,
+      "in_block_cone": 0.991028,
+      "n_block": 9610,
+      "n_off_cone": 300,
+      "one_click_samples": 9997,
+      "shot_floor": 0.004063,
+      "tvd_cone_from_ideal": 0.08532
+     },
+     "served_physical_perf": 0.021422
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.993936,
+        "in_block": 0.993936,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 61,
+        "one_click_samples": 10060,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.993936,
+        "in_block": 0.993936,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 61,
+        "one_click_samples": 10060,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.993936,
+        "in_block": 0.993936,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 61,
+        "one_click_samples": 10060,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.993936,
+        "in_block": 0.993936,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 61,
+        "one_click_samples": 10060,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+     "name": "t7-s20-n10000",
+     "retained": {
+      "cone_share": 0.917601,
+      "in_block": 0.905587,
+      "in_block_cone": 0.986907,
+      "n_block": 9045,
+      "n_off_cone": 823,
+      "one_click_samples": 9988,
+      "shot_floor": 0.004178,
+      "tvd_cone_from_ideal": 0.097578
+     },
+     "served_physical_perf": 0.009374
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.997208,
+        "in_block": 0.997208,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 28,
+        "one_click_samples": 10027,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.997208,
+        "in_block": 0.997208,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 28,
+        "one_click_samples": 10027,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.997208,
+        "in_block": 0.997208,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 28,
+        "one_click_samples": 10027,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.997208,
+        "in_block": 0.997208,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 28,
+        "one_click_samples": 10027,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+     "name": "r8-s46667-n10000",
+     "retained": {
+      "cone_share": 0.9951,
+      "in_block": 0.9773,
+      "in_block_cone": 0.982112,
+      "n_block": 9773,
+      "n_off_cone": 49,
+      "one_click_samples": 10000,
+      "shot_floor": 0.004011,
+      "tvd_cone_from_ideal": 0.10284
+     },
+     "served_physical_perf": 0.020955
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.997406,
+        "in_block": 0.997406,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 26,
+        "one_click_samples": 10025,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.997406,
+        "in_block": 0.997406,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 26,
+        "one_click_samples": 10025,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.997406,
+        "in_block": 0.997406,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 26,
+        "one_click_samples": 10025,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.997406,
+        "in_block": 0.997406,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 26,
+        "one_click_samples": 10025,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+     "name": "t9-s20-n10000",
+     "retained": {
+      "cone_share": 0.984598,
+      "in_block": 0.976398,
+      "in_block_cone": 0.991671,
+      "n_block": 9763,
+      "n_off_cone": 154,
+      "one_click_samples": 9999,
+      "shot_floor": 0.004032,
+      "tvd_cone_from_ideal": 0.090742
+     },
+     "served_physical_perf": 0.022461
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.994035,
+        "in_block": 0.994035,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 60,
+        "one_click_samples": 10059,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.994035,
+        "in_block": 0.994035,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 60,
+        "one_click_samples": 10059,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.994035,
+        "in_block": 0.994035,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 60,
+        "one_click_samples": 10059,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.994035,
+        "in_block": 0.994035,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 60,
+        "one_click_samples": 10059,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+     "name": "r10-s46667-n10000",
+     "retained": {
+      "cone_share": 0.890422,
+      "in_block": 0.88307,
+      "in_block_cone": 0.991743,
+      "n_block": 8768,
+      "n_off_cone": 1088,
+      "one_click_samples": 9929,
+      "shot_floor": 0.004255,
+      "tvd_cone_from_ideal": 0.087577
+     },
+     "served_physical_perf": 0.009502
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.997805,
+        "in_block": 0.997805,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 22,
+        "one_click_samples": 10021,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.997805,
+        "in_block": 0.997805,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 22,
+        "one_click_samples": 10021,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.997805,
+        "in_block": 0.997805,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 22,
+        "one_click_samples": 10021,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.997805,
+        "in_block": 0.997805,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 22,
+        "one_click_samples": 10021,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+     "name": "t11-s20-n10000",
+     "retained": {
+      "cone_share": 0.875675,
+      "in_block": 0.869274,
+      "in_block_cone": 0.99269,
+      "n_block": 8691,
+      "n_off_cone": 1243,
+      "one_click_samples": 9998,
+      "shot_floor": 0.004275,
+      "tvd_cone_from_ideal": 0.087066
+     },
+     "served_physical_perf": 0.025667
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.997506,
+        "in_block": 0.997506,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 25,
+        "one_click_samples": 10024,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.997506,
+        "in_block": 0.997506,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 25,
+        "one_click_samples": 10024,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.997506,
+        "in_block": 0.997506,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 25,
+        "one_click_samples": 10024,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.997506,
+        "in_block": 0.997506,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 25,
+        "one_click_samples": 10024,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+     "name": "r12-s46667-n10000",
+     "retained": {
+      "cone_share": 0.895058,
+      "in_block": 0.880052,
+      "in_block_cone": 0.983235,
+      "n_block": 8797,
+      "n_off_cone": 1049,
+      "one_click_samples": 9996,
+      "shot_floor": 0.00423,
+      "tvd_cone_from_ideal": 0.101629
+     },
+     "served_physical_perf": 0.023286
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.997506,
+        "in_block": 0.997506,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 25,
+        "one_click_samples": 10024,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.997506,
+        "in_block": 0.997506,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 25,
+        "one_click_samples": 10024,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.997506,
+        "in_block": 0.997506,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 25,
+        "one_click_samples": 10024,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.997506,
+        "in_block": 0.997506,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 25,
+        "one_click_samples": 10024,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+     "name": "t13-s20-n10000",
+     "retained": {
+      "cone_share": 0.971289,
+      "in_block": 0.960184,
+      "in_block_cone": 0.988567,
+      "n_block": 9598,
+      "n_off_cone": 287,
+      "one_click_samples": 9996,
+      "shot_floor": 0.00406,
+      "tvd_cone_from_ideal": 0.090467
+     },
+     "served_physical_perf": 0.023076
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.997406,
+        "in_block": 0.997406,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 26,
+        "one_click_samples": 10025,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.997406,
+        "in_block": 0.997406,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 26,
+        "one_click_samples": 10025,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.997406,
+        "in_block": 0.997406,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 26,
+        "one_click_samples": 10025,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.997406,
+        "in_block": 0.997406,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 26,
+        "one_click_samples": 10025,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+     "name": "r14-s46667-n10000",
+     "retained": {
+      "cone_share": 0.9895,
+      "in_block": 0.9723,
+      "in_block_cone": 0.982617,
+      "n_block": 9723,
+      "n_off_cone": 105,
+      "one_click_samples": 10000,
+      "shot_floor": 0.004022,
+      "tvd_cone_from_ideal": 0.099177
+     },
+     "served_physical_perf": 0.022609
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.993541,
+        "in_block": 0.993541,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 65,
+        "one_click_samples": 10064,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.993541,
+        "in_block": 0.993541,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 65,
+        "one_click_samples": 10064,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.993541,
+        "in_block": 0.993541,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 65,
+        "one_click_samples": 10064,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.993541,
+        "in_block": 0.993541,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 65,
+        "one_click_samples": 10064,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+     "name": "t15-s20-n10000",
+     "retained": {
+      "cone_share": 0.9407,
+      "in_block": 0.9349,
+      "in_block_cone": 0.993834,
+      "n_block": 9349,
+      "n_off_cone": 593,
+      "one_click_samples": 10000,
+      "shot_floor": 0.004124,
+      "tvd_cone_from_ideal": 0.077529
+     },
+     "served_physical_perf": 0.008728
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.993443,
+        "in_block": 0.993443,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 66,
+        "one_click_samples": 10065,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.993443,
+        "in_block": 0.993443,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 66,
+        "one_click_samples": 10065,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.993443,
+        "in_block": 0.993443,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 66,
+        "one_click_samples": 10065,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.993443,
+        "in_block": 0.993443,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 66,
+        "one_click_samples": 10065,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+     "name": "r16-s46667-n10000",
+     "retained": {
+      "cone_share": 1.0,
+      "in_block": 0.9925,
+      "in_block_cone": 0.9925,
+      "n_block": 9925,
+      "n_off_cone": 0,
+      "one_click_samples": 10000,
+      "shot_floor": 0.004001,
+      "tvd_cone_from_ideal": 0.080487
+     },
+     "served_physical_perf": 0.008588
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.993936,
+        "in_block": 0.993936,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 61,
+        "one_click_samples": 10060,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.993936,
+        "in_block": 0.993936,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 61,
+        "one_click_samples": 10060,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.993936,
+        "in_block": 0.993936,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 61,
+        "one_click_samples": 10060,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.993936,
+        "in_block": 0.993936,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 61,
+        "one_click_samples": 10060,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+     "name": "t17-s20-n10000",
+     "retained": {
+      "cone_share": 0.913474,
+      "in_block": 0.906872,
+      "in_block_cone": 0.992773,
+      "n_block": 9066,
+      "n_off_cone": 865,
+      "one_click_samples": 9997,
+      "shot_floor": 0.004186,
+      "tvd_cone_from_ideal": 0.091524
+     },
+     "served_physical_perf": 0.009411
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.993541,
+        "in_block": 0.993541,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 65,
+        "one_click_samples": 10064,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.993541,
+        "in_block": 0.993541,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 65,
+        "one_click_samples": 10064,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.993541,
+        "in_block": 0.993541,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 65,
+        "one_click_samples": 10064,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.993541,
+        "in_block": 0.993541,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 65,
+        "one_click_samples": 10064,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+     "name": "r18-s46667-n10000",
+     "retained": {
+      "cone_share": 0.968497,
+      "in_block": 0.960596,
+      "in_block_cone": 0.991842,
+      "n_block": 9605,
+      "n_off_cone": 315,
+      "one_click_samples": 9999,
+      "shot_floor": 0.004066,
+      "tvd_cone_from_ideal": 0.086518
+     },
+     "served_physical_perf": 0.008823
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.99364,
+        "in_block": 0.99364,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 64,
+        "one_click_samples": 10063,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.99364,
+        "in_block": 0.99364,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 64,
+        "one_click_samples": 10063,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.99364,
+        "in_block": 0.99364,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 64,
+        "one_click_samples": 10063,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.99364,
+        "in_block": 0.99364,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 64,
+        "one_click_samples": 10063,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+     "name": "t19-s20-n10000",
+     "retained": {
+      "cone_share": 0.971574,
+      "in_block": 0.964368,
+      "in_block_cone": 0.992583,
+      "n_block": 9635,
+      "n_off_cone": 284,
+      "one_click_samples": 9991,
+      "shot_floor": 0.00406,
+      "tvd_cone_from_ideal": 0.103672
+     },
+     "served_physical_perf": 0.008866
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.993443,
+        "in_block": 0.993443,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 66,
+        "one_click_samples": 10065,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.993443,
+        "in_block": 0.993443,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 66,
+        "one_click_samples": 10065,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.993443,
+        "in_block": 0.993443,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 66,
+        "one_click_samples": 10065,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.993443,
+        "in_block": 0.993443,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 66,
+        "one_click_samples": 10065,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+     "name": "r20-s46667-n10000",
+     "retained": {
+      "cone_share": 0.988595,
+      "in_block": 0.97509,
+      "in_block_cone": 0.986339,
+      "n_block": 9747,
+      "n_off_cone": 114,
+      "one_click_samples": 9996,
+      "shot_floor": 0.004025,
+      "tvd_cone_from_ideal": 0.086507
+     },
+     "served_physical_perf": 0.008687
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.99364,
+        "in_block": 0.99364,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 64,
+        "one_click_samples": 10063,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.99364,
+        "in_block": 0.99364,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 64,
+        "one_click_samples": 10063,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.99364,
+        "in_block": 0.99364,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 64,
+        "one_click_samples": 10063,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.99364,
+        "in_block": 0.99364,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 64,
+        "one_click_samples": 10063,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+     "name": "t21-s20-n10000",
+     "retained": {
+      "cone_share": 0.965479,
+      "in_block": 0.957575,
+      "in_block_cone": 0.991813,
+      "n_block": 9570,
+      "n_off_cone": 345,
+      "one_click_samples": 9994,
+      "shot_floor": 0.004072,
+      "tvd_cone_from_ideal": 0.091755
+     },
+     "served_physical_perf": 0.008889
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.993739,
+        "in_block": 0.993739,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 63,
+        "one_click_samples": 10062,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.993739,
+        "in_block": 0.993739,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 63,
+        "one_click_samples": 10062,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.993739,
+        "in_block": 0.993739,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 63,
+        "one_click_samples": 10062,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.993739,
+        "in_block": 0.993739,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 63,
+        "one_click_samples": 10062,
+        "shot_floor": 0.004001,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+     "name": "r22-s46667-n10000",
+     "retained": {
+      "cone_share": 0.942689,
+      "in_block": 0.930786,
+      "in_block_cone": 0.987374,
+      "n_block": 9306,
+      "n_off_cone": 573,
+      "one_click_samples": 9998,
+      "shot_floor": 0.004121,
+      "tvd_cone_from_ideal": 0.09648
+     },
+     "served_physical_perf": 0.009141
+    },
+    {
+     "arms": {
+      "ideal": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 0.0,
+        "n_block": 10000,
+        "n_off_cone": 0,
+        "one_click_samples": 10000,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 1.0,
+        "tvd_cone_from_ideal": 1.3e-05
+       }
+      },
+      "noise": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_dark": {
+       "reference_input": {
+        "cone_share": 0.99364,
+        "in_block": 0.99364,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 64,
+        "one_click_samples": 10063,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       },
+       "served_input": {
+        "cone_share": 0.99364,
+        "in_block": 0.99364,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 7.4e-05,
+        "n_block": 9999,
+        "n_off_cone": 64,
+        "one_click_samples": 10063,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.027046,
+        "tvd_cone_from_ideal": 3.7e-05
+       }
+      },
+      "noise_eff": {
+       "reference_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 1.0,
+        "in_block": 1.0,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 0,
+        "one_click_samples": 9999,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      },
+      "noise_eff_dark": {
+       "reference_input": {
+        "cone_share": 0.99364,
+        "in_block": 0.99364,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 64,
+        "one_click_samples": 10063,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       },
+       "served_input": {
+        "cone_share": 0.99364,
+        "in_block": 0.99364,
+        "in_block_cone": 1.0,
+        "multi_click_mass": 4.7e-05,
+        "n_block": 9999,
+        "n_off_cone": 64,
+        "one_click_samples": 10063,
+        "shot_floor": 0.004,
+        "simulated_global_perf": 0.019019,
+        "tvd_cone_from_ideal": 0.157179
+       }
+      }
+     },
+     "input_mode": 20,
+     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+     "name": "t23-s20-n10000",
+     "retained": {
+      "cone_share": 0.977491,
+      "in_block": 0.961985,
+      "in_block_cone": 0.984137,
+      "n_block": 9616,
+      "n_off_cone": 225,
+      "one_click_samples": 9996,
+      "shot_floor": 0.004047,
+      "tvd_cone_from_ideal": 0.093476
+     },
+     "served_physical_perf": 0.008878
+    }
+   ],
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "summary": {
+    "collapse_tvd_threshold": 0.3,
+    "collapse_verdicts": {
+     "ideal": "does_not_reproduce",
+     "noise": "does_not_reproduce",
+     "noise_dark": "does_not_reproduce",
+     "noise_eff": "does_not_reproduce",
+     "noise_eff_dark": "does_not_reproduce"
+    },
+    "collapsed_entries": 2,
+    "same_mesh_groups": [
+     {
+      "entries": 11,
+      "input_mode": 20,
+      "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+      "observed_tvd_spread": 0.022353,
+      "predicted_tvd_spread": {
+       "ideal": 0.0,
+       "noise": 0.0,
+       "noise_dark": 0.0,
+       "noise_eff": 0.0,
+       "noise_eff_dark": 0.0
+      }
+     },
+     {
+      "entries": 13,
+      "input_mode": 20,
+      "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+      "observed_tvd_spread": 0.741506,
+      "predicted_tvd_spread": {
+       "ideal": 0.0,
+       "noise": 0.0,
+       "noise_dark": 0.0,
+       "noise_eff": 0.0,
+       "noise_eff_dark": 0.0
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "schema": "qd-live-noise-sim-v1"
+}
