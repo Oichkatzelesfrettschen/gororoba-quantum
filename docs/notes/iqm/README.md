@@ -16,6 +16,7 @@ they said when read.
 | `changelog/iqm-client-36.0.0.md` | the CHANGELOG of the iqm-client 36.0.0 sdist (`--changelog`) |
 | `constraints-iqm-qccsw-4.7.0.txt` | IQM's client constraints for IQM OS 4.7.0 plus the integration pins |
 | `hardware-pre-4.7.md` | the pre-upgrade specifications of all six targets, from the 06:08Z snapshot at commit 2009f0f |
+| `native-sdk-comparison.md` | native transpile, offline readout inversion and transport bytes of the retained Garnet A_5 case against iqm-client |
 | `os-4.7.md` | what IQM OS 4.7 changed on Emerald, Garnet and Sirius: versions, `measure_012`, API, settings, calibration, client |
 | `python-stack.md`, `python-stack-versions.json` | every distribution installed in the client stack, with version, license, imports and requirements |
 | `../../evidence/iqm/` | the account snapshot: server, per-QC records, configuration artifacts, calibration sets, metrics, the update feed, `hardware.json` (`scripts/iqm_platform.py snapshot`) |
