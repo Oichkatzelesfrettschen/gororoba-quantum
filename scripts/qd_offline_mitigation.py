@@ -18,7 +18,8 @@ recombination). The three mitigations of the quantum cloud divide by that split:
 
 probs_to_sample_count (the conversion of a distribution to counts) draws from numpy's global generator, which
 Perceval leaves unseeded; seeded_counts calls perceval.random_seed(seed) first, and a caller that writes counts takes
-the seed through qrng_seeds.add_seed_argument, so a value of a retained QRNG draw is the only admitted source; this CLI converts no distribution to counts and holds no seed flag.
+the seed through qrng_seeds.add_seed_argument, so a value of a retained QRNG draw is the only admitted source.
+This CLI converts no distribution to counts and holds no seed flag.
 
 Usage: "$PYTHON" scripts/qd_offline_mitigation.py (--write OUT RUN... | --check OUT RUN... | --self-test)
          [--allow-server-default]
