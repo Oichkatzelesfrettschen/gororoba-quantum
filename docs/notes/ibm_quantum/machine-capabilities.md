@@ -8,8 +8,8 @@ repository reaches), [qpu-submission.md](qpu-submission.md) (quota, approval and
 fact has no other home. The procedure that uses it is the `program-ibm-heron` skill of gororoba-infrastructure
 (`agent-config/skills/program-ibm-heron/`) with one thin skill per machine.
 
-Evidence classes. **read** is a value of the fresh read of 2026-11-28T05:22Z, retained in
-[machine_capabilities.json](../../evidence/heron_platform/machine_capabilities.json) by `scripts/ibm_machine_capabilities.py`
+Evidence classes. **read** is a value of the read of 2026-11-28T05:50Z, retained in
+[targets-v2.json](../../evidence/heron_platform/targets-v2.json) by `scripts/heron_target_snapshot.py`
 (qiskit 2.6.2, qiskit-ibm-runtime 0.51.0; calibration reads, Target, usage and queue length
 only; no job was submitted, cancelled or created). **doc** is a statement of IBM's documentation as
 [ibm_heron_platform.md](../ibm_heron_platform.md) cites it. **run** is a value measured on a retained job, named by its record
@@ -38,7 +38,7 @@ legacy flag does not describe them (**inf**; the retained dynamic runs under sec
 
 `xslow` lasts 1,000 ns on every qubit, reports the error of `x` and `sx`, and the preset transpiler never emits it
 ([ibm_heron_platform.md](../ibm_heron_platform.md#measured-targets), **doc** and 2026-10-14 read).
-`measure_2` is shorter than `measure` on every backend (reported error higher, 2026-10-14 read); `reset` lasts as long as
+`measure_2` is shorter than `measure` on every backend (reported error higher on all three at the 2026-10-14 read; the median reads 0.0128 against 0.0101 on ibm_fez but 0.0095 against 0.0098 on ibm_kingston and 0.0154 against 0.0181 on ibm_marrakesh at the 2026-11-28 read, so the ordering is a property of the calibration and not of the platform); `reset` lasts as long as
 `measure_reset`. The three backends differ in gate and readout durations (the table above), so one logical circuit has a
 different schedule length on each; a layout comparison across backends compares schedules, not gate counts.
 
@@ -73,28 +73,39 @@ Settled charges of the retained jobs are in the next section and in [qpu-job-inv
 | Item | ibm_fez | ibm_kingston | ibm_marrakesh |
 |---|---|---|---|
 | backend_version | 1.3.37 | 1.0.0 | 1.0.21 |
-| calibration stamp (PST) | 2026-11-27 21:05:33 | 2026-11-27 21:08:02 | 2026-11-27 20:41:39 |
+| calibration stamp (PST) | 2026-11-27 21:42:07 | 2026-11-27 21:31:16 | 2026-11-27 21:21:13 |
 | qubits / dead qubits / healthy | 156 / 1 / 155 | 156 / 2 / 154 | 156 / 5 / 151 |
-| dead qubits (sx error 1.0 or no T1 or T2) | 72 | 121, 146 | 82, 94, 113, 119, 130 |
+| dead qubits (sx error 1.0 or no T1 or T2; see below) | 72 | 121, 146 | 82, 94, 113, 119, 130 |
 | couplers / dead / usable | 176 / 1 / 173 | 176 / 4 / 169 | 176 / 1 / 166 |
-| dead couplers (cz error 1.0) | 32-33 | 112-113, 130-131, 145-146, 146-147 | 113-119 |
+| dead couplers (cz error 1.0; see below) | 32-33 | 112-113, 130-131, 145-146, 146-147 | 113-119 |
 | usable graph components (qubits) | 155 | 153, 1 | 147, 4 |
-| qubits with readout error at least 0.1 | 6: 20, 72, 83, 102, 113, 148 | 4: 87, 113, 121, 146 | 14: 3, 31, 48, 51, 60, 68, 73, 81, 82, 83, 94, 113, 119, 130 |
+| qubits with readout error at least 0.1 | 6: 5, 53, 72, 83, 93, 148 | 4: 87, 113, 121, 146 | 14: 3, 31, 48, 51, 60, 68, 73, 81, 82, 83, 94, 113, 119, 130 |
 | couplers with cz error at least 0.05 | 7: 27-28, 32-33, 63-64, 71-72, 72-73, 102-103, 148-149 | 9: 84-85, 85-86, 86-87, 111-112, 112-113, 120-121, 130-131, 145-146, 146-147 | 9: 40-41, 81-82, 82-83, 108-109, 109-110, 109-118, 113-119, 119-133, 130-131 |
 | couplers above 3 x median cz error | 23 (threshold 0.00735) | 29 (threshold 0.00570) | 20 (threshold 0.00830) |
-| queue (pending jobs) | 1 | 0 | 0 |
+| queue (pending jobs) | 0 | 0 | 0 |
 
 | Quantity, min / p10 / median / p90 / max | ibm_fez | ibm_kingston | ibm_marrakesh |
 |---|---|---|---|
 | T1 (us) | 7.71 / 72.2 / 130 / 203 / 318 | 22.9 / 135 / 258 / 362 / 490 | 6.67 / 83.0 / 157 / 266 / 367 |
 | T2 (us) | 5.58 / 28.3 / 88.2 / 167 / 268 | 11.2 / 40.7 / 143 / 340 / 579 | 5.75 / 21.0 / 80.7 / 204 / 357 |
-| readout error (`measure`) | 0.00232 / 0.00476 / 0.0110 / 0.0560 / 0.401 | 0.00269 / 0.00452 / 0.00977 / 0.0314 / 0.499 | 0.00146 / 0.00537 / 0.0181 / 0.0933 / 0.499 |
+| readout error (`measure`) | 0.00244 / 0.00464 / 0.0101 / 0.0591 / 0.468 | 0.00269 / 0.00452 / 0.00977 / 0.0314 / 0.499 | 0.00146 / 0.00537 / 0.0181 / 0.0933 / 0.499 |
 | `sx` error | 0.000116 / 0.000197 / 0.000310 / 0.000602 / 1.00 | 0.000105 / 0.000157 / 0.000249 / 0.000480 / 1.00 | 0.000132 / 0.000210 / 0.000366 / 0.000845 / 1.00 |
 | `cz` error | 0.00133 / 0.00175 / 0.00245 / 0.0127 / 1.00 | 0.000827 / 0.00122 / 0.00190 / 0.00819 / 1.00 | 0.00108 / 0.00155 / 0.00277 / 0.0111 / 1.00 |
 
+Dead rule. IBM's own flag is `BackendProperties.is_qubit_operational` and `is_gate_operational`, which `faulty_qubits()`
+and `faulty_gates()` collect; each answers True where a row carries no `operational` property. The read counts rows that
+carry it: 0 of 156 qubit rows and 0 of the gate rows on every backend (**read**, `operational_property_rows`), so the vendor
+lists read empty because the flag is absent, not because every part works. The repository therefore counts a qubit dead when
+the vendor flags it, its `sx` error equals 1.0 (the value the Target reports for a part calibration could not fit) or the
+calibration reports no T1 or T2, and a coupler dead when the vendor flags a `cz` on it or its `cz` error equals 1.0 (our
+rule; the 1.0 test and the T1 and T2 test are ours, not IBM's). The measured gap supports a sentinel test over a threshold:
+the largest `sx` error below 1.0 is 0.0255, 0.0206 and 0.00404 and the largest `cz` error below 1.0 is 0.194, 0.189 and 0.142
+on the three backends, so no value lies between 0.194 and 1.0, and `scripts/heron_target_snapshot.py --check` fails on a
+snapshot whose largest error below 1.0 reaches 0.5.
+
 Reading of the tables (**read**, with **inf** where marked):
 
-- ibm_fez has one dead qubit (72, sx error 1.0, readout 0.40) and one dead coupler (32-33), and the other 155 qubits form one
+- ibm_fez has one dead qubit (72, sx error 1.0, readout 0.47) and one dead coupler (32-33), and the other 155 qubits form one
   connected component. Its `cz` median error is 0.00245, between the other two backends'.
   It has the fastest `sx`, `measure` and `measure_2`, and the shortest T1 median of the three.
 - ibm_kingston has the lowest median `cz` error (0.00190), the lowest median readout error and
@@ -230,10 +241,13 @@ from the Target's `if_else`, which `ibm_kingston` runs).
 ## 9. Regeneration
 
 ```sh
-GOROROBA_IBM_ACCOUNT= "$PYTHON" scripts/ibm_machine_capabilities.py --out docs/evidence/heron_platform/machine_capabilities.json
-"$PYTHON" scripts/ibm_machine_capabilities.py --check docs/evidence/heron_platform/machine_capabilities.json
+GOROROBA_IBM_ACCOUNT= "$PYTHON" scripts/heron_target_snapshot.py --out docs/evidence/heron_platform/targets-v2.json
+"$PYTHON" scripts/heron_target_snapshot.py --check docs/evidence/heron_platform/targets.json docs/evidence/heron_platform/targets-v2.json
 ```
 
-`--check` recomputes the summary, the coupling and the health block from the retained per-qubit values. The 2026-10-14
-Target snapshot [targets.json](../../evidence/heron_platform/targets.json) stays bound to its gate; this read adds the
-calibration distributions, the health block and the queue and usage context.
+`--check` (gate core-254) recomputes the platform facts of each file, and for `targets-v2.json` also the summary, the coupling
+and the health block from the retained per-qubit values. The 2026-10-14 snapshot
+[targets.json](../../evidence/heron_platform/targets.json) keeps its bytes because retained records cite its sha256 (the
+`algebra-device-conjectures-*` manifests, the pathion orientation-bit case, `gororoba-retained-runs.json` and others), so a
+refresh lands in the versioned successor `targets-v2.json`, which adds the calibration distributions, the health block and the
+queue and usage context.

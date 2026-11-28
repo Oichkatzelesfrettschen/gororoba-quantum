@@ -18,6 +18,7 @@ source supports reads **unverified**.
 | Calibration at read B | ibm_fez 2026-10-29T01:45:35-07:00, ibm_kingston 01:12:30-07:00, ibm_marrakesh 01:46:43-07:00 | `properties().last_update_date` | backends.json |
 | Installed source and offline probes | 2026-10-29 | qiskit-ibm-runtime 0.51.0, qiskit 2.6.1, samplomatic 0.21.0, qiskit-mitigation 0.1.1, pydantic 2.14.1, ibm-quantum-schemas 0.13.20261016, Python 3.14.7 | [inventory.json](../../evidence/ibm_runtime_options/inventory.json) |
 | Target snapshot | 2026-10-14T21:00:38Z | `scripts/heron_target_snapshot.py --out` | [targets.json](../../evidence/heron_platform/targets.json) |
+| Target snapshot with calibration | 2026-11-28T05:50:35Z | `scripts/heron_target_snapshot.py --out` | [targets-v2.json](../../evidence/heron_platform/targets-v2.json) |
 
 `scripts/ibm_runtime_options_inventory.py` writes both evidence files: `--out`
 introspects the installed package offline, `--backends` makes read B, and

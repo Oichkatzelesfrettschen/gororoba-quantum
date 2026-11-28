@@ -48,8 +48,10 @@ decomposition is not a free improvement.
 
 [M] The calibration distributions, dead qubits and couplers, limits, queue and quota of the three backends at 2026-11-28 are in
 [machine-capabilities.md](ibm_quantum/machine-capabilities.md) and its record
-[machine_capabilities.json](../evidence/heron_platform/machine_capabilities.json), written by
-`scripts/ibm_machine_capabilities.py`; the table above stays the 2026-10-14 snapshot that gate core-254 recomputes.
+[targets-v2.json](../evidence/heron_platform/targets-v2.json), written by `scripts/heron_target_snapshot.py` and recomputed by
+gate core-254 beside [targets.json](../evidence/heron_platform/targets.json); the table above stays the 2026-10-14 snapshot,
+whose bytes retained records pin by sha256. [M] The `measure_2` error exceeded the `measure` error in median on all three
+backends at 2026-10-14 and on ibm_fez alone at 2026-11-28, so the ordering moves with the calibration.
 
 ## Documentation pages and retrieval
 
@@ -107,7 +109,7 @@ rules below restate the [P] pages and [M] reads as design constraints.
   live_run.py binds them into the calibration identity.
 - **Measurement variants.** `measure_2` (`MidCircuitMeasure`) is the shorter
   mid-circuit readout IBM recommends where supported, with a higher reported
-  assignment error than `measure`. A reset is a measurement followed by a
+  assignment error than `measure` at the 2026-10-14 read (the median ordering reverses on two backends at 2026-11-28). A reset is a measurement followed by a
   conditional flip, since `reset` lasts exactly as long as `measure_reset`
   and `reset_2` as long as `measure_reset_2` on every qubit. Switching
   variants changes the physical measurement and needs its own control; Aer
