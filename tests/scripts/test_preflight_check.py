@@ -22,7 +22,7 @@ RUNS = {
     "qi": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
 }
 DRAW = "docs/evidence/anu_qrng/draw-2026-10-18T083548Z.json"
-UNLISTED_SEED = 987654321
+OUTSIDE_LEDGER = 987654321
 
 
 def check(condition: object, message: str = "check failed") -> None:
@@ -67,7 +67,7 @@ def strip_baseline(value: Any) -> None:
 
 def seed_in(name: str) -> Callable[[Path], None]:
     def mutate(directory: Path) -> None:
-        edit(directory, name, lambda value: value.update({"seed": UNLISTED_SEED}))
+        edit(directory, name, lambda value: value.update({"seed": OUTSIDE_LEDGER}))
 
     return mutate
 
@@ -109,7 +109,7 @@ MUTANTS: list[tuple[str, str, Callable[[Path], None]]] = [
         ibm_record(lambda v: v["compiled_ideal_validation"].update(all_candidates_passed=False)),
     ),
     ("ibm", "gate 2 fresh live read", ibm_record(lambda v: v.update(revalidation=[]))),
-    ("ibm", "gate 3 seed provenance", ibm_record(lambda v: v.update(seed_simulator=UNLISTED_SEED))),
+    ("ibm", "gate 3 seed provenance", ibm_record(lambda v: v.update(seed_simulator=OUTSIDE_LEDGER))),
     (
         "ibm",
         "gate 4 budget and ceiling",
