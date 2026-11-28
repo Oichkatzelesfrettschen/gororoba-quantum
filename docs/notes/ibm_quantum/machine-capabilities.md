@@ -60,11 +60,13 @@ stays untested on hardware.
 
 ## 2. Quota and billing today
 
-The primary account's `usage()` reads 67 s consumed of 600 s, 533 s remaining, over the
-period 2026-10-31 to 2026-11-28 (**read**; instance e3de05b6901e, the 12-hex digest of its CRN). A
-second saved account holds its own 600 s that quotas never pool with (`AGENTS.md`). The service holds the same 46 jobs the
-2026-11-08 inventory lists for the primary account, so no primary-account job ran after 2026-11-07 (**read**,
-`service.jobs(limit=None)` on 2026-11-28; the backup account was not read). Billing is QPU lock time: about 2 s per
+At the read of 2026-11-28T05:22Z the primary account's `usage()` read 67 s consumed of 600 s over the
+period 2026-10-31 to 2026-11-28 (**read**; instance e3de05b6901e, the 12-hex digest of its CRN). The figure is a read of
+that moment: a job submitted later adds to it (A5-242 ran on ibm_kingston at 2026-11-28T05:30:47Z), and each second returns
+28 days after it was spent, so a case reads `usage()` in the submitting process. A
+second saved account holds its own 600 s that quotas never pool with (`AGENTS.md`). At that read the service held the same
+46 jobs the 2026-11-08 inventory lists for the primary account, so no primary-account job had run after 2026-11-07 (**read**,
+`service.jobs(limit=None)`; the backup account was not read). Billing is QPU lock time: about 2 s per
 sub-job plus (repetition delay + circuit) per execution ([qpu_run_economy.md](../qpu_run_economy.md); **doc** and **run**).
 Settled charges of the retained jobs are in the next section and in [qpu-job-inventory.json](../../../results/live/qpu-job-inventory.json).
 
@@ -130,7 +132,7 @@ The guide's limits (**doc**): one level of `if`, no nesting, no measurement or r
 32 bits, about 300 broadcasts of 60 bits or 2,400 of 1 bit per job. A job holds either static or dynamic circuits per result
 group: the live_run.py planner refused a group that mixed them three times on 2026-10-13
 ([PATCH_WINDOW_FINDINGS.md](../../../results/live/PATCH_WINDOW_FINDINGS.md), **run**). The scheduler tables of 11 retained jobs give the feed-forward path in cycles
-([feedforward-latency.json](../../evidence/heron_platform/feedforward-latency.json), **run**, backend_version unrecorded):
+([feedforward-latency.json](../../evidence/heron_platform/feedforward-latency.json), **run**; `summary.ibm_fez.backend_versions` reads 1.3.37 and `summary.ibm_kingston.backend_versions` reads 1.0.0):
 ibm_fez, 16 broadcasts over 5 jobs, 406 cycles per broadcast and 112 cycles from the end of the target measurement to the receive
 step; ibm_kingston, 23 broadcasts over 6 jobs, 526 to 630 cycles and 102 to 206 cycles; the receive step takes 7 cycles on both. The latency-recovery run fixed L = 215 dt (0.86 us) on ibm_kingston
 ([LATENCY_RECOVERY_FINDINGS.md](../../../results/live/LATENCY_RECOVERY_FINDINGS.md), **run**).
@@ -179,8 +181,10 @@ Measured facts by backend (each row names its record):
 | ibm_marrakesh | qubit 47 baseline of the coprime-swap case (`dbc40u8c77vs7385ee0g`, 2026-10-21) | 18 | baseline Ramsey run before the fez qubit-143 question | run ([N21_Q143_COPRIME_SWAP_CASE.md](../../../results/live/N21_Q143_COPRIME_SWAP_CASE.md)) |
 
 The A5-242 orientation-bit case ([pathion-kernel-map-orientation-bit.md](../../design/pathion-kernel-map-orientation-bit.md)) has
-dry-run records and a compile case ([orientation-bit evidence](../../evidence/pathion-kernel-map/orientation-bit/case_compile.json))
-and no submitted job; the ledger row waits on a written case. The device-agreement rules of the wide coset analysis read
+dry-run records and a compile case ([orientation-bit evidence](../../evidence/pathion-kernel-map/orientation-bit/case_compile.json)).
+At the read of 2026-11-28T05:22Z it had no submitted job; a merged-diagonal run on ibm_kingston was submitted at
+2026-11-28T05:30:47Z (record `results/live/2026-11-28T053047.595383Z` on branch `a5-242-orientation-run`), and the ledger row
+of that branch holds its state. The device-agreement rules of the wide coset analysis read
 `-0.302 against 0.523` (n64) to `-0.179 against 0.943` (m128) and are not restated here.
 
 ## 7. What we can program
