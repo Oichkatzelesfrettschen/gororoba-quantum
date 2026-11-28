@@ -27,6 +27,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum")
 
 import qd_box_kite_cases as bk  # noqa: E402
 
+import parallel  # noqa: E402
 from cd_core import left_mult_matrix  # noqa: E402
 
 DIM = 32
@@ -98,17 +99,28 @@ def block_record(a: Any, block: list[int]) -> dict[str, Any]:
     }
 
 
+def operand_matrix(support: tuple[int, int]) -> Any:
+    vec = [0.0] * DIM
+    for i in support:
+        vec[i] = 1.0
+    return np.array(left_mult_matrix(DIM, vec))
+
+
+def block_item(item: tuple[str, tuple[int, int], list[int]]) -> dict[str, Any]:
+    """One (operand, coset block) work item; the blocks are independent, so they map through parallel.py."""
+    _, support, block = item
+    return block_record(operand_matrix(support), block)
+
+
 def record() -> dict[str, Any]:
+    items = [(name, support, block) for name, support in OPERANDS.items() for block in coset_blocks(support)]
+    records = parallel.ordered_map(block_item, items)
     out: dict[str, Any] = {}
     for name, support in OPERANDS.items():
-        vec = [0.0] * DIM
-        for i in support:
-            vec[i] = 1.0
-        a = np.array(left_mult_matrix(DIM, vec))
-        blocks = [block_record(a, block) for block in coset_blocks(support)]
+        blocks = [r for (owner, _, _), r in zip(items, records, strict=True) if owner == name]
         out[name] = {
             "support": list(support),
-            "global_nullity": int(sum(np.linalg.svd(a, compute_uv=False) < TOL)),
+            "global_nullity": int(sum(np.linalg.svd(operand_matrix(support), compute_uv=False) < TOL)),
             "block_nullities": [r["nullity"] for r in blocks],
             "first_blocks": blocks[:2],
         }
