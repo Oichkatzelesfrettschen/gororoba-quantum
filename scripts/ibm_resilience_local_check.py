@@ -1,7 +1,8 @@
 """Raw versus mitigated <Z> of one retained experiment row on the local noise model, for the EstimatorV2 design note.
 
-The row is the design_a associator readout (docs/notes/ibm_quantum/estimator-resilience-design.md). The check builds the
-two mitigation families the client Estimator offers from first principles on the Target's noise model:
+The row is the design_a associator readout (docs/notes/ibm_quantum/native-sdk-opt-ins.md, section "EstimatorV2
+resilience"). The check builds the two mitigation families the client Estimator offers from first principles on
+the Target's noise model:
 
 - readout inversion, the construction behind measure mitigation (TREX): live_run.readout_corrected inverts each
   measured bit's confusion channel (without the twirl of the service implementation);
@@ -9,7 +10,11 @@ two mitigation families the client Estimator offers from first principles on the
   zero with a linear and an exponential fit.
 
 It is an equivalent construction of the technique on a simulated channel, never the service implementation, and it
-sends nothing anywhere. The noise model acts on gates, delays and readout, so folding scales it by construction.
+sends nothing anywhere. The noise model acts on gates, delays and readout. Folding repeats the gate body only: the
+final measurement stays single, so one readout channel acts at every noise factor and the fit sees gate and idle
+attenuation scaled by the factor on top of a fixed readout channel. The report states the factors, the fit
+assumptions and the scheduled-duration ratio as separate fields; the ratio sums circuit durations and leaves out the
+repetition delay that the submission planner charges.
 
 Usage:
     "$PYTHON" scripts/ibm_resilience_local_check.py --backend fake:fez \\
@@ -36,6 +41,12 @@ import ibm_dd_compare as dd  # noqa: E402
 
 NOISE_FACTORS = (1, 3, 5)
 DEFAULT_SHOTS = 20000
+FOLDING_SCOPE = "global gate folding of the compiled body at odd factors; the final measurement is not folded"
+FIT_ASSUMPTIONS = (
+    "linear: z is affine in the factor; exponential: z = A exp(-b factor), which holds when gate and idle attenuation "
+    "multiply and a fixed readout channel is absent or already inverted; the unfolded readout channel breaks a pure "
+    "exponential on raw counts"
+)
 
 
 def z_of(law: np.ndarray) -> float:
@@ -114,7 +125,10 @@ def run_check(
         "zne_of_raw": extrapolate(NOISE_FACTORS, raw),
         "zne_of_readout_corrected": extrapolate(NOISE_FACTORS, corrected),
         "duration_dt": durations,
-        "qpu_cost_ratio": sum(durations) / durations[0],
+        "scheduled_duration_ratio": sum(durations) / durations[0],
+        "repetition_delay_included": False,
+        "folding": FOLDING_SCOPE,
+        "fit_assumptions": FIT_ASSUMPTIONS,
         "seed_transpiler": seed_transpiler,
         "seed_simulator": seed_simulator,
     }
@@ -132,7 +146,12 @@ def format_report(report: dict[str, Any]) -> str:
         rows.append(f"  {factor:6d}  {raw:+.4f}  {corrected:+.4f}  {duration}")
     rows.append(f"  ZNE of raw {report['zne_of_raw']}")
     rows.append(f"  ZNE of readout-corrected {report['zne_of_readout_corrected']}")
-    rows.append(f"  quantum-time ratio against one unmitigated circuit {report['qpu_cost_ratio']:.2f}")
+    rows.append(
+        f"  scheduled-duration ratio against one unmitigated circuit {report['scheduled_duration_ratio']:.2f} "
+        "(circuit durations only, repetition delay omitted)"
+    )
+    rows.append(f"  folding: {report['folding']}")
+    rows.append(f"  fits: {report['fit_assumptions']}")
     return "\n".join(rows)
 
 
