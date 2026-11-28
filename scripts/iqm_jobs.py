@@ -72,6 +72,9 @@ from iqm_records import (
     RESULTS_SCHEMA as RESULTS_SCHEMA,
 )
 from iqm_records import (
+    SENT_BODY as SENT_BODY,
+)
+from iqm_records import (
     SUBMISSION_SCHEMA as SUBMISSION_SCHEMA,
 )
 from iqm_records import (
@@ -453,11 +456,23 @@ def post_job(
         raise
     body = body_of(run_dir, row, qc)
     encoded = json.dumps(body, sort_keys=True).encode()
+    # The posted bytes are retained beside the receipt, so wire_sha256 names what left the process and a
+    # change of client or serializer shows as a digest change.
+    wire = iqm_platform.wire_bytes(body)
+    (run_dir / SENT_BODY).write_bytes(wire)
     # The exclusive checkpoint precedes the POST: an existing one means the job may already be on the server.
     fd = os.open(run_dir / "submission-state.json", os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
     with os.fdopen(fd, "w") as handle:
-        handle.write(dump({"state": "posting", "qc": qc, "job": job, "body_sha256": sha256(encoded)}))
-    status, reply = client.post(f"{API}/jobs/{qc}/circuit", body)
+        handle.write(
+            dump(
+                {"state": "posting", "qc": qc, "job": job, "body_sha256": sha256(encoded), "wire_sha256": sha256(wire)}
+            )
+        )
+    try:
+        status, reply = client.post_bytes(f"{API}/jobs/{qc}/circuit", wire)
+    except iqm_platform.NonJsonReply as error:
+        # The status survives a body that is not JSON, so a plain-text refusal is settled like a JSON one.
+        status, reply = error.status, error.text
     if 400 <= status < 500:
         # A 4xx refusal created no job, so the copy goes and the corrected case can be submitted again.
         shutil.rmtree(run_dir)
@@ -474,6 +489,7 @@ def post_job(
                 "job": job,
                 "cases_sha256": approved_sha256,
                 "body_sha256": sha256(encoded),
+                "wire_sha256": sha256(wire),
                 "approval": approval,
                 "max_credits": max_credits,
                 "price_per_second": price,

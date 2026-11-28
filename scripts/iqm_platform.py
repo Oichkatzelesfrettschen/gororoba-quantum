@@ -115,6 +115,15 @@ Transport = Callable[[str, str, bytes | None, dict[str, str]], tuple[int, dict[s
 PlatformError = RecordError
 
 
+class NonJsonReply(PlatformError):
+    """A reply whose body is not JSON, with the HTTP status kept for a caller that acts on it."""
+
+    def __init__(self, path: str, status: int, text: str) -> None:
+        super().__init__(f"POST {path} answered {status} with a non-JSON body")
+        self.status = status
+        self.text = text[:200]
+
+
 def now() -> str:
     return dt.datetime.now(dt.UTC).isoformat(timespec="seconds").replace("+00:00", "Z")
 
@@ -176,6 +185,11 @@ def write_private(path: Path, value: dict[str, Any]) -> None:
     os.replace(tmp, path)
 
 
+def wire_bytes(value: Any) -> bytes:
+    """The request body Client.post sends for value."""
+    return json.dumps(value).encode()
+
+
 class Client:
     def __init__(self, token: str, transport: Transport | None = None, server: str = SERVER) -> None:
         self.token = token
@@ -193,15 +207,17 @@ class Client:
         return status, body
 
     def post(self, path: str, value: Any, token: str | None = None) -> tuple[int, Any]:
-        status, _, body = self.send(
-            "POST", f"{self.server}/{path}", json.dumps(value).encode(), self.headers(token, True)
-        )
+        return self.post_bytes(path, wire_bytes(value), token)
+
+    def post_bytes(self, path: str, data: bytes, token: str | None = None) -> tuple[int, Any]:
+        """POST data exactly as given, so a caller can retain and hash the bytes that leave the process."""
+        status, _, body = self.send("POST", f"{self.server}/{path}", data, self.headers(token, True))
         if not body:
             return status, None
         try:
             return status, json.loads(body)
         except ValueError as error:
-            raise PlatformError(f"POST {path} answered {status} with a non-JSON body") from error
+            raise NonJsonReply(path, status, body.decode("utf-8", "replace")) from error
 
     def graphql(self, query: str, variables: dict[str, Any] | None = None) -> dict[str, Any]:
         status, reply = self.post("api/graphql", {"query": query, "variables": variables or {}})
