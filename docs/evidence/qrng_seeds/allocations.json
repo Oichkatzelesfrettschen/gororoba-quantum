@@ -2313,6 +2313,22 @@
    "experiment": "pathion_one_cz_null_bracketed_qx"
   },
   {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-27T222523Z.json",
+   "index": 33,
+   "value": 64202,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-transpiler",
+   "experiment": "2026-11-28T035012.386370Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-27T222523Z.json",
+   "index": 34,
+   "value": 53470,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-simulator",
+   "experiment": "2026-11-28T035012.386370Z"
+  },
+  {
    "record": "docs/evidence/outshift_qrng/draw-2026-10-27T154654Z.json",
    "index": 0,
    "value": 34509,
