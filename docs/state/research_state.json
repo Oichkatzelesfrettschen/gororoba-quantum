@@ -4515,6 +4515,13 @@
       "run": "results/quantum_inspire/runs/2026-11-19T1735Z-t17-characterization_interleaved_tuna_17-q12_phase-batch-03",
       "family": "Tuna-17 interleaved characterization series (interleaved T1 at per-qubit delays, drive-context crosstalk contrasts and q12 Ramsey phase arms)",
       "question": "On Tuna-17, does the q12 Ramsey fringe carry the static phase offset of about -0.15 rad that the null-rotation scan refit predicts, at waits of 0 and 25 cycles?"
+    },
+    {
+      "id": "ibm-kingston-a5-242-orientation-merged",
+      "provider": "ibm",
+      "run": "results/live/2026-11-28T053047.595383Z",
+      "family": "A5-242 orientation bit, merged diagonal on ibm_kingston",
+      "question": "On ibm_kingston, does the bit-4 orientation character gap follow the orientation qubit, the compiled SELECT or the physical qubit, on the merged-diagonal circuits with the tile pin?"
     }
   ],
   "claims": [

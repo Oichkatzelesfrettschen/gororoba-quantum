@@ -124,6 +124,13 @@ IDLE_CAMPAIGNS = frozenset({"idle_penalty", "idle_readout"})
 PIN_CAPABLE_CAMPAIGNS = PINNED_CAMPAIGNS | IDLE_CAMPAIGNS
 PIN_REQUIRED_CAMPAIGNS = frozenset({"idle_readout"})
 TWIRLING_MIN_SHOTS_PER_RANDOMIZATION = 64
+# Groups whose compile starts from one embedding of a logical-edge template. The group's wires keep the template's
+# couplers through routing, and the replica search moves the compiled pattern onto every placed region, so each region
+# keeps them. pathion_kernel_map_orientation_merged is the spider(2,2,1) of its SELECT diagonal with wires 1 and 4
+# adjacent, the pair its swap member exchanges (docs/design/pathion-kernel-map-orientation-merged.md).
+TILE_TEMPLATES: dict[str, tuple[tuple[int, int], ...]] = {
+    "pathion_kernel_map_orientation_merged": ((0, 1), (0, 2), (0, 3), (1, 4), (2, 5)),
+}
 OPT_LEVEL = 3
 SEED_TRANSPILER = 20261010
 SEED_SIMULATOR = 20261011
@@ -221,6 +228,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "pathion_four_term_block.py",
     "pathion_kernel_map.py",
     "pathion_kernel_map_orientation.py",
+    "pathion_kernel_map_orientation_merged.py",
     "pathion_parallel_coset.py",
     "pathion_wide_coset.py",
     "qpu_cases.py",
@@ -1292,6 +1300,39 @@ def component_layouts(snap: Snapshot, width: int) -> list[list[int]]:
     return layouts
 
 
+def tile_template_layout(graph: Any, edges: tuple[tuple[int, int], ...], excluded: frozenset[int]) -> list[int] | None:
+    """The lexicographically least embedding of a logical-edge template into graph minus the excluded qubits.
+
+    Logical wire i maps to entry i of the returned layout, and every template edge lands on a coupler of graph. The
+    choice reads the coupler graph and the exclusions only, so a fresh plan on an unchanged exclusion set compiles
+    from the same layout whatever the calibration; None means the graph holds no embedding.
+    """
+    host = graph.copy()
+    host.remove_nodes_from(sorted(excluded))
+    width = 1 + max(max(edge) for edge in edges)
+    pattern = rx.PyGraph()
+    pattern.add_nodes_from(range(width))
+    pattern.add_edges_from_no_data(list(edges))
+    layouts = []
+    for mapping in rx.vf2_mapping(host, pattern, subgraph=True, induced=False):
+        inverse = {wire: qubit for qubit, wire in mapping.items()}
+        layouts.append([inverse[wire] for wire in range(width)])
+    return min(layouts) if layouts else None
+
+
+def tile_missing_edges(
+    isas: Sequence[QuantumCircuit], layout: list[int], edges: tuple[tuple[int, int], ...]
+) -> list[tuple[int, int]]:
+    """The template edges whose coupler under layout no circuit of isas drives with a CZ."""
+    driven = {
+        frozenset(isa.find_bit(qubit).index for qubit in instruction.qubits)
+        for isa in isas
+        for instruction in isa.data
+        if instruction.operation.name == "cz"
+    }
+    return [edge for edge in edges if frozenset((layout[edge[0]], layout[edge[1]])) not in driven]
+
+
 def _compile_primary(qc: QuantumCircuit, snap: Snapshot, seed: int) -> QuantumCircuit:
     """_compile with Sabre's own layout, or from component_layouts when that layout panics."""
     try:
@@ -2331,19 +2372,48 @@ def select_candidates(
         trace.append({"stage": "routing_admission", "rejected": routing_rejections})
         if routing_rejections:
             continue
+        tile = TILE_TEMPLATES.get(group.name)
+        compile_pin = pinned
+        if tile is not None and pinned is None:
+            if snap.admission_target is None:
+                snap.admission_target = build_admission_target(snap)
+            compile_pin = tile_template_layout(
+                packing.coupling_graph(snap.admission_target, snap.backend.num_qubits),
+                tile,
+                frozenset(snap.excluded_qubits),
+            )
+            if compile_pin is None:
+                trace.append(
+                    {
+                        "stage": "tile_template",
+                        "rejected": [f"no embedding of the template {list(tile)} on the admitted couplers"],
+                    }
+                )
+                continue
+            trace.append(
+                {
+                    "stage": "tile_template",
+                    "edges": [list(edge) for edge in tile],
+                    "layout": compile_pin,
+                    "rejected": [],
+                }
+            )
         primaries = []
         primary = group.members[0]
         for seed in range(SEED_TRANSPILER, SEED_TRANSPILER + seeds):
             try:
                 isa = (
                     _compile_primary(primary.circuit, snap, seed)
-                    if pinned is None
-                    else _compile(primary.circuit, snap, seed, pinned)
+                    if compile_pin is None
+                    else _compile(primary.circuit, snap, seed, compile_pin)
                 )
             except (QiskitError, ValueError) as error:
                 trace.append({"seed": seed, "compile_error": type(error).__name__})
                 continue
-            if pinned is not None and (placed := isa.layout.initial_index_layout(filter_ancillas=True)) != pinned:
+            if (
+                compile_pin is not None
+                and (placed := isa.layout.initial_index_layout(filter_ancillas=True)) != compile_pin
+            ):
                 trace.append({"seed": seed, "pinned_layout_moved": placed})
                 continue
             bad = compiled_violations(isa, snap)
@@ -2429,6 +2499,11 @@ def select_candidates(
             if member_rejections:
                 trace.append({"seed": seed, "layout": layout, "member_rejections": member_rejections})
                 continue
+            if tile is not None:
+                missing = tile_missing_edges([*isas, *template_isas.values()], layout, tile)
+                if missing:
+                    trace.append({"seed": seed, "layout": layout, "tile_template_missing_edges": missing})
+                    continue
             if group.routed_violations is not None:
                 compiled_target = snap.admission_target if snap.admission_target is not None else snap.backend.target
                 routed_rejections = group.routed_violations([*isas, *template_isas.values()], compiled_target)
@@ -3209,6 +3284,22 @@ def choice_structure(choice: Choice) -> dict[str, Any]:
     }
 
 
+def _tile_template_fields(choice: Choice, tile: tuple[tuple[int, int], ...]) -> dict[str, Any]:
+    """The logical-edge template and each placed region's wire assignment, with its couplers checked on the device."""
+    graph = physical_cz_graph(choice.snap)
+    assignments = []
+    for replica in choice.replicas:
+        layout = [replica.mapping[qubit] for qubit in choice.layout]
+        assignments.append(
+            {
+                "index": replica.index,
+                "initial_layout": layout,
+                "template_on_couplers": all(graph.has_edge(layout[a], layout[b]) for a, b in tile),
+            }
+        )
+    return {"edges": [list(edge) for edge in tile], "assignments": assignments}
+
+
 def idle_padded_choice(choice: Choice) -> tuple[Choice, dict[str, list[dict[str, Any]]]]:
     """choice with every replica's ALAP list-schedule idle written in as delays, and each replica's inserted idle.
 
@@ -3278,7 +3369,7 @@ def _choice_record(
         }
         for entry in choice.entries
     ]
-    return {
+    record = {
         "group": choice.group.name,
         "backend": choice.snap.name,
         **choice.snap.identity,
@@ -3297,6 +3388,9 @@ def _choice_record(
         **choice_calibration_values(choice),
         "members": members,
     }
+    if (tile := TILE_TEMPLATES.get(choice.group.name)) is not None:
+        record["tile_template"] = _tile_template_fields(choice, tile)
+    return record
 
 
 def choice_calibration_values(choice: Choice) -> dict[str, Any]:

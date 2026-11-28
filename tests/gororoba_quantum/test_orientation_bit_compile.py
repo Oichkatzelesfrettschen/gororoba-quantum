@@ -14,7 +14,7 @@ from typing import Any
 
 import numpy as np
 import pytest
-from qiskit import QuantumCircuit
+from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 
 ROOT = Path(__file__).resolve().parents[2]
 DIRECTORY = ROOT / "docs/evidence/pathion-kernel-map/orientation-bit"
@@ -80,3 +80,33 @@ def test_relaxation_model_reproduces_the_closed_form_decay() -> None:
     ideal = cc.model_laws(circuit, cal, tile, depolarizing=False, relaxation=False, readout="none")
     _expect(abs(float(ideal[1] + ideal[3]) - 1.0) < 1e-12, "the noiseless model decays")
     _expect(bool(np.isclose(law.sum(), 1.0)), "the law is not normalized")
+
+
+def _packed_two_regions() -> QuantumCircuit:
+    isa = QuantumCircuit(QuantumRegister(12), ClassicalRegister(2, "g0_r0_c"), ClassicalRegister(2, "g0_r1_c"))
+    first, second = isa.cregs
+    isa.h(3)
+    isa.cx(3, 5)
+    isa.x(7)
+    isa.barrier()
+    isa.measure([3, 5], list(first))
+    isa.measure([7, 9], list(second))
+    return isa
+
+
+def test_region_circuit_cuts_one_replica_of_a_packed_isa_circuit() -> None:
+    cut = cc.region_circuit(_packed_two_regions(), "g0_r1_c", [9, 7])
+    seen = [
+        (i.operation.name, [cut.find_bit(q).index for q in i.qubits], [cut.find_bit(c).index for c in i.clbits])
+        for i in cut.data
+    ]
+    _expect(seen == [("x", [0], []), ("measure", [0], [0]), ("measure", [1], [1])], str(seen))
+    first = cc.region_circuit(_packed_two_regions(), "g0_r0_c", [3, 5])
+    _expect([i.operation.name for i in first.data] == ["h", "cx", "measure", "measure"], "first region")
+
+
+def test_region_circuit_refuses_a_measure_into_another_register() -> None:
+    isa = _packed_two_regions()
+    isa.measure(7, isa.cregs[0][0])
+    with pytest.raises(ValueError, match="writes outside"):
+        cc.region_circuit(isa, "g0_r1_c", [7, 9])

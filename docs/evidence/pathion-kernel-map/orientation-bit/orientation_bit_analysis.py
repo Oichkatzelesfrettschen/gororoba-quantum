@@ -99,7 +99,9 @@ import nhat_spectral as ns  # noqa: E402
 
 import pathion_kernel_map as pkm  # noqa: E402
 import pathion_kernel_map_orientation as pko  # noqa: E402
+import pathion_kernel_map_orientation_merged as pkom  # noqa: E402
 
+ORIENTATION_GROUPS = ("pathion_kernel_map_orientation", pkom.GROUP_NAME)
 ALPHA = 0.05
 POWER = 0.8
 FAMILY = 16
@@ -325,12 +327,19 @@ def readings(
     }
 
 
+def entry_group(name: str) -> Any:
+    """The group a collected entry names: the retained group or its merged-diagonal successor, whose members carry the
+    retained names, order and ideal laws (test_pathion_kernel_map_orientation_merged), so one rule reads both."""
+    for group in (pko.pathion_kernel_map_orientation_group(), pkom.pathion_kernel_map_orientation_merged_group()):
+        if group.name == name:
+            return group
+    raise ValueError(f"{name} is not an orientation-bit group")
+
+
 def units_from_entry(entry: dict[str, Any], keep: list[int] | None = None) -> dict[str, nb.Unit]:
     """Units of one collected group entry: per unit the ideal sign and the replica contrasts of its two arms, over the
     replicas listed in keep (all when None)."""
-    group = pko.pathion_kernel_map_orientation_group()
-    if entry["group"] != group.name:
-        raise ValueError(f"{entry['group']} is not {group.name}")
+    group = entry_group(entry["group"])
     ideal = {m.name: np.asarray(m.ideal, dtype=float) for m in group.members}
     measured = {name: np.asarray(v, dtype=float) for name, v in entry["measured"].items()}
     if keep is not None:
@@ -1038,9 +1047,9 @@ def main() -> int:
     for path in args.analyze:
         collect = json.loads(path.read_text())
         items = collect if isinstance(collect, list) else [collect]
-        entries.append(
-            next(x for x in items if isinstance(x, dict) and x.get("group") == "pathion_kernel_map_orientation")
-        )
+        found = next(x for x in items if isinstance(x, dict) and x.get("group") in ORIENTATION_GROUPS)
+        members = {m.name for m in entry_group(found["group"]).members}
+        entries.append({**found, "measured": {k: v for k, v in found["measured"].items() if k in members}})
     regions = [json.loads(p.read_text()) for p in args.regions] if args.regions else None
     errors = json.loads(args.readout_errors.read_text()) if args.readout_errors else None
     if not args.floors:

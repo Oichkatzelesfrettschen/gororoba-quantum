@@ -1,0 +1,57 @@
+{
+ "schema": "submitted-circuit-row-v1",
+ "row": {
+  "job_id": "db87o8or1c5c738lu910",
+  "run": "results/live/2026-10-15T070853.550532Z",
+  "retained_file": "results/live/2026-10-15T070853.550532Z/isa.qpy",
+  "retained_sha256": "c8996f472748a40ae516c130b8b351894ce34aec9de92226af4d8b0db8327bd7",
+  "order_source": "record.json submission.jobs[].pubs",
+  "expected_pubs": [
+   "ibm_kingston_static_pub_01",
+   "ibm_kingston_static_pub_02",
+   "ibm_kingston_static_pub_03",
+   "ibm_kingston_static_pub_04",
+   "ibm_kingston_static_pub_05",
+   "ibm_kingston_static_pub_06",
+   "ibm_kingston_static_pub_07",
+   "ibm_kingston_static_pub_08",
+   "ibm_kingston_static_pub_09",
+   "ibm_kingston_static_pub_10",
+   "ibm_kingston_static_pub_11",
+   "ibm_kingston_static_pub_12",
+   "ibm_kingston_static_pub_13",
+   "ibm_kingston_static_pub_14"
+  ],
+  "items": 14,
+  "item_kinds": [
+   "CircuitItem"
+  ],
+  "positional_matches": 14,
+  "submitted_qpy_sha256": [
+   "acf0e2f55bd00d650c9ef16260380548c9639e372b03171dc81fdb66249ec530",
+   "d7df1f632701058cfa303503c16ecf58be1deafc451361fd5dc70495546d9563",
+   "d8ef9d098d83371dfc916984c976170b5fbb8eea738b88c937189c07b325402f",
+   "381f8a064f1718716f547bc0a626cb22d99140283ebd8615ceead209d80746ea",
+   "8b85a24d930e11f395350f90a189901a749b9c7cac4cb9fa503009cb82e5060f",
+   "206a26d0458a56377c8aaa40f1db0a481d9ea9771793ae4275b2e998671c0780",
+   "cf3b805e1040c89781542c709d313c97dbeda55028780295d1bef9bef7966d78",
+   "bc450e661f5ab12e2fd2473110668b1affd01adb6a1e4fdd8880ecabe2b852de",
+   "33f9351f53dddb7a8cf041e816d82568446aff367e4e11bc5766e55d732c44bd",
+   "fd0f5dc506f847dbc36a53dd42da687aeab7d991137b8c9944e7dacbb4a986aa",
+   "6b5ffd6ce34226b732d0c6730bdd8dbab327c733db86af6920824a43e30d0676",
+   "1bbe07bb07b1c2c5ce2cdb5c543cad96f18a674d4c6c2773bbc086eedd6db7af",
+   "b5b8e138452216089a231d6fab66fc52082e124006a21028d71991f94ff50972",
+   "f1d0fb425f18162b1de808d719c974e821f1e466b928bbe29660f3317f840eb8"
+  ]
+ },
+ "provenance": {
+  "origin": "service",
+  "retrieved_utc": "2026-11-28T05:53:46.322327+00:00",
+  "operation": "read existing job inputs; submissions and uploads excluded",
+  "runtime_versions": {
+   "qiskit": "2.6.2",
+   "qiskit-ibm-runtime": "0.51.0"
+  },
+  "collector_sha256": "f4a09c11354074974f2268af2e48ec636f832260f9de8f2a1a4db61eb85ce888"
+ }
+}

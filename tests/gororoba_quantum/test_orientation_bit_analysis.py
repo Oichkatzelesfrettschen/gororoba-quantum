@@ -166,3 +166,15 @@ def test_operating_characteristics_sum_to_one_and_keep_the_null_from_refuting() 
                     _expect(abs(sum(operand["verdict"].values()) - 1.0) < 1e-9, f"{scenario} {rho} {rule}: operand")
     null = result["scenarios"]["null"]["rho1"]["band_rule"]["row_verdict"]
     _expect(null.get("refuted", 0.0) < 0.1, f"the null run refuted at {null}")
+
+
+def test_entry_group_reads_the_retained_group_and_its_merged_successor_with_one_ideal_law() -> None:
+    retained = oba.entry_group("pathion_kernel_map_orientation")
+    merged = oba.entry_group("pathion_kernel_map_orientation_merged")
+    _expect([m.name for m in retained.members] == [m.name for m in merged.members], "member names differ")
+    for a, b in zip(retained.members, merged.members, strict=True):
+        _expect(bool(np.allclose(a.ideal, b.ideal, atol=1e-12)), f"ideal law of {a.name} differs")
+    entry = {"group": merged.name, "measured": {m.name: [list(m.ideal)] for m in merged.members}}
+    _expect(len(oba.units_from_entry(entry)) == 8, "units of the merged entry")
+    with pytest.raises(ValueError, match="not an orientation-bit group"):
+        oba.entry_group("pathion_kernel_map")

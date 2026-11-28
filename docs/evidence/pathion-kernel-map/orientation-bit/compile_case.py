@@ -59,7 +59,7 @@ from statistics import median
 from typing import Any
 
 import numpy as np
-from qiskit import QuantumCircuit, transpile
+from qiskit import QuantumCircuit, qpy, transpile
 from qiskit.quantum_info import Kraus
 
 HERE = Path(__file__).resolve().parent
@@ -71,6 +71,7 @@ import orientation_bit_analysis as oba  # noqa: E402
 import parallel  # noqa: E402
 import pathion_kernel_map as pkm  # noqa: E402
 import pathion_kernel_map_orientation as pko  # noqa: E402
+import pathion_kernel_map_orientation_merged as pkom  # noqa: E402
 import qrng_seeds  # noqa: E402
 from heron_multiprogramming import HERON_BASIS, DisjointTile, HeronLattice  # noqa: E402
 
@@ -472,6 +473,62 @@ def model_laws(
     return _confuse(law, matrices)
 
 
+def region_circuit(isa: QuantumCircuit, register: str, qubits: list[int]) -> QuantumCircuit:
+    """The six-qubit circuit of one replica region of a packed ISA circuit: the instructions on the region's qubits
+    (sorted, so position p is physical qubit qubits[p]), measuring into the clbits of the region's register in order."""
+    position = {q: p for p, q in enumerate(sorted(qubits))}
+    creg = next(r for r in isa.cregs if r.name == register)
+    out = QuantumCircuit(len(position), len(creg))
+    for instruction in isa.data:
+        physical = [isa.find_bit(q).index for q in instruction.qubits]
+        if instruction.operation.name == "barrier" or not set(physical) <= set(position):
+            continue
+        slots = [isa.find_bit(c).registers[0] for c in instruction.clbits]
+        if any(reg.name != register for reg, _ in slots):
+            raise ValueError(f"{instruction.operation.name} on {physical} writes outside {register}")
+        out.append(instruction.operation, [position[q] for q in physical], [out.clbits[i] for _, i in slots])
+    return out
+
+
+def isa_region_members(isa_path: Path, record_path: Path, index: int) -> dict[str, QuantumCircuit]:
+    """Every member of the group of a live record, as compiled and packed on the device (isa.qpy), cut to region index.
+    The execution_pubs of the record name the member of each circuit of isa.qpy, in order; the isolated references are
+    skipped."""
+    record = json.loads(record_path.read_text())
+    with isa_path.open("rb") as f:
+        circuits = qpy.load(f)
+    pubs = record["execution_pubs"]
+    if len(circuits) != len(pubs):
+        raise ValueError(f"{len(circuits)} circuits for {len(pubs)} PUBs")
+    qubits = record["groups"][0]["replicas"][index]["physical_qubits"]
+    members: dict[str, QuantumCircuit] = {}
+    for pub, circuit in zip(pubs, circuits, strict=True):
+        (component,) = pub["components"]
+        if not component["reference"]:
+            members[component["member"]] = region_circuit(circuit, f"g0_r{index}_c", qubits)
+    return members
+
+
+def isa_region_laws(item: tuple[int, str, str]) -> dict[str, dict[str, list[float]]]:
+    """Laws of every compiled member on one region of a live record under each of the four noise models (region index,
+    record path, isa path). The noiseless law of every member must equal its ideal law."""
+    index, record, isa = item
+    cal, lattice = record_calibration(record), snapshot_lattice()
+    tile = region_tile(lattice, cal.regions[index], index)
+    members = isa_region_members(Path(isa), Path(record), index)
+    ideal = {
+        m.name: np.asarray(m.ideal, dtype=float) for m in pkom.pathion_kernel_map_orientation_merged_group().members
+    }
+    for name, circuit in members.items():
+        law = model_laws(circuit, cal, tile, depolarizing=False, relaxation=False, readout="none")
+        if float(np.max(np.abs(law - ideal[name]))) > 1e-9:
+            raise ValueError(f"compiled {name} of region {index} departs from its ideal law")
+    return {
+        model: {name: model_laws(c, cal, tile, **options).tolist() for name, c in members.items()}
+        for model, options in MODELS.items()
+    }
+
+
 def region_laws(item: tuple[int, int, str]) -> dict[str, dict[str, list[float]]]:
     """Laws of every member on one region of a live record's calibration under each of the four noise models (region
     index, seed, record path)."""
@@ -586,6 +643,9 @@ def main() -> int:
     ap.add_argument(
         "--floors-from", type=Path, metavar="RECORD", help="write floors.json: the floor band of C per region of RECORD"
     )
+    ap.add_argument(
+        "--isa", type=Path, help="with --floors-from: the isa.qpy of the record, whose compiled circuits set the floors"
+    )
     ap.add_argument("--check", action="store_true", help="recompute the record and compare it with case_compile.json")
     args = ap.parse_args()
     if args.check:
@@ -598,22 +658,29 @@ def main() -> int:
         print(f"{'FAIL' if found else 'ok'}: {len(found)} differences from case_compile.json")
         return 1 if found else 0
     if args.floors_from is not None:
-        if args.seed_transpiler is None or args.out is None:
-            ap.error("--floors-from needs --seed-transpiler and --out")
+        if args.out is None or (args.isa is None) == (args.seed_transpiler is None):
+            ap.error("--floors-from needs --out and exactly one of --isa and --seed-transpiler")
         cal = record_calibration(str(args.floors_from))
-        per_region = parallel.ordered_map(
-            region_laws,
-            [(i, args.seed_transpiler[0], str(args.floors_from)) for i in range(len(cal.regions))],
-            min_items=1,
-        )
-        floors = {
-            **floor_band(per_region),
-            "source": {
-                "record_sha256": sha256(args.floors_from),
-                "regions": cal.regions,
-                "calibration": cal.calibration,
-            },
+        source: dict[str, Any] = {
+            "record_sha256": sha256(args.floors_from),
+            "regions": cal.regions,
+            "calibration": cal.calibration,
         }
+        if args.isa is not None:
+            per_region = parallel.ordered_map(
+                isa_region_laws,
+                [(i, str(args.floors_from), str(args.isa)) for i in range(len(cal.regions))],
+                min_items=1,
+            )
+            source["circuits"] = {"isa_sha256": sha256(args.isa), "group": pkom.GROUP_NAME}
+        else:
+            per_region = parallel.ordered_map(
+                region_laws,
+                [(i, args.seed_transpiler[0], str(args.floors_from)) for i in range(len(cal.regions))],
+                min_items=1,
+            )
+            source["circuits"] = {"group": "pathion_kernel_map_orientation", "seed_transpiler": args.seed_transpiler[0]}
+        floors = {**floor_band(per_region), "source": source}
         (args.out / "floors.json").write_text(json.dumps(floors, indent=1, sort_keys=True, allow_nan=False) + "\n")
         return 0
     if args.seed_transpiler is None or args.out is None:
