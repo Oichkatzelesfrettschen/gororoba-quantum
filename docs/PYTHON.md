@@ -1,5 +1,23 @@
 # Python in this repository: multi-environment audit and governance
 
+## Defaults
+
+Start every task from its row. Retained records and approved case bytes stay on their pinned interpreters; `gq-max` is exploratory, unpinned, and enters no retained record.
+
+| Task class | Interpreter | What it holds | Rule |
+| --- | --- | --- | --- |
+| Exploratory hypercomplex and quantum work: probes, scans, cross-checks | `~/venvs/gq-max` on the compute workstation (CPython 3.14) | the repository pins of qiskit, Aer, runtime, samplomatic and perceval-quandela; python-flint, sympy, numpy, scipy, galois; the algebra libraries of [hypercomplex-libraries.md](notes/hypercomplex-libraries.md) that it lists as present; qiskit-addon-utils, -cutting, -sqd, -mpf, -obp and -aqc-tensor, mthree, stim, pymatching, mitiq, qiskit-experiments; iqm-client; the lock is [gq-max.lock.txt](notes/gq-max.lock.txt) | Start here for a new idea. Rerun the result on a pinned interpreter before it enters a record. A package result enters evidence only through a declared map onto `cd_core` ([AGENTS.md](../AGENTS.md#grounding-and-algebra)). |
+| Retained records, case bytes, gates, replay | the pinned CI interpreters `ci-py3.14.7` and `replay-py3.14.7` under `${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum/`, or `$PYTHON` where it matches them | the pins of the manifests below | `sh ci/pr_checks.sh` and `ci/run_gates.py` pick them ([ci/AGENTS.md](../ci/AGENTS.md)). A retained byte never comes from `gq-max`. |
+| IBM submission and collection | `$PYTHON` on the pinned stack, through `scripts/approved_run.sh` | qiskit, runtime and Aer at the `requirements.txt` pins | The approval rules of [AGENTS.md](../AGENTS.md#qpu-time-and-calibration) apply. Runtime 0.51.0 requires pydantic 2.13 or newer, so an IQM client that pins pydantic below 2.13 never shares this interpreter. |
+| IQM case bytes | `~/venvs/iqm-pin` on the compute workstation (CPython 3.14) | the `requirements.txt` pins, with no IQM client | Approved case bytes build here and nowhere else. |
+| IQM reads and submission | `iqm-python` of the iqm-resonance-stack package on the build host | iqm-client 36 on qiskit 2.1.2 | [iqm/README.md](notes/iqm/README.md) holds the procedure. A submission through iqm-client needs a transport hash to bind the approved bytes by digest. |
+| Quandela (Perceval, Belenos) | `$PYTHON`; `QD_PYTHON` only for the MCP server | perceval-quandela and exqalibur at the pins | [quandela/README.md](notes/quandela/README.md). |
+| Quantum Inspire | `QI_PYTHON`, a CPython 3.13 venv from [requirements-qi.txt](notes/quantum_inspire/requirements-qi.txt) (`~/venvs/qi-z127` on the compute workstation) | quantuminspire 4.1.0, qiskit-quantuminspire 0.18.5, qiskit 2.3.1 | The SDK declares Python below 3.14 ([setup.md](notes/quantum_inspire/setup.md#environment)); no 3.14 interpreter runs it. |
+| Computer algebra | Singular, msolve, Macaulay2 and Sage on the build host; python-flint in `$PYTHON` or `gq-max` | [computer-algebra.md](runbooks/computer-algebra.md) | Exact replays run in global orderings. Bertini and HomotopyContinuation are absent on both hosts. |
+| Hosted CI | the container of [ci/AGENTS.md](../ci/AGENTS.md) | the locked manifests below | Hosted checks admit a merge; no local interpreter substitutes. |
+
+A task class missing from the table runs on `$PYTHON`. Every interpreter starts with `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`.
+
 This document is the central governance and routing authority for Python libraries,
 environments, dependency manifests and interpreters across the repository.
 Versions live in the locked manifests and machine-audited inventories, never in
@@ -147,7 +165,9 @@ The repository audit recognizes four operational statuses across all Python dist
 | `$PYTHON`, exported | default-stack scripts, gates and dry runs; a provider-dependent script or gate half runs under its provider interpreter below | [AGENTS.md](../AGENTS.md) "Layout and gates" |
 | `--replay-python` or `REPLAY_PYTHON` | gates marked `"runtime": "qiskit-2.5"`; with neither, the running interpreter serves when it holds every replay pin, and an unresolved runtime exits 127 | [ci/AGENTS.md](../ci/AGENTS.md) |
 | `${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum/ci-py3.14.7` and `replay-py3.14.7` | `sh ci/pr_checks.sh` lanes and gates when `$PYTHON` differs from the pins (Arch's pytest-xdist reports a git `3.8.1.dev0` version, so the system interpreter never matches exactly); `sh ci/build_host_envs.sh` builds both from the pin files through CI's installer, and `XDG_CACHE_HOME` relocates them for a branch whose pins differ from main's | [ci/AGENTS.md](../ci/AGENTS.md) |
-| `QI_PYTHON` (Python 3.13) | Quantum Inspire SDK, qxelarator, cQASM, OpenSquirrel | [quantum_inspire/README.md](notes/quantum_inspire/README.md) |
+| `~/venvs/gq-max` (CPython 3.14), compute workstation | the exploratory environment of "Defaults" | [gq-max.lock.txt](notes/gq-max.lock.txt) |
+| `~/venvs/iqm-pin` (CPython 3.14), compute workstation | IQM case bytes on the repository pins | [iqm/README.md](notes/iqm/README.md) |
+| `QI_PYTHON` (Python 3.13) | Quantum Inspire SDK, qxelarator, cQASM, OpenSquirrel; locked by [requirements-qi.txt](notes/quantum_inspire/requirements-qi.txt) | [quantum_inspire/README.md](notes/quantum_inspire/README.md) |
 | `OQ_PYTHON` | Open Quantum SDK | [open_quantum/README.md](notes/open_quantum/README.md) |
 | `QD_PYTHON` | the Quandela MCP server; Perceval itself runs on `$PYTHON` | [quandela/README.md](notes/quandela/README.md) |
 | `iqm-python` | IQM Resonance client stack | [iqm/README.md](notes/iqm/README.md) |
@@ -166,12 +186,31 @@ many also run under `-O`, so a check raises explicitly instead of using
 `assert`.
 
 
+## Inventory reconciliation
+
+Source: package metadata and imports read on the compute workstation and the build host on 2026-11-28 (single reads), and PyPI `Requires-Dist` and `Requires-Python` fields read the same day. Versions stay in the manifests; this section names packages and the conflicts between manifests.
+
+**Present and previously undocumented here.** `gq-max` holds qiskit-addon-utils, -cutting, -sqd, -mpf, -obp and -aqc-tensor, mthree, stim, pymatching, mitiq, qiskit-experiments, iqm-client and iqm-station-control-client. Their role is exploratory. The register of [state/hypercomplex-libraries/libraries.md](state/hypercomplex-libraries/libraries.md) keeps each one's admission status, and the presence of qiskit-addon-mpf in `gq-max` does not reverse its declined workflow above. The build host carries pari, gap and flint as system packages without a row in "Libraries by job".
+
+**Documented and missing.** `gq-max` lacks hypercomplex-engine, Octonion-Sedenion and pyoctonion, which the build host carries as Arch packages ([hypercomplex-libraries.md](notes/hypercomplex-libraries.md) lists each library's hosts). Bertini and HomotopyContinuation, the witness-set solvers, are absent on both hosts.
+
+**Version drift.**
+- [setup.md](notes/quantum_inspire/setup.md#environment) named qiskit 2.5.2 as the repository pin; `requirements.txt` pins 2.6.2 and 2.5.2 is the replay pin. The lock `requirements-qi.txt` (qiskit 2.3.1) governs the Quantum Inspire interpreter.
+- The Arch `quantuminspire-qiskit-stack` (`qi-stack-python`) runs qiskit 2.3.0 beside the lock's 2.3.1; PyPI's current quantuminspire is newer than the lock's 4.1.0.
+- iqm-client is 34 in `gq-max`, 36 in the iqm-resonance-stack and 37 on PyPI.
+- hypercomplex-engine is 0.5.0 in the digest-bound [tables.json](evidence/algebra_packages/tables.json) and 0.7.2 from a fresh PyPI install; both tables equal `cd_core` at D = 4 to 64 ([test_hypercomplex_library_maps.py](../tests/gororoba_quantum/test_hypercomplex_library_maps.py)).
+
+**Conflicts that fix the interpreter split.**
+- IQM against runtime: iqm-client 37.0.0 requires `pydantic<2.13.0,>=2.12.4`; qiskit-ibm-runtime 0.51.0 requires `pydantic>=2.13.0` (PyPI metadata). The two never share an interpreter. Its `qiskit` extra also caps qiskit below 2.2 and Aer below 0.18, which the repository pins exceed.
+- Quantum Inspire against Python 3.14: quantuminspire 4.2.0 declares `Requires-Python <3.14,>=3.10` (PyPI metadata); the 4.1.0 lock declares the same ([setup.md](notes/quantum_inspire/setup.md#environment)). The SDK needs the 3.13 interpreter.
+
 ## Dependency manifests and inventory verification
 
 | Manifest / Register | Scope and purpose | Verification gate |
 | --- | --- | --- |
 | [requirements.txt](../requirements.txt) | Primary runtime dependencies (Qiskit 2.6.2, Aer 0.18.2, runtime 0.51.0, FLINT, SymPy, SciPy, NumPy) | `sh ci/pr_checks.sh tests` |
 | [ci/requirements-ci.txt](../ci/requirements-ci.txt) | CI gate tools, testing plugins, Quandela adapters, CVXPY/Clarabel solvers, MCP | `sh ci/pr_checks.sh lint\|types\|tests` |
+| [notes/gq-max.lock.txt](notes/gq-max.lock.txt) | The exploratory `gq-max` environment, unpinned in use and frozen as a record of what it holds | none; no gate reads it |
 | [ci/requirements-browser.txt](../ci/requirements-browser.txt) | Headless Playwright browser automation for measured explorer verification | `scripts/validate_measured_explorer.py` |
 | [ci/requirements-replay.txt](../ci/requirements-replay.txt) | Pinned Qiskit 2.5.2 compiler stack for bit-for-bit historical replay | `ci/run_gates.py --replay-python` |
 | [packaging/qiskit-aer-cuda/build-requirements.txt](../packaging/qiskit-aer-cuda/build-requirements.txt) | Build tools (`build`, `scikit-build`, `pybind11`, `wheel`) for native Aer CUDA package | [notes/build_host/custatevec.md](notes/build_host/custatevec.md) |
