@@ -406,24 +406,58 @@ def test_collect_fails_on_changed_compiled_couplers_after_keeping_the_bytes(
     require(stored["compiled_couplers_checked"] == "differ", "the record keeps differ")
 
 
-def test_a_recollection_cannot_replace_a_fresh_live_differ_with_a_retained_unread(
+def recheck_files(case: Path) -> list[Path]:
+    return sorted(case.glob("couplers-recheck-*.json"))
+
+
+def other_chip_reader(monkeypatch: pytest.MonkeyPatch, blob: Any) -> None:
+    request = qd_platform.request
+
+    def reader(method: str, route: str, auth: bool = True, body: Any = None, raw: bool = False) -> Any:
+        return live(blob) if route == qd_platform.platform_route(CHIP) else request(method, route, auth, body, raw)
+
+    monkeypatch.setattr(qd_platform, "request", reader)
+
+
+def test_a_recollection_reads_a_fresh_live_differ_into_a_recheck_and_keeps_results_json(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     case = collect_fixture(tmp_path, monkeypatch, live(None))
     require(qd_platform.collect(case, 0.0, 5.0)["couplers_checked"] == "unread", "the first read is unread")
-    request = qd_platform.request
-
-    def other_chip(method: str, route: str, auth: bool = True, body: Any = None, raw: bool = False) -> Any:
-        return live(OTHER) if route == qd_platform.platform_route(CHIP) else request(method, route, auth, body, raw)
-
-    monkeypatch.setattr(qd_platform, "request", other_chip)
+    before = (case / "results.json").read_bytes()
+    other_chip_reader(monkeypatch, OTHER)
     with pytest.raises(qd_platform.PlatformError, match="live-differ"):
         qd_platform.collect(case, 0.0, 5.0)
-    stored = json.loads((case / "results.json").read_text(encoding="utf-8"))
-    require(stored["couplers_checked"] == "live-differ", "the record now reads live-differ")
-    monkeypatch.setattr(qd_platform, "request", request)
+    require((case / "results.json").read_bytes() == before, "results.json keeps its first collection's bytes")
+    (recheck,) = recheck_files(case)
+    require(
+        json.loads(recheck.read_text(encoding="utf-8"))["couplers_checked"] == "live-differ",
+        "the recheck records live-differ",
+    )
     with pytest.raises(qd_platform.PlatformError, match="live-differ"):
         qd_platform.collect(case, 0.0, 5.0)
+    require((case / "results.json").read_bytes() == before, "a later recollection keeps results.json too")
+
+
+def test_a_recollection_that_matches_writes_a_recheck_and_leaves_the_verdict(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    case = collect_fixture(tmp_path, monkeypatch, live(RETAINED))
+    require(qd_platform.collect(case, 0.0, 5.0)["couplers_checked"] == "live-match", "the first read matches")
+    before = (case / "results.json").read_bytes()
+    require(qd_platform.collect(case, 0.0, 5.0)["couplers_checked"] == "live-match", "the recollection matches")
+    require((case / "results.json").read_bytes() == before, "results.json keeps its bytes")
+    (recheck,) = recheck_files(case)
+    require(
+        json.loads(recheck.read_text(encoding="utf-8"))["couplers_checked"] == "live-match",
+        "the recheck records live-match",
+    )
+
+
+def test_the_recheck_schema_names_match_between_the_writer_and_the_reader() -> None:
+    require(qd_platform.COUPLER_RECHECK_SCHEMA == qd_records.COUPLER_RECHECK_SCHEMA, "schema names differ")
+    require(qd_platform.COUPLER_RECHECK_GLOB == qd_records.COUPLER_RECHECK_GLOB, "file patterns differ")
+    require(qd_platform.COUPLER_STATES == {k: v for k, v in qd_records.COUPLER_ORDER.items()}, "state orders differ")
 
 
 def test_a_recollection_keeps_a_read_state_when_the_platform_omits_the_field(
@@ -449,3 +483,48 @@ def test_collect_fails_on_a_live_architecture_with_other_phase_shifters(
         qd_platform.collect(case, 0.0, 5.0)
     stored = json.loads((case / "results.json").read_text(encoding="utf-8"))
     require(stored["couplers_checked"] == "live-differ", 'stored["couplers_checked"] == "live-differ"')
+
+
+def write_recheck(run: Path, **changes: Any) -> Path:
+    submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
+    record = {
+        "schema": qd_platform.COUPLER_RECHECK_SCHEMA,
+        "job_id": submission["job_id"],
+        "architecture_source": submission["architecture_source"],
+        "checked_utc": "2026-11-28T06:00:00+00:00",
+        "couplers_checked": "live-match",
+        "compiled_couplers_checked": "match",
+        "platform_record_sha256": "0" * 64,
+        **changes,
+    }
+    path = run / "couplers-recheck-20261128T060000000000Z.json"
+    path.write_text(json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+    return path
+
+
+def test_a_recheck_that_differs_makes_validate_run_refuse_and_results_json_keeps_its_bytes(tmp_path: Path) -> None:
+    run = copied_run(tmp_path)
+    before = (run / "results.json").read_bytes()
+    write_recheck(run, couplers_checked="live-differ")
+    with pytest.raises(qd_records.RecordError, match="live-differ"):
+        qd_records.read_run(run)
+    require((run / "results.json").read_bytes() == before, "results.json keeps its bytes")
+
+
+def test_a_matching_recheck_keeps_validate_run_accepting_the_run(tmp_path: Path) -> None:
+    run = copied_run(tmp_path)
+    write_recheck(run)
+    facts = qd_records.read_run(run).facts
+    require(facts["couplers_checked"] == "live-match", "the judged state is the more severe read, live-match")
+    require(facts["compiled_couplers_checked"] == "match", "the compiled state is the more severe read, match")
+
+
+@pytest.mark.parametrize(
+    "changes",
+    [{"job_id": "job-other"}, {"architecture_source": "live"}, {"couplers_checked": "bogus"}, {"token": "x"}],
+)
+def test_a_malformed_recheck_refuses_the_run(tmp_path: Path, changes: dict[str, Any]) -> None:
+    run = copied_run(tmp_path)
+    write_recheck(run, **changes)
+    with pytest.raises(qd_records.RecordError):
+        qd_records.read_run(run)

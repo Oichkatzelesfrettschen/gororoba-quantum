@@ -1239,6 +1239,35 @@ def escalated_states(retained: dict[str, Any], fresh: dict[str, Any]) -> dict[st
     return out
 
 
+COUPLER_RECHECK_SCHEMA = "qd-couplers-recheck-v1"
+
+COUPLER_RECHECK_GLOB = "couplers-recheck-*.json"
+
+
+def write_couplers_recheck(case_dir: Path, submission: dict[str, Any], fresh: dict[str, Any], record: Any) -> Path:
+    """Publish one recollection's coupler read as couplers-recheck-<UTC>.json beside results.json.
+
+    The file names its job and planned architecture_source, the live and compiled states, the read time and the
+    sha256 of the platform record read. results.json keeps its bytes; qd_records.validate_run judges the file.
+    """
+    stamp = datetime.datetime.now(datetime.UTC).strftime("%Y%m%dT%H%M%S%fZ")
+    path = case_dir / f"couplers-recheck-{stamp}.json"
+    write_json(
+        path,
+        {
+            "schema": COUPLER_RECHECK_SCHEMA,
+            "job_id": submission["job_id"],
+            "architecture_source": submission["architecture_source"],
+            "checked_utc": fresh["couplers_checked_utc"],
+            "couplers_checked": fresh["couplers_checked"],
+            "compiled_couplers_checked": fresh["compiled_couplers_checked"],
+            "platform_record_sha256": sha256_bytes(json.dumps(record, sort_keys=True).encode()),
+        },
+        exclusive=True,
+    )
+    return path
+
+
 def explorer_row(platform: str) -> dict[str, Any]:
     rows = [row for row in get("/api/platforms/public/explorer", auth=False) if row.get("name") == platform]
     if len(rows) != 1:
@@ -2136,14 +2165,16 @@ def collect(case_dir: Path, poll: float, timeout: float) -> dict[str, Any]:
         )
     except PlatformError as error:
         collected["usage_absent"] = str(error)
+    platform_read: dict[str, Any] = {}
     if "architecture_source" in submission:
-        collected.update(
-            couplers_state(
-                submission,
-                submission["platform"],
-                lambda: patient(lambda: get(platform_route(submission["platform"])), job, "platform", deadline, poll),
+
+        def read_platform() -> Any:
+            platform_read["record"] = patient(
+                lambda: get(platform_route(submission["platform"])), job, "platform", deadline, poll
             )
-        )
+            return platform_read["record"]
+
+        collected.update(couplers_state(submission, submission["platform"], read_platform))
         collected["compiled_couplers_checked"] = compiled_couplers_state(submission, result_bytes)
         collected["couplers_checked_utc"] = now()
     if result_bytes is None:
@@ -2169,11 +2200,25 @@ def collect(case_dir: Path, poll: float, timeout: float) -> dict[str, Any]:
             raise PlatformError(f"{retained_path} differs from the recollection; nothing was rewritten")
         if result_bytes is not None:
             retain_bytes(raw_dir / "result.json", result_bytes)
-        # The fresh read is judged before the retained record can stand in for it: a state only escalates.
-        changed = {k: v for k, v in escalated_states(retained, collected).items() if retained.get(k) != v}
-        collected = {**retained, **changed}
-        if changed:
-            write_json(retained_path, collected)
+        # The verdict judges the more severe of the retained state, the fresh read and every earlier recheck. A
+        # recollection leaves results.json as first collected; its coupler read goes to a recheck file beside it.
+        judged = {**retained, **escalated_states(retained, collected)}
+        for prior_path in sorted(case_dir.glob(COUPLER_RECHECK_GLOB)):
+            prior = json.loads(prior_path.read_text(encoding="utf-8"))
+            judged = {
+                **judged,
+                **escalated_states(
+                    judged,
+                    {
+                        "couplers_checked": prior["couplers_checked"],
+                        "compiled_couplers_checked": prior["compiled_couplers_checked"],
+                        "couplers_checked_utc": prior["checked_utc"],
+                    },
+                ),
+            }
+        if "architecture_source" in submission:
+            write_couplers_recheck(case_dir, submission, collected, platform_read["record"])
+        collected = judged
     else:
         write_json(retained_path, collected, exclusive=True)
     if collected.get("couplers_checked") == "live-differ":
