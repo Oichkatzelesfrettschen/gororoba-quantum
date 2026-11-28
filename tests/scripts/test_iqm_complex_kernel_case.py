@@ -349,9 +349,9 @@ def test_recorded_power_is_the_joint_rule_over_the_predicted_counts() -> None:
     require(len(z) == len(decision.DISCRIMINATING) + len(decision.MUTATION_OPERANDS) + 2)
     counts = counts_from(predicted_zero(), kept)
     require(abs(pred["decision"]["power_complex_truth"] - round(decision.simulated_power(counts), 3)) < 1e-9)
-    # Near threshold the joint rule is far from the product of independent normals: at 300 kept shots the shared null
+    # Near threshold the joint rule is far from the product of independent normals: at 500 kept shots the shared null
     # and visibilities leave a power strictly between 0 and 1, and the quadrature repeats bit for bit.
-    thin = counts_from(predicted_zero(), 300)
+    thin = counts_from(predicted_zero(), 500)
     power = decision.simulated_power(thin)
     require(0.0 < power < 1.0 and power == decision.simulated_power(thin))
 
