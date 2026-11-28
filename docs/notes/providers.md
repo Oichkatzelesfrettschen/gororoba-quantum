@@ -1,5 +1,7 @@
 # Provider environments and MCP servers
 
+Start here: interpreters and their rules are in the [Defaults of PYTHON.md](../PYTHON.md#defaults); the machine skills are `program-ibm-heron`, `program-quandela-belenos` and `program-quantum-inspire-tuna17`; the capability notes are `docs/notes/ibm_quantum/machine-capabilities.md` and `docs/notes/quandela/belenos-capabilities.md`, and the routing table is `docs/notes/machine-routing.md`, each landing through its own pull request.
+
 Each provider guide holds the backend table, API behavior, gates and run
 procedure; the live provider pages stay the authority because they change.
 Every job, upload, notebook session and provider QRNG read waits for the

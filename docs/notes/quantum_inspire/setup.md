@@ -9,7 +9,8 @@ conflict with the repository's:
   qiskit-quantuminspire 0.18.5 declare `Requires-Python >= 3.10, < 3.14`;
   the repository and CI run Python 3.14.
 - qiskit-quantuminspire 0.18.5 requires `qiskit >= 2.0, < 2.4` and resolves
-  qiskit 2.3.1; the repository pins qiskit 2.5.2.
+  qiskit 2.3.1, below the repository pin in `requirements.txt` (2.5.2 is the pin of
+  `ci/requirements-replay.txt`).
 - pennylane-quantuminspire 0.15.5 requires Python >= 3.11 and
   PennyLane >= 0.43, < 0.46 (not installed here).
 - No Arch package or local PKGBUILD carries quantuminspire.
