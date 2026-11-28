@@ -83,6 +83,14 @@ def cell_script(source: str, root: int, drop_first: bool = False) -> str:
     return text.replace("number i=10754", f"number i={root}")
 
 
+def cert_line(line: str) -> str:
+    """A CERT line without the trailing timer that the colon line prints after its iteration count."""
+    text = line.strip()
+    if text.startswith("CERT colon_equal_after_iterations"):
+        return " ".join(text.split()[:3])
+    return text
+
+
 def limit() -> None:
     resource.setrlimit(resource.RLIMIT_AS, (ADDRESS_SPACE_BYTES, ADDRESS_SPACE_BYTES))
 
@@ -110,7 +118,7 @@ def run_cell(job: tuple[str, int, bool]) -> dict[str, Any]:
             text = raw.decode() if isinstance(raw, bytes) else raw
             status = "timeout"
         seconds = time.perf_counter() - start
-    certs = sorted({line.strip() for line in text.splitlines() if line.strip().startswith("CERT")})
+    certs = sorted({cert_line(line) for line in text.splitlines() if line.strip().startswith("CERT")})
     fiber = [line.strip() for line in text.splitlines() if line.strip().startswith("FIBER")]
     nak = re.search(r"NAKAYAMA generators\s+(\d+)", text)
     triple = None
