@@ -2,7 +2,7 @@
 
 This note states what is established about passages between the annihilator dimensions of A_5, what is open, and
 the next computations with their acceptance checks. The exact record is
-[a5-nullity-transitions](../evidence/a5-nullity-transitions/README.md) (ledger rows A5-650 to A5-665); the
+[a5-nullity-transitions](../evidence/a5-nullity-transitions/README.md) (ledger rows A5-650 to A5-668); the
 [review](../archive/reviews/a5-outside-transition-report/README.md) records where its paths come from. The
 nullity-8 to nullity-12 and nullity-16 limits belong to the
 [kernel-attachments program](a5-kernel-attachments-program.md) and the Lorentzian slice to the
@@ -46,12 +46,12 @@ their tables.
 | # | Item | Depends on | Acceptance check |
 |---|---|---|---|
 | T1 | Proof of the overlap law over the whole Stiefel cone | A5-654 | done: the kernel identity modulo the Stiefel ideal and the Clifford relations (A5-655, proved) |
-| T2a | done as a tested rule: the dimension of ker L_p n ker L_q (0, 2, 4) names the type R, C, H with closures so(8), su(4), sp(2) (A5-664, survives) | A5-659 | recorded |
+| T2a | done as a tested rule: the dimension of ker L_p n ker L_q (0, 2, 4) names the type R, C, H with closures so(8), su(4), sp(2) (A5-667, survives) | A5-659 | recorded |
 | T2 | A proof of the three-type rule (the red-team derivation of the review record covers dimension 4), whether dimensions 1 and 3 occur on W8, and the real orbit structure behind it: the pencil type over the real orbits of W8 (the plane types of the strata record), and the rank-drop locus and limiting planes at a point with scalar commutant | A5-659 | a rule that predicts the type at points written before their runs, starting from the real G_2 invariants of the halves at the eight recorded points and from points drawn from a parametrization of the real points of W8; A5-660 decided in its second clause |
-| T3 | Arcs into the W8 point beyond the 22 of A5-665 (twenty lines of zero first-order form, two curved arcs, all on the sphere): a proof for every arc, by the second-order Schur form of the nullity-8 record applied one stratum down | A5-665 | A5-660 decided |
-| T4 | done for dimensions and algebras (A5-663) and for the VB Pfaffian, which is -\|lead Q\|^2 \|lead G\|^2 on the doubly pure coordinates (A5-657, survives). Open: the same identity at N+-, and the locus of compression rank 4 at VB with its limiting kernels | A5-663 | the N+- Pfaffian compared with the leading forms; the real rank-4 locus tested on rational points |
+| T3 | Arcs into the W8 point beyond the 22 of A5-668 (twenty lines of zero first-order form, two curved arcs, all on the sphere): a proof for every arc, by the second-order Schur form of the nullity-8 record applied one stratum down | A5-668 | A5-660 decided |
+| T4 | done for dimensions and algebras (A5-666) and for the VB Pfaffian, which is -\|lead Q\|^2 \|lead G\|^2 on the doubly pure coordinates (A5-657, survives). Open: the same identity at N+-, and the locus of compression rank 4 at VB with its limiting kernels | A5-666 | the N+- Pfaffian compared with the leading forms; the real rank-4 locus tested on rational points |
 | T5 | Closed Gauss graph of the nullity-4 stratum over a W8 point as a subset of Gr(4, 8), against the Nash blow-up question of the attachments program (section 5) | T1, T3 | the fiber over the point identified as a set with a two-sided certificate (A5-250 for this incidence) |
-| T6 | done (A5-661): sp(1), sp(2), sp(4). Open: the statement for every level, pencil dimension 2^(n-2) - 1 and closure sp(2^(n-4)) at the embedded element; a derivation is in the review record | A5-661 | a machine proof in gororoba-math |
+| T6 | done (A5-664): sp(1), sp(2), sp(4). Open: the statement for every level, pencil dimension 2^(n-2) - 1 and closure sp(2^(n-4)) at the embedded element; a derivation is in the review record | A5-664 | a machine proof in gororoba-math |
 | T7 | Formal targets in gororoba-math: the Gram identity for the doubling unit at every level, the alternating three-form, the Pfaffian identity at e_1 + e_10 | none | a pool row of the formal-proofs workgroup per target; proofs compile there |
 | T8 | Hardware observable (hypothesis): overlaps of limiting planes read as contrasts of the coset-block kernel map on two nullity-4 operands near e_1 + e_10 | T1 | a written case and the owner's approval precede any device run |
 
@@ -63,7 +63,7 @@ their tables.
   machine proofs and cites rows by path; open work sits in the pooled ledger of gororoba-infrastructure.
 - **Gap 1.** The nullity-4 stratum has no kernel-limit record into any closure before this one (A5-389 open);
   T1 to T5 are the route.
-- **Gap 2.** Closed: the pencils at VB and N+- are in the record (A5-663).
+- **Gap 2.** Closed: the pencils at VB and N+- are in the record (A5-666).
 - **Gap 3.** The orbit classifier lives under an evidence directory and the record script imports it by path; a
   move into `gororoba_quantum/` is a separate change, since retained records bind the file's digest.
 - **Gap 4.** The paper link stays a boundary (A5-628). A correspondence needs a non-abelian algebra or a positivity

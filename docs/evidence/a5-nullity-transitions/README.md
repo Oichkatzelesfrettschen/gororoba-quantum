@@ -10,7 +10,7 @@ its bytes; `--self-test` runs ten controls, each a property that fails on a muta
 
 The paths gamma_1, gamma_2, gamma_3 and the pair of limiting planes of statement 3 come from an outside report
 ([review](../../archive/reviews/a5-outside-transition-report/README.md)); statements 2 (the second end of gamma_3)
-and 5 to 9 are computed here first. Ledger rows A5-650 to A5-665 of
+and 5 to 9 are computed here first. Ledger rows A5-650 to A5-668 of
 [the claim ledger](../a5-exceptional-fibers/ledger.tsv) carry the statements.
 
 ## Conventions
@@ -152,7 +152,7 @@ projective plane of C^3, a 2-sphere, embedded in the quaternionic lines HP^1 = S
 overlap law. The record covers lines in the six coordinate units, two curved arcs along the conic and the lines along pairs
 of zero-compression units (statement 15), all of which limit on the 2-sphere; a proof for every arc is open (A5-660). The quaternion commutant is absent at four of the ten named W8
 points, so the hypothesis that every W8 point carries it is refuted (A5-656). The dimension of ker L_p n ker L_q decides
-the type on every tested point (A5-664, survives); a proof is open. A red-team derivation
+the type on every tested point (A5-667, survives); a proof is open. A red-team derivation
 ([review](../../archive/reviews/a5-nullity-tower-split/README.md)) argues that dimension 4 forces type H and that
 the tower of statement 12 continues as sp(2^(n-4)) at every level; both are arguments awaiting a machine proof.
 The Pfaffian at N+- is not computed (A5-657).
