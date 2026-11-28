@@ -2,14 +2,18 @@
 
 Three tools put Perceval 1.3.1 and exqalibur 1.4.2 beside our own Belenos code. Our code stays
 authoritative for approval binding, digests and records; each native feature enters as an opt-in
-whose result a record captures. No tool submits, creates or cancels a provider job, and none draws
-from an unseeded generator. Tests: `tests/scripts/test_qd_live_noise_sim.py`,
+whose result a record captures. No tool submits, creates or cancels a provider job. No served string
+reaches `perceval.serialization.deserialize`, which evaluates parameter expressions with `sympy.S`:
+`scripts/qd_native_circuit.py` builds the Perceval `Circuit` from the couplers and numeric phases of
+`qd_belenos_mesh.decode` and refuses any symbol or expression field before it evaluates one. Every
+call that draws from Perceval's generators runs after `perceval.random_seed` with a value of a
+retained QRNG draw (see "Generators in Perceval 1.3.1"). Tests: `tests/scripts/test_qd_live_noise_sim.py`,
 `test_qd_perceval_crosscheck.py` and `test_qd_offline_mitigation.py`.
 
 ## Live-figure noisy simulation
 
 `scripts/qd_live_noise_sim.py` rebuilds each retained entry on Perceval's SLOS backend: the served
-`computed_circuit` and `computed_input`, threshold detectors, and a `NoiseModel` whose
+`computed_circuit` (built through `qd_native_circuit`) and `computed_input` (read as text), single-click detectors, and a `NoiseModel` whose
 indistinguishability, g2 and transmittance come from the run's `perfs_at_plan` (or any catalogue
 through `--perfs`, or the newest `platform-before/catalogue.json` through `--newest-catalogue`).
 The tool reads the exact output distribution, so no seed enters, and passes the expected counts to
@@ -36,29 +40,40 @@ observed tvd spread is 0.742 in job-16 and 0.512 in the replay against a predict
 noise, noise_eff) or at most 0.001 (dark arms); the three off-cone jobs spread 0.255, 0.021 and 0.027
 against at most 0.008. The dark counts explain at most 69 of 1243 off-cone clicks in job-16. The
 collapse is therefore a property of the entry (the iteration within its job), outside the reach of
-a static source, detector and dark-count model; the `noise_eff` arm moves the in-cone shape (tvd up
+a static source, detector or dark-count figure; Perceval's `NoiseModel(phase_error=...)` is not simulated here (a
+reviewer's recomputation reaches tvd 0.477 at 0.5 rad and 0.603 at 1.0 rad, evidence class: reviewer
+computation, not retained), so phase noise stays an open mechanism; the `noise_eff` arm moves the in-cone shape (tvd up
 to 0.157) and leaves every click inside the cone. The simulated `global_perf` differs from the served
 `physical_perf` by a factor 0.31 to 0.95 within job-16, 0.13 to 0.39 in the replay and 0.017 to 1.24
-in the off-cone jobs, so detection efficiency varies from entry to entry beyond the published figures.
-The replay and off-cone runs live on branch `qd-belenos-offcone-mechanisms-case`; their readings
-come from `--write` against that branch's case directories and sit in the pull request body, not in a
-retained record.
+in the off-cone jobs, so detection efficiency varies from entry to entry beyond the published figures. The
+`noise_dark` arm counts pulses as samples over the served `physical_perf` of the entry, the pulses the chip
+clocked for the observed samples, so that arm answers for the observed run.
+The job-16 row reads from the retained record. The "job16 replay a3eb02eb" and off-cone rows read from branch
+`qd-belenos-offcone-mechanisms-case`: their runs and `--write` outputs sit on that branch and in the pull
+request body, and no record in this pull request holds them.
 
 ## Native cross-checks
 
 `scripts/qd_perceval_crosscheck.py` records four comparisons in
 `docs/evidence/quandela/belenos_perceval_crosscheck.json`:
 
-- `unitary`: `qd_belenos_mesh.unitary` equals `Circuit.compute_unitary()` of the served circuit
-  on all 24 job-16 entries (largest difference below 5e-10 after rounding; 5.3e-16 on entry 0), over
-  552 couplers, 574 phase shifters and 276 Mach-Zehnder cells.
+- `unitary`: `qd_belenos_mesh.unitary` equals `Circuit.compute_unitary()` of the Perceval circuit
+  built from the same decoded couplers and numeric phases, on all 24 job-16 entries (decade -16: 5.3e-16
+  to 6.5e-16, recomputed; the record keeps the decade `max_abs_difference_decade`, which separates 5e-16
+  from 5e-10), over 552 couplers, 574 phase shifters and 276 Mach-Zehnder cells. The comparison checks our
+  coupler and phase algebra against Perceval's; the wire decoder is checked against exqalibur by
+  `qd_belenos_mesh.py --self-test`.
 - `optimizer`: `CircuitOptimizer(ntrials=1).optimize` over the served architecture with symbolic
-  phases, started from the served phases, returns fidelity 1.0, which fixes the parameter order of
-  `mesh_phases` against Perceval's. No random start runs.
+  phases, started from `qd_belenos_mesh.mesh_phases` as `first_guess`, returns fidelity 1.0, and the
+  template at that start already has fidelity 1.0 (`start_fidelity`), so a permutation of `mesh_phases`
+  fails the check (the test swaps two phases and reads a start fidelity below 1 - 1e-6). No random start
+  runs.
 - `decomposition`: `Circuit.decomposition` (triangle, `BS(theta, phi_tr)`) returns a 300-component
   circuit with error below 1e-6 for the 24-mode Fourier matrix and returns `None` for the served
-  unitary; with `allow_error=True` it returns a 294-component circuit with error below 1e-2. The
-  retry draws from an unseeded generator, so the record keeps only the error class. The mesh fit of
+  unitary; with `allow_error=True` it returns a circuit with error below 1e-2 (294 components at the
+  seed). Each call runs after `perceval.random_seed(DECOMPOSITION_SEED)`, value 0 of
+  `docs/evidence/anu_qrng/draw-2026-11-28T081947Z.json`, because `Circuit.decomposition` draws its
+  starting point from Python's `random` on every call; the record keeps the error class of the retry. The mesh fit of
   `qd_belenos_mesh.BlockFit` reaches the served unitary exactly, which the native triangle does not.
 - `cz`: the success probability of Catalog `postprocessed cz` with
   `NoiseModel(indistinguishability=M)` equals 1/9 for inputs 00, 01 and 11 and (5 - 4M)/9 for
@@ -79,19 +94,32 @@ Perceval's `extend_computation` and `parse_results` split:
 
 A run without the `mitigations` field carries the server's default mitigation, and
 `read_run` refuses it unless `allow_server_default` is set (the CLI flag
-`--allow-server-default` records a warning). The record
+`--allow-server-default` records a warning). `read_run` takes the state from the body the receipt sent
+(`job-body.json`, `payload.mitigations`, the text `pcvlar 0 1 0 list 0` for an empty list) and refuses a
+run whose `cases.json` disagrees. The record
 `docs/evidence/quandela/belenos_offline_mitigation.json` reads the 12 entries of
-`bdsc_qualification` `tc-none-e1`: single-photon inputs on threshold detectors give a perf factor of
-1.0 and a one-click change of 0, so balancing leaves them unchanged, PhotonRecycling is not applicable
-and DistinguishablePhotonMitigation order 1 needs 2 sub-computations.
+`bdsc_qualification` `tc-none-e1`: balancing leaves every entry unchanged (perf factor 1.0, one-click change
+0, row field `identity`), PhotonRecycling is not applicable and DistinguishablePhotonMitigation order 1
+needs 2 sub-computations.
 
-## Unseeded generators in Perceval 1.3.1
+DetectorBalancing at unit-efficiency threshold detectors is the identity on every threshold count, for any
+photon number: a detected state has entries 0 or 1, its only sub-state is itself, and the perf factor is 1
+(computed on a two-photon and a three-photon threshold distribution, tested on the `Detector.threshold()`
+path that `read_run` takes). Balancing changes a count only with calibrated per-mode efficiencies, which no
+retained run holds, and the receipt's `t_out` is a relative weight. The offline balancing is therefore a
+bookkeeping check on these runs and corrects nothing.
 
-`probs_to_sample_count` draws from numpy's global generator; `seeded_counts` calls
-`perceval.random_seed(seed)` first, so a caller that writes counts passes a value of a retained QRNG
-draw through `qrng_seeds.add_seed_argument`. `Matrix.random_unitary`, `CircuitOptimizer.optimize`
-without `first_guess` (its `seed` argument defaults to None) and the `allow_error` retries of
-`Circuit.decomposition` are unseeded as well, and no tool here calls them.
+## Generators in Perceval 1.3.1
+
+`perceval.random_seed(seed)` seeds Python's `random`, numpy and exqalibur. `Circuit.decomposition` draws
+`x0 = [p.random() for p in params]` from `random` on every call (`decomposition.py`, line 111), the
+`allow_error` retry and the exact path alike, so `qd_perceval_crosscheck.py` seeds each decomposition
+with `DECOMPOSITION_SEED`. `probs_to_sample_count` draws from numpy's global generator; `seeded_counts`
+calls `perceval.random_seed(seed)` first, so a caller that writes counts passes a value of a retained QRNG
+draw through `qrng_seeds.add_seed_argument` (the self-test and tests use values 1 to 3 of the draw above).
+`Matrix.random_unitary` and `CircuitOptimizer.optimize` without `first_guess` (its `seed` argument
+defaults to None) are unseeded, and no tool here calls them. `optimizer_check`, `one_click_distribution`
+and `read_run` draw nothing (measured: Python and numpy generator states unchanged).
 
 ## Open items
 
@@ -99,4 +127,7 @@ without `first_guess` (its `seed` argument defaults to None) and the `allow_erro
   that branch lands.
 - A seeded Perceval `CircuitOptimizer` fit of the 4-mode block against `BlockFit` needs a QRNG draw
   and a ledger row; the tools here run only the first-guess form.
-- The `program-quandela-belenos` skill does not yet name these tools.
+- The `program-quandela-belenos` skill does not yet name these tools; it lives outside this repository, and
+  its rule against `perceval.serialization.deserialize` on service data now holds in these tools too.
+- Perceval `NoiseModel(phase_error=...)` needs an arm of `qd_live_noise_sim.py`; its exqalibur generator
+  takes a value of a retained QRNG draw through `perceval.random_seed`.
