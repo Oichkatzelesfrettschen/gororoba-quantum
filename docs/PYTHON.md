@@ -380,3 +380,14 @@ has shown the two agree.
 - Run ruff and mypy through `ci/pinned_tool.py` on every touched Python file, and mypy over the `types` lane's scope (`sh ci/pr_checks.sh types`) when a change alters a signature another module imports.
 - Record the versions a result depends on inside the result.
 - Mock outcomes (`--native-dry-run`) never enter an analysis or a figure.
+
+## Native SDK tools
+
+Each tool below compares a native vendor feature with the repository's own submission path, offline: it sends no
+job and changes no default of the submitters, and its note names the interpreter it runs on.
+
+- IBM (qiskit, qiskit-ibm-runtime): dynamical decoupling, fractional gates, EstimatorV2 resilience and stretch
+  support, in [ibm_quantum/native-sdk-opt-ins.md](notes/ibm_quantum/native-sdk-opt-ins.md).
+- IQM (iqm-client and its Qiskit bridge): native compilation of a retained case, offline readout inversion and the
+  request-byte comparison, in [iqm/native-sdk-comparison.md](notes/iqm/native-sdk-comparison.md). An IQM receipt
+  names the posted bytes by `wire_sha256` and retains them as `submitted-body.json`.
