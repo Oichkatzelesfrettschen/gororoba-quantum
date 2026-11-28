@@ -1,0 +1,42 @@
+# Review of the pencil-certificate change (pull request 1045)
+
+The change adds [`scripts/a5_pencil_certificates.py`](../../../../scripts/a5_pencil_certificates.py) and its record
+`certificates.json`, README statements 16 to 18 of [the transition record](../../../evidence/a5-nullity-transitions/README.md),
+and ledger rows A5-657 (now proved), A5-667, A5-670 and A5-671. The owner chose one reviewer and two red-teamers; the
+Advisor reviews last. Head under review: `e9e3c33f0`. Local paths in the retained files read `WORKTREE`,
+`WORKSPACE` and `SCRATCH`, and the compute host is named by its role.
+
+| Role | Agent | Run |
+|---|---|---|
+| reviewer | `codex` on gpt-daybreak-blue, high effort, read-only sandbox | [report](reports/report-codex-daybreak-blue.md), [brief](reports/brief-review.md) |
+| red team | `agy` on gemini-4-neon-medium | [report](reports/report-agy-neon.md), [brief](reports/brief-redteam.md) |
+| red team | `opencode` on opencode/deepseek-v4.1-flash-free | [report](reports/report-opencode-deepseek-v4.1-flash-free.md), same brief |
+
+The OpenCode Go weekly window read 79 percent at the launch, the ceiling of `workspace/opencode-redteam.sh` in
+gororoba-infrastructure, so every paid Go model was refused. The free model ran first and answered, and the owner
+chose that route after an audit of the plan's usage.
+
+## Findings and verdicts
+
+| Finding | Source | Verdict |
+|---|---|---|
+| The tower bounds use the correct directions: mod-p commutant nullity above, verified rational elements below, mod-p bracket span below, Gram-skew container above | all three | confirmed; no change |
+| The 60 determinant evaluations drew coordinates modulo 11, so they were 11 distinct points | Codex, opencode | confirmed; the points are drawn modulo 1009, `validate` requires 60 distinct points and no vanishing target, and the README records the deviation of P26 |
+| A5-671 needs the bound dim Ann(x) <= 4 in A_4 (Proposition 9.10), and Biss, Dugger and Isaksen already prove the whole statement (Lemmas 9.5, 9.6, 9.9) | Codex, Neon, opencode | confirmed on the paper's pages 15 to 17; README statement 18 and A5-671 call the statement known and cite every lemma |
+| The polynomial identity covered the 18 basis units only; the forms of all 30 doubly pure units span the basis space and lead Q, lead G are constant along the kernel on R^30 | Neon (scope and computed check) | confirmed and adopted: `strata_item` checks the rank and the constancy by expansion, and A5-657 states the identity on all 30 units |
+| At type C the closure can be bounded by 15 through tr(J X) = 0 for the commutant element J, since tr(J m) = 0 on the pencil and tr(J [A, B]) = tr([J, A] B) | Neon | confirmed and adopted: the certificate now reads closure 15, su(4), with the container value 16 kept for the self-test |
+| `table_mismatches` sampled the left factor at a stride above A_4 | Codex, Neon, opencode | confirmed; every basis product is checked against a recursive basis product from the doubling formula, and the vector formula keeps its stride sample |
+| `validate` lacked requires: calibration skewness, type-R lower bound, type-C trace form, VB factor degrees, determinant labels, counts and zero targets | Codex, Neon, opencode | confirmed; each added |
+| The certificate does not bind the source of Q and G | Codex | confirmed; `scripts/a5_zero_divisor_strata.py` joins the digests |
+| N- and N+ are exchanged by the automorphism e_k -> (-1)^(bit 3 of k) e_k | Codex (proved) | confirmed and recorded (`automorphism`): the character is multiplicative, it maps N- to N+, and the Pfaffians correspond under x_w -> chi(w) x_w |
+| The type-C self-test control asserted only that the lower bound differs from 16 | opencode | confirmed; the control requires 15 at both bounds and 16 from the container alone |
+| The e_16 mutant is weak because Q and G cannot see e_16 | opencode | boundary: e_16 lies outside the doubly pure domain of Q and G by definition (the strata record), so the mutant tests exactly the scope the statement names, the off-domain coordinate that P14 found to break the identity |
+| The census rebuilds all 26,096 matrices in each of 64 workers and enumerates serially | Codex | boundary: the census takes a small share of the 359 s record, dominated by the A_8 item; a shared-memory layout is left for a change that needs it |
+| `strata_item` returns a partial row on its mutant path, and the schema is untyped | Codex | partly fixed: the partial row is reachable only with the mutant flag, which `require` now enforces; a TypedDict schema is left open |
+| The PR body said hosted checks were not run and called the type-C check a mutant | Codex | confirmed; the body is updated |
+| Three-type rule: on the family of Theorem 14.6 of Biss, Dugger and Isaksen, an operator J_k commutes with all compressions at dim A = 2 and 4 | Neon (computed at six points) | recorded as a lead in the program note (T2); not in the record |
+| Elements of A generate the commutant | opencode (tested) | refuted by its computation: their compressions vanish on the kernel; recorded in the program note |
+
+Neon and opencode both ran computations on the compute workstation in a scratch directory, and codex ran none,
+because the workstation checkout sat one commit behind the head. No reviewer changed a checkout. The codex browser
+left two snapshot files in the workspace root, and they were moved to the trash.

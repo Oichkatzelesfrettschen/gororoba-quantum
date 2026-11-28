@@ -157,28 +157,38 @@ Each statement has a `require` in the script's `validate`; the name of the recor
     so the nullity mod p of the commutation system bounds the commutant above, and four elements reconstructed from
     p and checked to commute with every pencil element over Q bound it below. The mod-p span of brackets of three
     fixed pencil elements bounds the closure below. The Gram-skew operators that commute with the verified commutant
-    contain the closure, and their dimension mod p bounds it above. The bounds meet at 3, 10, 36, 136 and 528 for
-    n = 4 to 8. At the type-R point e_1 + e_10 + e_3 + e_20 they meet at commutant 1 and closure 28. At the type-C
-    point e_1 + e_10 + 2 (e_20 + e_31) the closure lies between 15 and 16, so the certificate is tight for types H
-    and R only.
+    contain the closure, and their dimension mod p bounds it above. A traceless commutant element J with
+    tr(J m) = 0 for every pencil element m adds the condition tr(J X) = 0, since tr(J [A, B]) = tr([J, A] B) = 0
+    for A in the closure. The bounds meet at 3, 10, 36, 136 and 528 for n = 4 to 8. At the type-R point
+    e_1 + e_10 + e_3 + e_20 they meet at commutant 1 and closure 28. At the type-C point e_1 + e_10 + 2 (e_20 + e_31)
+    the commutant has one traceless element, of negative square trace, so it is C. The Gram-skew container alone
+    allows 16, u(4), and with the trace condition the bounds meet at 15, su(4).
 17. **Pfaffian at N+-** (`strata`). At N- and N+ the pencil has 19 coordinate units, 18 of them doubly pure. On
     the lines along those 18 units Q has order 1 and G order 3. Restricted to them, the Pfaffian, expanded in an
     integer polynomial ring, has degree 8 and 8,395 terms. It factors over Q as a quadratic times an irreducible
     sextic, and it equals c |lead Q|^2 |lead G|^2, with |c| = 2 in a frame of Gram 2 I. The same computation
-    reproduces the VB identity of statement 14 with |c| = 1. With the coordinate on e_16 kept, the VB identity
-    fails, the mutant of the self-test, as P14 recorded. A second implementation shares no code with cd_core or the
-    polynomial ring (`determinant`): products by the doubling formula, and Q and G as Gaussian-integer polynomials
-    in s. It reads, at 60 integer points over all 30 doubly pure imaginary units at each of N- and N+, the
-    coefficients of Q below order 1 and of G below order 3 as zero and det = 4 (|lead Q|^2 |lead G|^2)^2 in a
-    frame of Gram 2 I. So the identity extends beyond the 18 basis units at those points. The full Pfaffian with the
-    coordinate on e_16 is not computed at N+-.
+    reproduces the VB identity of statement 14 with |c| = 1 and three quadratic factors. With the coordinate on
+    e_16 kept, the VB identity fails, the mutant of the self-test, as P14 recorded. The identity holds on all 30
+    doubly pure imaginary units as a polynomial identity. The forms of the 30 units span the space of the basis
+    units (rank 18 at N+-, 8 at VB), so the pencil, and with it the Pfaffian, depends on the 30 coordinates only
+    through the basis coordinates. On the kernel of w -> K^T L_w K in R^30 (dimension 12 at N+-, 22 at VB) the
+    leading forms of Q and G are constant, checked by expansion along each kernel vector; the two sides therefore
+    agree off the basis coordinates. A second implementation shares no code with cd_core or the polynomial ring
+    (`determinant`): products by the doubling formula, and Q and G as Gaussian-integer polynomials in s. At 60
+    distinct integer points over all 30 units at each of N- and N+, it reads the coefficients of Q below order 1 and
+    of G below order 3 as zero and det = 4 (|lead Q|^2 |lead G|^2)^2 in a frame of Gram 2 I. The sign character
+    chi(k) = (-1)^(bit 3 of k) is multiplicative under XOR, so e_k -> chi(k) e_k is an automorphism. It maps N- to N+,
+    and the two Pfaffians correspond under x_w -> chi(w) x_w (`automorphism`), which explains why every invariant
+    agrees at the two points. The full Pfaffian with the coordinate on e_16 is not computed at N+-.
 18. **Common kernels of sedenion zero divisors** (`anticommutation`, `census`). In A_4, L_(e_8) anticommutes with the
     left multiplication by each of the 14 other imaginary units and squares to -I, and every imaginary unit acts
-    by a skew matrix. Both sides are bilinear, so the basis check covers every element. This is the complex
-    structure of Biss, Dugger and Isaksen ("Large annihilators in Cayley-Dickson algebras", arXiv math/0511691,
-    Proposition 5.3 and Lemma 6.4, read for this record): A_n is a vector space over C_n = <1, i_n> by left
-    multiplication, and L_x is conjugate-linear for x orthogonal to C_n. The evenness below is a corollary of
-    that structure; the record adds the census. For p = p_0 + p_8 e_8 + p' the Gram operator is
+    by a skew matrix. Both sides are bilinear, so the basis check covers every element. The statement is known.
+    Biss, Dugger and Isaksen ("Large annihilators in Cayley-Dickson algebras", arXiv math/0511691, read for this
+    record) prove it for every A_n with n >= 4: A_n is a vector space over C_n = <1, i_n> by left multiplication
+    (Proposition 5.3), L_x is conjugate-linear for x orthogonal to C_n (Lemma 6.4), every zero divisor is
+    orthogonal to C_n (Lemma 9.5), Ann(x) is a C_n-vector space (Lemma 9.6), and Ann(a) n Ann(b) has even real
+    dimension (Lemma 9.9). Proposition 9.10 bounds Ann(x) in A_4 by 4. The record contributes the basis check and
+    the census. In the notation here: for p = p_0 + p_8 e_8 + p' the Gram operator is
     (p_0^2 + p_8^2) I + L_(p')^T L_(p'), so a zero divisor has p_0 = p_8 = 0. Then L_p anticommutes with
     L_(e_8), so ker L_p is invariant under L_(e_8), and ker L_p n ker L_q is a complex subspace of a 4-dimensional
     kernel: its dimension is 0, 2 or 4. The census takes the 26,096 elements (a, b) with a, b pure octonions with
@@ -223,14 +233,17 @@ to a scratch file before its runs ([third-round-predictions.md](third-round-pred
 restated in the script: P20 and P21 (the tower at levels 7 and 8),
 P22 (commutant 1 and closure 28 at the type-R point), P23 (the N+- Pfaffian on the doubly pure coordinates as the
 product of leading forms), P24 (common kernels of dimension 0, 2 or 4 only) and P26 (the determinant route over
-all 30 doubly pure units, written after the first record run and before that route was coded) held. A first calibration run used
+all 30 doubly pure units, written after the first record run and before that route was coded) held. P26 named 60
+integer points. Its first run drew the coordinates modulo 11, so its 60 evaluations were 11 distinct points, which
+the review found. The record now draws them modulo 1009, and they are 60 distinct points; the ratio held at both. A first calibration run used
 two pencil elements as Lie generators and read the bounds 2 and 15 at the type-R point. Its bounds did not meet,
 so it certified nothing, and three generators close them. P25 (the pencil type on W8 points of the census) is not
 run.
 
 ## Reviews
 
-Two red-team reports ([review record](../../archive/reviews/a5-outside-transition-report/README.md), "Red team") supplied the
+The certificate change has its own [review record](../../archive/reviews/a5-pencil-certificates/README.md). Two
+red-team reports ([review record](../../archive/reviews/a5-outside-transition-report/README.md), "Red team") supplied the
 tangent-cone derivation of statement 6, the involution formula of statement 8 and the test that separates the
 quaternions from the other algebras of dimension 4.
 
@@ -245,6 +258,6 @@ quaternions from the other algebras of dimension 4.
     "$PYTHON" -B -W error scripts/a5_pencil_certificates.py --self-test
 
 Measured on the compute workstation (32 threads): the record takes 102 s of wall time and 992 CPU seconds at
-260 MiB, the self-test 12 s, the sign census 326 s of wall time and 3,470 CPU seconds. The certificates take 347 s of wall
-time and 980 CPU seconds at a peak of 2.6 GiB resident; the level-8 item takes most of the wall time, and the
+260 MiB, the self-test 12 s, the sign census 326 s of wall time and 3,470 CPU seconds. The certificates take 359 s of wall
+time and 968 CPU seconds at a peak of 3.3 GiB resident; the level-8 item takes most of the wall time, and the
 self-test takes 3 s.

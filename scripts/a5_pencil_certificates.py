@@ -45,7 +45,13 @@ import cd_core  # noqa: E402
 import parallel  # noqa: E402
 
 P = 32749
-SOURCE_FILES = ("gororoba_quantum/cd_core.py", "gororoba_quantum/parallel.py", "scripts/a5_pencil_certificates.py")
+SOURCE_FILES = (
+    "gororoba_quantum/cd_core.py",
+    "gororoba_quantum/parallel.py",
+    "scripts/a5_pencil_certificates.py",
+    "scripts/a5_zero_divisor_strata.py",
+)
+"""a5_zero_divisor_strata.py defines Q and G, whose leading forms the Pfaffian items read."""
 Vector = tuple[tuple[int, int], ...]
 BASE: Vector = ((1, 1), (10, 1))
 TOWER_LEVELS = (16, 32, 64, 128, 256)
@@ -113,9 +119,29 @@ def doubled(a: list[int], b: list[int]) -> list[int]:
     return first + second
 
 
+def basis_product(dimension: int, p: int, q: int) -> tuple[int, int]:
+    """(sign, index) of e_p e_q from (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)) on basis vectors."""
+    if dimension == 1:
+        return 1, 0
+    half = dimension // 2
+    if p < half and q < half:
+        return basis_product(half, p, q)
+    if p < half:
+        sign, index = basis_product(half, q - half, p)
+        return sign, index + half
+    if q < half:
+        sign, index = basis_product(half, p - half, q)
+        return (sign if q == 0 else -sign), index + half
+    sign, index = basis_product(half, q - half, p - half)
+    return (-sign if q == half else sign), index
+
+
 def table_mismatches(dimension: int, table: list[list[int]]) -> int:
-    """Basis products e_p e_q against the doubling formula, for every q and p in a stride of the indices."""
-    bad = 0
+    """Every basis product e_p e_q against basis_product, and the vector doubling formula for every q and p in a
+    stride of the indices (all p up to dimension 16)."""
+    bad = sum(
+        basis_product(dimension, p, q) != (table[p][q], p ^ q) for p in range(dimension) for q in range(dimension)
+    )
     for p in range(0, dimension, max(1, dimension // 16)):
         for q in range(dimension):
             a, b = [0] * dimension, [0] * dimension
@@ -269,7 +295,9 @@ def structure_item(job: tuple[int, Vector]) -> dict[str, Any]:
         int(fmpq_mat([[x[i, j] for i in range(size) for j in range(size)] for x in elements]).rank()) if verified else 0
     )
     trace_form_negative = noncommutative = False
-    closure_upper = -1
+    closure_upper = closure_upper_skew_only = -1
+    kept: list[fmpq_mat] = []
+    orthogonal: list[fmpq_mat] = []
     if verified:
         noncommutative = any(a * b != b * a for a in elements for b in elements)
         unit = fmpq_mat(size, size, [fmpq(int(i == j)) for i in range(size) for j in range(size)])
@@ -278,7 +306,6 @@ def structure_item(job: tuple[int, Vector]) -> dict[str, Any]:
             return sum((x[i, i] for i in range(size)), fmpq(0))
 
         traceless = [x - unit * (trace(x) / size) for x in elements]
-        kept: list[fmpq_mat] = []
         for x in traceless:
             rows = [[y[i, j] for i in range(size) for j in range(size)] for y in [*kept, x]]
             if int(fmpq_mat(rows).rank()) > len(kept):
@@ -288,7 +315,16 @@ def structure_item(job: tuple[int, Vector]) -> dict[str, Any]:
         residues = [
             np.array([[residue(x[i, j]) for j in range(size)] for i in range(size)], dtype=np.int64) for x in elements
         ]
-        closure_upper = nullity_mod_p(np.vstack([skew_system(gram), commutation_system(residues, size)]))
+        container = np.vstack([skew_system(gram), commutation_system(residues, size)])
+        closure_upper_skew_only = nullity_mod_p(container)
+        # tr(J [A, B]) = tr([J, A] B) = 0 for J in the commutant and A in the closure, so a traceless commutant element
+        # orthogonal to every pencil element under the trace pairing is orthogonal to the whole closure.
+        orthogonal = [x for x in kept if all(trace(x * m) == 0 for m in operators_q)]
+        trace_rows = [
+            np.array([[residue(x[j, i]) for j in range(size)] for i in range(size)], dtype=np.int64).ravel()
+            for x in orthogonal
+        ]
+        closure_upper = nullity_mod_p(np.vstack([container, *trace_rows])) if trace_rows else closure_upper_skew_only
     echelon = Echelon(size * size)
     frontier = echelon.add(np.array([g.ravel() for g in generic]))
     while frontier:
@@ -313,22 +349,18 @@ def structure_item(job: tuple[int, Vector]) -> dict[str, Any]:
         "commutant_trace_form_negative_definite": bool(trace_form_negative),
         "closure_lower": len(echelon.pivots),
         "closure_upper": int(closure_upper),
+        "closure_upper_skew_only": int(closure_upper_skew_only),
+        "commutant_traceless_dimension": len(kept),
+        "trace_constraints": len(orthogonal),
     }
 
 
-def strata_item(job: tuple[str, bool]) -> dict[str, Any]:
-    """Pfaffian of the pencil on the doubly pure coordinate units against |lead Q|^2 |lead G|^2.
-
-    job = (point, keep_off_domain): with keep_off_domain the coordinate on e_16, outside the doubly pure domain of Q
-    and G, stays in the pencil; the self-test uses it as the mutant on which the identity fails.
-    """
-    name, keep_off_domain = job
+def pencil_frame(name: str) -> tuple[int, np.ndarray, dict[int, np.ndarray], list[int]]:
+    """Kernel size, frame Gram matrix, compressions K^T L_w K of the 31 imaginary units, and a greedy basis of units."""
     dimension = 32
     table = sign_table(dimension)
-    base = dict(STRATA[name])
-    space, size = fmpz_mat(to_int(left(dimension, table, base))).nullspace()
+    space, size = fmpz_mat(to_int(left(dimension, table, dict(STRATA[name])))).nullspace()
     frame = np.array([[int(space[i, j]) for j in range(size)] for i in range(dimension)], dtype=np.int64)
-    gram = frame.T @ frame
     forms = {w: frame.T @ left(dimension, table, {w: 1}) @ frame for w in range(1, dimension)}
     units: list[int] = []
     stacked: list[list[int]] = []
@@ -337,39 +369,22 @@ def strata_item(job: tuple[str, bool]) -> dict[str, Any]:
             trial = [*stacked, [int(x) for x in forms[w].ravel()]]
             if int(fmpz_mat(trial).rank()) > len(stacked):
                 stacked, units = trial, [*units, w]
-    pure = list(units) if keep_off_domain else [w for w in units if w % 16]
-    xs = sp.symbols(f"x0:{len(pure)}", real=True)
-    s = sp.Symbol("s", real=True)
-    z: list[Any] = [sp.Integer(0)] * 16
-    for index, value in base.items():
-        z[index % 16] += value * (sp.I if index >= 16 else 1)
-    for x, w in zip(xs, pure, strict=True):
-        if w % 16:
-            z[w % 16] += s * x * (sp.I if w >= 16 else 1)
-    uu = sum(z[k] ** 2 for k in range(1, 8))
-    vv = sum(z[k] ** 2 for k in range(9, 16))
-    uv = sum(z[k] * z[8 + k] for k in range(1, 8))
-    q = sp.Poly(sp.expand(uu + z[8] ** 2 + vv), s)
-    g = sp.Poly(sp.expand((uu + z[8] ** 2 + vv) ** 2 - 4 * (uu * vv - uv**2)), s)
+    return int(size), frame.T @ frame, forms, units
 
-    def order(poly: Any) -> int:
-        return int(min(e for (e,), c in poly.terms() if sp.expand(c) != 0))
 
-    def modulus_squared(poly: Any) -> Any:
-        real, imaginary = sp.expand(poly.coeff_monomial(s ** order(poly))).as_real_imag()
-        return sp.expand(real**2 + imaginary**2)
-
-    target = sp.Poly(sp.expand(modulus_squared(q) * modulus_squared(g)), *xs)
-    if target.is_zero:
-        return {"point": name, "pfaffian_equals_constant_times_moduli": False}
-    context = fmpz_mpoly_ctx.get(("x", len(pure)), "lex")
+def pfaffian_terms(size: int, forms: dict[int, np.ndarray], coordinates: list[int]) -> dict[tuple[int, ...], int]:
+    """Pfaffian of sum x_i K^T L_(coordinates[i]) K in Z[x], by expansion along the first index of each subset."""
+    context = fmpz_mpoly_ctx.get(("x", len(coordinates)), "lex")
     gens = context.gens()
     zero = context.from_dict({})
     entries = [
-        [sum((int(forms[w][a, b]) * gens[i] for i, w in enumerate(pure) if forms[w][a, b]), zero) for b in range(size)]
+        [
+            sum((int(forms[w][a, b]) * gens[i] for i, w in enumerate(coordinates) if forms[w][a, b]), zero)
+            for b in range(size)
+        ]
         for a in range(size)
     ]
-    cache: dict[int, Any] = {0: context.from_dict({(0,) * len(pure): 1})}
+    cache: dict[int, Any] = {0: context.from_dict({(0,) * len(coordinates): 1})}
 
     def pfaffian(mask: int) -> Any:
         if mask not in cache:
@@ -382,27 +397,126 @@ def strata_item(job: tuple[str, bool]) -> dict[str, Any]:
             cache[mask] = total
         return cache[mask]
 
-    value = pfaffian((1 << size) - 1)
+    return {tuple(int(e) for e in m): int(c) for m, c in pfaffian((1 << size) - 1).to_dict().items()}
+
+
+def leading_forms(name: str, coordinates: list[int], s: Any, xs: Any) -> tuple[Any, Any, int, int]:
+    """Leading coefficients of Q and G of the strata record on the line y_0 + s sum x_i e_(coordinates[i])."""
+    z: list[Any] = [sp.Integer(0)] * 16
+    for index, value in STRATA[name]:
+        z[index % 16] += value * (sp.I if index >= 16 else 1)
+    for x, w in zip(xs, coordinates, strict=True):
+        if w % 16:
+            z[w % 16] += s * x * (sp.I if w >= 16 else 1)
+    uu = sum(z[k] ** 2 for k in range(1, 8))
+    vv = sum(z[k] ** 2 for k in range(9, 16))
+    uv = sum(z[k] * z[8 + k] for k in range(1, 8))
+    q = sp.Poly(sp.expand(uu + z[8] ** 2 + vv), s)
+    g = sp.Poly(sp.expand((uu + z[8] ** 2 + vv) ** 2 - 4 * (uu * vv - uv**2)), s)
+
+    def order(poly: Any) -> int:
+        return int(min(e for (e,), c in poly.terms() if sp.expand(c) != 0))
+
+    return (
+        sp.expand(q.coeff_monomial(s ** order(q))),
+        sp.expand(g.coeff_monomial(s ** order(g))),
+        order(q),
+        order(g),
+    )
+
+
+def modulus_squared(value: Any) -> Any:
+    real, imaginary = sp.expand(value).as_real_imag()
+    return sp.expand(real**2 + imaginary**2)
+
+
+def strata_item(job: tuple[str, bool]) -> dict[str, Any]:
+    """Pfaffian of the pencil on the doubly pure coordinate units against |lead Q|^2 |lead G|^2.
+
+    job = (point, keep_off_domain): with keep_off_domain the coordinate on e_16, outside the doubly pure domain of Q
+    and G, stays in the pencil; the self-test uses it as the mutant on which the identity fails. The record also holds
+    the reduction from all 30 doubly pure units to the basis units: the forms of the 30 units span the same space as
+    those of the basis units, and the leading forms of Q and G are constant along the kernel of w -> K^T L_w K on R^30.
+    """
+    name, keep_off_domain = job
+    size, gram, forms, units = pencil_frame(name)
+    pure = list(units) if keep_off_domain else [w for w in units if w % 16]
+    s = sp.Symbol("s", real=True)
+    xs = sp.symbols(f"x0:{len(pure)}", real=True)
+    lead_q, lead_g, order_q, order_g = leading_forms(name, pure, s, xs)
+    target = sp.Poly(sp.expand(modulus_squared(lead_q) * modulus_squared(lead_g)), *xs)
+    if target.is_zero:
+        require(keep_off_domain, f"{name}: the leading forms vanish on the doubly pure units")
+        return {"point": name, "pfaffian_equals_constant_times_moduli": False}
+    value_terms = pfaffian_terms(size, forms, pure)
     target_terms = {tuple(int(e) for e in m): int(c) for m, c in target.terms()}
-    value_terms = {tuple(int(e) for e in m): int(c) for m, c in value.to_dict().items()}
     lead = max(target_terms)
     constant = Fraction(value_terms.get(lead, 0), target_terms[lead])
-    identity = constant != 0 and constant.denominator == 1 and value == int(constant) * context.from_dict(target_terms)
+    identity = (
+        constant != 0
+        and constant.denominator == 1
+        and value_terms == {m: int(constant) * c for m, c in target_terms.items()}
+    )
+    context = fmpz_mpoly_ctx.get(("x", len(pure)), "lex")
+    factors = context.from_dict(value_terms).factor()[1]
     gram_det = int(fmpz_mat(to_int(gram)).det())
-    normalized = constant**2 * 2**size / gram_det
-    factors = value.factor()[1]
+    all_pure = [w for w in range(1, 32) if w % 16]
+    columns = fmpz_mat([[int(x) for x in forms[w].ravel()] for w in all_pure]).transpose()
+    kernel, kernel_dimension = columns.nullspace()
+    ys = sp.symbols(f"y0:{len(all_pure)}", real=True)
+    t = sp.Symbol("t", real=True)
+    full_q, full_g, _, _ = leading_forms(name, all_pure, s, ys)
+    invariant = True
+    for column in range(kernel_dimension):
+        shift = {y: y + t * int(kernel[i, column]) for i, y in enumerate(ys)}
+        invariant = invariant and all(sp.expand(f.subs(shift, simultaneous=True) - f) == 0 for f in (full_q, full_g))
     return {
         "point": name,
-        "kernel": int(size),
+        "kernel": size,
         "coordinate_units": units,
         "doubly_pure_units": pure,
-        "order_q": order(q),
-        "order_g": order(g),
+        "order_q": order_q,
+        "order_g": order_g,
         "pfaffian_terms": len(value_terms),
-        "pfaffian_degree": int(value.total_degree()),
+        "pfaffian_degree": max(sum(m) for m in value_terms),
         "pfaffian_factor_degrees": sorted([int(f.total_degree()), int(m)] for f, m in factors),
         "pfaffian_equals_constant_times_moduli": bool(identity),
-        "constant_squared_in_gram_2_frame": str(normalized),
+        "constant_squared_in_gram_2_frame": str(constant**2 * 2**size / gram_det),
+        "all_doubly_pure_forms_rank": int(fmpz_mat([[int(x) for x in forms[w].ravel()] for w in all_pure]).rank()),
+        "kernel_on_all_doubly_pure_units": int(kernel_dimension),
+        "leading_forms_constant_along_kernel": bool(invariant),
+    }
+
+
+def automorphism_item(_: int) -> dict[str, Any]:
+    """The sign character chi(k) = (-1)^(bit 3 of k) gives the automorphism e_k -> chi(k) e_k; it maps N- to N+, and
+    the Pfaffians of the two pencils on the doubly pure basis units correspond under x_w -> chi(w) x_w."""
+
+    def chi(k: int) -> int:
+        return -1 if k >> 3 & 1 else 1
+
+    character = all(chi(p) * chi(q) == chi(p ^ q) for p in range(32) for q in range(32))
+    image = tuple(sorted((k, chi(k) * v) for k, v in STRATA["N-"]))
+    size_m, _gram_m, forms_m, units_m = pencil_frame("N-")
+    size_p, _gram_p, forms_p, units_p = pencil_frame("N+")
+    pure_m = [w for w in units_m if w % 16]
+    pure_p = [w for w in units_p if w % 16]
+    minus = pfaffian_terms(size_m, forms_m, pure_m)
+    plus = pfaffian_terms(size_p, forms_p, pure_p)
+    signs = [chi(w) for w in pure_m]
+    substituted = {m: c * int(np.prod([signs[i] ** e for i, e in enumerate(m)])) for m, c in minus.items()}
+    lead = max(plus)
+    ratio = Fraction(substituted.get(lead, 0), plus[lead])
+    proportional = (
+        ratio != 0
+        and set(substituted) == set(plus)
+        and all(Fraction(c, plus[m]) == ratio for m, c in substituted.items())
+    )
+    return {
+        "character_is_multiplicative": bool(character),
+        "maps_n_minus_to_n_plus": image == tuple(sorted(STRATA["N+"])),
+        "same_units": pure_m == pure_p,
+        "pfaffians_proportional": bool(proportional),
     }
 
 
@@ -473,10 +587,12 @@ def determinant_item(name: str) -> dict[str, Any]:
         r, m = z0[index % 16]
         z0[index % 16] = (r, m + value) if index >= 16 else (r + value, m)
     ratios: set[str] = set()
+    points: set[tuple[int, ...]] = set()
     lower_vanish = True
     zero_targets = 0
     for t in range(1, DETERMINANT_POINTS + 1):
-        x = [((7 * t * (i + 1) + 3 * i * i + t * t) % 11) - 5 for i in range(len(units))]
+        x = [((7 * t * (i + 1) + 3 * i * i + t * t) % 1009) - 504 for i in range(len(units))]
+        points.add(tuple(x))
         zeta = [(0, 0)] * 16
         for value, w in zip(x, units, strict=True):
             r, m = zeta[w % 16]
@@ -504,6 +620,7 @@ def determinant_item(name: str) -> dict[str, Any]:
         "point": name,
         "doubly_pure_units": len(units),
         "points": DETERMINANT_POINTS,
+        "distinct_points": len(points),
         "lower_coefficients_vanish": bool(lower_vanish),
         "zero_targets": zero_targets,
         "normalized_ratios": sorted(ratios),
@@ -614,14 +731,29 @@ def validate(result: dict[str, Any]) -> None:
                 f"A_{n}: the kernel meets each half in 2^(n-3)",
             )
     r_row, c_row = result["calibration"]
-    require(r_row["commutant_verified"] and r_row["commutant_upper"] == 1, "type R: commutant the scalars")
+    require(r_row["forms_skew"] and c_row["forms_skew"], "types R and C: every compression is skew")
+    require(r_row["commutant_verified"] and r_row["commutant_upper"] == r_row["commutant_lower"] == 1, "type R: R")
     require(r_row["closure_lower"] == r_row["closure_upper"] == 28, "type R: closure so(8)")
     require(c_row["commutant_upper"] == c_row["commutant_lower"] == 2, "type C: commutant of dimension 2")
     require(not c_row["commutant_noncommutative"], "type C: the commutant is commutative")
-    require(c_row["closure_lower"] == 15 and c_row["closure_upper"] == 16, "type C: 15 <= closure <= 16")
+    require(
+        c_row["commutant_traceless_dimension"] == 1 and c_row["commutant_trace_form_negative_definite"],
+        "type C: the traceless part is one element of negative square trace, so the commutant is C",
+    )
+    require(c_row["closure_upper_skew_only"] == 16, "type C: the Gram-skew container alone bounds the closure by 16")
+    require(c_row["trace_constraints"] == 1, "type C: the commutant element is trace-orthogonal to the pencil")
+    require(c_row["closure_lower"] == c_row["closure_upper"] == 15, "type C: closure of dimension 15, su(4)")
     strata = {row["point"]: row for row in result["strata"]}
     require(strata["VB"]["order_q"] == 1 and strata["VB"]["order_g"] == 2, "VB: Q order 1, G order 2")
     require(strata["VB"]["constant_squared_in_gram_2_frame"] == "1", "VB: the constant is -1 or 1 with Gram 2 I")
+    require(strata["VB"]["pfaffian_factor_degrees"] == [[2, 1], [2, 1], [2, 1]], "VB: three quadratic factors")
+    for name, basis, kernel in (("VB", 8, 22), ("N-", 18, 12), ("N+", 18, 12)):
+        row = strata[name]
+        require(
+            row["all_doubly_pure_forms_rank"] == basis and row["kernel_on_all_doubly_pure_units"] == kernel,
+            f"{name}: the forms of all 30 doubly pure units span the space of the basis units",
+        )
+        require(row["leading_forms_constant_along_kernel"], f"{name}: lead Q and lead G are constant on the kernel")
     for name in ("VB", "N-", "N+"):
         require(strata[name]["pfaffian_equals_constant_times_moduli"], f"{name}: Pf = c |lead Q|^2 |lead G|^2")
     for name in ("N-", "N+"):
@@ -638,8 +770,19 @@ def validate(result: dict[str, Any]) -> None:
         "A_4: L_(e_8) anticommutes with the other imaginary units and squares to -I",
     )
     require(anticommutation["imaginary_units_skew"], "A_4: every imaginary unit acts by a skew matrix")
+    require([row["point"] for row in result["determinant"]] == ["N-", "N+"], "determinant route at N- and N+")
+    automorphism = result["automorphism"]
+    require(
+        all(automorphism[k] for k in ("character_is_multiplicative", "maps_n_minus_to_n_plus", "same_units")),
+        "e_k -> (-1)^(bit 3 of k) e_k is an automorphism mapping N- to N+",
+    )
+    require(automorphism["pfaffians_proportional"], "the N- and N+ Pfaffians correspond under x_w -> chi(w) x_w")
     for row in result["determinant"]:
         require(row["doubly_pure_units"] == 30, f"{row['point']}: 30 doubly pure units")
+        require(
+            row["points"] == row["distinct_points"] == DETERMINANT_POINTS and row["zero_targets"] == 0,
+            f"{row['point']}: 60 distinct points, none with a vanishing leading form",
+        )
         require(row["lower_coefficients_vanish"], f"{row['point']}: Q of order 1 and G of order 3 at every point")
         require(row["normalized_ratios"] == ["4"], f"{row['point']}: det = 4 (|lead Q|^2 |lead G|^2)^2 in Gram 2 I")
     census_row = result["census"]
@@ -667,6 +810,7 @@ def build_result() -> dict[str, Any]:
         "calibration": rows[len(TOWER_LEVELS) :],
         "strata": parallel.ordered_map(strata_item, [(name, False) for name in STRATA], 1),
         "determinant": parallel.ordered_map(determinant_item, ["N-", "N+"], 1),
+        "automorphism": automorphism_item(0),
         "anticommutation": anticommutation_item((16, 8)),
         "census": census(),
         "predictions": PREDICTIONS,
@@ -688,11 +832,13 @@ def self_test() -> list[str]:
     sedenion = structure_item((16, BASE))
     real_point = structure_item((32, CALIBRATION["R e1+e10+e3+e20"]))
     control("tower rule at A_4 against a type-R point of A_5", tower_ok(sedenion, 4), not tower_ok(real_point, 5))
+    complex_point = structure_item((32, CALIBRATION["C e1+e10+2(e20+e31)"]))
     control(
-        "closure bounds meet at sp(1) and so(8), and differ at type C",
+        "closure bounds meet at sp(1), so(8) and su(4), and the type-C bound needs the trace constraint",
         sedenion["closure_lower"] == sedenion["closure_upper"] == 3
-        and real_point["closure_lower"] == real_point["closure_upper"] == 28,
-        structure_item((32, CALIBRATION["C e1+e10+2(e20+e31)"]))["closure_lower"] != 16,
+        and real_point["closure_lower"] == real_point["closure_upper"] == 28
+        and complex_point["closure_lower"] == complex_point["closure_upper"] == 15,
+        complex_point["closure_upper_skew_only"] != complex_point["closure_lower"],
     )
     table = sign_table(16)
     mutant = [row[:] for row in table]

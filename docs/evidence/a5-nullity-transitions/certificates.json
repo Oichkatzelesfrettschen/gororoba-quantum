@@ -5,6 +5,12 @@
   "imaginary_units_skew": true,
   "square_is_minus_identity": true
  },
+ "automorphism": {
+  "character_is_multiplicative": true,
+  "maps_n_minus_to_n_plus": true,
+  "pfaffians_proportional": true,
+  "same_units": true
+ },
  "calibration": [
   {
    "base": [
@@ -27,9 +33,11 @@
    ],
    "closure_lower": 28,
    "closure_upper": 28,
+   "closure_upper_skew_only": 28,
    "commutant_lower": 1,
    "commutant_noncommutative": false,
    "commutant_trace_form_negative_definite": true,
+   "commutant_traceless_dimension": 0,
    "commutant_upper": 1,
    "commutant_verified": true,
    "dimension": 32,
@@ -39,7 +47,8 @@
    "kernel_in_lower_half": 0,
    "kernel_in_upper_half": 0,
    "pencil_dimension": 7,
-   "table_mismatches": 0
+   "table_mismatches": 0,
+   "trace_constraints": 0
   },
   {
    "base": [
@@ -61,10 +70,12 @@
     ]
    ],
    "closure_lower": 15,
-   "closure_upper": 16,
+   "closure_upper": 15,
+   "closure_upper_skew_only": 16,
    "commutant_lower": 2,
    "commutant_noncommutative": false,
    "commutant_trace_form_negative_definite": true,
+   "commutant_traceless_dimension": 1,
    "commutant_upper": 2,
    "commutant_verified": true,
    "dimension": 32,
@@ -74,7 +85,8 @@
    "kernel_in_lower_half": 2,
    "kernel_in_upper_half": 2,
    "pencil_dimension": 7,
-   "table_mismatches": 0
+   "table_mismatches": 0,
+   "trace_constraints": 1
   }
  ],
  "census": {
@@ -92,6 +104,7 @@
  },
  "determinant": [
   {
+   "distinct_points": 60,
    "doubly_pure_units": 30,
    "lower_coefficients_vanish": true,
    "normalized_ratios": [
@@ -102,6 +115,7 @@
    "zero_targets": 0
   },
   {
+   "distinct_points": 60,
    "doubly_pure_units": 30,
    "lower_coefficients_vanish": true,
    "normalized_ratios": [
@@ -137,10 +151,12 @@
  "sources": {
   "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
   "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
-  "scripts/a5_pencil_certificates.py": "c9a6de9eb1f25a3147d8a7f3b3c46e3c92d22777a4d02e62e2029eb61c927849"
+  "scripts/a5_pencil_certificates.py": "473c5b3b52d7232993770c9f23ee1a0ffe9976623d3d57e0198a7d16efe90eb9",
+  "scripts/a5_zero_divisor_strata.py": "09fd6941e7945638d37e53d24f6d4cd7e49c45b724e313394091b2bee9f1b0d4"
  },
  "strata": [
   {
+   "all_doubly_pure_forms_rank": 8,
    "constant_squared_in_gram_2_frame": "1",
    "coordinate_units": [
     3,
@@ -164,6 +180,8 @@
     14
    ],
    "kernel": 12,
+   "kernel_on_all_doubly_pure_units": 22,
+   "leading_forms_constant_along_kernel": true,
    "order_g": 2,
    "order_q": 1,
    "pfaffian_degree": 6,
@@ -186,6 +204,7 @@
    "point": "VB"
   },
   {
+   "all_doubly_pure_forms_rank": 18,
    "constant_squared_in_gram_2_frame": "4",
    "coordinate_units": [
     1,
@@ -229,6 +248,8 @@
     24
    ],
    "kernel": 16,
+   "kernel_on_all_doubly_pure_units": 12,
+   "leading_forms_constant_along_kernel": true,
    "order_g": 3,
    "order_q": 1,
    "pfaffian_degree": 8,
@@ -247,6 +268,7 @@
    "point": "N-"
   },
   {
+   "all_doubly_pure_forms_rank": 18,
    "constant_squared_in_gram_2_frame": "4",
    "coordinate_units": [
     1,
@@ -290,6 +312,8 @@
     24
    ],
    "kernel": 16,
+   "kernel_on_all_doubly_pure_units": 12,
+   "leading_forms_constant_along_kernel": true,
    "order_g": 3,
    "order_q": 1,
    "pfaffian_degree": 8,
@@ -322,9 +346,11 @@
    ],
    "closure_lower": 3,
    "closure_upper": 3,
+   "closure_upper_skew_only": 3,
    "commutant_lower": 4,
    "commutant_noncommutative": true,
    "commutant_trace_form_negative_definite": true,
+   "commutant_traceless_dimension": 3,
    "commutant_upper": 4,
    "commutant_verified": true,
    "dimension": 16,
@@ -334,7 +360,8 @@
    "kernel_in_lower_half": 0,
    "kernel_in_upper_half": 0,
    "pencil_dimension": 3,
-   "table_mismatches": 0
+   "table_mismatches": 0,
+   "trace_constraints": 3
   },
   {
    "base": [
@@ -349,9 +376,11 @@
    ],
    "closure_lower": 10,
    "closure_upper": 10,
+   "closure_upper_skew_only": 10,
    "commutant_lower": 4,
    "commutant_noncommutative": true,
    "commutant_trace_form_negative_definite": true,
+   "commutant_traceless_dimension": 3,
    "commutant_upper": 4,
    "commutant_verified": true,
    "dimension": 32,
@@ -361,7 +390,8 @@
    "kernel_in_lower_half": 4,
    "kernel_in_upper_half": 4,
    "pencil_dimension": 7,
-   "table_mismatches": 0
+   "table_mismatches": 0,
+   "trace_constraints": 3
   },
   {
    "base": [
@@ -376,9 +406,11 @@
    ],
    "closure_lower": 36,
    "closure_upper": 36,
+   "closure_upper_skew_only": 36,
    "commutant_lower": 4,
    "commutant_noncommutative": true,
    "commutant_trace_form_negative_definite": true,
+   "commutant_traceless_dimension": 3,
    "commutant_upper": 4,
    "commutant_verified": true,
    "dimension": 64,
@@ -388,7 +420,8 @@
    "kernel_in_lower_half": 8,
    "kernel_in_upper_half": 8,
    "pencil_dimension": 15,
-   "table_mismatches": 0
+   "table_mismatches": 0,
+   "trace_constraints": 3
   },
   {
    "base": [
@@ -403,9 +436,11 @@
    ],
    "closure_lower": 136,
    "closure_upper": 136,
+   "closure_upper_skew_only": 136,
    "commutant_lower": 4,
    "commutant_noncommutative": true,
    "commutant_trace_form_negative_definite": true,
+   "commutant_traceless_dimension": 3,
    "commutant_upper": 4,
    "commutant_verified": true,
    "dimension": 128,
@@ -415,7 +450,8 @@
    "kernel_in_lower_half": 16,
    "kernel_in_upper_half": 16,
    "pencil_dimension": 31,
-   "table_mismatches": 0
+   "table_mismatches": 0,
+   "trace_constraints": 3
   },
   {
    "base": [
@@ -430,9 +466,11 @@
    ],
    "closure_lower": 528,
    "closure_upper": 528,
+   "closure_upper_skew_only": 528,
    "commutant_lower": 4,
    "commutant_noncommutative": true,
    "commutant_trace_form_negative_definite": true,
+   "commutant_traceless_dimension": 3,
    "commutant_upper": 4,
    "commutant_verified": true,
    "dimension": 256,
@@ -442,7 +480,8 @@
    "kernel_in_lower_half": 32,
    "kernel_in_upper_half": 32,
    "pencil_dimension": 63,
-   "table_mismatches": 0
+   "table_mismatches": 0,
+   "trace_constraints": 3
   }
  ]
 }
