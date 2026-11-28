@@ -45,7 +45,7 @@ The quotient has dimension 20,384. The four block ranks (425, 415, 402, 402) and
 2,757) agree in all four runs. The skip shortens the products stage 1.37 times on both routes, inside the 1.4 to 1.8
 range that the quotient degree counts predict for L (A5-263). It leaves the closure untouched, and the closure spread
 between runs (137.7 s to 175.4 s) exceeds the products saving, so the total wall time does not improve measurably at this
-size. CSR storage of the operator (density 0.48 percent at N = 8, from the red-team report) is not implemented.
+size. CSR storage of the operator is not implemented and its density is not measured here.
 
 ## Run configuration and tool versions
 

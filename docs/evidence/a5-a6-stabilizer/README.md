@@ -35,7 +35,7 @@ whose kernel grows.
 
 The claim that the A_6 base-point stabilizer repeats "a G_2 factor and a (Z/2)^5 character group" holds for the group
 that acts and fails for the stabilizer. G_2 = Der(A_6) and the (Z/2)^5 characters act on the kernel coordinates
-(statements 2 and 3). No stabilizer contains G_2, since the orbit has dimension 6 or 11. The character stabilizer has
+(statements 2 and 3). Neither of the two points tested has a stabilizer containing G_2, since the orbit has dimension 6 or 11. The character stabilizer has
 order 8, not 2^5 or 2^6. The repeated piece is the stabilizer subalgebra of g_2 at the lift, of dimension 8 at both
 levels, together with the Klein group. This record does not test the A_5 boost and scaling (the SO(2, C) x C^* factor
 of H) at A_6.
