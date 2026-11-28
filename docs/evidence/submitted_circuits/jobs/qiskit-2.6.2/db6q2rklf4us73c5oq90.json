@@ -1,0 +1,81 @@
+{
+ "schema": "submitted-circuit-row-v1",
+ "row": {
+  "job_id": "db6q2rklf4us73c5oq90",
+  "run": "results/live/2026-10-13T025444.603480Z",
+  "retained_file": "results/live/2026-10-13T025444.603480Z/isa.qpy",
+  "retained_sha256": "2edd167f3baff13dd2b23246d89f3ff5d4e3878437975f8fdbe2f4dc997a59e5",
+  "order_source": "record.json submission.jobs[].pubs",
+  "expected_pubs": [
+   "ibm_fez_static_pub_05",
+   "ibm_fez_static_pub_06",
+   "ibm_fez_static_pub_13",
+   "ibm_fez_static_pub_14",
+   "ibm_fez_static_pub_19",
+   "ibm_fez_static_pub_20",
+   "ibm_fez_static_pub_44",
+   "ibm_fez_static_pub_45",
+   "ibm_fez_static_pub_47",
+   "ibm_fez_static_pub_48",
+   "ibm_fez_static_pub_61",
+   "ibm_fez_static_pub_62",
+   "ibm_fez_static_pub_63",
+   "ibm_fez_static_pub_64",
+   "ibm_fez_static_pub_66",
+   "ibm_fez_static_pub_70",
+   "ibm_fez_static_pub_74",
+   "ibm_fez_static_pub_89",
+   "ibm_fez_static_pub_90",
+   "ibm_fez_static_pub_104",
+   "ibm_fez_static_pub_105",
+   "ibm_fez_static_pub_106",
+   "ibm_fez_static_pub_107",
+   "ibm_fez_static_pub_108",
+   "ibm_fez_static_pub_110",
+   "ibm_fez_static_pub_111"
+  ],
+  "items": 26,
+  "item_kinds": [
+   "CircuitItem"
+  ],
+  "positional_matches": 26,
+  "submitted_qpy_sha256": [
+   "bddd95384ca0b25ad16d8ad37962aa5e8ffefbe329edc22da241ec24ff3d4a03",
+   "f13d2164cd2a6d381a772cac2d52b5371a5da709c62b88e6ff5d60b3de354d96",
+   "4a0d440d59e26ddc01c440d6d734c3c45b552bff401c36b9512fb2dce298d915",
+   "1b6b8985838a34c0d83ee349df84b25912134ca1097b5bc19ffa2139c4d0bbca",
+   "0749557403d1fc3216c227d874bcb9a405f9ec3ea8f5a88d678b437dfdc92de6",
+   "568917e12e2929410223739eba6a3b24bb29c4f99e414237331926f3bf05e396",
+   "d6262ad749d3db9e60445c1ecb9ca4d307b17be4f800d7a3532370c3aa4ccd24",
+   "a6c9eebf1ba5c72028a9c3ee75862e3678eeb549da3bddc6d573d93d259c7f46",
+   "10c3c0134a5c8f9ee51155fa00e322171d8618c993d2465bd64bfc46965295d7",
+   "94fb051a73871ef161d270458cbb0d62d9f4cd5bfef22756a7f85fe13d37b8e1",
+   "8074a298dd6b713f5b377f74962ebec7e44cb1e5a8d8388bd2ea458f9fa62053",
+   "0d923ca329bd6dd6663758e28893b588f584e78ea09fca4b814188c32567a7b6",
+   "288ebc56d31bdd09fe4ff6dd202698b4276e2895099088a4f6cdc7c96fbe59b3",
+   "35ce6c206c070d061c11ef1e3457ae902438a3abd63694c49952c72b3df3955c",
+   "41981a569fde3413fcfdb3b72d7fbfbfd8d9ea77d710b093d354c44545372060",
+   "cb6c7e69fe83c06881a3fe5f4656c0837a0fe8faefcaed7e31788be937e54ae9",
+   "b6987dcb1504c76131f80086fa7267d38d056284118bc022953691e2fd809167",
+   "1ce411b2d81cd4561ad7b41d96740a9c21c5e719b7f33115c76a0b589a782fa4",
+   "cea5e64b5402cacfe7fd74ec39d4900581ec847e2918704395fb09e0f5b612db",
+   "ee5709706fdc87c7926d877def052f34e3ecea17ba130cfcb7bfb2fc9f74a78f",
+   "2b8357fd125b39e57c4a1b36de21e6f0b26af3f039e1cb443aab10e87d5059f1",
+   "10d7ab5e486c4181f5dc251669a8fc867b8503adb5296e549b6e454336fe57f4",
+   "0440733b51447c55b3463bbddafbb64d9031d9a8f6f2bf388740099a3a8dcf79",
+   "95da0898d88b2b4da69156a85176034352b725c4c559cb59695fe0977e2cf91f",
+   "c8da345b3e98e2abace9fe9f87c7ccee196ba56aa41de977fa39b6bf05b2147b",
+   "1142cf14d142c0499517468cdf8e22b0125fc4f8617061da890abde7d2d1afc6"
+  ]
+ },
+ "provenance": {
+  "origin": "service",
+  "retrieved_utc": "2026-11-28T05:53:37.534897+00:00",
+  "operation": "read existing job inputs; submissions and uploads excluded",
+  "runtime_versions": {
+   "qiskit": "2.6.2",
+   "qiskit-ibm-runtime": "0.51.0"
+  },
+  "collector_sha256": "f4a09c11354074974f2268af2e48ec636f832260f9de8f2a1a4db61eb85ce888"
+ }
+}

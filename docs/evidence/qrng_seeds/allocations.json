@@ -2314,11 +2314,42 @@
   },
   {
    "record": "docs/evidence/anu_qrng/draw-2026-11-27T222523Z.json",
+   "index": 0,
+   "value": 23079,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-transpiler",
+   "experiment": "2026-11-27T225727.770557Z",
+   "resubmissions": [
+    "2026-11-27T225850.191883Z",
+    "2026-11-27T230015.212103Z"
+   ],
+   "envelope": "docs/design/pathion-kernel-map-orientation-bit.md"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-27T222523Z.json",
+   "index": 1,
+   "value": 24477,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-simulator",
+   "experiment": "2026-11-27T225727.770557Z",
+   "resubmissions": [
+    "2026-11-27T225850.191883Z",
+    "2026-11-27T230015.212103Z"
+   ],
+   "envelope": "docs/design/pathion-kernel-map-orientation-bit.md"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-27T222523Z.json",
    "index": 33,
    "value": 64202,
    "script": "gororoba_quantum/live_run.py",
    "flag": "--seed-transpiler",
-   "experiment": "2026-11-28T035012.386370Z"
+   "experiment": "2026-11-28T035012.386370Z",
+   "resubmissions": [
+    "2026-11-28T041415.297826Z",
+    "2026-11-28T052940.223096Z"
+   ],
+   "envelope": "docs/design/pathion-kernel-map-orientation-merged.md"
   },
   {
    "record": "docs/evidence/anu_qrng/draw-2026-11-27T222523Z.json",
@@ -2326,7 +2357,12 @@
    "value": 53470,
    "script": "gororoba_quantum/live_run.py",
    "flag": "--seed-simulator",
-   "experiment": "2026-11-28T035012.386370Z"
+   "experiment": "2026-11-28T035012.386370Z",
+   "resubmissions": [
+    "2026-11-28T041415.297826Z",
+    "2026-11-28T052940.223096Z"
+   ],
+   "envelope": "docs/design/pathion-kernel-map-orientation-merged.md"
   },
   {
    "record": "docs/evidence/outshift_qrng/draw-2026-10-27T154654Z.json",
