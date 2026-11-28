@@ -115,3 +115,10 @@ def test_propagated_ratio_estimates_are_unchanged() -> None:
         require(inverted[key] == observed[key], f"{key} keeps its value")
     with pytest.raises(ValueError, match="no contrast"):
         rem.propagate_rem(observed, 0.5, 0.5)
+
+
+def test_native_compile_rejects_duplicate_circuit_names() -> None:
+    entries = [{"file": "a.json"}, {"file": "b.json"}]
+    with pytest.raises(ValueError, match="duplicate circuit name"):
+        nc.row_keys(entries, ["c0", "c0"])
+    require(nc.row_keys(entries, ["c0", "c1"]) == ["c0", "c1"], "distinct names pass")

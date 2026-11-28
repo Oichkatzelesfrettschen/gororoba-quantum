@@ -49,6 +49,20 @@ def expand_measures(instructions: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return out
 
 
+def row_keys(entries: list[dict[str, Any]], names: list[str]) -> list[str]:
+    """The report key of each manifest entry: its circuit name, which must be unique across the case.
+
+    A repeated name would overwrite its row and drop that circuit from every total, so it is refused."""
+    if len(entries) != len(names):
+        raise ValueError("every manifest entry needs one circuit name")
+    seen: dict[str, str] = {}
+    for entry, name in zip(entries, names, strict=True):
+        if name in seen:
+            raise ValueError(f"duplicate circuit name {name!r} in {seen[name]} and {entry['file']}")
+        seen[name] = str(entry["file"])
+    return names
+
+
 def offline_backend(architecture: dict[str, Any]) -> Any:
     """An IQMBackendBase over the retained dynamic architecture; it compiles and refuses to run."""
     from iqm.iqm_client import DynamicQuantumArchitecture
@@ -101,11 +115,13 @@ def main(argv: list[str] | None = None) -> int:
     cases = json.loads((args.case / "cases.json").read_text(encoding="utf-8"))
     architecture = json.loads((args.case / "calibration/dynamic-quantum-architecture.json").read_text(encoding="utf-8"))
     backend = offline_backend(architecture)
-    rows: dict[str, Any] = {}
-    for job in cases["jobs"]:
-        for entry in job["circuits"][: args.limit]:
-            circuit = json.loads((args.case / entry["file"]).read_text(encoding="utf-8"))
-            rows[circuit["name"]] = compile_circuit(circuit, backend, args.optimization_level)
+    entries = [entry for job in cases["jobs"] for entry in job["circuits"][: args.limit]]
+    circuits = [json.loads((args.case / entry["file"]).read_text(encoding="utf-8")) for entry in entries]
+    keys = row_keys(entries, [circuit["name"] for circuit in circuits])
+    rows: dict[str, Any] = {
+        key: compile_circuit(circuit, backend, args.optimization_level)
+        for key, circuit in zip(keys, circuits, strict=True)
+    }
     totals: dict[str, Counter[str]] = {"before": Counter(), "after": Counter()}
     for row in rows.values():
         for arm in totals:
