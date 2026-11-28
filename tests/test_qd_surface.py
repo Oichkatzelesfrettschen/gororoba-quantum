@@ -32,7 +32,18 @@ def record(**specs: object) -> dict[str, object]:
 
 
 def surface(**records: dict[str, object]) -> dict[str, object]:
-    rows = [{"name": name, "type": "qpu"} for name in records]
+    rows = [
+        {
+            "name": name,
+            "type": "qpu",
+            "price_per_shot": 1e-6,
+            "max_duration": 300,
+            "locked": False,
+            "bookable": True,
+            "status": "available",
+        }
+        for name in records
+    ]
     return qd_surface.build(rows, records, "2026-11-27T23:42:00+00:00")
 
 
@@ -60,7 +71,7 @@ def test_surface_keeps_figures_and_drops_long_fields() -> None:
 
 def test_equal_surfaces_have_no_difference() -> None:
     base = surface(p=record())
-    check(qd_surface.diff(base, base) == {"fields": [], "figures": []}, "contract broken")
+    check(qd_surface.diff(base, base) == {"fields": [], "figures": [], "policy": []}, "contract broken")
 
 
 def test_absent_new_and_changed_fields() -> None:
@@ -105,3 +116,76 @@ def test_load_refuses_another_schema(tmp_path: Path) -> None:
     other.write_text(json.dumps({"schema": "x"}), encoding="utf-8")
     with pytest.raises(SystemExit):
         qd_surface.load(other)
+
+
+def mutated(base: dict[str, object]) -> dict[str, object]:
+    """The red team's mutations: same-length architecture bytes, commands, mitigation and mode lists, price,
+    duration, lock and kind; a surface of the first schema cannot see any of them."""
+    live = record(commands="c" * 60, default_mitigations=["a"], known_mitigations=["a", "b", "c"])
+    live["specs"]["architecture"] = "<chim>" * 20  # type: ignore[index]
+    live["specs"]["available_commands"] = ["sample_count"]  # type: ignore[index]
+    live["specs"]["connected_input_modes"] = [0, 1]  # type: ignore[index]
+    return surface(p=live)
+
+
+def test_policy_changes_exit_nonzero(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    base_record = record(commands="x" * 60, default_mitigations=["a", "b"], known_mitigations=["a", "b"])
+    base_record["specs"]["available_commands"] = ["sample_count", "probs"]  # type: ignore[index]
+    base_record["specs"]["connected_input_modes"] = [0, 1, 2]  # type: ignore[index]
+    base = surface(p=base_record)
+    live = mutated(base)
+    items = {row[1] for row in qd_surface.diff(base, live)["policy"]}
+    wanted = {
+        "digests.specs.architecture",
+        "digests.specs.commands",
+        "lists.specs.default_mitigations",
+        "lists.specs.known_mitigations",
+        "lists.specs.available_commands",
+        "lists.specs.connected_input_modes",
+    }
+    check(wanted <= items, f"missing {wanted - items}")
+    files = {name: tmp_path / f"{name}.json" for name in ("base", "live")}
+    files["base"].write_text(json.dumps(base), encoding="utf-8")
+    files["live"].write_text(json.dumps(live), encoding="utf-8")
+    check(qd_surface.main(["diff", "--baseline", str(files["base"]), "--live", str(files["live"])]) == 1, "exit")
+    check("digests.specs.architecture" in capsys.readouterr().out, "table")
+
+
+def test_explorer_price_limit_lock_and_kind_changes_exit_nonzero() -> None:
+    base = surface(p=record())
+    live = surface(p=record())
+    entry = live["platforms"]["p"]  # type: ignore[index]
+    entry["explorer"].update({"price_per_shot": 1e-3, "max_duration": 60, "locked": True, "kind": "simulator"})
+    entry["kind"] = "simulator"
+    items = {row[1] for row in qd_surface.diff(base, live)["policy"]}
+    check(
+        {"explorer.price_per_shot", "explorer.max_duration", "explorer.locked", "explorer.kind", "kind"} <= items,
+        str(items),
+    )
+
+
+def test_version_figure_change_is_a_policy_change() -> None:
+    live = record(software_versions={"pcvl-worker": "1.2"})
+    base = record(software_versions={"pcvl-worker": "1.1"})
+    result = qd_surface.diff(surface(p=base), surface(p=live))
+    check([row[1] for row in result["policy"]] == ["figures.specs.software_versions.pcvl-worker"], str(result))
+    check(result["figures"] == [], "a version figure is not a performance figure")
+
+
+def test_numeric_list_change_is_reported_and_exits_zero() -> None:
+    live = record()
+    live["perfs"]["Dark counts (detection/s)"] = [1.0, 9.0]  # type: ignore[index]
+    result = qd_surface.diff(surface(p=record()), surface(p=live))
+    check(result["fields"] == [] and result["policy"] == [], "numeric lists are performance figures")
+    check([row[1] for row in result["figures"]] == ["perfs.Dark counts (detection/s)"], str(result))
+
+
+def test_a_first_schema_baseline_reports_every_policy_item_as_new() -> None:
+    base = surface(p=record())
+    old = json.loads(json.dumps(base))
+    old["schema"] = "qd-surface-v1"
+    for entry in old["platforms"].values():
+        for key in ("explorer", "digests", "lists", "numeric"):
+            entry.pop(key)
+    items = {row[1] for row in qd_surface.diff(old, base)["policy"]}
+    check({"schema", "digests.specs.architecture", "explorer.price_per_shot"} <= items, str(items))

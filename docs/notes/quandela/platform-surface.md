@@ -252,7 +252,7 @@ change alone leaves it 0. Run it after each weekly maintenance window
 mesh check. When the five QPU fields return the output lists them as `new`;
 record the date here and in [calibration.md](calibration.md), then write a new
 baseline with `scripts/qd_surface.py read --out FILE` under a dated name.
-`scripts/qd_surface.py` has no write path other than `read --out`.
+`scripts/qd_surface.py` has no write path other than `read --out`. A surface of schema `qd-surface-v2` adds the sha256 of every long string (`specs.architecture`, `specs.commands`), the short policy lists, the Explorer price, limit, lock and status fields and summary statistics of numeric lists; `diff` exits 1 on any field, policy, price, version or architecture change, and a baseline of the first schema reports each of those items as new until `read --out` records a v2 baseline.
 
 ## Open items
 
