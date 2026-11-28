@@ -1,0 +1,17 @@
+{
+ "approval": "Red team with agy neon high exhaustively and have Advisor review and then resolve and then mock, analyze, adjust as needed, re-run, and then garnet!",
+ "body_sha256": "848057d5ccb1ed7be580ffc943f0687d5eb2f4416cc8314b3f6cf001c46add5c",
+ "cases_sha256": "5fd86c743f62a7390e5bf6d54d30bbbe32bd1c35f73d4decb1452698c56d9525",
+ "credit_before": {
+  "currentBalance": "11.75",
+  "expiresAt": "2026-12-01T00:00:00+00:00"
+ },
+ "expected_seconds": 7.951,
+ "job": "kernel",
+ "job_id": "01a21f93-4ace-717b-b6a9-df6ffbcab8bc",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "garnet:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-11-28T00:34:36Z"
+}

@@ -1,0 +1,17 @@
+{
+ "approval": "Owner-approved garnet:mock re-run (0 credits) of the rebuilt 6,000-shot case on calibration set a8782702; owner words of the first mock: \"mock, analyze, adjust as needed, re-run, and then garnet!\"",
+ "body_sha256": "1afe86200823854816a7a0da719a280e7d44f712cc83274d5bb96fa65ee87cca",
+ "cases_sha256": "562837b790ffe025d0c774c1700b84b9393318567c9ed519152481475d552566",
+ "credit_before": {
+  "currentBalance": "11.75",
+  "expiresAt": "2026-12-01T00:00:00+00:00"
+ },
+ "expected_seconds": 7.349,
+ "job": "kernel",
+ "job_id": "01a22014-6ce3-70f2-9907-7a3d5dc7ba49",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "garnet:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-11-28T02:55:39Z"
+}
