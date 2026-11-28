@@ -7,6 +7,12 @@ prepared 1) of the selector's physical qubit, the zero fraction p0 of the true s
 fraction q0 as p0 = (q0 - e10) / (1 - e01 - e10). The error rates come from the calibration set the run compiled
 against (calibration/metrics.json of the run, the heralded variants because the kept shots passed the herald).
 
+The inversion is affine in each arm, so an arm difference D scales by 1 / (1 - e01 - e10) and the arm variance by
+its square; a ratio of differences, N_c = 16 D_c / (D_c + D_r), and the visibility-resolution test cancel the factor.
+The corrected estimates therefore take the observed arm variance times 1 / (1 - e01 - e10)^2 (propagate_rem), never a
+binomial variance recomputed on inverted counts, which would read a different spread from the same shots. Only a rule
+that compares an absolute difference to a fixed floor (the s016 visibility floor) reads the scaled value.
+
 The comparison never replaces the preregistered analysis. It reports N_c per operand without and with the inversion,
 and the delta, so a note can state how far readout error moves each estimate.
 
@@ -57,13 +63,21 @@ def selector_qubits(case_dir: Path, prediction: dict[str, Any]) -> dict[str, str
     return out
 
 
-def mitigated(
-    pooled: dict[tuple[str, str, str], list[int]], rates: dict[str, tuple[float, float]]
-) -> dict[Any, list[float]]:
-    out: dict[Any, list[float]] = {}
-    for (operand, kind, orientation), (zeros, total) in pooled.items():
-        e01, e10 = rates[operand]
-        out[(operand, kind, orientation)] = [total * invert_zero_fraction(zeros / total, e01, e10), total]
+SCALED_WITH_DIFFERENCE = ("d_real", "d_complex", "dd", "se_dd", "visibility", "se_visibility")
+
+
+def propagate_rem(estimate: dict[str, Any], e01: float, e10: float) -> dict[str, Any]:
+    """The estimates of one operand after readout inversion, from the estimates of its observed counts.
+
+    Differences and their standard errors scale by 1 / (1 - e01 - e10); the ratio, N_c and their standard errors, which
+    divide one difference by another, keep their values, and an unresolved N_c stays unresolved."""
+    gap = 1.0 - e01 - e10
+    if gap <= 0:
+        raise ValueError("readout error rates leave no contrast")
+    out = dict(estimate)
+    for key in SCALED_WITH_DIFFERENCE:
+        if estimate.get(key) is not None:
+            out[key] = estimate[key] / gap
     return out
 
 
@@ -82,16 +96,18 @@ def compare(run_dir: Path, root: Path) -> dict[str, Any]:
     qubits = selector_qubits(case_dir, prediction)
     rates = {operand: readout_rates(metrics, qubit) for operand, qubit in qubits.items()}
     raw = decision.analyze(analyzer.counts_of(pooled))
-    corrected = decision.analyze(analyzer.counts_of(mitigated(pooled, rates)))
     rows = {}
     for operand in sorted(raw["estimates"]):
-        before, after = raw["estimates"][operand], corrected["estimates"][operand]
+        before = raw["estimates"][operand]
+        after = propagate_rem(before, *rates[operand])
         rows[operand] = {
             "selector_qubit": qubits[operand],
             "e01_e10": list(rates[operand]),
+            "visibility_raw": before["visibility"],
+            "visibility_rem": after["visibility"],
             "n_c_raw": before["n_c"],
             "n_c_rem": after["n_c"],
-            "n_c_delta": after["n_c"] - before["n_c"],
+            "n_c_delta": None if before["n_c"] is None else after["n_c"] - before["n_c"],
             "se_n_c_raw": before["se_n_c"],
             "se_n_c_rem": after["se_n_c"],
         }

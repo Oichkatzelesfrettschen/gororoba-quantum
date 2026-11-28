@@ -66,3 +66,52 @@ def test_transport_capture_self_test() -> None:
     import iqm_transport_capture as tc
 
     require(tc.self_test() == 0, "the capture self-test passes")
+
+
+def test_propagated_estimates_keep_ratios_and_unresolved_visibility() -> None:
+    # Both arms read (597, 1000, 500, 1000): D = 0.097 each, V = 0.194; the spread is binomial times PHI = 1.54.
+    d, variance = 0.097, 1.54 * (0.597 * 0.403 / 1000 + 0.25 / 1000)
+    se_v = (2 * variance) ** 0.5
+    require(0.194 < 5.0 * se_v, "the observed counts leave the visibility unresolved")
+    observed = {
+        "d_real": d,
+        "d_complex": d,
+        "dd": 0.0,
+        "se_dd": se_v,
+        "visibility": 2 * d,
+        "se_visibility": se_v,
+        "ratio": None,
+        "se_ratio": None,
+        "n_c": None,
+        "se_n_c": None,
+    }
+    e01, e10 = 0.001, 0.02
+    gap = 1.0 - e01 - e10
+    inverted = rem.propagate_rem(observed, e01, e10)
+    require(inverted["n_c"] is None, "inversion leaves an unresolved N_c unresolved")
+    require(abs(inverted["visibility"] - 2 * d / gap) < 1e-15, "a difference scales by 1 / gap")
+    require(abs(inverted["se_visibility"] - se_v / gap) < 1e-15, "a standard error scales by 1 / gap")
+    require(
+        abs(inverted["visibility"] / inverted["se_visibility"] - 2 * d / se_v) < 1e-12,
+        "the resolution z is the same before and after inversion",
+    )
+
+
+def test_propagated_ratio_estimates_are_unchanged() -> None:
+    observed = {
+        "d_real": 0.2,
+        "d_complex": 0.5,
+        "dd": 0.3,
+        "se_dd": 0.01,
+        "visibility": 0.7,
+        "se_visibility": 0.01,
+        "ratio": 3 / 7,
+        "se_ratio": 0.02,
+        "n_c": 16 * 0.5 / 0.7,
+        "se_n_c": 0.16,
+    }
+    inverted = rem.propagate_rem(observed, 0.01, 0.03)
+    for key in ("ratio", "se_ratio", "n_c", "se_n_c"):
+        require(inverted[key] == observed[key], f"{key} keeps its value")
+    with pytest.raises(ValueError, match="no contrast"):
+        rem.propagate_rem(observed, 0.5, 0.5)
