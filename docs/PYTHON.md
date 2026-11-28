@@ -13,7 +13,7 @@ Start every task from its row. Retained records and approved case bytes stay on 
 | IQM reads and submission | `iqm-python` of the iqm-resonance-stack package on the build host | iqm-client 36 on qiskit 2.1.2 | [iqm/README.md](notes/iqm/README.md) holds the procedure. A submission through iqm-client needs a transport hash to bind the approved bytes by digest. |
 | Quandela (Perceval, Belenos) | `$PYTHON`; `QD_PYTHON` only for the MCP server | perceval-quandela and exqalibur at the pins | [quandela/README.md](notes/quandela/README.md). |
 | Quantum Inspire | `QI_PYTHON`, a CPython 3.13 venv from [requirements-qi.txt](notes/quantum_inspire/requirements-qi.txt) (`~/venvs/qi-z127` on the compute workstation) | quantuminspire 4.1.0, qiskit-quantuminspire 0.18.5, qiskit 2.3.1 | The SDK declares Python below 3.14 ([setup.md](notes/quantum_inspire/setup.md#environment)); no 3.14 interpreter runs it. |
-| Computer algebra | Singular, msolve, Macaulay2 and Sage on the build host; python-flint in `$PYTHON` or `gq-max` | [computer-algebra.md](runbooks/computer-algebra.md) | Exact replays run in global orderings. Bertini and HomotopyContinuation are absent on both hosts. |
+| Computer algebra | Singular, msolve, Macaulay2 and Sage on the build host; python-flint in `$PYTHON` or `gq-max` | [computer-algebra.md](runbooks/computer-algebra.md) | Exact replays run in global orderings. Bertini 1.7 (serial and an OpenMPI 5 build) and Julia 1.13 with HomotopyContinuation 2.24.1 run on the compute workstation from its user prefix, which the infrastructure chart records. |
 | Hosted CI | the container of [ci/AGENTS.md](../ci/AGENTS.md) | the locked manifests below | Hosted checks admit a merge; no local interpreter substitutes. |
 
 A task class missing from the table runs on `$PYTHON`. Every interpreter starts with `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`.
@@ -192,7 +192,7 @@ Source: package metadata and imports read on the compute workstation and the bui
 
 **Present and previously undocumented here.** `gq-max` holds qiskit-addon-utils, -cutting, -sqd, -mpf, -obp and -aqc-tensor, mthree, stim, pymatching, mitiq, qiskit-experiments, iqm-client and iqm-station-control-client. Their role is exploratory. The register of [state/hypercomplex-libraries/libraries.md](state/hypercomplex-libraries/libraries.md) keeps each one's admission status, and the presence of qiskit-addon-mpf in `gq-max` does not reverse its declined workflow above. The build host carries pari, gap and flint as system packages without a row in "Libraries by job".
 
-**Documented and missing.** `gq-max` lacks hypercomplex-engine, Octonion-Sedenion and pyoctonion, which the build host carries as Arch packages ([hypercomplex-libraries.md](notes/hypercomplex-libraries.md) lists each library's hosts). Bertini and HomotopyContinuation, the witness-set solvers, are absent on both hosts.
+**Documented and missing.** `gq-max` imports `hypercomplex` and `pyoctonion` (checked 2026-11-28); Octonion-Sedenion imports under no `octonion_sedenion` module there, and the build host carries all three as Arch packages ([hypercomplex-libraries.md](notes/hypercomplex-libraries.md) lists each library's hosts). The witness-set solvers Bertini 1.7 and HomotopyContinuation 2.24.1 run on the compute workstation only.
 
 **Version drift.**
 - [setup.md](notes/quantum_inspire/setup.md#environment) named qiskit 2.5.2 as the repository pin; `requirements.txt` pins 2.6.2 and 2.5.2 is the replay pin. The lock `requirements-qi.txt` (qiskit 2.3.1) governs the Quantum Inspire interpreter.
