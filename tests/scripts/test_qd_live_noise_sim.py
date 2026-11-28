@@ -9,6 +9,7 @@ from typing import Any
 import pytest
 import qd_belenos_mesh as mesh_lib
 import qd_live_noise_sim as sim
+import qd_native_circuit as native
 
 ROOT = Path(__file__).resolve().parents[2]
 JOB16 = ROOT / "results/quandela/runs/2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16"
@@ -111,3 +112,23 @@ def test_a_larger_g2_lowers_in_block_and_raises_multi_click_mass() -> None:
     )
     if not high["multi"] > low["multi"] == 0.0 or abs(sum(low["p"]) - 1.0) > 1e-9:
         raise AssertionError((low, high))
+
+
+def test_a_served_circuit_with_a_symbolic_expression_is_refused_before_any_evaluation() -> None:
+    from perceval import PS, Circuit, P
+    from perceval.serialization import serialize
+
+    text = str(serialize(Circuit(2).add(0, PS(P("a") * 2 + 1))))
+    with pytest.raises(native.NativeCircuitError, match="symbolic"):
+        sim.one_click_distribution("|1,0>", text, None, None)
+
+
+def test_perfs_reader_rejects_a_record_without_the_per_mode_transmission(tmp_path: Path) -> None:
+    for broken in (
+        {k: v for k, v in PERFS.items() if k != "Transmission per mode (%)"},
+        {**PERFS, "Transmission per mode (%)": {"t_in": [0.0] * 24}},
+    ):
+        path = tmp_path / "broken.json"
+        path.write_text(json.dumps({"perfs": broken}), encoding="utf-8")
+        with pytest.raises(sim.SimError, match="Transmission|t_out"):
+            sim.read_perfs(path)

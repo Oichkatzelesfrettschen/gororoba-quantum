@@ -8,9 +8,13 @@ simulation is a function of the served circuit, its input and the figures, so
 two entries that share a mesh and an input receive one prediction; the retained
 entries of one mesh that differ in outcome decide the question.
 
-Per retained entry the simulation deserializes the served computed_circuit and
-computed_input, runs Processor("SLOS") with threshold detectors and reads the
-exact output distribution, so no random generator runs and no seed enters.
+Per retained entry the simulation builds the Perceval Circuit of the served computed_circuit from the
+couplers and numeric phases that qd_belenos_mesh.decode reads (qd_native_circuit refuses a symbolic expression,
+which Perceval's deserializer would sympy-evaluate), reads the occupation of computed_input as text, runs
+Processor("SLOS") with single-click detectors (Detector.ppnr(1, 1, efficiency)) and reads the exact output
+distribution, so no random generator runs and no seed enters. Only static source, detector and dark-count
+imperfections enter; Perceval's NoiseModel(phase_error=...) is not simulated, so phase noise stays an open
+mechanism of the collapse.
 The arms add one imperfection group each:
 
 - ideal: no noise, the served unitary alone;
@@ -19,7 +23,9 @@ The arms add one imperfection group each:
   (the receipt's t_out is a relative sensitivity weight, so the efficiencies
   are a relative-weight reading);
 - noise_dark: noise plus the receipt's dark counts as independent clicks per
-  clock pulse, rate / (clock x 1e6), over pulses = samples / physical_perf;
+  clock pulse, rate / (clock x 1e6), over pulses = samples / physical_perf of the served entry (the pulses the
+  chip clocked for the observed samples, so the arm compares with the observed run, not with the figure-driven
+  prediction);
 - noise_eff_dark: both.
 
 Dark clicks add to the expected one-click counts to first order (a dark click
@@ -47,6 +53,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum")
 
 import qd_belenos_cone as cone_lib  # noqa: E402
 import qd_belenos_mesh as mesh_lib  # noqa: E402
+import qd_native_circuit as native  # noqa: E402
 
 import parallel  # noqa: E402
 import qd_records  # noqa: E402
@@ -91,8 +98,16 @@ def read_perfs(path: Path) -> Perfs:
         perfs = data["perfs"]
     else:
         raise SimError(f"{path.name} holds no perfs record")
-    for key in ("HOM (%)", "g2 (%)", "Transmittance (%)", "Clock (MHz)", "Dark counts (detection/s)"):
+    for key in (
+        "HOM (%)",
+        "g2 (%)",
+        "Transmittance (%)",
+        "Clock (MHz)",
+        "Dark counts (detection/s)",
+        "Transmission per mode (%)",
+    ):
         require(key in perfs, f"{path.name}: the perfs record lacks {key}")
+    require("t_out" in perfs["Transmission per mode (%)"], f"{path.name}: the perfs record lacks t_out")
     t_out = perfs["Transmission per mode (%)"]["t_out"]
     dark = perfs["Dark counts (detection/s)"]
     require(len(t_out) == MODES and len(dark) == MODES, f"{path.name}: per-mode figures do not span {MODES} modes")
@@ -146,9 +161,8 @@ def one_click_distribution(
     for a hand-built fixture; weights set one threshold detector efficiency per mode.
     """
     import perceval as pcvl
-    from perceval.serialization import deserialize
 
-    circuit = deserialize(circuit_text)
+    circuit = native.circuit_from_text(circuit_text)
     model = None
     if noise is not None:
         model = pcvl.NoiseModel(
@@ -243,6 +257,7 @@ def read_run(
     beside the retained ones."""
     retained = cone_lib.run_cells(run)
     records = qd_records.load_run(run)
+    qd_records.validate_run(records)
     manifest = records.json_of("cases.json")
     (block,) = manifest["blocks"]
     low, width = block["offset"], len(block["roles"])
