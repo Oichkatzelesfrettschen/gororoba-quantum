@@ -1,13 +1,14 @@
 # A5-242 orientation-bit case, merged diagonal on ibm_kingston
 
-Status: written case with its binding dry run; the dry run fails the case's own ratio bound (swap members), so the case
-is not admitted and nothing was submitted. Parent case: [pathion-kernel-map-orientation-bit.md](pathion-kernel-map-orientation-bit.md)
+Status: written case with its binding dry run on the tile-template pin; the admission check admits the plan (exit 0), and
+nothing was submitted. The unpinned dry run of the first round failed the check on the swap members and is kept as the
+comparison. Parent case: [pathion-kernel-map-orientation-bit.md](pathion-kernel-map-orientation-bit.md)
 (question, falsifiers, decision rule, analysis). Redesign: [pathion-kernel-map-orientation-architecture.md](pathion-kernel-map-orientation-architecture.md),
 section 3(b) b1. Owner decision of 2026-11-28: merged diagonal, e1 + e26 primary, MIN_REGIONS 11 at replica floor 0.5,
 ibm_kingston only.
 
-Evidence classes: "record" is the retained dry run results/live/2026-11-28T035012.386370Z (code commit a2104903d, tree
-unmodified); "exact" is an Operator or Statevector equality; "model" is the architecture document's placement model.
+Evidence classes: "record" is the pinned dry run results/live/2026-11-28T041415.297826Z (code commit 84b0ee5ca, tree unmodified) and
+"unpinned record" the first-round dry run results/live/2026-11-28T035012.386370Z (code commit a2104903d); "exact" is an Operator or Statevector equality; "model" is the architecture document's placement model.
 
 ## What it measures
 
@@ -38,39 +39,43 @@ the noise models omit, and only the device measures it.
 
 ## Dry run against the design
 
-| Quantity | Design (model) | Dry run (record) |
-|---|---|---|
-| Regions placed at floor 0.5 | 11 | 11 |
-| Best and worst region score | 0.562, 0.357 | 0.529, 0.346 |
-| CZ per unit, e1 + e26: ctrl, move, xtwin, swap | 99, 95, 99, 102 | 100, 102, 100, 171 |
-| CZ per unit, e1 + e18: ctrl, move, xtwin, swap | 93, 93, 93, 92 | 96, 98, 96, 119 |
-| Swap ratio to control | 1.03, 0.99 | 1.71, 1.24 |
-| Charge | 11.2 s | 10.99 s |
+| Quantity | Design (model) | Unpinned record | Record (tile-template pin) |
+|---|---|---|---|
+| Regions placed at floor 0.5 | 11 | 11 | 11 |
+| Best and worst region score | 0.562, 0.357 | 0.529, 0.346 | 0.532, 0.343 |
+| CZ per unit, e1 + e26: ctrl, move, xtwin, swap | 99, 95, 99, 102 | 100, 102, 100, 171 | 99, 95, 99, 102 |
+| CZ per unit, e1 + e18: ctrl, move, xtwin, swap | 93, 93, 93, 92 | 96, 98, 96, 119 | 93, 93, 93, 92 |
+| Swap ratio to control | 1.03, 0.99 | 1.71, 1.24 | 1.03, 0.99 |
+| xtwin non-rz sequence equals ctrl (both operands, both arms) | required | differs at e1 + e26 | equal (check exit 0) |
+| Charge | 11.2 s | 10.99 s | 11.17 s |
 
-Layout [73, 79, 72, 74, 71, 93], transpiler seed 64203 (the best of eight consecutive seeds from index 33).
-Regions, scores, seconds and the ctrl, move and xtwin counts match the design within 1 to 5 CZ. The swap members miss by
-a layout effect: live_run.py leaves the layout to the transpiler search, which does not hold the spider(2,2,1) tile and
-the assignment of the design, and the swap member exchanges logical wires 1 and 4, so its cost depends on whether those
-wires sit adjacent. The admission check refuses the plan on four lines (both arms of both swap units); the other rules
-pass (backend, floor, 11 regions, exclusions, equal arms, charge). The deviation is reported, not tuned.
+Layout [7, 6, 8, 17, 5, 9] on the primary compile, transpiler seed 64202 (the best of eight consecutive seeds from index
+33). The CZ counts equal the design table (model) exactly, the region count and scores match it within 0.03, and the
+admission check exits 0 on the record. At the retained case's measured-to-expected ratio of 1.14 the charge reads
+12.7 s, inside the 16.8 s ceiling.
 
 ### Pin of the layout
 
-`--pin-layout` is not available to this group: `live_run.py` accepts it only for the pinned campaigns
-(PINNED_CAMPAIGNS: coherence_probes, primorial_gap88), the idle campaigns and the n21 families, and its replicas are
-the pinned paths themselves. For a standalone group it carries neither a per-region tile shape nor a logical-to-physical
-assignment. Missing: a pin that takes the tile shape and assignment of one region and maps it onto every placed region
-(`pinned_replicas` maps the first path onto the others and could do this once a standalone group may name a pin). The
-dry run ran without a pin; `live_run.py` is unchanged in this round.
+`TILE_TEMPLATES` in `gororoba_quantum/live_run.py` names the logical-edge template of the group, the spider(2,2,1) of
+the SELECT diagonal with edges (0,1), (0,2), (0,3), (1,4), (2,5), so logical wires 1 and 4 are adjacent. The pin takes no
+flag, so the approved command below stays flag-identical. `select_candidates` embeds the template into the admitted
+coupler graph minus the excluded qubits by subgraph isomorphism (`tile_template_layout`, the lexicographically least
+embedding, a function of the coupler graph and the exclusions only), compiles every seed from that layout through the
+existing `pinned` branch, and rejects a seed whose compiled circuits leave a template coupler undriven
+(`tile_missing_edges`). Replica placement then moves the compiled pattern onto every region by the existing embedding
+search, so each region keeps the template's couplers; a graph with no embedding rejects the backend. The group record
+carries `tile_template`: the edges and, per region, the wire layout and `template_on_couplers` (true for all 11
+regions of the record). Other groups compile and record as before (the new key and trace entries exist only for a group in
+`TILE_TEMPLATES`). Evidence: tests/gororoba_quantum/test_live_run_tile_template.py, the red-team probe of the unpinned
+record and the dry run above.
 
 ### Gate order of the exchange member
 
-On the dry-run compile the non-rz gate sequence of xtwin equals the control's for e1 + e18 (PUBs 10 and 14, 11 and 15)
-and differs for e1 + e26 (PUBs 1 and 6, 3 and 7), with equal CZ, sx, x and measure counts (inference from PUB order in
-`isa.qpy`). Over ten transpiler seeds on one tile the merged members agree in five or six of ten, the retained members
-in ten of ten. The statistic D (control minus exchange) is zero under errors that act before the frame only when the
-compiled gate sequences agree, so D at e1 + e26 carries a compile difference besides the frame. Falsifier: a pinned
-layout compiles both members to one sequence.
+On the unpinned compile the non-rz gate sequence of xtwin differed from the control's for e1 + e26 (PUBs 1 and 6, 3 and
+7) and matched for e1 + e18. The admission check now compares the non-rz sequence of the packed xtwin and control
+circuits, read from the archive that `isa.qpy.sha256` names, for both operands and both arms. It refuses the unpinned
+record on e1 + e26 and admits the pinned record: the falsifier of the first round (a pinned layout compiles both members
+to one sequence) holds on this compile.
 
 ## Power
 
@@ -82,8 +87,8 @@ shrink the scatter; no measurement supports that, so the power rests on the reta
 
 - A fresh plan on the calibration in force places fewer than 11 regions, exceeds 16.8 s, or touches an excluded qubit:
   the check refuses and nothing is sent.
-- Any swap or moved member routes more than 20 percent from its control: the check refuses (the state of the record
-  above).
+- Any swap or moved member routes more than 20 percent from its control, or an xtwin member compiles to another non-rz
+  sequence than its control: the check refuses (the state of the unpinned record).
 - The measured gap reading is decided by the parent case's rule; this case changes the circuit's cost, not the rule.
 
 ## Seeds
@@ -94,7 +99,7 @@ docs/evidence/qrng_seeds/allocations.json (runtime rows of the dry run); `ci/see
 
 ## Command the parent runs after approval
 
-From the repository root, with the account unset (primary), once the swap placement is resolved by the owner:
+From the repository root, with the account unset (primary):
 
 ```sh
 GOROROBA_IBM_ACCOUNT= sh scripts/approved_run.sh --check '"$PYTHON" ../scripts/pathion_kernel_map_orientation_merged_check.py' -- \
@@ -105,14 +110,13 @@ GOROROBA_IBM_ACCOUNT= sh scripts/approved_run.sh --check '"$PYTHON" ../scripts/p
   --seed-simulator qrng:docs/evidence/anu_qrng/draw-2026-11-27T222523Z.json#34 --out ../results/live
 ```
 
-With the layout of the record above the check exits 1 on the swap units and nothing is submitted.
+The wrapper plans afresh and submits at once; a plan that differs from the approved record writes `approval_required`
+and sends nothing. The case still waits for the owner's approval of this written case.
 
 ## Open decisions
 
-- Swap units: pin the layout (a change to `live_run.py`), drop the two swap units (the check's ratio rule then needs the
-  roles list changed), or accept a swap cost the check refuses.
-- `experiments.py` registers the group; `EXPERIMENT_SOURCE_MANIFEST` in `live_run.py` lists
-  `pathion_kernel_map_orientation.py` and not the successor module, so the experiment digest does not bind the merged
-  module's bytes. Adding the entry is a one-line change to `live_run.py`.
-- The four `results/live/archives/*.qpy` files (the isa.qpy of this and the three earlier dry runs) stay untracked as in
-  the earlier dry-run commit; `isa.qpy.sha256` of each record names its file.
+- Owner approval of the written case (backend, 16,384 shots, expected 11.2 to 12.7 s of quantum time) before the
+  command above runs. No other decision is open: the swap placement is resolved by the pin, and the source manifest now
+  lists the merged module.
+- The `results/live/archives/*.qpy` files (the isa.qpy of this and the earlier dry runs) stay untracked as in the earlier
+  dry-run commit; `isa.qpy.sha256` of each record names its file.
