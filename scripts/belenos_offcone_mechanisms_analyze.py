@@ -29,6 +29,31 @@ Analyst choices, fixed before the retained data was read:
   readings) names the one mechanism the pattern attributes, or no attribution.
 - Void job. A job is void when it holds no valid entry of some source. A void entry is dropped and reported. A
   trailing entry without its pair is dropped; a run that holds fewer entries than its settings is refused.
+- Presence rule. An off-cone mode counts as present at 32 or more one-click samples, the packet floor of the case.
+  PR 1036 (qd_belenos_offcone_packets) counts a mode at any positive count (n > 0); the two rules read different
+  quantities and their totals are not comparable (here: 15 presences at the case rule against 247 at n > 0).
+
+Post hoc additions. The routing gate, the cone-floor sensitivity and the continuous click contrast below were added
+after the three runs were read (a red team of 2026-11-28 reported the routing collapse and the 1.48x click ratio from
+them), so none of the three belongs to the preregistered layer, and the gate's threshold is the one part fixed from
+data other than the runs it gates:
+
+- Routing gate. belenos_mesh/job-16 (retained 2026-10-18, the same circuit and seed 20 on mesh 29dc6ef8) is the
+  baseline: its in_block_cone and tvd_cone_from_ideal over its 29dc6ef8 entries (qd_belenos_cone.run_cells) span an
+  envelope, in_block_cone from its minimum and tvd_cone_from_ideal up to its maximum. The envelope includes the two
+  failing entries job-16 itself holds (its first two entries), so it is the widest routing state the chip produced on
+  this mesh before the outage and rejects only a state it never produced. A job passes when the median of its valid
+  source-20 entries lies inside the envelope on both statistics, and fails closed when it has no such entry. The
+  threshold derives from job-16 alone and was written before run_cells was applied to the new runs, but the red
+  team's means for the new runs (0.158 to 0.195) were already known. Source 22 returned mesh 500c4fab, for which no
+  baseline exists, so the gate reads source 20 only. A failing gate withholds every mechanism verdict.
+- Cone-floor sensitivity. The cone adds a mode whose noisy-channel occupation is at least NOISY_FLOOR; the presences
+  are recounted at 0.5, 1 and 2 times that floor (qd_belenos_cone.run_cells noisy_floor).
+- Continuous click contrast. The mitigation contrast repeated on the raw primary off-cone clicks (every off-cone mode
+  other than mode 5) beside the binary presence count: the exact binomial test of job-01's share of the clicks at its
+  exposure share, which the overdispersion of packet counts makes optimistic (descriptive), and the ratio of the
+  default jobs' click rate to job-01's. A cell where every entry of every job carries at least 32 clicks on a mode is
+  flagged saturated: the binary indicator reads 1 on both arms there and cannot see an amplification.
 
 Usage: "$PYTHON" scripts/belenos_offcone_mechanisms_analyze.py (--write OUT RUN... | --check OUT RUN...)
 RUN is the case directory of each job with its raw result, three runs, in any order.
@@ -39,6 +64,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import statistics
 import sys
 from pathlib import Path
 from typing import Any
@@ -69,14 +95,54 @@ PREDICTED_PRESENCES_PER_JOB = 77.51
 PREDICTED_PRESENCES_PER_SOURCE = 38.76
 PREDICTED_MODE_5_PER_JOB = 49.04
 PREDICTED_RATE = 1.0841e-04
-CAVEAT = (
-    "couplers_checked is unread at plan and collect for every job: only the 2026-10-17 catalogue stamp backs "
-    "the carried architecture, so a coupler change between that stamp and the runs is unchecked"
+FLOOR_FACTORS = (0.5, 1.0, 2.0)
+BASELINE_RUN = case_lib.ROOT / "results/quandela/runs/2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16"
+ROUTING_RULE = (
+    "a job passes when the median of its valid source-20 entries has in_block_cone at or above the minimum and "
+    "tvd_cone_from_ideal at or below the maximum of belenos_mesh/job-16's 29dc6ef8 entries; a job without such an "
+    "entry fails"
 )
 
 
 class AnalysisError(RuntimeError):
     pass
+
+
+def baseline() -> dict[str, Any]:
+    """The routing envelope of belenos_mesh/job-16 on mesh 29dc6ef8: the thresholds of the routing gate."""
+    rows = [r for r in cone_lib.run_cells(BASELINE_RUN) if r["mesh_sha256"].startswith(SERVED_MESH)]
+    if not rows:
+        raise AnalysisError(f"{BASELINE_RUN.name}: no entry on mesh {SERVED_MESH}")
+    in_block = sorted(r["in_block_cone"] for r in rows)
+    tvd = sorted(r["tvd_cone_from_ideal"] for r in rows)
+    return {
+        "run": BASELINE_RUN.name,
+        "mesh": SERVED_MESH,
+        "entries": len(rows),
+        "rule": ROUTING_RULE,
+        "in_block_cone": {"min": round(in_block[0], 6), "median": round(statistics.median(in_block), 6)},
+        "tvd_cone_from_ideal": {"max": round(tvd[-1], 6), "median": round(statistics.median(tvd), 6)},
+        "entries_at_in_block_cone_0_98_or_more": sum(x >= 0.98 for x in in_block),
+    }
+
+
+def routing_gate(job: dict[str, Any], base: dict[str, Any]) -> dict[str, Any]:
+    """The routing-health reading of one job's valid source-20 entries against the baseline envelope."""
+    rows = [e for e in valid(job) if e["source"] == 20 and e.get("in_block_cone") is not None]
+    if not rows:
+        return {"entries": 0, "passes": False, "reason": "no valid source-20 entry carries a routing reading"}
+    in_block = statistics.median(e["in_block_cone"] for e in rows)
+    tvd = statistics.median(e["tvd_cone_from_ideal"] for e in rows)
+    floor, ceiling = base["in_block_cone"]["min"], base["tvd_cone_from_ideal"]["max"]
+    return {
+        "entries": len(rows),
+        "median_in_block_cone": round(in_block, 6),
+        "median_tvd_cone_from_ideal": round(tvd, 6),
+        "entries_inside_envelope": sum(
+            e["in_block_cone"] >= floor and e["tvd_cone_from_ideal"] <= ceiling for e in rows
+        ),
+        "passes": in_block >= floor and tvd <= ceiling,
+    }
 
 
 def binomial_two_sided(k: int, n: int, p: float) -> float:
@@ -111,7 +177,12 @@ def ideal_share(computed_circuit: str, source: int) -> float:
 
 
 def entry_of(
-    row: dict[str, Any], setting: dict[str, Any], computed_input: str, acquisition: float, share: float = 0.0
+    row: dict[str, Any],
+    setting: dict[str, Any],
+    computed_input: str,
+    acquisition: float,
+    share: float = 0.0,
+    presences_by_floor: dict[str, int] | None = None,
 ) -> dict[str, Any]:
     """One entry with the case's void rules applied to the returned mesh, source and recorded samples."""
     mode = setting["input_mode"]
@@ -147,6 +218,11 @@ def entry_of(
         "presence_modes": sorted(q for q, n in primary.items() if n >= PRESENCE_MIN),
         "mode_5_presence": int(off.get(HOT_MODE, 0) >= PRESENCE_MIN),
         "mode_5_clicks": off.get(HOT_MODE, 0),
+        "in_block_cone": row.get("in_block_cone"),
+        "tvd_cone_from_ideal": row.get("tvd_cone_from_ideal"),
+        "off_cone_clicks": {str(q): n for q, n in sorted(primary.items()) if n},
+        "primary_clicks": sum(primary.values()),
+        "presences_by_floor": presences_by_floor or {},
         "void": problems,
     }
 
@@ -169,6 +245,10 @@ def run_entries(run: Path) -> dict[str, Any]:
     if len(results) != len(settings):
         raise AnalysisError(f"{run.name}: {len(results)} entries for {len(settings)} settings (a cut run is refused)")
     rows = cone_lib.run_cells(run)
+    floors = {
+        str(factor): cone_lib.run_cells(run, cone_lib.NOISY_FLOOR * factor) if factor != 1.0 else rows
+        for factor in FLOOR_FACTORS
+    }
     entries = [
         entry_of(
             row,
@@ -176,9 +256,19 @@ def run_entries(run: Path) -> dict[str, Any]:
             result["computed_input"],
             row["acquisition_s_estimate"] or 0.0,
             ideal_share(result["computed_circuit"], setting["input_mode"]),
+            {
+                factor: sum(1 for q, n in at[k]["off_cone_by_mode"].items() if int(q) != HOT_MODE and n >= PRESENCE_MIN)
+                for factor, at in floors.items()
+            },
         )
-        for row, setting, result in zip(rows, settings, results, strict=True)
+        for k, (row, setting, result) in enumerate(zip(rows, settings, results, strict=True))
     ]
+    compiled = validated.collected.get("compiled_couplers_checked")
+    offline = compiled is None
+    if offline:
+        import qd_platform
+
+        compiled = qd_platform.compiled_couplers_state(validated.submission, (run / "raw/result.json").read_bytes())
     return {
         "run": run.name,
         "job": manifest["job"],
@@ -187,6 +277,8 @@ def run_entries(run: Path) -> dict[str, Any]:
         "result_sha256": validated.collected["result_sha256"],
         "architecture_source": validated.submission["architecture_source"],
         "couplers_checked": validated.collected["couplers_checked"],
+        "compiled_couplers_checked": compiled,
+        "compiled_couplers_checked_from": "offline from raw/result.json" if offline else "results.json",
         "entries": complete_pairs(entries),
         "dropped_unpaired": len(entries) - len(complete_pairs(entries)),
     }
@@ -267,7 +359,87 @@ def contrasts(jobs: dict[str, dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def verdicts(jobs: dict[str, dict[str, Any]], c: dict[str, Any]) -> dict[str, Any]:
+def caveat(jobs: dict[str, dict[str, Any]]) -> str:
+    """The coupler caveat read from the jobs' own couplers_checked and compiled_couplers_checked values."""
+    live = {job["couplers_checked"] for job in jobs.values()}
+    compiled = {job["compiled_couplers_checked"] for job in jobs.values()}
+    sources = sorted({job["architecture_source"] for job in jobs.values()})
+    first = (
+        "the live couplers matched the retained catalogue at collect in every job"
+        if live == {"live-match"}
+        else f"couplers_checked reads {sorted(live)} across the jobs, so the live couplers were not all read"
+    )
+    second = (
+        "the computed circuits of every entry carry the couplers of the plan's architecture (compiled_couplers_checked "
+        "match), which fixes the server's compile model and leaves the physical routing unchecked"
+        if compiled == {"match"}
+        else f"compiled_couplers_checked reads {sorted(compiled)} across the jobs"
+    )
+    return f"architecture_source {sources}: {first}; {second}"
+
+
+def click_contrast(jobs: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    """The mitigation contrast on raw primary off-cone clicks, beside the binary presence count, with saturation."""
+    entries = {name: valid(job) for name, job in jobs.items()}
+    clicks = {name: sum(e["primary_clicks"] for e in rows) for name, rows in entries.items()}
+    samples = {name: sum(e["samples"] for e in rows) for name, rows in entries.items()}
+    total, exposure = sum(clicks.values()), sum(samples.values())
+    default_samples = samples["job-00"] + samples["job-02"]
+    default_rate = (clicks["job-00"] + clicks["job-02"]) / default_samples if default_samples else None
+    off_rate = clicks["job-01"] / samples["job-01"] if samples["job-01"] else None
+    by_level = {}
+    for level in sorted({e["level"] for rows in entries.values() for e in rows}):
+        rate = {
+            name: (
+                sum(e["primary_clicks"] for e in rows if e["level"] == level)
+                / max(1, sum(e["samples"] for e in rows if e["level"] == level))
+            )
+            for name, rows in entries.items()
+        }
+        by_level[str(level)] = {"clicks_per_sample": {n: float(f"{v:.6g}") for n, v in rate.items()}}
+    saturated = []
+    every = [e for rows in entries.values() for e in rows]
+    for source in SOURCES:
+        for level in sorted({e["level"] for e in every}):
+            cell = [e for e in every if e["source"] == source and e["level"] == level]
+            modes = sorted({int(q) for e in cell for q in e["off_cone_clicks"]})
+            full = [q for q in modes if cell and all(e["off_cone_clicks"].get(str(q), 0) >= PRESENCE_MIN for e in cell)]
+            if full:
+                saturated.append({"source": source, "level": level, "modes": full, "entries": len(cell)})
+    return {
+        "primary_clicks": clicks,
+        "samples": samples,
+        "job_01_share_test": contrast(clicks["job-01"], total, samples["job-01"] / exposure if exposure else 1 / 3),
+        "test_note": "exact binomial on pooled clicks; packet counts are overdispersed, so p is optimistic",
+        "default_over_mitigations_off_click_rate": (
+            round(default_rate / off_rate, 4) if default_rate is not None and off_rate else None
+        ),
+        "by_level": by_level,
+        "saturated_cells": saturated,
+        "binary_indicator_saturated": bool(saturated),
+    }
+
+
+def floor_sensitivity(jobs: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    """Presences per job and the mitigation contrast when the cone floor is scaled by each of FLOOR_FACTORS."""
+    out = {}
+    for factor in FLOOR_FACTORS:
+        key = str(factor)
+        per = {name: sum(e["presences_by_floor"].get(key, 0) for e in valid(job)) for name, job in sorted(jobs.items())}
+        samples = {name: sum(e["samples"] for e in valid(job)) for name, job in jobs.items()}
+        total, exposure = sum(per.values()), sum(samples.values())
+        out[key] = {
+            "noisy_floor": cone_lib.NOISY_FLOOR * factor,
+            "presences": per,
+            "mitigation": contrast(per["job-01"], total, samples["job-01"] / exposure) if total else None,
+        }
+    return out
+
+
+def verdicts(jobs: dict[str, dict[str, Any]], c: dict[str, Any], base: dict[str, Any] | None = None) -> dict[str, Any]:
+    """The mechanisms' falsifier layer and the case reading; with a baseline, a failing routing gate withholds both."""
+    gates = {name: routing_gate(job, base) for name, job in sorted(jobs.items())} if base is not None else {}
+    collapsed = [name for name, gate in gates.items() if not gate["passes"]]
     void_jobs = [
         name for name, job in jobs.items() if any(not any(e["source"] == s for e in valid(job)) for s in SOURCES)
     ]
@@ -290,9 +462,14 @@ def verdicts(jobs: dict[str, dict[str, Any]], c: dict[str, Any]) -> dict[str, An
     matched = [m for m, ok in holds.items() if ok]
     blocked = bool(void_jobs) or drift["rejects"]
     reading = matched[0] if len(matched) == 1 and not blocked else "no attribution"
+    if collapsed:
+        mechanisms = {m: "withheld" for m in mechanisms}
+        reading = "routing collapsed, mechanisms unread"
     return {
         "falsifier_layer": mechanisms,
         "case_reading": reading,
+        "routing_gate": gates,
+        "routing_collapsed_jobs": collapsed,
         "reading_conditions_met": matched,
         "void_jobs": void_jobs,
         "drift_rejected": drift["rejects"],
@@ -359,6 +536,7 @@ def analysis(runs: list[Path]) -> dict[str, Any]:
     if arms != {"job-00": False, "job-01": True, "job-02": False}:
         raise AnalysisError(f"mitigation arms {arms} differ from the case (only job-01 sends mitigations = [])")
     c = contrasts(jobs)
+    base = baseline()
     return {
         "schema": SCHEMA,
         "case": "docs/design/belenos-offcone-mechanisms-case.md",
@@ -366,7 +544,10 @@ def analysis(runs: list[Path]) -> dict[str, Any]:
             f"off-cone mode other than {HOT_MODE} with one-click count >= {PRESENCE_MIN}; mode {HOT_MODE} separate"
         ),
         "alpha": ALPHA,
-        "caveat": CAVEAT,
+        "caveat": caveat(jobs),
+        "routing_baseline": base,
+        "floor_sensitivity": floor_sensitivity(jobs),
+        "click_contrast": click_contrast(jobs),
         "jobs": {
             name: {
                 "run": job["run"],
@@ -374,6 +555,8 @@ def analysis(runs: list[Path]) -> dict[str, Any]:
                 "result_sha256": job["result_sha256"],
                 "architecture_source": job["architecture_source"],
                 "couplers_checked": job["couplers_checked"],
+                "compiled_couplers_checked": job["compiled_couplers_checked"],
+                "compiled_couplers_checked_from": job["compiled_couplers_checked_from"],
                 "mitigations_off": job["mitigations_off"],
                 "dropped_unpaired": job["dropped_unpaired"],
                 "all_entries": tally(job["entries"]),
@@ -386,7 +569,7 @@ def analysis(runs: list[Path]) -> dict[str, Any]:
         "cells": cells(jobs),
         "sources": modes_of(jobs),
         "contrasts": c,
-        "verdict": verdicts(jobs, c),
+        "verdict": verdicts(jobs, c, base),
         "prediction_vs_outcome": prediction(jobs),
         "entries": {
             name: [{k: v for k, v in e.items() if k != "void"} | {"void": bool(e["void"])} for e in job["entries"]]

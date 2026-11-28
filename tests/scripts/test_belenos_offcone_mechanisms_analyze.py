@@ -30,6 +30,11 @@ def make_entry(source: int, level: int, presences: int, perf: float = 0.01) -> d
         "breaks_1_to_31": 0,
         "mode_5_presence": 0,
         "mode_5_clicks": 0,
+        "in_block_cone": 0.99,
+        "tvd_cone_from_ideal": 0.09,
+        "off_cone_clicks": {},
+        "primary_clicks": 0,
+        "presences_by_floor": {},
         "void": [],
     }
 
@@ -211,3 +216,103 @@ def test_a_source_split_beyond_the_episodes_bound_is_flagged() -> None:
     even = read(jobs_of(lambda s, n, r: 4 if s == 20 else 2))
     if even["episodes_exceeded_by_source_split"]:
         raise AssertionError(even)
+
+
+BASE = {"in_block_cone": {"min": 0.45}, "tvd_cone_from_ideal": {"max": 0.82}}
+
+
+def collapse(jobs: dict[str, dict[str, Any]], in_block: float = 0.2, tvd: float = 0.87) -> None:
+    for job in jobs.values():
+        for entry in job["entries"]:
+            entry["in_block_cone"], entry["tvd_cone_from_ideal"] = in_block, tvd
+
+
+def test_the_baseline_is_the_job_16_envelope_on_mesh_29dc6ef8() -> None:
+    base = ana.baseline()
+    if (
+        base["entries"] != 13
+        or base["in_block_cone"]["min"] != 0.450353
+        or base["tvd_cone_from_ideal"]["max"] != 0.819035
+    ):
+        raise AssertionError(base)
+    if base["entries_at_in_block_cone_0_98_or_more"] != 11:
+        raise AssertionError("job-16 holds 11 entries at 0.98 or more and two failing entries")
+
+
+def test_a_healthy_routing_state_leaves_the_case_reading_to_the_contrasts() -> None:
+    jobs = jobs_of(lambda s, level, rep: 0)
+    got = ana.verdicts(jobs, ana.contrasts(jobs), BASE)
+    if got["routing_collapsed_jobs"] or got["case_reading"] != "no attribution":
+        raise AssertionError(got)
+
+
+def test_a_collapsed_routing_state_withholds_every_mechanism_and_the_reading() -> None:
+    # source 22 reads no presence and source 20 reads 3 per entry: ungated, the contrasts would name episodes
+    jobs = jobs_of(lambda s, level, rep: 3 if s == 20 else 0, perf=lambda level: 0.01)
+    if ana.verdicts(jobs, ana.contrasts(jobs))["case_reading"] != "episodes":
+        raise AssertionError("the ungated reading is the one the gate must withhold")
+    collapse(jobs)
+    got = ana.verdicts(jobs, ana.contrasts(jobs), BASE)
+    if got["case_reading"] != "routing collapsed, mechanisms unread" or set(got["falsifier_layer"].values()) != {
+        "withheld"
+    }:
+        raise AssertionError(got)
+    if got["routing_collapsed_jobs"] != ["job-00", "job-01", "job-02"]:
+        raise AssertionError(got["routing_collapsed_jobs"])
+
+
+def test_the_gate_reads_the_median_and_fails_closed_without_a_source_20_entry() -> None:
+    jobs = jobs_of(lambda s, level, rep: 0)
+    entries = [e for e in jobs["job-00"]["entries"] if e["source"] == 20]
+    for entry in entries[:2]:
+        entry["in_block_cone"], entry["tvd_cone_from_ideal"] = 0.1, 0.9  # a minority of failing entries
+    if not ana.routing_gate(jobs["job-00"], BASE)["passes"]:
+        raise AssertionError("two failing entries of fifteen leave the median inside the envelope")
+    for entry in entries[:9]:
+        entry["in_block_cone"] = 0.1
+    if ana.routing_gate(jobs["job-00"], BASE)["passes"]:
+        raise AssertionError("a median below the envelope fails")
+    only_22 = {"job": "job-00", "entries": [e for e in jobs["job-00"]["entries"] if e["source"] == 22]}
+    if ana.routing_gate(only_22, BASE)["passes"]:
+        raise AssertionError("a job without a source-20 entry fails closed")
+
+
+def test_the_click_contrast_reads_an_amplification_the_binary_count_saturates_on() -> None:
+    def rule(source: int, level: int, rep: int) -> int:
+        return 1 if source == 20 and level == 60000 else 0
+
+    jobs = jobs_of(rule)
+    for name, job in jobs.items():
+        for entry in job["entries"]:
+            if entry["source"] == 20 and entry["level"] == 60000:
+                clicks = 40 if name == "job-01" else 60
+                entry["off_cone_clicks"], entry["primary_clicks"] = {"6": clicks}, clicks
+    got = ana.click_contrast(jobs)
+    if got["default_over_mitigations_off_click_rate"] != 1.5:
+        raise AssertionError(got["default_over_mitigations_off_click_rate"])
+    if got["saturated_cells"] != [{"source": 20, "level": 60000, "modes": [6], "entries": 15}]:
+        raise AssertionError(got["saturated_cells"])
+    if not got["binary_indicator_saturated"] or not got["job_01_share_test"]["rejects"]:
+        raise AssertionError(got)
+
+
+def test_the_floor_sensitivity_recounts_presences_per_factor() -> None:
+    jobs = jobs_of(lambda s, level, rep: 1)
+    for job in jobs.values():
+        for entry in job["entries"]:
+            entry["presences_by_floor"] = {"0.5": 2, "1.0": 1, "2.0": 0}
+    got = ana.floor_sensitivity(jobs)
+    if [got[k]["presences"]["job-00"] for k in ("0.5", "1.0", "2.0")] != [60, 30, 0]:
+        raise AssertionError(got)
+    if got["2.0"]["mitigation"] is not None:
+        raise AssertionError("a floor with no presence has no mitigation contrast")
+
+
+def test_the_caveat_follows_the_recorded_coupler_states() -> None:
+    def job(live: str, compiled: str) -> dict[str, Any]:
+        return {"couplers_checked": live, "compiled_couplers_checked": compiled, "architecture_source": "carried"}
+
+    both = ana.caveat({"a": job("unread", "match")})
+    live_read = ana.caveat({"a": job("live-match", "unread")})
+    if "match" not in both or "unread" not in both or both == live_read or "matched the retained" not in live_read:
+        raise AssertionError((both, live_read))
