@@ -1,10 +1,10 @@
-# Weight-slice unit-replacement Rees fibers into N- at both roots of -1
+# Weight-slice unit-replacement Rees fibers into N+ and N- at both roots of -1
 
 A5-409 records that the header-slice elimination of `nullity16_rees_fibers.py` reached its 300 s limit on all ten
 incidences into N+ and N-. A5-574 completes Iso -> N- by the unit-replacement route on the weight slice of A5-421,
 in about 900 times less wall time, and replays X- -> N-.
 [`scripts/a5_weight_slice_unit_cells.py`](../../../scripts/a5_weight_slice_unit_cells.py) extends that route to every
-source into N- except E8-bar, at both roots of -1, under the A5-409 limits: a 300 s timeout and a 16 GiB address-space
+source into N+ and N- except E8-bar, at both roots of -1, under the A5-409 limits: a 300 s timeout and a 16 GiB address-space
 limit per Singular process. Ledger row A5-675.
 
 ## Method
@@ -29,6 +29,10 @@ L = K test.
 | X+ -> N- | 21255 | 3 | 0, 3, 1 | done, 0.4 s |
 | W8 -> N- | 10754 | 24 | not reached | timeout at 300 s |
 | W8 -> N- | 21255 | 24 | not reached | timeout at 300 s |
+| Iso -> N+ | 10754, 21255 | 17 | 68, 5, 23 | done, 8.1 s and 7.8 s |
+| X+ -> N+ | 10754, 21255 | 15 | 69, 4, 12 | done, 6.3 s and 6.8 s |
+| X- -> N+ | 10754, 21255 | 3 | 0, 3, 1 | done, 0.4 s each |
+| W8 -> N+ | 10754, 21255 | not recorded | not reached | timeout at 300 s |
 
 Every finished cell prints `CERT unit_identity_bad 0`, `FIBER outside_K 0 K_outside_fiber 0` and no `CERT FAIL` line,
 so its fiber ideal equals its quadric ideal K.
@@ -40,7 +44,10 @@ so its fiber ideal equals its quadric ideal K.
 - The second root gives the same invariants on all three finished sources.
 - W8 -> N- does not finish inside 300 s on this route either.
 
-Not covered: the five incidences into N+, since the template carries only the N- slice matrix. E8-bar -> N+ and N-
+The N+ cells use the producer's N+ slice matrix (`_matrix_lines`) in place of the template's first 140 lines, which
+equal the producer's N- lines line for line. At N+ the roles of X+ and X- swap, as A5-416 states: the same-sign X+
+gives the threefold of degree 12 and the opposite-sign X- the plane. The record requires the A5-416 dimension and
+multiplicity at every finished N+ cell. E8-bar -> N+ and N-
 are already completed by the same route in 11 to 14 h (A5-572, A5-573). W8 needs a longer limit or another
 presentation.
 

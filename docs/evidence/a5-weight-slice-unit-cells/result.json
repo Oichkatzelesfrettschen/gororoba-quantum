@@ -18,6 +18,7 @@
    ],
    "j_source": null,
    "nakayama": 17,
+   "orbit": "N-",
    "root": 10754,
    "source": "iso",
    "status": "done"
@@ -40,6 +41,7 @@
    ],
    "j_source": null,
    "nakayama": 15,
+   "orbit": "N-",
    "root": 10754,
    "source": "xm",
    "status": "done"
@@ -61,12 +63,14 @@
    ],
    "j_source": null,
    "nakayama": 3,
+   "orbit": "N-",
    "root": 10754,
    "source": "xp",
    "status": "done"
   },
   {
    "j_source": null,
+   "orbit": "N-",
    "root": 10754,
    "source": "w8",
    "status": "timeout"
@@ -89,6 +93,7 @@
    ],
    "j_source": null,
    "nakayama": 17,
+   "orbit": "N-",
    "root": 21255,
    "source": "iso",
    "status": "done"
@@ -111,6 +116,7 @@
    ],
    "j_source": null,
    "nakayama": 15,
+   "orbit": "N-",
    "root": 21255,
    "source": "xm",
    "status": "done"
@@ -132,12 +138,164 @@
    ],
    "j_source": null,
    "nakayama": 3,
+   "orbit": "N-",
    "root": 21255,
    "source": "xp",
    "status": "done"
   },
   {
    "j_source": null,
+   "orbit": "N-",
+   "root": 21255,
+   "source": "w8",
+   "status": "timeout"
+  },
+  {
+   "cert": [
+    "CERT colon_equal_after_iterations 0",
+    "CERT pivot_nonzerodivisor_mod_J 1",
+    "CERT satstd_isSB 1 leading_u_bad 3",
+    "CERT unit_identity_bad 0 all_positive_degree 1"
+   ],
+   "fiber": [
+    "FIBER bound 0 minimal generators 68 dim 5 mult 23",
+    "FIBER outside_K 0 K_outside_fiber 0"
+   ],
+   "fiber_triple": [
+    68,
+    5,
+    23
+   ],
+   "j_source": null,
+   "nakayama": 17,
+   "orbit": "N+",
+   "root": 10754,
+   "source": "iso",
+   "status": "done"
+  },
+  {
+   "cert": [
+    "CERT pivot_nonzerodivisor_mod_J 1",
+    "CERT satstd_isSB 1 leading_u_bad 0",
+    "CERT unit_identity_bad 0 all_positive_degree 1"
+   ],
+   "fiber": [
+    "FIBER bound 0 minimal generators 0 dim 3 mult 1",
+    "FIBER outside_K 0 K_outside_fiber 0"
+   ],
+   "fiber_triple": [
+    0,
+    3,
+    1
+   ],
+   "j_source": null,
+   "nakayama": 3,
+   "orbit": "N+",
+   "root": 10754,
+   "source": "xm",
+   "status": "done"
+  },
+  {
+   "cert": [
+    "CERT colon_equal_after_iterations 1",
+    "CERT pivot_nonzerodivisor_mod_J 1",
+    "CERT satstd_isSB 1 leading_u_bad 2",
+    "CERT unit_identity_bad 0 all_positive_degree 1"
+   ],
+   "fiber": [
+    "FIBER bound 0 minimal generators 69 dim 4 mult 12",
+    "FIBER outside_K 0 K_outside_fiber 0"
+   ],
+   "fiber_triple": [
+    69,
+    4,
+    12
+   ],
+   "j_source": null,
+   "nakayama": 15,
+   "orbit": "N+",
+   "root": 10754,
+   "source": "xp",
+   "status": "done"
+  },
+  {
+   "j_source": null,
+   "orbit": "N+",
+   "root": 10754,
+   "source": "w8",
+   "status": "timeout"
+  },
+  {
+   "cert": [
+    "CERT colon_equal_after_iterations 0",
+    "CERT pivot_nonzerodivisor_mod_J 1",
+    "CERT satstd_isSB 1 leading_u_bad 3",
+    "CERT unit_identity_bad 0 all_positive_degree 1"
+   ],
+   "fiber": [
+    "FIBER bound 0 minimal generators 68 dim 5 mult 23",
+    "FIBER outside_K 0 K_outside_fiber 0"
+   ],
+   "fiber_triple": [
+    68,
+    5,
+    23
+   ],
+   "j_source": null,
+   "nakayama": 17,
+   "orbit": "N+",
+   "root": 21255,
+   "source": "iso",
+   "status": "done"
+  },
+  {
+   "cert": [
+    "CERT pivot_nonzerodivisor_mod_J 1",
+    "CERT satstd_isSB 1 leading_u_bad 0",
+    "CERT unit_identity_bad 0 all_positive_degree 1"
+   ],
+   "fiber": [
+    "FIBER bound 0 minimal generators 0 dim 3 mult 1",
+    "FIBER outside_K 0 K_outside_fiber 0"
+   ],
+   "fiber_triple": [
+    0,
+    3,
+    1
+   ],
+   "j_source": null,
+   "nakayama": 3,
+   "orbit": "N+",
+   "root": 21255,
+   "source": "xm",
+   "status": "done"
+  },
+  {
+   "cert": [
+    "CERT colon_equal_after_iterations 1",
+    "CERT pivot_nonzerodivisor_mod_J 1",
+    "CERT satstd_isSB 1 leading_u_bad 2",
+    "CERT unit_identity_bad 0 all_positive_degree 1"
+   ],
+   "fiber": [
+    "FIBER bound 0 minimal generators 69 dim 4 mult 12",
+    "FIBER outside_K 0 K_outside_fiber 0"
+   ],
+   "fiber_triple": [
+    69,
+    4,
+    12
+   ],
+   "j_source": null,
+   "nakayama": 15,
+   "orbit": "N+",
+   "root": 21255,
+   "source": "xp",
+   "status": "done"
+  },
+  {
+   "j_source": null,
+   "orbit": "N+",
    "root": 21255,
    "source": "w8",
    "status": "timeout"
