@@ -17,8 +17,8 @@ Every Singular process runs under the A5-409 limits, a 300 s timeout and a 16 Gi
 (done or timeout), its CERT lines, its FIBER line and its Nakayama count; wall times are not part of the bytes.
 
 Controls: the regenerated Iso -> N- and X- -> N- cells at root 10754 must read the retained FIBER values (68, 5, 23)
-and (69, 4, 12); a cell whose J line is the Iso equations with the generator mu' dropped must change its result (the
-self-test). The N+ cells need the N+ slice matrix, which the template does not carry, and stay outside this record.
+and (69, 4, 12); the Iso cell with the X- germ equations in its J line must leave (68, 5, 23) (the self-test). The
+N+ cells need the N+ slice matrix, which the template does not carry, and stay outside this record.
 No random draw enters.
 
 Usage:
@@ -64,20 +64,17 @@ def require(condition: bool, message: str) -> None:
 
 
 @cache
-def equations(source: str, drop_first: bool = False) -> str:
-    gens = ws.source_equations(ws.build_slice("N-"), source)
-    if drop_first:
-        gens = gens[1:]
-    return ",".join(gens)
+def equations(source: str) -> str:
+    return ",".join(ws.source_equations(ws.build_slice("N-"), source))
 
 
-def cell_script(source: str, root: int, drop_first: bool = False) -> str:
+def cell_script(source: str, root: int, j_source: str | None = None) -> str:
     lines = TEMPLATE.read_text(encoding="utf-8").split("\n")
     j_lines = [k for k, line in enumerate(lines) if line.startswith("ideal J=")]
     require(len(j_lines) == 1, "the template has no single J line")
     k = j_lines[0]
     rest = lines[k][lines[k].index("; J=std(J);") :]
-    lines[k] = "ideal J=" + equations(source, drop_first) + rest
+    lines[k] = "ideal J=" + equations(j_source or source) + rest
     text = "\n".join(lines)
     require(text.count("number i=10754") == 2, "the template root occurs other than twice")
     return text.replace("number i=10754", f"number i={root}")
@@ -95,12 +92,12 @@ def limit() -> None:
     resource.setrlimit(resource.RLIMIT_AS, (ADDRESS_SPACE_BYTES, ADDRESS_SPACE_BYTES))
 
 
-def run_cell(job: tuple[str, int, bool]) -> dict[str, Any]:
-    """One cell: Singular on the generated script under the A5-409 limits."""
-    source, root, drop_first = job
+def run_cell(job: tuple[str, int, str | None]) -> dict[str, Any]:
+    """One cell: Singular on the generated script under the A5-409 limits; a timeout keeps its status alone."""
+    source, root, j_source = job
     with tempfile.TemporaryDirectory() as tmp:
         path = Path(tmp) / "cell.sing"
-        path.write_text(cell_script(source, root, drop_first), encoding="utf-8")
+        path.write_text(cell_script(source, root, j_source), encoding="utf-8")
         start = time.perf_counter()
         try:
             out = subprocess.run(
@@ -126,11 +123,13 @@ def run_cell(job: tuple[str, int, bool]) -> dict[str, Any]:
         m = re.search(r"minimal generators\s+(\d+).*?dim\s+(\d+).*?mult\s+(\d+)", line)
         if m:
             triple = [int(m.group(1)), int(m.group(2)), int(m.group(3))]
-    print(f"cell {source} {root} drop={drop_first}: {status} {seconds:.1f} s", file=sys.stderr)
+    print(f"cell {source} {root} j={j_source}: {status} {seconds:.1f} s", file=sys.stderr)
+    if status == "timeout":
+        return {"source": source, "root": root, "j_source": j_source, "status": status}
     return {
         "source": source,
         "root": root,
-        "mutant": drop_first,
+        "j_source": j_source,
         "status": status,
         "nakayama": int(nak.group(1)) if nak else None,
         "cert": certs,
@@ -140,7 +139,7 @@ def run_cell(job: tuple[str, int, bool]) -> dict[str, Any]:
 
 
 def compute() -> dict[str, Any]:
-    jobs = [(s, r, False) for r in ROOTS for s in SOURCES]
+    jobs: list[tuple[str, int, str | None]] = [(s, r, None) for r in ROOTS for s in SOURCES]
     rows = parallel.ordered_map(run_cell, jobs, min_items=1)
     return {"template": str(TEMPLATE.relative_to(ROOT)), "timeout_seconds": TIMEOUT_SECONDS, "cells": rows}
 
@@ -160,9 +159,9 @@ def self_test() -> None:
     def control(baseline: bool, mutant: bool, name: str) -> None:
         require(baseline and not mutant, f"control {name}: baseline {baseline}, mutant {mutant}")
 
-    base = run_cell(("iso", 10754, False))
-    mut = run_cell(("iso", 10754, True))
-    control(base["fiber_triple"] == [68, 5, 23], mut["fiber_triple"] == [68, 5, 23], "Iso without mu'")
+    base = run_cell(("iso", 10754, None))
+    mut = run_cell(("iso", 10754, "xm"))
+    control(base["fiber_triple"] == [68, 5, 23], mut["fiber_triple"] == [68, 5, 23], "the X- germ in the Iso cell")
 
 
 def main() -> int:

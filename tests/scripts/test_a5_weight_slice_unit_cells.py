@@ -19,7 +19,6 @@ def test_only_the_j_line_and_the_root_change() -> None:
     require(sum("number i=21255" in line for line in cell) == 2)
 
 
-def test_the_mutant_drops_one_generator() -> None:
-    full = record.equations("iso")
-    dropped = record.equations("iso", True)
-    require(dropped.count(",") == full.count(",") - 1 and full.endswith(dropped))
+def test_the_mutant_takes_the_x_minus_germ() -> None:
+    cell = record.cell_script("iso", 10754, "xm")
+    require(record.equations("xm") in cell and record.equations("iso") not in cell)

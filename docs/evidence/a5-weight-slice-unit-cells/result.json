@@ -16,7 +16,7 @@
     5,
     23
    ],
-   "mutant": false,
+   "j_source": null,
    "nakayama": 17,
    "root": 10754,
    "source": "iso",
@@ -38,7 +38,7 @@
     4,
     12
    ],
-   "mutant": false,
+   "j_source": null,
    "nakayama": 15,
    "root": 10754,
    "source": "xm",
@@ -59,21 +59,14 @@
     3,
     1
    ],
-   "mutant": false,
+   "j_source": null,
    "nakayama": 3,
    "root": 10754,
    "source": "xp",
    "status": "done"
   },
   {
-   "cert": [
-    "CERT pivot_nonzerodivisor_mod_J 1",
-    "CERT unit_identity_bad 0 all_positive_degree 1"
-   ],
-   "fiber": [],
-   "fiber_triple": null,
-   "mutant": false,
-   "nakayama": 24,
+   "j_source": null,
    "root": 10754,
    "source": "w8",
    "status": "timeout"
@@ -94,7 +87,7 @@
     5,
     23
    ],
-   "mutant": false,
+   "j_source": null,
    "nakayama": 17,
    "root": 21255,
    "source": "iso",
@@ -116,7 +109,7 @@
     4,
     12
    ],
-   "mutant": false,
+   "j_source": null,
    "nakayama": 15,
    "root": 21255,
    "source": "xm",
@@ -137,21 +130,14 @@
     3,
     1
    ],
-   "mutant": false,
+   "j_source": null,
    "nakayama": 3,
    "root": 21255,
    "source": "xp",
    "status": "done"
   },
   {
-   "cert": [
-    "CERT pivot_nonzerodivisor_mod_J 1",
-    "CERT unit_identity_bad 0 all_positive_degree 1"
-   ],
-   "fiber": [],
-   "fiber_triple": null,
-   "mutant": false,
-   "nakayama": 24,
+   "j_source": null,
    "root": 21255,
    "source": "w8",
    "status": "timeout"

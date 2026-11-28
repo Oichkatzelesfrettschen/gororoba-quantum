@@ -46,8 +46,8 @@ presentation.
 
 ## Control (`--self-test`)
 
-The Iso cell with its first germ generator (mu') removed no longer reads (68, 5, 23): it runs into the 300 s
-timeout. The self-test therefore takes about 5 minutes.
+The Iso cell with the X- germ equations in its J line leaves (68, 5, 23); it reads the X- values. A timed-out cell keeps
+its status alone, since the output it printed before the limit depends on the host speed.
 
 ```sh
 "$PYTHON" -B -W error scripts/a5_weight_slice_unit_cells.py --check docs/evidence/a5-weight-slice-unit-cells/result.json
