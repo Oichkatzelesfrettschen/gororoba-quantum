@@ -46,6 +46,11 @@ ibm_marrakesh the median `rzz` error exceeds `cz`; `rzz` reports its own
 error on more than 90 percent of pairs on every backend, so a fractional
 decomposition is not a free improvement.
 
+[M] The calibration distributions, dead qubits and couplers, limits, queue and quota of the three backends at 2026-11-28 are in
+[machine-capabilities.md](ibm_quantum/machine-capabilities.md) and its record
+[machine_capabilities.json](../evidence/heron_platform/machine_capabilities.json), written by
+`scripts/ibm_machine_capabilities.py`; the table above stays the 2026-10-14 snapshot that gate core-254 recomputes.
+
 ## Documentation pages and retrieval
 
 Retrieved 2026-10-14T20:59:31Z with a Mozilla user agent. The SHA-256
