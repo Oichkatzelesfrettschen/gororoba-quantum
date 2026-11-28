@@ -151,7 +151,7 @@
  "sources": {
   "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
   "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
-  "scripts/a5_pencil_certificates.py": "473c5b3b52d7232993770c9f23ee1a0ffe9976623d3d57e0198a7d16efe90eb9",
+  "scripts/a5_pencil_certificates.py": "19009f3208103167115fac1127e27703d4b5427bcd87aa24d7223b2e398c1a80",
   "scripts/a5_zero_divisor_strata.py": "09fd6941e7945638d37e53d24f6d4cd7e49c45b724e313394091b2bee9f1b0d4"
  },
  "strata": [

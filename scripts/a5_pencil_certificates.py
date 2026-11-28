@@ -627,17 +627,21 @@ def determinant_item(name: str) -> dict[str, Any]:
     }
 
 
+def zero_divisor_block(a: tuple[int, ...]) -> list[tuple[int, ...]]:
+    """The elements (a, b) of the census for one first half a, with b in product order."""
+    norm = sum(x * x for x in a)
+    return [
+        (0, *a, 0, *b)
+        for b in product((-1, 0, 1), repeat=7)
+        if sum(x * x for x in b) == norm and sum(x * y for x, y in zip(a, b, strict=True)) == 0
+    ]
+
+
 def sedenion_zero_divisors() -> list[tuple[int, ...]]:
-    """(a, b) with a, b pure octonions with entries in {-1, 0, 1}, |a|^2 = |b|^2 <= 3 and a.b = 0, in product order."""
-    out: list[tuple[int, ...]] = []
-    for a in product((-1, 0, 1), repeat=7):
-        norm = sum(x * x for x in a)
-        if norm == 0 or norm > 3:
-            continue
-        for b in product((-1, 0, 1), repeat=7):
-            if sum(x * x for x in b) == norm and sum(x * y for x, y in zip(a, b, strict=True)) == 0:
-                out.append((0, *a, 0, *b))
-    return out
+    """(a, b) with a, b pure octonions with entries in {-1, 0, 1}, |a|^2 = |b|^2 <= 3 and a.b = 0, in product order;
+    the blocks of each a are independent and map through the pool in that order."""
+    halves = [a for a in product((-1, 0, 1), repeat=7) if 0 < sum(x * x for x in a) <= 3]
+    return [v for block in parallel.ordered_map(zero_divisor_block, halves, 1) for v in block]
 
 
 def census_chunk(job: tuple[int, tuple[tuple[int, ...], ...]]) -> dict[str, Any]:
