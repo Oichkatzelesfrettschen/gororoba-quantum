@@ -1,8 +1,8 @@
 # gq-max: the exploratory environment of docs/PYTHON.md "Defaults". CPython 3.14.9, resolved with uv 0.13.6 on Linux x86_64
 # (`uv pip freeze`, sorted). Unpinned by design: no retained record, approved case or gate runs on it.
 # Recreate: uv venv --python 3.14 ~/venvs/gq-max && VIRTUAL_ENV=~/venvs/gq-max uv pip install -r docs/notes/gq-max.lock.txt
-# Absent here, present elsewhere: hypercomplex-engine, Octonion-Sedenion, pyoctonion (build host Arch packages),
-# quantuminspire (Python < 3.14; QI_PYTHON), iqm-client 36 and 37 (iqm-python; pydantic < 2.13).
+# Absent here, present elsewhere: quantuminspire (Python < 3.14; QI_PYTHON), iqm-client 36 and 37 (iqm-python; pydantic < 2.13).
+# Present (case-sensitive imports, 2026-11-28): hypercomplex_engine, hypercomplex, pyoctonion, Octonion_Sedenion; pytest and pytest-xdist.
 annotated-types==0.8.0
 antlr4-python3-runtime==4.13.2
 anywidget==0.11.0
@@ -26,6 +26,7 @@ cython==3.3.2
 dill==0.4.1
 drawsvg==2.5.1
 duet==0.2.9
+execnet==2.1.2
 executing==2.3.0
 exqalibur==1.4.2
 fonttools==4.69.1
@@ -36,11 +37,13 @@ googleapis-common-protos==1.76.0
 grpcio==1.85.4
 h5py==3.16.0
 highspy==1.16.0
+hypercomplex-engine==0.7.2
 hypercomplex==0.3.4
 ibm-cloud-sdk-core==3.28.2
 ibm-platform-services==0.77.2
 ibm-quantum-schemas==0.13.20261016
 idna==3.20
+iniconfig==2.3.1
 ipython-pygments-lexers==1.1.1
 ipython==9.19.1
 ipywidgets==8.1.9
@@ -77,6 +80,7 @@ numba==0.68.1
 numpy-quaternion==2024.0.13
 numpy-typing-compat==20260602.2.2
 numpy==2.2.6
+octonion-sedenion==1.0.0
 openqasm3==1.0.2
 opentelemetry-api==1.45.2
 opentelemetry-exporter-http-transport==0.66b2
@@ -99,6 +103,7 @@ perceval-quandela==1.3.1
 pexpect==4.9.0
 pillow==13.0.0
 platformdirs==4.14.9
+pluggy==1.7.0
 plum-dispatch==2.10.1
 prompt-toolkit==3.0.53
 protobuf==7.34.1
@@ -114,10 +119,13 @@ pygments==2.21.0
 pyjwt==2.15.1
 pylatexenc==2.11
 pymatching==2.4.0
+pyoctonion==3.12
 pyparsing==3.3.3
 pyquaternion==0.9.9
 pyscf==2.15.1
 pyspnego==0.12.4
+pytest-xdist==3.8.0
+pytest==9.2.0
 python-dateutil==3.0.0
 python-dotenv==1.2.4
 python-flint==0.9.0
@@ -169,7 +177,6 @@ typing-inspection==0.4.5
 tzdata==2026.6
 uncertainties==3.2.3
 urllib3==2.8.0
-Using Python 3.14.9 environment at: venvs/gq-max
 wcwidth==0.9.5
 widgetsnbextension==4.0.16
 wrapt==2.5.2
