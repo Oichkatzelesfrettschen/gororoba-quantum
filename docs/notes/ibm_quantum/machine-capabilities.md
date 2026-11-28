@@ -27,7 +27,7 @@ of degree 3 (**read**; `coupling.degree_histogram`). The configuration reports `
 250 us, `dynamic_reprate_enabled` and `multi_meas_enabled` true, `measure_esp_enabled` false, and `supported_features`
 dynamic_circuits, parameters, qasm3 and qobj (**read**). The configuration field `conditional` reads false while the Target
 holds `if_else` and `store` is a supported instruction: dynamic circuits run through the Target's `if_else`, and the
-legacy flag does not describe them (**inf**; the retained dynamic runs under section 6 settled on ibm_kingston).
+legacy flag does not describe them (**inf**; the retained dynamic runs under section 6 settled on ibm_kingston and ibm_fez).
 
 | Duration (ns) | ibm_fez | ibm_kingston | ibm_marrakesh |
 |---|---|---|---|
@@ -98,11 +98,11 @@ Reading of the tables (**read**, with **inf** where marked):
   connected component. Its `cz` median error is 0.00245, between the other two backends'.
   It has the fastest `sx`, `measure` and `measure_2`, and the shortest T1 median of the three.
 - ibm_kingston has the lowest median `cz` error (0.00190), the lowest median readout error and
-  the longest T1 and T2 medians. Two dead qubits (121, 146) and four dead couplers cut qubit 146 off as an island of one, so the
-  usable graph is 153 qubits plus that island. Kingston reports no T1 for 146.
+  the longest T1 and T2 medians. Two dead qubits (121, 146) and four dead couplers leave qubit 120 as an island of one (its coupler to the
+  dead qubit 121 is unusable), so the usable graph is 153 qubits plus that island. Kingston reports no T1 for 146.
 - ibm_marrakesh has the highest median `cz` error, the highest median readout error and the slowest readout. Five qubits
   are dead or incomplete (82, 94, 113, 119, 130), fourteen have readout error of 0.1 or more, and the usable graph splits into
-  147 and 4 qubits. A layout on marrakesh excludes those qubits by construction (`--exclude-qubits`).
+  147 qubits and an island of four (95, 99, 114, 115). A layout on marrakesh excludes those qubits by construction (`--exclude-qubits`).
 - A coupler with `cz` duration above 68 ns is slower than the median by up to 40 ns (fez 10 rows, kingston 8, marrakesh 30 of
   352). **inf**: a longer pulse accompanies a coupler that needed a recalibrated pulse; no record separates the cause.
 - The reported `readout error` and T1 describe the calibration run and not the shots of a job. Qubits 0 and 1 of ibm_kingston
@@ -152,7 +152,8 @@ Measured facts by backend (each row names its record):
 | ibm_fez | parallel coset blocks, 17 placements (`dbnai2oqtr0c73acl9gg`, [2026-11-07T042521.359670Z](../../../results/live/2026-11-07T042521.359670Z/collect.json)) | 57 | 32 of 32 signs; nullity bands pass; null selector contrast fails on block k8; placement spread fails (slope and R squared); within-arm repeats pass | run |
 | ibm_fez | ripple ([2026-10-13T025444.603480Z](../../../results/live/2026-10-13T025444.603480Z/collect.json)), rank sector ([2026-10-13T032011.664435Z](../../../results/live/2026-10-13T032011.664435Z/collect.json)) | 66, 31 | the box-kite contrast signs and rank-sector contrast signs hold; 35 of 37 packed-against-isolated controls pass the 0.10 margin | run ([CAMPAIGN_FINDINGS.md](../../../results/live/CAMPAIGN_FINDINGS.md)) |
 | ibm_fez | patch window (three jobs, [2026-10-13T201757.782152Z](../../../results/live/2026-10-13T201757.782152Z/collect.json)); orbit and window arms (2026-10-13) | 25; 4 and 11 | the window context changes the orbit distributions with no resolved product-state Ramsey phase | run ([PATCH_WINDOW_FINDINGS.md](../../../results/live/PATCH_WINDOW_FINDINGS.md), [N21_ORBIT_RCA.md](../../../results/live/N21_ORBIT_RCA.md)) |
-| ibm_fez | segmented coprime-swap Ramsey of qubit 143 ([2026-10-20T031212.175942Z](../../../results/live/2026-10-20T031212.175942Z/collect.json)) | | two coherent lines of qubit 143 with weights 0.644 and 0.356; the beat is a candidate TLS or charge-parity mixture | run ([N21_Q143_COPRIME_SWAP_CASE.md](../../../results/live/N21_Q143_COPRIME_SWAP_CASE.md)) |
+| ibm_fez | ground Ramsey sweep of qubit 143 ([2026-10-20T031212.175942Z](../../../results/live/2026-10-20T031212.175942Z/collect.json)); segmented coprime-swap sweep of the same qubit, 2026-10-21 | | the ground sweep shows two coherent lines of qubit 143 with weights 0.644 and 0.356; the beat is a candidate TLS or charge-parity mixture, and the segmented sweep of 2026-10-21 was built to separate them | run ([N21_Q143_COPRIME_SWAP_CASE.md](../../../results/live/N21_Q143_COPRIME_SWAP_CASE.md); the 2026-10-21 result is not restated here) |
+| ibm_fez | wide coset blocks on 17 placements, group `pathion_wide_coset_d32` (`dbnk9noou4as73b4nn90`, backup account, [2026-11-07T153325.440007Z](../../../results/live/2026-11-07T153325.440007Z/collect.json)) | 9 | 12 PUBs at 18,816 shots; sign resolution 64 of 64 and 128 of 128; copy agreement fails for n64 (-0.994, z -11.42) and o64 (-0.172, z -5.61) and holds for m64 | run ([pathion_wide_coset_analysis.json](../../../results/live/pathion_wide_coset_analysis.json)) |
 | ibm_kingston | folded QPE pilot and ladder (`db5qmqclf4us73c4e1ug`; 2026-10-12) | 9; 40 | hybrid Shor and folded QPE mod 15 ran as dynamic PUBs; the folded delay comparison is inconclusive and the correction adoption failed | run ([CAMPAIGN_FINDINGS.md](../../../results/live/CAMPAIGN_FINDINGS.md)) |
 | ibm_kingston | corner baseline (`db87o48r1c5c738lu8jg`, [2026-10-15T070847.644554Z](../../../results/live/2026-10-15T070847.644554Z/collect.json)) | 4 | qubits 0 and 1 misassign the ground state 39 and 27 percent against a reported readout error below 1 percent; the zero-divisor fringe floor reads 2.2 times the model | run ([ZERO_DIVISOR_AND_CORNER_FINDINGS.md](../../../results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md)) |
 | ibm_kingston | n21 feedback (`dba8r7k24mrc738527d0`, 2026-10-18; five jobs) | 48 | feedback changes no measured outcome: contrast difference +0.0027 [-0.0129, +0.0184], model +0.0344; four control jobs ended in error 1305 and billed 2 to 5 s | run ([N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md](../../../results/live/N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md)) |
@@ -161,21 +162,21 @@ Measured facts by backend (each row names its record):
 | ibm_kingston | latency recovery (`dbf5kdom94ac738ssug0`, 2026-10-25) | 40 | 34 dynamic PUBs at 16,384 shots; L = 215 dt | run ([LATENCY_RECOVERY_FINDINGS.md](../../../results/live/LATENCY_RECOVERY_FINDINGS.md)) |
 | ibm_kingston | measurement-sequence envelope (`dbg08t9j4t8s73abaghg`, 2026-10-27) | 38 | every one of 32 qubits fails the reset screen (median residual difference 0.0123); no device verdict | run ([MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md](../../../results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md)) |
 | ibm_kingston | rep_delay 0 controls (2026-10-18) | 2 to 5 | jobs ran 129 s and 207 s with no shot loop, error 1305 | run ([REP_DELAY_ZERO_CONTROL_FINDINGS.md](../../../results/live/REP_DELAY_ZERO_CONTROL_FINDINGS.md)) |
+| ibm_kingston | wide coset blocks on 16 placements, group `pathion_wide_coset` (`dbnk9ndt7fqc73ajpfl0`, primary account, [2026-11-07T153325.886771Z](../../../results/live/2026-11-07T153325.886771Z/collect.json)) | 11 | 12 PUBs at 21,888 shots; sign resolution 64 of 64 and 128 of 128; target minus mutation reads 30.03 (D=64) and 62.09 (D=128); copy agreement holds on n64, o64 and m64 | run ([pathion_wide_coset_analysis.json](../../../results/live/pathion_wide_coset_analysis.json)) |
 | ibm_kingston | parallel coset blocks, 16 placements (`dbnahh5t7fqc73aj7bdg`, [2026-11-07T042346.084449Z](../../../results/live/2026-11-07T042346.084449Z/collect.json)) | 32 | 32 of 32 signs; null N_hat, odd part and within-arm repeats fail; parallel crosstalk passes (90 percent interval inside 0.015) | run ([PATHION_KERNEL_MAP_FINDINGS.md](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md)) |
 | ibm_marrakesh | pathion coset-block map (`dbn38t0ou4as73b3q1n0`, [2026-11-06T200832.558771Z](../../../results/live/2026-11-06T200832.558771Z/collect.json)) | 24 | 11 replicas; 32 of 32 signs; block visibility 0.76 to 0.87; the two devices agree on every operand within their intervals; null operand reads +0.19 [0.03, 0.35] | run (same findings file) |
 | ibm_marrakesh | qubit 47 baseline of the coprime-swap case (`dbc40u8c77vs7385ee0g`, 2026-10-21) | 18 | baseline Ramsey run before the fez qubit-143 question | run ([N21_Q143_COPRIME_SWAP_CASE.md](../../../results/live/N21_Q143_COPRIME_SWAP_CASE.md)) |
 
 The A5-242 orientation-bit case ([pathion-kernel-map-orientation-bit.md](../../design/pathion-kernel-map-orientation-bit.md)) has
 dry-run records and a compile case ([orientation-bit evidence](../../evidence/pathion-kernel-map/orientation-bit/case_compile.json))
-and no submitted job; the ledger row waits on a written case. The 2026-11-07 wide coset records
-([2026-11-07T153325.440007Z](../../../results/live/2026-11-07T153325.440007Z/collect.json) and
-[2026-11-07T153325.886771Z](../../../results/live/2026-11-07T153325.886771Z/collect.json)) retain a `collect.json` each; their
-analysis is [pathion_wide_coset_analysis.json](../../../results/live/pathion_wide_coset_analysis.json).
+and no submitted job; the ledger row waits on a written case. The device-agreement rules of the wide coset analysis read
+`-0.302 against 0.523` (n64) to `-0.179 against 0.943` (m128) and are not restated here.
 
 ## 7. What we can program
 
-Cost is the service's charge for a job of that shape; a new shape takes the planner's estimate with a 20 percent margin and
-the first job as the measurement ([qpu_run_economy.md](../qpu_run_economy.md)). The size limit is the Target's or the guide's.
+Cost is the service's charge for a job of that shape; a new shape takes the planner's estimate and the settled charge of its first job as the measurement
+([qpu_run_economy.md](../qpu_run_economy.md); the per-shot residual is in
+[PATHION_KERNEL_MAP_FINDINGS.md](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md), parallel coset blocks). The size limit is the Target's or the guide's.
 Every row rests on a retained run or on **doc** (marked); a row without a retained run is unexercised.
 
 ### 7.1 ibm_fez
@@ -187,7 +188,8 @@ Every row rests on a retained run or on **doc** (marked); a row without a retain
 | deep routed circuit (100+ CZ) | visibility 0.09 to 0.24 at 136 to 173 CZ | 18 | full map 2026-11-06 | m-dependent collapse on two placements; decompose to 1 to 20 CZ blocks |
 | coset-block decomposition | blocks of 1 to 20 CZ | 18 | coset-block map 2026-11-06 | nullity-8 and nullity-12 operands carry blocks fixed by their signs (the estimator forces 4) |
 | dynamic circuit on feed-forward | one `if` level, 32-bit operands | 4 and 11 | orbit and window arms 2026-10-13 | window context changes the orbit distribution; mixed static and dynamic groups are refused |
-| long-lived Ramsey (qubit 143) | single qubit sweeps | see record | coprime-swap 2026-10-20 | two lines of weights 0.644 and 0.356 on qubit 143 |
+| wide coset blocks (D=64, 128) | 17 placements of four-qubit blocks, 12 PUBs at 18,816 shots | 9 | wide coset 2026-11-07 | copy agreement fails on n64 and o64 |
+| long-lived Ramsey (qubit 143) | single qubit sweeps | see record | ground Ramsey 2026-10-20 and segmented sweep 2026-10-21 | two lines of weights 0.644 and 0.356 on qubit 143 |
 | fractional gates | rzz in (0, pi/2], rx any angle (**doc**) | | none | out-of-range bound value fails the job; no twirling, PEC or PEA (**doc**) |
 
 ### 7.2 ibm_kingston
@@ -198,6 +200,7 @@ Every row rests on a retained run or on **doc** (marked); a row without a retain
 | folded QPE and hybrid Shor | six dynamic PUBs at 4,096 shots | 9 | pilot 2026-10-11 | the folded delay comparison is inconclusive |
 | feed-forward with latency recovery | six physical qubits, 34 dynamic PUBs at 16,384 shots, 20 us or 50 us delay | 40 | latency recovery 2026-10-25 | the case's L = 215 dt holds only under the executed calibration |
 | packed placements | 16 placements of 4 qubits | 32 at 8,192 shots | parallel coset 2026-11-07 | null N_hat and odd part fail |
+| wide coset blocks (D=64, 128) | 16 placements of four-qubit blocks, 12 PUBs at 21,888 shots | 11 | wide coset 2026-11-07 | none of the copy-agreement rules fails |
 | coherence probes on a path | 98 circuits at 800 shots on three qubits | 23 | primorial coherence 2026-10-26 | a wire with readout assignment factor below 0.8 voids the case (qubit 0) |
 | readout and Ramsey baseline | 6 qubits, 1,024 shots | 4 | corner baseline 2026-10-15 | qubits 0 and 1 carry a readout fault the calibration omits |
 | idle-penalty pairs | 31 coupled pairs, 44 PUBs | 16 | idle-penalty probe 2026-10-26 | exposure gate before any readout verdict |

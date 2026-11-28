@@ -51,12 +51,12 @@ which the device runs (**inf**; the answer needs the provider).
   The pause clock is account-wide, the Ry emulator included.
 - Every job on a provider waits for the owner's approval of a written case (`AGENTS.md`, "Hardware services"), and a
   Quantum Inspire hardware batch keeps its pause and queue limits.
-- The credentials live on an online mesh host of the Oracle Cloud lab that the infrastructure chart (`hosts/README.md` of
-  gororoba-infrastructure) names by role; the wave series run from that host and no checkout on another host submits (owner
-  ruling of 2026-11-15, workspace memory). The compute host runs analysis only.
+- The Quantum Inspire credential stays outside every checkout, and the private gororoba-infrastructure repository records
+  where it lives and which host submits. Only that host submits; every other checkout analyzes retained runs.
 - A batch submitted while the device reads `calibrating` waits: batch 00 of the 2026-11-16 characterization sat 8 h 20 min
   from submission to execution ([tuna17-characterization-2026-11-16.md](tuna17-characterization-2026-11-16.md), **run**).
-  The submit gate reads `idle` first ([tuna17-interleaved-submit-gate.md](tuna17-interleaved-submit-gate.md)).
+  Since 2026-11-21 the interleaved series admits a batch at status `idle` or `executing` with the account's own queue empty
+  and refuses `calibrating` and offline ([tuna17-interleaved-submit-gate.md](tuna17-interleaved-submit-gate.md)).
 
 ## 3. Measured figures from the retained series
 
@@ -128,7 +128,7 @@ and on 5 and 6 of 8 for ba ([PATHION_KERNEL_MAP_FINDINGS.md](../../../results/li
 5. **Drive-and-readout context.** 29 of 98 crosstalk contrasts exceed |z| 3.49 on 15 qubits, the largest at the 256-pulse X90
    ladder of q15 (z 44.1) (same note, **run**).
 6. **Dashboard and API disagree.** The compute API reads `executing` and the Status dashboard `Idle` for Tuna-17 in the same
-   minute (**read**); the admission gate reads the compute API ([tuna17-interleaved-submit-gate.md](tuna17-interleaved-submit-gate.md)).
+   minute (**read**); the admission gate reads the compute API's status and the account's own queue ([tuna17-interleaved-submit-gate.md](tuna17-interleaved-submit-gate.md)).
 7. **A service-side job failure.** The account's job list of 2026-11-24 holds a failed job whose message reads "Quantum backend
    error: Inter-kernel communication: execution failed ... OSError [Errno 28] No space left on device"; the sibling jobs of
    its batch completed in 12 and 10 s (**read**, `qi_jobs`). The failing side is the platform's.
