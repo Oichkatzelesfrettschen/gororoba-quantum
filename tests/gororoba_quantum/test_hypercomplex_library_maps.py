@@ -96,7 +96,18 @@ def pyquaternion_table(dim: int) -> Table:
     )
 
 
+def pyoctonion_table(dim: int) -> Table:
+    pyoctonion = pytest.importorskip("pyoctonion", reason="pyoctonion is not installed in this interpreter")
+
+    def product(p: int, q: int) -> list[float]:
+        out = pyoctonion.Octonion(*tables.basis(p, 8)) * pyoctonion.Octonion(*tables.basis(q, 8))
+        return [out.x_0, out.x_1, out.x_2, out.x_3, out.x_4, out.x_5, out.x_6, out.x_7]
+
+    return tables.unit_table(dim, product)
+
+
 def octonion_sedenion_rows() -> dict[tuple[str, int], Table]:
+    """Octonion-Sedenion tables; the shared builder imports pyoctonion too, so each case has its own gate."""
     for module in ("pyoctonion", "Octonion_Sedenion.octonion"):
         pytest.importorskip(module, reason=f"{module} is not installed in this interpreter")
     return {(name, dim): table for name, dim, table, _ in tables.octonion_and_sedenion_tables()}
@@ -123,6 +134,7 @@ def test_package_table_is_identical_to_cd_core(name: str, dim: int) -> None:
 
 @pytest.mark.parametrize(("name", "dim"), [("pyoctonion", 8), ("Octonion-Sedenion", 8), ("Octonion-Sedenion", 16)])
 def test_octonion_and_sedenion_table_is_identical_to_cd_core(name: str, dim: int) -> None:
-    mismatches = identity_mismatches(dim, octonion_sedenion_rows()[(name, dim)])
+    table = pyoctonion_table(dim) if name == "pyoctonion" else octonion_sedenion_rows()[(name, dim)]
+    mismatches = identity_mismatches(dim, table)
     if mismatches:
         raise AssertionError(f"{name} D={dim}: {len(mismatches)} of {dim * dim} pairs differ, first {mismatches[0]}")
