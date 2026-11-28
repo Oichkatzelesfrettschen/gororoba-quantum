@@ -168,7 +168,7 @@ def test_manifest_limits_ceiling_and_prediction_binding() -> None:
     pred = prediction()
     (job,) = manifest["jobs"]
     require(len(job["circuits"]) == 80 <= case.MAX_CIRCUITS)
-    require(len(job["circuits"]) * job["shots"] <= case.MAX_EXECUTIONS and job["shots"] == pred["shots"] == 6500)
+    require(len(job["circuits"]) * job["shots"] <= case.MAX_EXECUTIONS and job["shots"] == pred["shots"] == case.SHOTS)
     require(job["max_credits"] == {"garnet:mock": 0.0, "garnet": case.CEILING_CREDITS})
     require(case.CEILING_CREDITS <= case.OWNER_BOUND_CREDITS)
     require(job["options"]["heralding_mode"] == "zeros" and job["options"]["active_reset_cycles"] == 1)

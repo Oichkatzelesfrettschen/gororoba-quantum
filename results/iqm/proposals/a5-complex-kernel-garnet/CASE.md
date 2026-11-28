@@ -1,3 +1,6 @@
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
 # IQM Garnet complex strata of the A_5 kernel map on 2 to 4 qubit coset blocks
 
 Status: written case awaiting the owner's approval of the digest below; nothing submitted to `garnet`. The `garnet:mock` twin
@@ -5,8 +8,8 @@ Status: written case awaiting the owner's approval of the digest below; nothing 
 The case is ledger row A5-632 (pool row QPU-68). It spends part of the 11.75 IQM credits that lapse 2026-12-01T00:00Z; the
 ceiling of the job is 10.5 credits, within the 11.0 the owner set.
 
-Backend `iqm:garnet`, calibration set `f8e3beea-af1b-476e-ab77-ea12c65901f7` (metrics set created 2026-11-27T02:43:43Z; copy in the case's
-`calibration/`). One job of 80 circuits at 6,500 shots (520,000 executions; the limits are 100 circuits and
+Backend `iqm:garnet`, calibration set `a8782702-7021-4533-ba2c-468cfb504bb8` (metrics set created 2026-11-28T02:46:31Z; copy in the case's
+`calibration/`). One job of 80 circuits at 6,000 shots (480,000 executions; the limits are 100 circuits and
 2,000,000 executions), built by `scripts/iqm_complex_kernel_case.py`. The digest of
 `results/iqm/cases/a5-complex-kernel-garnet/cases.json` is in the pull request body. Garnet rotates its calibration set about
 daily and a job that pins a retired set fails at station control; a rebuild (`build --live`, a free read of the current set)
@@ -79,9 +82,9 @@ usable qubits ranks by the fewest qubits whose retained parallel PRX train is no
 (`results/iqm/idle_schedule_probe_analysis.json`, set a18a947f of 2026-10-25, sha256 dc81ac1b23bf), then the
 fewest qubits that train did not measure, then the largest product of the three CZ fidelities, then the largest PRX RB fidelity of
 the weakest qubit, then the names. On this calibration set 32 stars are usable; the first is the patch
-(QB14, QB4, QB9, QB8 with QB9 at the center; CZ product 0.991704,
-weakest PRX RB fidelity 0.999372, every train linear). The star of the first draft of the case (QB6 with QB11, QB5 and QB7) ranks
-29 of 32: three of its four trains failed the linear fit (QB7 chi-square 227, QB5 20.7, QB11 19.3).
+(QB13, QB3, QB8, QB9 with QB9 at the center; CZ product 0.991283,
+weakest PRX RB fidelity 0.999456, every train linear). The patch of the previous build (QB14, QB4, QB9, QB8) ranks 2 of 32 on this set. The star of the first draft of the case (QB6 with QB11, QB5 and QB7) ranks
+28 of 32: three of its four trains failed the linear fit (QB7 chi-square 227, QB5 20.7, QB11 19.3).
 The full ranking is in `prediction.json` (`star`). The layout of each operand is the injective placement on the patch of the largest
 predicted visibility.
 
@@ -90,9 +93,9 @@ predicted visibility.
 | Operand | Pair | Stratum real/complex | Circuit qubits | Physical qubits | CZ | Kinds |
 |---|---|---|---|---|---|---|
 | s016 | e_1 + e_3 | 0/16 | 2 | QB8, QB9 | 1 | cplx, real |
-| s412 | e_1 + e_26 | 4/12 | 4 | QB14, QB4, QB8, QB9 | 23 (real, complex), 29 (plain) | cplx, plain, real |
-| s808 | e_1 + e_10 | 8/8 | 3 | QB14, QB4, QB9 | 9 | cplx, real, sent |
-| s124 | e_1 + e_18 | 12/4 | 4 | QB14, QB4, QB8, QB9 | 29 | cplx, real |
+| s412 | e_1 + e_26 | 4/12 | 4 | QB13, QB3, QB8, QB9 | 23 (real, complex), 29 (plain) | cplx, plain, real |
+| s808 | e_1 + e_10 | 8/8 | 3 | QB3, QB8, QB9 | 9 | cplx, real, sent |
+| s124 | e_1 + e_18 | 12/4 | 4 | QB13, QB3, QB8, QB9 | 29 | cplx, real |
 
 Each kind runs in the orientations + and -, ordered +, -, -, + (a quad), once per kind in the first half of the job and in reverse
 kind order in the second half, so each kind meets its mirror image at the same distance from the job's center; 10 kinds, 80
@@ -147,17 +150,17 @@ operand, so the seeds do not search anything beyond the placements.
 Exact density matrix of the touched qubits of each compiled circuit under the case's calibration copy (no sampling; ASAP idle
 relaxation, as the idle-schedule case resolved on Garnet at 13 to 59 standard errors,
 [design](../../../../docs/design/iqm-garnet-idle-schedule-train-readout.md)), planned at a kept fraction of 0.5 of the shots
-(13,000 kept shots per orientation of a kind; the run's kept counts decide the analysis).
+(12,000 kept shots per orientation of a kind; the run's kept counts decide the analysis).
 
 | Operand | D_c ideal, predicted | D_r ideal, predicted | V predicted | N_c ideal, predicted | N_c' predicted (SE) |
 |---|---|---|---|---|---|
-| s016 | 1.000, 0.975 | 0.000, 0.000 | 0.975 | 16, 16.00 | 16.06 (0.16) |
-| s412 | 0.750, 0.553 | 0.250, 0.176 | 0.728 | 12, 12.14 | 12.19 (0.16) |
-| s808 | 0.500, 0.431 | 0.500, 0.437 | 0.867 | 8, 7.94 | null: r_null = -0.0071 |
-| s124 | 0.250, 0.159 | 0.750, 0.496 | 0.655 | 4, 3.89 | 3.95 (0.17) |
+| s016 | 1.000, 0.977 | 0.000, 0.000 | 0.977 | 16, 16.00 | 16.03 (0.16) |
+| s412 | 0.750, 0.603 | 0.250, 0.195 | 0.798 | 12, 12.08 | 12.11 (0.15) |
+| s808 | 0.500, 0.452 | 0.500, 0.455 | 0.908 | 8, 7.97 | null: r_null = -0.0033 |
+| s124 | 0.250, 0.181 | 0.750, 0.558 | 0.739 | 4, 3.92 | 3.95 (0.16) |
 
-The plain kind reads D_p / V = -0.68 at s412. The z margins of the six conditions that carry a number (three discriminating
-operands, the s412 mutation, the null visibility, the s016 visibility over its floor) are 51.866, 26.401, 23.622, 52.405, 88.505, 60.2. The recorded power is
+The plain kind reads D_p / V = -0.70 at s412. The z margins of the six conditions that carry a number (three discriminating
+operands, the s412 mutation, the null visibility, the s016 visibility over its floor) are 50.638, 27.065, 25.26, 57.408, 89.944, 58.216. The recorded power is
 the probability that the complete rule returns the complex verdict when the counts of every kind and orientation scatter about the
 predicted counts as normals of variance phi n p (1 - p): the joint rule runs on 4,096 unscrambled Sobol' draws, so the shared null
 operand and the shared visibilities enter, and the result is 1.000 under the model. The model has no coherent error, so its
@@ -177,68 +180,68 @@ CZ; a residual Z rotation (zres) of +-0.05 and +-0.15 rad on both qubits after e
 | PRX amplitude, every qubit | 2 percent |
 | PRX amplitude, one qubit | 3 percent |
 | RZZ after every CZ | 0.05 rad |
-| cphase after every CZ | 0.1 rad |
+| cphase after every CZ | 0.05 rad |
 | zres after every CZ | 0.05 rad |
 | combined (-2 percent, -0.05 rad, -0.05 rad) | 0.5 times the triple |
 | combined, opposite sign | 1 times the triple |
 
 | Error | Verdict | r_null | N_c' s412 (ideal 12) | N_c' s124 (ideal 4) |
 |---|---|---|---|---|
-| alap | complex strata within tolerance | -0.002 | 12.15 | 3.95 |
-| combined+1x | complex strata within tolerance | 0.057 | 13.96 | 5.37 |
-| combined-0.25x | complex strata within tolerance | -0.036 | 12.02 | 4.35 |
-| combined-0.5x | complex strata within tolerance | -0.074 | 12.02 | 5.17 |
-| combined-1.5x | no reading | -0.532 | 16.03 | 15.09 |
-| combined-1x | no reading | -0.204 | 12.84 | 8.34 |
-| cphase+0.05 | complex strata within tolerance | 0.030 | 12.18 | 3.89 |
-| cphase+0.10 | complex strata within tolerance | 0.080 | 12.12 | 3.79 |
-| cphase-0.05 | complex strata within tolerance | -0.036 | 12.22 | 4.11 |
-| cphase-0.10 | complex strata within tolerance | -0.059 | 12.29 | 4.51 |
-| none | complex strata within tolerance | -0.007 | 12.19 | 3.95 |
-| prx+0.01 | complex strata within tolerance | -0.003 | 12.74 | 3.67 |
-| prx+0.02 | complex strata within tolerance | -0.002 | 13.49 | 3.52 |
-| prx+0.03 | complex side, off tolerance | -0.002 | 14.48 | 3.49 |
-| prx+0.03@QB14 | complex strata within tolerance | 0.049 | 12.48 | 2.90 |
-| prx+0.03@QB4 | complex strata within tolerance | -0.028 | 12.36 | 3.67 |
-| prx+0.03@QB8 | complex strata within tolerance | -0.007 | 12.89 | 4.02 |
-| prx+0.03@QB9 | complex strata within tolerance | -0.023 | 12.67 | 4.23 |
-| prx+0.04 | complex side, off tolerance | -0.001 | 15.76 | 3.63 |
-| prx+0.05 | complex side, off tolerance | 0.001 | 17.36 | 4.01 |
-| prx+0.05@QB14 | complex side, a control fails | 0.087 | 12.60 | 2.13 |
-| prx+0.05@QB4 | complex strata within tolerance | -0.021 | 12.34 | 3.29 |
-| prx+0.05@QB8 | complex strata within tolerance | -0.007 | 13.47 | 4.08 |
-| prx+0.05@QB9 | complex strata within tolerance | -0.051 | 13.41 | 4.72 |
-| prx-0.01 | complex strata within tolerance | -0.015 | 11.83 | 4.36 |
-| prx-0.02 | complex strata within tolerance | -0.031 | 11.64 | 4.96 |
-| prx-0.03 | complex strata within tolerance | -0.058 | 11.64 | 5.88 |
-| prx-0.03@QB14 | complex strata within tolerance | -0.063 | 11.83 | 4.84 |
-| prx-0.03@QB4 | complex strata within tolerance | 0.048 | 11.85 | 3.95 |
-| prx-0.03@QB8 | complex strata within tolerance | -0.007 | 11.64 | 3.88 |
-| prx-0.03@QB9 | complex strata within tolerance | -0.019 | 12.31 | 4.10 |
-| prx-0.04 | no reading | -0.103 | 11.89 | 7.39 |
-| prx-0.05 | no reading | -0.178 | 12.47 | 10.33 |
-| prx-0.05@QB14 | complex side, a control fails | -0.101 | 11.56 | 5.36 |
-| prx-0.05@QB4 | complex side, a control fails | 0.104 | 11.51 | 3.80 |
-| prx-0.05@QB8 | complex strata within tolerance | -0.007 | 11.31 | 3.84 |
-| prx-0.05@QB9 | complex strata within tolerance | -0.041 | 12.64 | 4.20 |
-| zres+0.05 | complex strata within tolerance | 0.050 | 12.21 | 3.92 |
-| zres+0.15 | complex side, off tolerance | 0.206 | 11.21 | 1.71 |
-| zres-0.05 | complex strata within tolerance | -0.067 | 12.09 | 4.27 |
-| zres-0.15 | no reading | -0.242 | 12.57 | 7.64 |
-| zz+0.05 | complex strata within tolerance | -0.011 | 12.36 | 4.07 |
-| zz-0.05 | complex strata within tolerance | 0.005 | 12.10 | 3.87 |
+| alap | complex strata within tolerance | -0.001 | 12.09 | 3.95 |
+| combined+1x | complex strata within tolerance | 0.061 | 13.82 | 5.43 |
+| combined-0.25x | complex strata within tolerance | -0.032 | 11.94 | 4.34 |
+| combined-0.5x | complex strata within tolerance | -0.070 | 11.95 | 5.14 |
+| combined-1.5x | no reading | -0.522 | 16.01 | 14.93 |
+| combined-1x | no reading | -0.198 | 12.79 | 8.27 |
+| cphase+0.05 | complex strata within tolerance | 0.034 | 12.10 | 3.90 |
+| cphase+0.10 | complex side, a control fails | 0.083 | 12.05 | 3.81 |
+| cphase-0.05 | complex strata within tolerance | -0.032 | 12.13 | 4.10 |
+| cphase-0.10 | complex strata within tolerance | -0.055 | 12.21 | 4.50 |
+| none | complex strata within tolerance | -0.003 | 12.11 | 3.95 |
+| prx+0.01 | complex strata within tolerance | 0.000 | 12.64 | 3.69 |
+| prx+0.02 | complex strata within tolerance | 0.001 | 13.36 | 3.54 |
+| prx+0.03 | complex side, off tolerance | 0.001 | 14.33 | 3.53 |
+| prx+0.03@QB13 | complex strata within tolerance | -0.003 | 12.11 | 3.36 |
+| prx+0.03@QB3 | complex strata within tolerance | 0.053 | 12.30 | 3.57 |
+| prx+0.03@QB8 | complex strata within tolerance | -0.019 | 12.57 | 4.26 |
+| prx+0.03@QB9 | complex strata within tolerance | -0.025 | 13.02 | 3.67 |
+| prx+0.04 | complex side, off tolerance | 0.002 | 15.55 | 3.67 |
+| prx+0.05 | complex side, off tolerance | 0.004 | 17.08 | 4.06 |
+| prx+0.05@QB13 | complex strata within tolerance | -0.003 | 12.15 | 2.90 |
+| prx+0.05@QB3 | complex side, a control fails | 0.091 | 12.54 | 3.32 |
+| prx+0.05@QB8 | complex strata within tolerance | -0.047 | 13.30 | 4.79 |
+| prx+0.05@QB9 | complex strata within tolerance | -0.018 | 13.40 | 3.30 |
+| prx-0.01 | complex strata within tolerance | -0.011 | 11.76 | 4.35 |
+| prx-0.02 | complex strata within tolerance | -0.026 | 11.58 | 4.94 |
+| prx-0.03 | complex strata within tolerance | -0.053 | 11.59 | 5.86 |
+| prx-0.03@QB13 | complex strata within tolerance | -0.003 | 12.19 | 4.38 |
+| prx-0.03@QB3 | complex strata within tolerance | -0.059 | 12.03 | 4.33 |
+| prx-0.03@QB8 | complex strata within tolerance | -0.015 | 12.23 | 4.09 |
+| prx-0.03@QB9 | complex strata within tolerance | 0.052 | 10.85 | 3.95 |
+| prx-0.04 | no reading | -0.097 | 11.85 | 7.37 |
+| prx-0.05 | no reading | -0.171 | 12.44 | 10.33 |
+| prx-0.05@QB13 | complex strata within tolerance | -0.003 | 12.31 | 4.59 |
+| prx-0.05@QB3 | complex side, a control fails | -0.096 | 12.03 | 4.59 |
+| prx-0.05@QB8 | complex strata within tolerance | -0.038 | 12.57 | 4.18 |
+| prx-0.05@QB9 | complex side, off tolerance | 0.108 | 9.82 | 3.80 |
+| zres+0.05 | complex strata within tolerance | 0.054 | 12.12 | 3.95 |
+| zres+0.15 | complex side, off tolerance | 0.211 | 11.07 | 1.82 |
+| zres-0.05 | complex strata within tolerance | -0.063 | 12.01 | 4.25 |
+| zres-0.15 | no reading | -0.236 | 12.53 | 7.58 |
+| zz+0.05 | complex strata within tolerance | -0.007 | 12.27 | 4.08 |
+| zz-0.05 | complex strata within tolerance | 0.008 | 12.03 | 3.87 |
 
 Reading. No audited error reads real strata. The rule fails closed: a coherent error moves the verdict to "no reading", "complex
-side, off tolerance" or "complex side, a control fails", never to a wrong stratum. The combined triple at 1 times breaks the verdict (s124 reads 8.34 at r_null = -0.20, "no reading"): PRX over-rotation, cphase and zres each below the single
+side, off tolerance" or "complex side, a control fails", never to a wrong stratum. The combined triple at 1 times breaks the verdict (s124 reads 8.27 at r_null = -0.20, "no reading"): PRX over-rotation, cphase and zres each below the single
 error bound together add to a reading the rule refuses, so the complex verdict holds for a combined error of at most half the triple
 (PRX -1 percent, cphase -0.025 rad, zres -0.025 rad). The uniform PRX amplitude bound (2 percent) is set by s412 at positive error (its reading moves up by about 0.7 per percent
 and leaves the tolerance at +3 percent) and by s124 and the null at negative error (-4 percent reads no verdict).
 
 Retained Garnet measurements bound the PRX terms only. The parallel PRX train of the idle-schedule case (2026-10-25, set a18a947f,
 `results/iqm/idle_schedule_probe_analysis.json`) measured the over-rotation of the four qubits of this star, each train linear:
-QB14 -0.36 +- 0.06 percent, QB4 +0.61 +- 0.09, QB8 +0.07 +- 0.07 and QB9 -0.19 +- 0.07. Isolated trains on QB11 and QB6 read -0.30 +- 0.06 and -0.18 +- 0.07
+QB13 +0.01 +- 0.07 percent (chi-square 15.7, linear), QB3 -0.11 +- 0.07, QB8 +0.07 +- 0.07 and QB9 -0.19 +- 0.07. Isolated trains on QB11 and QB6 read -0.30 +- 0.06 and -0.18 +- 0.07
 percent (the same set) and QB11 +0.15 +- 0.07 percent on set 68b0f1d0 (the amplification train of `results/iqm/kernel_cancellation_probe_analysis.json`); the
-span -0.30 to +0.15 percent of these isolated measurements is well inside the 2 percent bound, and the parallel train of the star's own qubits stays within 0.61 percent. Those records come from other calibration sets, and the
+span -0.30 to +0.15 percent of these isolated measurements is well inside the 2 percent bound, and the parallel train of the star's own qubits stays within 0.19 percent. Those records come from other calibration sets, and the
 amplitude error of the live set is not measured. The retained records hold no measurement of the CZ conditional phase or of the
 residual Z rotation (searched: results/iqm, docs/notes/iqm, docs/evidence/iqm*, docs/design for cphase, conditional phase and zres), so the combined bound rests
 on the model alone: a combined error beyond half the triple reads no verdict, and the case reports it as such. A four-circuit PRX
@@ -248,15 +251,15 @@ train on the star would measure the PRX term in the job; the 80 circuits carry t
 
 Billing v4 sizing (`gororoba_quantum/grover_plane_sizing.py`, inputs pinned in
 `docs/evidence/iqm-garnet-grover-plane/billing_v4_inputs.json`): the three Garnet models v3, v4_max and v4_sum price the job at
-7.95, 7.55 and 7.25 s of execution, expected runtime 8.39 s, expected billed
-5, 5 and 4.5 credits. The all-jobs band prices the ceiling at 8.5 credits at most; the job carries 10.5
-credits (21 billed seconds, cancel threshold 20 s), within the owner's 11.0. The shot count is 6,500: the 2.2 times overrun of the runtime (the overrun of the sibling Emerald run,
-18.45 s) clears the cancel threshold by 1.55 s, and the builder refuses a size whose margin falls under 1.5 s (the latency of the
-station-control stop after a cancel). Margin of the cancel threshold over the runtime: 11.6 s at 1 times, 7.4 s at 1.5 times and
-1.55 s at 2.2 times.
+7.35, 6.98 and 6.70 s of execution, expected runtime 7.79 s, expected billed
+4.5, 4.5 and 4.5 credits. The all-jobs band prices the ceiling at 8.0 credits at most; the job carries 10.5
+credits (21 billed seconds, cancel threshold 20 s), within the owner's 11.0. The shot count is 6,000: the 2.2 times overrun of the runtime (the overrun of the sibling Emerald run,
+18.45 s) clears the cancel threshold by 2.87 s, and the builder refuses a size whose margin falls under 1.5 s (the latency of the
+station-control stop after a cancel). Margin of the cancel threshold over the runtime: 12.2 s at 1 times, 8.3 s at 1.5 times and
+2.87 s at 2.2 times. The `garnet:mock` compile estimate of the 6,500-shot build read 8.50 s against 7.95 s modelled, so the shot count fell to 6,000 to keep the 2.2 times margin over 1.5 s with that excess.
 
-DECISION NEEDED (owner): keep 10.5 credits or raise it to 11.0 after the `garnet:mock` compile estimate
-(`execution_runtime_estimate_seconds`) is read (reported in the pull request). A job pins its calibration set and fails if Garnet no longer holds it.
+The ceiling stays 10.5 credits (the owner's limit is 11.0); the `garnet:mock` compile estimate
+(`execution_runtime_estimate_seconds`) of this build is reported in the pull request. A job pins its calibration set and fails if Garnet no longer holds it.
 
 ## Steps before a submission
 
@@ -288,7 +291,7 @@ verdict and the estimates in the change that analyzes the run; the QRNG allocati
 - The model has no leakage or crosstalk, and the audit covers the listed coherent errors, each alone or in the one combined triple.
 - The kept fraction of the heralded shots is planned at 0.5 and unmeasured for these qubit sets.
 - phi = 1.54 is a depth-1 bound of the Grover case applied to these circuits.
-- The 2.2 times overrun fits with 1.55 s to spare; a larger overrun is cancelled and billed.
+- The 2.2 times overrun fits with 2.87 s to spare; a larger overrun is cancelled and billed.
 - The linearity of the star's trains is a prior from set a18a947f; a rotated calibration set can change the ranking and, with it, the digest.
 - The block-dimension law and the complement-law visibility are checked in exact arithmetic on the repository's A_5 tables; their
   novelty is bounded by the code and notes of this repository, and no literature search was made for them.
