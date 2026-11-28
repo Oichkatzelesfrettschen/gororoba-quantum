@@ -228,6 +228,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "qrng_seeds.py",
     "qubit_baseline.py",
     "rank_attachments.py",
+    "pathion_kernel_map_orientation_merged.py",
     "rank_charts.py",
     "rank_polynomials.py",
     "rank_path_topology.py",
