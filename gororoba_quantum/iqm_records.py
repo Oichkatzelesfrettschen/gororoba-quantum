@@ -28,6 +28,8 @@ ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "results/iqm/runs"
 CASE_SCHEMA = "iqm-circuit-case-v1"
 SUBMISSION_SCHEMA = "iqm-submission-v1"
+# The request body as posted; a receipt that names wire_sha256 retains it, older receipts predate it.
+SENT_BODY = "submitted-body.json"
 RESULTS_SCHEMA = "iqm-results-v1"
 TERMINAL = ("completed", "failed", "cancelled")
 ARTIFACTS = ("measurements", "measurement_counts")
@@ -175,6 +177,17 @@ class Run:
         return self.measurements
 
 
+def check_wire(run_dir: Path, submission: dict[str, Any]) -> None:
+    """A receipt with wire_sha256 retains the posted bytes, and they carry the body that body_sha256 names."""
+    if "wire_sha256" not in submission:
+        return
+    wire = _optional_bytes(run_dir / SENT_BODY)
+    if wire is None or sha256(wire) != submission["wire_sha256"]:
+        raise RecordError(f"{run_dir}/{SENT_BODY} is not the posted body the receipt names")
+    if sha256(json.dumps(json.loads(wire), sort_keys=True).encode()) != submission["body_sha256"]:
+        raise RecordError(f"{run_dir}/{SENT_BODY} carries another body than body_sha256 names")
+
+
 def validate_run(records: Records) -> Run:
     """The rules every consumer shares; every rejection names the run directory."""
     run_dir = records.directory
@@ -184,6 +197,7 @@ def validate_run(records: Records) -> Run:
     case, row, cases_sha256 = validate_job(records, submission["job"])
     if cases_sha256 != submission["cases_sha256"]:
         raise RecordError(f"{run_dir}: cases.json differs from the submission receipt")
+    check_wire(run_dir, submission)
     results = records.json_of("results.json")
     if results.get("schema") != RESULTS_SCHEMA or results["job_id"] != submission["job_id"]:
         raise RecordError(f"{run_dir}: results.json names another job")

@@ -176,6 +176,11 @@ def write_private(path: Path, value: dict[str, Any]) -> None:
     os.replace(tmp, path)
 
 
+def wire_bytes(value: Any) -> bytes:
+    """The request body Client.post sends for value."""
+    return json.dumps(value).encode()
+
+
 class Client:
     def __init__(self, token: str, transport: Transport | None = None, server: str = SERVER) -> None:
         self.token = token
@@ -193,9 +198,11 @@ class Client:
         return status, body
 
     def post(self, path: str, value: Any, token: str | None = None) -> tuple[int, Any]:
-        status, _, body = self.send(
-            "POST", f"{self.server}/{path}", json.dumps(value).encode(), self.headers(token, True)
-        )
+        return self.post_bytes(path, wire_bytes(value), token)
+
+    def post_bytes(self, path: str, data: bytes, token: str | None = None) -> tuple[int, Any]:
+        """POST data exactly as given, so a caller can retain and hash the bytes that leave the process."""
+        status, _, body = self.send("POST", f"{self.server}/{path}", data, self.headers(token, True))
         if not body:
             return status, None
         try:
