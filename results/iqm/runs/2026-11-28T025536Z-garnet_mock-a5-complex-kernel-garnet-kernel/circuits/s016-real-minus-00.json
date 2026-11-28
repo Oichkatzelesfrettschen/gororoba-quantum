@@ -1,0 +1,103 @@
+{
+ "instructions": [
+  {
+   "args": {
+    "angle": 1.5707963268,
+    "phase": 1.5707963268
+   },
+   "locus": [
+    "QB8"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 3.1415926536,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB8"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": -1.5707963268,
+    "phase": -1.5707963268
+   },
+   "locus": [
+    "QB9"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 3.1415926536,
+    "phase": 1.5707963268
+   },
+   "locus": [
+    "QB9"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 1.5707963268,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB9"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {},
+   "locus": [
+    "QB8",
+    "QB9"
+   ],
+   "name": "cz"
+  },
+  {
+   "args": {
+    "angle": -1.5707963268,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB8"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 3.1415926536,
+    "phase": -2.3561944902
+   },
+   "locus": [
+    "QB8"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 1.5707963268,
+    "phase": -3.1415926536
+   },
+   "locus": [
+    "QB9"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m"
+   },
+   "locus": [
+    "QB9",
+    "QB8"
+   ],
+   "name": "measure"
+  }
+ ],
+ "name": "s016-real-minus-00"
+}
