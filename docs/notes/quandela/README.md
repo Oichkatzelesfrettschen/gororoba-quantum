@@ -425,13 +425,23 @@ record with `specs.architecture` keeps the coupler and phase-symbol comparison (
 records `architecture_source` "live"). The service omits the field intermittently, and a record without it admits the
 case on the retained architecture: the plan and `submission.json` record `architecture_source` "carried", the
 retained catalogue's sha256 (`architecture_catalogue_sha256`), the sha256 of its architecture blob
-(`architecture_sha256`) and its observation stamp (`architecture_observed_utc`), and every other missing field and
-every mesh case (`live_mesh`) still refuses. `collect` re-reads the platform and writes `couplers_checked` to
-`results.json`: "live-match" when the live `specs.architecture` equals the retained one, "live-differ" when it differs
-(`collect` fails after it retains the raw bytes, and `qd_records.validate_run` refuses the run), and "unread" when the
-record omits the field or the retained blob no longer has the planned digest. The job record exposes no coupler field
-(its `payload` is the sent computation, which `validate_run` already compares with `job-body.json`), so the platform
-record is the only coupler source. `qd_platform.py runs` prints `architecture_source` and `couplers_checked`.
+(`architecture_sha256`) and its observation stamp (`architecture_observed_utc`), and every mesh case (`live_mesh`) still
+refuses. A `specs.architecture` that is present and not a non-empty string refuses at plan and collect. Of the other
+missing fields, `specs.commands` is restored from a frozen processor record of the same worker versions
+(`payload_version_basis`, `retained_commands`), and `perfs`, `default_mitigations`, `known_mitigations` and
+`specs.type` read as absent without refusing the plan. `couplers_differ` compares the whole element sequence (kind,
+mode and parameter of every coupler and phase shifter, in order). `collect` re-reads the platform and writes
+`couplers_checked` to `results.json`: "live-match" when the live `specs.architecture` equals the retained one,
+"live-differ" when it differs (`collect` fails after it retains the raw bytes, and `qd_records.validate_run` refuses
+the run), and "unread" when the record omits the field or the retained blob no longer has the planned digest. A
+recollection keeps the more severe of the retained and the fresh state and rewrites `results.json` only to escalate
+one. The returned result carries a second coupler source: the `computed_circuit` of every entry holds the couplers of
+the compilation that ran, and `collect` writes `compiled_couplers_checked` ("match" or "differ" against the planned
+architecture whose digest the plan recorded, "unread" without a comparable result); "differ" fails `collect` after the
+raw bytes are kept and `qd_records.validate_run` refuses it. `validate_run` also requires the collection's
+`architecture_source` to equal the plan's. The job record exposes no coupler field (its `payload` is the sent
+computation, which `validate_run` already compares with `job-body.json`). `qd_platform.py runs` prints
+`architecture_source`, `couplers_checked` and `compiled_couplers_checked`.
 
 Spaced jobs of an approved case run unattended from a committed schedule
 through GitHub Actions, which calls the same plan, submit and collect

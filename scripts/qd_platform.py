@@ -365,10 +365,18 @@ def retained_catalogue(out: Path) -> dict[str, Any] | None:
 
 
 def chip_architecture(record: Any) -> str | None:
-    """The record's non-empty specs.architecture, or None when the record lacks one or carries it as null."""
+    """The record's specs.architecture, or None when the record lacks the field or the service sends it as null.
+
+    The service omits the field or sends null intermittently, which the carried-architecture rules admit. A
+    present value that is not a non-empty string is a changed record format, so it refuses rather than admits.
+    """
     specs = record.get("specs") if isinstance(record, dict) else None
-    blob = specs.get(ARCHITECTURE) if isinstance(specs, dict) else None
-    return blob if isinstance(blob, str) and blob else None
+    if not isinstance(specs, dict) or specs.get(ARCHITECTURE) is None:
+        return None
+    blob = specs[ARCHITECTURE]
+    if not isinstance(blob, str) or not blob:
+        raise PlatformError(f"specs.{ARCHITECTURE} is {type(blob).__name__} {blob!r}, not a non-empty string")
+    return blob
 
 
 def architecture_provenance(
@@ -1115,14 +1123,14 @@ def carried_provenance() -> dict[str, str]:
 
 
 def couplers_differ(blob: str) -> bool:
-    """Whether the blob's couplers or phase symbols differ from the retained catalogue's."""
+    """Whether the blob's element sequence differs from the retained catalogue's in kind, mode or parameter.
+
+    The sequence interleaves couplers and phase shifters, so a moved phase shifter, a renamed symbol and a
+    reordered element each differ.
+    """
     import qd_belenos_mesh as mesh
 
-    live = mesh.decode(blob)
-    retained = mesh.architecture(mesh.load_catalogue())
-    return [(k, m, p) for k, m, p in live if k == "bs"] != [(k, m, p) for k, m, p in retained if k == "bs"] or [
-        p for k, _, p in live if k == "ps"
-    ] != [p for k, _, p in retained if k == "ps"]
+    return list(mesh.decode(blob)) != list(mesh.architecture(mesh.load_catalogue()))
 
 
 def live_architecture(processor: dict[str, Any], platform: str) -> dict[str, str] | None:
@@ -1166,6 +1174,69 @@ def couplers_state(submission: dict[str, Any], platform: str, read: Callable[[],
         return state
     state["couplers_checked"] = "live-differ" if couplers_differ(blob) else "live-match"
     return state
+
+
+def computed_circuits(result_bytes: bytes | None) -> list[str]:
+    """The computed_circuit of every entry of a raw result, or [] when the bytes hold none."""
+    if result_bytes is None:
+        return []
+    try:
+        inner = json.loads(json.loads(result_bytes)["results"])
+        entries = inner["results_list"] if "results_list" in inner else [inner]
+        found = [entry["computed_circuit"] for entry in entries]
+    except (ValueError, KeyError, TypeError):
+        return []
+    return found if all(isinstance(text, str) for text in found) else []
+
+
+def compiled_couplers_state(submission: dict[str, Any], result_bytes: bytes | None) -> str:
+    """Whether the couplers the server compiled with match the architecture the plan recorded.
+
+    Every entry's computed_circuit carries the couplers of the calibration its compilation ran under. "match" when
+    each has the planned architecture's topology and coupler angles (qd_belenos_mesh.same_mesh), "differ" when one
+    does not or cannot be decoded, and "unread" when the result holds no computed circuit or the retained
+    catalogue no longer holds the architecture whose digest the plan recorded.
+    """
+    import qd_belenos_mesh as mesh
+
+    planned = chip_architecture(mesh.load_catalogue().get("processors", {}).get(submission["platform"]))
+    circuits = computed_circuits(result_bytes)
+    if planned is None or sha256_bytes(planned.encode()) != submission.get("architecture_sha256") or not circuits:
+        return "unread"
+    architecture = mesh.decode(planned)
+    try:
+        return "match" if all(mesh.same_mesh(architecture, mesh.decode(text)) for text in circuits) else "differ"
+    except mesh.MeshError:
+        return "differ"
+
+
+COUPLER_STATES = {
+    "couplers_checked": ("unread", "live-match", "live-differ"),
+    "compiled_couplers_checked": ("unread", "match", "differ"),
+}
+
+
+def escalated_states(retained: dict[str, Any], fresh: dict[str, Any]) -> dict[str, Any]:
+    """The coupler fields a recollection changes: for each, the more severe of the retained and the fresh value.
+
+    A fresh "live-differ" or "differ" replaces a retained "unread" or match, and a retained one stays when the
+    fresh read is "unread", so a recollection never reports a state milder than any read so far. A tie keeps the
+    retained value and its stamp.
+    """
+    out: dict[str, Any] = {}
+    for key, order in COUPLER_STATES.items():
+        known = [
+            (order.index(value), origin)
+            for origin, value in (("fresh", fresh.get(key)), ("retained", retained.get(key)))
+            if value in order
+        ]
+        if not known:
+            continue
+        rank, origin = max(known, key=lambda pair: (pair[0], pair[1] == "retained"))
+        out[key] = order[rank]
+        if origin == "fresh" and key == "couplers_checked":
+            out["couplers_checked_utc"] = fresh["couplers_checked_utc"]
+    return out
 
 
 def explorer_row(platform: str) -> dict[str, Any]:
@@ -2073,6 +2144,7 @@ def collect(case_dir: Path, poll: float, timeout: float) -> dict[str, Any]:
                 lambda: patient(lambda: get(platform_route(submission["platform"])), job, "platform", deadline, poll),
             )
         )
+        collected["compiled_couplers_checked"] = compiled_couplers_state(submission, result_bytes)
         collected["couplers_checked_utc"] = now()
     if result_bytes is None:
         collected["result_absent"] = absent
@@ -2083,20 +2155,36 @@ def collect(case_dir: Path, poll: float, timeout: float) -> dict[str, Any]:
         )
     if retained_path.exists():
         retained = json.loads(retained_path.read_text(encoding="utf-8"))
-        moving = ("collected_utc", "usage_after", "usage_absent", "couplers_checked", "couplers_checked_utc")
+        moving = (
+            "collected_utc",
+            "usage_after",
+            "usage_absent",
+            "couplers_checked",
+            "couplers_checked_utc",
+            "compiled_couplers_checked",
+        )
         if {k: v for k, v in retained.items() if k not in moving} != {
             k: v for k, v in collected.items() if k not in moving and not predates(retained, collected, k)
         }:
             raise PlatformError(f"{retained_path} differs from the recollection; nothing was rewritten")
         if result_bytes is not None:
             retain_bytes(raw_dir / "result.json", result_bytes)
-        collected = dict(retained)
+        # The fresh read is judged before the retained record can stand in for it: a state only escalates.
+        changed = {k: v for k, v in escalated_states(retained, collected).items() if retained.get(k) != v}
+        collected = {**retained, **changed}
+        if changed:
+            write_json(retained_path, collected)
     else:
         write_json(retained_path, collected, exclusive=True)
     if collected.get("couplers_checked") == "live-differ":
         raise PlatformError(
             f"job {job}: couplers_checked live-differ: the live specs.architecture differs from the retained "
             "catalogue; the raw result is kept and its readers refuse the run"
+        )
+    if collected.get("compiled_couplers_checked") == "differ":
+        raise PlatformError(
+            f"job {job}: compiled_couplers_checked differ: the computed circuits carry couplers other than the "
+            "planned architecture's; the raw result is kept and its readers refuse the run"
         )
     return collected
 

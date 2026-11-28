@@ -477,12 +477,22 @@ class Run:
 
 def check_couplers(owner: str, submission: dict[str, Any], collected: dict[str, Any]) -> None:
     """A run planned with an architecture_source carries the collect-time couplers_checked: "live-match" or
-    "unread" read; "live-differ" or an absent field refuses the run."""
+    "unread" read; "live-differ" or an absent field refuses the run. The collection names the same
+    architecture_source as the plan, and a compiled_couplers_checked of "differ" refuses; a run collected before
+    that field existed leaves it absent."""
     if "architecture_source" not in submission:
         return
     state = collected.get("couplers_checked")
     if state not in ("live-match", "unread"):
         raise RecordError(f"{owner}: couplers_checked is {state!r}, not live-match or unread")
+    if collected.get("architecture_source") != submission["architecture_source"]:
+        raise RecordError(
+            f"{owner}: architecture_source {collected.get('architecture_source')!r} in results.json differs from "
+            f"{submission['architecture_source']!r} in submission.json"
+        )
+    compiled = collected.get("compiled_couplers_checked", "unread")
+    if compiled not in ("match", "unread"):
+        raise RecordError(f"{owner}: compiled_couplers_checked is {compiled!r}, not match or unread")
 
 
 def validate_run(records: Records) -> Run:
@@ -580,6 +590,7 @@ def validate_run(records: Records) -> Run:
         facts |= {
             "architecture_source": submission["architecture_source"],
             "couplers_checked": collected["couplers_checked"],
+            "compiled_couplers_checked": collected.get("compiled_couplers_checked", "absent"),
         }
     return Run(submission, manifest, circuit, collected, summary, shots, facts, cases_sha256, body)
 
