@@ -1,3 +1,9 @@
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
 # gororoba-quantum
 
 Quantum circuits whose structure comes from the gororoba-open Cayley-Dickson
@@ -5,6 +11,13 @@ algebra kernel, targeting IBM Quantum Heron r2 backends. Left multiplication by 
 basis unit is a signed permutation of the 2^k basis states, so it is unitary on
 k qubits; two algebraic defects the kernel measures classically become hardware
 observables. [docs/README.md](docs/README.md) maps every document by area and task.
+
+## Start here
+
+- Pick the interpreter for the task from [docs/PYTHON.md](docs/PYTHON.md#defaults); exploratory hypercomplex and quantum work starts on `gq-max`, and retained records stay on the pinned interpreters.
+- Pick the algebra library for the dimension from [docs/notes/hypercomplex-libraries.md](docs/notes/hypercomplex-libraries.md); `cd_core` stays the specification.
+- Machine skills, by name: `program-ibm-heron` (with `program-ibm-fez`, `program-ibm-kingston`, `program-ibm-marrakesh`), `program-quandela-belenos` and `program-quantum-inspire-tuna17`.
+- Capability notes: `docs/notes/ibm_quantum/machine-capabilities.md` and `docs/notes/quandela/belenos-capabilities.md`; the routing table `docs/notes/machine-routing.md`. These three land through their own pull requests and carry no link until then.
 
 The [source index](docs/INDEX.md) separates hosted papers from ignored local copies.
 The [source library](docs/sources/README.md) retains licensed primary PDFs, per-paper notes,
