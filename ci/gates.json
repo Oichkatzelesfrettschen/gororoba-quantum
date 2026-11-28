@@ -5008,6 +5008,24 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_weight_slice_unit_cells.py --check docs/evidence/a5-weight-slice-unit-cells/result.json",
+      "name": "core-a5-weight-slice-unit-cells",
+      "seconds": 700.0,
+      "workers": 2,
+      "replays": [
+        "docs/evidence/a5-weight-slice-unit-cells/result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_weight_slice_unit_cells.py --self-test",
+      "name": "core-a5-weight-slice-unit-cells-self-test",
+      "seconds": 400.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/a5_e8bar_sections.py --check docs/evidence/a5-e8bar-sections/result.json",
       "name": "core-a5-e8bar-sections",
       "seconds": 30.0,

@@ -208,6 +208,7 @@ a W8 point ([review](../../archive/reviews/a5-outside-transition-report/README.m
 | A5-672 | Der(A_n) = g_2 for n = 3..6 over Q; at A_6 the lift of N- has nullity 36, the real doubling 32 | proved |
 | A5-673 | modulo 32009 the top-dimensional part of the E8-bar closure is irreducible over F_p-bar and generically reduced, from five zero-dimensional sections in 1.2 s (A5-605 stopped at 1 h) ([sections](../../evidence/a5-e8bar-sections/README.md)) | certified |
 | A5-674 | engine v16 skips the structural zero rows of the generator operator: equal ranks, products stage 1.37 times shorter at W8 d = 4, N = 12 ([memory-bounded](../../evidence/a5-exceptional-fibers/memory-bounded/README.md#structural-zero-rows-engine-v16)) | certified |
+| A5-675 | weight-slice unit-replacement fibers into N-: Iso (68, 5, 23), X- (69, 4, 12), X+ (P^2) at both roots in seconds; W8 times out at 300 s ([cells](../../evidence/a5-weight-slice-unit-cells/README.md)) | certified |
 
 ## Next computations
 
