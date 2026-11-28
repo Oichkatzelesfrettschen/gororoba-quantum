@@ -8,13 +8,16 @@ governs every nullity-4 approach to the nullity-8 point e_1 + e_10. Every decisi
 polynomial identity or an exact real-root count; no random draw enters. `--check` recomputes the record and compares
 its bytes; `--self-test` runs ten controls, each a property that fails on a mutated input, in normal and `-O` modes.
 
+`types-and-loci.json` is the output of [`scripts/a5_pencil_types_and_loci.py`](../../../scripts/a5_pencil_types_and_loci.py)
+`--out` and carries statements 19 to 23.
+
 `certificates.json` is the output of [`scripts/a5_pencil_certificates.py`](../../../scripts/a5_pencil_certificates.py)
 `--out` and carries statements 16 to 18, which need computations beyond the sympy record: the tower at levels 7 and 8,
 the N+- Pfaffian and the common kernels of sedenion zero divisors.
 
 The paths gamma_1, gamma_2, gamma_3 and the pair of limiting planes of statement 3 come from an outside report
 ([review](../../archive/reviews/a5-outside-transition-report/README.md)); statements 2 (the second end of gamma_3)
-and 5 to 9 are computed here first. Ledger rows A5-650 to A5-668, A5-670 and A5-671 of
+and 5 to 9 are computed here first. Ledger rows A5-650 to A5-668, A5-670, A5-671 and A5-676 to A5-680 of
 [the claim ledger](../a5-exceptional-fibers/ledger.tsv) carry the statements.
 
 ## Conventions
@@ -196,12 +199,57 @@ Each statement has a `require` in the script's `validate`; the name of the recor
     L_(e_8). Over 3,523,095 pairs (each i with i + 1, i + 98, ...), the common kernels have dimension 0 (3,518,410),
     2 (4,268) and 4 (417). The census classifies no W8 point, so prediction P25 is not run.
 
+19. **Full Pfaffians** (`types-and-loci.json`: `full_pfaffians`). With the coordinate on e_16 kept, the Pfaffian of
+    the pencil is irreducible over Q at VB (degree 6, 50 terms) and at N- and N+ (degree 8, 12,579 terms each). The
+    product of leading forms of statements 14 and 17 therefore belongs to the doubly pure slice alone.
+20. **Types on the census** (`type_census`). Each census pair (p, q) of statement 18 gives the point
+    y = (p, q) of A_5. The census takes every pair with dim A = 2 (4,268) or 4 (417), and the 3,005 pairs with
+    dim A = 0 and 131 i + j divisible by 1,171 (3,005 distinct p and q). Every point that lies in W8 has the type
+    its dim A names, with matched two-sided bounds except where the rational route below gives exact dimensions: 177 points of type R (commutant 1, closure 28), 3,282 of type C
+    (commutant 2, closure 15) and 139 of type H (commutant 4, closure 10). The other points lie in Iso (nullity 8,
+    dim A = 0), S0, S4_VQ, B9 (nullity 12, dim A = 2) and N+- (nullity 16, dim A = 4). Where the integer frame
+    exceeds the int64 bound of statement 16 (33 points of type R), the rational route of `a5_nullity_transitions`
+    gives the type from exact dimensions; the fallback catches that bound alone and re-raises every other error, and
+    the self-test compares the two routes at an R, a C and an H point. Every census point has halves that are both
+    zero divisors, so W8 points with an invertible half lie outside this census.
+21. **Normal form of the type rule** (`normal_form`). The proof of Theorem 14.6 of Biss, Dugger and Isaksen
+    (arXiv math/0511691, pages 23 to 26) brings a pair a, b of A_4 with Ann a n Ann b nonzero, up to an
+    automorphism of the octonions and scaling, to a = (t, kt) and b = (alpha t, (alpha k) t), with H = <1, i, j, k>,
+    t orthogonal to H and alpha in H. At t = e_4, k = e_3 and seven values of alpha, the kernel of y = (a, b) has
+    dimension 8. It splits into a part in Omega x Omega, Omega = H x H, that is the same for every alpha, and a part in
+    the complement that moves exactly when alpha leaves <1, k>, which is when dim A drops from 4 to 2. The operator J_k
+    (+L_k on the H part of each octonion slot, -L_k on its complement) preserves the kernel, squares to -I there and
+    commutes with all 31 compressions, so the commutant contains C at both dimensions. Taking J_k as +L_k on the whole
+    slot breaks the commutation (self-test).
+22. **The VB rank-4 locus** (`vb_singular`, `vb_plane_rank`, `vb_lines`). In the nine pencil coordinates at VB,
+    the 768 nonzero 6 x 6 sub-Pfaffians vanish on the plane m = x3 = x4 = x11 = x12 = 0. Singular (over Q, ordering
+    dp) puts m^3, (x3^2 + x4^2)^2 and (x11^2 + x12^2)^2 in their ideal, so a real direction of rank at most 4 lies on
+    that plane, the real zero set of m, lead Q = 2 (x3 + i x4) and lead G = 4 ((x3 + i x4)^2 + (x11 + i x12)^2). Two
+    4 x 4 sub-Pfaffians on the plane are -4 (x9^2 + x14^2) and 4 (x10^2 + x13^2), so the rank is exactly 4 off the
+    origin. The first-order form does not decide the line. Among the 31 units and their signed pair sums, 284
+    directions have rank-4 compression in the plane. For each, the second-order form
+    N^T K^T L_w L_0^+ L_w K N on the kernel N of the compression decides the line. It vanishes on the 100 directions
+    whose line VB + s w has nullity 8 at s = 2 and 3, such as e_1 + e_10 (the direction of gamma_2). Here L_0^+ is the
+    Moore-Penrose inverse, computed as (L_0^T L_0 + K (K^T K)^-1 K^T)^-1 L_0^T. It has rank 4 on
+    the other 184, whose lines have nullity 0 (88) or 4 (96). The directions e_10 and e_1 + e_10 have the same
+    compression; the unit e_1, of zero compression, enters only at second order.
+23. **Arcs into e_1 + e_10 to third order** (`w8_schur`). The compression map w -> K^T L_w K has a kernel Z of
+    dimension 24 and image the 7-dimensional pencil. For an arc y_0 + s w + s^2 v + s^3 u with w in Z, the kernel
+    equations give at second order the form K^T L_v K - K^T L_w L_0^+ L_w K. When that form vanishes, the third-order
+    form is K^T L_u K minus the symmetrized mixed term of w and v plus the cubic term of w. The 300 polarized
+    quadratic terms over a basis of Z, the 744 mixed terms of a basis vector of Z with a unit, and the 2,600
+    symmetrized cubic terms over Z all lie in the pencil span. Replacing L_0^+ by the identity takes the quadratic
+    terms out of it (self-test). So the first nonzero effective form of an arc of effective order at most 3 is an
+    element of the pencil. When its rank is 4, which is the nullity step of a nullity-4 arc, its kernel is the
+    limiting plane, a point of the 2-sphere by statement 8. Arcs of effective order above 3 are not covered.
+
 ## Reading and open questions (ledger rows A5-656, A5-657, A5-660)
 
 At e_1 + e_10 the limiting planes of the lines of statement 7 are the points of the conic zeta.zeta = 0 in the
 projective plane of C^3, a 2-sphere, embedded in the quaternionic lines HP^1 = S^4 of the kernel H^2 with the round
 overlap law. The record covers lines in the six coordinate units, two curved arcs along the conic and the lines along pairs
-of zero-compression units (statement 15), all of which limit on the 2-sphere; a proof for every arc is open (A5-660). The quaternion commutant is absent at four of the ten named W8
+of zero-compression units (statement 15), all of which limit on the 2-sphere. Statement 23 proves the claim for every
+arc of effective order at most 3; the general case is open (A5-660). The quaternion commutant is absent at four of the ten named W8
 points, so the hypothesis that every W8 point carries it is refuted (A5-656). The dimension of ker L_p n ker L_q decides
 the type on every tested point (A5-667, survives); a proof is open, and statement 18 proves that the dimension is
 even. A red-team derivation
@@ -235,14 +283,23 @@ P22 (commutant 1 and closure 28 at the type-R point), P23 (the N+- Pfaffian on t
 product of leading forms), P24 (common kernels of dimension 0, 2 or 4 only) and P26 (the determinant route over
 all 30 doubly pure units, written after the first record run and before that route was coded) held. P26 named 60
 integer points. Its first run drew the coordinates modulo 11, so its 60 evaluations were 11 distinct points, which
-the review found. The record now draws them modulo 1009, and they are 60 distinct points; the ratio held at both. A first calibration run used
+the review found. The record now draws them modulo 1009, and they are 60 distinct points; the ratio held at both. The fourth round, in
+`types-and-loci.json`, was written to a scratch file before its runs
+([fourth-round-predictions.md](fourth-round-predictions.md), kept verbatim): P27 (the full Pfaffians are irreducible),
+P28 (types on the census: P25, not run in `certificates.json`, run here on these points), P29 (J_k), P30 (the VB real rank-4 locus), P31 (the second-order form
+decides the VB lines), P32 and P33 (second- and third-order terms in the pencil) held. P31 was written after the
+nullities of six of its eight first directions had been read; the record then scanned 284 directions. P29 named five
+values of alpha that the agy Neon red team of the certificate change had already tested; of its seven values only
+alpha = 3 + 2j was new. P28 was first
+run on dim-0 pairs that shared few first halves; the record samples them across the census. A first calibration run used
 two pencil elements as Lie generators and read the bounds 2 and 15 at the type-R point. Its bounds did not meet,
 so it certified nothing, and three generators close them. P25 (the pencil type on W8 points of the census) is not
 run.
 
 ## Reviews
 
-The certificate change has its own [review record](../../archive/reviews/a5-pencil-certificates/README.md). Two
+The certificate change has its own [review record](../../archive/reviews/a5-pencil-certificates/README.md), and so
+does the [types-and-loci change](../../archive/reviews/a5-pencil-types-loci/README.md). Two
 red-team reports ([review record](../../archive/reviews/a5-outside-transition-report/README.md), "Red team") supplied the
 tangent-cone derivation of statement 6, the involution formula of statement 8 and the test that separates the
 quaternions from the other algebras of dimension 4.
@@ -257,7 +314,11 @@ quaternions from the other algebras of dimension 4.
     "$PYTHON" -B -W error scripts/a5_pencil_certificates.py --check docs/evidence/a5-nullity-transitions/certificates.json
     "$PYTHON" -B -W error scripts/a5_pencil_certificates.py --self-test
 
+    "$PYTHON" -B -W error scripts/a5_pencil_types_and_loci.py --check docs/evidence/a5-nullity-transitions/types-and-loci.json
+    "$PYTHON" -B -W error scripts/a5_pencil_types_and_loci.py --self-test
+
 Measured on the compute workstation (32 threads): the record takes 102 s of wall time and 992 CPU seconds at
 260 MiB, the self-test 12 s, the sign census 326 s of wall time and 3,470 CPU seconds. The certificates take 359 s of wall
 time and 968 CPU seconds at a peak of 3.3 GiB resident; the level-8 item takes most of the wall time, and the
-self-test takes 11 s.
+self-test takes 11 s. The types and loci take 132 s of wall time and 3,052 CPU seconds, most of it the type census,
+with Singular 4.4.1 on the path; the self-test takes 7 s.

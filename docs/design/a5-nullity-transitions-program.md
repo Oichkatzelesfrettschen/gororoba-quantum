@@ -2,7 +2,7 @@
 
 This note states what is established about passages between the annihilator dimensions of A_5, what is open, and
 the next computations with their acceptance checks. The exact record is
-[a5-nullity-transitions](../evidence/a5-nullity-transitions/README.md) (ledger rows A5-650 to A5-668, A5-670, A5-671); the
+[a5-nullity-transitions](../evidence/a5-nullity-transitions/README.md) (ledger rows A5-650 to A5-668, A5-670, A5-671, A5-676 to A5-680); the
 [review](../archive/reviews/a5-outside-transition-report/README.md) records where its paths come from. The
 nullity-8 to nullity-12 and nullity-16 limits belong to the
 [kernel-attachments program](a5-kernel-attachments-program.md) and the Lorentzian slice to the
@@ -47,9 +47,9 @@ their tables.
 |---|---|---|---|
 | T1 | Proof of the overlap law over the whole Stiefel cone | A5-654 | done: the kernel identity modulo the Stiefel ideal and the Clifford relations (A5-655, proved) |
 | T2a | done as a tested rule: the dimension of ker L_p n ker L_q (0, 2, 4) names the type R, C, H with closures so(8), su(4), sp(2) (A5-667, survives) | A5-659 | recorded |
-| T2 | A proof of the three-type rule (the red-team derivation of the review record covers dimension 4; dimensions 1 and 3 never occur, since every common kernel of sedenion zero divisors is complex, A5-671, a result of Biss, Dugger and Isaksen). Two leads from the [certificate review](../archive/reviews/a5-pencil-certificates/README.md), both unrecorded computations. Hypothesis, reviewer-reported and not reproduced: in the normal form a = (t, kt), b = (alpha t, (alpha k) t) of the proof of Theorem 14.6 of Biss, Dugger and Isaksen, the operator J_k that acts as +L_k on H x H and -L_k on its complement commutes with all 31 compressions at six points, four of them with dim A = 2; falsifier: a nonzero entry of the symbolic commutator over alpha. Refutation, reviewer-reported and not reproduced: the elements of A do not generate the commutant, because their compressions on the kernel vanish. Then the real orbit structure behind it: the pencil type over the real orbits of W8 (the plane types of the strata record), and the rank-drop locus and limiting planes at a point with scalar commutant | A5-659 | a rule that predicts the type at points written before their runs, starting from the real G_2 invariants of the halves at the eight recorded points and from points drawn from a parametrization of the real points of W8; A5-660 decided in its second clause |
-| T3 | Arcs into the W8 point beyond the 22 of A5-668 (twenty lines of zero first-order form, two curved arcs, all on the sphere): a proof for every arc, by the second-order Schur form of the nullity-8 record applied one stratum down | A5-668 | A5-660 decided |
-| T4 | done for dimensions and algebras (A5-666) and for the Pfaffians at VB and N+-, each c \|lead Q\|^2 \|lead G\|^2 on the doubly pure coordinates (A5-657, proved; Q of order 1, G of order 2 at VB and 3 at N+-). Open: the locus of compression rank 4 at VB with its limiting kernels, and the full Pfaffian at N+- with the coordinate on e_16 | A5-666 | the real rank-4 locus tested on rational points |
+| T2 | A proof of the three-type rule (the red-team derivation of the review record covers dimension 4; dimensions 1 and 3 never occur, since every common kernel of sedenion zero divisors is complex, A5-671, a result of Biss, Dugger and Isaksen). Two leads from the [certificate review](../archive/reviews/a5-pencil-certificates/README.md), both unrecorded computations. Reproduced in the record (A5-678): in the normal form a = (t, kt), b = (alpha t, (alpha k) t) of the proof of Theorem 14.6 of Biss, Dugger and Isaksen, the kernel splits into an alpha-independent Omega x Omega part and a part that moves when alpha leaves <1, k>, and J_k commutes with all 31 compressions at seven alpha; the census of A5-677 finds every one of 3,598 W8 points of the type its dim A names. Open: a proof uniform in alpha (the commutant can jump at special alpha), and dim A = 0 gives R, which has no normal form. Refutation, reviewer-reported and not reproduced: the elements of A do not generate the commutant, because their compressions on the kernel vanish. Then the real orbit structure behind it: the pencil type over the real orbits of W8 (the plane types of the strata record), and the rank-drop locus and limiting planes at a point with scalar commutant | A5-659 | a rule that predicts the type at points written before their runs, starting from the real G_2 invariants of the halves at the eight recorded points and from points drawn from a parametrization of the real points of W8; A5-660 decided in its second clause |
+| T3 | done through effective order 3 (A5-680): the second- and third-order Schur terms lie in the pencil, so the first nonzero effective form is a pencil element whose rank-4 kernel lies on the sphere. Open: arcs of effective order above 3. The red team of the change found that the order-4 term alone leaves the pencil, while the total effective forms of orders 4 to 6 on arcs whose lower orders cancel return to it (20 dense arcs; reviewer computation). Two conjectures to test: the Schur complement factors as U(s)^T P(s) U(s) with P(s) in the pencil, and an Sp(2) x Sp(1)-equivariant pair structure on R^32 = K + K^perp forces the closure |  A5-668 | A5-660 decided |
+| T4 | done for dimensions and algebras (A5-666) and for the Pfaffians at VB and N+-, each c \|lead Q\|^2 \|lead G\|^2 on the doubly pure coordinates (A5-657, proved; Q of order 1, G of order 2 at VB and 3 at N+-). The full Pfaffians with the coordinate on e_16 are irreducible at VB and N+- (A5-676). The real rank-4 locus at VB is the plane m = lead Q = lead G = 0, and the second-order form decides which of its directions continue into nullity 8 (A5-679); the limiting kernel of a nullity-8 line through it is the kernel of its first-order form | A5-666 | done |
 | T5 | Closed Gauss graph of the nullity-4 stratum over a W8 point as a subset of Gr(4, 8), against the Nash blow-up question of the attachments program (section 5) | T1, T3 | the fiber over the point identified as a set with a two-sided certificate (A5-250 for this incidence) |
 | T6 | done (A5-664, A5-670): sp(1), sp(2), sp(4), sp(8), sp(16) at levels 4 to 8, the last two by closure bounds that meet. Open: the statement for every level, pencil dimension 2^(n-2) - 1 and closure sp(2^(n-4)) at the embedded element; a derivation is in the review record | A5-664 | a machine proof in gororoba-math |
 | T7 | Formal targets in gororoba-math: the Gram identity for the doubling unit at every level, the alternating three-form, the Pfaffian identity at e_1 + e_10, the anticommutation of L_(e_8) in A_4 with the evenness of common kernels (A5-671) | none | a pool row of the formal-proofs workgroup per target; proofs compile there |
@@ -68,6 +68,24 @@ their tables.
   move into `gororoba_quantum/` is a separate change, since retained records bind the file's digest.
 - **Gap 4.** The paper link stays a boundary (A5-628). A correspondence needs a non-abelian algebra or a positivity
   structure on the A_5 side that matches the corner charge; no deliverable here supplies one.
+- **Gap 5 (a mechanical first pass of 2026-11-28, not the full track audit).** Four A_5 records sit outside
+  `ci/gates.json`. `a5-rank-strata-equations` and `a5-strata-regularity` call themselves retained replays because
+  Singular is absent from the hosted image. `a5-w8-a4-restriction` reproduces through its `run.sh`, and
+  `a5-w8-twisted-product` through its script. `ci/gates.json` supports `"requires": ["singular"]`, which skips where
+  Singular is absent (ci/AGENTS.md), so each can take a gate pair. `a5-gaussian-certificates` stays ungated on purpose,
+  since its generator is live in gororoba-math.
+- **Gap 6.** The ledger holds 12 open and 10 stalled rows. Ten of the open rows date from 2026-11-08 to 2026-11-12:
+  engine hypotheses (A5-258, A5-263, A5-278, A5-283), structure (A5-250, A5-254, A5-259, A5-325) and hardware readings
+  (A5-202, A5-242). Open pull requests touch A5-242, A5-254, A5-259 and A5-263. Every stalled row is a computation that
+  reached its cap: Singular standard bases, msolve eliminations, and Rees special fibers on E8-bar, Iso and W8 into N+-
+  and VB. Each needs a route decision from the cheap-question table of the
+  [computer-algebra runbook](../runbooks/computer-algebra.md), not a rerun.
+- **Gap 7.** `a5_pencil_certificates.structure_item` refuses an integer kernel frame whose entries exceed 2^20, and 33
+  census points of statement 20 fall back to the sympy route. In the probes of 2026-11-28 an LLL-reduced frame
+  resolved 19 of 25 such points; the other six still exceeded the bound.
+- **Gap 8.** The type rule (A5-667) has a normal form for dim A > 0 (A5-678) and none for dim A = 0. That half rests on
+  the census of A5-677, whose points have halves that are both zero divisors, and on earlier samples. W8 points whose
+  halves are invertible lie outside that census: the red team found 64 on nullity-8 lines through VB, all of type R.
 
 ## Standard of the record as a data source
 
