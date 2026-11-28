@@ -167,7 +167,11 @@ and cut-run handling; the script docstring lists them.
   the retained packets; the cheapest discriminating check is the mode-6 count against samples at source 20 on mesh
   29dc6ef8 with the cone floor lowered until mode 6 joins the cone.
 - **Caveat.** Couplers were unread at plan and at collect; only the 2026-10-17 catalogue stamp backs the carried
-  architecture. A cut run is refused by the analyzer (the shared cone reader zips settings and entries strictly), and
+  architecture. hypothesis: the retained packet law and these runs straddle the month-long Belenos outage (the
+  server returned 2026-11-27 with changed source and detector figures, docs/notes/quandela/platform-surface.md on
+  branch quandela-platform-surface), so a chip-side change after recalibration explains the missing packets as well as
+  a server-mode or circuit difference does; the discriminating check is a rerun of a retained belenos_mesh job-16
+  entry on its own seed, whose packet count separates a chip change from a property of this case. A cut run is refused by the analyzer (the shared cone reader zips settings and entries strictly), and
   the pair-completion rule is applied to a run that reads whole; no run was cut.
 
 ## Open items
