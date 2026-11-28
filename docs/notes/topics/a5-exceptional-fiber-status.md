@@ -199,6 +199,17 @@ a W8 point ([review](../../archive/reviews/a5-outside-transition-report/README.m
 | A5-667 | on W8 the pencil has type R, C or H (closures so(8), su(4), sp(2)) as ker L_p n ker L_q has dimension 0, 2, 4; 2,448 census points and 53 others | survives |
 | A5-668 | twenty lines of zero first-order compression and two curved arcs limit on the 2-sphere | proved |
 
+## Results of 2026-11-28: structural shortcuts
+
+| Row | Claim | Status |
+|---|---|---|
+| A5-254 | the Klein sign group of N- equals T'_K[2] for the rank-2 boost-free centralizer torus of the stabilizer, exact over Q ([Klein torus](../../evidence/a5-klein-torus/README.md)) | proved |
+| A5-259 | the A_6 base-point stabilizer contains G_2 and the (Z/2)^5 characters: they act, but the stabilizer has a G_2 part of dimension 8 and characters of order 8 ([A_6 stabilizer](../../evidence/a5-a6-stabilizer/README.md)) | refuted |
+| A5-672 | Der(A_n) = g_2 for n = 3..6 over Q; at A_6 the lift of N- has nullity 36, the real doubling 32 | proved |
+| A5-673 | modulo 32009 the top-dimensional part of the E8-bar closure is irreducible over F_p-bar and generically reduced, from five zero-dimensional sections in 1.2 s (A5-605 stopped at 1 h) ([sections](../../evidence/a5-e8bar-sections/README.md)) | certified |
+| A5-674 | engine v16 skips the structural zero rows of the generator operator: equal ranks, products stage 1.37 times shorter at W8 d = 4, N = 12 ([memory-bounded](../../evidence/a5-exceptional-fibers/memory-bounded/README.md#structural-zero-rows-engine-v16)) | certified |
+| A5-675 | weight-slice unit-replacement fibers into N-: Iso (68, 5, 23), X- (69, 4, 12), X+ (P^2) at both roots in seconds; W8 times out at 300 s ([cells](../../evidence/a5-weight-slice-unit-cells/README.md)) | certified |
+
 ## Next computations
 
 | Layer | Computation | Decides | Estimate from retained timings |

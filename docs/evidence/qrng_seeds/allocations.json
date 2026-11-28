@@ -1527,6 +1527,41 @@
    "value": 11079,
    "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
    "index": 15
+  },
+  {
+   "path": "scripts/a5_e8bar_sections.py",
+   "name": "SECTION_SEEDS",
+   "value": 44408,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 16
+  },
+  {
+   "path": "scripts/a5_e8bar_sections.py",
+   "name": "SECTION_SEEDS",
+   "value": 9137,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 17
+  },
+  {
+   "path": "scripts/a5_e8bar_sections.py",
+   "name": "SECTION_SEEDS",
+   "value": 10742,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 18
+  },
+  {
+   "path": "scripts/a5_e8bar_sections.py",
+   "name": "SECTION_SEEDS",
+   "value": 16920,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 19
+  },
+  {
+   "path": "scripts/a5_e8bar_sections.py",
+   "name": "SECTION_SEEDS",
+   "value": 9989,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+   "index": 20
   }
  ],
  "runtime": [

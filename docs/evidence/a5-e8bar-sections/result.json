@@ -1,0 +1,189 @@
+{
+ "decision": {
+  "clean_sections": true,
+  "common_sub_sums": [],
+  "orbit_gcd": 1,
+  "supports_irreducible_reduced": true
+ },
+ "ideal_generators": 37,
+ "mutant_decision": {
+  "clean_sections": true,
+  "common_sub_sums": [
+   1,
+   24
+  ],
+  "orbit_gcd": 1,
+  "supports_irreducible_reduced": false
+ },
+ "mutant_factor": "z(1),z(2),z(3),z(4)",
+ "mutant_sections": [
+  {
+   "dim": 0,
+   "dim_at_infinity": 0,
+   "eliminant_degree": 25,
+   "eliminant_generators": 1,
+   "orbits": [
+    1,
+    2,
+    4,
+    5,
+    13
+   ],
+   "rad_vdim": 25,
+   "seed": 44408,
+   "squarefree": true,
+   "vdim": 25
+  },
+  {
+   "dim": 0,
+   "dim_at_infinity": 0,
+   "eliminant_degree": 25,
+   "eliminant_generators": 1,
+   "orbits": [
+    1,
+    1,
+    2,
+    5,
+    16
+   ],
+   "rad_vdim": 25,
+   "seed": 9137,
+   "squarefree": true,
+   "vdim": 25
+  },
+  {
+   "dim": 0,
+   "dim_at_infinity": 0,
+   "eliminant_degree": 25,
+   "eliminant_generators": 1,
+   "orbits": [
+    1,
+    1,
+    2,
+    3,
+    18
+   ],
+   "rad_vdim": 25,
+   "seed": 10742,
+   "squarefree": true,
+   "vdim": 25
+  },
+  {
+   "dim": 0,
+   "dim_at_infinity": 0,
+   "eliminant_degree": 25,
+   "eliminant_generators": 1,
+   "orbits": [
+    1,
+    24
+   ],
+   "rad_vdim": 25,
+   "seed": 16920,
+   "squarefree": true,
+   "vdim": 25
+  },
+  {
+   "dim": 0,
+   "dim_at_infinity": 0,
+   "eliminant_degree": 25,
+   "eliminant_generators": 1,
+   "orbits": [
+    1,
+    1,
+    3,
+    20
+   ],
+   "rad_vdim": 25,
+   "seed": 9989,
+   "squarefree": true,
+   "vdim": 25
+  }
+ ],
+ "prime": 32009,
+ "sections": [
+  {
+   "dim": 0,
+   "dim_at_infinity": 0,
+   "eliminant_degree": 24,
+   "eliminant_generators": 1,
+   "orbits": [
+    2,
+    4,
+    5,
+    13
+   ],
+   "rad_vdim": 24,
+   "seed": 44408,
+   "squarefree": true,
+   "vdim": 24
+  },
+  {
+   "dim": 0,
+   "dim_at_infinity": 0,
+   "eliminant_degree": 24,
+   "eliminant_generators": 1,
+   "orbits": [
+    1,
+    2,
+    5,
+    16
+   ],
+   "rad_vdim": 24,
+   "seed": 9137,
+   "squarefree": true,
+   "vdim": 24
+  },
+  {
+   "dim": 0,
+   "dim_at_infinity": 0,
+   "eliminant_degree": 24,
+   "eliminant_generators": 1,
+   "orbits": [
+    1,
+    2,
+    3,
+    18
+   ],
+   "rad_vdim": 24,
+   "seed": 10742,
+   "squarefree": true,
+   "vdim": 24
+  },
+  {
+   "dim": 0,
+   "dim_at_infinity": 0,
+   "eliminant_degree": 24,
+   "eliminant_generators": 1,
+   "orbits": [
+    24
+   ],
+   "rad_vdim": 24,
+   "seed": 16920,
+   "squarefree": true,
+   "vdim": 24
+  },
+  {
+   "dim": 0,
+   "dim_at_infinity": 0,
+   "eliminant_degree": 24,
+   "eliminant_generators": 1,
+   "orbits": [
+    1,
+    3,
+    20
+   ],
+   "rad_vdim": 24,
+   "seed": 9989,
+   "squarefree": true,
+   "vdim": 24
+  }
+ ],
+ "seed_draw": "docs/evidence/anu_qrng/draw-2026-11-22T010305Z.json",
+ "seed_indices": [
+  16,
+  17,
+  18,
+  19,
+  20
+ ]
+}

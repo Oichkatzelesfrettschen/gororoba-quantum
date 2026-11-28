@@ -5008,6 +5008,75 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_weight_slice_unit_cells.py --check docs/evidence/a5-weight-slice-unit-cells/result.json",
+      "name": "core-a5-weight-slice-unit-cells",
+      "seconds": 700.0,
+      "workers": 2,
+      "replays": [
+        "docs/evidence/a5-weight-slice-unit-cells/result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_weight_slice_unit_cells.py --self-test",
+      "name": "core-a5-weight-slice-unit-cells-self-test",
+      "seconds": 400.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_e8bar_sections.py --check docs/evidence/a5-e8bar-sections/result.json",
+      "name": "core-a5-e8bar-sections",
+      "seconds": 30.0,
+      "replays": [
+        "docs/evidence/a5-e8bar-sections/result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_e8bar_sections.py --self-test && \"$PYTHON\" -B -W error -O scripts/a5_e8bar_sections.py --self-test",
+      "name": "core-a5-e8bar-sections-self-test",
+      "seconds": 30.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_klein_torus.py --check docs/evidence/a5-klein-torus/result.json",
+      "name": "core-a5-klein-torus",
+      "seconds": 30.0,
+      "replays": [
+        "docs/evidence/a5-klein-torus/result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_klein_torus.py --self-test && \"$PYTHON\" -B -W error -O scripts/a5_klein_torus.py --self-test",
+      "name": "core-a5-klein-torus-self-test",
+      "seconds": 30.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_a6_stabilizer.py --check docs/evidence/a5-a6-stabilizer/result.json",
+      "name": "core-a5-a6-stabilizer",
+      "seconds": 60.0,
+      "replays": [
+        "docs/evidence/a5-a6-stabilizer/result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/a5_a6_stabilizer.py --self-test && \"$PYTHON\" -B -W error -O scripts/a5_a6_stabilizer.py --self-test",
+      "name": "core-a5-a6-stabilizer-self-test",
+      "seconds": 30.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/a5_albert_derivation_stabilizers.py --check docs/evidence/a5-albert-derivation-stabilizers/result.json",
       "name": "core-a5-albert-derivation-stabilizers",
       "seconds": 90.0,
