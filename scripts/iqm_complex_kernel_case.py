@@ -61,7 +61,7 @@ CEILING_CREDITS = 10.5
 MAX_CIRCUITS = 100
 MAX_EXECUTIONS = 2_000_000
 OVERRUNS = (1.0, 1.5, 2.2)
-SHOTS = 6000
+SHOTS = 5800
 # The cancel threshold of the ceiling must clear the 2.2 times overrun of the expected runtime by this many seconds, the
 # latency of the station-control stop that follows a cancel.
 OVERRUN_MARGIN_MIN_SECONDS = 1.5

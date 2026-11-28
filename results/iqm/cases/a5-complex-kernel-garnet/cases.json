@@ -324,7 +324,7 @@
      "sha256": "92de8430162663e136d2a1dfd80768b0941687bb33685c58962a9cda58d68f14"
     }
    ],
-   "expected_seconds": 7.349,
+   "expected_seconds": 7.109,
    "job": "kernel",
    "max_credits": {
     "garnet": 10.5,
@@ -337,10 +337,10 @@
     },
     "heralding_mode": "zeros"
    },
-   "shots": 6000
+   "shots": 5800
   }
  ],
- "prediction_sha256": "ef6d9e6d26d9d2c65ce6236d99f7167146170efe54582c642440efb1b4b3ab30",
+ "prediction_sha256": "95983830137a9fb84a44d6b6ab4daf38d69c279a29ba521baa31f07a35842c2d",
  "qcs": [
   "garnet:mock",
   "garnet"
