@@ -1,0 +1,17 @@
+{
+ "approval": "Owner 2026-11-28 (question answer \"Approve on those checks (Recommended)\"): Garnet run of the A_5 complex-kernel case rebuilt on calibration a8782702, frozen rule e13820fc unchanged, mock re-run passed (01a2203f), live set equals pin; shots 5,800 (below the 6,000 asked, for the cancel margin)",
+ "body_sha256": "5c4085195f9149b32ea5b4894bc9d944394772b4b23077e726fecb03bdad0b59",
+ "cases_sha256": "0465f926a5f1779ea3473b4075e4340a89fdfb182bee3e81419d7e5bb80420c2",
+ "credit_before": {
+  "currentBalance": "11.75",
+  "expiresAt": "2026-12-01T00:00:00+00:00"
+ },
+ "expected_seconds": 7.109,
+ "job": "kernel",
+ "job_id": "01a22041-00d1-773a-8a43-a19506a2dbf7",
+ "max_credits": 10.5,
+ "price_per_second": 0.5,
+ "qc": "garnet",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-11-28T03:44:20Z"
+}
