@@ -95,6 +95,10 @@ def failures(record: dict, min_regions: int, ceiling: float, run: Path | None = 
         if group.get("replica_floor") != REPLICA_FLOOR:
             found.append(f"replica floor {group.get('replica_floor')}, not {REPLICA_FLOOR}")
         found += _load("pathion_kernel_map_orientation_check").ratio_failures(group["members"])
+        tile = group.get("tile_template") or {}
+        assignments = tile.get("assignments") or []
+        if not assignments or not all(a.get("template_on_couplers") is True for a in assignments):
+            found.append("a placed region does not carry the tile template on device couplers")
         if run is not None:
             try:
                 found += gate_sequence_failures(non_rz_sequences(record, run))

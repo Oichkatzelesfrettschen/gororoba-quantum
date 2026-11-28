@@ -7,7 +7,9 @@ compile to one non-rz gate sequence, so the admission check refuses a plan whose
 
 from __future__ import annotations
 
+import copy
 import importlib.util
+import json
 from pathlib import Path
 from types import ModuleType
 
@@ -58,4 +60,22 @@ def test_guard_admits_equal_xtwin_and_control_sequences_and_rejects_a_divergent_
     _expect(
         check.gate_sequence_failures(missing) == ["kmo_xtwin_e1pe18_plus: missing from the compiled plan"],
         "a missing xtwin member was not named",
+    )
+
+
+def test_tile_guard_rejects_a_region_off_the_template() -> None:
+    check = _check_module()
+    run = ROOT / "results" / "live" / "2026-11-28T041415.297826Z"
+    record = json.loads((run / "record.json").read_text())
+    message = "a placed region does not carry the tile template on device couplers"
+    _expect(
+        message not in check.failures(record, check.MIN_REGIONS, check.CEILING_SECONDS),
+        "the retained pinned record carries the template on every region",
+    )
+    broken = copy.deepcopy(record)
+    group = next(g for g in broken["groups"] if g["group"] == check.GROUP)
+    group["tile_template"]["assignments"][3]["template_on_couplers"] = False
+    _expect(
+        message in check.failures(broken, check.MIN_REGIONS, check.CEILING_SECONDS),
+        "a region off the template passes the admission check",
     )
