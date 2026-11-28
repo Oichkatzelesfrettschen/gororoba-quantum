@@ -15,3 +15,9 @@ Written 2026-11-28 before any N+- Pfaffian run (A5-657 at N+-):
 Written 2026-11-28 before the common-kernel search (MATH-225):
 - for sedenion zero divisors p, q, dim (ker L_p n ker L_q) lies in {0, 2, 4} and never 1 or 3 (hypothesis: a
   complex structure on the common kernel); on every W8 point (p, q) found, the pencil type follows that dimension.
+
+Written 2026-11-28 after the first record run and before the determinant route was coded (P26):
+- an implementation sharing no code with cd_core or the polynomial-ring expansion (products by the doubling
+  formula, Q and G as Gaussian-integer polynomials in s) finds, at N- and N+ over all 30 doubly pure imaginary
+  units and 60 integer points, det of the pencil equal to a constant times (|lead Q|^2 |lead G|^2)^2, with the
+  normalized constant 4 of the 18-unit identity.

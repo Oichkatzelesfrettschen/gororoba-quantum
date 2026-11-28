@@ -199,7 +199,7 @@ a W8 point ([review](../../archive/reviews/a5-outside-transition-report/README.m
 | A5-667 | on W8 the pencil has type R, C or H (closures so(8), su(4), sp(2)) as ker L_p n ker L_q has dimension 0, 2, 4; 2,448 census points and 53 others; dimensions 1 and 3 excluded by A5-671 | survives |
 | A5-668 | twenty lines of zero first-order compression and two curved arcs limit on the 2-sphere | proved |
 | A5-670 | tower at e_1 + e_10 continued: sp(8) and sp(16) in A_7 and A_8, pencil dimensions 31 and 63, by closure bounds that meet | proved |
-| A5-671 | L_(e_8) anticommutes with every other imaginary unit of A_4, so sedenion zero divisors are doubly pure and ker L_p n ker L_q is complex, of dimension 0, 2 or 4 | proved |
+| A5-671 | L_(e_8) anticommutes with every other imaginary unit of A_4 (the complex structure of Biss, Dugger and Isaksen), so sedenion zero divisors are doubly pure and ker L_p n ker L_q is complex, of dimension 0, 2 or 4 | proved |
 
 ## Next computations
 

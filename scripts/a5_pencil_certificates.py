@@ -14,8 +14,10 @@ nullity mod P of the commutation system bounds the commutant above and the mod-P
 closure below; commutant elements reconstructed from P and checked exactly over Q bound the commutant below, and
 the closure lies in the operators that are skew for the frame's Gram form and commute with those elements, whose
 dimension mod P bounds it above. The Pfaffian is expanded in a multivariate integer polynomial ring (fmpz_mpoly)
-and compared exactly. NumPy int64 holds only matrices reduced mod P (P < 2^15) or entries bounded by 4, so every
-product and sum stays below 2^40. No random draw enters; the generic pencil elements use fixed integer weights.
+and compared exactly; an implementation that shares no code with cd_core or that expansion repeats the comparison as
+a determinant identity at integer points over all 30 doubly pure units. NumPy int64 holds residues mod P
+(P < 2^15) and integer frames, forms and Gram matrices whose largest entry the script requires below 2^20, so every
+product and sum stays below 2^50. No random draw enters; the generic pencil elements use fixed integer weights.
 
 The replay commands are in docs/evidence/a5-nullity-transitions/README.md ("Replay").
 """
@@ -68,7 +70,12 @@ PREDICTIONS = {
     "constant times |lead Q|^2 |lead G|^2, with 2 (ord Q + ord G) = 8",
     "P24": "for sedenion zero divisors p, q the dimension of ker L_p n ker L_q is 0, 2 or 4, never 1 or 3",
     "P25": "on every W8 point (p, q) of the census the pencil type follows dim (ker L_p n ker L_q)",
+    "P26": "an implementation sharing no code with cd_core or the polynomial-ring expansion finds, at N- and N+ over "
+    "all 30 doubly pure imaginary units and 60 integer points, det of the pencil equal to a constant times "
+    "(|lead Q|^2 |lead G|^2)^2, with the normalized constant 4 of the 18-unit identity",
 }
+ENTRY_BOUND = 2**20
+DETERMINANT_POINTS = 60
 NOT_RUN = {"P25"}
 """P25 was written before the runs; the census classifies no W8 point, so it stays open."""
 
@@ -230,6 +237,10 @@ def structure_item(job: tuple[int, Vector]) -> dict[str, Any]:
     in_upper = size - int(fmpz_mat(to_int(frame[:half])).rank())
     forms = [frame.T @ left(dimension, table, {w: 1}) @ frame for w in range(1, dimension)]
     skew = all(np.array_equal(f, -f.T) for f in forms)
+    require(
+        max(int(np.abs(m).max()) for m in [frame, gram, *forms]) < ENTRY_BOUND,
+        "frame, Gram and form entries stay below the int64 bound",
+    )
     basis: list[int] = []
     stacked: list[list[int]] = []
     for w, form in enumerate(forms):
@@ -305,8 +316,13 @@ def structure_item(job: tuple[int, Vector]) -> dict[str, Any]:
     }
 
 
-def strata_item(name: str) -> dict[str, Any]:
-    """Pfaffian of the pencil on the doubly pure coordinate units against |lead Q|^2 |lead G|^2."""
+def strata_item(job: tuple[str, bool]) -> dict[str, Any]:
+    """Pfaffian of the pencil on the doubly pure coordinate units against |lead Q|^2 |lead G|^2.
+
+    job = (point, keep_off_domain): with keep_off_domain the coordinate on e_16, outside the doubly pure domain of Q
+    and G, stays in the pencil; the self-test uses it as the mutant on which the identity fails.
+    """
+    name, keep_off_domain = job
     dimension = 32
     table = sign_table(dimension)
     base = dict(STRATA[name])
@@ -321,14 +337,15 @@ def strata_item(name: str) -> dict[str, Any]:
             trial = [*stacked, [int(x) for x in forms[w].ravel()]]
             if int(fmpz_mat(trial).rank()) > len(stacked):
                 stacked, units = trial, [*units, w]
-    pure = [w for w in units if w % 16]
+    pure = list(units) if keep_off_domain else [w for w in units if w % 16]
     xs = sp.symbols(f"x0:{len(pure)}", real=True)
     s = sp.Symbol("s", real=True)
     z: list[Any] = [sp.Integer(0)] * 16
     for index, value in base.items():
         z[index % 16] += value * (sp.I if index >= 16 else 1)
     for x, w in zip(xs, pure, strict=True):
-        z[w % 16] += s * x * (sp.I if w >= 16 else 1)
+        if w % 16:
+            z[w % 16] += s * x * (sp.I if w >= 16 else 1)
     uu = sum(z[k] ** 2 for k in range(1, 8))
     vv = sum(z[k] ** 2 for k in range(9, 16))
     uv = sum(z[k] * z[8 + k] for k in range(1, 8))
@@ -343,6 +360,8 @@ def strata_item(name: str) -> dict[str, Any]:
         return sp.expand(real**2 + imaginary**2)
 
     target = sp.Poly(sp.expand(modulus_squared(q) * modulus_squared(g)), *xs)
+    if target.is_zero:
+        return {"point": name, "pfaffian_equals_constant_times_moduli": False}
     context = fmpz_mpoly_ctx.get(("x", len(pure)), "lex")
     gens = context.gens()
     zero = context.from_dict({})
@@ -388,10 +407,12 @@ def strata_item(name: str) -> dict[str, Any]:
 
 
 def anticommutation_item(job: tuple[int, int]) -> dict[str, Any]:
-    """L_w L_h + L_h L_w for the unit h and every other imaginary unit w, and L_h^2 + I; job = (dimension, h)."""
+    """L_w L_h + L_h L_w for the unit h and every other imaginary unit w, L_h^2 + I, and skewness of every L_w;
+    job = (dimension, h)."""
     dimension, h = job
     table = sign_table(dimension)
     doubling = left(dimension, table, {h: 1})
+    skew = all(np.array_equal(m, -m.T) for m in (left(dimension, table, {w: 1}) for w in range(1, dimension)))
     failures = [
         w
         for w in range(1, dimension)
@@ -401,6 +422,91 @@ def anticommutation_item(job: tuple[int, int]) -> dict[str, Any]:
         "dimension": dimension,
         "anticommutation_failures": failures,
         "square_is_minus_identity": bool(np.array_equal(doubling @ doubling, -np.eye(dimension, dtype=np.int64))),
+        "imaginary_units_skew": bool(skew),
+    }
+
+
+def gauss_mul(a: list[tuple[int, int]], b: list[tuple[int, int]]) -> list[tuple[int, int]]:
+    """Product of two polynomials in s with Gaussian-integer coefficients (re, im)."""
+    out = [(0, 0)] * (len(a) + len(b) - 1)
+    for i, (ar, ai) in enumerate(a):
+        for j, (br, bi) in enumerate(b):
+            r, m = out[i + j]
+            out[i + j] = (r + ar * br - ai * bi, m + ar * bi + ai * br)
+    return out
+
+
+def gauss_add(a: list[tuple[int, int]], b: list[tuple[int, int]], scale: int = 1) -> list[tuple[int, int]]:
+    size = max(len(a), len(b))
+    a = a + [(0, 0)] * (size - len(a))
+    b = b + [(0, 0)] * (size - len(b))
+    return [(x[0] + scale * y[0], x[1] + scale * y[1]) for x, y in zip(a, b, strict=True)]
+
+
+def square_sum(line: list[list[tuple[int, int]]], indices: range) -> list[tuple[int, int]]:
+    total: list[tuple[int, int]] = [(0, 0)]
+    for k in indices:
+        total = gauss_add(total, gauss_mul(line[k], line[k]))
+    return total
+
+
+def determinant_item(name: str) -> dict[str, Any]:
+    """det of the pencil against (|lead Q|^2 |lead G|^2)^2 at integer points over all doubly pure units.
+
+    Products come from the doubling formula (doubled), Q and G from Gaussian-integer polynomials in s; nothing is
+    shared with cd_core, sympy or the polynomial-ring expansion of strata_item.
+    """
+    dimension, base = 32, dict(STRATA[name])
+
+    def left_doubled(vector: dict[int, int]) -> np.ndarray:
+        element = [vector.get(k, 0) for k in range(dimension)]
+        columns = [doubled(element, [int(r == q) for r in range(dimension)]) for q in range(dimension)]
+        return np.array([[columns[q][r] for q in range(dimension)] for r in range(dimension)], dtype=np.int64)
+
+    space, size = fmpz_mat(to_int(left_doubled(base))).nullspace()
+    frame = np.array([[int(space[i, j]) for j in range(size)] for i in range(dimension)], dtype=np.int64)
+    gram_det = int(fmpz_mat(to_int(frame.T @ frame)).det())
+    units = [w for w in range(1, dimension) if w % 16]
+    forms = {w: frame.T @ left_doubled({w: 1}) @ frame for w in units}
+    z0 = [(0, 0)] * 16
+    for index, value in base.items():
+        r, m = z0[index % 16]
+        z0[index % 16] = (r, m + value) if index >= 16 else (r + value, m)
+    ratios: set[str] = set()
+    lower_vanish = True
+    zero_targets = 0
+    for t in range(1, DETERMINANT_POINTS + 1):
+        x = [((7 * t * (i + 1) + 3 * i * i + t * t) % 11) - 5 for i in range(len(units))]
+        zeta = [(0, 0)] * 16
+        for value, w in zip(x, units, strict=True):
+            r, m = zeta[w % 16]
+            zeta[w % 16] = (r, m + value) if w >= 16 else (r + value, m)
+        line = [[z0[k], zeta[k]] for k in range(16)]
+        uu, vv = square_sum(line, range(1, 8)), square_sum(line, range(9, 16))
+        uv: list[tuple[int, int]] = [(0, 0)]
+        for k in range(1, 8):
+            uv = gauss_add(uv, gauss_mul(line[k], line[8 + k]))
+        q = gauss_add(gauss_add(uu, gauss_mul(line[8], line[8])), vv)
+        g = gauss_add(gauss_mul(q, q), gauss_add(gauss_mul(uu, vv), gauss_mul(uv, uv), -1), -4)
+        lower_vanish = lower_vanish and q[0] == (0, 0) and all(c == (0, 0) for c in g[:3])
+        target = (q[1][0] ** 2 + q[1][1] ** 2) * (g[3][0] ** 2 + g[3][1] ** 2)
+        det = int(
+            fmpz_mat(
+                to_int(sum((v * forms[w] for v, w in zip(x, units, strict=True)), np.zeros((size, size), np.int64)))
+            ).det()
+        )
+        if target == 0:
+            zero_targets += 1
+            lower_vanish = lower_vanish and det == 0
+            continue
+        ratios.add(str(Fraction(det * 2**size, target * target * gram_det)))
+    return {
+        "point": name,
+        "doubly_pure_units": len(units),
+        "points": DETERMINANT_POINTS,
+        "lower_coefficients_vanish": bool(lower_vanish),
+        "zero_targets": zero_targets,
+        "normalized_ratios": sorted(ratios),
     }
 
 
@@ -488,6 +594,9 @@ def outcomes(result: dict[str, Any]) -> dict[str, bool]:
             for n in ("N-", "N+")
         ),
         "P24": set(dims) <= {"0", "2", "4"},
+        "P26": all(
+            row["lower_coefficients_vanish"] and row["normalized_ratios"] == ["4"] for row in result["determinant"]
+        ),
     }
 
 
@@ -522,11 +631,17 @@ def validate(result: dict[str, Any]) -> None:
         require(row["order_q"] == 1 and row["order_g"] == 3, f"{name}: Q order 1, G order 3")
         require(row["pfaffian_degree"] == 8 and row["pfaffian_terms"] == 8395, f"{name}: degree 8, 8,395 terms")
         require(row["pfaffian_factor_degrees"] == [[2, 1], [6, 1]], f"{name}: factors of degree 2 and 6")
+        require(row["constant_squared_in_gram_2_frame"] == "4", f"{name}: |c| = 2 in a frame of Gram 2 I")
     anticommutation = result["anticommutation"]
     require(
         anticommutation["anticommutation_failures"] == [] and anticommutation["square_is_minus_identity"],
         "A_4: L_(e_8) anticommutes with the other imaginary units and squares to -I",
     )
+    require(anticommutation["imaginary_units_skew"], "A_4: every imaginary unit acts by a skew matrix")
+    for row in result["determinant"]:
+        require(row["doubly_pure_units"] == 30, f"{row['point']}: 30 doubly pure units")
+        require(row["lower_coefficients_vanish"], f"{row['point']}: Q of order 1 and G of order 3 at every point")
+        require(row["normalized_ratios"] == ["4"], f"{row['point']}: det = 4 (|lead Q|^2 |lead G|^2)^2 in Gram 2 I")
     census_row = result["census"]
     require(census_row["zero_divisors"] == 26096, "census: 26,096 zero divisors")
     require(census_row["nullities"] == {"4": 26096}, "census: every one has nullity 4")
@@ -538,7 +653,7 @@ def validate(result: dict[str, Any]) -> None:
     )
     held = outcomes(result)
     require(set(held) | NOT_RUN == set(PREDICTIONS), "every prediction has an outcome or is marked not run")
-    require(all(held.values()), "P20 to P24 held")
+    require(all(held.values()), "P20 to P24 and P26 held")
     require(result["predictions"] == PREDICTIONS and result["prediction_held"] == held, "predictions stored")
 
 
@@ -550,7 +665,8 @@ def build_result() -> dict[str, Any]:
         "prime": P,
         "tower": rows[: len(TOWER_LEVELS)],
         "calibration": rows[len(TOWER_LEVELS) :],
-        "strata": parallel.ordered_map(strata_item, list(STRATA), 1),
+        "strata": parallel.ordered_map(strata_item, [(name, False) for name in STRATA], 1),
+        "determinant": parallel.ordered_map(determinant_item, ["N-", "N+"], 1),
         "anticommutation": anticommutation_item((16, 8)),
         "census": census(),
         "predictions": PREDICTIONS,
@@ -589,11 +705,15 @@ def self_test() -> list[str]:
         anticommutation_item((16, 8))["anticommutation_failures"] == [],
         anticommutation_item((16, 4))["anticommutation_failures"] != [],
     )
-    vb = strata_item("VB")
     control(
-        "VB Pfaffian identity holds and the order of G differs from N",
-        vb["pfaffian_equals_constant_times_moduli"],
-        vb["order_g"] != 3,
+        "VB Pfaffian identity holds on the doubly pure units and fails with the coordinate on e_16 kept",
+        strata_item(("VB", False))["pfaffian_equals_constant_times_moduli"],
+        not strata_item(("VB", True))["pfaffian_equals_constant_times_moduli"],
+    )
+    control(
+        "imaginary units act by skew matrices, the real unit does not",
+        anticommutation_item((16, 8))["imaginary_units_skew"],
+        not np.array_equal(left(16, table, {0: 1}), -left(16, table, {0: 1}).T),
     )
     control(
         "reconstruction of a residue below the bound, and not above it",

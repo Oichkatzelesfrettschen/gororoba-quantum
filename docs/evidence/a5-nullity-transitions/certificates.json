@@ -2,6 +2,7 @@
  "anticommutation": {
   "anticommutation_failures": [],
   "dimension": 16,
+  "imaginary_units_skew": true,
   "square_is_minus_identity": true
  },
  "calibration": [
@@ -89,12 +90,35 @@
   "pairs": 3523095,
   "zero_divisors": 26096
  },
+ "determinant": [
+  {
+   "doubly_pure_units": 30,
+   "lower_coefficients_vanish": true,
+   "normalized_ratios": [
+    "4"
+   ],
+   "point": "N-",
+   "points": 60,
+   "zero_targets": 0
+  },
+  {
+   "doubly_pure_units": 30,
+   "lower_coefficients_vanish": true,
+   "normalized_ratios": [
+    "4"
+   ],
+   "point": "N+",
+   "points": 60,
+   "zero_targets": 0
+  }
+ ],
  "prediction_held": {
   "P20": true,
   "P21": true,
   "P22": true,
   "P23": true,
-  "P24": true
+  "P24": true,
+  "P26": true
  },
  "predictions": {
   "P20": "at e1 + e10 in A_7 the kernel has dimension 32, meeting each half in 16, the pencil dimension 31, the commutant is a quaternion algebra and the Lie closure has dimension 136",
@@ -102,7 +126,8 @@
   "P22": "the type-R point e1 + e10 + e3 + e20 of A_5 reads commutant 1 and Lie closure 28",
   "P23": "at N- and N+, restricted to the doubly pure coordinates, the Pfaffian of the pencil is a nonzero constant times |lead Q|^2 |lead G|^2, with 2 (ord Q + ord G) = 8",
   "P24": "for sedenion zero divisors p, q the dimension of ker L_p n ker L_q is 0, 2 or 4, never 1 or 3",
-  "P25": "on every W8 point (p, q) of the census the pencil type follows dim (ker L_p n ker L_q)"
+  "P25": "on every W8 point (p, q) of the census the pencil type follows dim (ker L_p n ker L_q)",
+  "P26": "an implementation sharing no code with cd_core or the polynomial-ring expansion finds, at N- and N+ over all 30 doubly pure imaginary units and 60 integer points, det of the pencil equal to a constant times (|lead Q|^2 |lead G|^2)^2, with the normalized constant 4 of the 18-unit identity"
  },
  "predictions_not_run": [
   "P25"
@@ -112,7 +137,7 @@
  "sources": {
   "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
   "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
-  "scripts/a5_pencil_certificates.py": "3598db00cae461576e7a3ba0d29721d973f578cfad1c1204be8d791dd8302bf5"
+  "scripts/a5_pencil_certificates.py": "c9a6de9eb1f25a3147d8a7f3b3c46e3c92d22777a4d02e62e2029eb61c927849"
  },
  "strata": [
   {

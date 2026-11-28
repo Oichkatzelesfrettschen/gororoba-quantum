@@ -165,11 +165,20 @@ Each statement has a `require` in the script's `validate`; the name of the recor
     the lines along those 18 units Q has order 1 and G order 3. Restricted to them, the Pfaffian, expanded in an
     integer polynomial ring, has degree 8 and 8,395 terms. It factors over Q as a quadratic times an irreducible
     sextic, and it equals c |lead Q|^2 |lead G|^2, with |c| = 2 in a frame of Gram 2 I. The same computation
-    reproduces the VB identity of statement 14 with |c| = 1. The full Pfaffian with the coordinate on e_16 is not
-    computed at N+-.
+    reproduces the VB identity of statement 14 with |c| = 1. With the coordinate on e_16 kept, the VB identity
+    fails, the mutant of the self-test, as P14 recorded. A second implementation shares no code with cd_core or the
+    polynomial ring (`determinant`): products by the doubling formula, and Q and G as Gaussian-integer polynomials
+    in s. It reads, at 60 integer points over all 30 doubly pure imaginary units at each of N- and N+, the
+    coefficients of Q below order 1 and of G below order 3 as zero and det = 4 (|lead Q|^2 |lead G|^2)^2 in a
+    frame of Gram 2 I. So the identity extends beyond the 18 basis units at those points. The full Pfaffian with the
+    coordinate on e_16 is not computed at N+-.
 18. **Common kernels of sedenion zero divisors** (`anticommutation`, `census`). In A_4, L_(e_8) anticommutes with the
-    left multiplication by each of the 14 other imaginary units and squares to -I. Both sides are bilinear, so the
-    basis check covers every element. For p = p_0 + p_8 e_8 + p' the Gram operator is
+    left multiplication by each of the 14 other imaginary units and squares to -I, and every imaginary unit acts
+    by a skew matrix. Both sides are bilinear, so the basis check covers every element. This is the complex
+    structure of Biss, Dugger and Isaksen ("Large annihilators in Cayley-Dickson algebras", arXiv math/0511691,
+    Proposition 5.3 and Lemma 6.4, read for this record): A_n is a vector space over C_n = <1, i_n> by left
+    multiplication, and L_x is conjugate-linear for x orthogonal to C_n. The evenness below is a corollary of
+    that structure; the record adds the census. For p = p_0 + p_8 e_8 + p' the Gram operator is
     (p_0^2 + p_8^2) I + L_(p')^T L_(p'), so a zero divisor has p_0 = p_8 = 0. Then L_p anticommutes with
     L_(e_8), so ker L_p is invariant under L_(e_8), and ker L_p n ker L_q is a complex subspace of a 4-dimensional
     kernel: its dimension is 0, 2 or 4. The census takes the 26,096 elements (a, b) with a, b pure octonions with
@@ -213,7 +222,8 @@ XOR-order rule) and P19 (no W8 point with dim A = 2) failed. The third round, in
 to a scratch file before its runs ([third-round-predictions.md](third-round-predictions.md), kept verbatim) and
 restated in the script: P20 and P21 (the tower at levels 7 and 8),
 P22 (commutant 1 and closure 28 at the type-R point), P23 (the N+- Pfaffian on the doubly pure coordinates as the
-product of leading forms) and P24 (common kernels of dimension 0, 2 or 4 only) held. A first calibration run used
+product of leading forms), P24 (common kernels of dimension 0, 2 or 4 only) and P26 (the determinant route over
+all 30 doubly pure units, written after the first record run and before that route was coded) held. A first calibration run used
 two pencil elements as Lie generators and read the bounds 2 and 15 at the type-R point. Its bounds did not meet,
 so it certified nothing, and three generators close them. P25 (the pencil type on W8 points of the census) is not
 run.
@@ -235,6 +245,6 @@ quaternions from the other algebras of dimension 4.
     "$PYTHON" -B -W error scripts/a5_pencil_certificates.py --self-test
 
 Measured on the compute workstation (32 threads): the record takes 102 s of wall time and 992 CPU seconds at
-260 MiB, the self-test 12 s, the sign census 326 s of wall time and 3,470 CPU seconds. The certificates take 579 s of wall
-time and 1,230 CPU seconds at a peak of 2.6 GiB resident; the level-8 item takes most of the wall time, and the
+260 MiB, the self-test 12 s, the sign census 326 s of wall time and 3,470 CPU seconds. The certificates take 347 s of wall
+time and 980 CPU seconds at a peak of 2.6 GiB resident; the level-8 item takes most of the wall time, and the
 self-test takes 3 s.
