@@ -162,7 +162,7 @@ def with_bulk_presence(record: dict[str, Any], include_bulk: bool) -> dict[str, 
     specs = record.get("specs")
     sent = specs if isinstance(specs, dict) else {}
     out = dict(record)
-    # "empty" matches qd_platform.chip_architecture, which treats a null or empty value as no architecture.
+    # "empty" marks a null or empty value; qd_platform.chip_architecture treats null as no architecture and refuses "".
     out["bulk_fields"] = presence(sent, BULK_SPECS)
     if not include_bulk and isinstance(specs, dict):
         out["specs"] = {

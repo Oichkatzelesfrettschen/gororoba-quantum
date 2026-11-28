@@ -111,6 +111,7 @@ def cell(
     labels: list[int],
     physical_perf: float,
     clock_mhz: float,
+    noisy_floor: float = NOISY_FLOOR,
 ) -> dict[str, Any]:
     """The cone reading of one served mesh (its architecture and phases), its one-click histogram and its
     sample count over every outcome."""
@@ -119,7 +120,7 @@ def cell(
     peak = mesh_lib.peak_occupancy(arch, phases, source)
     ideal_cone = [q for q in range(MODES) if peak[q] > CONE_FLOOR]
     noisy = mesh_lib.channel(arch, phases, source, sigma=CONE_SIGMA, sigma_theta=CONE_SIGMA_THETA)
-    cone = sorted(set(ideal_cone) | {q for q in range(MODES) if noisy[q] >= NOISY_FLOOR})
+    cone = sorted(set(ideal_cone) | {q for q in range(MODES) if noisy[q] >= noisy_floor})
     ideal = mesh_lib.propagate(arch, phases, source)[0]
     block = sum(single[low : low + width])
     total = sum(single)
@@ -156,7 +157,7 @@ def cell(
     }
 
 
-def run_cells(run: Path) -> list[dict[str, Any]]:
+def run_cells(run: Path, noisy_floor: float = NOISY_FLOOR) -> list[dict[str, Any]]:
     records = qd_records.load_run(run)
     manifest = records.json_of("cases.json")
     (block,) = manifest["blocks"]
@@ -206,6 +207,7 @@ def run_cells(run: Path) -> list[dict[str, Any]]:
             labels,
             float(entry["physical_perf"]),
             clock,
+            noisy_floor,
         )
         off = [q for q in range(MODES) if q not in row["cone_modes"]]
         acquisition = row["acquisition_s_estimate"] or 0.0

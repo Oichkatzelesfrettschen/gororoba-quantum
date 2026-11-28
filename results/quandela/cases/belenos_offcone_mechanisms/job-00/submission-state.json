@@ -1,0 +1,300 @@
+{
+ "body_sha256": "c595311bbda2478135079b3df4efef20e8b72ef51ed2492bb065fd3e0db3c53c",
+ "cases_sha256": "3cfea723a031a0ec359c0dbcd38d0c97e873d0c7e25b4b63f806eeaa8e9d86d7",
+ "job_id": "7b918f1c-9a64-4a70-9ea2-48274c81ba30",
+ "phase": "posted",
+ "platform": "qpu:belenos",
+ "receipt": {
+  "admitted_statuses": [
+   "available"
+  ],
+  "approval": "Owner 2026-11-27: \"Approve all three (Recommended)\" (Belenos off-cone mechanisms ABA case, jobs 00, 01, 02, at most 1.12 credits each); gate 2026-11-28: \"Carried layout + check (Recommended)\"",
+  "architecture_catalogue_sha256": "2305a04a7b4bce89dbe8f76c500c0cdd51ccb2a64cba62bca2bf219dbbc0d803",
+  "architecture_observed_utc": "2026-10-17T17:53:31+00:00",
+  "architecture_sha256": "ca90c1c0d43d530c31faebb6c3ae2781bb1aded87cf442c1a0fda1067be05398",
+  "architecture_source": "carried",
+  "availability_at_plan": {
+   "max_concurrent_jobs": 1,
+   "max_jobs_in_queue": 1,
+   "max_running_qt_jobs": 10,
+   "num_concurrent_jobs": 0,
+   "num_jobs_in_queue": 0,
+   "num_running_qt_jobs": 0
+  },
+  "body_sha256": "c595311bbda2478135079b3df4efef20e8b72ef51ed2492bb065fd3e0db3c53c",
+  "case": "job-00",
+  "cases_sha256": "3cfea723a031a0ec359c0dbcd38d0c97e873d0c7e25b4b63f806eeaa8e9d86d7",
+  "credit_ceiling": 1.12,
+  "estimated_credits": 1.12,
+  "estimated_shots": 715000,
+  "expected_seconds": 227.16,
+  "max_credits": 1.12,
+  "max_samples": 715000,
+  "max_shots": 1430000,
+  "payload_version_basis": "restored from docs/evidence/bdsc/inputs/receipt.json retrieved 2026-10-17T17:53:31+00:00",
+  "per_job_credits": 1.0,
+  "perfs_at_estimate": {
+   "Clock (MHz)": 4.94,
+   "Dark counts (detection/s)": [
+    33.3,
+    11.6,
+    0.8,
+    1.9,
+    0.2,
+    0.4,
+    0.3,
+    0.0,
+    0.1,
+    0.1,
+    0.3,
+    0.2,
+    0.0,
+    0.2,
+    0.1,
+    0.1,
+    0.2,
+    0.1,
+    0.1,
+    34.2,
+    0.1,
+    0.9,
+    0.1,
+    0.3
+   ],
+   "HOM (%)": 85.6,
+   "Transmission per mode (%)": {
+    "t_in": [
+     6.44,
+     0.0,
+     6.54,
+     0.0,
+     4.32,
+     0.0,
+     5.98,
+     0.0,
+     5.09,
+     5.11,
+     0.0,
+     0.0,
+     4.55,
+     4.97,
+     0.0,
+     0.0,
+     4.35,
+     0.0,
+     3.89,
+     0.0,
+     4.58,
+     0.0,
+     2.75,
+     0.0
+    ],
+    "t_out": [
+     90.65,
+     81.13,
+     80.44,
+     68.9,
+     92.87,
+     66.31,
+     82.48,
+     75.77,
+     96.43,
+     94.93,
+     129.54,
+     106.25,
+     71.21,
+     105.48,
+     114.74,
+     129.92,
+     103.57,
+     139.24,
+     119.15,
+     124.91,
+     118.46,
+     136.67,
+     109.75,
+     91.65
+    ]
+   },
+   "Transmittance (%)": 5.07,
+   "g2 (%)": 0.7
+  },
+  "perfs_at_plan": {
+   "Clock (MHz)": 4.94,
+   "Dark counts (detection/s)": [
+    33.3,
+    11.6,
+    0.8,
+    1.9,
+    0.2,
+    0.4,
+    0.3,
+    0.0,
+    0.1,
+    0.1,
+    0.3,
+    0.2,
+    0.0,
+    0.2,
+    0.1,
+    0.1,
+    0.2,
+    0.1,
+    0.1,
+    34.2,
+    0.1,
+    0.9,
+    0.1,
+    0.3
+   ],
+   "HOM (%)": 85.6,
+   "Transmission per mode (%)": {
+    "t_in": [
+     6.44,
+     0.0,
+     6.54,
+     0.0,
+     4.32,
+     0.0,
+     5.98,
+     0.0,
+     5.09,
+     5.11,
+     0.0,
+     0.0,
+     4.55,
+     4.97,
+     0.0,
+     0.0,
+     4.35,
+     0.0,
+     3.89,
+     0.0,
+     4.58,
+     0.0,
+     2.75,
+     0.0
+    ],
+    "t_out": [
+     90.65,
+     81.13,
+     80.44,
+     68.9,
+     92.87,
+     66.31,
+     82.48,
+     75.77,
+     96.43,
+     94.93,
+     129.54,
+     106.25,
+     71.21,
+     105.48,
+     114.74,
+     129.92,
+     103.57,
+     139.24,
+     119.15,
+     124.91,
+     118.46,
+     136.67,
+     109.75,
+     91.65
+    ]
+   },
+   "Transmittance (%)": 5.07,
+   "g2 (%)": 0.7
+  },
+  "platform": "qpu:belenos",
+  "platform_at_plan": {
+   "bookable": true,
+   "description": "Belenos QPU",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": {
+    "end_time": "2026-12-03T12:00:00Z",
+    "maintenance_title": "Weekly maintenance",
+    "start_time": "2026-12-03T08:30:00Z",
+    "time_zone": "Europe/Paris"
+   },
+   "max_duration": 300,
+   "name": "qpu:belenos",
+   "price_per_shot": 1e-06,
+   "statistic": {
+    "2026-11-21": {
+     "availability": 0.0
+    },
+    "2026-11-22": {
+     "availability": 0.0
+    },
+    "2026-11-23": {
+     "availability": 0.0
+    },
+    "2026-11-24": {
+     "availability": 0.0
+    },
+    "2026-11-25": {
+     "availability": 0.0
+    },
+    "2026-11-26": {
+     "availability": 1888.68
+    },
+    "2026-11-27": {
+     "availability": 18579.32
+    },
+    "2026-11-28": {
+     "availability": 11195.69
+    }
+   },
+   "status": "available",
+   "type": "qpu"
+  },
+  "schema": "qd-submission-v1",
+  "status_at_plan": {
+   "explorer": "available",
+   "processor": "available"
+  },
+  "usage_before": [
+   {
+    "total_jobs": 178,
+    "usage": [
+     {
+      "credits": 0.0,
+      "duration_seconds": 5144,
+      "free_credits": 58.8188,
+      "nb_jobs": 55,
+      "platform_name": "qpu:ascella"
+     },
+     {
+      "credits": 0.0,
+      "duration_seconds": 2689,
+      "free_credits": 27.0,
+      "nb_jobs": 30,
+      "platform_name": "sim:belenos"
+     },
+     {
+      "credits": 0.0,
+      "duration_seconds": 9568,
+      "free_credits": 96.36970800000005,
+      "nb_jobs": 78,
+      "platform_name": "qpu:belenos"
+     },
+     {
+      "credits": 0.0,
+      "duration_seconds": 549,
+      "free_credits": 15.0,
+      "nb_jobs": 15,
+      "platform_name": "sim:ascella"
+     }
+    ]
+   }
+  ],
+  "versions": {
+   "exqalibur": "1.4.2",
+   "perceval-quandela": "1.3.1"
+  }
+ },
+ "schema": "qd-submission-state-v1",
+ "started_utc": "2026-11-28T03:46:18+00:00",
+ "submitted_utc": "2026-11-28T03:46:21+00:00"
+}

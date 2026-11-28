@@ -60,6 +60,7 @@ class Records:
     submission_bytes: bytes | None
     collected_bytes: bytes | None
     raw: bytes | None
+    rechecks: tuple[tuple[str, bytes], ...] = ()
 
     def bytes_of(self, name: str) -> bytes:
         data = {
@@ -109,6 +110,7 @@ def load_run(directory: Path) -> Records:
         submission_bytes=_optional_bytes(directory / "submission.json"),
         collected_bytes=_optional_bytes(directory / "results.json"),
         raw=_optional_bytes(directory / "raw" / "result.json"),
+        rechecks=tuple((path.name, path.read_bytes()) for path in sorted(directory.glob(COUPLER_RECHECK_GLOB))),
     )
 
 
@@ -140,6 +142,16 @@ TERMINAL = ("completed", "error", "canceled")
 RESULT_LIMIT = 64 << 20
 
 STATE_PATTERN = re.compile(r"\|(\d+(?:,\d+)*)>=(\d+)")
+
+COUPLER_RECHECK_GLOB = "couplers-recheck-*.json"
+
+COUPLER_RECHECK_SCHEMA = "qd-couplers-recheck-v1"
+
+# Severity order, least to most severe; a recheck may raise a coupler field along this order only.
+COUPLER_ORDER = {
+    "couplers_checked": ("unread", "live-match", "live-differ"),
+    "compiled_couplers_checked": ("unread", "match", "differ"),
+}
 
 
 class RecordError(RuntimeError):
@@ -179,15 +191,16 @@ def seed_value(seed: Any, owner: str) -> int:
 
 def iteration_form(manifest: dict[str, Any]) -> str:
     """How a case's iterations differ: "single" (one computation), "mesh" (each binds its own phases), "seeded"
-    (a fixed circuit whose iterations set only their compilation_seed and, optionally, their own budgets) or
-    "phase" (phi = k pi/4).
+    (a fixed circuit whose iterations set only their compilation_seed and, optionally, their own budgets and the
+    one source mode their photon enters) or "phase" (phi = k pi/4).
 
     A one-iteration case is one computation unless its manifest sets "iterator": true, which sends its one
     seeded setting as a ComputationIterator holding one entry, the payload class of every iterated job.
 
     A non-mesh iterated case with settings is seeded only when every setting names a valid compilation_seed and
-    nothing else but its name, and the settings count its iterations. A seeded or template case names per-iteration
-    max_samples and max_shots on every setting or on none; named budgets are positive integers with
+    nothing else but its name, its input_mode and its budgets, and the settings count its iterations. A seeded or
+    template case names per-iteration max_samples and max_shots on every setting or on none, and a seeded case names
+    input_mode, a non-negative integer, on every setting or on none; named budgets are positive integers with
     max_shots >= max_samples that sum to the manifest's (check_budgets). Any other settings list raises.
     """
     owner = manifest["job"]
@@ -221,14 +234,20 @@ def iteration_form(manifest: dict[str, Any]) -> str:
     if not isinstance(settings, list) or len(settings) != steps:
         raise RecordError(f"{owner}: {steps} iterations need {steps} settings")
     plain, budgeted = {"name", "compilation_seed"}, {"name", "compilation_seed", "max_samples", "max_shots"}
+    sourced = {"input_mode"}
     keys = {frozenset(setting) if isinstance(setting, dict) else frozenset() for setting in settings}
-    if keys not in ({frozenset(plain)}, {frozenset(budgeted)}):
+    forms = [frozenset(base | extra) for base in (plain, budgeted) for extra in (set(), sourced)]
+    if len(keys) != 1 or not keys <= set(forms):
         raise RecordError(
-            f"{owner}: every seeded iteration names its name and compilation_seed, and all or none their budgets"
+            f"{owner}: every seeded iteration names its name and compilation_seed, and all or none their budgets "
+            "and their input_mode"
         )
     for setting in settings:
         seed_value(setting["compilation_seed"], f"{owner}/{setting['name']}")
-    if keys == {frozenset(budgeted)}:
+        mode = setting.get("input_mode", 0)
+        if isinstance(mode, bool) or not isinstance(mode, int) or mode < 0:
+            raise RecordError(f"{owner}/{setting['name']}: input_mode {mode!r} is not a non-negative integer")
+    if frozenset(budgeted) <= next(iter(keys)):
         check_budgets(manifest, settings)
     return "seeded"
 
@@ -468,6 +487,61 @@ class Run:
     body: dict[str, Any]
 
 
+def check_couplers(owner: str, submission: dict[str, Any], collected: dict[str, Any]) -> None:
+    """A run planned with an architecture_source carries the collect-time couplers_checked: "live-match" or
+    "unread" read; "live-differ" or an absent field refuses the run. The collection names the same
+    architecture_source as the plan, and a compiled_couplers_checked of "differ" refuses; a run collected before
+    that field existed leaves it absent."""
+    if "architecture_source" not in submission:
+        return
+    state = collected.get("couplers_checked")
+    if state not in ("live-match", "unread"):
+        raise RecordError(f"{owner}: couplers_checked is {state!r}, not live-match or unread")
+    if collected.get("architecture_source") != submission["architecture_source"]:
+        raise RecordError(
+            f"{owner}: architecture_source {collected.get('architecture_source')!r} in results.json differs from "
+            f"{submission['architecture_source']!r} in submission.json"
+        )
+    compiled = collected.get("compiled_couplers_checked", "unread")
+    if compiled not in ("match", "unread"):
+        raise RecordError(f"{owner}: compiled_couplers_checked is {compiled!r}, not match or unread")
+
+
+def judged_couplers(
+    owner: str, submission: dict[str, Any], collected: dict[str, Any], rechecks: tuple[tuple[str, bytes], ...]
+) -> dict[str, Any]:
+    """results.json with every coupler recheck folded in: each coupler field takes the more severe of its own value
+    and the recheck's. A recheck that names another job or architecture source, carries an unknown state or a
+    forbidden key, or sits beside a run planned without an architecture_source refuses the run."""
+    if not rechecks:
+        return collected
+    if "architecture_source" not in submission:
+        raise RecordError(f"{owner}: {rechecks[0][0]} rechecks a run planned without architecture_source")
+    judged = dict(collected)
+    for name, data in rechecks:
+        try:
+            record = json.loads(data)
+        except ValueError as error:
+            raise RecordError(f"{owner}: {name} is not JSON") from error
+        if (
+            not isinstance(record, dict)
+            or record.get("schema") != COUPLER_RECHECK_SCHEMA
+            or record.get("job_id") != submission["job_id"]
+            or record.get("architecture_source") != submission["architecture_source"]
+        ):
+            raise RecordError(f"{owner}: {name} does not recheck this job's couplers")
+        if carried := sorted(set(FORBIDDEN_KEYS) & keys(record)):
+            raise RecordError(f"{owner}: {name} carries {carried}")
+        for key, order in COUPLER_ORDER.items():
+            value = record.get(key)
+            if value not in order:
+                raise RecordError(f"{owner}: {name} records {key} {value!r}")
+            current = judged.get(key)
+            if current not in order or order.index(value) > order.index(current):
+                judged[key] = value
+    return judged
+
+
 def validate_run(records: Records) -> Run:
     """Offline rules of one retained run: receipt, digests, approval, collection and raw result bytes.
 
@@ -499,6 +573,9 @@ def validate_run(records: Records) -> Run:
         raise RecordError(f"{owner}: results.json names another job or schema")
     if carried := sorted(set(FORBIDDEN_KEYS) & keys(collected)):
         raise RecordError(f"{owner}: results.json carries {carried}")
+    check_couplers(owner, submission, collected)
+    judged = judged_couplers(owner, submission, collected, records.rechecks)
+    check_couplers(owner, submission, judged)
     returned = collected.get("data", {}).get("payload")
     if (
         manifest.get("schema") == "qd-hypercomplex-cases-v1"
@@ -558,6 +635,12 @@ def validate_run(records: Records) -> Run:
         "statuses": {status: 1},
         "detail": f"job {submission['job_id']}, {collected.get('samples', 0)} samples, {shots} shots",
     }
+    if "architecture_source" in submission:
+        facts |= {
+            "architecture_source": submission["architecture_source"],
+            "couplers_checked": judged["couplers_checked"],
+            "compiled_couplers_checked": judged.get("compiled_couplers_checked", "absent"),
+        }
     return Run(submission, manifest, circuit, collected, summary, shots, facts, cases_sha256, body)
 
 
